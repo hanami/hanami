@@ -1,6 +1,7 @@
 require 'lotus/router'
 require 'lotus/controller'
 require 'lotus/view'
+require 'lotus/view/view_loader'
 
 module Lotus
   module View
@@ -42,13 +43,7 @@ module Lotus
 
     protected
     def self.view_for(action)
-      # TODO extract Lotus::Views::ViewLoader.new(action, config).load!
-      namespace, alternate_action_name, action_name = action.class.name.split('::')
-      action_name = action_name || alternate_action_name
-      namespace   = namespace.gsub(config.controller_suffix, '')
-      Utils::Class.load!(
-        "#{ namespace }::(#{ config.view_namespace }#{ action_name }|#{ action_name }#{ config.view_suffix })"
-      )
+      Lotus::View::ViewLoader.new(action, config).load!
     end
   end
 end

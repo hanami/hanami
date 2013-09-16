@@ -6,5 +6,11 @@ module Posts
       def call(params)
       end
     end
+
+    action 'Raise' do
+      def call(params)
+        raise "I've got a problem"
+      end
+    end
   end
 end
