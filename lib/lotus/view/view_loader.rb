@@ -1,4 +1,5 @@
 require 'lotus/utils/class'
+require 'lotus/view/internal_server_error_view'
 
 module Lotus
   module View
@@ -12,7 +13,17 @@ module Lotus
       end
 
       def load!
-        Utils::Class.load!(@class_name)
+        begin
+          Utils::Class.load!(@class_name)
+        rescue NameError
+          _fallback!
+          retry
+        end
+      end
+
+      protected
+      def _fallback!
+        @class_name = 'Lotus::View::InternalServerErrorView'
       end
 
       private

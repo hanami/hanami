@@ -18,13 +18,13 @@ describe 'A Lotus application' do
       response.body.must_match %(<h1>Posts</h1>)
     end
 
-    # it 'returns a server side error when an exeception is raised' do
-    #   response = @blog.get('/raise')
+    it 'returns a server side error when an exeception is raised' do
+      response = @blog.get('/raise')
 
-    #   response.status.must_equal 500
-    #   response.body.must_match %(<title>Blog: Internal Server Error</title>)
-    #   response.body.must_match %(<h1>Internal Server Error</h1>)
-    # end
+      response.status.must_equal 500
+      response.body.must_match %(<title>Internal Server Error</title>)
+      response.body.must_match %(<h1>Internal Server Error</h1>)
+    end
 
     # it 'returns a not found response for unknown path' do
     #   response = @blog.get('/unknown')
