@@ -26,13 +26,13 @@ describe 'A Lotus application' do
       response.body.must_match %(<h1>Internal Server Error</h1>)
     end
 
-    # it 'returns a not found response for unknown path' do
-    #   response = @blog.get('/unknown')
+    it 'returns a not found response for unknown path' do
+      response = @blog.get('/unknown')
 
-    #   response.status.must_equal 404
-    #   response.body.must_match %(<title>Blog: Not Found</title>)
-    #   response.body.must_match %(<h1>Not Found</h1>)
-    # end
+      response.status.must_equal 404
+      response.body.must_match %(<title>Not Found</title>)
+      response.body.must_match %(<h1>Not Found</h1>)
+    end
   end
 
   describe 'with a Rails layout' do

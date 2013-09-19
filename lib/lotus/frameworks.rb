@@ -37,13 +37,13 @@ module Lotus
 
     def self.render(response)
       action = response.action
-      format = :html # response.format
-      view_for(action).render({format: format}, action.exposures)
+      format = :html # TODO response.format
+      view_for(response).render({format: format}, action.exposures)
     end
 
     protected
-    def self.view_for(action)
-      Lotus::View::ViewLoader.new(action, config).load!
+    def self.view_for(response)
+      Lotus::View::ViewLoader.load!(response, config)
     end
   end
 end
