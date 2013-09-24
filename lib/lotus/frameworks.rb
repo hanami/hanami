@@ -4,6 +4,14 @@ require 'lotus/view'
 require 'lotus/view/view_loader'
 
 module Lotus
+  module Action
+    Throwable.class_eval do
+      protected
+      def status(code, message)
+        self.status = code
+      end
+    end
+  end
   module View
     module Rendering
       class TemplatesFinder

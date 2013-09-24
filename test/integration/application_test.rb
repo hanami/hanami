@@ -33,6 +33,12 @@ describe 'A Lotus application' do
       response.body.must_match %(<title>Not Found</title>)
       response.body.must_match %(<h1>Not Found</h1>)
     end
+
+    it 'returns an image from public directory' do
+      response = @blog.get('/favicon.ico')
+
+      response.status.must_equal 200
+    end
   end
 
   describe 'with a Rails layout' do
