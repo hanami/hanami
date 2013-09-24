@@ -22,6 +22,14 @@ module Lotus
       end
     end
 
+    def excluded_load_paths(value = nil)
+      if value
+        @excluded_load_paths = value
+      else
+        @excluded_load_paths ||= /(features|spec|test|vendor)/
+      end
+    end
+
     def controller_suffix(value = nil)
       if value
         @controller_suffix = value

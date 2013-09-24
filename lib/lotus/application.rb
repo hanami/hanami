@@ -53,7 +53,7 @@ module Lotus
       view.root   = config.root
 
       Dir.glob("#{ config.root }/**/*.rb").each do |file|
-        require file
+        require file unless file.match(config.excluded_load_paths)
       end
 
       resolver    = Lotus::Routing::EndpointResolver.new(suffix: config.controller_namespace)
