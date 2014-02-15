@@ -12,7 +12,8 @@ module Lotus
 
     class File < ::Rack::File
       def serving(env)
-        Lotus::HTTP::Response.fabricate(super)
+        # Lotus::HTTP::Response.fabricate(super)
+        [ super, NullAction.new ].flatten
       end
 
       def available?
@@ -34,9 +35,7 @@ module Lotus
       DEFAULT_CODE = 404
 
       def call(env)
-        HTTP::Response.new(HTTP::Response::NullAction.new).tap do |response|
-          response.status, _ = Http::Status.for_code(DEFAULT_CODE)
-        end
+        [ DEFAULT_CODE, {}, [], NullAction.new]
       end
     end
   end
@@ -53,7 +52,7 @@ module Lotus
 
     def call(env)
       middleware.call(env).tap do |response|
-        response.body = view.render(response) if response.body.empty?
+        response[2] = view.render(response) if response[2].empty?
       end
     end
 
@@ -87,7 +86,7 @@ module Lotus
 
       resolver    = Lotus::Routing::EndpointResolver.new(suffix: config.controller_namespace)
       default_app = Lotus::Routing::DefaultApp.new
-      @routes  = Lotus::Router.draw(resolver: resolver, default_app: default_app, &config.routes)
+      @routes  = Lotus::Router.new(resolver: resolver, default_app: default_app, &config.routes)
       middleware
 
       view.layout = :application

@@ -17,7 +17,7 @@ module Lotus
 
       private
       def self.class_name_for(response, config)
-        case response.status
+        case response[0]
         when SUCCESSFUL_STATES
           class_name_from_action(response, config)
         else
@@ -26,13 +26,13 @@ module Lotus
       end
 
       def self.class_name_from_action(response, config)
-        action = response.action
+        action = response[3]
         namespace, action_name = _extract_namespace_and_action_name(action, config.dup)
         "#{ namespace }::(#{ config.view_namespace }#{ action_name }|#{ action_name }#{ config.view_suffix })"
       end
 
       def self.class_name_from_status(response)
-        _, name = Http::Status.for_code(response.status)
+        _, name = Http::Status.for_code(response[0])
         CLASS_PREFIX + name.gsub(' ', '') + CLASS_SUFFIX
       end
 

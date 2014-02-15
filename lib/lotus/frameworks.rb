@@ -11,7 +11,24 @@ module Lotus
         self.status = code
       end
     end
+
+    Rack.class_eval do
+      # FIXME try do inject this behavior in order to implement like this:
+      # def response
+      #   [ super, self ].flatten
+      # end
+      def response
+        [ @_status || Rack::DEFAULT_RESPONSE_CODE, headers, @_body || Rack::DEFAULT_RESPONSE_BODY.dup, self ]
+      end
+    end
   end
+
+  class NullAction
+    def exposures
+      {}
+    end
+  end
+
   module View
     module Rendering
       class TemplatesFinder
@@ -44,7 +61,7 @@ module Lotus
     end
 
     def self.render(response)
-      action = response.action
+      action = response[3]
       format = :html # TODO response.format
       view_for(response).render({format: format}, action.exposures)
     end
