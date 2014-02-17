@@ -1,4 +1,5 @@
 require 'lotus/router'
+require 'lotus/model'
 require 'lotus/controller'
 require 'lotus/view'
 require 'lotus/view/view_loader'

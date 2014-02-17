@@ -77,6 +77,8 @@ module Lotus
     end
 
     def load!
+      Lotus::Action.handled_exceptions = { Lotus::Model::RecordNotFound => 404 }
+
       view.config = config
       view.root   = config.root
 
