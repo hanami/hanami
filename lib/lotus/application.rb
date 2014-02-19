@@ -52,7 +52,8 @@ module Lotus
 
     def call(env)
       middleware.call(env).tap do |response|
-        response[2] = view.render(response) if response[2].empty?
+        # FIXME Array() should be handled internally by the LHS
+        response[2] = Array(view.render(response)) if response[2].empty?
       end
     end
 
