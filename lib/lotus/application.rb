@@ -71,7 +71,7 @@ module Lotus
     def middleware
       @middleware ||= begin
         builder = ::Rack::Builder.new
-        builder.use Rack::Static, urls: ['/favicon.ico', '/stylesheets', '/images', '/javascripts'], root: config.root.join('public').to_s
+        builder.use Rack::Static, urls: ['/favicon.ico', '/assets', '/stylesheets', '/images', '/javascripts'], root: config.root.join('public').to_s
         builder.run @routes
         builder
       end
