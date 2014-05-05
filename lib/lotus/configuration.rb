@@ -14,6 +14,14 @@ module Lotus
       end
     end
 
+    def mapping(&blk)
+      if block_given?
+        @mapping = blk
+      else
+        @mapping
+      end
+    end
+
     def root(value = nil)
       if value
         @root = Pathname.new(value).realpath

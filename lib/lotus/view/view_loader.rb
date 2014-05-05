@@ -28,7 +28,7 @@ module Lotus
       def self.class_name_from_action(response, config)
         action = response[3]
         namespace, action_name = _extract_namespace_and_action_name(action, config.dup)
-        "#{ namespace }::(#{ config.view_namespace }#{ action_name }|#{ action_name }#{ config.view_suffix })"
+        "#{ namespace }(::#{ action_name }|Views::#{ action_name }|::#{ config.view_namespace }#{ action_name }|::#{ action_name }#{ config.view_suffix })"
       end
 
       def self.class_name_from_status(response)

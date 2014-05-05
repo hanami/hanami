@@ -64,7 +64,7 @@ module Lotus
     def self.render(response)
       action = response[3]
       format = :html # TODO response.format
-      view_for(response).render({format: format}, action.exposures)
+      view_for(response).render(action.exposures.merge(format: format))
     end
 
     protected

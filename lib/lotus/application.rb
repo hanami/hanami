@@ -57,9 +57,9 @@ module Lotus
       end
     end
 
-    protected
-    attr_reader :routes
+    attr_reader :routes, :mapping
 
+    protected
     class << self
       attr_accessor :config
     end
@@ -78,7 +78,7 @@ module Lotus
     end
 
     def load!
-      Lotus::Action.handled_exceptions = { Lotus::Model::RecordNotFound => 404 }
+      Lotus::Controller.handled_exceptions = { Lotus::Model::EntityNotFound => 404 }
 
       view.config = config
       view.root   = config.root
@@ -89,8 +89,12 @@ module Lotus
 
       resolver    = Lotus::Routing::EndpointResolver.new(suffix: config.controller_namespace)
       default_app = Lotus::Routing::DefaultApp.new
+
       @routes  = Lotus::Router.new(resolver: resolver, default_app: default_app, &config.routes)
       middleware
+
+      @mapping = Lotus::Model::Mapper.new(&config.mapping)
+      @mapping.load!
 
       view.layout = :application
       view.load!
