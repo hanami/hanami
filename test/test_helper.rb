@@ -1,17 +1,21 @@
-$:.unshift 'lib'
 require 'rubygems'
 require 'bundler/setup'
-require 'minitest/autorun'
-require 'lotus'
 
-Minitest::Test.class_eval do
-  def self.isolate_me!
-    require 'minitest/isolation'
+if ENV['COVERAGE'] == 'true'
+  require 'simplecov'
+  require 'coveralls'
 
-    class << self
-      unless method_defined?(:isolation?)
-        define_method :isolation? do true end
-      end
-    end
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+    SimpleCov::Formatter::HTMLFormatter,
+    Coveralls::SimpleCov::Formatter
+  ]
+
+  SimpleCov.start do
+    command_name 'test'
+    add_filter   'test'
   end
 end
+
+require 'minitest/autorun'
+$:.unshift 'lib'
+require 'lotus'
