@@ -19,3 +19,4 @@ end
 require 'minitest/autorun'
 $:.unshift 'lib'
 require 'lotus'
+require 'fixtures'
