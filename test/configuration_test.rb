@@ -82,4 +82,21 @@ describe Lotus::Configuration do
       end
     end
   end
+
+  describe '#loading_paths' do
+    before do
+      @configuration.root '.'
+    end
+
+    describe 'by default' do
+      it "it's equal to root" do
+        @configuration.loading_paths.must_equal [@configuration.root]
+      end
+    end
+
+    it 'allows to add other paths' do
+      @configuration.loading_paths << '..'
+      @configuration.loading_paths.must_include '..'
+    end
+  end
 end

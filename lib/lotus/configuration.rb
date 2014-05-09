@@ -1,4 +1,5 @@
 require 'lotus/utils/kernel'
+require 'lotus/config/loading_paths'
 
 module Lotus
   class Configuration
@@ -8,10 +9,14 @@ module Lotus
 
     def root(value = nil)
       if value
-        @root = Lotus::Utils::Kernel.Pathname(value).realpath
+        @root = Utils::Kernel.Pathname(value).realpath
       else
         @root
       end
+    end
+
+    def loading_paths
+      @loading_paths ||= Config::LoadingPaths.new(root)
     end
   end
 end
