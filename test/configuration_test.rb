@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'lotus/router'
+require 'lotus/model'
 
 describe Lotus::Configuration do
   before do
@@ -107,7 +108,6 @@ describe Lotus::Configuration do
 
       it 'sets the routes' do
         @configuration.routes(&routes)
-        assert_equal @configuration.routes.to_proc, routes
 
         router = Lotus::Router.new(&@configuration.routes)
         router.path(:root).must_equal '/'
@@ -115,13 +115,65 @@ describe Lotus::Configuration do
     end
 
     describe 'when a relative path is given' do
-      let(:path) { __dir__ + '/fixtures/routes' }
+      describe "and it's valid" do
+        let(:path) { __dir__ + '/fixtures/routes' }
 
-      it 'sets the routes' do
-        @configuration.routes(path)
+        it 'sets the routes' do
+          @configuration.routes(path)
 
-        router = Lotus::Router.new(&@configuration.routes)
-        router.path(:root).must_equal '/'
+          router = Lotus::Router.new(&@configuration.routes)
+          router.path(:root).must_equal '/'
+        end
+      end
+
+      describe "and it's unknown" do
+        let(:path) { __dir__ + '/fixtures/unknown' }
+
+        it 'raises an error' do
+          @configuration.routes(path)
+
+          -> {
+            Lotus::Router.new(&@configuration.routes)
+          }.must_raise ArgumentError
+        end
+      end
+    end
+  end
+
+  describe '#mapping' do
+    describe 'when a block is given' do
+      let(:mapping) { Proc.new { collection :customers do; end } }
+
+      it 'sets the database mapping' do
+        @configuration.mapping(&mapping)
+
+        mapper = Lotus::Model::Mapper.new(&@configuration.mapping)
+        mapper.collection(:customers).must_be_kind_of Lotus::Model::Mapping::Collection
+      end
+    end
+
+    describe 'when a relative path is given' do
+      describe "and it's valid" do
+        let(:path) { __dir__ + '/fixtures/mapping' }
+
+        it 'sets the routes' do
+          @configuration.mapping(path)
+
+          mapper = Lotus::Model::Mapper.new(&@configuration.mapping)
+          mapper.collection(:customers).must_be_kind_of Lotus::Model::Mapping::Collection
+        end
+      end
+
+      describe "and it's unknown" do
+        let(:path) { __dir__ + '/fixtures/unknown' }
+
+        it 'raises an error' do
+          @configuration.mapping(path)
+
+          -> {
+            Lotus::Model::Mapper.new(&@configuration.mapping)
+          }.must_raise ArgumentError
+        end
       end
     end
   end

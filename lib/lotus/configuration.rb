@@ -1,6 +1,7 @@
 require 'lotus/utils/kernel'
 require 'lotus/config/loading_paths'
 require 'lotus/config/routes'
+require 'lotus/config/mapping'
 
 module Lotus
   class Configuration
@@ -25,6 +26,14 @@ module Lotus
         @routes = Config::Routes.new(path, &blk)
       else
         @routes
+      end
+    end
+
+    def mapping(path = nil, &blk)
+      if path or block_given?
+        @mapping = Config::Mapping.new(path, &blk)
+      else
+        @mapping
       end
     end
   end

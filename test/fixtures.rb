@@ -6,6 +6,11 @@ module CoffeeShop
       routes do
         get '/', to: ->{}
       end
+
+      mapping do
+        collection :customers do
+        end
+      end
     end
   end
 end

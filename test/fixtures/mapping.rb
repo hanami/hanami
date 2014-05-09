@@ -1,0 +1,2 @@
+collection :customers do
+end
