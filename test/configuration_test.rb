@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'lotus/router'
 
 describe Lotus::Configuration do
   before do
@@ -97,6 +98,31 @@ describe Lotus::Configuration do
     it 'allows to add other paths' do
       @configuration.loading_paths << '..'
       @configuration.loading_paths.must_include '..'
+    end
+  end
+
+  describe '#routes' do
+    describe 'when a block is given' do
+      let(:routes) { Proc.new { get '/', to: ->{}, as: :root } }
+
+      it 'sets the routes' do
+        @configuration.routes(&routes)
+        assert_equal @configuration.routes.to_proc, routes
+
+        router = Lotus::Router.new(&@configuration.routes)
+        router.path(:root).must_equal '/'
+      end
+    end
+
+    describe 'when a relative path is given' do
+      let(:path) { __dir__ + '/fixtures/routes' }
+
+      it 'sets the routes' do
+        @configuration.routes(path)
+
+        router = Lotus::Router.new(&@configuration.routes)
+        router.path(:root).must_equal '/'
+      end
     end
   end
 end
