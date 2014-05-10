@@ -5,6 +5,8 @@ require 'lotus/config/mapping'
 
 module Lotus
   class Configuration
+    DEFAULT_LOADING_PATH = 'app'.freeze
+
     def initialize(&blk)
       instance_eval(&blk) if block_given?
     end
@@ -18,7 +20,7 @@ module Lotus
     end
 
     def loading_paths
-      @loading_paths ||= Config::LoadingPaths.new(root)
+      @loading_paths ||= Config::LoadingPaths.new(root.join(DEFAULT_LOADING_PATH))
     end
 
     def routes(path = nil, &blk)

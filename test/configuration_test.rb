@@ -92,7 +92,7 @@ describe Lotus::Configuration do
 
     describe 'by default' do
       it "it's equal to root" do
-        @configuration.loading_paths.must_equal [@configuration.root]
+        @configuration.loading_paths.must_equal [@configuration.root.join('app')]
       end
     end
 
