@@ -1,5 +1,7 @@
 require 'lotus/utils/class_attribute'
+require 'lotus/frameworks'
 require 'lotus/configuration'
+require 'lotus/loader'
 
 module Lotus
   class Application
@@ -8,6 +10,17 @@ module Lotus
 
     def self.configure(&blk)
       self.configuration = Configuration.new(&blk)
+    end
+
+    attr_accessor :routes, :mapping
+
+    def initialize
+      @loader = Lotus::Loader.new(self)
+      @loader.load!
+    end
+
+    def configuration
+      self.class.configuration
     end
   end
 end

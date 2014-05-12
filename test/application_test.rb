@@ -13,4 +13,16 @@ describe Lotus::Application do
       configuration.root.must_equal Pathname.new(__dir__)
     end
   end
+
+  describe '#configuration' do
+    it 'returns class configuration' do
+      @application.configuration.must_equal @application.class.configuration
+    end
+  end
+
+  describe '#initialize' do
+    it 'loads the frameworks and the application' do
+      @application.routes.must_be_kind_of(Lotus::Router)
+    end
+  end
 end
