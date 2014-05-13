@@ -1,4 +1,5 @@
 require 'lotus/utils/kernel'
+require 'lotus/utils/string'
 
 module Lotus
   class Loader
