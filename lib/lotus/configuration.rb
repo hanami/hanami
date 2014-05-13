@@ -19,6 +19,14 @@ module Lotus
       end
     end
 
+    def layout(value = nil)
+      if value
+        @layout = value
+      else
+        @layout
+      end
+    end
+
     def loading_paths
       @loading_paths ||= Config::LoadingPaths.new(root.join(DEFAULT_LOADING_PATH))
     end

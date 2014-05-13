@@ -1,7 +1,3 @@
-# FIXME move this into CoffeeShop module
-class ApplicationLayout
-end
-
 class Customer
 end
 
@@ -9,6 +5,7 @@ module CoffeeShop
   class Application < Lotus::Application
     configure do
       root __dir__
+      layout :application
 
       loading_paths.clear
 
@@ -22,5 +19,8 @@ module CoffeeShop
         end
       end
     end
+  end
+
+  class ApplicationLayout
   end
 end

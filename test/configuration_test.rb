@@ -177,4 +177,26 @@ describe Lotus::Configuration do
       end
     end
   end
+
+  describe '#layout' do
+    describe "when not previously set" do
+      it 'defaults to nil' do
+        @configuration.layout.must_be_nil
+      end
+    end
+
+    describe "when called with an argument" do
+      it 'sets the value' do
+        @configuration.layout(:other)
+        @configuration.layout.must_equal :other
+      end
+    end
+
+    describe "when called with nil" do
+      it 'sets the value' do
+        @configuration.layout(nil)
+        @configuration.layout.must_be_nil
+      end
+    end
+  end
 end

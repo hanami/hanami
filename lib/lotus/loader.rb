@@ -22,15 +22,12 @@ module Lotus
 
     def load_frameworks!
       # FIXME only add that exception if Lotus::Model is defined
-      # FIXME read the layout from the configuration
-      # FIXME layout class must be nested into CoffeeShop
       application_module.module_eval %{
         Controller = Lotus::Controller.dup unless defined?(#{application_module}::Controller)
         View       = Lotus::View.dup       unless defined?(#{application_module}::View)
 
         Controller.handled_exceptions = { Lotus::Model::EntityNotFound => 404 }
         View.root                     = Utils::Kernel.Pathname("#{ configuration.root }")
-        View.layout                   = :application
       }
     end
 
@@ -44,6 +41,10 @@ module Lotus
 
     def finalize!
       application_module.module_eval %{
+        if #{ !configuration.layout.nil? }
+          View.layout = "#{application_module}::#{ Utils::String.new(configuration.layout).classify }"
+        end
+
         View.load!
       }
 

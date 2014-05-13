@@ -26,7 +26,7 @@ describe Lotus::Loader do
       end
 
       it 'assigns layout to CoffeeShop::View' do
-        CoffeeShop::View.layout.must_equal ApplicationLayout
+        CoffeeShop::View.layout.must_equal CoffeeShop::ApplicationLayout
       end
 
       it 'assigns configuration to CoffeeShop::View'
