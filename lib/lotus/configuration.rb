@@ -1,11 +1,11 @@
 require 'lotus/utils/kernel'
-require 'lotus/config/loading_paths'
+require 'lotus/config/load_paths'
 require 'lotus/config/routes'
 require 'lotus/config/mapping'
 
 module Lotus
   class Configuration
-    DEFAULT_LOADING_PATH = 'app'.freeze
+    DEFAULT_LOAD_PATH = 'app'.freeze
 
     def initialize(&blk)
       instance_eval(&blk) if block_given?
@@ -27,13 +27,13 @@ module Lotus
       end
     end
 
-    def loading_paths
-      @loading_paths ||= Config::LoadingPaths.new(root.join(DEFAULT_LOADING_PATH))
+    def load_paths
+      @load_paths ||= Config::LoadPaths.new(root.join(DEFAULT_LOAD_PATH))
     end
 
     def routes(path = nil, &blk)
       if path or block_given?
-        @routes = Config::Routes.new(path, &blk)
+        @routes = Config::Routes.new(root, path, &blk)
       else
         @routes
       end
@@ -41,9 +41,17 @@ module Lotus
 
     def mapping(path = nil, &blk)
       if path or block_given?
-        @mapping = Config::Mapping.new(path, &blk)
+        @mapping = Config::Mapping.new(root, path, &blk)
       else
         @mapping
+      end
+    end
+
+    def controller_pattern(value = nil)
+      if value
+        @controller_pattern = value
+      else
+        @controller_pattern ||= 'Controllers::%{controller}::%{action}'
       end
     end
   end

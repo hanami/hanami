@@ -85,20 +85,20 @@ describe Lotus::Configuration do
     end
   end
 
-  describe '#loading_paths' do
+  describe '#load_paths' do
     before do
       @configuration.root '.'
     end
 
     describe 'by default' do
       it "it's equal to root" do
-        @configuration.loading_paths.must_equal [@configuration.root.join('app')]
+        @configuration.load_paths.must_equal [@configuration.root.join('app')]
       end
     end
 
     it 'allows to add other paths' do
-      @configuration.loading_paths << '..'
-      @configuration.loading_paths.must_include '..'
+      @configuration.load_paths << '..'
+      @configuration.load_paths.must_include '..'
     end
   end
 
@@ -196,6 +196,21 @@ describe Lotus::Configuration do
       it 'sets the value' do
         @configuration.layout(nil)
         @configuration.layout.must_be_nil
+      end
+    end
+  end
+
+  describe '#controller_pattern' do
+    describe "when not previously set" do
+      it 'defaults to a specific value' do
+        @configuration.controller_pattern.must_equal 'Controllers::%{controller}::%{action}'
+      end
+    end
+
+    describe "when called with an argument" do
+      it 'sets the value' do
+        @configuration.controller_pattern(pattern = '%{controller}Controller::%{action}')
+        @configuration.controller_pattern.must_equal pattern
       end
     end
   end

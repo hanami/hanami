@@ -19,4 +19,11 @@ end
 require 'minitest/autorun'
 $:.unshift 'lib'
 require 'lotus'
+
+Lotus::Config::LoadPaths.class_eval do
+  def clear
+    @paths.clear
+  end
+end
+
 require 'fixtures'

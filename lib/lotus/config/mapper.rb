@@ -5,8 +5,9 @@ module Lotus
     class Mapper
       EXTNAME = '.rb'
 
-      def initialize(path, &blk)
+      def initialize(root, path, &blk)
         @path, @blk = path, blk
+        @path = root.join(path) if root && path
       end
 
       def to_proc

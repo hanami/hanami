@@ -4,7 +4,7 @@ describe Lotus::Config::Mapping do
   describe '#to_proc' do
     describe 'when only path is given' do
       before do
-        @mapping = Lotus::Config::Mapping.new(path)
+        @mapping = Lotus::Config::Mapping.new(Pathname.new(__dir__), path)
       end
 
       describe "and it's nil" do

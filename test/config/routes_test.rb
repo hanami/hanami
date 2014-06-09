@@ -4,7 +4,7 @@ describe Lotus::Config::Routes do
   describe '#to_proc' do
     describe 'when only path is given' do
       before do
-        @routes = Lotus::Config::Routes.new(path)
+        @routes = Lotus::Config::Routes.new(Pathname.new(__dir__), path)
       end
 
       describe "and it's nil" do

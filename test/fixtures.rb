@@ -4,10 +4,10 @@ end
 module CoffeeShop
   class Application < Lotus::Application
     configure do
-      root __dir__
-      layout :application
+      root   File.dirname(__FILE__)
+      layout nil
 
-      loading_paths.clear
+      load_paths.clear
 
       routes do
         get '/', to: ->{}, as: :root
@@ -19,8 +19,5 @@ module CoffeeShop
         end
       end
     end
-  end
-
-  class ApplicationLayout
   end
 end
