@@ -7,7 +7,6 @@ if !ENV['TRAVIS']
   gem 'lotus-router',     require: false, github: 'lotus/router'
   gem 'lotus-controller', require: false, github: 'lotus/controller'
   gem 'lotus-view',       require: false, github: 'lotus/view', branch: 'configuration'
-  gem 'lotus-model',      require: false, github: 'lotus/model'
 else
   gem 'lotus-router',     '~> 0.1'
   gem 'lotus-controller', '~> 0.1'

@@ -12,7 +12,7 @@ module Lotus
       self.configuration = Configuration.new(&blk)
     end
 
-    attr_accessor :routes, :mapping
+    attr_accessor :routes#, :mapping
 
     def initialize
       @loader = Lotus::Loader.new(self)

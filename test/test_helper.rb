@@ -24,6 +24,11 @@ Lotus::Config::LoadPaths.class_eval do
   def clear
     @paths.clear
   end
+
+  def include?(object)
+    @paths.include?(object)
+  end
 end
 
+Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates').mkpath
 require 'fixtures'

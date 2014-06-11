@@ -10,7 +10,7 @@ describe Lotus::Application do
       configuration = CoffeeShop::Application.configuration
 
       configuration.must_be_kind_of Lotus::Configuration
-      configuration.root.must_equal Pathname.new(__dir__)
+      configuration.root.must_equal Pathname.new(__dir__).join('../tmp/coffee_shop')
     end
   end
 

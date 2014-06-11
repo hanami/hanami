@@ -1,5 +1,4 @@
 require 'lotus'
-require 'lotus/model'
 
 module Collaboration
   class Application < Lotus::Application

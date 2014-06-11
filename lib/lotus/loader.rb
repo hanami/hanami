@@ -1,3 +1,4 @@
+require 'lotus/utils/class'
 require 'lotus/utils/kernel'
 require 'lotus/utils/string'
 
@@ -23,19 +24,14 @@ module Lotus
 
     def load_frameworks!
       application_module.module_eval %{
-        Controller = Lotus::Controller.duplicate unless defined?(#{application_module}::Controller)
-        Action     = Lotus::Action.dup           unless defined?(#{application_module}::Action)
-
-        Controller.configure do
-          action_module #{application_module}::Action
+        unless defined?(#{application_module}::Controller)
+          Controller = Lotus::Controller.generate(#{ application_module })
         end
-
-        Controllers = Module.new unless defined?(#{application_module}::Controllers)
 
         unless defined?(#{application_module}::View)
           View = Lotus::View.generate(#{ application_module }) do
             root Utils::Kernel.Pathname("#{ configuration.root }/app/templates")
-            layout :#{ configuration.layout }
+            layout "#{ configuration.layout }".to_sym unless #{ configuration.layout.nil? }
           end
         end
       }
@@ -46,23 +42,18 @@ module Lotus
 
       resolver = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: application_module)
       application.routes = Lotus::Router.new(resolver: resolver, &configuration.routes)
-
-      # FIXME assign mapping only if Lotus::Model is defined
-      application.mapping = Lotus::Model::Mapper.new(&configuration.mapping)
     end
 
     def finalize!
       application_module.module_eval %{
         View.load!
       }
-
-      # FIXME load mapping only if Lotus::Model is defined
-      application.mapping.load!
     end
 
     def application_module
-      # TODO refactor in favor of Utils::Class
-      Object.const_get application.class.name.split('::').first
+      @application_module ||= Utils::Class.load!(
+        Utils::String.new(application.class).namespace
+      )
     end
   end
 end

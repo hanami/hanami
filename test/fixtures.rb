@@ -1,22 +1,13 @@
-class Customer
-end
-
 module CoffeeShop
   class Application < Lotus::Application
     configure do
-      root   File.dirname(__FILE__)
+      root   Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop')
       layout nil
 
       load_paths.clear
 
       routes do
         get '/', to: ->{}, as: :root
-      end
-
-      mapping do
-        collection :customers do
-          entity Customer
-        end
       end
     end
   end

@@ -2,15 +2,13 @@ require 'test_helper'
 
 describe Lotus::Loader do
   before do
+    CoffeeShop::Application.configuration.root.join('app/templates').mkpath
+
     @application = CoffeeShop::Application.new
     @loader      = Lotus::Loader.new(@application)
   end
 
   describe '#load!' do
-    before do
-      @loader.load!
-    end
-
     describe 'frameworks' do
       it 'generates per application frameworks' do
         assert defined?(CoffeeShop::Controller), 'expected CoffeeShop::Controller'
@@ -31,7 +29,7 @@ describe Lotus::Loader do
       end
 
       it 'assigns root to CoffeeShop::View' do
-        CoffeeShop::View.configuration.root.must_equal @application.configuration.root
+        CoffeeShop::View.configuration.root.must_equal @application.configuration.root.join('app/templates')
       end
 
       it 'assigns layout to CoffeeShop::View' do
@@ -50,11 +48,6 @@ describe Lotus::Loader do
           resolver = @application.routes.instance_variable_get(:@router).instance_variable_get(:@resolver)
           resolver.instance_variable_get(:@namespace).must_equal CoffeeShop
         end
-      end
-
-      it 'assigns mapping' do
-        expected = Lotus::Model::Mapper.new(&@application.configuration.mapping)
-        @application.mapping.collection(:customers).name.must_equal expected.collection(:customers).name
       end
     end
 
