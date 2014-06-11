@@ -32,15 +32,3 @@ Lotus::Action::Rack.class_eval do
     [ @_status || DEFAULT_RESPONSE_CODE, headers, @_body || DEFAULT_RESPONSE_BODY.dup, self ]
   end
 end
-
-Lotus::View::Dsl.class_eval do
-  def template(value = nil)
-    if value
-      @@template = value
-    else
-      # FIXME
-      # @@template ||= Utils::String.new(name).underscore
-      @@template ||= 'home/index'
-    end
-  end
-end

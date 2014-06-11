@@ -25,19 +25,18 @@ module Lotus
       application_module.module_eval %{
         Controller = Lotus::Controller.duplicate unless defined?(#{application_module}::Controller)
         Action     = Lotus::Action.dup           unless defined?(#{application_module}::Action)
-        View       = Lotus::View.duplicate       unless defined?(#{application_module}::View)
 
         Controller.configure do
           action_module #{application_module}::Action
         end
 
         Controllers = Module.new unless defined?(#{application_module}::Controllers)
-        Views       = Module.new unless defined?(#{application_module}::Views)
 
-        View.configure do
-          root Utils::Kernel.Pathname("#{ configuration.root }/app/templates")
-          namespace #{application_module}::Views
-          layout :#{ configuration.layout } # THIS should work because of the lazy loading
+        unless defined?(#{application_module}::View)
+          View = Lotus::View.generate(#{ application_module }) do
+            root Utils::Kernel.Pathname("#{ configuration.root }/app/templates")
+            layout :#{ configuration.layout }
+          end
         end
       }
     end
@@ -54,12 +53,6 @@ module Lotus
 
     def finalize!
       application_module.module_eval %{
-        if #{ !configuration.layout.nil? }
-          View.configure do
-            layout :#{ configuration.layout }
-          end
-        end
-
         View.load!
       }
 

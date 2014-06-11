@@ -29,11 +29,8 @@ module Lotus
         action = response.pop
         view   = Utils::Class.load!(action.class.name.gsub('Controllers', 'Views'))
 
-        require 'byebug'
-        byebug
-        # FIXME it fails to find the template for one reason:
-        #
-        #   1. Lotus::View::Dsl.template should be aware of namespaces (see lib/lotus/frameworks.rb)
+        # FIXME consider only "renderable" statuses
+        # FIXME handle non-successful statuses with Lotus views such as Lotus::Views::ServerErrorView
         response[2] = Array(view.render(action.exposures.merge(format: :html)))
       end
     end
