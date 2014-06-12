@@ -49,6 +49,12 @@ describe Lotus::Loader do
           resolver.instance_variable_get(:@namespace).must_equal CoffeeShop
         end
       end
+
+      describe 'middleware' do
+        it 'preloads the middleware' do
+          @application.middleware.must_be_kind_of(Lotus::Middleware)
+        end
+      end
     end
 
     # describe 'finalization' do

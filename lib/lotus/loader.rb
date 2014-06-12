@@ -42,6 +42,8 @@ module Lotus
 
       resolver = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: application_module)
       application.routes = Lotus::Router.new(resolver: resolver, &configuration.routes)
+
+      application.middleware # preload
     end
 
     def finalize!

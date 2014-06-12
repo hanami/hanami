@@ -2,6 +2,8 @@ require 'lotus/utils/class_attribute'
 require 'lotus/frameworks'
 require 'lotus/configuration'
 require 'lotus/loader'
+require 'lotus/rendering_policy'
+require 'lotus/middleware'
 
 module Lotus
   class Application
@@ -12,9 +14,14 @@ module Lotus
       self.configuration = Configuration.new(&blk)
     end
 
-    attr_accessor :routes#, :mapping
+    attr_reader :routes
 
-    def initialize
+    # @api private
+    attr_writer :routes
+
+    def initialize(rendering_policy = RenderingPolicy.new)
+      @rendering_policy = rendering_policy
+
       @loader = Lotus::Loader.new(self)
       @loader.load!
     end
@@ -24,15 +31,13 @@ module Lotus
     end
 
     def call(env)
-      # FIXME don't assume that "Controllers" will be always part of the class name
-      @routes.call(env).tap do |response|
-        action = response.pop
-        view   = Utils::Class.load!(action.class.name.gsub('Controllers', 'Views'))
-
-        # FIXME consider only "renderable" statuses
-        # FIXME handle non-successful statuses with Lotus views such as Lotus::Views::ServerErrorView
-        response[2] = Array(view.render(action.exposures.merge(format: :html)))
+      middleware.call(env).tap do |response|
+        @rendering_policy.render!(response)
       end
+    end
+
+    def middleware
+      @middleware ||= Lotus::Middleware.new(self)
     end
   end
 end
