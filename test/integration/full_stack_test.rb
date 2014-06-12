@@ -78,4 +78,12 @@ describe 'A full stack Lotus application' do
     response.body.must_match %(<title>Collaboration</title>)
     response.body.must_match %(<h1>Welcome</h1>)
   end
+
+  it "handles thrown statuses from actions" do
+    get '/protected'
+
+    response.status.must_equal 401
+    response.body.must_match %(<title>Unauthorized</title>)
+    response.body.must_match %(<h1>Unauthorized</h1>)
+  end
 end
