@@ -11,4 +11,10 @@ module Collaboration::Controllers::Home
       raise StandardError
     end
   end
+
+  action 'Legacy' do
+    def call(params)
+      redirect_to '/'
+    end
+  end
 end
