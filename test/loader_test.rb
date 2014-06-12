@@ -48,6 +48,11 @@ describe Lotus::Loader do
           resolver = @application.routes.instance_variable_get(:@router).instance_variable_get(:@resolver)
           resolver.instance_variable_get(:@namespace).must_equal CoffeeShop
         end
+
+        it 'assigns custom default app' do
+          default_app = @application.routes.instance_variable_get(:@router).instance_variable_get(:@default_app)
+          default_app.must_be_kind_of(Lotus::Routing::Default)
+        end
       end
 
       describe 'middleware' do

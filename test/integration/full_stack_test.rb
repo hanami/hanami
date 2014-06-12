@@ -31,5 +31,25 @@ describe 'A full stack Lotus application' do
 
     response = @application.get('/fonts/cabin-medium.woff')
     response.status.must_equal 200
+
+    response = @application.get('/stylesheets/not-found.css')
+    response.status.must_equal 404
+  end
+
+  it "renders a custom page for not found resources" do
+    response = @application.get('/unknown')
+
+    response.status.must_equal 404
+
+    response.body.must_match %(<title>Not Found</title>)
+    response.body.must_match %(<h1>Not Found</h1>)
+  end
+
+  it "renders a custom page for server side errors" do
+    response = @application.get('/error')
+
+    response.status.must_equal 500
+    response.body.must_match %(<title>Internal Server Error</title>)
+    response.body.must_match %(<h1>Internal Server Error</h1>)
   end
 end

@@ -1,6 +1,7 @@
 require 'lotus/utils/class'
 require 'lotus/utils/kernel'
 require 'lotus/utils/string'
+require 'lotus/routing/default'
 
 module Lotus
   class Loader
@@ -40,8 +41,9 @@ module Lotus
     def load_application!
       configuration.load_paths.load!
 
-      resolver = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: application_module)
-      application.routes = Lotus::Router.new(resolver: resolver, &configuration.routes)
+      resolver    = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: application_module)
+      default_app = Lotus::Routing::Default.new
+      application.routes = Lotus::Router.new(resolver: resolver, default_app: default_app, &configuration.routes)
 
       application.middleware # preload
     end

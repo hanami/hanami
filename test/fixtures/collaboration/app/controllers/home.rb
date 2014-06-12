@@ -5,4 +5,10 @@ module Collaboration::Controllers::Home
     def call(params)
     end
   end
+
+  action 'Error' do
+    def call(params)
+      raise StandardError
+    end
+  end
 end
