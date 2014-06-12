@@ -199,6 +199,63 @@ describe Lotus::Configuration do
     end
   end
 
+  describe '#scheme' do
+    describe "when not previously set" do
+      it 'defaults to a specific value' do
+        @configuration.scheme.must_equal 'http://'
+      end
+    end
+
+    describe "when called with an argument" do
+      it 'sets the value' do
+        @configuration.scheme(scheme = 'https://')
+        @configuration.scheme.must_equal scheme
+      end
+    end
+  end
+
+  describe '#host' do
+    describe "when not previously set" do
+      it 'defaults to a specific value' do
+        @configuration.host.must_equal 'localhost'
+      end
+    end
+
+    describe "when called with an argument" do
+      it 'sets the value' do
+        @configuration.host(host = 'lotusrb.org')
+        @configuration.host.must_equal host
+      end
+    end
+  end
+
+  describe '#port' do
+    describe "when not previously set" do
+      describe "and scheme is set on 'http://'" do
+        it 'defaults to a specific value' do
+          @configuration.port.must_equal '80'
+        end
+      end
+
+      describe "and scheme is set on 'https://'" do
+        before do
+          @configuration.scheme 'https://'
+        end
+
+        it 'defaults to a specific value' do
+          @configuration.port.must_equal '443'
+        end
+      end
+    end
+
+    describe "when called with an argument" do
+      it 'sets the value' do
+        @configuration.port(port = '8080')
+        @configuration.port.must_equal port
+      end
+    end
+  end
+
   describe '#controller_pattern' do
     describe "when not previously set" do
       it 'defaults to a specific value' do

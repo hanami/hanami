@@ -47,6 +47,34 @@ module Lotus
       end
     end
 
+    def scheme(value = nil)
+      if value
+        @scheme = value
+      else
+        @scheme ||= 'http://'
+      end
+    end
+
+    def host(value = nil)
+      if value
+        @host = value
+      else
+        @host ||= 'localhost'
+      end
+    end
+
+    def port(value = nil)
+      if value
+        @port = value
+      else
+        @port ||
+          case scheme
+          when 'http://'  then '80'
+          when 'https://' then '443'
+          end
+      end
+    end
+
     def controller_pattern(value = nil)
       if value
         @controller_pattern = value
