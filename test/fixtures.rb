@@ -6,6 +6,9 @@ module CoffeeShop
 
       load_paths.clear
 
+      scheme 'https'
+      host   'lotus-coffeeshop.org'
+
       routes do
         get '/', to: ->{}, as: :root
       end

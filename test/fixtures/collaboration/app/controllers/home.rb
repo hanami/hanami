@@ -14,7 +14,7 @@ module Collaboration::Controllers::Home
 
   action 'Legacy' do
     def call(params)
-      redirect_to '/'
+      redirect_to Collaboration::Routes.url(:root)
     end
   end
 end

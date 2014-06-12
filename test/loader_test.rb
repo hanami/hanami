@@ -16,6 +16,10 @@ describe Lotus::Loader do
         assert defined?(CoffeeShop::View),       'expected CoffeeShop::View'
       end
 
+      it 'generates per application classes' do
+        assert defined?(CoffeeShop::Routes), 'expected CoffeeShop::Routes'
+      end
+
       it 'configures controller to use custom action module' do
         CoffeeShop::Controller.configuration.action_module.must_equal(CoffeeShop::Action)
       end
@@ -52,6 +56,11 @@ describe Lotus::Loader do
         it 'assigns custom default app' do
           default_app = @application.routes.instance_variable_get(:@router).instance_variable_get(:@default_app)
           default_app.must_be_kind_of(Lotus::Routing::Default)
+        end
+
+        it 'assigns scheme, host and port configuration' do
+          routes = @application.routes
+          routes.url(:root).must_equal 'https://lotus-coffeeshop.org/'
         end
       end
 

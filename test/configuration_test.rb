@@ -202,13 +202,13 @@ describe Lotus::Configuration do
   describe '#scheme' do
     describe "when not previously set" do
       it 'defaults to a specific value' do
-        @configuration.scheme.must_equal 'http://'
+        @configuration.scheme.must_equal 'http'
       end
     end
 
     describe "when called with an argument" do
       it 'sets the value' do
-        @configuration.scheme(scheme = 'https://')
+        @configuration.scheme(scheme = 'https')
         @configuration.scheme.must_equal scheme
       end
     end
@@ -231,19 +231,19 @@ describe Lotus::Configuration do
 
   describe '#port' do
     describe "when not previously set" do
-      describe "and scheme is set on 'http://'" do
+      describe "and scheme is set on 'http" do
         it 'defaults to a specific value' do
-          @configuration.port.must_equal '80'
+          @configuration.port.must_equal 80
         end
       end
 
-      describe "and scheme is set on 'https://'" do
+      describe "and scheme is set on 'https'" do
         before do
-          @configuration.scheme 'https://'
+          @configuration.scheme 'https'
         end
 
         it 'defaults to a specific value' do
-          @configuration.port.must_equal '443'
+          @configuration.port.must_equal 443
         end
       end
     end
@@ -251,7 +251,7 @@ describe Lotus::Configuration do
     describe "when called with an argument" do
       it 'sets the value' do
         @configuration.port(port = '8080')
-        @configuration.port.must_equal port
+        @configuration.port.must_equal port.to_i
       end
     end
   end

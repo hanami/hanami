@@ -51,7 +51,7 @@ module Lotus
       if value
         @scheme = value
       else
-        @scheme ||= 'http://'
+        @scheme ||= 'http'
       end
     end
 
@@ -65,12 +65,12 @@ module Lotus
 
     def port(value = nil)
       if value
-        @port = value
+        @port = Integer(value)
       else
         @port ||
           case scheme
-          when 'http://'  then '80'
-          when 'https://' then '443'
+          when 'http'  then 80
+          when 'https' then 443
           end
       end
     end
