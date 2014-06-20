@@ -9,7 +9,7 @@ end
 gem 'lotus-utils',      require: false, github: 'lotus/utils'
 gem 'lotus-router',     require: false, github: 'lotus/router'
 gem 'lotus-controller', require: false, github: 'lotus/controller'
-gem 'lotus-view',       require: false, github: 'lotus/view', branch: 'configuration'
+gem 'lotus-view',       require: false, github: 'lotus/view'
 
 gem 'simplecov',   require: false
 gem 'coveralls',   require: false

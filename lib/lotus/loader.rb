@@ -25,19 +25,24 @@ module Lotus
     attr_reader :application, :configuration
 
     def load_frameworks!
-      # TODO try to avoid module_eval %{}
-      application_module.module_eval %{
-        unless defined?(#{application_module}::Controller)
-          Controller = Lotus::Controller.generate(#{ application_module })
-        end
+      config = configuration
 
-        unless defined?(#{application_module}::View)
-          View = Lotus::View.generate(#{ application_module }) do
-            root Utils::Kernel.Pathname("#{ configuration.root }/app/templates")
-            layout "#{ configuration.layout }".to_sym unless #{ configuration.layout.nil? }
+      unless application_module.const_defined?('Controller')
+        controller = Lotus::Controller.duplicate(application_module)
+        application_module.const_set('Controller', controller)
+      end
+
+      unless application_module.const_defined?('View')
+        view = Lotus::View.duplicate(application_module) do
+          root Utils::Kernel.Pathname(config.root.join('app/templates'))
+
+          unless config.layout.nil?
+            layout config.layout
           end
         end
-      }
+
+        application_module.const_set('View', view)
+      end
     end
 
     def load_application!
@@ -58,16 +63,14 @@ module Lotus
     end
 
     def finalize!
-      # TODO try to avoid module_eval %{}
-      routes = Lotus::Routes.new(application.routes)
+      unless application_module.const_defined?('Routes')
+        routes = Lotus::Routes.new(application.routes)
+        application_module.const_set('Routes', routes)
+      end
 
-      application_module.module_eval %{
-        unless defined?(#{application_module}::Routes)
-          Routes = routes
-        end
-
+      application_module.module_eval do
         View.load!
-      }
+      end
     end
 
     def application_module
