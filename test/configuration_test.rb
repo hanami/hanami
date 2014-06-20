@@ -218,6 +218,24 @@ describe Lotus::Configuration do
     end
   end
 
+  describe 'assets' do
+    describe "when not previously set" do
+      it "is equal to public/ from the root directory" do
+        @configuration.assets.to_s.must_equal @configuration.root.join('public').to_s
+      end
+    end
+
+    describe "when set" do
+      before do
+        @configuration.assets 'assets'
+      end
+
+      it 'returns the configured value' do
+        @configuration.assets.to_s.must_equal @configuration.root.join('assets').to_s
+      end
+    end
+  end
+
   describe '#scheme' do
     describe "when not previously set" do
       it 'defaults to a specific value' do

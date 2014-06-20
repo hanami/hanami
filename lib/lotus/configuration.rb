@@ -1,5 +1,6 @@
 require 'lotus/utils/kernel'
 require 'lotus/config/load_paths'
+require 'lotus/config/assets'
 require 'lotus/config/routes'
 require 'lotus/config/mapping'
 
@@ -38,6 +39,14 @@ module Lotus
         @templates = value
       else
         root.join @templates.to_s
+      end
+    end
+
+    def assets(value = nil)
+      if value
+        @assets = value
+      else
+        Config::Assets.new(root, @assets)
       end
     end
 
