@@ -8,19 +8,19 @@ describe Lotus::Configuration do
 
   describe '#initialize' do
     describe 'when block is given' do
-      it 'yields it' do
+      it 'stores for later evaluation' do
         configuration = Lotus::Configuration.new do
           root __dir__
-        end
+        end.load!
 
-        configuration.root.wont_be_nil
+        configuration.root.must_equal Pathname(__dir__).realpath
       end
     end
 
     describe 'when no block is given' do
-      it 'yields it' do
-        configuration = Lotus::Configuration.new
-        configuration.root.must_be_nil
+      it 'when loaded it will set defaults values' do
+        configuration = Lotus::Configuration.new.load!
+        configuration.root.must_equal Pathname(Dir.pwd).realpath
       end
     end
   end

@@ -8,14 +8,20 @@ module Lotus
     DEFAULT_LOAD_PATH = 'app'.freeze
 
     def initialize(&blk)
-      instance_eval(&blk) if block_given?
+      @blk = blk || Proc.new{}
+    end
+
+    # @api private
+    def load!
+      instance_eval(&@blk)
+      self
     end
 
     def root(value = nil)
       if value
-        @root = Utils::Kernel.Pathname(value).realpath
+        @root = value
       else
-        @root
+        Utils::Kernel.Pathname(@root || Dir.pwd).realpath
       end
     end
 

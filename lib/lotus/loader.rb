@@ -15,6 +15,7 @@ module Lotus
 
     def load!
       @mutex.synchronize do
+        load_configuration!
         load_frameworks!
         load_application!
         finalize!
@@ -23,6 +24,10 @@ module Lotus
 
     private
     attr_reader :application, :configuration
+
+    def load_configuration!
+      configuration.load!
+    end
 
     def load_frameworks!
       config = configuration
