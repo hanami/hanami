@@ -199,6 +199,25 @@ describe Lotus::Configuration do
     end
   end
 
+  describe '#templates' do
+    describe "when not previously set" do
+      it "is equal to configuration's root" do
+        @configuration.root.wont_be_nil
+        @configuration.templates.must_equal @configuration.root
+      end
+    end
+
+    describe "when set" do
+      before do
+        @configuration.templates 'app/templates'
+      end
+
+      it 'returns the configured value' do
+        @configuration.templates.must_equal @configuration.root.join('app/templates')
+      end
+    end
+  end
+
   describe '#scheme' do
     describe "when not previously set" do
       it 'defaults to a specific value' do

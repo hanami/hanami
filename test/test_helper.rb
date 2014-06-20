@@ -16,6 +16,8 @@ if ENV['COVERAGE'] == 'true'
   end
 end
 
+FIXTURES_ROOT = Pathname(File.dirname(__FILE__) + '/fixtures').realpath
+
 require 'minitest/autorun'
 $:.unshift 'lib'
 require 'lotus'

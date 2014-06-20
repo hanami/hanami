@@ -5,6 +5,7 @@ module CoffeeShop
       layout nil
 
       load_paths.clear
+      templates 'app/templates'
 
       scheme 'https'
       host   'lotus-coffeeshop.org'

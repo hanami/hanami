@@ -39,7 +39,7 @@ module Lotus
 
       unless application_module.const_defined?('View')
         view = Lotus::View.duplicate(application_module) do
-          root Utils::Kernel.Pathname(config.root.join('app/templates'))
+          root config.templates
 
           unless config.layout.nil?
             layout config.layout

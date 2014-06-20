@@ -5,8 +5,19 @@ require 'fixtures/collaboration/application'
 describe 'A full stack Lotus application' do
   include Rack::Test::Methods
 
+  before do
+    @current_dir = Dir.pwd
+    Dir.chdir FIXTURES_ROOT.join('collaboration')
+    @app = Collaboration::Application.new
+  end
+
+  after do
+    Dir.chdir @current_dir
+    @current_dir = nil
+  end
+
   def app
-    Collaboration::Application.new
+    @app
   end
 
   def response

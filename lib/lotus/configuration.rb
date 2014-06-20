@@ -33,6 +33,14 @@ module Lotus
       end
     end
 
+    def templates(value = nil)
+      if value
+        @templates = value
+      else
+        root.join @templates.to_s
+      end
+    end
+
     def load_paths
       @load_paths ||= Config::LoadPaths.new(root.join(DEFAULT_LOAD_PATH))
     end
