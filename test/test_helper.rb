@@ -43,6 +43,10 @@ Lotus::Config::LoadPaths.class_eval do
   def include?(object)
     @paths.include?(object)
   end
+
+  def empty?
+    @paths.empty?
+  end
 end
 
 Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates').mkpath

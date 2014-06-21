@@ -5,6 +5,8 @@ module Collaboration
     configure do
       layout :application
 
+      load_paths << 'app'
+
       routes  'config/routes'
       mapping 'config/mapping'
     end

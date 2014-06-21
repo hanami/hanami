@@ -48,7 +48,7 @@ module Lotus
     end
 
     def load_application!
-      configuration.load_paths.load!
+      configuration.load_paths.load!(configuration.root)
       namespace = configuration.namespace || application_module
 
       resolver    = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: namespace)

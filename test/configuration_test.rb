@@ -139,8 +139,8 @@ describe Lotus::Configuration do
     end
 
     describe 'by default' do
-      it "it's equal to root" do
-        @configuration.load_paths.must_include @configuration.root.join('app')
+      it "is empty" do
+        @configuration.load_paths.must_be_empty
       end
     end
 

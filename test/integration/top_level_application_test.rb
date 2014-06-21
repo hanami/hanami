@@ -3,7 +3,6 @@ require 'rack/test'
 require 'fixtures/information_tech/application'
 
 describe 'A top level Lotus application' do
-  isolate_me!
   include Rack::Test::Methods
 
   before do

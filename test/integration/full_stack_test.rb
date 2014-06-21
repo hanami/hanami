@@ -3,7 +3,6 @@ require 'rack/test'
 require 'fixtures/collaboration/application'
 
 describe 'A full stack Lotus application' do
-  isolate_me!
   include Rack::Test::Methods
 
   before do

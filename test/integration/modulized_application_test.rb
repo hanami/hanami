@@ -3,7 +3,6 @@ require 'rack/test'
 require 'fixtures/furnitures/application'
 
 describe 'A modulized Lotus application' do
-  isolate_me!
   include Rack::Test::Methods
 
   before do

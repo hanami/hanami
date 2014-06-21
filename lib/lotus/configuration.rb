@@ -6,8 +6,6 @@ require 'lotus/config/mapping'
 
 module Lotus
   class Configuration
-    DEFAULT_LOAD_PATH = 'app'.freeze
-
     def initialize
       @blk = Proc.new{}
     end
@@ -65,7 +63,7 @@ module Lotus
     end
 
     def load_paths
-      @load_paths ||= Config::LoadPaths.new(root.join(DEFAULT_LOAD_PATH))
+      @load_paths ||= Config::LoadPaths.new
     end
 
     def routes(path = nil, &blk)

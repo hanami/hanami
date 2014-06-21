@@ -4,8 +4,11 @@ module InformationTech
   class Application < Lotus::Application
     configure do
       namespace Object
+
       controller_pattern '%{controller}Controller::%{action}'
       view_pattern       '%{controller}::%{action}'
+
+      load_paths << 'app'
 
       layout :app
 
