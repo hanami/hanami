@@ -4,7 +4,7 @@ module Lotus
       DEFAULT_DIRECTORY = 'public'.freeze
 
       def initialize(root, directory)
-        @path = root.join directory || DEFAULT_DIRECTORY
+        @path = root.join(directory || DEFAULT_DIRECTORY)
       end
 
       def entries
@@ -19,9 +19,7 @@ module Lotus
         @path.to_s
       end
 
-      def to_str
-        to_s
-      end
+      alias_method :to_str, :to_s
     end
   end
 end
