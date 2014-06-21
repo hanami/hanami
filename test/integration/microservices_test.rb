@@ -3,7 +3,7 @@ require 'rack/test'
 require 'fixtures/microservices/apps/frontend/application'
 require 'fixtures/microservices/apps/backend/application'
 
-describe 'A modulized Lotus application' do
+describe 'Lotus microservices applications' do
   include Rack::Test::Methods
 
   before do
