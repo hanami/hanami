@@ -8,12 +8,18 @@ module Lotus
   class Configuration
     DEFAULT_LOAD_PATH = 'app'.freeze
 
-    def initialize(&blk)
-      @blk = blk || Proc.new{}
+    def initialize
+      @blk = Proc.new{}
+    end
+
+    def configure(&blk)
+      @blk = blk if block_given?
+      self
     end
 
     # @api private
-    def load!
+    def load!(namespace = nil)
+      @namespace = namespace
       instance_eval(&@blk)
       self
     end
@@ -23,6 +29,14 @@ module Lotus
         @root = value
       else
         Utils::Kernel.Pathname(@root || Dir.pwd).realpath
+      end
+    end
+
+    def namespace(value = nil)
+      if value
+        @namespace = value
+      else
+        @namespace
       end
     end
 
@@ -103,6 +117,14 @@ module Lotus
         @controller_pattern = value
       else
         @controller_pattern ||= 'Controllers::%{controller}::%{action}'
+      end
+    end
+
+    def view_pattern(value = nil)
+      if value
+        @view_pattern = value
+      else
+        @view_pattern ||= 'Views::%{controller}::%{action}'
       end
     end
   end

@@ -21,3 +21,4 @@ tmp
 *.a
 mkmf.log
 .greenbar
+.DS_Store

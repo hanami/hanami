@@ -1,15 +1,15 @@
 require 'test_helper'
 require 'rack/test'
-require 'fixtures/collaboration/application'
+require 'fixtures/information_tech/application'
 
-describe 'A full stack Lotus application' do
+describe 'A top level Lotus application' do
   isolate_me!
   include Rack::Test::Methods
 
   before do
     @current_dir = Dir.pwd
-    Dir.chdir FIXTURES_ROOT.join('collaboration')
-    @app = Collaboration::Application.new
+    Dir.chdir FIXTURES_ROOT.join('information_tech')
+    @app = InformationTech::Application.new
   end
 
   after do
@@ -25,12 +25,12 @@ describe 'A full stack Lotus application' do
     last_response
   end
 
-  it 'returns a successful response for the root path' do
-    get '/'
+  it 'returns a successful response for a resource' do
+    get '/hardware'
 
     response.status.must_equal 200
-    response.body.must_match %(<title>Collaboration</title>)
-    response.body.must_match %(<h1>Welcome</h1>)
+    response.body.must_match %(<title>Information Technology</title>)
+    response.body.must_match %(<h1>Hardware</h1>)
   end
 
   it "doesn't try to render responses that aren't coming from an action" do
@@ -78,8 +78,8 @@ describe 'A full stack Lotus application' do
     follow_redirect!
 
     response.status.must_equal 200
-    response.body.must_match %(<title>Collaboration</title>)
-    response.body.must_match %(<h1>Welcome</h1>)
+    response.body.must_match %(<title>Information Technology</title>)
+    response.body.must_match %(<h1>Hardware</h1>)
   end
 
   it "handles redirects from actions" do
@@ -87,8 +87,8 @@ describe 'A full stack Lotus application' do
     follow_redirect!
 
     response.status.must_equal 200
-    response.body.must_match %(<title>Collaboration</title>)
-    response.body.must_match %(<h1>Welcome</h1>)
+    response.body.must_match %(<title>Information Technology</title>)
+    response.body.must_match %(<h1>Hardware</h1>)
   end
 
   it "handles thrown statuses from actions" do

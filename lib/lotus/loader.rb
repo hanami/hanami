@@ -26,7 +26,7 @@ module Lotus
     attr_reader :application, :configuration
 
     def load_configuration!
-      configuration.load!
+      configuration.load!(application_module)
     end
 
     def load_frameworks!
@@ -39,11 +39,8 @@ module Lotus
 
       unless application_module.const_defined?('View')
         view = Lotus::View.duplicate(application_module) do
-          root config.templates
-
-          unless config.layout.nil?
-            layout config.layout
-          end
+          root   config.templates
+          layout config.layout
         end
 
         application_module.const_set('View', view)
@@ -52,8 +49,9 @@ module Lotus
 
     def load_application!
       configuration.load_paths.load!
+      namespace = configuration.namespace || application_module
 
-      resolver    = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: application_module)
+      resolver    = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: namespace)
       default_app = Lotus::Routing::Default.new
       application.routes = Lotus::Router.new(
         resolver:    resolver,
@@ -73,9 +71,9 @@ module Lotus
         application_module.const_set('Routes', routes)
       end
 
-      application_module.module_eval do
-        View.load!
-      end
+      application_module.module_eval %{
+        #{ application_module }::View.load!
+      }
     end
 
     def application_module

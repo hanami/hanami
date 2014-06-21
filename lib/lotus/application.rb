@@ -8,10 +8,12 @@ require 'lotus/middleware'
 module Lotus
   class Application
     include Lotus::Utils::ClassAttribute
+
     class_attribute :configuration
+    self.configuration = Configuration.new
 
     def self.configure(&blk)
-      self.configuration = Configuration.new(&blk)
+      configuration.configure(&blk)
     end
 
     attr_reader :routes
@@ -19,11 +21,11 @@ module Lotus
     # @api private
     attr_writer :routes
 
-    def initialize(rendering_policy = RenderingPolicy.new)
-      @rendering_policy = rendering_policy
-
+    def initialize
       @loader = Lotus::Loader.new(self)
       @loader.load!
+
+      @rendering_policy = RenderingPolicy.new(configuration)
     end
 
     def configuration

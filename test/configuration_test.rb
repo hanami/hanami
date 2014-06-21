@@ -3,24 +3,31 @@ require 'lotus/router'
 
 describe Lotus::Configuration do
   before do
+    module MockApp
+    end
+
+    @namespace     = MockApp
     @configuration = Lotus::Configuration.new
   end
 
-  describe '#initialize' do
+  after do
+    Object.send(:remove_const, :MockApp)
+  end
+
+  describe '#configure' do
     describe 'when block is given' do
       it 'stores for later evaluation' do
-        configuration = Lotus::Configuration.new do
+        @configuration.configure do
           root __dir__
-        end.load!
+        end.load!(@namespace)
 
-        configuration.root.must_equal Pathname(__dir__).realpath
+        @configuration.root.must_equal Pathname(__dir__).realpath
       end
     end
 
     describe 'when no block is given' do
       it 'when loaded it will set defaults values' do
-        configuration = Lotus::Configuration.new.load!
-        configuration.root.must_equal Pathname(Dir.pwd).realpath
+        @configuration.root.must_equal Pathname(Dir.pwd).realpath
       end
     end
   end
@@ -80,6 +87,48 @@ describe Lotus::Configuration do
 
       it 'returns the value' do
         @configuration.root.must_equal Pathname.new('.').realpath
+      end
+    end
+  end
+
+  describe '#namespace' do
+    describe "when not previously set" do
+      it "returns nil" do
+        @configuration.namespace.must_be_nil
+      end
+
+      describe "when the configuration is loaded" do
+        before do
+          @configuration.load!(MockApp)
+        end
+
+        it "returns the value" do
+          @configuration.namespace.must_equal MockApp
+        end
+      end
+    end
+
+    describe "when previously set" do
+      before do
+        @configuration.namespace Object
+      end
+
+      it 'returns the value' do
+        @configuration.namespace.must_equal Object
+      end
+
+      describe "when the configuration is loaded" do
+        before do
+          @configuration.configure do
+            namespace Object
+          end
+
+          @configuration.load!(MockApp)
+        end
+
+        it "returns returns the value set by the configure block" do
+          @configuration.namespace.must_equal Object
+        end
       end
     end
   end

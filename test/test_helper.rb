@@ -22,6 +22,19 @@ require 'minitest/autorun'
 $:.unshift 'lib'
 require 'lotus'
 
+
+Minitest::Test.class_eval do
+  def self.isolate_me!
+    require 'minitest/isolation'
+
+    class << self
+      unless method_defined?(:isolation?)
+        define_method :isolation? do true end
+      end
+    end
+  end
+end
+
 Lotus::Config::LoadPaths.class_eval do
   def clear
     @paths.clear
