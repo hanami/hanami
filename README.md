@@ -328,6 +328,118 @@ end
 # We use Object, because it's the top level Ruby namespace.
 ```
 
+### Conventions
+
+* Lotus expects that controllers, actions and views to have a specific pattern (see Configuration for customizations)
+* All the commands must be run from the root of the project. If this requirement cannot be satisfied, please hardcode the path with `Configuration#root`.
+* The template name must reflect the name of the corresponding view: `Bookshelf::Views::Dashboard::Index` for `dashboard/index.html.erb`.
+* All the static files are served by the internal Rack middleware stack.
+* The application expects to find static files under `public/` (see `Configuration#assets`)
+* If the public folder doesn't exist, it doesn't serve static files.
+
+### Non-Conventions
+
+* The application structure can be organized according to developer needs.
+* No file-to-name convention: modules and classes can live in one or multiple files.
+* No autoloading paths. They must be explicitely configured.
+
+### Configuration
+
+A Lotus application can be configured with a DSL that determines its behavior.
+
+```ruby
+require 'lotus'
+
+module Bookshelf
+  class Application < Lotus::Application
+    configure do
+      # Determines the root of the application (optional)
+      # Argument: String, Pathname, defaults to Dir.pwd
+      #
+      root 'path/to/root'
+
+      # The Ruby namespace where to lookup for actions and views (optional)
+      # Argument: Module, Class, defaults to the application module (eg. Bookshelf)
+      #
+      namespace Object
+
+      # The relative load paths where the application will recursively load the code (mandatory)
+      # Argument: String, Array<String>, defaults to empty set
+      #
+      load_paths << [
+        'app/controllers',
+        'app/views'
+      ]
+
+      # The route set (mandatory)
+      # Argument: Proc with the routes definition
+      #
+      routes do
+        get '/', to: 'home#index'
+      end
+
+      # The route set (mandatory) (alternative usage)
+      # Argument: A relative path where to find the routes definition
+      #
+      routes 'config/routes'
+
+      # The layout to be used by all the views (optional)
+      # Argument: A Symbol that indicates the name, default to nil
+      #
+      layout :application # Will look for Bookshelf::Views::ApplicationLayout
+
+      # The relative path where to find the templates (optional)
+      # Argument: A string with the relative path, default to the root of the app
+      #
+      templates 'app/templates'
+
+      # Default format for the requests that don't specify an HTTP_ACCEPT header (optional)
+      # Argument: A symbol representation of a mime type, default to :html
+      #
+      default_format :json
+
+      # URI scheme used by the routing system to generate absoule URLs (optional)
+      # Argument: A string, default to "http"
+      #
+      scheme 'https'
+
+      # URI host used by the routing system to generate absoule URLs (optional)
+      # Argument: A string, default to "localhost"
+      #
+      host 'bookshelf.org'
+
+      # URI port used by the routing system to generate absoule URLs (optional)
+      # Argument: An object coercible to integer, default to 80 if the scheme is http and 443 if it's https
+      # This SHOULD be configured only in case the application listens to that non standard ports
+      #
+      port 2323
+
+      # The name pattern to find controller and actions (optional)
+      # Argument: A string, it must contain "%{controller}" and %{action}
+      # Default to "Controllers::%{controller}::%{action}"
+      #
+      controller_pattern '%{controller}Controller::%{action}'
+
+      # The name pattern to find views (optional)
+      # Argument: A string, it must contain "%{controller}" and %{action}
+      # Default to "Views::%{controller}::%{action}"
+      #
+      controller_pattern '%{controller}Views::%{action}'
+    end
+  end
+end
+```
+
+## The future
+
+Lotus uses different approaches for web development with Ruby, for this reason, it needs to reach a certain code maturity degree.
+It will improved by collecting the feedback of real world applications.
+
+Also, it still lacks of features like: live reloading, multiple environments, code generators, cli, etc..
+Please get involved with the project.
+
+Thank you.
+
 ## Contributing
 
 1. Fork it ( https://github.com/lotus/lotus/fork )
