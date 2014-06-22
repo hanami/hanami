@@ -55,8 +55,8 @@ describe 'A full stack Lotus application' do
     response.status.must_equal 404
   end
 
-  it "renders a custom page for not found resources" do
-    get '/unknown'
+  it "when html, it renders a custom page for not found resources" do
+    request '/unknown', 'HTTP_ACCEPT' => 'text/html'
 
     response.status.must_equal 404
 
@@ -64,7 +64,14 @@ describe 'A full stack Lotus application' do
     response.body.must_match %(<h1>Not Found</h1>)
   end
 
-  it "renders a custom page for server side errors" do
+  it "when non html, it only returns the status code and message" do
+    request '/unknown', 'HTTP_ACCEPT' => 'application/json'
+
+    response.status.must_equal 404
+    response.body.must_equal 'Not Found'
+  end
+
+  it "when html, it renders a custom page for server side errors" do
     get '/error'
 
     response.status.must_equal 500
@@ -72,8 +79,33 @@ describe 'A full stack Lotus application' do
     response.body.must_match %(<h1>Internal Server Error</h1>)
   end
 
+  it "when non html, it only returns the error status code and message" do
+    request '/error', 'HTTP_ACCEPT' => 'application/json'
+
+    response.status.must_equal 500
+    response.body.must_equal 'Internal Server Error'
+  end
+
+  it "Doesn't render if the body was already set by the action" do
+    get '/body'
+
+    response.status.must_equal 200
+    response.body.must_equal 'Set by action'
+  end
+
+  it "Renders the body from the custom rendering policy" do
+    get '/presenter'
+
+    response.status.must_equal 200
+    response.body.must_equal 'Set by presenter'
+  end
+
   it "handles redirects from routes" do
     get '/legacy'
+
+    response.status.must_equal 302
+    response.body.must_be_empty
+
     follow_redirect!
 
     response.status.must_equal 200
