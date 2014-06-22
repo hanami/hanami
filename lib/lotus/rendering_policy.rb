@@ -19,7 +19,7 @@ module Lotus
           view = view_for(action)
 
           # FIXME consider only "renderable" statuses
-          response[2] = Array(view.render(action.exposures.merge(format: :html)))
+          response[2] = Array(view.render(action.to_rendering))
         else
           # FIXME consider non :html statuses
           response[2] = Lotus::Views::Default.render(response: response, format: :html)

@@ -32,3 +32,9 @@ Lotus::Action::Rack.class_eval do
     [ @_status || DEFAULT_RESPONSE_CODE, headers, @_body || DEFAULT_RESPONSE_BODY.dup, self ]
   end
 end
+
+Lotus::Action.class_eval do
+  def to_rendering
+    exposures.merge(format: format)
+  end
+end

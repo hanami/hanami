@@ -82,6 +82,14 @@ module Lotus
       end
     end
 
+    def default_format(format = nil)
+      if format
+        @default_format = Utils::Kernel.Symbol(format)
+      else
+        @default_format || :html
+      end
+    end
+
     def scheme(value = nil)
       if value
         @scheme = value

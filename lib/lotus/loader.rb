@@ -33,7 +33,10 @@ module Lotus
       config = configuration
 
       unless application_module.const_defined?('Controller')
-        controller = Lotus::Controller.duplicate(application_module)
+        controller = Lotus::Controller.duplicate(application_module) do
+          default_format config.default_format
+        end
+
         application_module.const_set('Controller', controller)
       end
 

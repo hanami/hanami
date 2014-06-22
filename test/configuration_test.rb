@@ -285,6 +285,28 @@ describe Lotus::Configuration do
     end
   end
 
+  describe '#default_format' do
+    describe "when not previously set" do
+      it 'returns nil' do
+        @configuration.default_format.must_equal :html
+      end
+    end
+
+    describe "when set" do
+      before do
+        @configuration.default_format :json
+      end
+
+      it 'returns the value' do
+        @configuration.default_format.must_equal :json
+      end
+    end
+
+    it 'raises an error if the given format cannot be coerced into symbol' do
+      -> { @configuration.default_format(23) }.must_raise TypeError
+    end
+  end
+
   describe '#scheme' do
     describe "when not previously set" do
       it 'defaults to a specific value' do

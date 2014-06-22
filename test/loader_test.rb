@@ -24,6 +24,10 @@ describe Lotus::Loader do
         CoffeeShop::Controller.configuration.action_module.must_equal(CoffeeShop::Action)
       end
 
+      it 'configures controller to use default format' do
+        CoffeeShop::Controller.configuration.default_format.must_equal(:html)
+      end
+
       it 'generates controllers namespace' do
         assert defined?(CoffeeShop::Controllers), 'expected CoffeeShop::Controllers'
       end
