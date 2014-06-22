@@ -21,7 +21,7 @@ module Lotus
       @namespace          = configuration.namespace
     end
 
-    def render!(response)
+    def render(response)
       if renderable?(response)
         action = response.pop
 
