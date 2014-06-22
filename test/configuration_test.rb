@@ -378,4 +378,19 @@ describe Lotus::Configuration do
       end
     end
   end
+
+  describe '#view_pattern' do
+    describe "when not previously set" do
+      it 'defaults to a specific value' do
+        @configuration.view_pattern.must_equal 'Views::%{controller}::%{action}'
+      end
+    end
+
+    describe "when called with an argument" do
+      it 'sets the value' do
+        @configuration.view_pattern(pattern = '%{controller}View::%{action}')
+        @configuration.view_pattern.must_equal pattern
+      end
+    end
+  end
 end
