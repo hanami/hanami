@@ -105,7 +105,7 @@ end
 run OneFile::Application.new
 ```
 
-When the application is instantiate, it will also create `OneFile::Controllers` and `OneFile::Views` namespace, to incentivize the modularization of the resources.
+When the application is instantiated, it will also create `OneFile::Controllers` and `OneFile::Views` namespace, to incentivize the modularization of the resources.
 Also, note how similar are the names of the action and of the view: `OneFile::Controllers::Home::Index` and `OneFile::Views::Home::Index`.
 **This naming system is a Lotus convention and MUST be followed, or otherwise configured**.
 
@@ -176,6 +176,7 @@ During the boot time it **recursively preloads all the classes from the specifie
 
 ```ruby
 # apps/backend/application.rb
+require 'lotus'
 
 module Backend
   class Application < Lotus::Application
@@ -208,6 +209,123 @@ run Lotus::Router.new {
 }
 
 # We use an instance of Lotus::Router to mount two Lotus applications
+```
+
+#### Modulized application
+
+```
+test/fixtures/furnitures
+├── app
+│   ├── controllers
+│   │   └── furnitures
+│   │       └── catalog_controller.rb       Furnitures::CatalogController::Index
+│   ├── templates
+│   │   ├── application.html.erb
+│   │   └── furnitures
+│   │       └── catalog
+│   │           └── index.html.erb
+│   └── views
+│       ├── application_layout.rb           Furnitures::Views::ApplicationLayout
+│       └── furnitures
+│           └── catalog
+│               └── index.rb                Furnitures::Catalog::Index
+├── application.rb                          Furnitures::Application
+└── public
+    ├── favicon.ico
+    ├── fonts
+    │   └── cabin-medium.woff
+    ├── images
+    │   └── application.jpg
+    ├── javascripts
+    │   └── application.js
+    └── stylesheets
+        └── application.css
+```
+
+You may have noticed a different naming structure here, it's easily achieved with a few settings.
+
+```ruby
+# application.rb
+require 'lotus'
+
+module Furnitures
+  class Application < Lotus::Application
+    configure do
+      layout :application
+      routes do
+        get '/', to: 'catalog#index'
+      end
+
+      load_paths << 'app'
+
+      controller_pattern "%{controller}Controller::%{action}"
+      view_pattern       "%{controller}::%{action}"
+    end
+  end
+end
+```
+
+The patterns above, are indicating to Lotus the name structure that we want to use for our application.
+The main actor of the HTTP layer is an action. Actions are classes grouped logically in the same module called controller.
+
+For an incoming `GET` request to `/`, the router will look for a `CatalogController` with an `Index` action.
+Once the action will be called, the control will pass to the view. Here the application will look for a `Catalog` module with an `Index` view.
+
+**That two patters are interpolated at the runtime, with the controller/action informations passed by the router.**
+
+#### Top level architecture
+
+```
+test/fixtures/information_tech
+├── app
+│   ├── controllers
+│   │   └── hardware_controller.rb         HardwareController::Index
+│   ├── templates
+│   │   ├── app.html.erb
+│   │   └── hardware
+│   │       └── index.html.erb
+│   └── views
+│       ├── app_layout.rb                  AppLayout
+│       └── hardware
+│           └── index.rb                   Hardware::Index
+├── application.rb                         InformationTech::Application
+├── config
+│   └── routes.rb
+└── public
+    ├── favicon.ico
+    ├── fonts
+    │   └── cabin-medium.woff
+    ├── images
+    │   └── application.jpg
+    ├── javascripts
+    │   └── application.js
+    └── stylesheets
+        └── application.css
+```
+
+While this architecture is technically possible, it's discouraged, because it pollutes the global namespace and it makes hard to split in several deliverables, once the code base will be big enough.
+
+```ruby
+# application.rb
+require 'lotus'
+
+module InformationTech
+  class Application < Lotus::Application
+    configure do
+      namespace Object
+
+      controller_pattern '%{controller}Controller::%{action}'
+      view_pattern       '%{controller}::%{action}'
+
+      layout :app
+
+      load_paths << 'app'
+      routes 'config/routes'
+    end
+  end
+end
+
+# We use Object, because it's the top level Ruby namespace.
 ```
 
 ## Contributing
