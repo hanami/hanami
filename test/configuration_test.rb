@@ -393,4 +393,74 @@ describe Lotus::Configuration do
       end
     end
   end
+
+  describe '#freeze' do
+    before do
+      @configuration.freeze
+    end
+
+    it 'must be frozen' do
+      @configuration.must_be :frozen?
+    end
+
+    it 'it raises error when try to load!' do
+      -> { @configuration.load! 'Bookshelf' }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate root' do
+      -> { @configuration.root '..' }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate assets' do
+      -> { @configuration.assets 'assets' }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate templates' do
+      -> { @configuration.assets 'app/templates' }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the configure block' do
+      -> { @configuration.configure(&Proc.new{}) }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the controller_pattern' do
+      -> { @configuration.controller_pattern('%{controller}::%{action}') }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the view_pattern' do
+      -> { @configuration.view_pattern('%{controller}::%{action}') }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the default_format' do
+      -> { @configuration.default_format(:xml) }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the scheme' do
+      -> { @configuration.scheme('http') }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the host' do
+      -> { @configuration.host('example.org') }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the port' do
+      -> { @configuration.port(80) }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the layout' do
+      -> { @configuration.layout(:another) }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the load_paths' do
+      -> { @configuration.load_paths << 'app/controllers' }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the namespace' do
+      -> { @configuration.namespace(Object) }.must_raise RuntimeError
+    end
+
+    it 'it raises error when try to mutate the routes' do
+      -> { @configuration.routes(&Proc.new{}) }.must_raise RuntimeError
+    end
+  end
 end
