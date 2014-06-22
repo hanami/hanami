@@ -1,5 +1,9 @@
 module Lotus
   module Config
+    # Assets configuration
+    #
+    # @since 0.1.0
+    # @api private
     class Assets
       DEFAULT_DIRECTORY = 'public'.freeze
 

@@ -1,5 +1,9 @@
 module Lotus
   module Routing
+    # The default Rack application that responds when a resource cannot be found.
+    #
+    # @since 0.1.0
+    # @api private
     class Default
       DEFAULT_CODE = 404
       DEFAULT_BODY = ['Not Found'].freeze

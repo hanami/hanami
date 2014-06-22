@@ -2,6 +2,10 @@ require 'lotus/config/mapper'
 
 module Lotus
   module Config
+    # Defines a route set
+    #
+    # @since 0.1.0
+    # @api private
     class Routes < Mapper
       private
       def error_message

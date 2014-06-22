@@ -5,6 +5,10 @@ require 'lotus/routes'
 require 'lotus/routing/default'
 
 module Lotus
+  # Load an application
+  #
+  # @since 0.1.0
+  # @api private
   class Loader
     def initialize(application)
       @application   = application

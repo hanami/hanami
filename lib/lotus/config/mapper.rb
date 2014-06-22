@@ -2,6 +2,10 @@ require 'lotus/utils/kernel'
 
 module Lotus
   module Config
+    # Define a mapping for Lotus::Model
+    #
+    # @since 0.1.0
+    # @api private
     class Mapper
       EXTNAME = '.rb'
 

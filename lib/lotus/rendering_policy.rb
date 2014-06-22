@@ -3,6 +3,10 @@ require 'lotus/views/default'
 require 'lotus/views/null_view'
 
 module Lotus
+  # Rendering policy
+  #
+  # @since 0.1.0
+  # @api private
   class RenderingPolicy
     STATUS  = 0
     HEADERS = 1

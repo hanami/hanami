@@ -2,6 +2,10 @@ require 'lotus/utils/load_paths'
 
 module Lotus
   module Config
+    # Define the load paths where the application should load
+    #
+    # #since 0.1.0
+    # @api private
     class LoadPaths < Utils::LoadPaths
       PATTERN = '**/*.rb'.freeze
 
