@@ -424,7 +424,7 @@ module Bookshelf
       # Argument: A string, it must contain "%{controller}" and %{action}
       # Default to "Views::%{controller}::%{action}"
       #
-      controller_pattern '%{controller}Views::%{action}'
+      controller_view '%{controller}Views::%{action}'
     end
   end
 end
@@ -450,7 +450,7 @@ Thank you.
 
 ## Versioning
 
-__Lotus::Controller__ uses [Semantic Versioning 2.0.0](http://semver.org)
+__Lotus__ uses [Semantic Versioning 2.0.0](http://semver.org)
 
 ## Copyright
 
