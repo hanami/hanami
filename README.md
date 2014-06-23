@@ -64,7 +64,7 @@ In this way, growing code bases can be split without effort, avoiding monolithic
 Lotus has a smart **mechanism of duplication of its frameworks**, that allows multiple copy of a framework and multiple applications to run in the **same Ruby process**.
 In other words, even small Lotus applications are ready to be split in separated deliverables, but they can safely coexist in the same heap space.
 
-For instance, when a `Bookshelf::Application` is loaded, `Lotus::View` and `Lotus::Controller` are duplicated as `Bookshelf::View` and `Bookshelf::Controller`, in order to make their configurations completely indepentend from `Backend::Application` thay may live in the same Ruby process.
+For instance, when a `Bookshelf::Application` is loaded, `Lotus::View` and `Lotus::Controller` are duplicated as `Bookshelf::View` and `Bookshelf::Controller`, in order to make their configurations completely independent from `Backend::Application` thay may live in the same Ruby process.
 So that, developers SHOULD include `Bookshelf::Controller` instead of `Lotus::Controller`.
 
 #### One file application
