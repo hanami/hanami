@@ -64,7 +64,7 @@ In this way, growing code bases can be split without effort, avoiding monolithic
 Lotus has a smart **mechanism of duplication of its frameworks**, that allows multiple copy of a framework and multiple applications to run in the **same Ruby process**.
 In other words, even small Lotus applications are ready to be split in separated deliverables, but they can safely coexist in the same heap space.
 
-For instance, when a `Bookshelf::Application` is loaded, `Lotus::View` and `Lotus::Controller` are duplicated as `Bookshelf::View` and `Bookshelf::Controller`, in order to make their configurations completely indepentend from `Backend::Application` thay may live in the same Ruby process.
+For instance, when a `Bookshelf::Application` is loaded, `Lotus::View` and `Lotus::Controller` are duplicated as `Bookshelf::View` and `Bookshelf::Controller`, in order to make their configurations completely independent from `Backend::Application` they may live in the same Ruby process.
 So that, developers SHOULD include `Bookshelf::Controller` instead of `Lotus::Controller`.
 
 #### One file application
@@ -341,7 +341,7 @@ end
 
 * The application structure can be organized according to developer needs.
 * No file-to-name convention: modules and classes can live in one or multiple files.
-* No autoloading paths. They must be explicitely configured.
+* No autoloading paths. They must be explicitly configured.
 
 ### Configuration
 
@@ -433,9 +433,9 @@ end
 ## The future
 
 Lotus uses different approaches for web development with Ruby, for this reason, it needs to reach a certain code maturity degree.
-It will improved by collecting the feedback of real world applications.
+It will be improved by collecting the feedback of real world applications.
 
-Also, it still lacks of features like: live reloading, multiple environments, code generators, cli, etc..
+Also, it still lacks features like: live reloading, multiple environments, code generators, cli, etc..
 Please get involved with the project.
 
 Thank you.
