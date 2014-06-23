@@ -82,21 +82,25 @@ module OneFile
     end
   end
 
-  module Controllers::Home
-    include OneFile::Controller
+  module Controllers
+    module Home
+      include Lotus::Controller
 
-    action 'Index' do
-      def call(params)
+      action 'Index' do
+        def call(params)
+        end
       end
     end
   end
 
-  module Views::Home
-    class Index
-      include OneFile::View
+  module Views
+    module Home
+      class Index
+        include Lotus::View
 
-      def render
-        'Hello'
+        def render
+          'Hello'
+        end
       end
     end
   end
