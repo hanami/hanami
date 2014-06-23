@@ -54,7 +54,7 @@ While [Lotus::View](https://github.com/lotus/view) it's used for the presentatio
 
 ### Architecture
 
-Unlike the other Ruby web frameworks, it has a flexible conventions for the code structure.
+Unlike other Ruby web frameworks, it has a flexible conventions for the code structure.
 Developers can arrange the layout of their projects as they prefer.
 There is a suggested architecture that can be easily changed with a few settings.
 
