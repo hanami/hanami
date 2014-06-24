@@ -2,10 +2,7 @@ require 'test_helper'
 
 describe Lotus::Loader do
   before do
-    CoffeeShop::Application.configuration.root.join('app/templates').mkpath
-
     @application = CoffeeShop::Application.new
-    @loader      = Lotus::Loader.new(@application)
   end
 
   describe '#load!' do
