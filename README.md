@@ -54,7 +54,7 @@ While [Lotus::View](https://github.com/lotus/view) it's used for the presentatio
 
 ### Architecture
 
-Unlike the other Ruby web frameworks, it has a flexible conventions for the code structure.
+Unlike the other Ruby web frameworks, it has flexible conventions for the code structure.
 Developers can arrange the layout of their projects as they prefer.
 There is a suggested architecture that can be easily changed with a few settings.
 
@@ -64,8 +64,8 @@ In this way, growing code bases can be split without effort, avoiding monolithic
 Lotus has a smart **mechanism of duplication of its frameworks**, that allows multiple copy of a framework and multiple applications to run in the **same Ruby process**.
 In other words, even small Lotus applications are ready to be split in separated deliverables, but they can safely coexist in the same heap space.
 
-For instance, when a `Bookshelf::Application` is loaded, `Lotus::View` and `Lotus::Controller` are duplicated as `Bookshelf::View` and `Bookshelf::Controller`, in order to make their configurations completely independent from `Backend::Application` they may live in the same Ruby process.
-So that, developers SHOULD include `Bookshelf::Controller` instead of `Lotus::Controller`.
+For instance, when a `Bookshelf::Application` is loaded, `Lotus::View` and `Lotus::Controller` are duplicated as `Bookshelf::View` and `Bookshelf::Controller`, in order to make their configurations completely independentfrom `Backend::Application`. They may coexist happily in the same Ruby process.
+Developers can therefore use `Bookshelf::Controller` instead of `Lotus::Controller`.
 
 #### One file application
 
@@ -110,7 +110,7 @@ run OneFile::Application.new
 ```
 
 When the application is instantiated, it will also create `OneFile::Controllers` and `OneFile::Views` namespace, to incentivize the modularization of the resources.
-Also, note how similar are the names of the action and of the view: `OneFile::Controllers::Home::Index` and `OneFile::Views::Home::Index`.
+Also, note the similarity in names of the action and the view: `OneFile::Controllers::Home::Index` and `OneFile::Views::Home::Index`.
 **This naming system is a Lotus convention and MUST be followed, or otherwise configured**.
 
 #### Microservices architecture
@@ -246,7 +246,7 @@ test/fixtures/furnitures
         └── application.css
 ```
 
-You may have noticed a different naming structure here, it's easily achieved with a few settings.
+You may have noticed a different naming structure here. You can easily achieve this with a few setting changes.
 
 ```ruby
 # application.rb
@@ -269,11 +269,12 @@ module Furnitures
 end
 ```
 
-The patterns above, are indicating to Lotus the name structure that we want to use for our application.
-The main actor of the HTTP layer is an action. Actions are classes grouped logically in the same module called controller.
+The patterns above indicate to Lotus the name structure that we want to use for our application.
+
+The main actor of the HTTP layer is an action. Actions are classes grouped logically in the same module, called a controller.
 
 For an incoming `GET` request to `/`, the router will look for a `CatalogController` with an `Index` action.
-Once the action will be called, the control will pass to the view. Here the application will look for a `Catalog` module with an `Index` view.
+Once the action is called, the control will pass to the view. Here the application will look for a `Catalog` module with an `Index` view.
 
 **That two patters are interpolated at the runtime, with the controller/action informations passed by the router.**
 
@@ -334,7 +335,7 @@ end
 
 ### Conventions
 
-* Lotus expects that controllers, actions and views to have a specific pattern (see Configuration for customizations)
+* Lotus expects controllers, actions and views to have a specific pattern (see Configuration for customizations)
 * All the commands must be run from the root of the project. If this requirement cannot be satisfied, please hardcode the path with `Configuration#root`.
 * The template name must reflect the name of the corresponding view: `Bookshelf::Views::Dashboard::Index` for `dashboard/index.html.erb`.
 * All the static files are served by the internal Rack middleware stack.
@@ -436,10 +437,11 @@ end
 
 ## The future
 
-Lotus uses different approaches for web development with Ruby, for this reason, it needs to reach a certain code maturity degree.
+Lotus uses different approaches for web development with Ruby than other frameworks. For this reason, it needs to reach a certain degree of maturity.
 It will be improved by collecting the feedback of real world applications.
 
-Also, it still lacks features like: live reloading, multiple environments, code generators, cli, etc..
+Lotus still lacks features like: live reloading, multiple environments, code generators, cli, etc..
+
 Please get involved with the project.
 
 Thank you.
