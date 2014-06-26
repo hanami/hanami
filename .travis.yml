@@ -5,3 +5,8 @@ rvm:
   - 2.1.0
   - 2.1.1
   - 2.1.2
+  - rbx-2
+
+matrix:
+  allow_failures:
+    - rvm: rbx-2
