@@ -276,7 +276,7 @@ The main actor of the HTTP layer is an action. Actions are classes grouped logic
 For an incoming `GET` request to `/`, the router will look for a `CatalogController` with an `Index` action.
 Once the action is called, the control will pass to the view. Here the application will look for a `Catalog` module with an `Index` view.
 
-**That two patters are interpolated at the runtime, with the controller/action informations passed by the router.**
+**That two patterns are interpolated at the runtime, with the controller/action informations passed by the router.**
 
 #### Top level architecture
 
