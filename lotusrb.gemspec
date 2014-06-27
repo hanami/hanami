@@ -13,11 +13,12 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'http://lotusrb.org'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z -- lib/* LICENSE.md README.md lotusrb.gemspec`.split("\x0")
+  spec.files         = `git ls-files -z -- lib/* bin/* LICENSE.md README.md lotusrb.gemspec`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test)/})
   spec.require_paths = ['lib']
 
+  spec.add_dependency 'thor'
   spec.add_dependency 'lotus-utils',      '~> 0.2'
   spec.add_dependency 'lotus-router',     '~> 0.1', '>= 0.1.1'
   spec.add_dependency 'lotus-controller', '~> 0.2'
