@@ -19,24 +19,26 @@ describe Lotus::Commands::Server do
       ARGV.replace(@regular_args)
     end
 
-    it 'should set the environment with correct arguments' do
+    it 'sets the environment with correct arguments' do
       @server.options[:Port].must_equal "3005"
     end
   end
 
   describe '#middleware' do
-    it 'should not have ShowExceptions in deployment' do
+    it 'does not mount ShowExceptions in deployment' do
       @server.middleware["deployment"]
         .include?(::Rack::ShowExceptions).must_equal false
+    end
+
+    it 'does mount ShowExceptions in development' do
       @server.middleware["development"]
         .include?(::Rack::ShowExceptions).must_equal true
     end
 
-    it 'should have ContentLength loaded' do
-      @server.middleware["development"]
-        .include?(::Rack::ContentLength).must_equal true
-      @server.middleware["deployment"]
-        .include?(::Rack::ContentLength).must_equal true
+    it 'mounts ContentLength middleware' do
+      @server.middleware.each do |env, middleware|
+        middleware.include?(::Rack::ContentLength).must_equal true
+      end
     end
   end
 end
