@@ -10,6 +10,7 @@ describe Lotus::Commands::Server do
 
   describe '#options' do
     let(:opts) { { port: "3005", host: 'example.com' } }
+    let(:env) { ENV['RACK_ENV'] || "development" }
 
     it 'sets the options correctly for rack' do
       @server.options[:Port].must_equal "3005"
@@ -17,25 +18,23 @@ describe Lotus::Commands::Server do
     end
 
     it 'merges in default values' do
-      @server.options[:environment].must_equal ENV['RACK_ENV']
+      @server.options[:environment].must_equal env
       @server.options[:config].must_equal "config.ru"
     end
   end
 
   describe '#middleware' do
     it 'does not mount ShowExceptions in deployment' do
-      @server.middleware["deployment"]
-        .include?(::Rack::ShowExceptions).must_equal false
+      @server.middleware["deployment"].wont_include ::Rack::ShowExceptions
     end
 
     it 'does mount ShowExceptions in development' do
-      @server.middleware["development"]
-        .include?(::Rack::ShowExceptions).must_equal true
+      @server.middleware["development"].must_include ::Rack::ShowExceptions
     end
 
     it 'mounts ContentLength middleware' do
       @server.middleware.each do |env, middleware|
-        middleware.include?(::Rack::ContentLength).must_equal true
+        middleware.must_include ::Rack::ContentLength
       end
     end
   end
