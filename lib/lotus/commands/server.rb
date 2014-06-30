@@ -13,7 +13,7 @@ module Lotus
       # which is the cause of Safari content-length bugs.
       def middleware
         m = Hash.new { |e, m| e[m] = [] }
-        m["deployment"].concat([::Rack::ContentLength])
+        m["deployment"].concat([::Rack::ContentLength, ::Rack::CommonLogger])
         m["development"].concat(m["deployment"] + [::Rack::ShowExceptions, ::Rack::Lint])
         m
       end
