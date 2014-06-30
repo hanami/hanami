@@ -81,7 +81,12 @@ module OneFile
       end
     end
   end
+end
 
+# Trigger framework duplication.
+OneFile::Application.new
+
+module OneFile
   module Controllers
     module Home
       include OneFile::Controller
