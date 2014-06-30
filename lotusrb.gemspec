@@ -18,11 +18,11 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test)/})
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'thor'
   spec.add_dependency 'lotus-utils',      '~> 0.2'
   spec.add_dependency 'lotus-router',     '~> 0.1', '>= 0.1.1'
   spec.add_dependency 'lotus-controller', '~> 0.2'
   spec.add_dependency 'lotus-view',       '~> 0.2'
+  spec.add_dependency 'thor',             '0.19.1'
 
   spec.add_development_dependency 'bundler',   '~> 1.6'
   spec.add_development_dependency 'rake',      '~> 10'
