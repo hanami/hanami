@@ -2,25 +2,23 @@ require 'test_helper'
 require 'lotus/commands/server'
 
 describe Lotus::Commands::Server do
+  let(:opts) { Hash.new }
+
   before do
-    @server = Lotus::Commands::Server.new
+    @server = Lotus::Commands::Server.new(opts)
   end
 
   describe '#options' do
-    let(:new_args) { %w(ignoreme -p 3005) }
-    let(:opt_parser) { MiniTest::Mock.new }
+    let(:opts) { { port: "3005", host: 'example.com' } }
 
-    before do
-      @regular_args = ARGV.dup
-      ARGV.replace(new_args)
-    end
-
-    after do
-      ARGV.replace(@regular_args)
-    end
-
-    it 'sets the environment with correct arguments' do
+    it 'sets the options correctly for rack' do
       @server.options[:Port].must_equal "3005"
+      @server.options[:Host].must_equal "example.com"
+    end
+
+    it 'merges in default values' do
+      @server.options[:environment].must_equal "development"
+      @server.options[:config].must_equal "config.ru"
     end
   end
 
