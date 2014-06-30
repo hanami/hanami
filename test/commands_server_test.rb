@@ -17,7 +17,7 @@ describe Lotus::Commands::Server do
     end
 
     it 'merges in default values' do
-      @server.options[:environment].must_equal "development"
+      @server.options[:environment].must_equal ENV['RACK_ENV']
       @server.options[:config].must_equal "config.ru"
     end
   end
