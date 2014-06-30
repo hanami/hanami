@@ -27,7 +27,7 @@ module Lotus
         {
           environment: environment,
           pid:  nil,
-          port: 4000,
+          port: 2300,
           host: default_host,
           accesslog: [],
           config: "config.ru"
