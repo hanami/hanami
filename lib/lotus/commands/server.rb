@@ -21,9 +21,6 @@ module Lotus
       private
 
       def default_options
-        environment  = ENV['RACK_ENV'] || 'development'
-        default_host = environment == 'development' ? 'localhost' : '0.0.0.0'
-
         {
           environment: environment,
           pid:  nil,
@@ -32,6 +29,14 @@ module Lotus
           accesslog: [],
           config: "config.ru"
         }
+      end
+
+      def environment
+        ENV['RACK_ENV'] || 'development'
+      end
+
+      def default_host
+        environment == 'development' ? 'localhost' : '0.0.0.0'
       end
 
       # Frustratingly, some of racks options are capitalized
