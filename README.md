@@ -80,6 +80,8 @@ module OneFile
         get '/', to: 'home#index'
       end
     end
+
+    load!
   end
 
   module Controllers
