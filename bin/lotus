@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'lotus/cli'
+Lotus::Cli.start
