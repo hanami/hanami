@@ -50,7 +50,7 @@ module Lotus
         }
 
         fixed_opts = Hash.new
-        opts.each {|k,v| fixed_opts[opts_map.fetch(k, k)] = v }
+        opts.each { |k,v| fixed_opts[opts_map.fetch(k, k)] = v }
         fixed_opts
       end
     end
