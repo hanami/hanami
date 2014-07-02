@@ -67,6 +67,23 @@ In other words, even small Lotus applications are ready to be split in separated
 For instance, when a `Bookshelf::Application` is loaded, `Lotus::View` and `Lotus::Controller` are duplicated as `Bookshelf::View` and `Bookshelf::Controller`, in order to make their configurations completely independent from `Backend::Application`. They may coexist happily in the same Ruby process.
 Developers can therefore use `Bookshelf::Controller` instead of `Lotus::Controller`.
 
+#### Tiny application
+
+```ruby
+# config.ru
+require 'lotus'
+
+class TinyApp < Lotus::Application
+  configure do
+    routes do
+      get '/', to: ->(env) {[200, {}, ['Hello from Lotus!']]} # Direct Rack response
+    end
+  end
+end
+
+run TinyApp.new
+```
+
 #### One file application
 
 ```ruby
