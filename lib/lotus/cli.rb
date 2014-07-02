@@ -1,11 +1,11 @@
 require 'thor'
+require 'lotus/environment'
 require 'lotus/commands/server'
-require 'lotus/utils/hash'
 
 module Lotus
   class Cli < Thor
-    desc "server", "starts a lotus server"
-    method_option :port,      aliases: '-p', desc: "The port to run the server on, "
+    desc 'server', 'starts a lotus server'
+    method_option :port,      aliases: '-p', desc: 'The port to run the server on, '
     method_option :server,                   desc: 'choose a specific Rack::Handler, e.g. webrick, thin etc'
     method_option :config,                   desc: 'a rackup configuration file path to load (config.ru)'
     method_option :host,                     desc: 'the host address to bind to'
@@ -19,14 +19,14 @@ module Lotus
       if options[:help]
         invoke :help, ['server']
       else
-        Lotus::Commands::Server.new(server_options).start
+        Lotus::Commands::Server.new(environment).start
       end
     end
 
     private
 
-    def server_options
-      Lotus::Utils::Hash.new(options).symbolize!
+    def environment
+      Lotus::Environment.new(options)
     end
   end
 end
