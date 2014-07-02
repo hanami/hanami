@@ -1,6 +1,8 @@
 require 'thor'
 require 'lotus/environment'
 require 'lotus/commands/server'
+require 'lotus/commands/console'
+require 'lotus/utils/hash'
 
 module Lotus
   class Cli < Thor
@@ -23,10 +25,27 @@ module Lotus
       end
     end
 
+    desc "console", "starts a lotus console"
+    method_option :applications,          desc: 'path to your applications.rb file (config/applications.rb)'
+    method_option :help,   aliases: '-h', desc: 'displays the usage method'
+
+    def console
+      if options[:help]
+        invoke :help, ['console']
+      else
+        Lotus::Commands::Console.new(symbolized_options).start
+      end
+    end
+
     private
 
     def environment
       Lotus::Environment.new(options)
+    end
+
+
+    def symbolized_options
+      Lotus::Utils::Hash.new(options).symbolize!
     end
   end
 end

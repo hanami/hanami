@@ -22,7 +22,6 @@ require 'minitest/autorun'
 $:.unshift 'lib'
 require 'lotus'
 
-
 Minitest::Test.class_eval do
   def self.isolate_me!
     require 'minitest/isolation'
@@ -31,6 +30,14 @@ Minitest::Test.class_eval do
       unless method_defined?(:isolation?)
         define_method :isolation? do true end
       end
+    end
+  end
+end
+
+module MiniTest
+  class Spec
+    class << self
+      alias_method :context, :describe
     end
   end
 end
