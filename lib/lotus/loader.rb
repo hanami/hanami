@@ -56,6 +56,18 @@ module Lotus
 
     def load_application!
       configuration.load_paths.load!(configuration.root)
+      load_rack!
+    end
+
+    def finalize!
+      application_module.module_eval %{
+        #{ application_module }::View.load!
+      }
+    end
+
+    def load_rack!
+      return if application.is_a?(Class)
+
       namespace = configuration.namespace || application_module
 
       resolver    = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: namespace)
@@ -70,22 +82,16 @@ module Lotus
       )
 
       application.middleware # preload
-    end
 
-    def finalize!
       unless application_module.const_defined?('Routes')
         routes = Lotus::Routes.new(application.routes)
         application_module.const_set('Routes', routes)
       end
-
-      application_module.module_eval %{
-        #{ application_module }::View.load!
-      }
     end
 
     def application_module
       @application_module ||= Utils::Class.load!(
-        Utils::String.new(application.class).namespace
+        Utils::String.new(application.name).namespace
       )
     end
   end

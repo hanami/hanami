@@ -73,10 +73,41 @@ module Lotus
     #
     # @since 0.1.0
     def initialize
-      @loader = Lotus::Loader.new(self)
-      @loader.load!
-
+      self.class.load!(self)
       @rendering_policy = RenderingPolicy.new(configuration)
+    end
+
+    # Eager load the application configuration, by activating the framework
+    # duplication mechanisms.
+    #
+    # @since 0.1.1
+    #
+    # @example
+    #   require 'lotus'
+    #
+    #   module OneFile
+    #     class Application < Lotus::Application
+    #       configure do
+    #         routes do
+    #           get '/', to: 'dashboard#index'
+    #         end
+    #       end
+    #
+    #       load!
+    #     end
+    #
+    #     module Controllers::Dashboard
+    #       include OneFile::Controller
+    #
+    #       action 'Index' do
+    #         def call(params)
+    #           self.body = 'Hello!'
+    #         end
+    #       end
+    #     end
+    #   end
+    def self.load!(recipient = self)
+      Lotus::Loader.new(recipient).load!
     end
 
     # Return the configuration for this application
@@ -87,6 +118,14 @@ module Lotus
     # @see Lotus::Application.configuration
     def configuration
       self.class.configuration
+    end
+
+    # Return the application name
+    #
+    # @since 0.1.1
+    # @api private
+    def name
+      self.class.name
     end
 
     # Process a request.

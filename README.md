@@ -80,11 +80,13 @@ module OneFile
         get '/', to: 'home#index'
       end
     end
+
+    load!
   end
 
   module Controllers
     module Home
-      include Lotus::Controller
+      include OneFile::Controller
 
       action 'Index' do
         def call(params)
@@ -96,7 +98,7 @@ module OneFile
   module Views
     module Home
       class Index
-        include Lotus::View
+        include OneFile::View
 
         def render
           'Hello'

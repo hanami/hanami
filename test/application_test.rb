@@ -25,4 +25,10 @@ describe Lotus::Application do
       @application.routes.must_be_kind_of(Lotus::Router)
     end
   end
+
+  describe '#name' do
+    it 'returns the class name' do
+      @application.name.must_equal @application.class.name
+    end
+  end
 end
