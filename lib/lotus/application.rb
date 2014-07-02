@@ -97,7 +97,7 @@ module Lotus
     #     end
     #
     #     module Controllers::Dashboard
-    #       include Bookshelf::Controller
+    #       include OneFile::Controller
     #
     #       action 'Index' do
     #         def call(params)
