@@ -61,7 +61,7 @@ describe Lotus::Loader do
 
         it 'assigns scheme, host and port configuration' do
           routes = @application.routes
-          routes.url(:root).must_equal 'https://lotus-coffeeshop.org/'
+          routes.url(:root).must_equal 'https://lotus-coffeeshop.org:2300/'
         end
       end
 

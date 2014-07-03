@@ -364,20 +364,8 @@ describe Lotus::Configuration do
 
   describe '#port' do
     describe "when not previously set" do
-      describe "and scheme is set on 'http" do
-        it 'defaults to a specific value' do
-          @configuration.port.must_equal 80
-        end
-      end
-
-      describe "and scheme is set on 'https'" do
-        before do
-          @configuration.scheme 'https'
-        end
-
-        it 'defaults to a specific value' do
-          @configuration.port.must_equal 443
-        end
+      it 'defaults to 2300' do
+        @configuration.port.must_equal 2300
       end
     end
 

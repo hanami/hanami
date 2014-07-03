@@ -646,11 +646,7 @@ module Lotus
     # The URI port for this application.
     # This is used by the router helpers to generate absolute URLs.
     #
-    # By default this value is `80`, if `scheme` is `"http"`, or `443` if
-    # `scheme` is `"https"`.
-    #
-    # This is optional, you should set this value only if your application
-    # listens on a port not listed above.
+    # By default this value is `2300`.
     #
     # This is part of a DSL, for this reason when this method is called with
     # an argument, it will set the corresponding instance variable. When
@@ -677,7 +673,7 @@ module Lotus
     #     end
     #   end
     #
-    #   Bookshelf::Application.configuration.port # => 80
+    #   Bookshelf::Application.configuration.port # => 2300
     #
     # @example Setting the value
     #   require 'lotus'
@@ -685,30 +681,17 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         port 2323
+    #         port 8080
     #       end
     #     end
     #   end
     #
-    #   Bookshelf::Application.configuration.port # => 2323
+    #   Bookshelf::Application.configuration.port # => 8080
     def port(value = nil)
       if value
         @port = Integer(value)
       else
-        # FIXME this hack MUST be removed when we implement the multi-environment feature
-        #
-        # when @port is set:
-        #   it always takes the precedence
-        # when @port isn't set:
-        #   development:
-        #     @env.port should take the precedence
-        #   other env:
-        #     the scheme should take the precedence
-        @port || ((@env.port != 2300) ? @env.port : nil) ||
-          case scheme
-          when 'http'  then 80
-          when 'https' then 443
-          end
+        @port || @env.port
       end
     end
 
