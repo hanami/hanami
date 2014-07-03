@@ -6,6 +6,8 @@ describe Lotus::Configuration do
     module MockApp
     end
 
+    ENV['RACK_ENV']   = nil
+    ENV['LOTUS_ENV']  = nil
     ENV['LOTUS_HOST'] = nil
     ENV['LOTUS_PORT'] = nil
 
