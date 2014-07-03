@@ -1,4 +1,5 @@
 require 'lotus/utils/kernel'
+require 'lotus/environment'
 require 'lotus/config/load_paths'
 require 'lotus/config/assets'
 require 'lotus/config/routes'
@@ -17,6 +18,7 @@ module Lotus
     # @api private
     def initialize
       @blk = Proc.new{}
+      @env = Environment.new
     end
 
     # Set a block yield when the configuration will be loaded
@@ -637,7 +639,7 @@ module Lotus
       if value
         @host = value
       else
-        @host ||= 'localhost'
+        @host ||= @env.host
       end
     end
 
@@ -693,7 +695,16 @@ module Lotus
       if value
         @port = Integer(value)
       else
-        @port ||
+        # FIXME this hack MUST be removed when we implement the multi-environment feature
+        #
+        # when @port is set:
+        #   it always takes the precedence
+        # when @port isn't set:
+        #   development:
+        #     @env.port should take the precedence
+        #   other env:
+        #     the scheme should take the precedence
+        @port || ((@env.port != 2300) ? @env.port : nil) ||
           case scheme
           when 'http'  then 80
           when 'https' then 443

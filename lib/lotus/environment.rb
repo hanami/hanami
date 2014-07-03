@@ -15,7 +15,7 @@ module Lotus
 
     DEFAULT_CONFIG = 'config.ru'.freeze
 
-    def initialize(options)
+    def initialize(options = {})
       @options = Utils::Hash.new(options).symbolize!.freeze
       set_env_vars!
     end
@@ -26,12 +26,13 @@ module Lotus
 
     def host
       @options.fetch(:host) {
-        environment == DEFAULT_ENV ? DEFAULT_HOST : LISTEN_ALL_HOST
+        ENV[LOTUS_HOST] ||
+          ( environment == DEFAULT_ENV ? DEFAULT_HOST : LISTEN_ALL_HOST )
       }
     end
 
     def port
-      @options.fetch(:port) { DEFAULT_PORT }
+      @options.fetch(:port) { ENV[LOTUS_PORT] || DEFAULT_PORT }.to_i
     end
 
     def config
