@@ -1,3 +1,4 @@
+require 'thread'
 require 'lotus/utils/hash'
 
 module Lotus
@@ -17,21 +18,22 @@ module Lotus
 
     def initialize(options = {})
       @options = Utils::Hash.new(options).symbolize!.freeze
-      set_env_vars!
+      @mutex   = Mutex.new
+      @mutex.synchronize { set_env_vars! }
     end
 
     def environment
-      ENV[LOTUS_ENV] || ENV[RACK_ENV] || DEFAULT_ENV
+      @environment ||= ENV[LOTUS_ENV] || ENV[RACK_ENV] || DEFAULT_ENV
     end
 
     def host
-      @options.fetch(:host) {
+      @host ||= @options.fetch(:host) {
         ENV[LOTUS_HOST] || default_host
       }
     end
 
     def port
-      @options.fetch(:port) { ENV[LOTUS_PORT] || DEFAULT_PORT }.to_i
+      @port ||= @options.fetch(:port) { ENV[LOTUS_PORT] || DEFAULT_PORT }.to_i
     end
 
     def config

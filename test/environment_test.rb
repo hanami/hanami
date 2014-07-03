@@ -52,6 +52,19 @@ describe Lotus::Environment do
         @env.environment.must_equal 'test'
       end
     end
+
+    describe "when the env vars change after the initialization" do
+      before do
+        @env = Lotus::Environment.new
+      end
+
+      it 'always return the same value' do
+        @env.environment.must_equal 'development'
+
+        ENV['LOTUS_ENV'] = 'test'
+        @env.environment.must_equal 'development'
+      end
+    end
   end
 
   describe '#host' do
@@ -122,6 +135,19 @@ describe Lotus::Environment do
         @env.host.must_equal 'lotusrb.org'
       end
     end
+
+    describe "when the env vars change after the initialization" do
+      before do
+        @env = Lotus::Environment.new
+      end
+
+      it 'always return the same value' do
+        @env.host.must_equal 'localhost'
+
+        ENV['LOTUS_HOST'] = 'changedlotushost.org'
+        @env.host.must_equal 'localhost'
+      end
+    end
   end
 
   describe '#port' do
@@ -166,6 +192,19 @@ describe Lotus::Environment do
 
       it 'gives the precedence to the option' do
         @env.port.must_equal 2323
+      end
+    end
+
+    describe "when the env vars change after the initialization" do
+      before do
+        @env = Lotus::Environment.new
+      end
+
+      it 'always return the same value' do
+        @env.port.must_equal 2300
+
+        ENV['LOTUS_PORT'] = '1223'
+        @env.port.must_equal 2300
       end
     end
   end
