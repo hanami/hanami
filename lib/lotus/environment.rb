@@ -26,8 +26,7 @@ module Lotus
 
     def host
       @options.fetch(:host) {
-        ENV[LOTUS_HOST] ||
-          ( environment == DEFAULT_ENV ? DEFAULT_HOST : LISTEN_ALL_HOST )
+        ENV[LOTUS_HOST] || default_host
       }
     end
 
@@ -53,6 +52,10 @@ module Lotus
       ENV[LOTUS_ENV]  = ENV[RACK_ENV] = environment
       ENV[LOTUS_HOST] = host
       ENV[LOTUS_PORT] = port.to_s
+    end
+
+    def default_host
+      environment == DEFAULT_ENV ? DEFAULT_HOST : LISTEN_ALL_HOST
     end
   end
 end
