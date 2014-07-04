@@ -6,6 +6,11 @@ describe Lotus::Configuration do
     module MockApp
     end
 
+    ENV['RACK_ENV']   = nil
+    ENV['LOTUS_ENV']  = nil
+    ENV['LOTUS_HOST'] = nil
+    ENV['LOTUS_PORT'] = nil
+
     @namespace     = MockApp
     @configuration = Lotus::Configuration.new
   end
@@ -323,9 +328,29 @@ describe Lotus::Configuration do
   end
 
   describe '#host' do
+    before do
+      ENV['LOTUS_HOST'] = nil
+      ENV['LOTUS_ENV']  = nil
+    end
+
     describe "when not previously set" do
+      before do
+        @configuration = Lotus::Configuration.new
+      end
+
       it 'defaults to a specific value' do
         @configuration.host.must_equal 'localhost'
+      end
+    end
+
+    describe "when the env var is set" do
+      before do
+        ENV['LOTUS_HOST'] = 'lotustest.org'
+        @configuration = Lotus::Configuration.new
+      end
+
+      it 'returns that value' do
+        @configuration.host.must_equal 'lotustest.org'
       end
     end
 
@@ -339,20 +364,23 @@ describe Lotus::Configuration do
 
   describe '#port' do
     describe "when not previously set" do
-      describe "and scheme is set on 'http" do
-        it 'defaults to a specific value' do
-          @configuration.port.must_equal 80
-        end
+      it 'defaults to 2300' do
+        @configuration.port.must_equal 2300
+      end
+    end
+
+    describe "when the env var is set" do
+      before do
+        ENV['LOTUS_PORT'] = '2306'
+        @configuration = Lotus::Configuration.new
       end
 
-      describe "and scheme is set on 'https'" do
-        before do
-          @configuration.scheme 'https'
-        end
+      after do
+        ENV['LOTUS_PORT'] = nil
+      end
 
-        it 'defaults to a specific value' do
-          @configuration.port.must_equal 443
-        end
+      it 'returns that value' do
+        @configuration.port.must_equal 2306
       end
     end
 

@@ -1,4 +1,5 @@
 require 'lotus/utils/kernel'
+require 'lotus/environment'
 require 'lotus/config/load_paths'
 require 'lotus/config/assets'
 require 'lotus/config/routes'
@@ -17,6 +18,7 @@ module Lotus
     # @api private
     def initialize
       @blk = Proc.new{}
+      @env = Environment.new
     end
 
     # Set a block yield when the configuration will be loaded
@@ -637,18 +639,14 @@ module Lotus
       if value
         @host = value
       else
-        @host ||= 'localhost'
+        @host ||= @env.host
       end
     end
 
     # The URI port for this application.
     # This is used by the router helpers to generate absolute URLs.
     #
-    # By default this value is `80`, if `scheme` is `"http"`, or `443` if
-    # `scheme` is `"https"`.
-    #
-    # This is optional, you should set this value only if your application
-    # listens on a port not listed above.
+    # By default this value is `2300`.
     #
     # This is part of a DSL, for this reason when this method is called with
     # an argument, it will set the corresponding instance variable. When
@@ -675,7 +673,7 @@ module Lotus
     #     end
     #   end
     #
-    #   Bookshelf::Application.configuration.port # => 80
+    #   Bookshelf::Application.configuration.port # => 2300
     #
     # @example Setting the value
     #   require 'lotus'
@@ -683,21 +681,17 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         port 2323
+    #         port 8080
     #       end
     #     end
     #   end
     #
-    #   Bookshelf::Application.configuration.port # => 2323
+    #   Bookshelf::Application.configuration.port # => 8080
     def port(value = nil)
       if value
         @port = Integer(value)
       else
-        @port ||
-          case scheme
-          when 'http'  then 80
-          when 'https' then 443
-          end
+        @port || @env.port
       end
     end
 
