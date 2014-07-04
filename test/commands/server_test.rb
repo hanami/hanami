@@ -17,7 +17,6 @@ describe Lotus::Commands::Server do
 
   describe '#options' do
     let(:opts) { { port: "3005", host: 'example.com' } }
-    let(:env) { ENV['RACK_ENV'] || "development" }
 
     it 'sets the options correctly for rack' do
       @server.options[:Port].must_equal 3005
@@ -25,7 +24,7 @@ describe Lotus::Commands::Server do
     end
 
     it 'merges in default values' do
-      @server.options[:environment].must_equal env
+      @server.options[:environment].must_equal 'development'
       @server.options[:config].must_equal "config.ru"
     end
   end
