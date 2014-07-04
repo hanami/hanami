@@ -4,25 +4,36 @@ require 'irb'
 
 describe Lotus::Commands::Console do
   let(:opts) { Hash.new }
-
-  before do
-    @console = Lotus::Commands::Console.new(opts)
-  end
+  let(:env)  { Lotus::Environment.new(opts) }
+  let(:console) { Lotus::Commands::Console.new(env) }
 
   describe '#options' do
     it 'merges in default values' do
-      @console.options[:applications].must_equal 'config/applications.rb'
+      console.options[:applications].must_equal 'config/applications.rb'
     end
   end
 
   describe '#start' do
     context 'with no config/applications.rb file' do
       it 'raises a LoadError' do
-        proc { @console.start }.must_raise(LoadError)
+        proc { console.start }.must_raise(LoadError)
       end
     end
 
-    context 'with a config/applications.rb file' do
+    context 'manually setting the config/applications.rb file' do
+      it 'requires applications.rb and starts an IRB session' do
+        opts[:applications] = 'test/fixtures/microservices/config/applications.rb'
+
+        IRB.stub :start, -> { @started = true } do
+          console.start
+          @started.must_equal true
+
+          $LOADED_FEATURES.must_include "#{Dir.pwd}/#{opts[:applications]}"
+        end
+      end
+    end
+
+    context 'with the default config/applications.rb file' do
       before do
         @old_pwd = Dir.pwd
         Dir.chdir 'test/fixtures/microservices'
@@ -32,7 +43,7 @@ describe Lotus::Commands::Console do
       context 'using IRB' do
         it 'requires applications.rb and starts an IRB session' do
           IRB.stub :start, -> { @started = true } do
-            @console.start
+            console.start
             @started.must_equal true
 
             $LOADED_FEATURES.must_include "#{Dir.pwd}/config/applications.rb"
@@ -50,7 +61,7 @@ describe Lotus::Commands::Console do
 
         it 'requires applications.rb and starts a Pry session' do
           Pry.stub :start, -> { @started = true } do
-            @console.start
+            console.start
             @started.must_equal true
 
             $LOADED_FEATURES.must_include "#{Dir.pwd}/config/applications.rb"

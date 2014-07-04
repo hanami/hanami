@@ -5,8 +5,8 @@ module Lotus
     class Console
       attr_reader :options
 
-      def initialize(options)
-        @options = default_options.merge(options)
+      def initialize(env)
+        @options = _extract_options(env)
       end
 
       def start
@@ -24,6 +24,10 @@ module Lotus
       end
 
       private
+
+      def _extract_options(env)
+        default_options.merge(env.to_options)
+      end
 
       def default_options
         { applications: 'config/applications.rb' }

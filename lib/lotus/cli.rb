@@ -33,7 +33,7 @@ module Lotus
       if options[:help]
         invoke :help, ['console']
       else
-        Lotus::Commands::Console.new(symbolized_options).start
+        Lotus::Commands::Console.new(environment).start
       end
     end
 
@@ -41,11 +41,6 @@ module Lotus
 
     def environment
       Lotus::Environment.new(options)
-    end
-
-
-    def symbolized_options
-      Lotus::Utils::Hash.new(options).symbolize!
     end
   end
 end
