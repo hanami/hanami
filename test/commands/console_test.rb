@@ -14,13 +14,13 @@ describe Lotus::Commands::Console do
   end
 
   describe '#start' do
-    context 'with no config/applications.rb file' do
+    describe 'with no config/applications.rb file' do
       it 'raises a LoadError' do
         proc { console.start }.must_raise(LoadError)
       end
     end
 
-    context 'manually setting the config/applications.rb file' do
+    describe 'manually setting the config/applications.rb file' do
       it 'requires applications.rb and starts an IRB session' do
         opts[:applications] = 'test/fixtures/microservices/config/applications.rb'
 
@@ -33,14 +33,14 @@ describe Lotus::Commands::Console do
       end
     end
 
-    context 'with the default config/applications.rb file' do
+    describe 'with the default config/applications.rb file' do
       before do
         @old_pwd = Dir.pwd
         Dir.chdir 'test/fixtures/microservices'
         $LOAD_PATH.unshift Dir.pwd
       end
 
-      context 'using IRB' do
+      describe 'using IRB' do
         it 'requires applications.rb and starts an IRB session' do
           IRB.stub :start, -> { @started = true } do
             console.start
@@ -51,7 +51,7 @@ describe Lotus::Commands::Console do
         end
       end
 
-      context 'using Pry' do
+      describe 'using Pry' do
         before do
           unless defined?(::Pry)
             @remove_pry_const = true

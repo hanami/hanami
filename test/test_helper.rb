@@ -34,14 +34,6 @@ Minitest::Test.class_eval do
   end
 end
 
-module MiniTest
-  class Spec
-    class << self
-      alias_method :context, :describe
-    end
-  end
-end
-
 Lotus::Config::LoadPaths.class_eval do
   def clear
     @paths.clear
