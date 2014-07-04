@@ -1,81 +1,205 @@
 require 'test_helper'
 require 'lotus/commands/console'
-require 'irb'
 
 describe Lotus::Commands::Console do
   let(:opts) { Hash.new }
   let(:env)  { Lotus::Environment.new(opts) }
   let(:console) { Lotus::Commands::Console.new(env) }
 
+  def stub_engine(engine)
+    begin
+      @engine = Object.const_get(engine)
+    rescue NameError
+      @remove_const = true
+    end
+
+    Lotus::Utils::IO.silence_warnings do
+      Object.const_set(engine, Module.new { def self.start; end })
+    end
+  end
+
+  def remove_engine(engine)
+    Lotus::Utils::IO.silence_warnings do
+      Object.const_set(engine, @engine)
+    end if @engine
+
+    Object.send(:remove_const, engine.to_sym) if @remove_const
+  end
+
   describe '#options' do
-    it 'merges in default values' do
-      console.options[:applications].must_equal 'config/applications.rb'
+    describe "when no options are specified" do
+      it 'returns a default' do
+        console.options.fetch(:applications).must_equal 'config/applications'
+      end
+    end
+
+    describe "when :applications option is specified" do
+      let(:opts) { Hash[applications: 'path/to/applications'] }
+
+      it 'returns that value' do
+        console.options.fetch(:applications).must_equal 'path/to/applications'
+      end
+    end
+  end
+
+  describe '#engine' do
+    describe 'when all the supported engines are loaded' do
+      before do
+        stub_engine 'Pry'
+        stub_engine 'Ripl'
+        stub_engine 'IRB'
+      end
+
+      after do
+        remove_engine 'Pry'
+        remove_engine 'Ripl'
+        remove_engine 'IRB'
+      end
+
+      it 'prefers Pry' do
+        console.engine.must_equal(Pry)
+      end
+    end
+
+    describe 'when Ripl and IRB are loaded' do
+      before do
+        stub_engine 'Ripl'
+        stub_engine 'IRB'
+      end
+
+      after do
+        remove_engine 'Ripl'
+        remove_engine 'IRB'
+      end
+
+      it 'prefers Ripl' do
+        console.engine.must_equal(Ripl)
+      end
+    end
+
+    describe 'when nothing is loaded' do
+      before do
+        stub_engine 'IRB'
+      end
+
+      after do
+        remove_engine 'IRB'
+      end
+
+      it 'uses IRB' do
+        console.engine.must_equal(IRB)
+      end
+    end
+
+    describe 'when an option forces to use a specific engine' do
+      describe 'IRB' do
+        let(:opts) { Hash[engine: 'irb'] }
+
+        before do
+          stub_engine 'IRB'
+        end
+
+        after do
+          remove_engine 'IRB'
+        end
+
+        it 'uses IRB' do
+          console.engine.must_equal(IRB)
+        end
+      end
+
+      describe 'Pry' do
+        before do
+          stub_engine 'Pry'
+        end
+
+        after do
+          remove_engine 'Pry'
+        end
+
+        let(:opts) { Hash[engine: 'pry'] }
+
+        it 'uses Pry' do
+          console.engine.must_equal(Pry)
+        end
+      end
+
+      describe 'Ripl' do
+        before do
+          stub_engine 'Ripl'
+        end
+
+        after do
+          remove_engine 'Ripl'
+        end
+
+        let(:opts) { Hash[engine: 'ripl'] }
+
+        it 'uses Ripl' do
+          console.engine.must_equal(Ripl)
+        end
+      end
+
+      describe 'Unknown engine' do
+        let(:opts) { Hash[engine: 'unknown'] }
+
+        it 'raises error' do
+          begin
+            console.engine
+          rescue ArgumentError => e
+            e.message.must_equal 'Unknown console engine: unknown'
+          end
+        end
+      end
     end
   end
 
   describe '#start' do
-    describe 'with no config/applications.rb file' do
-      it 'raises a LoadError' do
-        proc { console.start }.must_raise(LoadError)
-      end
-    end
-
-    describe 'manually setting the config/applications.rb file' do
-      it 'requires applications.rb and starts an IRB session' do
-        opts[:applications] = 'test/fixtures/microservices/config/applications.rb'
-
-        IRB.stub :start, -> { @started = true } do
-          console.start
-          @started.must_equal true
-
-          $LOADED_FEATURES.must_include "#{Dir.pwd}/#{opts[:applications]}"
-        end
-      end
+    before do
+      @engine = Minitest::Mock.new
+      @engine.expect(:start, nil)
     end
 
     describe 'with the default config/applications.rb file' do
       before do
         @old_pwd = Dir.pwd
         Dir.chdir 'test/fixtures/microservices'
-        $LOAD_PATH.unshift Dir.pwd
-      end
-
-      describe 'using IRB' do
-        it 'requires applications.rb and starts an IRB session' do
-          IRB.stub :start, -> { @started = true } do
-            console.start
-            @started.must_equal true
-
-            $LOADED_FEATURES.must_include "#{Dir.pwd}/config/applications.rb"
-          end
-        end
-      end
-
-      describe 'using Pry' do
-        before do
-          unless defined?(::Pry)
-            @remove_pry_const = true
-            module Pry; def self.start() end; end
-          end
-        end
-
-        it 'requires applications.rb and starts a Pry session' do
-          Pry.stub :start, -> { @started = true } do
-            console.start
-            @started.must_equal true
-
-            $LOADED_FEATURES.must_include "#{Dir.pwd}/config/applications.rb"
-          end
-        end
-
-        after do
-          Object.send(:remove_const, :Pry) if @remove_pry_const
-        end
       end
 
       after do
-        $LOAD_PATH.shift
         Dir.chdir @old_pwd
+      end
+
+      it 'requires that file and starts a console session' do
+        console.stub :engine, @engine do
+          console.start
+
+          @engine.verify
+          $LOADED_FEATURES.must_include "#{Dir.pwd}/config/applications.rb"
+        end
+      end
+    end
+
+    describe 'when manually setting the applications file' do
+      let(:opts) {
+        Hash[applications: 'test/fixtures/microservices/config/applications']
+      }
+
+      it 'requires that file and starts a console session' do
+        console.stub :engine, @engine do
+          console.start
+
+          @engine.verify
+          $LOADED_FEATURES.must_include "#{Dir.pwd}/#{opts[:applications]}.rb"
+        end
+      end
+    end
+
+    describe 'when applications file is missing' do
+      it 'raises a LoadError' do
+        console.stub :engine, @engine do
+          proc { console.start }.must_raise(LoadError)
+        end
       end
     end
   end

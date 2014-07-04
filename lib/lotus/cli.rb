@@ -26,7 +26,8 @@ module Lotus
     end
 
     desc "console", "starts a lotus console"
-    method_option :applications,          desc: 'path to your applications.rb file (config/applications.rb)'
+    method_option :applications,          desc: 'path to your applications file (config/applications.rb)'
+    method_option :engine,                desc: 'choose a specific console engine: irb/pry/ripl (irb)'
     method_option :help,   aliases: '-h', desc: 'displays the usage method'
 
     def console

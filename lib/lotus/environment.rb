@@ -14,7 +14,8 @@ module Lotus
     LOTUS_PORT   = 'LOTUS_PORT'.freeze
     DEFAULT_PORT = 2300
 
-    DEFAULT_CONFIG = 'config.ru'.freeze
+    DEFAULT_CONFIG       = 'config.ru'.freeze
+    DEFAULT_APPLICATIONS = 'config/applications'.freeze
 
     def initialize(options = {})
       @options = Utils::Hash.new(options).symbolize!.freeze
@@ -40,12 +41,17 @@ module Lotus
       @options.fetch(:config) { DEFAULT_CONFIG }
     end
 
+    def applications
+      @options.fetch(:applications) { DEFAULT_APPLICATIONS }
+    end
+
     def to_options
       @options.merge(
-        environment: environment,
-        config:      config,
-        host:        host,
-        port:        port
+        environment:  environment,
+        applications: applications,
+        config:       config,
+        host:         host,
+        port:         port
       )
     end
 
