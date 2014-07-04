@@ -5,10 +5,8 @@ module Lotus
     # @since 0.1.0
     # @api private
     class Assets
-      DEFAULT_DIRECTORY = 'public'.freeze
-
       def initialize(root, directory)
-        @path = root.join(directory || DEFAULT_DIRECTORY)
+        @path = root.join(directory)
       end
 
       def entries

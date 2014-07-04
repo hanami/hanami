@@ -154,7 +154,7 @@ module Lotus
     #
     # @see Lotus::Middleware
     def middleware
-      @middleware ||= Lotus::Middleware.new(self)
+      @middleware ||= configuration.middleware.load!(self)
     end
   end
 end
