@@ -17,20 +17,26 @@ module Lotus
     # @since 0.1.0
     # @api private
     def initialize
-      @blk = Proc.new{}
-      @env = Environment.new
+      @blk     = Proc.new{}
+      @env     = Environment.new
+      @configs = Hash.new { |k, v| k[v] = [] }
     end
 
     # Set a block yield when the configuration will be loaded
     #
+    # @param env [Symbol,nil] the configuration environment name
     # @param blk [Proc] the configuration block
     #
     # @return [self]
     #
     # @since 0.1.0
     # @api private
-    def configure(&blk)
-      @blk = blk if block_given?
+    def configure(env = nil, &blk)
+      if block_given?
+        @blk = blk
+        @configs[env] << blk
+      end
+
       self
     end
 
@@ -44,7 +50,10 @@ module Lotus
     # @api private
     def load!(namespace = nil)
       @namespace = namespace
-      instance_eval(&@blk)
+
+      @configs[nil].each(&method(:load_config))
+      @configs[environment].each(&method(:load_config))
+
       self
     end
 
@@ -489,7 +498,7 @@ module Lotus
     # requirement for the mime type.
     #
     # The given format must be coercible to a symbol, and be a valid mime type
-    # alias. If it isn't, at the runtime the framework will raise a 
+    # alias. If it isn't, at the runtime the framework will raise a
     # `Lotus::Controller::UnknownFormatError`.
     #
     # By default this value is `:html`.
@@ -950,6 +959,19 @@ module Lotus
       else
         @view_pattern ||= 'Views::%{controller}::%{action}'
       end
+    end
+
+    # Application environment name
+    #
+    # @return [Symbol] the environment name
+    def environment
+      @env.environment.to_sym
+    end
+
+    private
+
+    def load_config(blk)
+      instance_eval(&blk)
     end
   end
 end

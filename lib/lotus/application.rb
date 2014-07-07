@@ -30,6 +30,7 @@ module Lotus
     # Configure the application.
     # It yields the given block in the context of the configuration
     #
+    # @param env [Symbol,nil] the configuration environment name
     # @param blk [Proc] the configuration block
     #
     # @since 0.1.0
@@ -46,8 +47,8 @@ module Lotus
     #       end
     #     end
     #   end
-    def self.configure(&blk)
-      configuration.configure(&blk)
+    def self.configure(env = nil, &blk)
+      configuration.configure(env, &blk)
     end
 
     # Return the routes for this application
@@ -155,6 +156,12 @@ module Lotus
     # @see Lotus::Middleware
     def middleware
       @middleware ||= Lotus::Middleware.new(self)
+    end
+
+    private
+
+    def self.inherited(base)
+      base.configuration = Configuration.new
     end
   end
 end
