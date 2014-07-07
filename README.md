@@ -204,6 +204,9 @@ require 'lotus'
 module Backend
   class Application < Lotus::Application
     configure do
+      # Specify a root here so that load paths, etc. are relative to your microservice.
+      root 'apps/backend'
+    
       load_paths << [
         'controllers',
         'views'
