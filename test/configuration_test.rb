@@ -26,7 +26,47 @@ describe Lotus::Configuration do
           root __dir__
         end.load!(@namespace)
 
+        @configuration.configure do
+          layout :application
+        end.load!(@namespace)
+
         @configuration.root.must_equal Pathname(__dir__).realpath
+        @configuration.layout.must_equal :application
+      end
+
+      it 'overrides other env configs with default' do
+        @configuration.configure do
+          layout :default
+        end
+
+        @configuration.configure :test do
+          layout :test
+        end.load!(@namespace)
+
+        @configuration.layout.must_equal :default
+      end
+
+      describe 'when ENV is set' do
+        before do
+          ENV['LOTUS_ENV'] = 'environment'
+          @configuration   = Lotus::Configuration.new
+        end
+
+        after do
+          ENV['LOTUS_ENV'] = nil
+        end
+
+        it 'sets config based on env' do
+          @configuration.configure do
+            layout :default
+          end
+
+          @configuration.configure :environment do
+            layout :environment
+          end.load!(@namespace)
+
+          @configuration.layout.must_equal :environment
+        end
       end
     end
 
