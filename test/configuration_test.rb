@@ -21,19 +21,6 @@ describe Lotus::Configuration do
 
   describe '#configure' do
     describe 'when block is given' do
-      it 'stores for later evaluation' do
-        @configuration.configure do
-          root __dir__
-        end.load!(@namespace)
-
-        @configuration.configure do
-          layout :application
-        end.load!(@namespace)
-
-        @configuration.root.must_equal Pathname(__dir__).realpath
-        @configuration.layout.must_equal :application
-      end
-
       it 'overrides other env configs with default' do
         @configuration.configure do
           layout :default

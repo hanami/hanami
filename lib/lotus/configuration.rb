@@ -17,25 +17,26 @@ module Lotus
     # @since 0.1.0
     # @api private
     def initialize
-      @blk     = Proc.new{}
-      @env     = Environment.new
-      @configs = Hash.new { |k, v| k[v] = [] }
+      @blk = Proc.new{}
+      @env = Environment.new
+      @configurations = Hash.new { |k, v| k[v] = [] }
     end
 
     # Set a block yield when the configuration will be loaded
     #
-    # @param env [Symbol,nil] the configuration environment name
+    # @param environment [Symbol,nil] the configuration environment name
     # @param blk [Proc] the configuration block
     #
     # @return [self]
     #
     # @since 0.1.0
     # @api private
-    def configure(env = nil, &blk)
-      if block_given?
+    def configure(environment = nil, &blk)
+      if environment
+        @configurations[environment.to_s] << blk
+      else
         @blk = blk
-        @configs[env] << blk
-      end
+      end if block_given?
 
       self
     end
@@ -50,9 +51,7 @@ module Lotus
     # @api private
     def load!(namespace = nil)
       @namespace = namespace
-
-      @configs[nil].each(&method(:load_config))
-      @configs[environment].each(&method(:load_config))
+      evaluate_configurations!
 
       self
     end
@@ -961,17 +960,17 @@ module Lotus
       end
     end
 
-    # Application environment name
-    #
-    # @return [Symbol] the environment name
-    def environment
-      @env.environment.to_sym
+    private
+    # @since x.x.x
+    # @api private
+    def evaluate_configurations!
+      configurations.each {|c| instance_eval(&c) }
     end
 
-    private
-
-    def load_config(blk)
-      instance_eval(&blk)
+    # @since x.x.x
+    # @api private
+    def configurations
+      [ @blk ] + @configurations[@env.environment]
     end
   end
 end

@@ -5,7 +5,7 @@ describe Lotus::Application do
     @application = CoffeeShop::Application.new
   end
 
-  it 'instatite new configuration object when inherited' do
+  it 'instantiate new configuration object when inherited' do
     backend_app  = Backend::Application.new
     frontend_app = Frontend::Application.new
 

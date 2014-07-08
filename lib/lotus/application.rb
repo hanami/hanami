@@ -18,19 +18,27 @@ module Lotus
   #     end
   #   end
   class Application
-    include Lotus::Utils::ClassAttribute
-
-    # Application configuration
+    # Override Ruby's Class#inherited
     #
-    # @since 0.1.0
+    # @since x.x.x
     # @api private
-    class_attribute :configuration
-    self.configuration = Configuration.new
+    #
+    # @see http://www.ruby-doc.org/core/Class.html#method-i-inherited
+    def self.inherited(base)
+      super
+
+      base.class_eval do
+        include Lotus::Utils::ClassAttribute
+
+        class_attribute :configuration
+        self.configuration = Configuration.new
+      end
+    end
 
     # Configure the application.
     # It yields the given block in the context of the configuration
     #
-    # @param env [Symbol,nil] the configuration environment name
+    # @param environment [Symbol,nil] the configuration environment name
     # @param blk [Proc] the configuration block
     #
     # @since 0.1.0
@@ -47,8 +55,8 @@ module Lotus
     #       end
     #     end
     #   end
-    def self.configure(env = nil, &blk)
-      configuration.configure(env, &blk)
+    def self.configure(environment = nil, &blk)
+      configuration.configure(environment, &blk)
     end
 
     # Return the routes for this application
@@ -156,12 +164,6 @@ module Lotus
     # @see Lotus::Middleware
     def middleware
       @middleware ||= Lotus::Middleware.new(self)
-    end
-
-    private
-
-    def self.inherited(base)
-      base.configuration = Configuration.new
     end
   end
 end
