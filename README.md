@@ -103,7 +103,7 @@ module OneFile
 
   module Controllers
     module Home
-      include OneFile::Controller
+      include Lotus::Controller
 
       action 'Index' do
         def call(params)
@@ -115,7 +115,7 @@ module OneFile
   module Views
     module Home
       class Index
-        include OneFile::View
+        include Lotus::View
 
         def render
           'Hello'
@@ -206,7 +206,7 @@ module Backend
     configure do
       # Specify a root here so that load paths, etc. are relative to your microservice.
       root 'apps/backend'
-    
+
       load_paths << [
         'controllers',
         'views'
