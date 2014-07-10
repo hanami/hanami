@@ -220,6 +220,12 @@ describe Lotus::Configuration do
     end
   end
 
+  describe '#middleware' do
+    it 'returns a new instance of Lotus::Middleware' do
+      @configuration.middleware.must_be_instance_of Lotus::Middleware
+    end
+  end
+
   # describe '#mapping' do
   #   describe 'when a block is given' do
   #     let(:mapping) { Proc.new { collection :customers do; end } }

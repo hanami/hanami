@@ -324,6 +324,9 @@ module Lotus
     #   Sets the given value
     #   @param value [String] the relative path to the assets dir.
     #
+    # @overload assets(false)
+    #   Disables serving static assets
+    #
     # @overload assets
     #   Gets the value
     #   @return [Lotus::Config::Assets] assets root
@@ -356,11 +359,29 @@ module Lotus
     #
     #   Bookshelf::Application.configuration.assets
     #     # => #<Pathname:/root/path/assets>
-    def assets(value = nil)
-      if value
-        @assets = value
+    #
+    # @example Disabling static assets
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         assets false
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.assets
+    #     # => false
+    def assets(directory = nil)
+      return @assets if defined?(@assets)
+
+      if directory.nil?
+        @assets = Config::Assets.new(root, 'public')
+      elsif directory
+        @assets = Config::Assets.new(root, directory)
       else
-        Config::Assets.new(root, @assets)
+        @assets = false
       end
     end
 
@@ -483,7 +504,38 @@ module Lotus
       end
     end
 
-    # since 0.1.0
+    # Application middleware.
+    #
+    # Specify middleware that your application will use. This method will return
+    # the application's underlying Middleware stack which you can use to add new
+    # middleware for your application to use. By default, the middleware stack
+    # will contain only `Rack::Static`. However, if `assets false` was specified
+    # in the configuration block, the default Middleware stack will be empty.
+    #
+    # @since 0.1.0
+    #
+    # @see http://rdoc.info/gems/rack/Rack/Static
+    # @see Lotus::Middleware#use
+    #
+    # @example
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         middleware.use Rack::MethodOverride, nil, 'max-age=0, private, must-revalidate'
+    #         middleware.use Rack::ETag
+    #       end
+    #     end
+    #   end
+    #
+    #
+    # @since 0.1.1
+    def middleware
+      @middleware ||= Lotus::Middleware.new(self)
+    end
+
+    # @since 0.1.0
     # @api private
     def mapping(path = nil, &blk)
       if path or block_given?
