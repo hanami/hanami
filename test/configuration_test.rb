@@ -313,12 +313,50 @@ describe Lotus::Configuration do
     end
 
     describe "when set" do
+      describe "with a directory name" do
+        before do
+          @configuration.assets 'assets'
+        end
+
+        it 'returns the configured value' do
+          @configuration.assets.to_s.must_equal @configuration.root.join('assets').to_s
+        end
+      end
+
+      describe "with :disabled" do
+        before do
+          @configuration.assets :disabled
+        end
+
+        it 'returns false' do
+          @configuration.assets.wont_be :enabled?
+        end
+      end
+    end
+
+    describe "when already set" do
       before do
         @configuration.assets 'assets'
       end
 
-      it 'returns the configured value' do
-        @configuration.assets.to_s.must_equal @configuration.root.join('assets').to_s
+      describe "if I set with a new directory name" do
+        before do
+          @configuration.assets 'another'
+        end
+
+        it 'returns it' do
+          @configuration.assets.to_s.must_equal @configuration.root.join('another').to_s
+        end
+      end
+
+      describe "if I set with :disabled" do
+        before do
+          @configuration.assets :disabled
+        end
+
+        it 'returns it' do
+          @configuration.assets.wont_be :enabled?
+        end
       end
     end
   end
@@ -477,7 +515,7 @@ describe Lotus::Configuration do
     end
 
     it 'it raises error when try to mutate templates' do
-      -> { @configuration.assets 'app/templates' }.must_raise RuntimeError
+      -> { @configuration.templates 'app/templates' }.must_raise RuntimeError
     end
 
     it 'it raises error when try to mutate the configure block' do

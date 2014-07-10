@@ -366,22 +366,18 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         assets false
+    #         assets :disabled
     #       end
     #     end
     #   end
     #
-    #   Bookshelf::Application.configuration.assets
+    #   Bookshelf::Application.configuration.assets.enabled?
     #     # => false
     def assets(directory = nil)
-      return @assets if defined?(@assets)
-
-      if directory.nil?
-        @assets = Config::Assets.new(root, 'public')
-      elsif directory
+      if directory
         @assets = Config::Assets.new(root, directory)
       else
-        @assets = false
+        @assets ||= Config::Assets.new(root, directory)
       end
     end
 
@@ -512,7 +508,7 @@ module Lotus
     # will contain only `Rack::Static`. However, if `assets false` was specified
     # in the configuration block, the default Middleware stack will be empty.
     #
-    # @since 0.1.0
+    # @since x.x.x
     #
     # @see http://rdoc.info/gems/rack/Rack/Static
     # @see Lotus::Middleware#use
@@ -528,9 +524,6 @@ module Lotus
     #       end
     #     end
     #   end
-    #
-    #
-    # @since 0.1.1
     def middleware
       @middleware ||= Lotus::Middleware.new(self)
     end

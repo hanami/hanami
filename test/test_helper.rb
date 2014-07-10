@@ -48,5 +48,7 @@ Lotus::Config::LoadPaths.class_eval do
   end
 end
 
+Lotus::Middleware.class_eval { attr_reader :stack }
+
 Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates').mkpath
 require 'fixtures'

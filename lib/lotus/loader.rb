@@ -81,7 +81,7 @@ module Lotus
         &configuration.routes
       )
 
-      application.middleware # preload
+      configuration.middleware.load!(application, namespace)
 
       unless application_module.const_defined?('Routes')
         routes = Lotus::Routes.new(application.routes)

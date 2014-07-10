@@ -1,8 +1,6 @@
 require 'test_helper'
 require 'lotus/middleware'
 
-Lotus::Middleware.class_eval { attr_reader :stack }
-
 describe Lotus::Middleware do
   before do
     module MockApp
@@ -10,7 +8,12 @@ describe Lotus::Middleware do
     end
   end
 
-  let(:configuration) { MockApp::Application.configuration }
+  after do
+    Object.send(:remove_const, :MockApp)
+  end
+
+  let(:application)   { MockApp::Application.new }
+  let(:configuration) { application.configuration }
   let(:middleware)    { configuration.middleware }
 
   it 'contains only Rack::Static by default' do
@@ -23,31 +26,32 @@ describe Lotus::Middleware do
     ]
   end
 
-  it 'does not include Rack::Static if configuration.assets is set to false' do
-    configuration.assets false
-    middleware.stack.any? { |m| m.first == Rack::Static }.must_equal false
+  describe "when it's configured with disabled assets" do
+    before do
+      configuration.assets :disabled
+    end
+
+    it 'does not include Rack::Static' do
+      middleware.stack.wont_include(Rack::Static)
+    end
   end
+
 
   describe '#use' do
     it 'inserts a middleware into the stack' do
       middleware.use Rack::ETag
       middleware.stack.must_include [Rack::ETag, [], nil]
-      MockApp::Application.new.middleware.stack.must_include [Rack::ETag, [], nil]
     end
-  end
 
-  describe '#load' do
-    it 'loads the middleware into a Rack::Builder' do
-      middleware.use Rack::ETag
-      middleware.load!(MockApp::Application.new)
-      builder = middleware.instance_variable_get(:@builder)
-
-      builder.instance_variable_get(:@use).size.must_equal 2
+    it 'inserts a middleware into the stack with arguments' do
+      middleware.use Rack::ETag, 'max-age=0, private, must-revalidate'
+      middleware.stack.must_include [Rack::ETag, ['max-age=0, private, must-revalidate'], nil]
     end
-  end
 
-  after do
-    MockApp.send(:remove_const, :Application)
-    Object.send(:remove_const, :MockApp)
+    it 'inserts a middleware into the stack with a block' do
+      block = -> { }
+      middleware.use Rack::BodyProxy, &block
+      middleware.stack.must_include [Rack::BodyProxy, [], block]
+    end
   end
 end

@@ -131,7 +131,7 @@ module Lotus
 
     # Return the application name
     #
-    # @since 0.1.1
+    # @since x.x.x
     # @api private
     def name
       self.class.name
@@ -163,7 +163,7 @@ module Lotus
     #
     # @see Lotus::Middleware
     def middleware
-      @middleware ||= configuration.middleware.load!(self)
+      @middleware ||= configuration.middleware
     end
   end
 end

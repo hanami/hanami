@@ -5,8 +5,14 @@ module Lotus
     # @since 0.1.0
     # @api private
     class Assets
+      DEFAULT_DIRECTORY = 'public'.freeze
+
       def initialize(root, directory)
-        @path = root.join(directory)
+        @path = case directory
+                when :disabled
+                when String, NilClass
+                  root.join(directory || DEFAULT_DIRECTORY)
+                end
       end
 
       def entries
@@ -15,6 +21,10 @@ module Lotus
         else
           []
         end
+      end
+
+      def enabled?
+        !@path.nil?
       end
 
       def to_s

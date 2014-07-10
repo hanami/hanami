@@ -15,10 +15,9 @@ module Lotus
     #
     # @see Lotus::Configuration
     def initialize(configuration)
-      # Initialize the default Middleware stack
       @stack = []
 
-      if configuration.assets
+      if configuration.assets.enabled?
         use Rack::Static, {
           urls: configuration.assets.entries,
           root: configuration.assets
@@ -32,13 +31,14 @@ module Lotus
     #
     # @return [Lotus::Middleware] the loaded middleware stack
     #
-    # @since 0.1.0
+    # @since x.x.x
     # @api private
     #
     # @see http://rdoc.info/gems/rack/Rack/Builder
-    def load!(application)
+    def load!(application, namespace)
+      @namespace = namespace
       @builder = ::Rack::Builder.new
-      @stack.each { |m, args, block| @builder.use m, *args, &block }
+      @stack.each { |m, args, block| @builder.use load_middleware(m), *args, &block }
       @builder.run application.routes
 
       self
@@ -65,9 +65,20 @@ module Lotus
     #
     # @return [Array] the middleware that was added
     #
-    # @since 0.1.0
+    # @since x.x.x
     def use(middleware, *args, &blk)
       @stack << [middleware, args, blk]
+    end
+
+    # @api private
+    # @since x.x.x
+    def load_middleware(middleware)
+      case middleware
+      when String
+        @namespace.const_get(middleware)
+      else
+        middleware
+      end
     end
   end
 end
