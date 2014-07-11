@@ -457,6 +457,16 @@ module Bookshelf
 end
 ```
 
+## Command-line
+
+Lotus provides a few command-line utilities:
+
+* `lotus server` boots up a server. Assumes you have a `config.ru` file.
+* `lotus console` brings up a REPL. It defaults to IRB but can be configured to
+  use Pry or Ripl via the `--engine` option. By default, the console will try to
+load `config/applications.rb`. You can point it directly to your app via the
+`--applications` flag.
+
 ## The future
 
 Lotus uses different approaches for web development with Ruby than other frameworks. For this reason, it needs to reach a certain degree of maturity.
