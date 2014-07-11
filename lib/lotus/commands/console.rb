@@ -3,6 +3,13 @@ require 'rack'
 module Lotus
   module Commands
     class Console
+      module Methods
+        def reload!
+          puts 'Reloading...'
+          Kernel.exec $0
+        end
+      end
+
       ENGINES = {
         'pry'  => 'Pry',
         'ripl' => 'Ripl',
@@ -20,6 +27,9 @@ module Lotus
         ARGV.shift until ARGV.empty?
         require File.expand_path(options[:applications], Dir.pwd)
 
+        # Add convenience methods to the main:Object binding
+        TOPLEVEL_BINDING.eval('self').send(:include, Methods)
+
         engine.start
       end
 
@@ -28,6 +38,7 @@ module Lotus
       end
 
       private
+
       def engine_lookup
         (ENGINES.find {|_, klass| Object.const_defined?(klass) } || default_engine).first
       end

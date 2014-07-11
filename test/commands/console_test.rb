@@ -203,4 +203,58 @@ describe Lotus::Commands::Console do
       end
     end
   end
+
+  describe 'convenience methods' do
+    before do
+      @old_main = TOPLEVEL_BINDING
+      @main     = Minitest::Mock.new
+      Lotus::Utils::IO.silence_warnings { TOPLEVEL_BINDING = @main }
+      @main.expect(:eval, TOPLEVEL_BINDING, ['self'])
+
+      @engine = Minitest::Mock.new
+      @engine.expect(:start, nil)
+    end
+
+    after do
+      Lotus::Utils::IO.silence_warnings { TOPLEVEL_BINDING = @old_main }
+    end
+
+    it 'mixes convenience methods into the TOPLEVEL_BINDING' do
+      @main.expect(:include, true, [Lotus::Commands::Console::Methods])
+
+      opts[:applications] = 'test/fixtures/microservices/config/applications'
+      console.stub(:engine, @engine) { console.start }
+
+      @engine.verify
+      @main.verify
+    end
+  end
+end
+
+describe Lotus::Commands::Console::Methods do
+  describe '#reload!' do
+    before do
+      @binding = Class.new
+      @binding.send(:include, Lotus::Commands::Console::Methods)
+
+      @old_kernel = Kernel
+      Lotus::Utils::IO.silence_warnings { Kernel = Minitest::Mock.new }
+      Kernel.expect(:exec, true, [$0])
+    end
+
+    after do
+      Lotus::Utils::IO.silence_warnings { Kernel = @old_kernel }
+    end
+
+    it 're-executes the running process' do
+      begin
+        $stdout = StringIO.new
+        @binding.new.reload!
+      ensure
+        $stdout = STDOUT
+      end
+
+      Kernel.verify
+    end
+  end
 end
