@@ -6,7 +6,7 @@ module Lotus
       module Methods
         def reload!
           puts 'Reloading...'
-          Kernel.exec $0
+          Kernel.exec "#{$0} console"
         end
       end
 
