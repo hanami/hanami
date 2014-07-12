@@ -14,7 +14,7 @@ module Lotus
   #   require 'lotus'
   #
   #   module Bookshelf
-  #     Application < Lotus::Application
+  #     class Application < Lotus::Application
   #     end
   #   end
   class Application
