@@ -3,6 +3,7 @@ require 'lotus/utils/kernel'
 require 'lotus/utils/string'
 require 'lotus/routes'
 require 'lotus/routing/default'
+require 'lotus/action/cookies'
 
 module Lotus
   # Load an application
@@ -39,6 +40,7 @@ module Lotus
       unless application_module.const_defined?('Controller')
         controller = Lotus::Controller.duplicate(application_module) do
           default_format config.default_format
+          modules { include Lotus::Action::Cookies } if config.cookies
         end
 
         application_module.const_set('Controller', controller)

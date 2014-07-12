@@ -305,6 +305,41 @@ describe Lotus::Configuration do
     end
   end
 
+  describe 'cookies' do
+    describe "when not previously set" do
+      it "is false" do
+        @configuration.cookies.must_equal false
+      end
+    end
+
+    describe "when set" do
+      before do
+        @configuration.cookies true
+      end
+
+      it "returns the configured value" do
+        @configuration.cookies.must_equal true
+      end
+    end
+
+    describe "when already set" do
+      before do
+        @configuration.cookies true
+      end
+
+      describe "if I set a new value" do
+        before do
+          @configuration.cookies false
+        end
+
+        it "returns it" do
+          @configuration.cookies.must_equal false
+        end
+      end
+    end
+
+  end
+
   describe 'assets' do
     describe "when not previously set" do
       it "is equal to public/ from the root directory" do

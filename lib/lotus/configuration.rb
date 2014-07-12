@@ -381,6 +381,77 @@ module Lotus
       end
     end
 
+    # Configure cookies
+    # The application will inject Lotus::Action::Cookies into Bookshelf::Action
+    # allowing you to use cookies insie your actions.
+    #
+    # By default it's nil.
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @overload cookies(value)
+    #   Instructs lotus#load_frameworks! to inject Lotus::Action:Cookies.
+    #   @param value [Boolean]
+    #
+    # @overload cookies(false)
+    #   Disables injection of Lotus::Action::Cookies.
+    #
+    # @overload cookies
+    #   Gets the boolean value or returns false if it's not set.
+    #   @return [Boolean]
+    #
+    # @since 0.1.0
+    #
+    # @see Lotus::Configure#root
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.cookies
+    #     # => false
+    #
+    # @example Setting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         cookies true
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.cookies
+    #     # => true
+    #
+    # @example Setting a new value again.
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         cookies false
+    #         cookies true
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.cookies
+    #     # => true
+    #
+    def cookies(value = nil)
+      if value.nil?
+        @cookies || false
+      else
+        @cookies = value
+      end
+    end
+
     # Application load paths
     # The application will recursively load all the Ruby files under these paths.
     #
