@@ -396,8 +396,6 @@ module Lotus
     #   Gets the value.
     #   @return [TrueClass, FalseClass]
     #
-    # @since 0.1.0
-    #
     # @example Getting the value
     #   require 'lotus'
     #
