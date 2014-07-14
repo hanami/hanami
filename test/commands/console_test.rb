@@ -239,7 +239,7 @@ describe Lotus::Commands::Console::Methods do
 
       @old_kernel = Kernel
       Lotus::Utils::IO.silence_warnings { Kernel = Minitest::Mock.new }
-      Kernel.expect(:exec, true, [$0])
+      Kernel.expect(:exec, true, ["#{$0} console"])
     end
 
     after do
