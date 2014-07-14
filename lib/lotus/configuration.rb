@@ -382,29 +382,23 @@ module Lotus
     end
 
     # Configure cookies
-    # The application will inject Lotus::Action::Cookies into Bookshelf::Action
-    # allowing you to use cookies insie your actions.
-    #
-    # By default it's nil.
+    # Enable cookies (disabled by default).
     #
     # This is part of a DSL, for this reason when this method is called with
     # an argument, it will set the corresponding instance variable. When
     # called without, it will return the already set value, or the default.
     #
     # @overload cookies(value)
-    #   Instructs lotus#load_frameworks! to inject Lotus::Action:Cookies.
-    #   @param value [Boolean]
-    #
-    # @overload cookies(false)
-    #   Disables injection of Lotus::Action::Cookies.
+    #   Sets the given value.
+    #   @param value [TrueClass, FalseClass]
     #
     # @overload cookies
-    #   Gets the boolean value or returns false if it's not set.
-    #   @return [Boolean]
+    #   Gets the value.
+    #   @return [TrueClass, FalseClass]
     #
     # @since 0.1.0
     #
-    # @see Lotus::Configure#root
+    # @example Getting the value
     #   require 'lotus'
     #
     #   module Bookshelf
@@ -429,7 +423,7 @@ module Lotus
     #   Bookshelf::Application.configuration.cookies
     #     # => true
     #
-    # @example Setting a new value again.
+    # @example Setting a new value after one is set.
     #   require 'lotus'
     #
     #   module Bookshelf
