@@ -410,10 +410,6 @@ module Bookshelf
       #
       routes 'config/routes'
 
-      # The mapping set (optional) (alternative usage)
-      # Arguement: A relative path where to find the mapping definition for a database.
-      mapping 'config/mapping'
-
       # The layout to be used by all the views (optional)
       # Argument: A Symbol that indicates the name, default to nil
       #
