@@ -420,6 +420,10 @@ module Bookshelf
       #
       templates 'app/templates'
 
+      # Enable or Disable cookies (optional)
+      # Argument: A [`TrueClass`, `FalseClass`], default to `FalseClass`.
+      cookies true
+
       # Default format for the requests that don't specify an HTTP_ACCEPT header (optional)
       # Argument: A symbol representation of a mime type, default to :html
       #
