@@ -28,7 +28,7 @@ module CookiesApp
     action 'Set' do
       def call(params)
         self.body = 'yummy!'
-        cookies[:big_cookie] = 'nomnomnom!'
+        cookies[:foo] = 'nomnomnom!'
       end
     end
 
@@ -37,7 +37,7 @@ module CookiesApp
         self.body = 'with options!'
         expire_date = Time.parse params[:expires]
 
-        cookies[:with_options] = {
+        cookies[:foo] = {
           value: 'nomnomnom!',
           domain: 'lotusrocks.com',
           path: '/controller',

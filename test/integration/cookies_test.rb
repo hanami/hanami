@@ -41,7 +41,7 @@ describe 'Cookies' do
     get '/set_cookies'
 
     response.body.must_equal('yummy!')
-    response.headers['Set-Cookie'].must_equal('big_cookie=nomnomnom%21')
+    response.headers['Set-Cookie'].must_equal('foo=nomnomnom%21')
   end
 
   it 'sucessfully sets cookies with options' do
@@ -49,7 +49,7 @@ describe 'Cookies' do
     get '/set_cookies_with_options', { expires: next_week }
 
     response.body.must_equal('with options!')
-    response.headers['Set-Cookie'].must_equal("with_options=nomnomnom%21; domain=lotusrocks.com; path=/controller; expires=#{next_week.gmtime.rfc2822}; secure; HttpOnly")
+    response.headers['Set-Cookie'].must_equal("foo=nomnomnom%21; domain=lotusrocks.com; path=/controller; expires=#{next_week.gmtime.rfc2822}; secure; HttpOnly")
   end
 
   it 'sucessfully deletes cookies' do
