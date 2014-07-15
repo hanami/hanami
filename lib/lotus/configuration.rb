@@ -381,6 +381,69 @@ module Lotus
       end
     end
 
+    # Configure cookies
+    # Enable cookies (disabled by default).
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @overload cookies(value)
+    #   Sets the given value.
+    #   @param value [TrueClass, FalseClass]
+    #
+    # @overload cookies
+    #   Gets the value.
+    #   @return [TrueClass, FalseClass]
+    #
+    # @example Getting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.cookies
+    #     # => false
+    #
+    # @example Setting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         cookies true
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.cookies
+    #     # => true
+    #
+    # @example Setting a new value after one is set.
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         cookies false
+    #         cookies true
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.cookies
+    #     # => true
+    #
+    def cookies(value = nil)
+      if value.nil?
+        @cookies || false
+      else
+        @cookies = value
+      end
+    end
+
     # Application load paths
     # The application will recursively load all the Ruby files under these paths.
     #
