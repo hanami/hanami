@@ -4,6 +4,7 @@ require 'lotus/utils/string'
 require 'lotus/routes'
 require 'lotus/routing/default'
 require 'lotus/action/cookies'
+require 'lotus/action/session'
 
 module Lotus
   # Load an application
@@ -41,6 +42,7 @@ module Lotus
         controller = Lotus::Controller.duplicate(application_module) do
           default_format config.default_format
           modules { include Lotus::Action::Cookies } if config.cookies
+          modules { include Lotus::Action::Session } if config.sessions.enabled?
         end
 
         application_module.const_set('Controller', controller)

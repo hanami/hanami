@@ -3,8 +3,10 @@ require 'lotus/middleware'
 
 describe Lotus::Middleware do
   before do
-    module MockApp
-      class Application < Lotus::Application; end
+    config = config_blk
+    MockApp = Module.new
+    MockApp::Application = Class.new(Lotus::Application) do
+      configure &config
     end
   end
 
@@ -15,27 +17,27 @@ describe Lotus::Middleware do
   let(:application)   { MockApp::Application.new }
   let(:configuration) { application.configuration }
   let(:middleware)    { configuration.middleware }
+  let(:config_blk)    { proc {} }
 
   it 'contains only Rack::Static by default' do
-    middleware.stack.must_equal [
-      [
-        Rack::Static,
-        [{ urls: configuration.assets.entries, root: configuration.assets }],
-        nil
-      ]
-    ]
+    middleware.stack.must_equal [configuration.assets.middleware]
   end
 
   describe "when it's configured with disabled assets" do
-    before do
-      configuration.assets :disabled
-    end
+    let(:config_blk) { proc { assets :disabled } }
 
     it 'does not include Rack::Static' do
-      middleware.stack.wont_include(Rack::Static)
+      middleware.stack.flatten.wont_include(Rack::Static)
     end
   end
 
+  describe "when it's configured with sessions" do
+    let(:config_blk) { proc { sessions :cookie } }
+
+    it 'includes sessions middleware' do
+      middleware.stack.must_include(configuration.sessions.middleware)
+    end
+  end
 
   describe '#use' do
     it 'inserts a middleware into the stack' do

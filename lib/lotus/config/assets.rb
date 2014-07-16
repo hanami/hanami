@@ -27,6 +27,10 @@ module Lotus
         !@path.nil?
       end
 
+      def middleware
+        [Rack::Static, [{ urls: entries, root: @path }], nil]
+      end
+
       def to_s
         @path.to_s
       end

@@ -4,6 +4,7 @@ require 'lotus/config/load_paths'
 require 'lotus/config/assets'
 require 'lotus/config/routes'
 require 'lotus/config/mapping'
+require 'lotus/config/sessions'
 
 module Lotus
   # Configuration for a Lotus application
@@ -441,6 +442,89 @@ module Lotus
         @cookies || false
       else
         @cookies = value
+      end
+    end
+
+    # Configure sessions
+    # Enable sessions (disabled by default).
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # Given Class as identifier it will be used as sessions middleware.
+    # Given String as identifier it will be resolved as class name and used as
+    # sessions middleware.
+    # Given Symbol as identifier it is assumed it's name of the class under
+    # Rack::Session namespace that will be used as sessions middleware
+    # (e.g. :cookie for Rack::Session::Cookie).
+    #
+    # By default options include domain inferred from host configuration, and
+    # secure flag inferred from scheme configuration.
+    #
+    # @overload sessions(identifier, options)
+    #   Sets the given value.
+    #   @param identifier [Class, String, Symbol] Rack middleware for sessions management
+    #   @param options [Hash] options to pass to sessions middleware
+    #
+    # @overload sessions(false)
+    #   Disables sessions
+    #
+    # @overload sessions
+    #   Gets the value.
+    #   @return [Lotus::Config::Sessions] sessions configuration
+    #
+    # @since x.x.x
+    #
+    # @see Lotus::Configuration#host
+    # @see Lotus::Configuration#scheme
+    #
+    # @example Getting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.sessions
+    #     # => #<Lotus::Config::Sessions:0x00000001ca0c28 @enabled=false>
+    #
+    # @example Setting the value with symbol
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         sessions :cookie
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.sessions
+    #     # => #<Lotus::Config::Sessions:0x00000001589458 @enabled=true, @identifier=:cookie, @options={:domain=>"localhost", :secure=>false}>
+    #
+    # @example Disabling previusly enabled sessions
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         sessions :cookie
+    #         sessions false
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.sessions
+    #     # => #<Lotus::Config::Sessions:0x00000002460d78 @enabled=false>
+    #
+    def sessions(identifier = nil, options = {})
+      if identifier.nil?
+        @sessions ||= Config::Sessions.new
+      else
+        options = { domain: host, secure: scheme == 'https' }.merge(options)
+        @sessions = Config::Sessions.new(identifier, options)
       end
     end
 
