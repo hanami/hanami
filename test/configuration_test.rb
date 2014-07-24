@@ -596,5 +596,9 @@ describe Lotus::Configuration do
     it 'it raises error when try to mutate the routes' do
       -> { @configuration.routes(&Proc.new{}) }.must_raise RuntimeError
     end
+
+    it 'it raises error when try to mutate handle_exceptions setting' do
+      -> { @configuration.handle_exceptions(false) }.must_raise RuntimeError
+    end
   end
 end

@@ -39,7 +39,9 @@ module Lotus
 
       unless application_module.const_defined?('Controller')
         controller = Lotus::Controller.duplicate(application_module) do
-          default_format config.default_format
+          handle_exceptions config.handle_exceptions
+          default_format    config.default_format
+
           modules { include Lotus::Action::Cookies } if config.cookies
         end
 

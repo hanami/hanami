@@ -1068,6 +1068,93 @@ module Lotus
       end
     end
 
+    # Decide if handle exceptions with an HTTP status or let them uncaught
+    #
+    # If this value is set to `true`, the configured exceptions will return
+    # the specified HTTP status, the rest of them with `500`.
+    #
+    # If this value is set to `false`, the exceptions won't be caught.
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @overload handle_exceptions(value)
+    #   Sets the given value
+    #   @param value [TrueClass, FalseClass] true or false, default to true
+    #
+    # @overload handle_exceptions
+    #   Gets the value
+    #   @return [TrueClass, FalseClass]
+    #
+    # @since x.x.x
+    #
+    # @see http://rdoc.info/gems/lotus-controller/Lotus/Controller/Configuration:handle_exceptions
+    # @see http://httpstatus.es/500
+    #
+    # @example Enabled (default)
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         routes do
+    #           get '/error', to: 'error#index'
+    #         end
+    #       end
+    #
+    #       load!
+    #     end
+    #
+    #     module Controllers::Error
+    #       include Bookshelf::Controller
+    #
+    #       action 'Index' do
+    #         def call(params)
+    #           raise ArgumentError
+    #         end
+    #       end
+    #     end
+    #   end
+    #
+    #   # GET '/error' # => 500 - Internal Server Error
+    #
+    # @example Disabled
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         handle_exceptions false
+    #
+    #         routes do
+    #           get '/error', to: 'error#index'
+    #         end
+    #       end
+    #
+    #       load!
+    #     end
+    #
+    #     module Controllers::Error
+    #       include Bookshelf::Controller
+    #
+    #       action 'Index' do
+    #         def call(params)
+    #           raise ArgumentError
+    #         end
+    #       end
+    #     end
+    #   end
+    #
+    #   # GET '/error' # => raises ArgumentError
+    def handle_exceptions(value = nil)
+      if value.nil?
+        @handle_exceptions
+      else
+        @handle_exceptions = value
+      end
+    end
+
     private
     # @since x.x.x
     # @api private

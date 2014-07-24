@@ -429,6 +429,11 @@ module Bookshelf
       #
       default_format :json
 
+      # Handle exceptions with HTTP statuses (true) or don't catch them (false)
+      # Argument: boolean, defaults to true
+      #
+      handle_exceptions true
+
       # URI scheme used by the routing system to generate absoule URLs (optional)
       # Argument: A string, default to "http"
       #
