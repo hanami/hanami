@@ -20,7 +20,7 @@ describe Lotus::Middleware do
   let(:config_blk)    { proc {} }
 
   it 'contains only Rack::Static by default' do
-    middleware.stack.must_equal [configuration.assets.middleware]
+    middleware.stack.must_equal [[Rack::Static, [{ urls: [], root: configuration.assets.to_s }], nil]]
   end
 
   describe "when it's configured with disabled assets" do
@@ -35,7 +35,7 @@ describe Lotus::Middleware do
     let(:config_blk) { proc { sessions :cookie } }
 
     it 'includes sessions middleware' do
-      middleware.stack.must_include(configuration.sessions.middleware)
+      middleware.stack.must_include ["Rack::Session::Cookie", [{ domain: configuration.host, secure: false }], nil]
     end
   end
 

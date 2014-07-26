@@ -13,13 +13,7 @@ describe Lotus::Config::Sessions do
     end
   end
 
-  describe '#middleware' do
-    it 'provided with identifier returns passed options' do
-      options = { domain: 'example.com' }
-      sessions = Lotus::Config::Sessions.new('Cookie', options)
-      sessions.middleware[1].must_equal [options]
-    end
-
+  describe '#middleware_class' do
     describe 'provided with class as identifier' do
       before do
         SessionMiddleware = Class.new
@@ -31,22 +25,30 @@ describe Lotus::Config::Sessions do
 
       it 'returns class' do
         sessions = Lotus::Config::Sessions.new(SessionMiddleware)
-        sessions.middleware.first.must_equal SessionMiddleware
+        sessions.middleware_class.must_equal SessionMiddleware
       end
     end
 
     describe 'provided with string as identifier' do
       it 'returns string' do
         sessions = Lotus::Config::Sessions.new('SessionMiddleware')
-        sessions.middleware.first.must_equal 'SessionMiddleware'
+        sessions.middleware_class.must_equal 'SessionMiddleware'
       end
     end
 
     describe 'provided with symbol as identifier' do
       it 'returns symbol as class name under Rack::Session namespace' do
         sessions = Lotus::Config::Sessions.new(:some_storage)
-        sessions.middleware.first.must_equal 'Rack::Session::SomeStorage'
+        sessions.middleware_class.must_equal 'Rack::Session::SomeStorage'
       end
+    end
+  end
+
+  describe '#options' do
+    it 'returns passed options' do
+      options = { domain: 'example.com' }
+      sessions = Lotus::Config::Sessions.new('Cookie', options)
+      sessions.options.must_equal options
     end
   end
 end

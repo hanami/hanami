@@ -523,8 +523,7 @@ module Lotus
       if identifier.nil?
         @sessions ||= Config::Sessions.new
       else
-        options = { domain: host, secure: scheme == 'https' }.merge(options)
-        @sessions = Config::Sessions.new(identifier, options)
+        @sessions = Config::Sessions.new(identifier, options, self)
       end
     end
 

@@ -8,33 +8,39 @@ module Lotus
     # @api private
     class Sessions
 
-      def initialize(identifier = nil, options = {})
-        if identifier
-          @identifier = identifier
-          @options = options
-          @enabled = true
-        else
-          @enabled = false
-        end
+      RACK_NAMESPACE = 'Rack::Session::%{class_name}'.freeze
+
+      def initialize(identifier = nil, options = {}, config = nil)
+        @identifier = identifier
+        @options = options
+        @config = config
       end
 
       def enabled?
-        @enabled
+        !!@identifier
       end
 
-      def middleware
-        [resolve_identifier, [@options], nil]
+      def options
+        default_options.merge(@options)
+      end
+
+      def middleware_class
+        case @identifier
+        when Symbol
+          class_name = Utils::String.new(@identifier).classify
+          RACK_NAMESPACE % { class_name: class_name }
+        else
+          @identifier
+        end
       end
 
       private
 
-      def resolve_identifier
-        case @identifier
-        when Symbol
-          class_name = Utils::String.new(@identifier).classify
-          "Rack::Session::#{class_name}"
+      def default_options
+        if @config
+          { domain: @config.host, secure: @config.scheme == 'https' }
         else
-          @identifier
+          {}
         end
       end
     end

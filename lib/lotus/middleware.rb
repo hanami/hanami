@@ -80,8 +80,12 @@ module Lotus
     # @since x.x.x
     def load_default_stack
       @default_stack_loaded ||= begin
-        @stack.unshift @configuration.sessions.middleware if @configuration.sessions.enabled?
-        @stack.unshift @configuration.assets.middleware if @configuration.assets.enabled?
+        if @configuration.sessions.enabled?
+          use @configuration.sessions.middleware_class, @configuration.sessions.options
+        end
+        if @configuration.assets.enabled?
+          use Rack::Static, urls: @configuration.assets.entries, root: @configuration.assets.to_s
+        end
         true
       end
     end
