@@ -1,5 +1,9 @@
 require 'lotus/utils/class'
+require 'lotus/views/base'
 require 'lotus/views/default'
+require 'lotus/views/not_found'
+require 'lotus/views/internal_error'
+require 'lotus/views/unprocessable_entity'
 require 'lotus/views/null_view'
 
 module Lotus
@@ -35,7 +39,7 @@ module Lotus
           )
         else
           if render_status_page?(response, action)
-            Lotus::Views::Default.render(response: response, format: :html)
+            non_successful_renderer(response).render(response: response, format: :html)
           end
         end
 
@@ -63,6 +67,19 @@ module Lotus
         Utils::Class.load!(@view_pattern % { controller: captures[:controller], action: captures[:action] }, @namespace)
       else
         Views::NullView.new(response[BODY])
+      end
+    end
+
+    def non_successful_renderer(response)
+      case response[STATUS]
+      when 404
+        Lotus::Views::NotFound
+      when 422
+        Lotus::Views::UnprocessableEntity
+      when 500
+        Lotus::Views::InternalError
+      else
+        Lotus::Views::Default
       end
     end
   end

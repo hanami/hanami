@@ -4,17 +4,14 @@ module Lotus
     #
     # @since 0.1.0
     # @api private
-    class Default
+    class Default < Base
       include Lotus::View
       configuration.reset!
 
       layout nil
-      root Pathname.new(File.dirname(__FILE__)).join('../templates').realpath
-      template 'default'
 
-      def title
-        response[2].first
-      end
+      template 'default'
+      root lib_root
     end
   end
 end
