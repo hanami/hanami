@@ -4,7 +4,7 @@ module Lotus
     #
     # @since 0.1.0
     # @api private
-    class InternalError < Base
+    class InternalServerError < Base
       include Lotus::View
       configuration.reset!
 

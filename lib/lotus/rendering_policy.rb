@@ -2,7 +2,7 @@ require 'lotus/utils/class'
 require 'lotus/views/base'
 require 'lotus/views/default'
 require 'lotus/views/not_found'
-require 'lotus/views/internal_error'
+require 'lotus/views/internal_server_error'
 require 'lotus/views/unprocessable_entity'
 require 'lotus/views/null_view'
 
@@ -77,7 +77,7 @@ module Lotus
       when 422
         Lotus::Views::UnprocessableEntity
       when 500
-        Lotus::Views::InternalError
+        Lotus::Views::InternalServerError
       else
         Lotus::Views::Default
       end
