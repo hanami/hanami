@@ -5,41 +5,60 @@ module Lotus
     # @since 0.1.0
     # @api private
     class Assets
+      class Path
+        def initialize(path)
+          @path = path
+        end
+
+        def entries
+          if @path.exist?
+            @path.children.map {|child| "/#{ child.basename }" }
+          else
+            []
+          end
+        end
+
+        def to_s
+          @path.to_s
+        end
+
+        alias_method :to_str, :to_s
+      end
+
       DEFAULT_DIRECTORY = 'public'.freeze
 
-      def initialize(root)
+      def initialize(root, enabled=true)
+        @enabled = enabled
         @root = root
-        @paths = [default_path]
+        @paths = []
       end
 
       def <<(directories)
         directories.each do |directory|
-          @paths << @root.join(directory)
+          @paths << Path.new(@root.join(directory))
         end
       end
 
       def entries
-        @paths.flat_map do |path|
-          if path.exist?
-            path.children.map {|child| "/#{ child.basename }" }
-          end
+        paths.flat_map do |path|
+          path.entries
         end.compact
       end
 
       def enabled?
-        @paths.any?
+        @enabled
       end
 
       def to_s
-        @paths.first.to_s
+        paths.map(&:to_s)
       end
 
-      alias_method :to_str, :to_s
-
-      private
+      def paths
+        @paths.any? ? @paths : [default_path]
+      end
 
       def default_path
-        @root.join(DEFAULT_DIRECTORY)
+        Path.new(@root.join(DEFAULT_DIRECTORY))
       end
     end
   end

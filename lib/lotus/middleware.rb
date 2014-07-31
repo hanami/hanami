@@ -18,10 +18,12 @@ module Lotus
       @stack = []
 
       if configuration.assets.enabled?
-        use Rack::Static, {
-          urls: configuration.assets.entries,
-          root: configuration.assets
-        }
+        configuration.assets.paths.each do |path|
+          use Rack::Static, {
+            urls: path.entries,
+            root: path
+          }
+        end
       end
     end
 

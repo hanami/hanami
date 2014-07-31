@@ -20,8 +20,7 @@ describe Lotus::Middleware do
     middleware.stack.must_equal [
       [
         Rack::Static,
-        [{ urls: configuration.assets.entries, root: configuration.assets }],
-        nil
+        [{ urls: configuration.assets.entries, root: configuration.assets.default_path }], nil
       ]
     ]
   end
