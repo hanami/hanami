@@ -7,31 +7,40 @@ module Lotus
     class Assets
       DEFAULT_DIRECTORY = 'public'.freeze
 
-      def initialize(root, directory)
-        @path = case directory
-                when :disabled
-                when String, NilClass
-                  root.join(directory || DEFAULT_DIRECTORY)
-                end
+      def initialize(root)
+        @root = root
+        @paths = [default_path]
       end
 
-      def entries
-        if @path.exist?
-          @path.children.map {|child| "/#{ child.basename }" }
-        else
-          []
+      def <<(directories)
+        directories.each do |directory|
+          @paths << @root.join(directory)
         end
       end
 
+      def entries
+        @paths.flat_map do |path|
+          if path.exist?
+            path.children.map {|child| "/#{ child.basename }" }
+          end
+        end.compact
+      end
+
       def enabled?
-        !@path.nil?
+        @paths.any?
       end
 
       def to_s
-        @path.to_s
+        @paths.first.to_s
       end
 
       alias_method :to_str, :to_s
+
+      private
+
+      def default_path
+        @root.join(DEFAULT_DIRECTORY)
+      end
     end
   end
 end
