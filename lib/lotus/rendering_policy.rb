@@ -23,6 +23,7 @@ module Lotus
       @controller_pattern = %r{#{ configuration.controller_pattern.gsub(/\%\{(controller|action)\}/) { "(?<#{ $1 }>(.*))" } }}
       @view_pattern       = configuration.view_pattern
       @namespace          = configuration.namespace
+      @templates          = configuration.templates
     end
 
     def render(response)
@@ -35,7 +36,7 @@ module Lotus
           )
         else
           if render_status_page?(response, action)
-            Lotus::Views::Default.render(response: response, format: :html)
+            Lotus::Views::Default.render(@templates, {response: response, format: :html})
           end
         end
 
