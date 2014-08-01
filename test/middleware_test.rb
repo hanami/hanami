@@ -16,10 +16,10 @@ describe Lotus::Middleware do
   let(:configuration) { application.configuration }
   let(:middleware)    { configuration.middleware }
 
-  it 'contains only Rack::Static by default' do
+  it 'contains only Lotus::Middleware::TryStatic by default' do
     middleware.stack.must_equal [
       [
-        Rack::Static,
+        Lotus::Middleware::TryStatic,
         [{ urls: configuration.assets.entries, root: configuration.assets.default_path }], nil
       ]
     ]
@@ -30,8 +30,8 @@ describe Lotus::Middleware do
       configuration.assets :disabled
     end
 
-    it 'does not include Rack::Static' do
-      middleware.stack.wont_include(Rack::Static)
+    it 'does not include Lotus::Middleware::TryStatic' do
+      middleware.stack.wont_include(Lotus::Middleware::TryStatic)
     end
   end
 

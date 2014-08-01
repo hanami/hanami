@@ -11,17 +11,22 @@ module Lotus
         end
 
         def entries
-          if @path.exist?
-            @path.children.map {|child| "/#{ child.basename }" }
+          if path.exist?
+            path.children.map {|child| "/#{ child.basename }" }
           else
             []
           end
         end
 
         def to_s
-          @path.to_s
+          path.to_s
         end
 
+        def ==(other)
+          self.to_s == other.path.to_s
+        end
+
+        attr_accessor :path
         alias_method :to_str, :to_s
       end
 
