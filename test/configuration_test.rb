@@ -367,6 +367,19 @@ describe Lotus::Configuration do
           @configuration.assets.wont_be :enabled?
         end
       end
+
+      describe 'with multiple directories' do
+        before do
+          @configuration.assets << ['assets', 'more_assets']
+        end
+
+        it 'returns the configured directory paths' do
+          @configuration.assets.to_s.must_equal [
+            @configuration.root.join('assets').to_s,
+            @configuration.root.join('more_assets').to_s,
+          ]
+        end
+      end
     end
 
     describe "when already set" do
