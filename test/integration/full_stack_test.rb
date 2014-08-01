@@ -45,6 +45,9 @@ describe 'A full stack Lotus application' do
     get '/javascripts/application.js'
     response.status.must_equal 200
 
+    get '/javascripts/jquery.js'
+    response.status.must_equal 200
+
     get '/images/application.jpg'
     response.status.must_equal 200
 
