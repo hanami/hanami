@@ -61,7 +61,7 @@ describe 'A full stack Lotus application' do
     response.status.must_equal 418
 
     response.body.must_match %(<title>I'm a teapot</title>)
-    response.body.must_match %(<h1>I'm a teapot</h1>)
+    response.body.must_match %(<h1>I'm a teapot (418)</h1>)
   end
 
   it "when html, it renders a custom page for not found resources" do
