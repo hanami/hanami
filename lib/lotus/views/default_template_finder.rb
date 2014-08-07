@@ -3,7 +3,7 @@ module Lotus
     class DefaultTemplateFinder < View::Rendering::TemplateFinder
       # Template Finder
       #
-      # @since 0.1.0
+      # @since x.x.x
       # @api private
       def initialize(root, template_name, format)
          @root    = root
