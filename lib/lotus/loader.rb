@@ -59,6 +59,8 @@ module Lotus
     end
 
     def load_application!
+      return if application.is_a?(Class)
+
       configuration.load_paths.load!(configuration.root)
       load_rack!
     end
@@ -70,8 +72,6 @@ module Lotus
     end
 
     def load_rack!
-      return if application.is_a?(Class)
-
       namespace = configuration.namespace || application_module
 
       resolver    = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: namespace)
