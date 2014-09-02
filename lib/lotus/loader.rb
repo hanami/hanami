@@ -95,7 +95,7 @@ module Lotus
 
     def application_module
       @application_module ||= Utils::Class.load!(
-        Utils::String.new(application.name).namespace
+        Utils::String.new(application.name).deconstantize
       )
     end
   end
