@@ -6,7 +6,7 @@ if !ENV['TRAVIS']
   gem 'yard',             require: false
 end
 
-gem 'lotus-utils',       require: false, github: 'lotus/utils'
+gem 'lotus-utils',       require: false, github: 'rail44/utils', branch: 'add-string-deconstantize'
 gem 'lotus-router',      require: false, github: 'lotus/router'
 gem 'lotus-validations', require: false, github: 'lotus/validations'
 gem 'lotus-controller',  require: false, github: 'lotus/controller'
