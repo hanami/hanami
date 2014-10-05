@@ -1,12 +1,12 @@
 require 'test_helper'
 
 describe Lotus::Loader do
-  before do
-    @application = CoffeeShop::Application.new
-  end
-
   describe '#load!' do
     describe 'frameworks' do
+      before do
+        @application = CoffeeShop::Application.new
+      end
+
       it 'generates per application frameworks' do
         assert defined?(CoffeeShop::Controller), 'expected CoffeeShop::Controller'
         assert defined?(CoffeeShop::Action),     'expected CoffeeShop::Action'
@@ -43,6 +43,10 @@ describe Lotus::Loader do
     end
 
     describe 'application' do
+      before do
+        @application = CoffeeShop::Application.new
+      end
+
       describe 'routing' do
         it 'assigns routes' do
           expected = Lotus::Router.new(&@application.configuration.routes)
@@ -69,6 +73,19 @@ describe Lotus::Loader do
         it 'preloads the middleware' do
           @application.middleware.must_be_kind_of(Lotus::Middleware)
         end
+      end
+    end
+
+    describe 'toplevel' do
+      require 'fixtures/toplevel'
+      before do
+        @application = TopLevelApplication.new
+      end
+
+      it 'generates per application frameworks' do
+        assert defined?(TopLevelApplication::Controller), 'expected TopLevelApplication::Controller'
+        assert defined?(TopLevelApplication::Action),     'expected TopLevelApplication::Action'
+        assert defined?(TopLevelApplication::View),       'expected TopLevelApplication::View'
       end
     end
 
