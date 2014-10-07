@@ -47,8 +47,8 @@ $ gem install lotusrb
 ## Usage
 
 Lotus combines the power and the flexibility of all its [frameworks](https://github.com/lotus).
-It uses [Lotus::Router](https://github.com/lotus/router) and [Lotus::Controller](https://github.com/lotus/controller) for routing and controller layer, respectively.
-While [Lotus::View](https://github.com/lotus/view) it's used for the presentational logic.
+It uses [Lotus::Router](https://github.com/lotus/router) and [Lotus::Controller](https://github.com/lotus/controller) for the routing and controller layer, respectively.
+While [Lotus::View](https://github.com/lotus/view) is for the presentational logic.
 
 **If you're not familiar with those libraries, please read their READMEs first.**
 
@@ -58,13 +58,16 @@ Unlike other Ruby web frameworks, Lotus has flexible conventions for the code st
 Developers can arrange the layout of their projects as they prefer.
 There is a suggested architecture that can be easily changed with a few settings.
 
-Based on the experience on dozens of projects, Lotus encourages the use of Ruby namespaces.
-In this way, growing code bases can be split without effort, avoiding monolithic applications.
+Lotus encourages the use of Ruby namespaces. This is based on the experience of working on dozens of projects.
+By using Ruby namespaces, as your code grows it can be split with less effort. In otherwords, Lotus is providing gentle guidance for avoiding monolithic applications.
 
-Lotus has a smart **mechanism of duplication of its frameworks**, that allows multiple copy of a framework and multiple applications to run in the **same Ruby process**.
-In other words, even small Lotus applications are ready to be split in separated deliverables, but they can safely coexist in the same heap space.
+Lotus has a smart **mechanism of duplication of its frameworks**.
+It allows multiple copies of the framework and multiple applications to run in the **same Ruby process**.
+In other words, Lotus applications are ready to be split into smaller parts but these parts can coexist in the same heap space.
 
-For instance, when a `Bookshelf::Application` is loaded, `Lotus::View` and `Lotus::Controller` are duplicated as `Bookshelf::View` and `Bookshelf::Controller`, in order to make their configurations completely independent from `Backend::Application`. They may coexist happily in the same Ruby process.
+For instance, when a `Bookshelf::Application` is loaded, `Lotus::View` and `Lotus::Controller` are duplicated as `Bookshelf::View` and `Bookshelf::Controller`.
+This makes the `Bookshelf::Application` configuration independent of a `Backend::Application`.
+Both applications may coexist happily in the same Ruby process.
 Developers can therefore use `Bookshelf::Controller` instead of `Lotus::Controller`.
 
 #### Tiny application
@@ -128,9 +131,10 @@ end
 run OneFile::Application.new
 ```
 
-When the application is instantiated, it will also create `OneFile::Controllers` and `OneFile::Views` namespace, to incentivize the modularization of the resources.
+When the application is instantiated, it will also create the `OneFile::Controllers` and `OneFile::Views` namespaces.
+This incentivizes the modularization of the resources.
 Also, note the similarity in names of the action and the view: `OneFile::Controllers::Home::Index` and `OneFile::Views::Home::Index`.
-**This naming system is a Lotus convention and MUST be followed, or otherwise configured**.
+**This naming system is a Lotus convention and MUST be followed, or otherwise you will need to do more configuration.**.
 
 #### Microservices architecture
 
@@ -194,7 +198,7 @@ test/fixtures/microservices
 As you can see, the code can be organized as you prefer. For instance, all the sessions actions for the backend are grouped in the same file,
 while they're split in the case of the frontend app.
 
-**This because Lotus doesn't have namespace-to-filename conventions, and doesn't have autoload paths.**
+**This is because Lotus doesn't have namespace-to-filename conventions, and doesn't have autoload paths.**
 During the boot time it **recursively preloads all the classes from the specified directories.**
 
 ```ruby
@@ -206,7 +210,7 @@ module Backend
     configure do
       # Specify a root here so that load paths, etc. are relative to your microservice.
       root 'apps/backend'
-    
+
       load_paths << [
         'controllers',
         'views'
@@ -268,7 +272,7 @@ test/fixtures/furnitures
         └── application.css
 ```
 
-You may have noticed a different naming structure here. You can easily achieve this with a few setting changes.
+You may have noticed a different naming structure here. You can achieve this with a few setting changes.
 
 ```ruby
 # application.rb
@@ -291,14 +295,14 @@ module Furnitures
 end
 ```
 
-The patterns above indicate to Lotus the name structure that we want to use for our application.
+The patterns above tell Lotus the name structure that we want to use for our application.
 
 The main actor of the HTTP layer is an action. Actions are classes grouped logically in the same module, called a controller.
 
 For an incoming `GET` request to `/`, the router will look for a `CatalogController` with an `Index` action.
 Once the action is called, the control will pass to the view. Here the application will look for a `Catalog` module with an `Index` view.
 
-**That two patterns are interpolated at the runtime, with the controller/action informations passed by the router.**
+**These two patterns are interpolated at runtime, with the controller/action information passed by the router.**
 
 #### Top level architecture
 
@@ -330,7 +334,9 @@ test/fixtures/information_tech
         └── application.css
 ```
 
-While this architecture is technically possible, it's discouraged, because it pollutes the global namespace and it makes hard to split in several deliverables, once the code base will be big enough.
+While this architecture is technically possible, it's discouraged.
+This architecture pollutes the global namespace.
+Which makes it harder to split the application into several deliverables.
 
 ```ruby
 # application.rb
@@ -357,7 +363,7 @@ end
 
 ### Conventions
 
-* Lotus expects controllers, actions and views to have a specific pattern (see Configuration for customizations)
+* Lotus expects controllers, actions and views to have a specific pattern (see [Configuration](#configuration) for customizations)
 * All the commands must be run from the root of the project. If this requirement cannot be satisfied, please hardcode the path with `Configuration#root`.
 * The template name must reflect the name of the corresponding view: `Bookshelf::Views::Dashboard::Index` for `dashboard/index.html.erb`.
 * All the static files are served by the internal Rack middleware stack.
@@ -371,6 +377,8 @@ end
 * No autoloading paths. They must be explicitly configured.
 
 ### Configuration
+
+<a name="configuration"></a>
 
 A Lotus application can be configured with a DSL that determines its behavior.
 
@@ -470,7 +478,7 @@ end
 
 Lotus provides a few command-line utilities:
 
-* `lotus server` boots up a server. Assumes you have a `config.ru` file.
+* `lotus server` boots up a server. It assumes you have a `config.ru` file.
 * `lotus console` brings up a REPL. It defaults to IRB but can be configured to
   use Pry or Ripl via the `--engine` option. By default, the console will try to
 load `config/applications.rb`. You can point it directly to your app via the
@@ -478,7 +486,8 @@ load `config/applications.rb`. You can point it directly to your app via the
 
 ## The future
 
-Lotus uses different approaches for web development with Ruby than other frameworks. For this reason, it needs to reach a certain degree of maturity.
+Lotus uses different approaches for web development with Ruby than other frameworks.
+For this reason, it needs to reach a certain degree of maturity.
 It will be improved by collecting the feedback of real world applications.
 
 Lotus still lacks features like: live reloading, multiple environments, code generators, cli, etc..
