@@ -59,7 +59,7 @@ Developers can arrange the layout of their projects as they prefer.
 There is a suggested architecture that can be easily changed with a few settings.
 
 Lotus encourages the use of Ruby namespaces. This is based on the experience of working on dozens of projects.
-By using Ruby namespaces, as your code grows it can be split with less effort. In otherwords, Lotus is providing gentle guidance for avoiding monolithic applications.
+By using Ruby namespaces, as your code grows it can be split with less effort. In other words, Lotus is providing gentle guidance for avoiding monolithic applications.
 
 Lotus has a smart **mechanism of duplication of its frameworks**.
 It allows multiple copies of the framework and multiple applications to run in the **same Ruby process**.
@@ -241,7 +241,7 @@ run Lotus::Router.new {
 # We use an instance of Lotus::Router to mount two Lotus applications
 ```
 
-#### Modulized application
+#### Modularized application
 
 ```
 test/fixtures/furnitures
@@ -430,6 +430,7 @@ module Bookshelf
 
       # Enable or Disable cookies (optional)
       # Argument: A [`TrueClass`, `FalseClass`], default to `FalseClass`.
+      #
       cookies true
 
       # Default format for the requests that don't specify an HTTP_ACCEPT header (optional)
@@ -442,17 +443,17 @@ module Bookshelf
       #
       handle_exceptions true
 
-      # URI scheme used by the routing system to generate absoule URLs (optional)
+      # URI scheme used by the routing system to generate absolute URLs (optional)
       # Argument: A string, default to "http"
       #
       scheme 'https'
 
-      # URI host used by the routing system to generate absoule URLs (optional)
+      # URI host used by the routing system to generate absolute URLs (optional)
       # Argument: A string, default to "localhost"
       #
       host 'bookshelf.org'
 
-      # URI port used by the routing system to generate absoule URLs (optional)
+      # URI port used by the routing system to generate absolute URLs (optional)
       # Argument: An object coercible to integer, default to 80 if the scheme is http and 443 if it's https
       # This SHOULD be configured only in case the application listens to that non standard ports
       #
@@ -490,7 +491,7 @@ Lotus uses different approaches for web development with Ruby than other framewo
 For this reason, it needs to reach a certain degree of maturity.
 It will be improved by collecting the feedback of real world applications.
 
-Lotus still lacks features like: live reloading, multiple environments, code generators, cli, etc..
+Lotus still lacks features like: live reloading, multiple environments, code generators, CLI, etc..
 
 Please get involved with the project.
 
