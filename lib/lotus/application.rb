@@ -89,6 +89,9 @@ module Lotus
     # Eager load the application configuration, by activating the framework
     # duplication mechanisms.
     #
+    # @param application [Lotus::Application, Class<Lotus::Application>]
+    # @return void
+    #
     # @since 0.1.1
     #
     # @example
@@ -115,8 +118,8 @@ module Lotus
     #       end
     #     end
     #   end
-    def self.load!(recipient = self)
-      Lotus::Loader.new(recipient).load!
+    def self.load!(application = self)
+      Lotus::Loader.new(application).load!
     end
 
     # Return the configuration for this application
