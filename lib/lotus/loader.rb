@@ -22,7 +22,8 @@ module Lotus
       @mutex.synchronize do
         load_configuration!
         load_frameworks!
-        load_application!
+        load_configuration_load_paths!
+        load_rack!
         finalize!
       end
     end
@@ -58,15 +59,14 @@ module Lotus
       end
     end
 
-    def load_application!
-      configuration.load_paths.load!(configuration.root)
-      load_rack!
-    end
-
     def finalize!
       application_module.module_eval %{
         #{ application_module }::View.load!
       }
+    end
+
+    def load_configuration_load_paths!
+      configuration.load_paths.load!(configuration.root)
     end
 
     def load_rack!
