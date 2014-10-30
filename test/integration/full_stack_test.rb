@@ -112,7 +112,7 @@ describe 'A full stack Lotus application' do
   it "handles redirects from routes" do
     get '/legacy'
 
-    response.status.must_equal 302
+    response.status.must_equal 301
     response.body.must_be_empty
 
     follow_redirect!
