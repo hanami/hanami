@@ -343,18 +343,18 @@ describe Lotus::Configuration do
   describe 'assets' do
     describe "when not previously set" do
       it "is equal to public/ from the root directory" do
-        @configuration.assets.to_s.must_equal @configuration.root.join('public').to_s
+        @configuration.assets.to_s.must_equal [@configuration.root.join('public').to_s]
       end
     end
 
     describe "when set" do
       describe "with a directory name" do
         before do
-          @configuration.assets 'assets'
+          @configuration.assets << ['assets']
         end
 
         it 'returns the configured value' do
-          @configuration.assets.to_s.must_equal @configuration.root.join('assets').to_s
+          @configuration.assets.to_s.must_equal [@configuration.root.join('assets').to_s]
         end
       end
 
@@ -367,20 +367,33 @@ describe Lotus::Configuration do
           @configuration.assets.wont_be :enabled?
         end
       end
+
+      describe 'with multiple directories' do
+        before do
+          @configuration.assets << ['assets', 'more_assets']
+        end
+
+        it 'returns the configured directory paths' do
+          @configuration.assets.to_s.must_equal [
+            @configuration.root.join('assets').to_s,
+            @configuration.root.join('more_assets').to_s,
+          ]
+        end
+      end
     end
 
     describe "when already set" do
       before do
-        @configuration.assets 'assets'
+        @configuration.assets ['assets']
       end
 
-      describe "if I set with a new directory name" do
+      describe "if I append with a new directory name" do
         before do
-          @configuration.assets 'another'
+          @configuration.assets << ['another']
         end
 
         it 'returns it' do
-          @configuration.assets.to_s.must_equal @configuration.root.join('another').to_s
+          @configuration.assets.to_s.must_equal [@configuration.root.join('another').to_s]
         end
       end
 

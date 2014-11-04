@@ -373,11 +373,11 @@ module Lotus
     #
     #   Bookshelf::Application.configuration.assets.enabled?
     #     # => false
-    def assets(directory = nil)
-      if directory
-        @assets = Config::Assets.new(root, directory)
+    def assets(disabled=nil)
+      if disabled == :disabled
+        @assets = Config::Assets.new(root, false)
       else
-        @assets ||= Config::Assets.new(root, directory)
+        @assets ||= Config::Assets.new(root)
       end
     end
 

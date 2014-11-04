@@ -4,6 +4,23 @@ module Lotus
   # @since 0.1.0
   # @api private
   class Middleware
+    class TryStatic
+      FILE_NOT_FOUND = 404
+
+      def initialize(app, options)
+        @app = app
+        @static = Rack::Static.new(@app, options)
+      end
+
+      def call(env)
+        rack_static_response = @static.call(env)
+        if rack_static_response[0] == FILE_NOT_FOUND
+          @app.call(env)
+        else
+          rack_static_response
+        end
+      end
+    end
     # Instantiate a middleware stack
     #
     # @param configuration [Lotus::Configuration] the application's configuration
@@ -18,10 +35,12 @@ module Lotus
       @stack = []
 
       if configuration.assets.enabled?
-        use Rack::Static, {
-          urls: configuration.assets.entries,
-          root: configuration.assets
-        }
+        configuration.assets.paths.each do |path|
+          use TryStatic, {
+            urls: path.entries,
+            root: path
+          }
+        end
       end
     end
 

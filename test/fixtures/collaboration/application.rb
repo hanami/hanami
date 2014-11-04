@@ -7,6 +7,7 @@ module Collaboration
 
       load_paths << 'app'
 
+      assets << ['vendor', 'public']
       routes  'config/routes'
       mapping 'config/mapping'
     end
