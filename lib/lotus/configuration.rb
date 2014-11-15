@@ -591,13 +591,128 @@ module Lotus
       @middleware ||= Lotus::Middleware.new(self)
     end
 
-    # @since 0.1.0
-    # @api private
+    # Application collection mapping.
+    #
+    # Specify a set of collections for the application, by passing a block, or a
+    # relative path where to find the file that describes them.
+    #
+    # By default it's `nil`.
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @overload mapping(blk)
+    #   Specify a set of mapping in the given block
+    #   @param blk [Proc] the mapping definitions
+    #
+    # @overload mapping(path)
+    #   Specify a relative path where to find the mapping file
+    #   @param path [String] the relative path
+    #
+    # @overload mapping
+    #   Gets the value
+    #   @return [Lotus::Config::Mapping] the set of mappings
+    #
+    # @since x.x.x
+    #
+    # @see http://rdoc.info/gems/lotus-model/Lotus/Mapper
+    #
+    # @example Getting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.mapping
+    #     # => nil
+    #
+    # @example Setting the value, by passing a block
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         mapping do
+    #           collection :users do
+    #             entity User
+    #
+    #             attribute :id,   Integer
+    #             attribute :name, String
+    #           end
+    #         end
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.mapping
+    #     # => #<Lotus::Config::Mapping:0x007ff50a991388 @blk=#<Proc:0x007ff123991338@(irb):4>, @path=#<Pathname:.>>
+    #
+    # @example Setting the value, by passing a relative path
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         mapping 'config/mapping'
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.mapping
+    #     # => #<Lotus::Config::Routes:0x007ff50a991388 @blk=nil, @path=#<Pathname:config/mapping.rb>>
     def mapping(path = nil, &blk)
       if path or block_given?
         @mapping = Config::Mapping.new(root, path, &blk)
       else
         @mapping
+      end
+    end
+
+    # Adapter configuration.
+    # The application will instantiate adapter instance based on this configuration.
+    #
+    # The given options must have key pairs :type and :uri
+    # If it isn't, at the runtime the framework will raise a
+    # `ArgumentError`.
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @overload adapter(options)
+    #   Sets the given type and uri
+    #   @param options [Hash] a set of options for adapter
+    #
+    # @overload adapter
+    #   Gets the value
+    #   @return [Hash] adapter options
+    #
+    # @since x.x.x
+    #
+    # @see Lotus::Configuration#adapter
+    # @see http://rdoc.info/gems/lotus-model/Lotus/Model/Configuration:adapter
+    #
+    # @example
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         adapter type: :sql, uri: 'sqlite3://uri'
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.adapter
+    #     # => {type: :sql, uri: 'sqlite3://uri'}
+    def adapter(options = {})
+      if !options.empty?
+        @adapter = options
+      else
+        @adapter
       end
     end
 
@@ -1159,7 +1274,7 @@ module Lotus
     # @since x.x.x
     # @api private
     def evaluate_configurations!
-      configurations.each {|c| instance_eval(&c) }
+      configurations.each { |c| instance_eval(&c) }
     end
 
     # @since x.x.x

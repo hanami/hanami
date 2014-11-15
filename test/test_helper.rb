@@ -51,4 +51,12 @@ end
 Lotus::Middleware.class_eval { attr_reader :stack }
 
 Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates').mkpath
+
+require 'lotus/model/adapters/memory_adapter'
+require 'lotus/model/adapters/sql_adapter'
+db = Pathname.new(File.dirname(__FILE__)).join('../tmp/test.db')
+db.dirname.mkpath      # create directory if not exist
+db.delete if db.exist? # delete file if exist
+SQLITE_CONNECTION_STRING = "sqlite://#{ db }"
+
 require 'fixtures'

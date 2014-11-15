@@ -1,6 +1,7 @@
 require 'lotus/router'
-require 'lotus/controller'
+require 'lotus/model'
 require 'lotus/view'
+require 'lotus/controller'
 
 module Lotus
   module Frameworks

@@ -138,4 +138,73 @@ describe 'A full stack Lotus application' do
     response.body.must_match %(<title>Unauthorized</title>)
     response.body.must_match %(<h1>Unauthorized</h1>)
   end
+
+  describe 'RESTful CRUD' do
+    before do
+      @book = ::Book.new(name: 'The path to success')
+      BookRepository.persist(@book)
+    end
+
+    after do
+      BookRepository.clear
+    end
+
+    it 'handles index action' do
+      get '/books'
+
+      response.status.must_equal 200
+      response.body.must_include 'There are 1 books'
+    end
+
+    it 'handles show action' do
+      get "/books/#{@book.id}"
+
+      response.status.must_equal 200
+
+      response.body.must_include "<p id=\"book_id\">#{@book.id}</p>"
+      response.body.must_include '<p id="book_name">The path to success</p>'
+    end
+
+    it 'handles edit action' do
+      get "/books/#{@book.id}/edit"
+
+      response.status.must_equal 200
+
+      response.body.must_include "<form accept-charset=\"UTF-8\" action=\"/books/#{@book.id}\" method=\"patch\">"
+      response.body.must_include '<input name="book[name]" placeholder="Name" type="text" value="The path to success" />'
+    end
+
+    it 'handles new action' do
+      get "/books/new"
+
+      response.status.must_equal 200
+
+      response.body.must_include '<form accept-charset="UTF-8" action="/books" method="post">'
+      response.body.must_include '<input name="book[name]" placeholder="Name" type="text" value="" />'
+    end
+
+    it 'handles update action' do
+      patch "/books/#{@book.id}", name: 'The path to failure'
+
+      response.status.must_equal 200
+      response.body.must_be_empty
+
+      follow_redirect!
+
+      response.status.must_equal 200
+      response.body.must_include 'The path to failure'
+    end
+
+    # it 'handles destroy action' do
+    #   delete "/books/#{@book.id}"
+
+    #   response.status.must_equal 200
+    #   response.body.must_be_empty
+
+    #   follow_redirect!
+
+    #   response.status.must_equal 200
+    # end
+  end
+
 end

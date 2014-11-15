@@ -25,8 +25,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'lotus-view',                 '>= 0.3.0.dev'
   spec.add_dependency 'thor',             '0.19.1'
 
-  spec.add_development_dependency 'bundler',   '~> 1.6'
-  spec.add_development_dependency 'rake',      '~> 10'
-  spec.add_development_dependency 'minitest',  '~> 5'
-  spec.add_development_dependency 'rack-test', '~> 0.6'
+  spec.add_development_dependency 'bundler',     '~> 1.6'
+  spec.add_development_dependency 'rake',        '~> 10'
+  spec.add_development_dependency 'minitest',    '~> 5'
+  spec.add_development_dependency 'rack-test',   '~> 0.6'
+  spec.add_development_dependency 'lotus-model', '~> 0.2'
+  spec.add_development_dependency 'sqlite3'
 end

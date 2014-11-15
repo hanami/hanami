@@ -123,6 +123,24 @@ describe Lotus::Configuration do
     end
   end
 
+  describe '#adapter' do
+    describe 'when not previously set' do
+      it 'returns nil' do
+        @configuration.adapter.must_be_nil
+      end
+    end
+
+    describe 'when set' do
+      before do
+        @configuration.adapter type: :sql, uri: 'sqlite3://uri'
+      end
+
+      it 'returns the configured value' do
+        @configuration.adapter.must_equal({type: :sql, uri: 'sqlite3://uri'})
+      end
+    end
+  end
+
   describe '#namespace' do
     describe "when not previously set" do
       it "returns nil" do

@@ -36,6 +36,7 @@ module Lotus
     end
 
     def load_frameworks!
+      _load_model_framework!
       _load_controller_framework!
       _load_view_framework!
     end
@@ -66,10 +67,31 @@ module Lotus
       end
     end
 
+    def _load_model_framework!
+      config = configuration
+
+      return unless config.adapter
+
+      unless application_module.const_defined?('Model')
+        model = Lotus::Model.duplicate(application_module) do
+          adapter config.adapter
+          mapping &config.mapping
+        end
+
+        application_module.const_set('Model', model)
+      end
+    end
+
     def finalize!
       application_module.module_eval %{
         #{ application_module }::View.load!
       }
+
+      if configuration.adapter
+        application_module.module_eval %{
+          #{ application_module }::Model.load!
+        }
+      end
     end
 
     def load_configuration_load_paths!
