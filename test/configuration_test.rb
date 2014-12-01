@@ -357,12 +357,14 @@ describe Lotus::Configuration do
       end
 
       it 'returns the configured value for middleware' do
-        @configuration.sessions.middleware_class.must_equal 'Rack::Session::Cookie'
+        @configuration.sessions.middleware.must_equal ["Rack::Session::Cookie", {domain: 'localhost', secure: false}]
       end
 
       it 'returns default values for options' do
         default_options = { domain: @configuration.host, secure: @configuration.scheme == 'https' }
-        @configuration.sessions.options.must_equal default_options
+        _, options = @configuration.sessions.middleware
+
+        options.must_equal default_options
       end
     end
 
@@ -372,7 +374,7 @@ describe Lotus::Configuration do
       end
 
       it 'merges default option values' do
-        options = @configuration.sessions.options
+        _, options = @configuration.sessions.middleware
         options[:domain].must_equal @configuration.host
         options[:expire_after].must_equal 2592000
         options[:secure].must_equal true
@@ -381,16 +383,25 @@ describe Lotus::Configuration do
 
     describe 'when already set' do
       before do
-        @configuration.sessions :cookie
+        @configuration.sessions :cookies
+
+        module Rack::Session
+          class FileSystem
+          end
+        end
+      end
+
+      after do
+        Rack::Session.__send__(:remove_const, :FileSystem)
       end
 
       describe 'if set with new configuration' do
         before do
-          @configuration.sessions 'Rack::Session::Redis'
+          @configuration.sessions 'Rack::Session::FileSystem'
         end
 
         it 'returns it' do
-          @configuration.sessions.middleware_class.must_equal 'Rack::Session::Redis'
+          @configuration.sessions.middleware.must_equal ['Rack::Session::FileSystem', {domain: 'localhost', secure: false}]
         end
       end
 

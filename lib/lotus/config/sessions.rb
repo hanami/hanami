@@ -8,37 +8,68 @@ module Lotus
     # @api private
     class Sessions
 
-      RACK_NAMESPACE = 'Rack::Session::%{class_name}'.freeze
+      # Ruby namespace for Rack session adapters
+      #
+      # @since x.x.x
+      # @api private
+      RACK_NAMESPACE = 'Rack::Session::%s'.freeze
 
-      def initialize(identifier = nil, options = {}, config = nil)
-        @identifier = identifier
-        @options = options
-        @config = config
+      # HTTP sessions configuration
+      #
+      # @param adapter [Symbol,String,Class] the session adapter
+      # @param options [Hash] the optional session options
+      # @param configuration [Lotus::Configuration] the application configuration
+      #
+      # @since x.x.x
+      # @api private
+      #
+      # @see http://www.rubydoc.info/github/rack/rack/Rack/Session/Abstract/ID
+      def initialize(adapter = nil, options = {}, configuration = nil)
+        @adapter       = adapter
+        @options       = options
+        @configuration = configuration
       end
 
+      # Check if the sessions are enabled
+      #
+      # @return [FalseClass,TrueClass] the result of the check
+      #
+      # @since x.x.x
+      # @api private
       def enabled?
-        !!@identifier
+        !!@adapter
       end
 
-      def options
-        default_options.merge(@options)
-      end
-
-      def middleware_class
-        case @identifier
+      # Returns the Rack middleware and the options
+      #
+      # @return [Array] Rack middleware and options
+      #
+      # @since x.x.x
+      # @api private
+      def middleware
+        middleware = case @adapter
         when Symbol
-          class_name = Utils::String.new(@identifier).classify
-          RACK_NAMESPACE % { class_name: class_name }
+          RACK_NAMESPACE % Utils::String.new(@adapter).classify
         else
-          @identifier
+          @adapter
         end
+
+        [middleware, options]
       end
 
       private
 
+      # @since x.x.x
+      # @api private
+      def options
+        default_options.merge(@options)
+      end
+
+      # @since x.x.x
+      # @api private
       def default_options
-        if @config
-          { domain: @config.host, secure: @config.scheme == 'https' }
+        if @configuration
+          { domain: @configuration.host, secure: @configuration.ssl? }
         else
           {}
         end

@@ -35,7 +35,7 @@ describe Lotus::Middleware do
     let(:config_blk) { proc { sessions :cookie } }
 
     it 'includes sessions middleware' do
-      middleware.stack.must_include ["Rack::Session::Cookie", [{ domain: configuration.host, secure: false }], nil]
+      middleware.stack.must_include ['Rack::Session::Cookie', [{ domain: configuration.host, secure: false }], nil]
     end
   end
 

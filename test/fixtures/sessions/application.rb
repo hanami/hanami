@@ -16,23 +16,26 @@ module SessionsApp
 
 
   module Controllers::Sessions
-    include SessionsApp::Controller
+    class New
+      include SessionsApp::Action
 
-    action 'New' do
       def call(params)
         session[:name] = params[:name]
         self.body = "Session created for: #{session[:name]}"
       end
     end
 
-    action 'Show' do
-      def call(params)
+    class Show
+      include SessionsApp::Action
 
+      def call(params)
         self.body = session[:name]
       end
     end
 
-    action 'Destroy' do
+    class Destroy
+      include SessionsApp::Action
+
       def call(params)
         name = session[:name]
         session.clear
@@ -40,5 +43,4 @@ module SessionsApp
       end
     end
   end
-
 end

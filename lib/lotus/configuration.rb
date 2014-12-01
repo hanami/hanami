@@ -11,6 +11,12 @@ module Lotus
   #
   # @since 0.1.0
   class Configuration
+    # @since x.x.x
+    # @api private
+    #
+    # @see Lotus::Configuration#ssl?
+    SSL_SCHEME = 'https'.freeze
+
     # Initialize a new configuration instance
     #
     # @return [Lotus::Configuration]
@@ -452,19 +458,19 @@ module Lotus
     # an argument, it will set the corresponding instance variable. When
     # called without, it will return the already set value, or the default.
     #
-    # Given Class as identifier it will be used as sessions middleware.
-    # Given String as identifier it will be resolved as class name and used as
+    # Given Class as adapter it will be used as sessions middleware.
+    # Given String as adapter it will be resolved as class name and used as
     # sessions middleware.
-    # Given Symbol as identifier it is assumed it's name of the class under
+    # Given Symbol as adapter it is assumed it's name of the class under
     # Rack::Session namespace that will be used as sessions middleware
     # (e.g. :cookie for Rack::Session::Cookie).
     #
     # By default options include domain inferred from host configuration, and
     # secure flag inferred from scheme configuration.
     #
-    # @overload sessions(identifier, options)
+    # @overload sessions(adapter, options)
     #   Sets the given value.
-    #   @param identifier [Class, String, Symbol] Rack middleware for sessions management
+    #   @param adapter [Class, String, Symbol] Rack middleware for sessions management
     #   @param options [Hash] options to pass to sessions middleware
     #
     # @overload sessions(false)
@@ -496,13 +502,13 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         sessions :cookie
+    #         sessions :cookie, secret: 'abc123'
     #       end
     #     end
     #   end
     #
     #   Bookshelf::Application.configuration.sessions
-    #     # => #<Lotus::Config::Sessions:0x00000001589458 @enabled=true, @identifier=:cookie, @options={:domain=>"localhost", :secure=>false}>
+    #     # => #<Lotus::Config::Sessions:0x00000001589458 @enabled=true, @adapter=:cookie, @options={:domain=>"localhost", :secure=>false}>
     #
     # @example Disabling previusly enabled sessions
     #   require 'lotus'
@@ -519,11 +525,11 @@ module Lotus
     #   Bookshelf::Application.configuration.sessions
     #     # => #<Lotus::Config::Sessions:0x00000002460d78 @enabled=false>
     #
-    def sessions(identifier = nil, options = {})
-      if identifier.nil?
+    def sessions(adapter = nil, options = {})
+      if adapter.nil?
         @sessions ||= Config::Sessions.new
       else
-        @sessions = Config::Sessions.new(identifier, options, self)
+        @sessions = Config::Sessions.new(adapter, options, self)
       end
     end
 
@@ -789,6 +795,13 @@ module Lotus
       else
         @scheme ||= 'http'
       end
+    end
+
+    # Check if the application uses SSL
+    #
+    # @since x.x.x
+    def ssl?
+      scheme == SSL_SCHEME
     end
 
     # The URI host for this application.

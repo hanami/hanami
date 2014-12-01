@@ -81,7 +81,7 @@ module Lotus
     def load_default_stack
       @default_stack_loaded ||= begin
         if @configuration.sessions.enabled?
-          use @configuration.sessions.middleware_class, @configuration.sessions.options
+          use(*@configuration.sessions.middleware)
         end
         if @configuration.assets.enabled?
           use Rack::Static, urls: @configuration.assets.entries, root: @configuration.assets.to_s
