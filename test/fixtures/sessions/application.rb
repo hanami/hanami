@@ -1,11 +1,10 @@
 module SessionsApp
   class Application < Lotus::Application
     configure do
-      # Activate sessions
       sessions :cookie, secret: '1234567890'
 
       routes do
-        post   '/set_session'  , to: 'sessions#new'
+        post   '/set_session'  , to: 'sessions#create'
         get    '/get_session'  , to: 'sessions#show'
         delete '/clear_session', to: 'sessions#destroy'
       end
@@ -16,7 +15,7 @@ module SessionsApp
 
 
   module Controllers::Sessions
-    class New
+    class Create
       include SessionsApp::Action
 
       def call(params)
@@ -29,7 +28,7 @@ module SessionsApp
       include SessionsApp::Action
 
       def call(params)
-        self.body = session[:name]
+        self.body = session[:name] || '[empty]'
       end
     end
 

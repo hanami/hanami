@@ -153,7 +153,7 @@ module Lotus
     # @see Lotus::Application#middleware
     def call(env)
       middleware.call(env).tap do |response|
-        @rendering_policy.render(response)
+        @rendering_policy.render(env, response)
       end
     end
 

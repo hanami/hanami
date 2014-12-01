@@ -31,7 +31,7 @@ describe 'Sessions' do
   it 'has empty session by default' do
     get '/get_session'
 
-    response.body.must_equal ''
+    response.body.must_equal '[empty]'
   end
 
   it 'allows to set session' do
@@ -49,12 +49,11 @@ describe 'Sessions' do
 
   it 'allows to clear session' do
     post '/set_session', { name: 'Lotus' }
-    delete '/clear_session', nil, { 'HTTP_COOKIE' => response.headers['Set-Cookie'] }
 
+    delete '/clear_session', nil, { 'HTTP_COOKIE' => response.headers['Set-Cookie'] }
     response.body.must_equal 'Session cleared for: Lotus'
 
     get '/get_session', nil, { 'HTTP_COOKIE' => response.headers['Set-Cookie'] }
-
-    response.body.must_equal ''
+    response.body.must_equal '[empty]'
   end
 end

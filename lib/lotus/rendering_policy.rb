@@ -12,7 +12,7 @@ module Lotus
     HEADERS = 1
     BODY    = 2
 
-    RACK_RESPONSE_SIZE = 3
+    LOTUS_ACTION = 'lotus.action'.freeze
 
     SUCCESSFUL_STATUSES   = (200..201).freeze
     STATUSES_WITHOUT_BODY = Set.new((100..199).to_a << 204 << 205 << 301 << 302 << 304).freeze
@@ -26,17 +26,15 @@ module Lotus
       @templates          = configuration.templates
     end
 
-    def render(response)
-      if renderable?(response)
-        action = response.pop
-
+    def render(env, response)
+      if action = renderable?(env)
         body = if successful?(response)
           view_for(response, action).render(
             action.to_rendering
           )
         else
           if render_status_page?(response, action)
-            Lotus::Views::Default.render(@templates, response[STATUS],response: response, format: :html)
+            Lotus::Views::Default.render(@templates, response[STATUS], response: response, format: :html)
           end
         end
 
@@ -45,8 +43,8 @@ module Lotus
     end
 
     private
-    def renderable?(response)
-      response.size > RACK_RESPONSE_SIZE
+    def renderable?(env)
+      env.delete(LOTUS_ACTION)
     end
 
     def successful?(response)
