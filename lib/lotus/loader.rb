@@ -80,9 +80,14 @@ module Lotus
 
     def load_rack!
       return if application.is_a?(Class)
+      _assign_rendering_policy!
       _assign_rack_routes!
       _load_rack_middleware!
       _assign_routes_to_application_module!
+    end
+
+    def _assign_rendering_policy!
+      application.renderer = RenderingPolicy.new(configuration)
     end
 
     def _assign_rack_routes!

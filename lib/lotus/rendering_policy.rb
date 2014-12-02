@@ -45,6 +45,7 @@ module Lotus
       end
 
       response[BODY] = Array(body) unless body.nil?
+      response
     end
 
     private
