@@ -48,11 +48,24 @@ module Collaboration::Controllers::Books
     end
   end
 
+  class Create
+    include Lotus::Action
+
+    def call(params)
+      @book = Book.new(params)
+      BookRepository.create(@book)
+
+      redirect_to Collaboration::Routes.url(:books, :id => @book.id)
+    end
+  end
+
   class Update
     include Lotus::Action
 
     def call(params)
       @book = BookRepository.find(params[:id])
+      @book.update(params)
+      BookRepository.update(@book)
 
       redirect_to Collaboration::Routes.url(:books, :id => @book.id)
     end

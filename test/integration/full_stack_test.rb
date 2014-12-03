@@ -186,25 +186,41 @@ describe 'A full stack Lotus application' do
     it 'handles update action' do
       patch "/books/#{@book.id}", name: 'The path to failure'
 
-      response.status.must_equal 200
+      response.status.must_equal 302
       response.body.must_be_empty
 
       follow_redirect!
 
       response.status.must_equal 200
-      response.body.must_include 'The path to failure'
+      response.body.must_include "<p id=\"book_id\">#{@book.id}</p>"
+      response.body.must_include '<p id="book_name">The path to failure</p>'
     end
 
-    # it 'handles destroy action' do
-    #   delete "/books/#{@book.id}"
+    it 'handles update action' do
+      post "/books", name: 'The art of Zen'
 
-    #   response.status.must_equal 200
-    #   response.body.must_be_empty
+      response.status.must_equal 302
+      response.body.must_be_empty
 
-    #   follow_redirect!
+      follow_redirect!
 
-    #   response.status.must_equal 200
-    # end
+      response.status.must_equal 200
+      response.body.must_include '<p id="book_name">The art of Zen</p>'
+    end
+
+
+    it 'handles destroy action' do
+      delete "/books/#{@book.id}"
+
+      response.status.must_equal 302
+      response.body.must_be_empty
+
+      follow_redirect!
+
+      response.status.must_equal 200
+      response.body.must_include 'There are 0 books'
+    end
   end
 
 end
+

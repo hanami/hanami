@@ -21,10 +21,10 @@ module Lotus
     def load!
       @mutex.synchronize do
         load_configuration!
-        load_frameworks!
+        configure_frameworks!
         load_configuration_load_paths!
         load_rack!
-        finalize!
+        load_frameworks!
       end
     end
 
@@ -35,13 +35,13 @@ module Lotus
       configuration.load!(application_module)
     end
 
-    def load_frameworks!
-      _load_model_framework!
-      _load_controller_framework!
-      _load_view_framework!
+    def configure_frameworks!
+      _configure_model_framework! if defined?(Lotus::Model) && configuration.adapter
+      _configure_controller_framework!
+      _configure_view_framework!
     end
 
-    def _load_controller_framework!
+    def _configure_controller_framework!
       config = configuration
       unless application_module.const_defined?('Controller')
         controller = Lotus::Controller.duplicate(application_module) do
@@ -55,7 +55,7 @@ module Lotus
       end
     end
 
-    def _load_view_framework!
+    def _configure_view_framework!
       config = configuration
       unless application_module.const_defined?('View')
         view = Lotus::View.duplicate(application_module) do
@@ -67,11 +67,8 @@ module Lotus
       end
     end
 
-    def _load_model_framework!
+    def _configure_model_framework!
       config = configuration
-
-      return unless config.adapter
-
       unless application_module.const_defined?('Model')
         model = Lotus::Model.duplicate(application_module) do
           adapter config.adapter
@@ -82,16 +79,21 @@ module Lotus
       end
     end
 
-    def finalize!
+    def load_frameworks!
+      _load_view_framework!
+      _load_model_framework! if defined?(Lotus::Model) && configuration.adapter
+    end
+
+    def _load_view_framework!
       application_module.module_eval %{
         #{ application_module }::View.load!
       }
+    end
 
-      if configuration.adapter
-        application_module.module_eval %{
-          #{ application_module }::Model.load!
-        }
-      end
+    def _load_model_framework!
+      application_module.module_eval %{
+        #{ application_module }::Model.load!
+      }
     end
 
     def load_configuration_load_paths!

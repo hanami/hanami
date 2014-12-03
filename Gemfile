@@ -11,6 +11,7 @@ gem 'lotus-router',               '>= 0.2.0.dev', require: false, github: 'lotus
 gem 'lotus-controller',           '>= 0.3.0.dev', require: false, github: 'lotus/controller', branch: '0.3.x'
 gem 'lotus-view',                 '>= 0.3.0.dev', require: false, github: 'lotus/view',       branch: '0.3.x'
 gem 'lotus-model',                                require: false, github: 'lotus/model'
+gem 'sqlite3'
 
 gem 'simplecov', require: false
 gem 'coveralls', require: false
