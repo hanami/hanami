@@ -29,19 +29,25 @@ describe Lotus::Commands::Server do
     end
   end
 
-  describe '#middleware' do
-    it 'does not mount ShowExceptions in deployment' do
-      @server.middleware["deployment"].wont_include ::Rack::ShowExceptions
+  describe 'middleware stack' do
+    before do
+      @builder = FakeRackBuilder.new(&@server.__send__(:_environment_middleware))
     end
 
-    it 'does mount ShowExceptions in development' do
-      @server.middleware["development"].must_include ::Rack::ShowExceptions
+    it 'includes Rack::ContentLength' do
+      @builder.stack.must_include ::Rack::ContentLength
     end
 
-    it 'mounts ContentLength middleware' do
-      @server.middleware.each do |env, middleware|
-        middleware.must_include ::Rack::ContentLength
-      end
+    it 'includes Rack::CommonLogger' do
+      @builder.stack.must_include ::Rack::CommonLogger
+    end
+
+    it 'includes Rack::ShowExceptions' do
+      @builder.stack.must_include ::Rack::ShowExceptions
+    end
+
+    it 'includes Rack::Lint' do
+      @builder.stack.must_include ::Rack::Lint
     end
   end
 
