@@ -14,6 +14,7 @@ describe Lotus::Loader do
         assert defined?(CoffeeShop::Model),      'expected CoffeeShop::Model'
         assert defined?(CoffeeShop::Entity),     'expected CoffeeShop::Entity'
         assert defined?(CoffeeShop::Repository), 'expected CoffeeShop::Repository'
+        assert defined?(CoffeeShop::Presenter),  'expected CoffeeShop::Presenter'
       end
 
       it 'generates per application classes' do
