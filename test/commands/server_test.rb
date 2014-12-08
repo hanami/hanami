@@ -15,6 +15,12 @@ describe Lotus::Commands::Server do
     @server = Lotus::Commands::Server.new(@env)
   end
 
+  describe '#middleware' do
+    it 'returns an empty Hash' do
+      @server.middleware.must_equal({})
+    end
+  end
+
   describe '#options' do
     let(:opts) { { port: "3005", host: 'example.com' } }
 
@@ -26,22 +32,6 @@ describe Lotus::Commands::Server do
     it 'merges in default values' do
       @server.options[:environment].must_equal 'development'
       @server.options[:config].must_equal "config.ru"
-    end
-  end
-
-  describe '#middleware' do
-    it 'does not mount ShowExceptions in deployment' do
-      @server.middleware["deployment"].wont_include ::Rack::ShowExceptions
-    end
-
-    it 'does mount ShowExceptions in development' do
-      @server.middleware["development"].must_include ::Rack::ShowExceptions
-    end
-
-    it 'mounts ContentLength middleware' do
-      @server.middleware.each do |env, middleware|
-        middleware.must_include ::Rack::ContentLength
-      end
     end
   end
 
@@ -268,6 +258,24 @@ describe Lotus::Commands::Server do
 
       it 'sets that value' do
         @server.options.fetch(:pid).must_equal 'true'
+      end
+    end
+  end
+
+  describe 'code reloading' do
+    describe 'when enabled' do
+      let(:opts) { Hash[code_reloading: true] }
+
+      it 'uses Shotgun to wrap the application' do
+        @server.instance_variable_get(:@app).must_be_kind_of(Shotgun::Loader)
+      end
+    end
+
+    describe 'when disabled' do
+      let(:opts) { Hash[code_reloading: false] }
+
+      it "doesn't use Shotgun" do
+        @server.instance_variable_get(:@app).must_be_nil
       end
     end
   end
