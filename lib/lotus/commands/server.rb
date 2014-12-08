@@ -29,6 +29,10 @@ module Lotus
         end
       end
 
+      def middleware
+        @middleware ||= Hash.new {|h,k| h[k] = []}
+      end
+
       def start
         if code_reloading?
           Shotgun.enable_copy_on_write

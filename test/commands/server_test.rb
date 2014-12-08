@@ -15,6 +15,12 @@ describe Lotus::Commands::Server do
     @server = Lotus::Commands::Server.new(@env)
   end
 
+  describe '#middleware' do
+    it 'returns an empty Hash' do
+      @server.middleware.must_equal({})
+    end
+  end
+
   describe '#options' do
     let(:opts) { { port: "3005", host: 'example.com' } }
 
