@@ -15,6 +15,7 @@ module Lotus
     method_option :warn,                     desc: 'turn on warnings'
     method_option :daemonize,                desc: 'if true, the server will daemonize itself (fork, detach, etc)'
     method_option :pid,                      desc: 'path to write a pid file after daemonize'
+    method_option :code_reloading,           desc: 'code reloading', type: :boolean, default: true
     method_option :help,      aliases: '-h', desc: 'displays the usage message'
 
     def server

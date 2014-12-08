@@ -1,14 +1,18 @@
 require 'rack'
-require 'shotgun'
 
 module Lotus
   module Commands
     # Rack compatible server.
     #
-    # It implements code reloading via process fork.
-    # It loads a middleware stack that targets the development phase.
+    # It is run with:
     #
-    # For those reasons it SHOULD NOT be used for deployment purposes.
+    #   `bundle exec lotus server`
+    #
+    # It runs the application, by using the server specified in your `Gemfile`
+    # (eg. Puma or Unicorn).
+    #
+    # It enables code reloading by default.
+    # This feature is implemented via process fork and requires `shotgun` gem.
     #
     # @since 0.1.0
     # @api private
@@ -16,13 +20,21 @@ module Lotus
       attr_reader :options
 
       def initialize(env)
-        @options = _extract_options(env)
-        @app     = Shotgun::Loader.new(env.config, &_environment_middleware)
+        @_env    = env
+        @options = _extract_options(@_env)
+
+        if code_reloading?
+          require 'shotgun'
+          @app = Shotgun::Loader.new(@_env.config)
+        end
       end
 
       def start
-        Shotgun.enable_copy_on_write
-        Shotgun.preload
+        if code_reloading?
+          Shotgun.enable_copy_on_write
+          Shotgun.preload
+        end
+
         super
       end
 
@@ -35,13 +47,8 @@ module Lotus
         )
       end
 
-      def _environment_middleware
-        Proc.new {
-          use ::Rack::ContentLength
-          use ::Rack::CommonLogger
-          use ::Rack::ShowExceptions
-          use ::Rack::Lint
-        }
+      def code_reloading?
+        @_env.code_reloading?
       end
     end
   end

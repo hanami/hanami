@@ -29,28 +29,6 @@ describe Lotus::Commands::Server do
     end
   end
 
-  describe 'middleware stack' do
-    before do
-      @builder = FakeRackBuilder.new(&@server.__send__(:_environment_middleware))
-    end
-
-    it 'includes Rack::ContentLength' do
-      @builder.stack.must_include ::Rack::ContentLength
-    end
-
-    it 'includes Rack::CommonLogger' do
-      @builder.stack.must_include ::Rack::CommonLogger
-    end
-
-    it 'includes Rack::ShowExceptions' do
-      @builder.stack.must_include ::Rack::ShowExceptions
-    end
-
-    it 'includes Rack::Lint' do
-      @builder.stack.must_include ::Rack::Lint
-    end
-  end
-
   describe 'host' do
     describe 'when no option is specified' do
       it 'defaults to localhost' do
@@ -274,6 +252,24 @@ describe Lotus::Commands::Server do
 
       it 'sets that value' do
         @server.options.fetch(:pid).must_equal 'true'
+      end
+    end
+  end
+
+  describe 'code reloading' do
+    describe 'when enabled' do
+      let(:opts) { Hash[code_reloading: true] }
+
+      it 'uses Shotgun to wrap the application' do
+        @server.instance_variable_get(:@app).must_be_kind_of(Shotgun::Loader)
+      end
+    end
+
+    describe 'when disabled' do
+      let(:opts) { Hash[code_reloading: false] }
+
+      it "doesn't use Shotgun" do
+        @server.instance_variable_get(:@app).must_be_nil
       end
     end
   end
