@@ -37,7 +37,7 @@ module Lotus
     end
 
     def configure_frameworks!
-      _configure_model_framework! if defined?(Lotus::Model) && configuration.adapter
+      _configure_model_framework! if defined?(Lotus::Model)
       _configure_controller_framework!
       _configure_view_framework!
     end
@@ -71,7 +71,7 @@ module Lotus
 
     def _configure_model_framework!
       config = configuration
-      unless application_module.const_defined?('Model')
+      if config.adapter && config.mapping && !application_module.const_defined?('Model')
         model = Lotus::Model.duplicate(application_module) do
           adapter config.adapter
           mapping &config.mapping
