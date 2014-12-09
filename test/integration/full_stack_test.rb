@@ -41,18 +41,23 @@ describe 'A full stack Lotus application' do
   it "serves static files" do
     get '/stylesheets/application.css'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/javascripts/application.js'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/images/application.jpg'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/fonts/cabin-medium.woff'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/stylesheets/not-found.css'
     response.status.must_equal 404
+    response.body.wont_be_empty
   end
 
   it "when user provided a custom template, it renders a custom page" do

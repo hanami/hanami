@@ -36,23 +36,29 @@ describe 'A top level Lotus application' do
     get '/favicon.ico'
 
     response.status.must_equal 200
+    response.body.wont_be_empty
   end
 
   it "serves static files" do
     get '/stylesheets/application.css'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/javascripts/application.js'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/images/application.jpg'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/fonts/cabin-medium.woff'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/stylesheets/not-found.css'
     response.status.must_equal 404
+    response.body.wont_be_empty
   end
 
   it "renders a custom page for not found resources" do

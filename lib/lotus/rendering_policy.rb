@@ -30,25 +30,38 @@ module Lotus
     end
 
     def render(env, response)
-      body = if action = renderable?(env)
-        if successful?(response)
-          view_for(response, action).render(
-            action.to_rendering
-          )
-        else
-          if render_status_page?(response, action)
-            Lotus::Views::Default.render(@templates, response[STATUS], response: response, format: :html)
-          end
-        end
-      else
-        EMPTY_BODY
-      end
+      body = _render(env, response) || _render_head(env)
 
       response[BODY] = Array(body) unless body.nil?
       response
     end
 
     private
+    def _render(env, response)
+      if action = renderable?(env)
+        _render_action(action, response) ||
+          _render_status_page(action, response)
+      end
+    end
+
+    def _render_action(action, response)
+      if successful?(response)
+        view_for(action, response).render(
+          action.to_rendering
+        )
+      end
+    end
+
+    def _render_status_page(action, response)
+      if render_status_page?(action, response)
+        Lotus::Views::Default.render(@templates, response[STATUS], response: response, format: :html)
+      end
+    end
+
+    def _render_head(env)
+      EMPTY_BODY if head?(env)
+    end
+
     def renderable?(env)
       env[REQUEST_METHOD] != HEAD and
         env.delete(LOTUS_ACTION)
@@ -59,15 +72,15 @@ module Lotus
     end
 
     def head?(env)
-      env[REQUEST_METHOD] != HEAD
+      env[REQUEST_METHOD] == HEAD
     end
 
-    def render_status_page?(response, action)
+    def render_status_page?(action, response)
       RENDERABLE_FORMATS.include?(action.format) &&
         !STATUSES_WITHOUT_BODY.include?(response[STATUS])
     end
 
-    def view_for(response, action)
+    def view_for(action, response)
       if response[BODY].empty?
         captures = @controller_pattern.match(action.class.name)
         Utils::Class.load!(@view_pattern % { controller: captures[:controller], action: captures[:action] }, @namespace)
