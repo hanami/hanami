@@ -29,8 +29,13 @@ module Lotus
         end
       end
 
+      # Primarily this removes the ::Rack::Chunked middleware
+      # which is the cause of Safari content-length bugs.
       def middleware
-        @middleware ||= Hash.new {|h,k| h[k] = []}
+        mw = Hash.new { |e, m| e[m] = [] }
+        mw["deployment"].concat([::Rack::ContentLength, ::Rack::CommonLogger])
+        mw["development"].concat(mw["deployment"] + [::Rack::ShowExceptions, ::Rack::Lint])
+        mw
       end
 
       def start

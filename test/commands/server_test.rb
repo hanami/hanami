@@ -16,8 +16,14 @@ describe Lotus::Commands::Server do
   end
 
   describe '#middleware' do
-    it 'returns an empty Hash' do
-      @server.middleware.must_equal({})
+    it 'returns per env Rack stack' do
+      expected = {
+        'deployment'  => [::Rack::ContentLength, ::Rack::CommonLogger],
+        'development' => [::Rack::ContentLength, ::Rack::CommonLogger,
+                          ::Rack::ShowExceptions, Rack::Lint]
+      }
+
+      @server.middleware.must_equal(expected)
     end
   end
 
