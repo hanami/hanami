@@ -63,7 +63,7 @@ module Lotus
     end
 
     def renderable?(env)
-      env[REQUEST_METHOD] != HEAD and
+      !head?(env) and
         env.delete(LOTUS_ACTION)
     end
 
