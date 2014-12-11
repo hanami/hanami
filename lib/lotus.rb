@@ -1,5 +1,6 @@
 require 'lotus/version'
 require 'lotus/application'
+require 'lotus/container'
 
 # A complete web framework for Ruby
 #

@@ -40,3 +40,9 @@ module CoffeeShop
     end
   end
 end
+
+class RackApp
+  def self.call(env)
+    [200, {}, ['Hello from RackApp']]
+  end
+end
