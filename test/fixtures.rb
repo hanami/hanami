@@ -46,3 +46,25 @@ class RackApp
     [200, {}, ['Hello from RackApp']]
   end
 end
+
+class RackApp
+  def self.call(env)
+    [200, {}, ['Hello from RackApp']]
+  end
+end
+
+module Backend
+  class App
+    def self.call(env)
+    [200, {}, ['home']]
+    end
+  end
+end
+
+class TinyApp < Lotus::Application
+  configure do
+    routes do
+      get '/', to: 'home#index'
+    end
+  end
+end
