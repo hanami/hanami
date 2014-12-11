@@ -1,7 +1,7 @@
 module Collaboration::Controllers::Protected
-  include Collaboration::Controller
+  class Index
+    include Collaboration::Action
 
-  action 'Index' do
     def call(params)
       halt 401
     end

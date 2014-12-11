@@ -1,24 +1,30 @@
 module Furnitures::CatalogController
-  include Furnitures::Controller
+  class Index
+    include Furnitures::Action
 
-  action 'Index' do
     def call(params)
     end
   end
 
-  action 'Error' do
+  class Error
+    include Furnitures::Action
+
     def call(params)
       raise 'boom'
     end
   end
 
-  action 'Legacy' do
+  class Legacy
+    include Furnitures::Action
+
     def call(params)
       redirect_to 'http://localhost/catalog'
     end
   end
 
-  action 'Protected' do
+  class Protected
+    include Furnitures::Action
+
     def call(params)
       halt 401
     end

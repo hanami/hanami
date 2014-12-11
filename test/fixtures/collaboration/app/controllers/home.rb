@@ -1,18 +1,22 @@
 module Collaboration::Controllers::Home
-  include Collaboration::Controller
+  class Index
+    include Collaboration::Action
 
-  action 'Index' do
     def call(params)
     end
   end
 
-  action 'Error' do
+  class Error
+    include Collaboration::Action
+
     def call(params)
       raise StandardError
     end
   end
 
-  action 'Legacy' do
+  class Legacy
+    include Collaboration::Action
+
     def call(params)
       redirect_to Collaboration::Routes.url(:root)
     end

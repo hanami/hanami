@@ -15,24 +15,27 @@ module CookiesApp
     load!
   end
 
-
   module Controllers::Cookies
-    include CookiesApp::Controller
+    class Get
+      include CookiesApp::Action
 
-    action 'Get' do
       def call(params)
         self.body = cookies[:foo]
       end
     end
 
-    action 'Set' do
+    class Set
+      include CookiesApp::Action
+
       def call(params)
         self.body = 'yummy!'
         cookies[:foo] = 'nomnomnom!'
       end
     end
 
-    action 'SetWithOptions' do
+    class SetWithOptions
+      include CookiesApp::Action
+
       def call(params)
         self.body = 'with options!'
         expire_date = Time.parse params[:expires]
@@ -48,7 +51,9 @@ module CookiesApp
       end
     end
 
-    action 'Del' do
+    class Del
+      include CookiesApp::Action
+
       def call(params)
         self.body = 'deleted!'
         cookies[:delete] = nil

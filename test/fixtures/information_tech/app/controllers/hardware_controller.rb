@@ -1,24 +1,30 @@
 module HardwareController
-  include InformationTech::Controller
+  class Index
+    include InformationTech::Action
 
-  action 'Index' do
     def call(params)
     end
   end
 
-  action 'Error' do
+  class Error
+    include InformationTech::Action
+
     def call(params)
       raise 'boom'
     end
   end
 
-  action 'Legacy' do
+  class Legacy
+    include InformationTech::Action
+
     def call(params)
       redirect_to 'http://localhost/hardware'
     end
   end
 
-  action 'Protected' do
+  class Protected
+    include InformationTech::Action
+
     def call(params)
       halt 401
     end
