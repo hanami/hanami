@@ -2,6 +2,7 @@ require 'thor'
 require 'lotus/environment'
 require 'lotus/commands/server'
 require 'lotus/commands/console'
+require 'lotus/commands/routes'
 require 'lotus/utils/hash'
 
 module Lotus
@@ -36,6 +37,17 @@ module Lotus
         invoke :help, ['console']
       else
         Lotus::Commands::Console.new(environment).start
+      end
+    end
+
+    desc "routes", "prints routes"
+    method_option :help,   aliases: '-h', desc: 'displays the usage method'
+
+    def routes
+      if options[:help]
+        invoke :help, ['routes']
+      else
+        Lotus::Commands::Routes.new.start
       end
     end
 
