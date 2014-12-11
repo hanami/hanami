@@ -3,7 +3,7 @@ require 'lotus/model'
 class Order
   include Lotus::Entity
 
-  self.attributes = :size, :coffee, :qty
+  attributes :size, :coffee, :qty
 end
 
 class OrderRepository
