@@ -51,6 +51,8 @@ module Lotus
 
           prepare { include Lotus::Action::Cookies } if config.cookies
           prepare { include Lotus::Action::Session } if config.sessions.enabled?
+
+          config.controller.__apply(self)
         end
 
         application_module.const_set('Controller', controller)
@@ -63,6 +65,8 @@ module Lotus
         view = Lotus::View.duplicate(application_module) do
           root   config.templates
           layout config.layout
+
+          config.view.__apply(self)
         end
 
         application_module.const_set('View', view)
@@ -71,19 +75,22 @@ module Lotus
 
     def _configure_model_framework!
       config = configuration
-      if config.adapter && config.mapping && !application_module.const_defined?('Model')
+      if _lotus_model_loaded? && !application_module.const_defined?('Model')
         model = Lotus::Model.duplicate(application_module) do
-          adapter config.adapter
-          mapping &config.mapping
+          adapter(config.adapter)  if config.adapter
+          mapping(&config.mapping) if config.mapping
+
+          config.model.__apply(self)
         end
 
         application_module.const_set('Model', model)
       end
     end
 
+
     def load_frameworks!
       _load_view_framework!
-      _load_model_framework! if defined?(Lotus::Model) && configuration.adapter
+      _load_model_framework!
     end
 
     def _load_view_framework!
@@ -93,9 +100,22 @@ module Lotus
     end
 
     def _load_model_framework!
+      return unless _load_model_framework?
+
       application_module.module_eval %{
         #{ application_module }::Model.load!
       }
+    end
+
+    def _load_model_framework?
+      if _lotus_model_loaded? && application_module.const_defined?('Model')
+        model = application_module.const_get('Model')
+        model.configuration.adapter
+      end
+    end
+
+    def _lotus_model_loaded?
+      defined?(Lotus::Model)
     end
 
     def load_configuration_load_paths!

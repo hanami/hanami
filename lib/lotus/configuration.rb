@@ -1,5 +1,6 @@
 require 'lotus/utils/kernel'
 require 'lotus/environment'
+require 'lotus/config/framework_configuration'
 require 'lotus/config/load_paths'
 require 'lotus/config/assets'
 require 'lotus/config/routes'
@@ -1364,6 +1365,137 @@ module Lotus
       else
         @handle_exceptions = value
       end
+    end
+
+    # It lazily collects all the low level settings for Lotus::Model's
+    # configuration and applies them when the application is loaded.
+    #
+    # NOTE: This forwards all the configurations to Lotus::Model, without
+    # checking them. Before to use this feature, please have a look at the
+    # current Lotus::Model version installed.
+    #
+    # NOTE: This may override some configurations of your application.
+    #
+    # @return [Lotus::Config::FrameworkConfiguration] the configuration
+    #
+    # @since x.x.x
+    #
+    # @see http://www.rubydoc.info/gems/lotus-model/Lotus/Model/Configuration
+    #
+    # @example Define a setting
+    #   require 'lotus'
+    #   require 'lotus/model'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         model.adapter type: :memory, uri: 'memory://localhost/database'
+    #       end
+    #     end
+    #   end
+    #
+    # @example Override a setting
+    #   require 'lotus'
+    #   require 'lotus/model'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         adapter       type: :sql,    uri: 'postgres://localhost/database'
+    #         model.adapter type: :memory, uri: 'memory://localhost/database'
+    #       end
+    #     end
+    #   end
+    #
+    #   # The memory adapter will override the SQL one
+    def model
+      @model ||= Config::FrameworkConfiguration.new
+    end
+
+    # It lazily collects all the low level settings for Lotus::Controller's
+    # configuration and applies them when the application is loaded.
+    #
+    # NOTE: This forwards all the configurations to Lotus::Controller, without
+    # checking them. Before to use this feature, please have a look at the
+    # current Lotus::Controller version installed.
+    #
+    # NOTE: This may override some configurations of your application.
+    #
+    # @return [Lotus::Config::FrameworkConfiguration] the configuration
+    #
+    # @since x.x.x
+    #
+    # @see http://www.rubydoc.info/gems/lotus-controller/Lotus/Controller/Configuration
+    #
+    # @example Define a setting
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         controller.default_format :json
+    #       end
+    #     end
+    #   end
+    #
+    # @example Override a setting
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         handle_exceptions            false
+    #         controller.handle_exceptions true
+    #       end
+    #     end
+    #   end
+    #
+    #   # Exceptions will be handled
+    def controller
+      @controller ||= Config::FrameworkConfiguration.new
+    end
+
+    # It lazily collects all the low level settings for Lotus::View's
+    # configuration and applies them when the application is loaded.
+    #
+    # NOTE: This forwards all the configurations to Lotus::View, without
+    # checking them. Before to use this feature, please have a look at the
+    # current Lotus::View version installed.
+    #
+    # NOTE: This may override some configurations of your application.
+    #
+    # @return [Lotus::Config::FrameworkConfiguration] the configuration
+    #
+    # @since x.x.x
+    #
+    # @see http://www.rubydoc.info/gems/lotus-view/Lotus/View/Configuration
+    #
+    # @example Define a setting
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         view.layout :application
+    #       end
+    #     end
+    #   end
+    #
+    # @example Override a setting
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         layout      :application
+    #         view.layout :backend
+    #       end
+    #     end
+    #   end
+    #
+    #   # It will use `:backend` layout
+    def view
+      @view ||= Config::FrameworkConfiguration.new
     end
 
     private
