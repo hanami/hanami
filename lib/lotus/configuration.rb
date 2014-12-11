@@ -6,6 +6,7 @@ require 'lotus/config/assets'
 require 'lotus/config/routes'
 require 'lotus/config/mapping'
 require 'lotus/config/sessions'
+require 'lotus/config/configure'
 
 module Lotus
   # Configuration for a Lotus application
@@ -30,21 +31,25 @@ module Lotus
       @configurations = Hash.new { |k, v| k[v] = [] }
     end
 
-    # Set a block yield when the configuration will be loaded
+    # Set a block yield when the configuration will be loaded or
+    # set a path for the specific environment.
     #
     # @param environment [Symbol,nil] the configuration environment name
+    # @param environment [String,nil] the configuration path of a specific environment
     # @param blk [Proc] the configuration block
     #
     # @return [self]
     #
     # @since 0.1.0
     # @api private
-    def configure(environment = nil, &blk)
-      if environment
+    def configure(environment = nil, path = nil, &blk)
+      if environment && path
+        @configurations[environment.to_s] << Config::Configure.new(root, path, &blk)
+      elsif environment
         @configurations[environment.to_s] << blk
       else
         @blk = blk
-      end if block_given?
+      end
 
       self
     end
