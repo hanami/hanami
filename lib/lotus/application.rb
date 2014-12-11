@@ -76,6 +76,14 @@ module Lotus
     # @api private
     attr_writer :routes
 
+    # Rendering policy
+    #
+    # @param [Lotus::RenderingPolicy]
+    #
+    # @since x.x.x
+    # @api private
+    attr_accessor :renderer
+
     # Initialize and load a new instance of the application
     #
     # @return [Lotus::Application] a new instance of the application
@@ -83,7 +91,6 @@ module Lotus
     # @since 0.1.0
     def initialize
       self.class.load!(self)
-      @rendering_policy = RenderingPolicy.new(configuration)
     end
 
     # Eager load the application configuration, by activating the framework
@@ -152,9 +159,8 @@ module Lotus
     # @see http://rack.github.io
     # @see Lotus::Application#middleware
     def call(env)
-      middleware.call(env).tap do |response|
-        @rendering_policy.render(response)
-      end
+      renderer.render(env,
+                      middleware.call(env))
     end
 
     # Rack middleware stack

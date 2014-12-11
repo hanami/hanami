@@ -49,46 +49,58 @@ describe 'Lotus microservices applications' do
     get '/favicon.ico'
 
     response.status.must_equal 200
+    response.body.wont_be_empty
   end
 
   it "doesn't try to render responses that aren't coming from a frontend action" do
     get '/backend/favicon.ico'
 
     response.status.must_equal 200
+    response.body.wont_be_empty
   end
 
   it "serves static files from the frontend" do
     get '/stylesheets/application.css'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/javascripts/application.js'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/images/application.jpg'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/fonts/cabin-medium.woff'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/stylesheets/not-found.css'
     response.status.must_equal 404
+    response.body.wont_be_empty
   end
 
   it "serves static files from the backend" do
     get '/backend/stylesheets/application.css'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/backend/javascripts/application.js'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/backend/images/application.jpg'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/backend/fonts/cabin-medium.woff'
     response.status.must_equal 200
+    response.body.wont_be_empty
 
     get '/backend/stylesheets/not-found.css'
     response.status.must_equal 404
+    response.body.wont_be_empty
   end
 
   it "renders a custom page for frontend not found resources" do

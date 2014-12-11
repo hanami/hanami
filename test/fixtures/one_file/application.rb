@@ -10,9 +10,9 @@ module OneFile
   end
 
   module Controllers::Dashboard
-    include OneFile::Controller
+    class Index
+      include OneFile::Action
 
-    action 'Index' do
       def call(params)
         self.body = 'Hello'
       end

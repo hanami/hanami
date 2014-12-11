@@ -14,7 +14,9 @@ module Configurable
   module Controllers::Error
     include Configurable::Controller
 
-    action 'Index' do
+    class Index
+      include Configurable::Action
+
       def call(params)
         raise ArgumentError
       end

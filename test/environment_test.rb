@@ -208,4 +208,64 @@ describe Lotus::Environment do
       end
     end
   end
+
+  describe '#code_reloading?' do
+    describe 'when not specified' do
+      describe 'in the default env' do
+        before do
+          @env = Lotus::Environment.new
+        end
+
+        it 'returns true' do
+          @env.code_reloading?.must_equal true
+        end
+      end
+
+      describe 'with a specified env (development)' do
+        before do
+          ENV['LOTUS_ENV'] = 'development'
+          @env = Lotus::Environment.new
+        end
+
+        it 'returns true' do
+          @env.environment.must_equal 'development'
+          @env.code_reloading?.must_equal true
+        end
+      end
+
+      describe 'with a specified env (test)' do
+        before do
+          ENV['LOTUS_ENV'] = 'test'
+          @env = Lotus::Environment.new
+        end
+
+        it 'returns true' do
+          @env.environment.must_equal 'test'
+          @env.code_reloading?.must_equal false
+        end
+      end
+    end
+
+    describe 'when specified' do
+      describe 'with false' do
+        before do
+          @env = Lotus::Environment.new(code_reloading: false)
+        end
+
+        it 'returns false' do
+          @env.code_reloading?.must_equal false
+        end
+      end
+
+      describe 'with true' do
+        before do
+          @env = Lotus::Environment.new(code_reloading: true)
+        end
+
+        it 'returns true' do
+          @env.code_reloading?.must_equal true
+        end
+      end
+    end
+  end
 end

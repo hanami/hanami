@@ -123,6 +123,24 @@ describe Lotus::Configuration do
     end
   end
 
+  describe '#adapter' do
+    describe 'when not previously set' do
+      it 'returns nil' do
+        @configuration.adapter.must_be_nil
+      end
+    end
+
+    describe 'when set' do
+      before do
+        @configuration.adapter type: :sql, uri: 'sqlite3://uri'
+      end
+
+      it 'returns the configured value' do
+        @configuration.adapter.must_equal({type: :sql, uri: 'sqlite3://uri'})
+      end
+    end
+  end
+
   describe '#namespace' do
     describe "when not previously set" do
       it "returns nil" do
@@ -338,6 +356,83 @@ describe Lotus::Configuration do
       end
     end
 
+  end
+
+  describe '#sessions' do
+    describe 'when not previously set' do
+      it 'is not enabled' do
+        @configuration.sessions.wont_be :enabled?
+      end
+    end
+
+    describe 'when set without options' do
+      before do
+        @configuration.sessions :cookie
+      end
+
+      it 'is enabled' do
+        @configuration.sessions.must_be :enabled?
+      end
+
+      it 'returns the configured value for middleware' do
+        @configuration.sessions.middleware.must_equal ["Rack::Session::Cookie", {domain: 'localhost', secure: false}]
+      end
+
+      it 'returns default values for options' do
+        default_options = { domain: @configuration.host, secure: @configuration.scheme == 'https' }
+        _, options = @configuration.sessions.middleware
+
+        options.must_equal default_options
+      end
+    end
+
+    describe 'when set with options' do
+      before do
+        @configuration.sessions :cookies, secure: true, expire_after: 2592000
+      end
+
+      it 'merges default option values' do
+        _, options = @configuration.sessions.middleware
+        options[:domain].must_equal @configuration.host
+        options[:expire_after].must_equal 2592000
+        options[:secure].must_equal true
+      end
+    end
+
+    describe 'when already set' do
+      before do
+        @configuration.sessions :cookies
+
+        module Rack::Session
+          class FileSystem
+          end
+        end
+      end
+
+      after do
+        Rack::Session.__send__(:remove_const, :FileSystem)
+      end
+
+      describe 'if set with new configuration' do
+        before do
+          @configuration.sessions 'Rack::Session::FileSystem'
+        end
+
+        it 'returns it' do
+          @configuration.sessions.middleware.must_equal ['Rack::Session::FileSystem', {domain: 'localhost', secure: false}]
+        end
+      end
+
+      describe 'if set with false' do
+        before do
+          @configuration.sessions false
+        end
+
+        it 'is disabled' do
+          @configuration.sessions.wont_be :enabled?
+        end
+      end
+    end
   end
 
   describe 'assets' do

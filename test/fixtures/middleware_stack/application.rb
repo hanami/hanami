@@ -51,9 +51,9 @@ module MiddlewareStack
   end
 
   module Controllers::Home
-    include MiddlewareStack::Controller
+    class Index
+      include MiddlewareStack::Action
 
-    action 'Index' do
       def call(params)
         self.body = 'Hello'
       end

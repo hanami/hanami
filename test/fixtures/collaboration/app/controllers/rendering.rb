@@ -1,13 +1,15 @@
 module Collaboration::Controllers::Rendering
-  include Collaboration::Controller
+  class Body
+    include Collaboration::Action
 
-  action 'Body' do
     def call(params)
       self.body = 'Set by action'
     end
   end
 
-  action 'Presenter' do
+  class Presenter
+    include Collaboration::Action
+
     def call(params)
     end
   end

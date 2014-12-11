@@ -1,7 +1,7 @@
 module Backend::Controllers::Sessions
-  include Backend::Controller
+  class New
+    include Backend::Action
 
-  action 'New' do
     def call(params)
     end
   end

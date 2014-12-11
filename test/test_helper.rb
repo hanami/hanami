@@ -51,4 +51,18 @@ end
 Lotus::Middleware.class_eval { attr_reader :stack }
 
 Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates').mkpath
+
+class FakeRackBuilder
+  attr_reader :stack
+
+  def initialize(&blk)
+    @stack = Set.new
+    instance_eval(&blk) if block_given?
+  end
+
+  def use(middleware)
+    @stack.add(middleware)
+  end
+end
+
 require 'fixtures'

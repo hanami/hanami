@@ -20,6 +20,8 @@ module Lotus
     DEFAULT_CONFIG       = 'config.ru'.freeze
     DEFAULT_APPLICATIONS = 'config/applications'.freeze
 
+    CODE_RELOADING = { 'development' => true }
+
     # @param options [Hash] override default options for various environment attributes
     def initialize(options = {})
       @options = Utils::Hash.new(options).symbolize!.freeze
@@ -60,6 +62,11 @@ module Lotus
     # @return [String] path to directory that contains registered applications
     def applications
       @options.fetch(:applications) { DEFAULT_APPLICATIONS }
+    end
+
+    # @return [TrueClass,FalseClass]
+    def code_reloading?
+      @options.fetch(:code_reloading) { !!CODE_RELOADING[environment] }
     end
 
     # @return [Lotus::Utils::Hash]

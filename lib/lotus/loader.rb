@@ -4,6 +4,7 @@ require 'lotus/utils/string'
 require 'lotus/routes'
 require 'lotus/routing/default'
 require 'lotus/action/cookies'
+require 'lotus/action/session'
 
 module Lotus
   # Load an application
@@ -21,10 +22,10 @@ module Lotus
     def load!
       @mutex.synchronize do
         load_configuration!
-        load_frameworks!
+        configure_frameworks!
         load_configuration_load_paths!
         load_rack!
-        finalize!
+        load_frameworks!
       end
     end
 
@@ -35,26 +36,28 @@ module Lotus
       configuration.load!(application_module)
     end
 
-    def load_frameworks!
-      _load_controller_framework!
-      _load_view_framework!
+    def configure_frameworks!
+      _configure_model_framework! if defined?(Lotus::Model)
+      _configure_controller_framework!
+      _configure_view_framework!
     end
 
-    def _load_controller_framework!
+    def _configure_controller_framework!
       config = configuration
       unless application_module.const_defined?('Controller')
         controller = Lotus::Controller.duplicate(application_module) do
           handle_exceptions config.handle_exceptions
           default_format    config.default_format
 
-          modules { include Lotus::Action::Cookies } if config.cookies
+          prepare { include Lotus::Action::Cookies } if config.cookies
+          prepare { include Lotus::Action::Session } if config.sessions.enabled?
         end
 
         application_module.const_set('Controller', controller)
       end
     end
 
-    def _load_view_framework!
+    def _configure_view_framework!
       config = configuration
       unless application_module.const_defined?('View')
         view = Lotus::View.duplicate(application_module) do
@@ -66,9 +69,32 @@ module Lotus
       end
     end
 
-    def finalize!
+    def _configure_model_framework!
+      config = configuration
+      if config.adapter && config.mapping && !application_module.const_defined?('Model')
+        model = Lotus::Model.duplicate(application_module) do
+          adapter config.adapter
+          mapping &config.mapping
+        end
+
+        application_module.const_set('Model', model)
+      end
+    end
+
+    def load_frameworks!
+      _load_view_framework!
+      _load_model_framework! if defined?(Lotus::Model) && configuration.adapter
+    end
+
+    def _load_view_framework!
       application_module.module_eval %{
         #{ application_module }::View.load!
+      }
+    end
+
+    def _load_model_framework!
+      application_module.module_eval %{
+        #{ application_module }::Model.load!
       }
     end
 
@@ -78,9 +104,14 @@ module Lotus
 
     def load_rack!
       return if application.is_a?(Class)
+      _assign_rendering_policy!
       _assign_rack_routes!
       _load_rack_middleware!
       _assign_routes_to_application_module!
+    end
+
+    def _assign_rendering_policy!
+      application.renderer = RenderingPolicy.new(configuration)
     end
 
     def _assign_rack_routes!

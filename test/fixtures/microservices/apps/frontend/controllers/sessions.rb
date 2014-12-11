@@ -1,7 +1,7 @@
 module Frontend::Controllers::Sessions
-  include Frontend::Controller
+  class New
+    include Frontend::Action
 
-  action 'New' do
     def call(params)
     end
   end
