@@ -29,7 +29,7 @@ describe Lotus::Commands::Console do
   describe '#options' do
     describe "when no options are specified" do
       it 'returns a default' do
-        console.options.fetch(:applications).must_equal 'config/applications'
+        console.options.fetch(:applications).must_equal Pathname.new(Dir.pwd).join('config/applications')
       end
     end
 
@@ -37,7 +37,7 @@ describe Lotus::Commands::Console do
       let(:opts) { Hash[applications: 'path/to/applications'] }
 
       it 'returns that value' do
-        console.options.fetch(:applications).must_equal 'path/to/applications'
+        console.options.fetch(:applications).must_equal Pathname.new(Dir.pwd).join('path/to/applications')
       end
     end
   end

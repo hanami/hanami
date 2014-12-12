@@ -25,7 +25,7 @@ module Lotus
 
         if code_reloading?
           require 'shotgun'
-          @app = Shotgun::Loader.new(@_env.config)
+          @app = Shotgun::Loader.new(@_env.rackup)
         end
       end
 
@@ -50,6 +50,7 @@ module Lotus
       private
       def _extract_options(env)
         env.to_options.merge(
+          config:      env.rackup,
           Host:        env.host,
           Port:        env.port,
           AccessLog:   []

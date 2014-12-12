@@ -37,7 +37,7 @@ describe Lotus::Commands::Server do
 
     it 'merges in default values' do
       @server.options[:environment].must_equal 'development'
-      @server.options[:config].must_equal "config.ru"
+      @server.options[:config].must_equal Pathname.new('config.ru').expand_path
     end
   end
 
@@ -89,18 +89,18 @@ describe Lotus::Commands::Server do
     end
   end
 
-  describe 'config' do
+  describe 'rackup' do
     describe 'when no option is specified' do
       it 'defaults to config.ru' do
-        @server.options.fetch(:config).must_equal 'config.ru'
+        @server.options.fetch(:rackup).must_equal Pathname.new('config.ru').expand_path
       end
     end
 
     describe 'when an option is specified' do
-      let(:opts) { Hash[config: 'test/fixtures/config.ru'] }
+      let(:opts) { Hash[rackup: 'test/fixtures/config.ru'] }
 
       it 'sets that value' do
-        @server.options.fetch(:config).must_equal 'test/fixtures/config.ru'
+        @server.options.fetch(:rackup).must_equal Pathname.new('test/fixtures/config.ru').expand_path
       end
     end
   end
