@@ -321,32 +321,20 @@ module Lotus
       end
     end
 
-    # Assets root.
-    # The application will serve the static assets under this directory.
+    # The application will serve the static assets under these directories.
     #
     # By default it's equal to the `public/` directory under the application
     # `root`.
     #
-    # Otherwise, you can specify a different relative path under `root`.
-    #
-    # This is part of a DSL, for this reason when this method is called with
-    # an argument, it will set the corresponding instance variable. When
-    # called without, it will return the already set value, or the default.
-    #
-    # @overload assets(value)
-    #   Sets the given value
-    #   @param value [String] the relative path to the assets dir.
-    #
-    # @overload assets(false)
-    #   Disables serving static assets
+    # Otherwise, you can add differents relatives paths under `root`.
     #
     # @overload assets
     #   Gets the value
     #   @return [Lotus::Config::Assets] assets root
     #
-    # @since 0.1.0
+    # @since x.x.x
     #
-    # @see Lotus::Configuration#root
+    # @see Lotus::Configuration#serve_assets
     #
     # @example Getting the value
     #   require 'lotus'
@@ -359,38 +347,75 @@ module Lotus
     #   Bookshelf::Application.configuration.assets
     #     # => #<Pathname:/root/path/public>
     #
-    # @example Setting the value
+    # @example Adding new assets paths
     #   require 'lotus'
     #
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         assets 'assets'
+    #         serve_assets true
+    #         assets << [
+    #           'vendor/assets'
+    #         ]
     #       end
     #     end
     #   end
     #
     #   Bookshelf::Application.configuration.assets
-    #     # => #<Pathname:/root/path/assets>
+    #     # => #<Lotus::Config::Assets @root=#<Pathname:/root/path/assets>, @paths=["public"]>
     #
-    # @example Disabling static assets
+    def assets
+      @assets ||= Config::Assets.new(root)
+    end
+
+    # Configure serving of assets
+    # Enable static assets (disabled by default).
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @since x.x.x
+    #
+    # @overload serve_assets(value)
+    #   Sets the given value.
+    #   @param value [TrueClass, FalseClass]
+    #
+    # @overload serve_assets
+    #   Gets the value.
+    #   @return [TrueClass, FalseClass]
+    #
+    # @see Lotus::Configuration#assets
+    #
+    # @example Getting serve assets configuration by default
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.serve_assets
+    #     # => false
+    #
+    # @example Enabling static assets
     #   require 'lotus'
     #
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         assets :disabled
+    #         serve_assets true
     #       end
     #     end
     #   end
     #
-    #   Bookshelf::Application.configuration.assets.enabled?
-    #     # => false
-    def assets(directory = nil)
-      if directory
-        @assets = Config::Assets.new(root, directory)
+    #   Bookshelf::Application.configuration.serve_assets
+    #     # => true
+    def serve_assets(value = nil)
+      if value.nil?
+        @serve_assets || false
       else
-        @assets ||= Config::Assets.new(root, directory)
+        @serve_assets = value
       end
     end
 

@@ -22,6 +22,13 @@ module Collaboration
       load_paths << 'app'
       routes  'config/routes'
 
+      serve_assets true
+
+      assets << [
+        'public',
+        'vendor/assets'
+      ]
+
       adapter type: :sql, uri: SQLITE_CONNECTION_STRING
       mapping 'config/mapping'
     end

@@ -83,8 +83,10 @@ module Lotus
         if @configuration.sessions.enabled?
           use(*@configuration.sessions.middleware)
         end
-        if @configuration.assets.enabled?
-          use Rack::Static, urls: @configuration.assets.entries, root: @configuration.assets.to_s
+        if @configuration.serve_assets
+          @configuration.assets.entries.each do |path, children|
+            use Rack::Static, urls: children, root: path
+          end
         end
         true
       end
