@@ -62,6 +62,37 @@ describe Lotus::Configuration do
         @configuration.root.must_equal Pathname(Dir.pwd).realpath
       end
     end
+
+    describe 'when a relative path is given' do
+      before do
+        @configuration.configure :development do
+          layout :development
+        end
+      end
+
+      describe "and it's valid" do
+        let(:path) { __dir__ + '/fixtures/config/development' }
+
+        it 'configuration path' do
+          @configuration.configure :development, path
+          @configuration.load!(@namespace)
+          @configuration.layout.must_equal :development
+          @configuration.handle_exceptions.must_equal false
+        end
+      end
+
+      describe "and it's unknown" do
+        let(:path) { __dir__ + '/fixtures/config/unknown' }
+
+        it 'raises an error' do
+          @configuration.configure :development, path
+
+          -> {
+            @configuration.load!(@namespace)
+          }.must_raise ArgumentError
+        end
+      end
+    end
   end
 
   describe '#root' do
