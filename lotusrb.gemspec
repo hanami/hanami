@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'lotus-view',                 '>= 0.3.0.dev'
   spec.add_dependency 'lotus-model',                '>= 0.2.0.dev'
   spec.add_dependency 'shotgun',          '~> 0.9'
+  spec.add_dependency 'dotenv',           '~> 1.0'
   spec.add_dependency 'thor',             '0.19.1'
 
   spec.add_development_dependency 'bundler',   '~> 1.6'

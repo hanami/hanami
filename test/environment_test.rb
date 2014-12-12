@@ -6,6 +6,56 @@ describe Lotus::Environment do
     ENV['RACK_ENV']   = nil
     ENV['LOTUS_HOST'] = nil
     ENV['LOTUS_PORT'] = nil
+
+    ENV['FOO'] = nil
+    ENV['BAZ'] = nil
+    ENV['WAT'] = nil
+  end
+
+  describe '#initialize' do
+    describe 'env vars' do
+      before do
+        @env = Lotus::Environment.new(config: 'test/fixtures/config')
+      end
+
+      it 'sets env vars from .env' do
+        ENV['FOO'].must_equal 'bar'
+      end
+
+      it 'sets env vars from the environment .env' do
+        ENV['BAZ'].must_equal 'yes' # override
+        ENV['WAT'].must_equal 'true'
+      end
+
+      describe 'when the .env is missing' do
+        before do
+          ENV['FOO'] = nil
+          ENV['BAZ'] = nil
+
+          @env = Lotus::Environment.new
+        end
+
+        it "doesn't set env vars" do
+          ENV['FOO'].must_be_nil
+          ENV['BAZ'].must_be_nil
+        end
+      end
+
+      describe 'when the environment .env is missing' do
+        before do
+          ENV['LOTUS_ENV'] = 'test'
+          ENV['BAZ'] = nil
+          ENV['WAT'] = nil
+
+          @env = Lotus::Environment.new(config: 'test/fixtures/config')
+        end
+
+        it "doesn't set env vars" do
+          ENV['BAZ'].must_equal 'no' # from .env
+          ENV['WAT'].must_be_nil
+        end
+      end
+    end
   end
 
   describe '#environment' do
@@ -63,6 +113,76 @@ describe Lotus::Environment do
 
         ENV['LOTUS_ENV'] = 'test'
         @env.environment.must_equal 'development'
+      end
+    end
+  end
+
+  describe '#config' do
+    describe 'when not specified' do
+      before do
+        @env = Lotus::Environment.new
+      end
+
+      it 'equals to "config/"' do
+        @env.config.must_equal(Pathname.new(Dir.pwd).join('config'))
+      end
+    end
+
+    describe 'when specified' do
+      describe 'and it is relative path' do
+        before do
+          @env = Lotus::Environment.new(config: 'test')
+        end
+
+        it 'equals to it' do
+          @env.config.must_equal(Pathname.new(Dir.pwd).join('test'))
+        end
+      end
+
+      describe 'and it is absolute path' do
+        before do
+          @path = File.expand_path(__dir__) + '/tmp/config'
+          @env  = Lotus::Environment.new(config: @path)
+        end
+
+        it 'equals to it' do
+          @env.config.must_equal(Pathname.new(@path))
+        end
+      end
+    end
+  end
+
+  describe '#rackup' do
+    describe 'when not specified' do
+      before do
+        @env = Lotus::Environment.new
+      end
+
+      it 'equals to "config.ru"' do
+        @env.rackup.must_equal(Pathname.new(Dir.pwd).join('config.ru'))
+      end
+    end
+
+    describe 'when specified' do
+      describe 'and it is relative path' do
+        before do
+          @env = Lotus::Environment.new(rackup: 'test.ru')
+        end
+
+        it 'assumes it is located under root' do
+          @env.rackup.must_equal(Pathname.new(Dir.pwd).join('test.ru'))
+        end
+      end
+
+      describe 'and it is absolute path' do
+        before do
+          @path = File.expand_path(__dir__) + '/absolute.ru'
+          @env  = Lotus::Environment.new(rackup: @path)
+        end
+
+        it 'assumes it is located under root' do
+          @env.rackup.must_equal(Pathname.new(@path))
+        end
       end
     end
   end
