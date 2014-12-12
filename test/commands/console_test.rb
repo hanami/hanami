@@ -29,15 +29,15 @@ describe Lotus::Commands::Console do
   describe '#options' do
     describe "when no options are specified" do
       it 'returns a default' do
-        console.options.fetch(:applications).must_equal Pathname.new(Dir.pwd).join('config/applications')
+        console.options.fetch(:env_config).must_equal Pathname.new(Dir.pwd).join('config/environment')
       end
     end
 
-    describe "when :applications option is specified" do
-      let(:opts) { Hash[applications: 'path/to/applications'] }
+    describe "when :environment option is specified" do
+      let(:opts) { Hash[environment: 'path/to/environment'] }
 
       it 'returns that value' do
-        console.options.fetch(:applications).must_equal Pathname.new(Dir.pwd).join('path/to/applications')
+        console.options.fetch(:env_config).must_equal Pathname.new(Dir.pwd).join('path/to/environment')
       end
     end
   end
@@ -160,7 +160,7 @@ describe Lotus::Commands::Console do
       @engine.expect(:start, nil)
     end
 
-    describe 'with the default config/applications.rb file' do
+    describe 'with the default config/environment.rb file' do
       before do
         @old_pwd = Dir.pwd
         Dir.chdir 'test/fixtures/microservices'
@@ -175,14 +175,14 @@ describe Lotus::Commands::Console do
           console.start
 
           @engine.verify
-          $LOADED_FEATURES.must_include "#{Dir.pwd}/config/applications.rb"
+          $LOADED_FEATURES.must_include "#{Dir.pwd}/config/environment.rb"
         end
       end
     end
 
-    describe 'when manually setting the applications file' do
+    describe 'when manually setting the environment file' do
       let(:opts) {
-        Hash[applications: 'test/fixtures/microservices/config/applications']
+        Hash[environment: 'test/fixtures/microservices/config/environment']
       }
 
       it 'requires that file and starts a console session' do
@@ -190,12 +190,12 @@ describe Lotus::Commands::Console do
           console.start
 
           @engine.verify
-          $LOADED_FEATURES.must_include "#{Dir.pwd}/#{opts[:applications]}.rb"
+          $LOADED_FEATURES.must_include "#{Dir.pwd}/#{opts[:environment]}.rb"
         end
       end
     end
 
-    describe 'when applications file is missing' do
+    describe 'when environment file is missing' do
       it 'raises a LoadError' do
         console.stub :engine, @engine do
           proc { console.start }.must_raise(LoadError)
@@ -222,7 +222,7 @@ describe Lotus::Commands::Console do
     it 'mixes convenience methods into the TOPLEVEL_BINDING' do
       @main.expect(:include, true, [Lotus::Commands::Console::Methods])
 
-      opts[:applications] = 'test/fixtures/microservices/config/applications'
+      opts[:environment] = 'test/fixtures/microservices/config/environment'
       console.stub(:engine, @engine) { console.start }
 
       @engine.verify

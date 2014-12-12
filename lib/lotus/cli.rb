@@ -16,6 +16,7 @@ module Lotus
     method_option :warn,                     desc: 'turn on warnings'
     method_option :daemonize,                desc: 'if true, the server will daemonize itself (fork, detach, etc)'
     method_option :pid,                      desc: 'path to write a pid file after daemonize'
+    method_option :environment,              desc: 'path to environment configuration (config/environment.rb)'
     method_option :code_reloading,           desc: 'code reloading', type: :boolean, default: true
     method_option :help,      aliases: '-h', desc: 'displays the usage message'
 
@@ -27,8 +28,8 @@ module Lotus
       end
     end
 
-    desc "console", "starts a lotus console"
-    method_option :applications,          desc: 'path to your applications file (config/applications.rb)'
+    desc 'console', 'starts a lotus console'
+    method_option :environment,           desc: 'path to environment configuration (config/environment.rb)'
     method_option :engine,                desc: 'choose a specific console engine: irb/pry/ripl (irb)'
     method_option :help,   aliases: '-h', desc: 'displays the usage method'
 
@@ -40,14 +41,15 @@ module Lotus
       end
     end
 
-    desc "routes", "prints routes"
-    method_option :help,   aliases: '-h', desc: 'displays the usage method'
+    desc 'routes', 'prints routes'
+    method_option :environment,                 desc: 'path to environment configuration (config/environment.rb)'
+    method_option :help,         aliases: '-h', desc: 'displays the usage method'
 
     def routes
       if options[:help]
         invoke :help, ['routes']
       else
-        Lotus::Commands::Routes.new.start
+        Lotus::Commands::Routes.new(environment).start
       end
     end
 

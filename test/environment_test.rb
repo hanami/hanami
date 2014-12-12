@@ -152,6 +152,41 @@ describe Lotus::Environment do
     end
   end
 
+  describe '#env_config' do
+    describe 'when not specified' do
+      before do
+        @env = Lotus::Environment.new
+      end
+
+      it 'equals to "config/environment"' do
+        @env.env_config.must_equal(Pathname.new(Dir.pwd).join('config/environment'))
+      end
+    end
+
+    describe 'when specified' do
+      describe 'and it is relative path' do
+        before do
+          @env = Lotus::Environment.new(environment: 'env.rb')
+        end
+
+        it 'assumes it is located under root' do
+          @env.env_config.must_equal(Pathname.new(Dir.pwd).join('env.rb'))
+        end
+      end
+
+      describe 'and it is absolute path' do
+        before do
+          @path = File.expand_path(__dir__) + '/c/env.rb'
+          @env  = Lotus::Environment.new(environment: @path)
+        end
+
+        it 'assumes it is located under root' do
+          @env.env_config.must_equal(Pathname.new(@path))
+        end
+      end
+    end
+  end
+
   describe '#rackup' do
     describe 'when not specified' do
       before do

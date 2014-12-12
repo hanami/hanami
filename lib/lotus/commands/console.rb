@@ -1,5 +1,3 @@
-require 'rack'
-
 module Lotus
   module Commands
     class Console
@@ -18,14 +16,15 @@ module Lotus
 
       attr_reader :options
 
-      def initialize(env)
-        @options = env.to_options
+      def initialize(environment)
+        @environment = environment
+        @options     = environment.to_options
       end
 
       def start
         # Clear out ARGV so Pry/IRB don't attempt to parse the rest
         ARGV.shift until ARGV.empty?
-        require File.expand_path(options[:applications], Dir.pwd)
+        require @environment.env_config
 
         # Add convenience methods to the main:Object binding
         TOPLEVEL_BINDING.eval('self').send(:include, Methods)

@@ -80,7 +80,11 @@ module Lotus
     # @api private
     DEFAULT_RACKUP       = 'config.ru'.freeze
 
-    DEFAULT_APPLICATIONS = 'applications'.freeze
+    # Default environment configuration file
+    #
+    # @since x.x.x
+    # @api private
+    DEFAULT_ENVIRONMENT_CONFIG = 'environment'.freeze
 
     # Code reloading per environment
     #
@@ -262,13 +266,31 @@ module Lotus
     # under application's root. If absolute path, it will be used as it is.
     #
     # @return [Pathname] path to the Rack configuration file
+    #
+    # @since x.x.x
     def rackup
       root.join(@options.fetch(:rackup) { DEFAULT_RACKUP })
     end
 
-    # @return [String] path to directory that contains registered applications
-    def applications
-      root.join(@options.fetch(:applications) { config.join(DEFAULT_APPLICATIONS) })
+    # Path to environment configuration file.
+    #
+    # In order to decide the value, it looks up the following sources:
+    #
+    #   * CLI option `environment`
+    #
+    # If those are missing it falls back to the default one:
+    # `"config/environment.rb"`.
+    #
+    # When a relative path is given via CLI option, it assumes to be located
+    # under application's root. If absolute path, it will be used as it is.
+    #
+    # @return [Pathname] path to applications
+    #
+    # @since 0.1.0
+    #
+    # @see Lotus::Environment::DEFAULT_ENVIRONMENT_CONFIG
+    def env_config
+      root.join(@options.fetch(:environment) { config.join(DEFAULT_ENVIRONMENT_CONFIG) })
     end
 
     # Determine if activate code reloading for the current environment while
@@ -301,11 +323,11 @@ module Lotus
     # @api private
     def to_options
       @options.merge(
-        environment:  environment,
-        applications: applications,
-        rackup:       rackup,
-        host:         host,
-        port:         port
+        environment: environment,
+        env_config:  env_config,
+        rackup:      rackup,
+        host:        host,
+        port:        port
       )
     end
 
