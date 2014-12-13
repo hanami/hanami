@@ -192,6 +192,8 @@ test/fixtures/microservices
 │               ├── create.rb               Frontend::Views::Sessions::Create
 │               ├── destroy.rb              Frontend::Views::Sessions::Destroy
 │               └── new.rb                  Frontend::Views::Sessions::New
+├── config
+│   ├── environment.rb
 └── config.ru
 ```
 
@@ -229,16 +231,26 @@ end
 ```
 
 ```ruby
-# config.ru
-require_relative 'apps/frontend/application'
-require_relative 'apps/backend/application'
+# config/environment.rb
+require 'lotus/setup'
+require_relative '../apps/frontend/application'
+require_relative '../apps/backend/application'
 
-run Lotus::Router.new {
-  mount Backend::Application,  at: '/backend'
+Lotus::Container.configure do
+  mount Backend::Application,  at: '/admin'
   mount Frontend::Application, at: '/'
 }
 
-# We use an instance of Lotus::Router to mount two Lotus applications
+# We use Lotus::Container to mount two Lotus microservices
+```
+
+```ruby
+# config.ru
+require_relative 'config/environment.rb'
+
+run Lotus::Container.new
+
+# We use an instance of Lotus::Container to start our application
 ```
 
 #### Modularized application
@@ -482,8 +494,8 @@ Lotus provides a few command-line utilities:
 * `lotus server` boots up a server. It assumes you have a `config.ru` file.
 * `lotus console` brings up a REPL. It defaults to IRB but can be configured to
   use Pry or Ripl via the `--engine` option. By default, the console will try to
-load `config/applications.rb`. You can point it directly to your app via the
-`--applications` flag.
+load `config/environment.rb`. You can point it directly to your app container via the
+`--environment` flag.
 
 ## The future
 
