@@ -1,9 +1,6 @@
 module MiddlewareStack
   class Application < Lotus::Application
     configure do
-      # Testing disabled assets, which doesn't include Rack::Static
-      assets :disabled
-
       # Test lazy loading with relative class name
       middleware.use 'Middlewares::Runtime'
 
