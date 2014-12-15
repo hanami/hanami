@@ -86,6 +86,8 @@ module Lotus
         if @configuration.assets.enabled?
           use Rack::Static, urls: @configuration.assets.entries, root: @configuration.assets.to_s
         end
+
+        use Rack::MethodOverride
         true
       end
     end

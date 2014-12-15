@@ -663,8 +663,9 @@ module Lotus
     # Specify middleware that your application will use. This method will return
     # the application's underlying Middleware stack which you can use to add new
     # middleware for your application to use. By default, the middleware stack
-    # will contain only `Rack::Static`. However, if `assets false` was specified
-    # in the configuration block, the default Middleware stack will be empty.
+    # will contain only `Rack::Static` and `Rack::MethodOverride`. However, if
+    # `assets false` was specified # in the configuration block, the default
+    # `Rack::Static` will be removed.
     #
     # @since x.x.x
     #

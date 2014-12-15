@@ -19,8 +19,12 @@ describe Lotus::Middleware do
   let(:middleware)    { configuration.middleware }
   let(:config_blk)    { proc {} }
 
-  it 'contains only Rack::Static by default' do
-    middleware.stack.must_equal [[Rack::Static, [{ urls: [], root: configuration.assets.to_s }], nil]]
+  it 'contains Rack::Static by default' do
+    middleware.stack.must_include [Rack::Static, [{ urls: [], root: configuration.assets.to_s }], nil]
+  end
+
+  it 'contains Rack::MethodOverride by default' do
+    middleware.stack.must_include [Rack::MethodOverride, [], nil]
   end
 
   describe "when it's configured with disabled assets" do
