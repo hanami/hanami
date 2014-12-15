@@ -683,6 +683,76 @@ module Lotus
       end
     end
 
+    # Body parsing configuration.
+    #
+    # Specify a set of parsers for specific mime types that your application will use. This method will
+    # return the application's parsers which you can use to add existing and new custom parsers for your
+    # application to use.
+    #
+    # By default it's an empty `Array`
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @overload body_parsers(parsers)
+    #   Specify a set of body parsers.
+    #   @param parsers [Array] the body parser definitions
+    #
+    # @overload body_parsers
+    #   Gets the value
+    #   @return [Array] the set of parsers
+    #
+    # @since 0.2.0
+    #
+    # @example Getting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.body_parsers
+    #     # => []
+    #
+    # @example Setting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         body_parsers :json, XmlParser.new
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.body_parsers
+    #     # => [:json, XmlParser.new]
+    #
+    # @example Setting a new value after one is set.
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         body_parsers :json
+    #         body_parsers XmlParser.new
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.body_parsers
+    #     # => [XmlParser.new]
+    #
+    def body_parsers(*parsers)
+      if parsers.empty?
+        @body_parsers ||= []
+      else
+        @body_parsers = parsers
+      end
+    end
+
     # Application middleware.
     #
     # Specify middleware that your application will use. This method will return

@@ -139,6 +139,7 @@ module Lotus
       resolver    = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: namespace)
       default_app = Lotus::Routing::Default.new
       application.routes = Lotus::Router.new(
+        parsers:     configuration.body_parsers,
         resolver:    resolver,
         default_app: default_app,
         scheme:      configuration.scheme,

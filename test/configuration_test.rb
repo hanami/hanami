@@ -269,6 +269,42 @@ describe Lotus::Configuration do
     end
   end
 
+  describe "#body_parsers" do
+    describe "when not previously set" do
+      it "defaults to nil" do
+        @configuration.body_parsers.must_equal []
+      end
+    end
+
+    describe "when set" do
+      before do
+        @configuration.body_parsers :json, :xml
+      end
+
+      it "returns the configured values" do
+        @configuration.body_parsers.must_equal [:json, :xml]
+      end
+    end
+
+    describe "when already set" do
+      before do
+        @configuration.body_parsers :json
+      end
+
+      describe "if I set a new value" do
+        before do
+          @configuration.body_parsers :xml
+        end
+
+        it "returns it" do
+          @configuration.body_parsers.must_equal [:xml]
+        end
+      end
+    end
+
+  end
+
+
   describe '#middleware' do
     it 'returns a new instance of Lotus::Middleware' do
       @configuration.middleware.must_be_instance_of Lotus::Middleware
