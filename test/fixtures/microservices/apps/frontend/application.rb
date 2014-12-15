@@ -8,7 +8,13 @@ module Frontend
       ]
 
       layout :frontend
-      assets 'assets'
+
+      serve_assets true
+
+      assets << [
+        'assets',
+        'vendor/assets'
+      ]
 
       routes do
         resource :sessions, only: [:new]
