@@ -177,6 +177,18 @@ module Lotus
       @environment ||= ENV[LOTUS_ENV] || ENV[RACK_ENV] || DEFAULT_ENV
     end
 
+    # A set of Bundler groups
+    #
+    # @return [Array] A set of groups
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see http://bundler.io/v1.7/groups.html
+    def bundler_groups
+      [environment]
+    end
+
     # Application's root
     #
     # It defaults to the current working directory.
