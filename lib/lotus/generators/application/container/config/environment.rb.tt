@@ -1,0 +1,5 @@
+require 'lotus/setup'
+require_relative '../lib/<%= config[:app_name] %>'
+
+Lotus::Container.configure do
+end

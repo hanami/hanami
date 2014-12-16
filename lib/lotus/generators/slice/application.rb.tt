@@ -1,0 +1,30 @@
+module <%= config[:classified_slice_name] %>
+  class Application < Lotus::Application
+    configure do
+      root __dir__
+
+      # adapter type: :file_system, uri: ENV['<%= config[:upcase_slice_name] %>_DATABASE_URL']
+
+      routes  'config/routes'
+      # mapping 'config/mapping'
+
+      layout :application
+
+      # cookies true
+      # sessions :cookie, secret: ENV['<%= config[:upcase_slice_name] %>_SESSIONS_SECRET']
+
+      load_paths << [
+        'controllers',
+        'views'
+      ]
+
+      controller.prepare do
+        # ...
+      end
+
+      view.prepare do
+        # ...
+      end
+    end
+  end
+end

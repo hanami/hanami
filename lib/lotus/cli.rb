@@ -1,12 +1,10 @@
 require 'thor'
 require 'lotus/environment'
-require 'lotus/commands/server'
-require 'lotus/commands/console'
-require 'lotus/commands/routes'
-require 'lotus/utils/hash'
 
 module Lotus
   class Cli < Thor
+    include Thor::Actions
+
     desc 'server', 'starts a lotus server'
     method_option :port,      aliases: '-p', desc: 'The port to run the server on, '
     method_option :server,                   desc: 'choose a specific Rack::Handler, e.g. webrick, thin etc'
@@ -24,6 +22,7 @@ module Lotus
       if options[:help]
         invoke :help, ['server']
       else
+        require 'lotus/commands/server'
         Lotus::Commands::Server.new(environment).start
       end
     end
@@ -37,6 +36,7 @@ module Lotus
       if options[:help]
         invoke :help, ['console']
       else
+        require 'lotus/commands/console'
         Lotus::Commands::Console.new(environment).start
       end
     end
@@ -49,7 +49,24 @@ module Lotus
       if options[:help]
         invoke :help, ['routes']
       else
+        require 'lotus/commands/routes'
         Lotus::Commands::Routes.new(environment).start
+      end
+    end
+
+    desc 'new', 'generates a new application'
+    method_option :architecture,   aliases: '-a', desc: 'application architecture', type: :string,  default: 'container'
+    method_option :slice,                         desc: 'slice name',               type: :string,  default: 'web'
+    method_option :slice_base_url,                desc: 'slice base url',           type: :string,  default: '/'
+    method_option :lotus_head,                    desc: 'use Lotus HEAD',           type: :boolean, default: false
+    method_option :help,           aliases: '-h', desc: 'displays the usage method'
+
+    def new(name = nil)
+      if options[:help]
+        invoke :help, ['new']
+      else
+        require 'lotus/commands/new'
+        Lotus::Commands::New.new(name, environment, self).start
       end
     end
 

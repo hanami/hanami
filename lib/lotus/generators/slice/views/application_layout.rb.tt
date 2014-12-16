@@ -1,0 +1,7 @@
+module <%= config[:classified_slice_name] %>
+  module Views
+    class ApplicationLayout
+      include <%= config[:classified_slice_name] %>::Layout
+    end
+  end
+end
