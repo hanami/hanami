@@ -178,6 +178,7 @@ describe Lotus::Commands::New do
             content.must_match %(ENV['LOTUS_ENV'] ||= 'test')
             content.must_match %(require_relative '../config/environment')
             content.must_match %(require 'minitest/autorun')
+            content.must_match %(Lotus::Application.preload!)
           end
         end
 
