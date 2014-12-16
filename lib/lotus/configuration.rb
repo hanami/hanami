@@ -321,32 +321,20 @@ module Lotus
       end
     end
 
-    # Assets root.
-    # The application will serve the static assets under this directory.
+    # The application will serve the static assets under these directories.
     #
     # By default it's equal to the `public/` directory under the application
     # `root`.
     #
-    # Otherwise, you can specify a different relative path under `root`.
-    #
-    # This is part of a DSL, for this reason when this method is called with
-    # an argument, it will set the corresponding instance variable. When
-    # called without, it will return the already set value, or the default.
-    #
-    # @overload assets(value)
-    #   Sets the given value
-    #   @param value [String] the relative path to the assets dir.
-    #
-    # @overload assets(false)
-    #   Disables serving static assets
+    # Otherwise, you can add differents relatives paths under `root`.
     #
     # @overload assets
     #   Gets the value
     #   @return [Lotus::Config::Assets] assets root
     #
-    # @since 0.1.0
+    # @since x.x.x
     #
-    # @see Lotus::Configuration#root
+    # @see Lotus::Configuration#serve_assets
     #
     # @example Getting the value
     #   require 'lotus'
@@ -359,38 +347,75 @@ module Lotus
     #   Bookshelf::Application.configuration.assets
     #     # => #<Pathname:/root/path/public>
     #
-    # @example Setting the value
+    # @example Adding new assets paths
     #   require 'lotus'
     #
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         assets 'assets'
+    #         serve_assets true
+    #         assets << [
+    #           'vendor/assets'
+    #         ]
     #       end
     #     end
     #   end
     #
     #   Bookshelf::Application.configuration.assets
-    #     # => #<Pathname:/root/path/assets>
+    #     # => #<Lotus::Config::Assets @root=#<Pathname:/root/path/assets>, @paths=["public"]>
     #
-    # @example Disabling static assets
+    def assets
+      @assets ||= Config::Assets.new(root)
+    end
+
+    # Configure serving of assets
+    # Enable static assets (disabled by default).
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @since x.x.x
+    #
+    # @overload serve_assets(value)
+    #   Sets the given value.
+    #   @param value [TrueClass, FalseClass]
+    #
+    # @overload serve_assets
+    #   Gets the value.
+    #   @return [TrueClass, FalseClass]
+    #
+    # @see Lotus::Configuration#assets
+    #
+    # @example Getting serve assets configuration by default
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.serve_assets
+    #     # => false
+    #
+    # @example Enabling static assets
     #   require 'lotus'
     #
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         assets :disabled
+    #         serve_assets true
     #       end
     #     end
     #   end
     #
-    #   Bookshelf::Application.configuration.assets.enabled?
-    #     # => false
-    def assets(directory = nil)
-      if directory
-        @assets = Config::Assets.new(root, directory)
+    #   Bookshelf::Application.configuration.serve_assets
+    #     # => true
+    def serve_assets(value = nil)
+      if value.nil?
+        @serve_assets || false
       else
-        @assets ||= Config::Assets.new(root, directory)
+        @serve_assets = value
       end
     end
 
@@ -658,13 +683,84 @@ module Lotus
       end
     end
 
+    # Body parsing configuration.
+    #
+    # Specify a set of parsers for specific mime types that your application will use. This method will
+    # return the application's parsers which you can use to add existing and new custom parsers for your
+    # application to use.
+    #
+    # By default it's an empty `Array`
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @overload body_parsers(parsers)
+    #   Specify a set of body parsers.
+    #   @param parsers [Array] the body parser definitions
+    #
+    # @overload body_parsers
+    #   Gets the value
+    #   @return [Array] the set of parsers
+    #
+    # @since 0.2.0
+    #
+    # @example Getting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.body_parsers
+    #     # => []
+    #
+    # @example Setting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         body_parsers :json, XmlParser.new
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.body_parsers
+    #     # => [:json, XmlParser.new]
+    #
+    # @example Setting a new value after one is set.
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         body_parsers :json
+    #         body_parsers XmlParser.new
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.body_parsers
+    #     # => [XmlParser.new]
+    #
+    def body_parsers(*parsers)
+      if parsers.empty?
+        @body_parsers ||= []
+      else
+        @body_parsers = parsers
+      end
+    end
+
     # Application middleware.
     #
     # Specify middleware that your application will use. This method will return
     # the application's underlying Middleware stack which you can use to add new
     # middleware for your application to use. By default, the middleware stack
-    # will contain only `Rack::Static`. However, if `assets false` was specified
-    # in the configuration block, the default Middleware stack will be empty.
+    # will contain only `Rack::Static` and `Rack::MethodOverride`. However, if
+    # `assets false` was specified # in the configuration block, the default
+    # `Rack::Static` will be removed.
     #
     # @since x.x.x
     #

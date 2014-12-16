@@ -269,6 +269,42 @@ describe Lotus::Configuration do
     end
   end
 
+  describe "#body_parsers" do
+    describe "when not previously set" do
+      it "defaults to nil" do
+        @configuration.body_parsers.must_equal []
+      end
+    end
+
+    describe "when set" do
+      before do
+        @configuration.body_parsers :json, :xml
+      end
+
+      it "returns the configured values" do
+        @configuration.body_parsers.must_equal [:json, :xml]
+      end
+    end
+
+    describe "when already set" do
+      before do
+        @configuration.body_parsers :json
+      end
+
+      describe "if I set a new value" do
+        before do
+          @configuration.body_parsers :xml
+        end
+
+        it "returns it" do
+          @configuration.body_parsers.must_equal [:xml]
+        end
+      end
+    end
+
+  end
+
+
   describe '#middleware' do
     it 'returns a new instance of Lotus::Middleware' do
       @configuration.middleware.must_be_instance_of Lotus::Middleware
@@ -467,56 +503,78 @@ describe Lotus::Configuration do
   end
 
   describe 'assets' do
-    describe "when not previously set" do
-      it "is equal to public/ from the root directory" do
-        @configuration.assets.to_s.must_equal @configuration.root.join('public').to_s
+    before do
+      @configuration.root 'test/fixtures/collaboration'
+    end
+
+    describe "when serve_assets isn't previously set" do
+      it "doesn't serve assets" do
+        @configuration.serve_assets.must_equal false
       end
     end
 
-    describe "when set" do
-      describe "with a directory name" do
-        before do
-          @configuration.assets 'assets'
-        end
-
-        it 'returns the configured value' do
-          @configuration.assets.to_s.must_equal @configuration.root.join('assets').to_s
+    describe 'when serve_assets set to true' do
+      before do
+        @configuration.serve_assets true
+      end
+      describe 'with a directory name' do
+        it 'returns the configured values' do
+          expectations = [
+            %(/stylesheets),
+            %(/favicon.ico),
+            %(/javascripts),
+            %(/fonts),
+            %(/images)
+          ]
+          actual = @configuration.assets.entries.values.flatten
+          expectations.each do |expectation|
+            actual.must_include expectation
+          end
         end
       end
 
-      describe "with :disabled" do
+      describe 'if set with emtpy array' do
         before do
-          @configuration.assets :disabled
+          @configuration.assets.instance_variable_set(:@paths, [])
         end
 
         it 'returns false' do
-          @configuration.assets.wont_be :enabled?
+          @configuration.assets.wont_be :any?
         end
       end
-    end
 
-    describe "when already set" do
-      before do
-        @configuration.assets 'assets'
-      end
-
-      describe "if I set with a new directory name" do
+      describe 'adding new assets paths' do
         before do
-          @configuration.assets 'another'
+          @configuration.assets << [
+            'vendor/assets',
+            'vendor/another_assets_path'
+          ]
         end
 
         it 'returns it' do
-          @configuration.assets.to_s.must_equal @configuration.root.join('another').to_s
+          expectations = [
+            %(/stylesheets),
+            %(/favicon.ico),
+            %(/javascripts),
+            %(/fonts),
+            %(/images),
+            %(/foo.js),
+            %(/bar.js)
+          ]
+          actual = @configuration.assets.entries.values.flatten
+          expectations.each do |expectation|
+            actual.must_include expectation
+          end
         end
-      end
 
-      describe "if I set with :disabled" do
-        before do
-          @configuration.assets :disabled
-        end
+        describe 'if set with emtpy array' do
+          before do
+            @configuration.assets.instance_variable_set(:@paths, [])
+          end
 
-        it 'returns it' do
-          @configuration.assets.wont_be :enabled?
+          it 'returns it' do
+            @configuration.assets.wont_be :any?
+          end
         end
       end
     end
@@ -672,7 +730,7 @@ describe Lotus::Configuration do
     end
 
     it 'it raises error when try to mutate assets' do
-      -> { @configuration.assets 'assets' }.must_raise RuntimeError
+      -> { @configuration.assets << 'assets' }.must_raise RuntimeError
     end
 
     it 'it raises error when try to mutate templates' do

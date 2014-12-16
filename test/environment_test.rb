@@ -117,6 +117,16 @@ describe Lotus::Environment do
     end
   end
 
+  describe '#bundler_groups' do
+    before do
+      @env = Lotus::Environment.new
+    end
+
+    it 'returns a set of groups for Bundler' do
+      @env.bundler_groups.must_equal [@env.environment]
+    end
+  end
+
   describe '#config' do
     describe 'when not specified' do
       before do
