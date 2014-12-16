@@ -21,6 +21,39 @@ describe Lotus::Application do
     end
   end
 
+  describe 'subclasses' do
+    before do
+      Lotus::Application.applications.clear
+
+      module Foo
+        class Application < Lotus::Application
+          def self.load!(application = self)
+            @@loaded = true
+          end
+
+          def self.loaded?
+            @@loaded
+          end
+
+          configure { }
+        end
+      end
+    end
+
+    after do
+      Object.__send__(:remove_const, :Foo)
+    end
+
+    it 'register subclasses' do
+      Lotus::Application.applications.must_include(Foo::Application)
+    end
+
+    it 'preloads registered subclasses' do
+      Lotus::Application.preload!
+      Foo::Application.must_be :loaded?
+    end
+  end
+
   describe '#configuration' do
     it 'returns class configuration' do
       @application.configuration.must_equal @application.class.configuration

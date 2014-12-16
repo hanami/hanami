@@ -33,6 +33,22 @@ module Lotus
         class_attribute :configuration
         self.configuration = Configuration.new
       end
+
+      synchronize do
+        applications.add(base)
+      end
+    end
+
+    # Registry of Lotus applications in the current Ruby process
+    #
+    # @return [Set] a set of all the registered applications
+    #
+    # @since x.x.x
+    # @api private
+    def self.applications
+      synchronize do
+        @@applications ||= Set.new
+      end
     end
 
     # Configure the application.
@@ -129,6 +145,17 @@ module Lotus
       Lotus::Loader.new(application).load!
     end
 
+    # Preload all the registered applications
+    #
+    # @return [void]
+    #
+    # @since x.x.x
+    def self.preload!
+      synchronize do
+        applications.each(&:load!)
+      end
+    end
+
     # Return the configuration for this application
     #
     # @since 0.1.0
@@ -173,6 +200,18 @@ module Lotus
     # @see Lotus::Middleware
     def middleware
       @middleware ||= configuration.middleware
+    end
+
+    private
+
+    # Yields the given block in a critical section
+    #
+    # @since x.x.x
+    # @api private
+    def self.synchronize
+      Mutex.new.synchronize do
+        yield
+      end
     end
   end
 end
