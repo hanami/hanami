@@ -48,6 +48,7 @@ describe Lotus::Commands::New do
         content.must_match %(gem 'rake')
         content.must_match %(gem 'lotusrb',     '#{ Lotus::VERSION }')
         content.must_match %(gem 'lotus-model', '>= 0.2.0.dev')
+        content.must_match %(gem 'capybara')
       end
 
       describe 'lotus-head option' do
@@ -66,6 +67,13 @@ describe Lotus::Commands::New do
           content.must_match %(gem 'lotusrb',                           github: 'lotus/lotus')
         end
       end
+
+      describe 'minitest (default)' do
+        it 'includes minitest' do
+          content = @root.join('Gemfile').read
+          content.must_match %(gem 'minitest')
+        end
+      end
     end
 
     describe 'Rakefile' do
@@ -74,6 +82,7 @@ describe Lotus::Commands::New do
           content = @root.join('Rakefile').read
           content.must_match %(Rake::TestTask.new)
           content.must_match %(t.pattern = 'test/**/*_test.rb')
+          content.must_match %(t.libs    << 'test')
           content.must_match %(task default: :test)
         end
       end
@@ -146,6 +155,43 @@ describe Lotus::Commands::New do
     describe 'lib/chirp/repositories' do
       it 'generates it' do
         @root.join('lib/chirp/repositories').must_be :directory?
+      end
+    end
+
+    describe 'testing' do
+      describe 'when minitest (default)' do
+        describe 'test/chirp/entities' do
+          it 'generates it' do
+            @root.join('test/chirp/entities').must_be :directory?
+          end
+        end
+
+        describe 'test/chirp/repositories' do
+          it 'generates it' do
+            @root.join('test/chirp/repositories').must_be :directory?
+          end
+        end
+
+        describe 'test/test_helper.rb' do
+          it 'generates it' do
+            content = @root.join('test/test_helper.rb').read
+            content.must_match %(ENV['LOTUS_ENV'] ||= 'test')
+            content.must_match %(require_relative '../config/environment')
+            content.must_match %(require 'minitest/autorun')
+          end
+        end
+
+        describe 'test/features_helper.rb' do
+          it 'generates it' do
+            content = @root.join('test/features_helper.rb').read
+            content.must_match %(require_relative './test_helper')
+            content.must_match %(require 'capybara')
+            content.must_match %(require 'capybara/dsl')
+            content.must_match %(Capybara.app = Lotus::Container.new)
+            content.must_match %(class MiniTest::Spec)
+            content.must_match %(include Capybara::DSL)
+          end
+        end
       end
     end
 
@@ -241,6 +287,28 @@ describe Lotus::Commands::New do
         content = @root.join('apps/web/templates/application.html.erb').read
         content.must_match %(<title>Web</title>)
         content.must_match %(<%= yield %>)
+      end
+    end
+
+    describe 'testing' do
+      describe 'when minitest (default)' do
+        describe 'test/web/features' do
+          it 'generates it' do
+            @root.join('test/web/features').must_be :directory?
+          end
+        end
+
+        describe 'test/web/controllers' do
+          it 'generates it' do
+            @root.join('test/web/controllers').must_be :directory?
+          end
+        end
+
+        describe 'test/web/views' do
+          it 'generates it' do
+            @root.join('test/web/views').must_be :directory?
+          end
+        end
       end
     end
   end

@@ -40,15 +40,24 @@ module Lotus
 
           case options[:test]
           when 'rspec'
-          else
-            templates.merge! 'Rakefile.minitest.tt' => 'Rakefile'
+          else # minitest (default)
+            templates.merge!(
+              'Rakefile.minitest.tt'  => 'Rakefile',
+              'test_helper.rb.tt'     => 'test/test_helper.rb',
+              'features_helper.rb.tt' => 'test/features_helper.rb'
+            )
+
+            empty_directories << [
+              "test/#{ app_name }/entities",
+              "test/#{ app_name }/repositories"
+            ]
           end
 
           templates.each do |src, dst|
             cli.template(source.join(src), target.join(dst), opts)
           end
 
-          empty_directories.each do |dir|
+          empty_directories.flatten.each do |dir|
             gitkeep = '.gitkeep'
             cli.template(source.join(gitkeep), target.join(dir, gitkeep), opts)
           end

@@ -40,6 +40,16 @@ module Lotus
           "controllers"
         ]
 
+        case options[:test]
+        when 'rspec'
+        else # minitest (default)
+          empty_directories << [
+            "../../test/#{ opts[:slice_name] }/features",
+            "../../test/#{ opts[:slice_name] }/controllers",
+            "../../test/#{ opts[:slice_name] }/views"
+          ]
+        end
+
         ##
         # config/environment.rb
         #
@@ -79,7 +89,7 @@ module Lotus
         ##
         # Empty directories
         #
-        empty_directories.each do |dir|
+        empty_directories.flatten.each do |dir|
           gitkeep = '.gitkeep'
           cli.template(@source.join(gitkeep), @target.join(dir, gitkeep), opts)
         end

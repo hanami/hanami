@@ -15,3 +15,11 @@ gem 'lotusrb',                           github: 'lotus/lotus'
 gem 'lotusrb',     '<%= Lotus::VERSION %>'
 gem 'lotus-model', '<%= config[:lotus_model_version] %>'
 <% end %>
+
+group :test do
+<% if config[:test] == 'rspec' %>
+<% else %>
+gem 'minitest'
+<% end %>
+gem 'capybara'
+end
