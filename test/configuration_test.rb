@@ -504,7 +504,7 @@ describe Lotus::Configuration do
 
   describe 'assets' do
     before do
-      @configuration.root 'test/fixtures/collaboration'
+      @configuration.root 'test/fixtures/collaboration/apps/web'
     end
 
     describe "when serve_assets isn't previously set" do
@@ -574,6 +574,29 @@ describe Lotus::Configuration do
 
           it 'returns it' do
             @configuration.assets.wont_be :any?
+          end
+        end
+      end
+
+      describe 'adding relative path' do
+        before do
+          @configuration.assets << [
+            '../../vendor/assets'
+          ]
+        end
+
+        it 'returns it' do
+          expectations = [
+            %(/stylesheets),
+            %(/favicon.ico),
+            %(/javascripts),
+            %(/fonts),
+            %(/images),
+            %(/lotus.js)
+          ]
+          actual = @configuration.assets.entries.values.flatten
+          expectations.each do |expectation|
+            actual.must_include expectation
           end
         end
       end
