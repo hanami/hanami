@@ -32,7 +32,7 @@ module Lotus
     def load!(application, namespace)
       @namespace = namespace
       @builder = ::Rack::Builder.new
-      load_default_stack
+      load_default_stack(application)
       @stack.each { |m, args, block| @builder.use load_middleware(m), *args, &block }
       @builder.run application.routes
 
@@ -78,11 +78,12 @@ module Lotus
 
     # @api private
     # @since x.x.x
-    def load_default_stack
+    def load_default_stack(application)
       @default_stack_loaded ||= begin
         if @configuration.sessions.enabled?
           use(*@configuration.sessions.middleware)
         end
+
         if @configuration.serve_assets
           @configuration.assets.entries.each do |path, children|
             use Rack::Static, urls: children, root: path
@@ -90,6 +91,12 @@ module Lotus
         end
 
         use Rack::MethodOverride
+
+        unless application.routes.defined?
+          require 'lotus/welcome'
+          use Lotus::Welcome
+        end
+
         true
       end
     end
