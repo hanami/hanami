@@ -6,6 +6,10 @@ describe Lotus::Commands::Console do
   let(:env)  { Lotus::Environment.new(opts) }
   let(:console) { Lotus::Commands::Console.new(env) }
 
+  before do
+    Lotus::Application.clear_registered_applications!
+  end
+
   def stub_engine(engine)
     begin
       @engine = Object.const_get(engine)
@@ -177,6 +181,10 @@ describe Lotus::Commands::Console do
           @engine.verify
           $LOADED_FEATURES.must_include "#{Dir.pwd}/config/environment.rb"
         end
+      end
+
+      it 'preloads application' do
+        assert defined?(Frontend::Controllers::Sessions::New), "expected Frontend::Controllers::Sessions::New to be loaded"
       end
     end
 
