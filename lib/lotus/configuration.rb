@@ -35,7 +35,7 @@ module Lotus
     # set a path for the specific environment.
     #
     # @param environment [Symbol,nil] the configuration environment name
-    # @param path [String,nil] the configuration path of a specific environment
+    # @param environment [String,nil] the configuration path of a specific environment
     # @param blk [Proc] the configuration block
     #
     # @return [self]
@@ -52,42 +52,6 @@ module Lotus
       end
 
       self
-    end
-
-    # Define per environment specific overrides of the general configuration.
-    #
-    # This is a syntactic sugar for `Lotus::Configuration#configure`.
-    #
-    # @param env [Symbol] the environment
-    # @param path [String,Pathname] a relative or absolute path
-    #
-    # @since x.x.x
-    #
-    # @see Lotus::Configuration#configure
-    #
-    # @example
-    #   # application.rb
-    #   require 'lotusrb'
-    #
-    #   module Bookshelf
-    #     class Application < Lotus::Application
-    #       configure do
-    #         # ...
-    #         serve_assets false
-    #
-    #         environment :development, 'config/development'
-    #       end
-    #     end
-    #   end
-    #
-    #   # config/development.rb
-    #   serve_assets true
-    #
-    #
-    #
-    #   # The application will serve assets only for "development" environment
-    def environment(env, path)
-      configure(env, path)
     end
 
     # Load the configuration
