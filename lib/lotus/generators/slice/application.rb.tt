@@ -13,9 +13,15 @@ module <%= config[:classified_slice_name] %>
       # cookies true
       # sessions :cookie, secret: ENV['<%= config[:upcase_slice_name] %>_SESSIONS_SECRET']
 
+      serve_assets false
+
       load_paths << [
         'controllers',
         'views'
+      ]
+
+      assets << [
+        'public'
       ]
 
       controller.prepare do

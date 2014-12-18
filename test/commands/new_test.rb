@@ -248,6 +248,11 @@ describe Lotus::Commands::New do
         content.must_match %('controllers')
         content.must_match %('views')
 
+        content.must_match %(assets << [)
+        content.must_match %('public')
+
+        content.must_match %(serve_assets false)
+
         content.must_match %(controller.prepare)
         content.must_match %(view.prepare)
       end
@@ -270,6 +275,18 @@ describe Lotus::Commands::New do
     describe 'apps/web/controllers' do
       it 'generates it' do
         @root.join('apps/web/controllers').must_be :exist?
+      end
+    end
+
+    describe 'apps/web/public/javascripts' do
+      it 'generates it' do
+        @root.join('apps/web/public/javascripts').must_be :exist?
+      end
+    end
+
+    describe 'apps/web/public/stylesheets' do
+      it 'generates it' do
+        @root.join('apps/web/public/stylesheets').must_be :exist?
       end
     end
 

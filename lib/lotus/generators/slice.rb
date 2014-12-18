@@ -37,7 +37,9 @@ module Lotus
         }
 
         empty_directories = [
-          "controllers"
+          "controllers",
+          "public/javascripts",
+          "public/stylesheets"
         ]
 
         case options[:test]
