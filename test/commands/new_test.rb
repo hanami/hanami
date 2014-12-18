@@ -230,6 +230,7 @@ describe Lotus::Commands::New do
         content.must_match %(module Web)
         content.must_match %(class Application < Lotus::Application)
 
+        # main configure block
         content.must_match %(configure do)
         content.must_match %(root __dir__)
 
@@ -251,10 +252,19 @@ describe Lotus::Commands::New do
         content.must_match %(# assets << [)
         content.must_match %(#   'vendor/javascripts')
 
-        content.must_match %(serve_assets false)
+        content.must_match %(# serve_assets true)
 
         content.must_match %(controller.prepare)
         content.must_match %(view.prepare)
+
+        # per environment configuration
+        content.must_match %(configure :development do)
+        content.must_match %(handle_exceptions false)
+        content.must_match %(serve_assets      true)
+
+        content.must_match %(configure :test do)
+        content.must_match %(handle_exceptions false)
+        content.must_match %(serve_assets      true)
       end
     end
 
