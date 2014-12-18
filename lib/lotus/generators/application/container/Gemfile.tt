@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'bundler'
 gem 'rake'
 
-<% if config[:lotus_head] %>
+<%- if config[:lotus_head] -%>
 gem 'lotus-utils',       require: false, github: 'lotus/utils'
 gem 'lotus-router',      require: false, github: 'lotus/router'
 gem 'lotus-validations', require: false, github: 'lotus/validations'
@@ -11,15 +11,15 @@ gem 'lotus-controller',  require: false, github: 'lotus/controller'
 gem 'lotus-view',        require: false, github: 'lotus/view'
 gem 'lotus-model',       require: false, github: 'lotus/model'
 gem 'lotusrb',                           github: 'lotus/lotus'
-<% else %>
+<%- else -%>
 gem 'lotusrb',     '<%= Lotus::VERSION %>'
 gem 'lotus-model', '<%= config[:lotus_model_version] %>'
-<% end %>
+<%- end -%>
 
 group :test do
-<% if config[:test] == 'rspec' %>
-<% else %>
-gem 'minitest'
-<% end %>
-gem 'capybara'
+<%- if config[:test] == 'rspec' -%>
+<%- else -%>
+  gem 'minitest'
+<%- end -%>
+  gem 'capybara'
 end
