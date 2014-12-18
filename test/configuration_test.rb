@@ -95,6 +95,22 @@ describe Lotus::Configuration do
     end
   end
 
+  describe '#environment' do
+    before do
+      @configuration.configure :development do
+        layout :development
+      end
+    end
+    let(:path) { __dir__ + '/fixtures/config/development' }
+
+    it "accepts an env and a path to override general configurations" do
+      @configuration.environment :development, path
+      @configuration.load!(@namespace)
+      @configuration.layout.must_equal :development
+      @configuration.handle_exceptions.must_equal false
+    end
+  end
+
   describe '#root' do
     describe 'when a value is given' do
       describe "and it's a string" do
