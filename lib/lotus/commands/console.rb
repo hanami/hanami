@@ -28,6 +28,7 @@ module Lotus
 
         # Add convenience methods to the main:Object binding
         TOPLEVEL_BINDING.eval('self').send(:include, Methods)
+        Lotus::Application.preload!
 
         engine.start
       end
