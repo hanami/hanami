@@ -20,9 +20,9 @@ module <%= config[:classified_slice_name] %>
         'views'
       ]
 
-      assets << [
-        'public'
-      ]
+      # assets << [
+      #   'vendor/javascripts'
+      # ]
 
       controller.prepare do
         # ...

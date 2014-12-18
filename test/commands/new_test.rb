@@ -248,8 +248,8 @@ describe Lotus::Commands::New do
         content.must_match %('controllers')
         content.must_match %('views')
 
-        content.must_match %(assets << [)
-        content.must_match %('public')
+        content.must_match %(# assets << [)
+        content.must_match %(#   'vendor/javascripts')
 
         content.must_match %(serve_assets false)
 
