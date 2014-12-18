@@ -2,8 +2,8 @@
 # See: http://www.rubydoc.info/gems/lotus-model/#Usage
 #
 # collection :users do
-#   entity      User
-#   respository UserRepository
+#   entity     User
+#   repository UserRepository
 #
 #   attribute :id,   Integer
 #   attribute :name, String
