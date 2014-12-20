@@ -1,5 +1,5 @@
 require 'lotus/model'
-Dir["#{ __dir__ }/**/*.rb"].each {|file| require_relative file }
+Dir["#{ __dir__ }/**/*.rb"].each { |file| require_relative file }
 
 Lotus::Model.configure do
   # Database adapter

@@ -80,24 +80,45 @@ module Lotus
     # @since x.x.x
     def load_default_stack(application)
       @default_stack_loaded ||= begin
-        if @configuration.sessions.enabled?
-          use(*@configuration.sessions.middleware)
-        end
-
-        if @configuration.serve_assets
-          @configuration.assets.entries.each do |path, children|
-            use Rack::Static, urls: children, root: path
-          end
-        end
-
+        _load_session_middleware
+        _load_asset_middlewares
+        _load_default_welcome_page_for(application)
         use Rack::MethodOverride
 
-        unless application.routes.defined?
-          require 'lotus/welcome'
-          use Lotus::Welcome
-        end
-
         true
+      end
+    end
+
+    # Default welcome page
+    #
+    # @api private
+    # @since 0.2.0
+    def _load_default_welcome_page_for(application)
+      unless application.routes.defined?
+        require 'lotus/welcome'
+        use Lotus::Welcome
+      end
+    end
+
+    # Add session middleware
+    #
+    # @api private
+    # @since x.x.x
+    def _load_session_middleware
+      if @configuration.sessions.enabled?
+        use(*@configuration.sessions.middleware)
+      end
+    end
+
+    # Add asset middlewares
+    #
+    # @api private
+    # #since 0.2.0
+    def _load_asset_middlewares
+      if @configuration.serve_assets
+        @configuration.assets.entries.each do |path, children|
+          use Rack::Static, urls: children, root: path
+        end
       end
     end
   end
