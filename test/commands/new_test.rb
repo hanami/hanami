@@ -47,7 +47,7 @@ describe Lotus::Commands::New do
         content.must_match %(gem 'bundler')
         content.must_match %(gem 'rake')
         content.must_match %(gem 'lotusrb',     '#{ Lotus::VERSION }')
-        content.must_match %(gem 'lotus-model', '>= 0.2.0.dev')
+        content.must_match %(gem 'lotus-model', '~> 0.2')
         content.must_match %(gem 'capybara')
       end
 
