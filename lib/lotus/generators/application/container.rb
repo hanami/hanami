@@ -43,13 +43,13 @@ module Lotus
           else # minitest (default)
             templates.merge!(
               'Rakefile.minitest.tt'  => 'Rakefile',
-              'test_helper.rb.tt'     => 'test/test_helper.rb',
-              'features_helper.rb.tt' => 'test/features_helper.rb'
+              'spec_helper.rb.tt'     => 'spec/spec_helper.rb',
+              'features_helper.rb.tt' => 'spec/features_helper.rb'
             )
 
             empty_directories << [
-              "test/#{ app_name }/entities",
-              "test/#{ app_name }/repositories"
+              "spec/#{ app_name }/entities",
+              "spec/#{ app_name }/repositories"
             ]
           end
 

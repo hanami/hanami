@@ -160,21 +160,21 @@ describe Lotus::Commands::New do
 
     describe 'testing' do
       describe 'when minitest (default)' do
-        describe 'test/chirp/entities' do
+        describe 'spec/chirp/entities' do
           it 'generates it' do
-            @root.join('test/chirp/entities').must_be :directory?
+            @root.join('spec/chirp/entities').must_be :directory?
           end
         end
 
-        describe 'test/chirp/repositories' do
+        describe 'spec/chirp/repositories' do
           it 'generates it' do
-            @root.join('test/chirp/repositories').must_be :directory?
+            @root.join('spec/chirp/repositories').must_be :directory?
           end
         end
 
-        describe 'test/test_helper.rb' do
+        describe 'spec/spec_helper.rb' do
           it 'generates it' do
-            content = @root.join('test/test_helper.rb').read
+            content = @root.join('spec/spec_helper.rb').read
             content.must_match %(ENV['LOTUS_ENV'] ||= 'test')
             content.must_match %(require_relative '../config/environment')
             content.must_match %(require 'minitest/autorun')
@@ -182,10 +182,10 @@ describe Lotus::Commands::New do
           end
         end
 
-        describe 'test/features_helper.rb' do
+        describe 'spec/features_helper.rb' do
           it 'generates it' do
-            content = @root.join('test/features_helper.rb').read
-            content.must_match %(require_relative './test_helper')
+            content = @root.join('spec/features_helper.rb').read
+            content.must_match %(require_relative './spec_helper')
             content.must_match %(require 'capybara')
             content.must_match %(require 'capybara/dsl')
             content.must_match %(Capybara.app = Lotus::Container.new)
@@ -320,21 +320,21 @@ describe Lotus::Commands::New do
 
     describe 'testing' do
       describe 'when minitest (default)' do
-        describe 'test/web/features' do
+        describe 'spec/web/features' do
           it 'generates it' do
-            @root.join('test/web/features').must_be :directory?
+            @root.join('spec/web/features').must_be :directory?
           end
         end
 
-        describe 'test/web/controllers' do
+        describe 'spec/web/controllers' do
           it 'generates it' do
-            @root.join('test/web/controllers').must_be :directory?
+            @root.join('spec/web/controllers').must_be :directory?
           end
         end
 
-        describe 'test/web/views' do
+        describe 'spec/web/views' do
           it 'generates it' do
-            @root.join('test/web/views').must_be :directory?
+            @root.join('spec/web/views').must_be :directory?
           end
         end
       end

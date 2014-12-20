@@ -46,9 +46,9 @@ module Lotus
         when 'rspec'
         else # minitest (default)
           empty_directories << [
-            "../../test/#{ opts[:slice_name] }/features",
-            "../../test/#{ opts[:slice_name] }/controllers",
-            "../../test/#{ opts[:slice_name] }/views"
+            "../../spec/#{ opts[:slice_name] }/features",
+            "../../spec/#{ opts[:slice_name] }/controllers",
+            "../../spec/#{ opts[:slice_name] }/views"
           ]
         end
 
