@@ -10,7 +10,7 @@ module Lotus
 
           @slice_generator     = Slice.new(command)
           @lotus_head          = options.fetch(:lotus_head)
-          @lotus_model_version = '>= 0.2.0.dev'
+          @lotus_model_version = '~> 0.2'
 
           cli.class.source_root(source)
         end
