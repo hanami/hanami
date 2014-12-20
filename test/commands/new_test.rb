@@ -236,10 +236,11 @@ describe Lotus::Commands::New do
 
         content.must_match %(# adapter type: :file_system, uri: ENV['WEB_DATABASE_URL'])
 
-        content.must_match %(routes  'config/routes')
+        content.must_match %(routes 'config/routes')
         content.must_match %(# mapping 'config/mapping')
 
         content.must_match %(layout :application)
+        content.must_match %(# templates 'templates')
 
         content.must_match %(# cookies true)
 
@@ -249,10 +250,14 @@ describe Lotus::Commands::New do
         content.must_match %('controllers')
         content.must_match %('views')
 
+        content.must_match %(# middleware.use Rack::Protection)
+
+        content.must_match %(# body_parsers :json)
+
         content.must_match %(# assets << [)
         content.must_match %(#   'vendor/javascripts')
 
-        content.must_match %(# serve_assets true)
+        content.must_match %(# serve_assets false)
 
         content.must_match %(controller.prepare)
         content.must_match %(view.prepare)
@@ -265,6 +270,11 @@ describe Lotus::Commands::New do
         content.must_match %(configure :test do)
         content.must_match %(handle_exceptions false)
         content.must_match %(serve_assets      true)
+
+        content.must_match %(configure :production do)
+        content.must_match %(# scheme 'https')
+        content.must_match %(# host   'example.org')
+        content.must_match %(# port   443)
       end
     end
 
