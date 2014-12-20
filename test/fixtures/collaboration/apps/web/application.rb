@@ -26,7 +26,8 @@ module Collaboration
 
       assets << [
         'public',
-        'vendor/assets'
+        'vendor/assets',
+        '../../vendor/assets'
       ]
 
       adapter type: :sql, uri: SQLITE_CONNECTION_STRING

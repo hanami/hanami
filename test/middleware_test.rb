@@ -19,7 +19,7 @@ describe Lotus::Middleware do
   let(:middleware)    { configuration.middleware }
   let(:config_blk) do
     proc do
-      root 'test/fixtures/collaboration'
+      root 'test/fixtures/collaboration/apps/web'
       serve_assets true
     end
   end
