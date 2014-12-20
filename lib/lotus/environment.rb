@@ -28,19 +28,19 @@ module Lotus
 
     # Default `.env` file name
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     DEFAULT_DOTENV = '.env'.freeze
 
     # Default `.env` per environment file name
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     DEFAULT_DOTENV_ENV = '.env.%s'.freeze
 
     # Default configuration directory under application root
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     DEFAULT_CONFIG = 'config'.freeze
 
@@ -76,19 +76,19 @@ module Lotus
 
     # Default Rack configuration file
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     DEFAULT_RACKUP       = 'config.ru'.freeze
 
     # Default environment configuration file
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     DEFAULT_ENVIRONMENT_CONFIG = 'environment'.freeze
 
     # Code reloading per environment
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     CODE_RELOADING = { 'development' => true }.freeze
 
@@ -181,7 +181,7 @@ module Lotus
     #
     # @return [Array] A set of groups
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     #
     # @see http://bundler.io/v1.7/groups.html
@@ -196,7 +196,7 @@ module Lotus
     #
     # @return [Pathname] application's root
     #
-    # @since x.x.x
+    # @since 0.2.0
     def root
       @root ||= Pathname.new(Dir.pwd)
     end
@@ -216,7 +216,7 @@ module Lotus
     #
     # @return [Pathname] the config directory
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see Lotus::Environment::DEFAULT_CONFIG
     # @see Lotus::Environment#root
@@ -279,7 +279,7 @@ module Lotus
     #
     # @return [Pathname] path to the Rack configuration file
     #
-    # @since x.x.x
+    # @since 0.2.0
     def rackup
       root.join(@options.fetch(:rackup) { DEFAULT_RACKUP })
     end
@@ -319,7 +319,7 @@ module Lotus
     #
     # @return [TrueClass,FalseClass] the result of the check
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see Lotus::Commands::Server
     # @see Lotus::Environment::CODE_RELOADING
@@ -352,7 +352,7 @@ module Lotus
       set_application_env_vars!
     end
 
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     def set_lotus_env_vars!
       ENV[LOTUS_ENV]  = ENV[RACK_ENV] = environment
@@ -360,7 +360,7 @@ module Lotus
       ENV[LOTUS_PORT] = port.to_s
     end
 
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     def set_application_env_vars!
       Dotenv.load     config.join(DEFAULT_DOTENV)

@@ -13,7 +13,7 @@ module Lotus
   #
   # @since 0.1.0
   class Configuration
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     #
     # @see Lotus::Configuration#ssl?
@@ -332,7 +332,7 @@ module Lotus
     #   Gets the value
     #   @return [Lotus::Config::Assets] assets root
     #
-    # @since x.x.x
+    # @since 0.1.0
     #
     # @see Lotus::Configuration#serve_assets
     #
@@ -375,7 +375,7 @@ module Lotus
     # an argument, it will set the corresponding instance variable. When
     # called without, it will return the already set value, or the default.
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @overload serve_assets(value)
     #   Sets the given value.
@@ -511,7 +511,7 @@ module Lotus
     #   Gets the value.
     #   @return [Lotus::Config::Sessions] sessions configuration
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see Lotus::Configuration#host
     # @see Lotus::Configuration#scheme
@@ -762,7 +762,7 @@ module Lotus
     # `assets false` was specified # in the configuration block, the default
     # `Rack::Static` will be removed.
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see http://rdoc.info/gems/rack/Rack/Static
     # @see Lotus::Middleware#use
@@ -805,7 +805,7 @@ module Lotus
     #   Gets the value
     #   @return [Lotus::Config::Mapping] the set of mappings
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see http://rdoc.info/gems/lotus-model/Lotus/Mapper
     #
@@ -881,7 +881,7 @@ module Lotus
     #   Gets the value
     #   @return [Hash] adapter options
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see Lotus::Configuration#adapter
     # @see http://rdoc.info/gems/lotus-model/Lotus/Model/Configuration:adapter
@@ -1016,7 +1016,11 @@ module Lotus
 
     # Check if the application uses SSL
     #
-    # @since x.x.x
+    # @return [FalseClass,TrueClass] the result of the check
+    #
+    # @since 0.2.0
+    #
+    # @see Lotus::Configuration#scheme
     def ssl?
       scheme == SSL_SCHEME
     end
@@ -1400,7 +1404,7 @@ module Lotus
     #   Gets the value
     #   @return [TrueClass, FalseClass]
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see http://rdoc.info/gems/lotus-controller/Lotus/Controller/Configuration:handle_exceptions
     # @see http://httpstatus.es/500
@@ -1479,7 +1483,7 @@ module Lotus
     #
     # @return [Lotus::Config::FrameworkConfiguration] the configuration
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see http://www.rubydoc.info/gems/lotus-model/Lotus/Model/Configuration
     #
@@ -1524,7 +1528,7 @@ module Lotus
     #
     # @return [Lotus::Config::FrameworkConfiguration] the configuration
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see http://www.rubydoc.info/gems/lotus-controller/Lotus/Controller/Configuration
     #
@@ -1567,7 +1571,7 @@ module Lotus
     #
     # @return [Lotus::Config::FrameworkConfiguration] the configuration
     #
-    # @since x.x.x
+    # @since 0.2.0
     #
     # @see http://www.rubydoc.info/gems/lotus-view/Lotus/View/Configuration
     #
@@ -1600,13 +1604,13 @@ module Lotus
     end
 
     private
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     def evaluate_configurations!
       configurations.each { |c| instance_eval(&c) }
     end
 
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     def configurations
       [ @blk ] + @configurations[@env.environment]

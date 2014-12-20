@@ -5,7 +5,7 @@ module Lotus
     # Define configuration of application of
     # a specific environment
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     class Configure < Mapper
       private

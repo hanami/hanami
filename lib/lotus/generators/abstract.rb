@@ -5,13 +5,13 @@ module Lotus
     # Abstract super class for generators
     #
     # @abstract
-    # @since x.x.x
+    # @since 0.2.0
     class Abstract < SimpleDelegator
       # Initialize a generator
       #
       # @param command [Thor] a Thor instance that comes from Lotus::Cli
       #
-      # @since x.x.x
+      # @since 0.2.0
       # @api private
       def initialize(command)
         super(command)
@@ -22,7 +22,7 @@ module Lotus
       # @raise [NotImplementedError]
       #
       # @abstract
-      # @since x.x.x
+      # @since 0.2.0
       def start
         raise NotImplementedError
       end

@@ -20,7 +20,7 @@ module Lotus
   class Application
     # Override Ruby's Class#inherited
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     #
     # @see http://www.ruby-doc.org/core/Class.html#method-i-inherited
@@ -43,7 +43,7 @@ module Lotus
     #
     # @return [Set] a set of all the registered applications
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     def self.applications
       synchronize do
@@ -96,7 +96,7 @@ module Lotus
     #
     # @param [Lotus::RenderingPolicy]
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     attr_accessor :renderer
 
@@ -149,7 +149,7 @@ module Lotus
     #
     # @return [void]
     #
-    # @since x.x.x
+    # @since 0.2.0
     def self.preload!
       synchronize do
         applications.each(&:load!)
@@ -168,7 +168,7 @@ module Lotus
 
     # Return the application name
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     def name
       self.class.name
@@ -206,7 +206,7 @@ module Lotus
 
     # Yields the given block in a critical section
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     def self.synchronize
       Mutex.new.synchronize do

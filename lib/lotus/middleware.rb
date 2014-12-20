@@ -25,7 +25,7 @@ module Lotus
     #
     # @return [Lotus::Middleware] the loaded middleware stack
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     #
     # @see http://rdoc.info/gems/rack/Rack/Builder
@@ -60,13 +60,13 @@ module Lotus
     #
     # @return [Array] the middleware that was added
     #
-    # @since x.x.x
+    # @since 0.2.0
     def use(middleware, *args, &blk)
       @stack << [middleware, args, blk]
     end
 
     # @api private
-    # @since x.x.x
+    # @since 0.2.0
     def load_middleware(middleware)
       case middleware
       when String
@@ -77,7 +77,7 @@ module Lotus
     end
 
     # @api private
-    # @since x.x.x
+    # @since 0.2.0
     def load_default_stack(application)
       @default_stack_loaded ||= begin
         _load_session_middleware
@@ -103,7 +103,7 @@ module Lotus
     # Add session middleware
     #
     # @api private
-    # @since x.x.x
+    # @since 0.2.0
     def _load_session_middleware
       if @configuration.sessions.enabled?
         use(*@configuration.sessions.middleware)
