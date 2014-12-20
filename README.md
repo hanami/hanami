@@ -430,6 +430,19 @@ module Bookshelf
       #
       routes 'config/routes'
 
+      # Enabling serving assets
+      # Argument: boolean, defaults to false
+      #
+      serve_assets true
+
+      # Assets directories
+      # Argument: array, with assets path, default is 'public'
+      #
+      assets << [
+        'public',
+        'vendor/assets'
+      ]
+
       # The layout to be used by all the views (optional)
       # Argument: A Symbol that indicates the name, default to nil
       #
