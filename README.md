@@ -26,354 +26,80 @@ __Lotus__ supports Ruby (MRI) 2+
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'lotusrb'
-```
-
-And then execute:
-
 ```shell
-$ bundle
-```
-
-Or install it yourself as:
-
-```shell
-$ gem install lotusrb
+% gem install lotusrb
 ```
 
 ## Usage
 
-Lotus combines the power and the flexibility of all its [frameworks](https://github.com/lotus).
-It uses [Lotus::Router](https://github.com/lotus/router) and [Lotus::Controller](https://github.com/lotus/controller) for the routing and controller layer, respectively.
-While [Lotus::View](https://github.com/lotus/view) is for the presentational logic.
+```shell
+% lotus new bookshelf
+% cd bookshelf && bundle
+% bundle exec lotus server # visit http://localhost:2300
+```
 
-**If you're not familiar with those libraries, please read their READMEs first.**
+## Architectures
 
-### Architecture
+Lotus is a modular web framework.
+It scales from **single file HTTP endpoints** to **multiple applications in the same Ruby process**.
 
-Unlike other Ruby web frameworks, Lotus has flexible conventions for the code structure.
+Unlike other Ruby web frameworks, Lotus has **flexible conventions for code structure**.
 Developers can arrange the layout of their projects as they prefer.
 There is a suggested architecture that can be easily changed with a few settings.
 
 Lotus encourages the use of Ruby namespaces. This is based on the experience of working on dozens of projects.
-By using Ruby namespaces, as your code grows it can be split with less effort. In other words, Lotus is providing gentle guidance for avoiding monolithic applications.
+By using Ruby namespaces, as your code grows it can be split with less effort. In other words, Lotus is providing gentle guidance for **avoid monolithic applications**.
 
 Lotus has a smart **mechanism of duplication of its frameworks**.
 It allows multiple copies of the framework and multiple applications to run in the **same Ruby process**.
 In other words, Lotus applications are ready to be split into smaller parts but these parts can coexist in the same heap space.
 
-For instance, when a `Bookshelf::Application` is loaded, `Lotus::View` and `Lotus::Controller` are duplicated as `Bookshelf::View` and `Bookshelf::Controller`.
-This makes the `Bookshelf::Application` configuration independent of a `Backend::Application`.
-Both applications may coexist happily in the same Ruby process.
-Developers can therefore use `Bookshelf::Controller` instead of `Lotus::Controller`.
+All this adaptability can be helpful to bend the framework for your advanced needs, but we recognize the need of a guidance in standard architectures.
+For this reason Lotus is shipped with code generators.
 
-#### Tiny application
 
-```ruby
-# config.ru
-require 'lotus'
+### _Container_ architecture
 
-class TinyApp < Lotus::Application
-  configure do
-    routes do
-      get '/', to: ->(env) {[200, {}, ['Hello from Lotus!']]} # Direct Rack response
-    end
-  end
-end
+This is the default architecture.
+When your are to start a new project use it.
 
-run TinyApp.new
+The core of this architecture lives in `lib/`, where developers should build features **independently from the delivery mechanism**.
+
+Imagine you are building a personal finance application, and you have a feature called _"register expense"_. This functionality involves `Money` and `Expense` Ruby objects and the need of persisting data into a database. You can have those classes living in `lib/pocket/money.rb` and `lib/pocket/expense.rb` and use [Lotus::Model](https://github.com/lotus/model) to persist them.
+
+It has few but important advantages:
+
+* **Code reusability.** You can register an expense from the Web UI or from a JSON API, which can be different Lotus _slices_ or simple Rack based apps.
+* **Decoupled components.** The core of your application depends only on a few gems and it doesn't need to worry about the Web/HTTP/Console/Background jobs.
+* **Applications are built like a gem**, this ease the process of package them and share between projects, without the need of carry on a lot of dependencies.
+
+Multiple Lotus applications are located under the `apps/` directory.
+
+
+When a project is new, to move fast, a team wants to ship a single deliverable in production.
+Once the code grows, they may want to decide to extract microservices. However, this isn't always possible or easy, because of the high coupling between components.
+
+Lotus comes to the rescue, by helping teams to build products with _slices_.
+A _slice_ is a web application that serves for a single purpose: user facing application, administration backend, JSON API, dashboard for profiling etc. To make a Rails analogy, it's kinda equivalent to an _engine_. The only difference is that a _slice_ is a self contained Rack application that can be easily extracted.
+
+Here's the name _**container**_: a Lotus _"shell"_ that can run multiple micro applications in the same process.
+
+```shell
+% lotus new pocket --arch=container
+% lotus new pocket # --arch=container is the default
 ```
 
-#### One file application
+Read more about this [architecture](https://github.com/lotus/lotus/wiki/Container-architecture).
 
-```ruby
-# config.ru
-require 'lotus'
+### _Application_ architecture
 
-module OneFile
-  class Application < Lotus::Application
-    configure do
-      routes do
-        get '/', to: 'home#index'
-      end
-    end
+_upcoming_
 
-    load!
-  end
+### _Micro_ architecture
 
-  module Controllers
-    module Home
-      include OneFile::Controller
+_upcoming_
 
-      action 'Index' do
-        def call(params)
-        end
-      end
-    end
-  end
-
-  module Views
-    module Home
-      class Index
-        include OneFile::View
-
-        def render
-          'Hello'
-        end
-      end
-    end
-  end
-end
-
-run OneFile::Application.new
-```
-
-When the application is instantiated, it will also create the `OneFile::Controllers` and `OneFile::Views` namespaces.
-This incentivizes the modularization of the resources.
-Also, note the similarity in names of the action and the view: `OneFile::Controllers::Home::Index` and `OneFile::Views::Home::Index`.
-**This naming system is a Lotus convention and MUST be followed, or otherwise you will need to do more configuration.**.
-
-#### Microservices architecture
-
-```
-test/fixtures/microservices
-├── apps
-│   ├── backend
-│   │   ├── application.rb                  Backend::Application
-│   │   ├── controllers
-│   │   │   └── sessions.rb                 Backend::Controllers::Sessions::New, Create & Destroy
-│   │   ├── public
-│   │   │   ├── favicon.ico
-│   │   │   ├── fonts
-│   │   │   │   └── cabin-medium.woff
-│   │   │   ├── images
-│   │   │   │   └── application.jpg
-│   │   │   ├── javascripts
-│   │   │   │   └── application.js
-│   │   │   └── stylesheets
-│   │   │       └── application.css
-│   │   ├── templates
-│   │   │   ├── backend.html.erb
-│   │   │   └── sessions
-│   │   │       └── new.html.erb
-│   │   └── views
-│   │       ├── backend_layout.rb           Backend::Views::BackendLayout
-│   │       └── sessions
-│   │           ├── create.rb               Backend::Views::Sessions::Create
-│   │           ├── destroy.rb              Backend::Views::Sessions::Destroy
-│   │           └── new.rb                  Backend::Views::Sessions::New
-│   └── frontend
-│       ├── application.rb                  Frontend::Application
-│       ├── assets
-│       │   ├── favicon.ico
-│       │   ├── fonts
-│       │   │   └── cabin-medium.woff
-│       │   ├── images
-│       │   │   └── application.jpg
-│       │   ├── javascripts
-│       │   │   └── application.js
-│       │   └── stylesheets
-│       │       └── application.css
-│       ├── controllers
-│       │   └── sessions
-│       │       ├── create.rb               Frontend::Controllers::Sessions::Create
-│       │       ├── destroy.rb              Frontend::Controllers::Sessions::Destroy
-│       │       └── new.rb                  Frontend::Controllers::Sessions::New
-│       ├── templates
-│       │   ├── frontend.html.erb
-│       │   └── sessions
-│       │       └── new.html.erb
-│       └── views
-│           ├── application_layout.rb       Frontend::Views::ApplicationLayout
-│           └── sessions
-│               ├── create.rb               Frontend::Views::Sessions::Create
-│               ├── destroy.rb              Frontend::Views::Sessions::Destroy
-│               └── new.rb                  Frontend::Views::Sessions::New
-├── config
-│   ├── environment.rb
-└── config.ru
-```
-
-As you can see, the code can be organized as you prefer. For instance, all the sessions actions for the backend are grouped in the same file,
-while they're split in the case of the frontend app.
-
-**This is because Lotus doesn't have namespace-to-filename conventions, and doesn't have autoload paths.**
-During the boot time it **recursively preloads all the classes from the specified directories.**
-
-```ruby
-# apps/backend/application.rb
-require 'lotus'
-
-module Backend
-  class Application < Lotus::Application
-    configure do
-      # Specify a root here so that load paths, etc. are relative to your microservice.
-      root 'apps/backend'
-
-      load_paths << [
-        'controllers',
-        'views'
-      ]
-
-      layout :backend
-
-      routes do
-        resource :sessions, only: [:new, :create, :destroy]
-      end
-    end
-  end
-end
-
-# All code under apps/backend/{controllers,views} will be loaded
-```
-
-```ruby
-# config/environment.rb
-require 'lotus/setup'
-require_relative '../apps/frontend/application'
-require_relative '../apps/backend/application'
-
-Lotus::Container.configure do
-  mount Backend::Application,  at: '/admin'
-  mount Frontend::Application, at: '/'
-}
-
-# We use Lotus::Container to mount two Lotus microservices
-```
-
-```ruby
-# config.ru
-require_relative 'config/environment.rb'
-
-run Lotus::Container.new
-
-# We use an instance of Lotus::Container to start our application
-```
-
-#### Modularized application
-
-```
-test/fixtures/furnitures
-├── app
-│   ├── controllers
-│   │   └── furnitures
-│   │       └── catalog_controller.rb       Furnitures::CatalogController::Index
-│   ├── templates
-│   │   ├── application.html.erb
-│   │   └── furnitures
-│   │       └── catalog
-│   │           └── index.html.erb
-│   └── views
-│       ├── application_layout.rb           Furnitures::Views::ApplicationLayout
-│       └── furnitures
-│           └── catalog
-│               └── index.rb                Furnitures::Catalog::Index
-├── application.rb                          Furnitures::Application
-└── public
-    ├── favicon.ico
-    ├── fonts
-    │   └── cabin-medium.woff
-    ├── images
-    │   └── application.jpg
-    ├── javascripts
-    │   └── application.js
-    └── stylesheets
-        └── application.css
-```
-
-You may have noticed a different naming structure here. You can achieve this with a few setting changes.
-
-```ruby
-# application.rb
-require 'lotus'
-
-module Furnitures
-  class Application < Lotus::Application
-    configure do
-      layout :application
-      routes do
-        get '/', to: 'catalog#index'
-      end
-
-      load_paths << 'app'
-
-      controller_pattern "%{controller}Controller::%{action}"
-      view_pattern       "%{controller}::%{action}"
-    end
-  end
-end
-```
-
-The patterns above tell Lotus the name structure that we want to use for our application.
-
-The main actor of the HTTP layer is an action. Actions are classes grouped logically in the same module, called a controller.
-
-For an incoming `GET` request to `/`, the router will look for a `CatalogController` with an `Index` action.
-Once the action is called, the control will pass to the view. Here the application will look for a `Catalog` module with an `Index` view.
-
-**These two patterns are interpolated at runtime, with the controller/action information passed by the router.**
-
-#### Top level architecture
-
-```
-test/fixtures/information_tech
-├── app
-│   ├── controllers
-│   │   └── hardware_controller.rb         HardwareController::Index
-│   ├── templates
-│   │   ├── app.html.erb
-│   │   └── hardware
-│   │       └── index.html.erb
-│   └── views
-│       ├── app_layout.rb                  AppLayout
-│       └── hardware
-│           └── index.rb                   Hardware::Index
-├── application.rb                         InformationTech::Application
-├── config
-│   └── routes.rb
-└── public
-    ├── favicon.ico
-    ├── fonts
-    │   └── cabin-medium.woff
-    ├── images
-    │   └── application.jpg
-    ├── javascripts
-    │   └── application.js
-    └── stylesheets
-        └── application.css
-```
-
-While this architecture is technically possible, it's discouraged.
-This architecture pollutes the global namespace.
-Which makes it harder to split the application into several deliverables.
-
-```ruby
-# application.rb
-require 'lotus'
-
-module InformationTech
-  class Application < Lotus::Application
-    configure do
-      namespace Object
-
-      controller_pattern '%{controller}Controller::%{action}'
-      view_pattern       '%{controller}::%{action}'
-
-      layout :app
-
-      load_paths << 'app'
-      routes 'config/routes'
-    end
-  end
-end
-
-# We use Object, because it's the top level Ruby namespace.
-```
-
-### Conventions
+## Conventions
 
 * Lotus expects controllers, actions and views to have a specific pattern (see [Configuration](#configuration) for customizations)
 * All the commands must be run from the root of the project. If this requirement cannot be satisfied, please hardcode the path with `Configuration#root`.
@@ -382,13 +108,13 @@ end
 * The application expects to find static files under `public/` (see `Configuration#assets`)
 * If the public folder doesn't exist, it doesn't serve static files.
 
-### Non-Conventions
+## Non-Conventions
 
 * The application structure can be organized according to developer needs.
 * No file-to-name convention: modules and classes can live in one or multiple files.
 * No autoloading paths. They must be explicitly configured.
 
-### Configuration
+## Configuration
 
 <a name="configuration"></a>
 
@@ -400,23 +126,31 @@ require 'lotus'
 module Bookshelf
   class Application < Lotus::Application
     configure do
+      ########################
+      # BASIC CONFIGURATIONS #
+      ########################
+
       # Determines the root of the application (optional)
       # Argument: String, Pathname, defaults to Dir.pwd
       #
-      root 'path/to/root'
-
-      # The Ruby namespace where to lookup for actions and views (optional)
-      # Argument: Module, Class, defaults to the application module (eg. Bookshelf)
-      #
-      namespace Object
+      root 'path/to/root' # or __root__
 
       # The relative load paths where the application will recursively load the code (mandatory)
       # Argument: String, Array<String>, defaults to empty set
       #
       load_paths << [
-        'app/controllers',
-        'app/views'
+        'controllers',
+        'views'
       ]
+
+      # Handle exceptions with HTTP statuses (true) or don't catch them (false)
+      # Argument: boolean, defaults to true
+      #
+      handle_exceptions true
+
+      #######################
+      # HTTP CONFIGURATIONS #
+      #######################
 
       # The route set (mandatory)
       # Argument: Proc with the routes definition
@@ -429,44 +163,6 @@ module Bookshelf
       # Argument: A relative path where to find the routes definition
       #
       routes 'config/routes'
-
-      # Enabling serving assets
-      # Argument: boolean, defaults to false
-      #
-      serve_assets true
-
-      # Assets directories
-      # Argument: array, with assets path, default is 'public'
-      #
-      assets << [
-        'public',
-        'vendor/assets'
-      ]
-
-      # The layout to be used by all the views (optional)
-      # Argument: A Symbol that indicates the name, default to nil
-      #
-      layout :application # Will look for Bookshelf::Views::ApplicationLayout
-
-      # The relative path where to find the templates (optional)
-      # Argument: A string with the relative path, default to the root of the app
-      #
-      templates 'app/templates'
-
-      # Enable or Disable cookies (optional)
-      # Argument: A [`TrueClass`, `FalseClass`], default to `FalseClass`.
-      #
-      cookies true
-
-      # Default format for the requests that don't specify an HTTP_ACCEPT header (optional)
-      # Argument: A symbol representation of a mime type, default to :html
-      #
-      default_format :json
-
-      # Handle exceptions with HTTP statuses (true) or don't catch them (false)
-      # Argument: boolean, defaults to true
-      #
-      handle_exceptions true
 
       # URI scheme used by the routing system to generate absolute URLs (optional)
       # Argument: A string, default to "http"
@@ -484,43 +180,178 @@ module Bookshelf
       #
       port 2323
 
-      # The name pattern to find controller and actions (optional)
-      # Argument: A string, it must contain "%{controller}" and %{action}
-      # Default to "Controllers::%{controller}::%{action}"
+      # Toggle cookies (optional)
+      # Argument: A [`TrueClass`, `FalseClass`], default to `FalseClass`.
       #
-      controller_pattern '%{controller}Controller::%{action}'
+      cookies true
 
-      # The name pattern to find views (optional)
-      # Argument: A string, it must contain "%{controller}" and %{action}
-      # Default to "Views::%{controller}::%{action}"
+      # Toggle sessions (optional)
+      # Argument: Symbol the Rack session adapter
+      #           A Hash with options
       #
-      view_pattern '%{controller}Views::%{action}'
+      sessions :cookie, secret: ENV['SESSIONS_SECRET']
+
+      # Default format for the requests that don't specify an HTTP_ACCEPT header (optional)
+      # Argument: A symbol representation of a mime type, default to :html
+      #
+      default_format :json
+
+      # Rack middleware configuration (optional)
+      #
+      middleware.use Rack::Protection
+
+      # HTTP Body parsers (optional)
+      # Parse non GET responses body for a specific mime type
+      # Argument: Symbol, which represent the format of the mime type (only `:json` is supported)
+      #           Object, the parser
+      #
+      body_parsers :json, MyXMLParser.new
+
+      ###########################
+      # DATABASE CONFIGURATIONS #
+      ###########################
+
+      # Configure a database adapter (optional)
+      # Argument: A Hash with the settings
+      #           type: Symbol, :file_system, :memory and :sql
+      #           uri:  String, 'file:///db/bookshelf'
+      #                         'memory://localhost/bookshelf'
+      #                         'sqlite:memory:'
+      #                         'sqlite://db/bookshelf.db'
+      #                         'postgres://localhost/bookshelf'
+      #                         'mysql://localhost/bookshelf'
+      #
+      adapter type: :file_system, uri: ENV['DATABASE_URL']
+
+      # Configure a database mapping (optional)
+      # Argument: Proc
+      #
+      mapping do
+        collection :users do
+          entity     User
+          repository UserRepository
+
+          attribute :id,   Integer
+          attribute :name, String
+        end
+      end
+
+      # Configure a database mapping (optional, alternative usage)
+      # Argument: A relative path where to find the mapping definitions
+      #
+      mapping 'config/mapping'
+
+      ############################
+      # TEMPLATES CONFIGURATIONS #
+      ############################
+
+      # The layout to be used by all the views (optional)
+      # Argument: A Symbol that indicates the name, default to nil
+      #
+      layout :application # Will look for Bookshelf::Views::ApplicationLayout
+
+      # The relative path where to find the templates (optional)
+      # Argument: A string with the relative path, default to the root of the app
+      #
+      templates 'templates'
+
+      #########################
+      # ASSETS CONFIGURATIONS #
+      #########################
+
+      # Specify sources for assets (optional)
+      # Argument: String, Array<String>, defaults to 'public'
+      #
+      assets << [
+        'public',
+        'vendor/assets'
+      ]
+
+      # Enabling serving assets (optional)
+      # Argument: boolean, defaults to false
+      #
+      serve_assets true
+
+      #############################
+      # FRAMEWORKS CONFIGURATIONS #
+      #############################
+
+      # Low level configuration for Lotus::Model (optional)
+      # The given block will be yielded by `Lotus::Model::Configuration`.
+      # See the related documentation
+      # Argument: Proc
+      #
+      model.prepare do
+        # ...
+      end
+
+      # Low level configuration for Lotus::View (optional)
+      # The given block will be yielded every time `Lotus::View` is included.
+      # This is helpful to share logic between views
+      # See the related documentation
+      # Argument: Proc
+      #
+      view.prepare do
+        include MyCustomRoutingHelpers # included by all the views
+      end
+
+      # Low level configuration for Lotus::Controller (optional)
+      # Argument: Proc
+      controller.prepare do
+        include Authentication # included by all the actions
+        before :authenticate!   # run auth logic before each action
+      end
+    end
+
+    ###############################
+    # ENVIRONMENTS CONFIGURATIONS #
+    ###############################
+
+    configure :development do
+      # override the general configuration only for the development environment
+      handle_exceptions false
+      serve_assets      true
+    end
+
+    configure :test do
+      # override the general configuration only for the test environment
+      host 'test.host'
     end
   end
 end
 ```
 
-## Command-line
+## Command line
 
-Lotus provides a few command-line utilities:
+Lotus provides a few command line utilities:
 
-* `lotus server` boots up a server. It assumes you have a `config.ru` file.
-* `lotus console` brings up a REPL. It defaults to IRB but can be configured to
-  use Pry or Ripl via the `--engine` option. By default, the console will try to
-load `config/environment.rb`. You can point it directly to your app container via the
-`--environment` flag.
+### Server
 
-## The future
+It looks at the `config.ru` file in the root of the application, and starts the Rack server defined in your `Gemfile` (eg. puma, thin, unicorn). It defaults to WEBRick.
 
-Lotus uses different approaches for web development with Ruby than other frameworks.
-For this reason, it needs to reach a certain degree of maturity.
-It will be improved by collecting the feedback of real world applications.
+It supports **code reloading** feature by default, useful for development purposes.
 
-Lotus still lacks features like: live reloading, multiple environments, code generators, CLI, etc..
+```shell
+% bundle exec lotus server
+```
 
-Please get involved with the project.
+### Console
 
-Thank you.
+It starts a REPL, by using the engine defined in your `Gemfile`. It defaults to IRb. **Run it from the root of the application**.
+
+```shell
+% bundle exec lotus console
+```
+
+It supports **code reloading** via the `reload!` command.
+
+### Routes
+
+It prints the routes defined by the Lotus application(s).
+
+```shell
+% bundle exec lotus routes
+```
 
 ## Contributing
 
