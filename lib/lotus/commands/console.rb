@@ -40,7 +40,7 @@ module Lotus
       private
 
       def engine_lookup
-        (ENGINES.find {|_, klass| Object.const_defined?(klass) } || default_engine).first
+        (ENGINES.find { |_, klass| Object.const_defined?(klass) } || default_engine).first
       end
 
       def default_engine

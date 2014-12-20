@@ -10,7 +10,7 @@ class XmlParser < Lotus::Routing::Parsing::Parser
     result = {}
 
     xml = ::REXML::Document.new(body)
-    xml.elements.each('*') {|el| result[el.name] = el.text }
+    xml.elements.each('*') { |el| result[el.name] = el.text }
 
     result
   end
