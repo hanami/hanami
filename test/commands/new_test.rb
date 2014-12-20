@@ -91,7 +91,7 @@ describe Lotus::Commands::New do
     describe 'config.ru' do
       it 'generates it' do
         content = @root.join('config.ru').read
-        content.must_match %(require_relative 'config/environment')
+        content.must_match %(require './config/environment')
         content.must_match %(run Lotus::Container.new)
       end
     end
