@@ -36,7 +36,7 @@ module <%= config[:classified_slice_name] %>
       # URI scheme used by the routing system to generate absolute URLs
       # Defaults to "http"
       #
-      #scheme 'https'
+      # scheme 'https'
 
       # URI host used by the routing system to generate absolute URLs
       # Defaults to "localhost"
@@ -68,7 +68,7 @@ module <%= config[:classified_slice_name] %>
       # Default format for the requests that don't specify an HTTP_ACCEPT header
       # Argument: A symbol representation of a mime type, default to :html
       #
-      #default_format :html
+      # default_format :html
 
       # HTTP Body parsers
       # Parse non GET responses body for a specific mime type

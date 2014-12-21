@@ -5,6 +5,11 @@ module Lotus
   class Cli < Thor
     include Thor::Actions
 
+    desc 'version', 'prints Lotus version'
+    def version
+      puts Lotus::VERSION
+    end
+
     desc 'server', 'starts a lotus server'
     method_option :port,      aliases: '-p', desc: 'The port to run the server on, '
     method_option :server,                   desc: 'choose a specific Rack::Handler, e.g. webrick, thin etc'
