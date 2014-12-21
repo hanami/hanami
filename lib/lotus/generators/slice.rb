@@ -8,14 +8,14 @@ module Lotus
       def initialize(command)
         super
 
-        @slice_name            = options.fetch(:slice)
+        @slice_name            = options.fetch(:application)
         @upcase_slice_name     = @slice_name.upcase
         @classified_slice_name = Utils::String.new(@slice_name).classify
 
         @source                = Pathname.new(::File.dirname(__FILE__) + '/../generators/slice')
         @target                = target.join('apps', @slice_name)
 
-        @slice_base_url        = options.fetch(:slice_base_url)
+        @slice_base_url        = options.fetch(:application_base_url)
 
         cli.class.source_root(@source)
       end

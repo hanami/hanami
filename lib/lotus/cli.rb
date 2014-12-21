@@ -61,8 +61,8 @@ module Lotus
 
     desc 'new', 'generates a new application'
     method_option :architecture,   aliases: '-a', desc: 'application architecture', type: :string,  default: 'container'
-    method_option :slice,                         desc: 'slice name',               type: :string,  default: 'web'
-    method_option :slice_base_url,                desc: 'slice base url',           type: :string,  default: '/'
+    method_option :application,                   desc: 'application name',         type: :string,  default: 'web'
+    method_option :application_base_url,          desc: 'application base url',     type: :string,  default: '/'
     method_option :lotus_head,                    desc: 'use Lotus HEAD',           type: :boolean, default: false
     method_option :help,           aliases: '-h', desc: 'displays the usage method'
 

@@ -31,7 +31,7 @@ describe Lotus::Commands::New do
 
   describe 'container architecture' do
     def container_options
-      Hash[architecture: 'container', slice: 'web', slice_base_url: '/', lotus_head: false]
+      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false]
     end
 
     let(:opts)     { container_options }
