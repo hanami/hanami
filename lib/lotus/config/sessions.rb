@@ -54,11 +54,11 @@ module Lotus
       # @api private
       def middleware
         middleware = case @adapter
-        when Symbol
-          RACK_NAMESPACE % Utils::String.new(@adapter).classify
-        else
-          @adapter
-        end
+                     when Symbol
+                       RACK_NAMESPACE % Utils::String.new(@adapter).classify
+                     else
+                       @adapter
+                     end
 
         [middleware, options]
       end
