@@ -2,6 +2,19 @@
 
 A complete web framework for Ruby
 
+## Frameworks
+
+Lotus combines together small but yet powerful frameworks:
+
+* [**Lotus::Utils**](https://github.com/lotus/utils) - Ruby core extentions and class utilities
+* [**Lotus::Router**](https://github.com/lotus/router) - Rack compatible HTTP router for Ruby
+* [**Lotus::Validations**](https://github.com/lotus/validations) - Validation mixin for Ruby objects
+* [**Lotus::Model**](https://github.com/lotus/model) - Persistence with entities, repositories and data mapper
+* [**Lotus::View**](https://github.com/lotus/view) - Presentation with a separation between views and templates
+* [**Lotus::Controller**](https://github.com/lotus/controller) - Full featured, fast and testable actions for Rack
+
+All those components are designed to be used independently from each other. If your aren't familiar with them, please take time to go through their READMEs.
+
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/lotusrb.png)](http://badge.fury.io/rb/lotusrb)
@@ -60,8 +73,10 @@ For this reason Lotus is shipped with code generators.
 
 ### _Container_ architecture
 
+**TL;DR: Develop your application like a gem. Implement use cases in `lib/`. Use one or more Lotus applications in `apps/`.**
+
 This is the default architecture.
-When your are to start a new project use it.
+When your are about to start a new project use it.
 
 The core of this architecture lives in `lib/`, where developers should build features **independently from the delivery mechanism**.
 
@@ -351,6 +366,14 @@ It prints the routes defined by the Lotus application(s).
 
 ```shell
 % bundle exec lotus routes
+```
+
+### Version
+
+It prints the current Lotus version.
+
+```shell
+% bundle exec lotus version
 ```
 
 ## Contributing
