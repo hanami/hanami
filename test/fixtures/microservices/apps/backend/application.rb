@@ -7,6 +7,12 @@ module Backend
         'views'
       ]
 
+      serve_assets true
+
+      assets << [
+        'public'
+      ]
+
       layout :backend
 
       routes do

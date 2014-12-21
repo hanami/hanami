@@ -4,34 +4,40 @@ module Lotus
     #
     # @since 0.1.0
     # @api private
-    class Assets
+    class Assets  < Utils::LoadPaths
       DEFAULT_DIRECTORY = 'public'.freeze
 
-      def initialize(root, directory)
-        @path = case directory
-                when :disabled
-                when String, NilClass
-                  root.join(directory || DEFAULT_DIRECTORY)
-                end
+      # @since 0.1.0
+      # @api private
+      def initialize(root)
+        @root = root
+        @paths = Array(DEFAULT_DIRECTORY)
       end
 
+      # @since 0.1.0
+      # @api private
       def entries
-        if @path.exist?
-          @path.children.map {|child| "/#{ child.basename }" }
-        else
-          []
+        hash = Hash.new { |k, v| k[v] = [] }
+        each do |path|
+          if path.exist?
+            hash[path.to_s] = path.children.map { |child| "/#{ child.basename }" }
+          end
         end
+        hash
       end
 
-      def enabled?
-        !@path.nil?
+      # @since 0.2.0
+      # @api private
+      def any?
+        @paths.any?
       end
 
-      def to_s
-        @path.to_s
+      protected
+      # @since 0.1.0
+      # @api private
+      def realpath(path)
+        @root.join(path).realpath
       end
-
-      alias_method :to_str, :to_s
     end
   end
 end

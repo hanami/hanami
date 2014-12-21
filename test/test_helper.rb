@@ -34,6 +34,14 @@ Minitest::Test.class_eval do
   end
 end
 
+Lotus::Application.class_eval do
+  def self.clear_registered_applications!
+    synchronize do
+      applications.clear
+    end
+  end
+end
+
 Lotus::Config::LoadPaths.class_eval do
   def clear
     @paths.clear

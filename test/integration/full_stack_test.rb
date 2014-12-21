@@ -1,13 +1,13 @@
 require 'test_helper'
 require 'rack/test'
-require 'fixtures/collaboration/application'
+require 'fixtures/collaboration/apps/web/application'
 
 describe 'A full stack Lotus application' do
   include Rack::Test::Methods
 
   before do
     @current_dir = Dir.pwd
-    Dir.chdir FIXTURES_ROOT.join('collaboration')
+    Dir.chdir FIXTURES_ROOT.join('collaboration/apps/web')
     @app = Collaboration::Application.new
   end
 
@@ -57,6 +57,12 @@ describe 'A full stack Lotus application' do
 
     get '/stylesheets/not-found.css'
     response.status.must_equal 404
+    response.body.wont_be_empty
+  end
+
+  it 'serves static files in relative path' do
+    get '/lotus.js'
+    response.status.must_equal 200
     response.body.wont_be_empty
   end
 

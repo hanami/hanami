@@ -1,0 +1,9 @@
+<!doctype HTML>
+<html>
+  <head>
+    <title><%= config[:classified_slice_name] %></title>
+  </head>
+  <body>
+    <%%= yield %>
+  </body>
+</html>

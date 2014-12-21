@@ -25,14 +25,14 @@ module Lotus
     #
     # @return [Lotus::Middleware] the loaded middleware stack
     #
-    # @since x.x.x
+    # @since 0.2.0
     # @api private
     #
     # @see http://rdoc.info/gems/rack/Rack/Builder
     def load!(application, namespace)
       @namespace = namespace
       @builder = ::Rack::Builder.new
-      load_default_stack
+      load_default_stack(application)
       @stack.each { |m, args, block| @builder.use load_middleware(m), *args, &block }
       @builder.run application.routes
 
@@ -60,13 +60,13 @@ module Lotus
     #
     # @return [Array] the middleware that was added
     #
-    # @since x.x.x
+    # @since 0.2.0
     def use(middleware, *args, &blk)
       @stack << [middleware, args, blk]
     end
 
     # @api private
-    # @since x.x.x
+    # @since 0.2.0
     def load_middleware(middleware)
       case middleware
       when String
@@ -77,16 +77,48 @@ module Lotus
     end
 
     # @api private
-    # @since x.x.x
-    def load_default_stack
+    # @since 0.2.0
+    def load_default_stack(application)
       @default_stack_loaded ||= begin
-        if @configuration.sessions.enabled?
-          use(*@configuration.sessions.middleware)
-        end
-        if @configuration.assets.enabled?
-          use Rack::Static, urls: @configuration.assets.entries, root: @configuration.assets.to_s
-        end
+        _load_session_middleware
+        _load_asset_middlewares
+        _load_default_welcome_page_for(application)
+        use Rack::MethodOverride
+
         true
+      end
+    end
+
+    # Default welcome page
+    #
+    # @api private
+    # @since 0.2.0
+    def _load_default_welcome_page_for(application)
+      unless application.routes.defined?
+        require 'lotus/welcome'
+        use Lotus::Welcome
+      end
+    end
+
+    # Add session middleware
+    #
+    # @api private
+    # @since 0.2.0
+    def _load_session_middleware
+      if @configuration.sessions.enabled?
+        use(*@configuration.sessions.middleware)
+      end
+    end
+
+    # Add asset middlewares
+    #
+    # @api private
+    # #since 0.2.0
+    def _load_asset_middlewares
+      if @configuration.serve_assets
+        @configuration.assets.entries.each do |path, children|
+          use Rack::Static, urls: children, root: path
+        end
       end
     end
   end

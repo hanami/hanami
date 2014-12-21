@@ -17,7 +17,7 @@ module Lotus
       end
 
       def call(env)
-        action = NullAction.new.tap {|a| a.call(env) }
+        action = NullAction.new.tap { |a| a.call(env) }
         [ DEFAULT_CODE, {CONTENT_TYPE => action.content_type}, DEFAULT_BODY, action ]
       end
     end

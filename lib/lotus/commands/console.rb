@@ -1,5 +1,3 @@
-require 'rack'
-
 module Lotus
   module Commands
     class Console
@@ -18,17 +16,19 @@ module Lotus
 
       attr_reader :options
 
-      def initialize(env)
-        @options = env.to_options
+      def initialize(environment)
+        @environment = environment
+        @options     = environment.to_options
       end
 
       def start
         # Clear out ARGV so Pry/IRB don't attempt to parse the rest
         ARGV.shift until ARGV.empty?
-        require File.expand_path(options[:applications], Dir.pwd)
+        require @environment.env_config.to_s
 
         # Add convenience methods to the main:Object binding
         TOPLEVEL_BINDING.eval('self').send(:include, Methods)
+        Lotus::Application.preload!
 
         engine.start
       end
@@ -40,7 +40,7 @@ module Lotus
       private
 
       def engine_lookup
-        (ENGINES.find {|_, klass| Object.const_defined?(klass) } || default_engine).first
+        (ENGINES.find { |_, klass| Object.const_defined?(klass) } || default_engine).first
       end
 
       def default_engine
