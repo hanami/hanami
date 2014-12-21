@@ -81,9 +81,10 @@ describe Lotus::Commands::New do
         it 'generates it' do
           content = @root.join('Rakefile').read
           content.must_match %(Rake::TestTask.new)
-          content.must_match %(t.pattern = 'test/**/*_test.rb')
-          content.must_match %(t.libs    << 'test')
+          content.must_match %(t.pattern = 'spec/**/*_spec.rb')
+          content.must_match %(t.libs    << 'spec')
           content.must_match %(task default: :test)
+          content.must_match %(task spec: :test)
         end
       end
     end
