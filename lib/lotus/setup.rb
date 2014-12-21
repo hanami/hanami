@@ -1,5 +1,3 @@
-require 'rubygems'
-require 'bundler/setup'
 require 'lotusrb'
 
 Bundler.require(
