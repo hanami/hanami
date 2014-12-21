@@ -14,6 +14,12 @@ module Lotus
       # @api private
       RACK_NAMESPACE = 'Rack::Session::%s'.freeze
 
+      # Localhost string for detecting localhost host configuration
+      #
+      # @since x.x.x
+      # @api private
+      LOCALHOST = 'localhost'.freeze
+
       # HTTP sessions configuration
       #
       # @param adapter [Symbol,String,Class] the session adapter
@@ -68,11 +74,17 @@ module Lotus
       # @since 0.2.0
       # @api private
       def default_options
-        if @configuration
+        if @configuration && !localhost?
           { domain: @configuration.host, secure: @configuration.ssl? }
         else
           {}
         end
+      end
+
+      # @since x.x.x
+      # @api private
+      def localhost?
+        @configuration.host.eql? LOCALHOST
       end
     end
   end
