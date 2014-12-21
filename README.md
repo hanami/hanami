@@ -13,7 +13,8 @@ Lotus combines together small but yet powerful frameworks:
 * [**Lotus::View**](https://github.com/lotus/view) - Presentation with a separation between views and templates
 * [**Lotus::Controller**](https://github.com/lotus/controller) - Full featured, fast and testable actions for Rack
 
-All those components are designed to be used independently from each other. If your aren't familiar with them, please take time to go through their READMEs.
+All those components are designed to be used independently from each other or to work together in a Lotus application.
+If your aren't familiar with them, please take time to go through their READMEs.
 
 ## Status
 
