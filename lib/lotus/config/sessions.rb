@@ -1,3 +1,4 @@
+require 'ipaddr'
 require 'lotus/utils/string'
 
 module Lotus
@@ -18,7 +19,7 @@ module Lotus
       #
       # @since x.x.x
       # @api private
-      LOCALHOST = 'localhost'.freeze
+      BLACKLISTED_DOMAINS = %w(localhost).freeze
 
       # HTTP sessions configuration
       #
@@ -74,17 +75,22 @@ module Lotus
       # @since 0.2.0
       # @api private
       def default_options
-        if @configuration && !localhost?
-          { domain: @configuration.host, secure: @configuration.ssl? }
+        if @configuration
+          { domain: domain, secure: @configuration.ssl? }
         else
           {}
         end
       end
 
-      # @since x.x.x
-      # @api private
-      def localhost?
-        @configuration.host.eql? LOCALHOST
+      def domain
+        domain = @configuration.host
+        if !BLACKLISTED_DOMAINS.include?(domain) && !ip_address?(domain)
+          domain
+        end
+      end
+
+      def ip_address?(string)
+        !!IPAddr.new(string) rescue false
       end
     end
   end

@@ -442,13 +442,14 @@ describe Lotus::Configuration do
       end
 
       it 'returns the configured value for middleware' do
-        @configuration.sessions.middleware.must_equal ["Rack::Session::Cookie", {}]
+        @configuration.sessions.middleware.must_equal ["Rack::Session::Cookie", { domain: nil, secure: false }]
       end
 
       it 'returns default values for options' do
+        default_options = { domain:nil, secure:false }
         _, options = @configuration.sessions.middleware
 
-        options.must_be_empty
+        options.must_equal default_options
       end
     end
 
@@ -485,7 +486,7 @@ describe Lotus::Configuration do
         end
 
         it 'returns it' do
-          @configuration.sessions.middleware.must_equal ['Rack::Session::FileSystem', {}]
+          @configuration.sessions.middleware.must_equal ['Rack::Session::FileSystem', { domain: nil, secure: false }]
         end
       end
 
