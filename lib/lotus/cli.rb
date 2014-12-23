@@ -1,5 +1,6 @@
 require 'thor'
 require 'lotus/environment'
+require 'lotus/version'
 
 module Lotus
   class Cli < Thor
