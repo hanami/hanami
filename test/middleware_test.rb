@@ -45,10 +45,41 @@ describe Lotus::Middleware do
   end
 
   describe "when it's configured with sessions" do
-    let(:config_blk) { proc { sessions :cookie } }
+      let(:config_blk) do
+        proc do
+          sessions :cookie
+          host 'localhost'
+        end
+      end
 
-    it 'includes sessions middleware' do
-      middleware.stack.must_include ['Rack::Session::Cookie', [{}], nil]
+    it 'domain is nil in sessions middleware' do
+      middleware.stack.must_include ['Rack::Session::Cookie', [{ domain: nil, secure: false }], nil]
+    end
+
+    describe 'and configured with domain 0.0.0.0' do
+      let(:config_blk) do
+        proc do
+          sessions :cookie
+          host '0.0.0.0'
+        end
+      end
+
+      it 'domain is nil in sessions middleware' do
+        middleware.stack.must_include ['Rack::Session::Cookie', [{ domain: nil, secure: false }], nil]
+      end
+    end
+
+    describe 'and configured with domain foo.com' do
+      let(:config_blk) do
+        proc do
+          sessions :cookie
+          host 'foo.com'
+        end
+      end
+
+      it 'domain is equal to the host in sessions middleware' do
+        middleware.stack.must_include ['Rack::Session::Cookie', [{ domain: 'foo.com', secure: false }], nil]
+      end
     end
   end
 
