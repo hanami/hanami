@@ -46,7 +46,7 @@ describe Lotus::Commands::New do
         content = @root.join('Gemfile').read
         content.must_match %(gem 'bundler')
         content.must_match %(gem 'rake')
-        content.must_match %(gem 'lotusrb',     '#{ Lotus::VERSION }')
+        content.must_match %(gem 'lotusrb',      '#{ Lotus::VERSION }')
         content.must_match %(gem 'lotus-model', '~> 0.2')
         content.must_match %(gem 'capybara')
       end
@@ -72,6 +72,14 @@ describe Lotus::Commands::New do
         it 'includes minitest' do
           content = @root.join('Gemfile').read
           content.must_match %(gem 'minitest')
+        end
+      end
+
+      describe 'production group' do
+        it 'includes a server example' do
+          content = @root.join('Gemfile').read
+          content.must_match %(group :production do)
+          content.must_match %(# gem 'puma')
         end
       end
     end
