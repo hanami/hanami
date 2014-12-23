@@ -1,0 +1,5 @@
+module <%= config[:classified_slice_name] %>::Views::Home
+  class Index
+    include <%= config[:classified_slice_name] %>::View
+  end
+end

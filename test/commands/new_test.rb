@@ -46,7 +46,7 @@ describe Lotus::Commands::New do
         content = @root.join('Gemfile').read
         content.must_match %(gem 'bundler')
         content.must_match %(gem 'rake')
-        content.must_match %(gem 'lotusrb',     '#{ Lotus::VERSION }')
+        content.must_match %(gem 'lotusrb',      '#{ Lotus::VERSION }')
         content.must_match %(gem 'lotus-model', '~> 0.2')
         content.must_match %(gem 'capybara')
       end
@@ -72,6 +72,14 @@ describe Lotus::Commands::New do
         it 'includes minitest' do
           content = @root.join('Gemfile').read
           content.must_match %(gem 'minitest')
+        end
+      end
+
+      describe 'production group' do
+        it 'includes a server example' do
+          content = @root.join('Gemfile').read
+          content.must_match %(group :production do)
+          content.must_match %(# gem 'puma')
         end
       end
     end
@@ -285,6 +293,7 @@ describe Lotus::Commands::New do
       it 'generates it' do
         content = @root.join('apps/web/config/routes.rb').read
         content.must_match %(# Configure your routes here)
+        content.must_match %(# get '/', to: 'home#index')
       end
     end
 
@@ -301,15 +310,13 @@ describe Lotus::Commands::New do
       end
     end
 
-    describe 'apps/web/public/javascripts' do
+    describe 'apps/web/controllers/home/index.rb' do
       it 'generates it' do
-        @root.join('apps/web/public/javascripts').must_be :exist?
-      end
-    end
-
-    describe 'apps/web/public/stylesheets' do
-      it 'generates it' do
-        @root.join('apps/web/public/stylesheets').must_be :exist?
+        content = @root.join('apps/web/controllers/home/index.rb').read
+        content.must_match %(module Web::Controllers::Home)
+        content.must_match %(class Index)
+        content.must_match %(include Web::Action)
+        content.must_match "def call(params)"
       end
     end
 
@@ -330,6 +337,36 @@ describe Lotus::Commands::New do
         content.must_match %(<%= yield %>)
       end
     end
+
+    describe 'apps/web/views/home/index.rb' do
+      it 'generates it' do
+        content = @root.join('apps/web/views/home/index.rb').read
+        content.must_match %(module Web::Views::Home)
+        content.must_match %(class Index)
+        content.must_match %(include Web::View)
+      end
+    end
+
+    describe 'apps/web/templates/home/index.html.rb' do
+      it 'generates it' do
+        content = @root.join('apps/web/templates/home/index.html.erb').read
+        content.must_match %(<h1>Welcome to Lotus!</h1>)
+        content.must_match %(<h3>This template is rendered by <code>Web::Views::Home::Index</code> and it's available at: <code>apps/web/templates/home/index.html.erb</code></h3>)
+      end
+    end
+
+    describe 'apps/web/public/javascripts' do
+      it 'generates it' do
+        @root.join('apps/web/public/javascripts').must_be :exist?
+      end
+    end
+
+    describe 'apps/web/public/stylesheets' do
+      it 'generates it' do
+        @root.join('apps/web/public/stylesheets').must_be :exist?
+      end
+    end
+
 
     describe 'testing' do
       describe 'when minitest (default)' do
