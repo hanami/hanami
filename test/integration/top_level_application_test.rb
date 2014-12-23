@@ -14,6 +14,20 @@ describe 'A top level Lotus application' do
   after do
     Dir.chdir @current_dir
     @current_dir = nil
+
+    _reset_controller_setup
+    _reset_view_setup
+  end
+
+  def _reset_controller_setup
+    Object.send(:remove_const, :Action)
+    Object.send(:remove_const, :Controller)
+  end
+
+  def _reset_view_setup
+    Object.send(:remove_const, :Layout)
+    Object.send(:remove_const, :View)
+    Object.send(:remove_const, :Presenter)
   end
 
   def app

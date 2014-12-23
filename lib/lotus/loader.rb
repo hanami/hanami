@@ -44,8 +44,8 @@ module Lotus
 
     def _configure_controller_framework!
       config = configuration
-      unless application_module.const_defined?('Controller')
-        controller = Lotus::Controller.duplicate(application_module) do
+      unless namespace.const_defined?('Controller')
+        controller = Lotus::Controller.duplicate(namespace) do
           handle_exceptions config.handle_exceptions
           default_format    config.default_format
 
@@ -55,21 +55,21 @@ module Lotus
           config.controller.__apply(self)
         end
 
-        application_module.const_set('Controller', controller)
+        namespace.const_set('Controller', controller)
       end
     end
 
     def _configure_view_framework!
       config = configuration
-      unless application_module.const_defined?('View')
-        view = Lotus::View.duplicate(application_module) do
+      unless namespace.const_defined?('View')
+        view = Lotus::View.duplicate(namespace) do
           root   config.templates
           layout config.layout
 
           config.view.__apply(self)
         end
 
-        application_module.const_set('View', view)
+        namespace.const_set('View', view)
       end
     end
 
@@ -94,8 +94,8 @@ module Lotus
     end
 
     def _load_view_framework!
-      application_module.module_eval %{
-        #{ application_module }::View.load!
+      namespace.module_eval %{
+        #{ namespace }::View.load!
       }
     end
 
@@ -135,7 +135,6 @@ module Lotus
     end
 
     def _assign_rack_routes!
-      namespace = configuration.namespace || application_module
       resolver    = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: namespace)
       default_app = Lotus::Routing::Default.new
       application.routes = Lotus::Router.new(
@@ -150,7 +149,6 @@ module Lotus
     end
 
     def _load_rack_middleware!
-      namespace = configuration.namespace || application_module
       configuration.middleware.load!(application, namespace)
     end
 
@@ -165,6 +163,10 @@ module Lotus
       @application_module ||= Utils::Class.load!(
         Utils::String.new(application.name).namespace
       )
+    end
+
+    def namespace
+      configuration.namespace || application_module
     end
   end
 end

@@ -1,5 +1,5 @@
 module Hardware
   class Index
-    include InformationTech::View
+    include Lotus::View
   end
 end
