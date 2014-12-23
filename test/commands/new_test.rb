@@ -100,6 +100,8 @@ describe Lotus::Commands::New do
     describe 'config/environment.rb' do
       it 'generates it' do
         content = @root.join('config/environment.rb').read
+        content.must_match %(require 'rubygems')
+        content.must_match %(require 'bundler/setup')
         content.must_match %(require 'lotus/setup')
         content.must_match %(require_relative '../lib/chirp')
 

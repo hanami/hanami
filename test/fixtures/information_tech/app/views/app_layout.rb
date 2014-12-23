@@ -1,3 +1,3 @@
 class AppLayout
-  include InformationTech::Layout
+  include Lotus::Layout
 end

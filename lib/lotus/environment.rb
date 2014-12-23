@@ -1,6 +1,7 @@
 require 'thread'
-require 'lotus/utils/hash'
+require 'pathname'
 require 'dotenv'
+require 'lotus/utils/hash'
 
 module Lotus
   # Define and expose information about the Lotus environment.

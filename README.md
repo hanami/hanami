@@ -13,7 +13,8 @@ Lotus combines together small but yet powerful frameworks:
 * [**Lotus::View**](https://github.com/lotus/view) - Presentation with a separation between views and templates
 * [**Lotus::Controller**](https://github.com/lotus/controller) - Full featured, fast and testable actions for Rack
 
-All those components are designed to be used independently from each other. If your aren't familiar with them, please take time to go through their READMEs.
+All those components are designed to be used independently from each other or to work together in a Lotus application.
+If your aren't familiar with them, please take time to go through their READMEs.
 
 ## Status
 
@@ -82,20 +83,22 @@ The core of this architecture lives in `lib/`, where developers should build fea
 
 Imagine you are building a personal finance application, and you have a feature called _"register expense"_. This functionality involves `Money` and `Expense` Ruby objects and the need of persisting data into a database. You can have those classes living in `lib/pocket/money.rb` and `lib/pocket/expense.rb` and use [Lotus::Model](https://github.com/lotus/model) to persist them.
 
-It has few but important advantages:
+It's based on a few simple concepts: **use cases** and **applications**.
+Use cases (features) should be implemented in `lib/` with a combination of pure objects and the needed Ruby gems.
+One or more Lotus applications live in `apps/`. They are isolated each other, and depend only on the code in `lib/`.
 
-* **Code reusability.** You can register an expense from the Web UI or from a JSON API, which can be different Lotus _slices_ or simple Rack based apps.
-* **Decoupled components.** The core of your application depends only on a few gems and it doesn't need to worry about the Web/HTTP/Console/Background jobs.
-* **Applications are built like a gem**, this ease the process of package them and share between projects, without the need of carry on a lot of dependencies.
+Each of them should serve for only one purpose: user facing web application, administrative backend, JSON API, metrics dashboard, etc.
 
-Multiple Lotus applications are located under the `apps/` directory.
+This architecture has important advantages:
 
+  * **Code reusability.** You can consume a feature from the Web UI or from a HTTP API. Each one can be different Lotus application or simple Rack based endpoints.
+  * **Decoupled components.** The core of your application depends only on a few gems and it doesn't need to worry about the Web/HTTP/Console/Background jobs.
+  * **Applications are built like a gem**, this ease the process of package them and share between projects, without the need of carry a lot of dependencies.
+  * **Avoid monoliths**. Each Lotus application under `apps/` is a candidate for later on extraction into a separated [_microservice_](http://martinfowler.com/articles/microservices.html).
 
-When a project is new, to move fast, a team wants to ship a single deliverable in production.
-Once the code grows, they may want to decide to extract microservices. However, this isn't always possible or easy, because of the high coupling between components.
-
-Lotus comes to the rescue, by helping teams to build products with _slices_.
-A _slice_ is a web application that serves for a single purpose: user facing application, administration backend, JSON API, dashboard for profiling etc. To make a Rails analogy, it's kinda equivalent to an _engine_. The only difference is that a _slice_ is a self contained Rack application that can be easily extracted.
+The last point is crucial. In the early days of a new project is really convenient to build and deploy all the code together.
+But as the time passes, it can become nearly impossible to extract sets of cohesive functionalities into separated deliverables.
+Lotus helps to plan those things ahead of time, but without the burden that is required by those choices, because it support multiple applications natively.
 
 Here's the name _**container**_: a Lotus _"shell"_ that can run multiple micro applications in the same process.
 
@@ -290,15 +293,6 @@ module Bookshelf
       #############################
       # FRAMEWORKS CONFIGURATIONS #
       #############################
-
-      # Low level configuration for Lotus::Model (optional)
-      # The given block will be yielded by `Lotus::Model::Configuration`.
-      # See the related documentation
-      # Argument: Proc
-      #
-      model.prepare do
-        # ...
-      end
 
       # Low level configuration for Lotus::View (optional)
       # The given block will be yielded every time `Lotus::View` is included.

@@ -2,7 +2,7 @@ module Collaboration::Controllers::Books
   include Collaboration::Controller
 
   class New
-    include Lotus::Action
+    include Collaboration::Action
     expose :book
 
     def call(params)
@@ -11,7 +11,7 @@ module Collaboration::Controllers::Books
   end
 
   class Index
-    include Lotus::Action
+    include Collaboration::Action
     expose :books
 
     def call(params)
@@ -20,7 +20,7 @@ module Collaboration::Controllers::Books
   end
 
   class Show
-    include Lotus::Action
+    include Collaboration::Action
     expose :book
 
     def call(params)
@@ -29,7 +29,7 @@ module Collaboration::Controllers::Books
   end
 
   class Edit
-    include Lotus::Action
+    include Collaboration::Action
     expose :book
 
     def call(params)
@@ -38,7 +38,7 @@ module Collaboration::Controllers::Books
   end
 
   class Destroy
-    include Lotus::Action
+    include Collaboration::Action
 
     def call(params)
       @book = BookRepository.find(params[:id])
@@ -49,7 +49,7 @@ module Collaboration::Controllers::Books
   end
 
   class Create
-    include Lotus::Action
+    include Collaboration::Action
 
     def call(params)
       @book = Book.new(params)
@@ -60,7 +60,7 @@ module Collaboration::Controllers::Books
   end
 
   class Update
-    include Lotus::Action
+    include Collaboration::Action
 
     def call(params)
       @book = BookRepository.find(params[:id])

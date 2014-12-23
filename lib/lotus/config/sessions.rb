@@ -1,3 +1,4 @@
+require 'ipaddr'
 require 'lotus/utils/string'
 
 module Lotus
@@ -13,6 +14,12 @@ module Lotus
       # @since 0.2.0
       # @api private
       RACK_NAMESPACE = 'Rack::Session::%s'.freeze
+
+      # Localhost string for detecting localhost host configuration
+      #
+      # @since x.x.x
+      # @api private
+      BLACKLISTED_DOMAINS = %w(localhost).freeze
 
       # HTTP sessions configuration
       #
@@ -48,11 +55,11 @@ module Lotus
       # @api private
       def middleware
         middleware = case @adapter
-        when Symbol
-          RACK_NAMESPACE % Utils::String.new(@adapter).classify
-        else
-          @adapter
-        end
+                     when Symbol
+                       RACK_NAMESPACE % Utils::String.new(@adapter).classify
+                     else
+                       @adapter
+                     end
 
         [middleware, options]
       end
@@ -69,10 +76,21 @@ module Lotus
       # @api private
       def default_options
         if @configuration
-          { domain: @configuration.host, secure: @configuration.ssl? }
+          { domain: domain, secure: @configuration.ssl? }
         else
           {}
         end
+      end
+
+      def domain
+        domain = @configuration.host
+        if !BLACKLISTED_DOMAINS.include?(domain) && !ip_address?(domain)
+          domain
+        end
+      end
+
+      def ip_address?(string)
+        !!IPAddr.new(string) rescue false
       end
     end
   end

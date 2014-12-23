@@ -442,11 +442,11 @@ describe Lotus::Configuration do
       end
 
       it 'returns the configured value for middleware' do
-        @configuration.sessions.middleware.must_equal ["Rack::Session::Cookie", {domain: 'localhost', secure: false}]
+        @configuration.sessions.middleware.must_equal ["Rack::Session::Cookie", { domain: nil, secure: false }]
       end
 
       it 'returns default values for options' do
-        default_options = { domain: @configuration.host, secure: @configuration.scheme == 'https' }
+        default_options = { domain:nil, secure:false }
         _, options = @configuration.sessions.middleware
 
         options.must_equal default_options
@@ -460,7 +460,7 @@ describe Lotus::Configuration do
 
       it 'merges default option values' do
         _, options = @configuration.sessions.middleware
-        options[:domain].must_equal @configuration.host
+        options[:domain].must_be_nil
         options[:expire_after].must_equal 2592000
         options[:secure].must_equal true
       end
@@ -486,7 +486,7 @@ describe Lotus::Configuration do
         end
 
         it 'returns it' do
-          @configuration.sessions.middleware.must_equal ['Rack::Session::FileSystem', {domain: 'localhost', secure: false}]
+          @configuration.sessions.middleware.must_equal ['Rack::Session::FileSystem', { domain: nil, secure: false }]
         end
       end
 
