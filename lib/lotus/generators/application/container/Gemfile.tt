@@ -12,7 +12,7 @@ gem 'lotus-view',        require: false, github: 'lotus/view'
 gem 'lotus-model',       require: false, github: 'lotus/model'
 gem 'lotusrb',                           github: 'lotus/lotus'
 <%- else -%>
-gem 'lotusrb',     '<%= Lotus::VERSION %>'
+gem 'lotusrb',      '<%= Lotus::VERSION %>'
 gem 'lotus-model', '<%= config[:lotus_model_version] %>'
 <%- end -%>
 
@@ -22,4 +22,8 @@ group :test do
   gem 'minitest'
 <%- end -%>
   gem 'capybara'
+end
+
+group :production do
+  # gem 'puma'
 end
