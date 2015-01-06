@@ -68,7 +68,7 @@ module Lotus
     method_option :help,           aliases: '-h', desc: 'displays the usage method'
 
     def new(name = nil)
-      if options[:help]
+      if options[:help] || name.nil?
         invoke :help, ['new']
       else
         require 'lotus/commands/new'
