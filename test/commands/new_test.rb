@@ -75,6 +75,15 @@ describe Lotus::Commands::New do
         end
       end
 
+      describe 'rspec' do
+        let(:opts) { container_options.merge(test: 'rspec') }
+
+        it 'includes rspec' do
+          content = @root.join('Gemfile').read
+          content.must_match %(gem 'rspec')
+        end
+      end
+
       describe 'production group' do
         it 'includes a server example' do
           content = @root.join('Gemfile').read
@@ -93,6 +102,16 @@ describe Lotus::Commands::New do
           content.must_match %(t.libs    << 'spec')
           content.must_match %(task default: :test)
           content.must_match %(task spec: :test)
+        end
+      end
+
+      describe 'rspec' do
+        let(:opts) { container_options.merge(test: 'rspec') }
+
+        it 'generates it' do
+          content = @root.join('Rakefile').read
+          content.must_match %(RSpec::Core::RakeTask.new(:spec))
+          content.must_match %(task default: :spec)
         end
       end
     end
@@ -169,6 +188,14 @@ describe Lotus::Commands::New do
       end
     end
 
+    describe 'empty spec/* directory' do
+      it 'generates it' do
+        @root.join('spec/chirp/entities').must_be :directory?
+        @root.join('spec/chirp/repositories').must_be :directory?
+        @root.join('spec/support').must_be :directory?
+      end
+    end
+
     describe 'testing' do
       describe 'when minitest (default)' do
         describe 'spec/chirp/entities' do
@@ -184,24 +211,85 @@ describe Lotus::Commands::New do
         end
 
         describe 'spec/spec_helper.rb' do
-          it 'generates it' do
-            content = @root.join('spec/spec_helper.rb').read
-            content.must_match %(ENV['LOTUS_ENV'] ||= 'test')
-            content.must_match %(require_relative '../config/environment')
-            content.must_match %(require 'minitest/autorun')
-            content.must_match %(Lotus::Application.preload!)
+          describe 'minitest (default)' do
+            it 'generates it' do
+              content = @root.join('spec/spec_helper.rb').read
+              content.must_match %(ENV['LOTUS_ENV'] ||= 'test')
+              content.must_match %(require_relative '../config/environment')
+              content.must_match %(require 'minitest/autorun')
+              content.must_match %(Lotus::Application.preload!)
+            end
+          end
+
+          describe 'rspec' do
+            let(:opts) { container_options.merge(test: 'rspec') }
+
+            it 'generates it' do
+              content = @root.join('spec/spec_helper.rb').read
+              content.must_match %(ENV['LOTUS_ENV'] ||= 'test')
+              content.must_match %(require_relative '../config/environment')
+              content.must_match %(RSpec.configure do |config|)
+              content.must_match %(config.before(:suite) { Lotus::Application.preload! })
+              content.must_match %(config.filter_run :focus)
+              content.must_match %(config.run_all_when_everything_filtered = true)
+
+              content.must_match %(if config.files_to_run.one?)
+              content.must_match %(config.default_formatter = 'doc')
+
+              content.must_match %(config.order = :random)
+              content.must_match %(Kernel.srand config.seed)
+
+              content.must_match %(config.expect_with :rspec do |expectations|)
+              content.must_match %(expectations.syntax = :expect)
+
+              content.must_match %(config.mock_with :rspec do |mocks|)
+              content.must_match %(mocks.syntax = :expect)
+              content.must_match %(mocks.verify_partial_doubles = true)
+            end
           end
         end
 
         describe 'spec/features_helper.rb' do
-          it 'generates it' do
-            content = @root.join('spec/features_helper.rb').read
-            content.must_match %(require_relative './spec_helper')
-            content.must_match %(require 'capybara')
-            content.must_match %(require 'capybara/dsl')
-            content.must_match %(Capybara.app = Lotus::Container.new)
-            content.must_match %(class MiniTest::Spec)
-            content.must_match %(include Capybara::DSL)
+          describe 'minitest (default)' do
+            it 'generates it' do
+              content = @root.join('spec/features_helper.rb').read
+              content.must_match %(require_relative './spec_helper')
+              content.must_match %(require 'capybara')
+              content.must_match %(require 'capybara/dsl')
+              content.must_match %(Capybara.app = Lotus::Container.new)
+              content.must_match %(class MiniTest::Spec)
+              content.must_match %(include Capybara::DSL)
+            end
+          end
+
+          describe 'rspec' do
+            let(:opts) { container_options.merge(test: 'rspec') }
+
+            it 'generates it' do
+              content = @root.join('spec/features_helper.rb').read
+              content.must_match %(require_relative './spec_helper')
+              content.must_match %(require 'capybara')
+              content.must_match %(require 'capybara/rspec')
+              content.must_match %(RSpec.configure do |config|)
+              content.must_match %(config.include RSpec::FeatureExampleGroup)
+              content.must_match %(config.include Capybara::DSL)
+              content.must_match %(config.include Capybara::RSpecMatchers)
+            end
+          end
+        end
+
+        describe 'spec/support/capybara.rb' do
+          describe 'rspec' do
+            let(:opts) { container_options.merge(test: 'rspec') }
+
+            it 'generates it' do
+              content = @root.join('spec/support/capybara.rb').read
+              content.must_match %(module RSpec)
+              content.must_match %(module FeatureExampleGroup)
+              content.must_match %(def self.included(group))
+              content.must_match %(group.metadata[:type] = :feature)
+              content.must_match %(Capybara.app = Lotus::Container.new)
+            end
           end
         end
       end
