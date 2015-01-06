@@ -76,6 +76,18 @@ module Lotus
       end
     end
 
+    desc 'dbconsole', 'start a db console'
+    method_option :help,           aliases: '-h', desc: 'displays the usage method'
+    def dbconsole(app)
+      if options[:help]
+        invoke :help, ['new']
+      else
+        require 'lotus/commands/dbconsole'
+        Lotus::Commands::DBConsole.new(app, environment).start
+      end
+    end
+
+
     private
 
     def environment
