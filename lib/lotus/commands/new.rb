@@ -10,11 +10,11 @@ module Lotus
       attr_reader :app_name, :source, :target, :cli, :options
 
       def initialize(app_name, environment, cli)
-        @app_name = app_name
+        @app_name = _get_real_app_name(app_name)
         @options  = environment.to_options
         @arch     = @options.fetch(:architecture)
 
-        @target   = Pathname.pwd.join(@app_name)
+        @target   = Pathname.pwd.join(app_name)
         @source   = Pathname.new(@options.fetch(:source) { ::File.dirname(__FILE__) + '/../generators/application/' }).join(@arch)
 
         @cli      = cli
@@ -26,6 +26,21 @@ module Lotus
 
       def start
         @command.start
+      end
+
+      private
+      def _get_real_app_name(app_name)
+        case app_name
+        when '.'
+          ::File.basename(Dir.getwd)
+        when '/'
+          # If path is root, then use a default app name
+          # most likely won't be used due to file permission
+          'app'
+        else
+          # Allows the app name to be a path
+          ::File.basename(app_name)
+        end
       end
     end
   end
