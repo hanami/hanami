@@ -33,6 +33,7 @@ module Lotus
             'config/.env.development.tt' => 'config/.env.development',
             'config/.env.test.tt'        => 'config/.env.test',
             'lib/app_name.rb.tt'         => "lib/#{ app_name }.rb",
+            'lib/config/mapping.rb.tt'   => 'lib/config/mapping.rb',
           }
 
           empty_directories = [
