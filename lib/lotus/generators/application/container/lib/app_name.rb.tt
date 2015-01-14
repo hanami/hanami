@@ -19,6 +19,9 @@ Lotus::Model.configure do
   ##
   # Database mapping
   #
+  # Optionally, you can specify mapping file to load with:
+  #   mapping "{__dir__}/config/mapping"
+  #
   mapping do
     # collection :users do
     #   entity     User

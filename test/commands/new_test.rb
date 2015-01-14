@@ -167,6 +167,19 @@ describe Lotus::Commands::New do
         content.must_match %(Lotus::Model.configure)
         content.must_match %(adapter type: :file_system, uri: ENV['CHIRP_DATABASE_URL'])
         content.must_match %(mapping do)
+        content.must_match %(mapping "{__dir__}/config/mapping")
+      end
+    end
+
+    describe 'lib/config/mapping.rb' do
+      it 'generates it' do
+        content = @root.join('lib/config/mapping.rb').read
+        content.must_match %(collection :users do)
+        content.must_match %(entity     User)
+        content.must_match %(repository UserRepository)
+        content.must_match %(attribute :id,   Integer)
+        content.must_match %(attribute :name, String)
+        content.must_match %(end)
       end
     end
 
