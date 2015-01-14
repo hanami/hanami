@@ -1,6 +1,7 @@
 require 'securerandom'
 require 'lotus/generators/abstract'
 require 'lotus/utils/string'
+require 'lotus/application_name'
 
 module Lotus
   module Generators
@@ -8,8 +9,9 @@ module Lotus
       def initialize(command)
         super
 
-        @slice_name            = options.fetch(:application)
-        @upcase_slice_name     = @slice_name.upcase
+        application_name       = ApplicationName.new(options.fetch(:application))
+        @slice_name            = application_name.to_s
+        @upcase_slice_name     = application_name.to_env_s
         @classified_slice_name = Utils::String.new(@slice_name).classify
 
         @source                = Pathname.new(::File.dirname(__FILE__) + '/../generators/slice')
