@@ -174,12 +174,12 @@ describe Lotus::Commands::New do
     describe 'lib/config/mapping.rb' do
       it 'generates it' do
         content = @root.join('lib/config/mapping.rb').read
-        content.must_match %(collection :users do)
-        content.must_match %(entity     User)
-        content.must_match %(repository UserRepository)
-        content.must_match %(attribute :id,   Integer)
-        content.must_match %(attribute :name, String)
-        content.must_match %(end)
+        content.must_match %(# collection :users do)
+        content.must_match %(#   entity     User)
+        content.must_match %(#   repository UserRepository)
+        content.must_match %(#   attribute :id,   Integer)
+        content.must_match %(#   attribute :name, String)
+        content.must_match %(# end)
       end
     end
 
