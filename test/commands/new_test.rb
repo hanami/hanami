@@ -162,7 +162,7 @@ describe Lotus::Commands::New do
     describe 'lib/chirp.rb' do
       it 'generates it' do
         content = @root.join('lib/chirp.rb').read
-        content.must_match 'Dir["#{ __dir__ }/**/*.rb"].each { |file| require_relative file }'
+        content.must_match 'Dir["#{ __dir__ }/chirp/**/*.rb"].each { |file| require_relative file }'
         content.must_match %(require 'lotus/model')
         content.must_match %(Lotus::Model.configure)
         content.must_match %(adapter type: :file_system, uri: ENV['CHIRP_DATABASE_URL'])
