@@ -529,17 +529,37 @@ describe Lotus::Commands::New do
         end
       end
     end
+  end
 
-    describe 'application path' do
-      describe 'when an application path is provided' do
-        let(:opts) { container_options.merge(application_path: 'my_lotus_app') }
+  describe 'application path' do
+    def container_options
+      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false]
+    end
 
-        describe 'my_lotus_app' do
-          it 'generates it' do
-            @root.dirname().join('my_lotus_app').must_be :directory?
-          end
+    let(:opts)      { container_options }
+    let(:app_name)  { 'chirp' }
+
+    before do
+      capture_io { command.start }
+    end
+
+    describe 'when a path is provided' do
+      let(:opts) { container_options.merge(path: 'my_lotus_app') }
+
+      describe 'my_lotus_app' do
+        it 'generates it' do
+          @root.dirname().join('my_lotus_app').must_be :directory?
         end
       end
+    end
+  end
+
+  describe 'when a path is provided as the app name' do
+    let(:opts)      { Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false] }
+    let(:app_name)  { 'lib/chirp' }
+
+    it 'raises an ArgumentError' do
+      -> { command.start }.must_raise ArgumentError
     end
   end
 end
