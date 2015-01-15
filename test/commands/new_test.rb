@@ -558,7 +558,7 @@ describe Lotus::Commands::New do
 
     it 'raises an ArgumentError' do
       exception = -> { command.start }.must_raise ArgumentError
-      (exception.message).must_equal 'Invalid application name. If you want to set application path, please use --path option'
+      exception.message.must_equal 'Invalid application name. If you want to set application path, please use --path option'
     end
   end
 end

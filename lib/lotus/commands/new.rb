@@ -30,10 +30,11 @@ module Lotus
 
       private
       def _get_real_app_name(app_name)
-        raise ArgumentError.new("Invalid application name. If you want to set application path, please use --path option") if app_name.include?('/')
+        if app_name.include?('/')
+          raise ArgumentError.new("Invalid application name. If you want to set application path, please use --path option")
+        end
 
-        app_name = ::File.basename(Dir.getwd) if app_name == '.'
-        app_name
+        app_name == '.' ? ::File.basename(Dir.getwd) : app_name
       end
     end
   end
