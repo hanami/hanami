@@ -14,7 +14,7 @@ module Lotus
         @options  = environment.to_options
         @arch     = @options.fetch(:architecture)
 
-        @target   = Pathname.pwd.join(app_name)
+        @target   = Pathname.pwd.join(@options.fetch(:application_path, ::File.basename(app_name, '*')))
         @source   = Pathname.new(@options.fetch(:source) { ::File.dirname(__FILE__) + '/../generators/application/' }).join(@arch)
 
         @cli      = cli
@@ -33,13 +33,10 @@ module Lotus
         case app_name
         when '.'
           ::File.basename(Dir.getwd)
-        when '/'
-          # If path is root, then use a default app name
-          # most likely won't be used due to file permission
-          'app'
         else
-          # Allows the app name to be a path
-          ::File.basename(app_name)
+          # Returns last component of the app_name
+          # if a path is provided
+          ::File.basename(app_name, '*')
         end
       end
     end

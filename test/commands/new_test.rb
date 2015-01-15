@@ -530,41 +530,14 @@ describe Lotus::Commands::New do
       end
     end
 
-    describe 'when app_name is a path' do
-      let(:app_name) { '../new' }
+    describe 'application path' do
+      describe 'when an application path is provided' do
+        let(:opts) { container_options.merge(application_path: 'my_lotus_app') }
 
-      describe 'config/environment.rb' do
-        it 'generates it' do
-          content = @root.join('config/environment.rb').read
-          content.must_match %(require_relative '../lib/new')
-        end
-      end
-
-      describe 'lib/new' do
-        it 'generates it' do
-          @root.join('lib/new').must_be :directory?
-        end
-      end
-
-      describe 'lib/new.rb' do
-        it 'generates it' do
-          @root.join('lib/new.rb').must_be :file?
-          content = @root.join('lib/new.rb').read
-          content.must_match %(adapter type: :file_system, uri: ENV['NEW_DATABASE_URL'])
-        end
-      end
-
-      describe 'config/.env.development' do
-        it 'generates it' do
-          content = @root.join('config/.env.development').read
-          content.must_match %(NEW_DATABASE_URL="file:///db/new_development")
-        end
-      end
-
-      describe 'config/.env.test' do
-        it 'generates it' do
-          content = @root.join('config/.env.test').read
-          content.must_match %(NEW_DATABASE_URL="file:///db/new_test")
+        describe 'my_lotus_app' do
+          it 'generates it' do
+            @root.dirname().join('my_lotus_app').must_be :directory?
+          end
         end
       end
     end
