@@ -490,5 +490,75 @@ describe Lotus::Commands::New do
         end
       end
     end
+
+    describe 'when app_name is .' do
+      let(:app_name) { '.' }
+
+      describe 'config/environment.rb' do
+        it 'generates it' do
+          content = @root.join('config/environment.rb').read
+          content.must_match %(require_relative '../lib/new')
+        end
+      end
+
+      describe 'lib/new' do
+        it 'generates it' do
+          @root.join('lib/new').must_be :directory?
+        end
+      end
+
+      describe 'lib/new.rb' do
+        it 'generates it' do
+          @root.join('lib/new.rb').must_be :file?
+          content = @root.join('lib/new.rb').read
+          content.must_match %(adapter type: :file_system, uri: ENV['NEW_DATABASE_URL'])
+        end
+      end
+
+      describe 'config/.env.development' do
+        it 'generates it' do
+          content = @root.join('config/.env.development').read
+          content.must_match %(NEW_DATABASE_URL="file:///db/new_development")
+        end
+      end
+
+      describe 'config/.env.test' do
+        it 'generates it' do
+          content = @root.join('config/.env.test').read
+          content.must_match %(NEW_DATABASE_URL="file:///db/new_test")
+        end
+      end
+    end
+  end
+
+  describe 'application path' do
+    def container_options
+      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false]
+    end
+
+    let(:opts)      { container_options }
+    let(:app_name)  { 'chirp' }
+
+    before do
+      capture_io { command.start }
+    end
+
+    describe 'when a path is provided' do
+      let(:opts) { container_options.merge(path: 'my_lotus_app') }
+
+      it 'generates the app at the specific path' do
+        @root.dirname().join('my_lotus_app').must_be :directory?
+      end
+    end
+  end
+
+  describe 'when a path is provided as the app name' do
+    let(:opts)      { Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false] }
+    let(:app_name)  { 'lib/chirp' }
+
+    it 'raises an ArgumentError' do
+      exception = -> { command.start }.must_raise ArgumentError
+      exception.message.must_equal 'Invalid application name. If you want to set application path, please use --path option'
+    end
   end
 end
