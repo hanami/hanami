@@ -546,10 +546,8 @@ describe Lotus::Commands::New do
     describe 'when a path is provided' do
       let(:opts) { container_options.merge(path: 'my_lotus_app') }
 
-      describe 'my_lotus_app' do
-        it 'generates it' do
-          @root.dirname().join('my_lotus_app').must_be :directory?
-        end
+      it 'generates the app at the specific path' do
+        @root.dirname().join('my_lotus_app').must_be :directory?
       end
     end
   end
@@ -559,7 +557,8 @@ describe Lotus::Commands::New do
     let(:app_name)  { 'lib/chirp' }
 
     it 'raises an ArgumentError' do
-      -> { command.start }.must_raise ArgumentError
+      exception = -> { command.start }.must_raise ArgumentError
+      (exception.message).must_equal 'Invalid application name. If you want to set application path, please use --path option'
     end
   end
 end
