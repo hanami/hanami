@@ -1,6 +1,7 @@
 require 'thor'
 require 'lotus/environment'
 require 'lotus/version'
+require 'lotus/cli/generate'
 
 module Lotus
   class Cli < Thor
@@ -77,6 +78,8 @@ module Lotus
         Lotus::Commands::New.new(name, environment, self).start
       end
     end
+
+    register(Lotus::Generate, 'generate', 'generate <command>', 'Generate parts for Lotus.')
 
     private
 
