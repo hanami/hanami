@@ -12,7 +12,7 @@ module Lotus
           name = Lotus::Utils::String.new(name)
           #@app_name = ""
           @migration_name = name.underscore
-          @migration_time = Time.now.to_i.to_s
+          @migration_time = generate_timestamp
           @migration_class = name.classify
 
           @target = Pathname.new(environment.root)
@@ -25,6 +25,12 @@ module Lotus
 
         def start
           @command.start
+        end
+
+        private
+        
+        def generate_timestamp
+          Time.now.strftime("%d%m%Y")
         end
       end
     end

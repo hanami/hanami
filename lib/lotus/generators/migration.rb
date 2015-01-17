@@ -17,12 +17,18 @@ module Lotus
         }
 
         templates = {
-          'migration.rb.tt' => "db/migrate/#{ opts[:migration_time] }_#{ opts[:migration_name] }.rb"
+          'migration.rb.tt' => "db/migrate/#{ migration_file_name(opts[:migration_time],opts[:migration_name]) }.rb"
         }
 
         templates.each do |src, dst|
           cli.template(source.join(src), target.join(dst), opts)
         end
+      end
+
+      private
+
+      def migration_file_name(time, name)
+        "#{time}_#{name}"
       end
     end
   end
