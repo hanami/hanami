@@ -30,7 +30,7 @@ module Lotus
         private
         
         def generate_timestamp
-          Time.now.strftime("%Y%m%d%H%M")
+          Time.now.strftime("%Y%m%d%H%M%S")
         end
       end
     end
