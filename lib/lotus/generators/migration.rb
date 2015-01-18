@@ -10,7 +10,6 @@ module Lotus
 
       def start
         opts = {
-          #app_name:         app_name,
           migration_name:   migration_name,
           migration_time:   migration_time,
           migration_class:  migration_class,
