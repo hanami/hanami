@@ -31,9 +31,9 @@ describe Lotus::Commands::Generate::Migration do
   describe 'start' do
     let(:migration_name) { 'create_bird' }
     it 'generates a timestamped migration file' do
-      Time.stub :now, Time.mktime(1970,1,1) do
+      Time.stub :now, Time.new(1970,1,1,23,01) do
         capture_io { command.start }
-        content = @root.join('db/migrate/01011970_create_bird.rb').read
+        content = @root.join('db/migrate/197001012301_create_bird.rb').read
         content.must_match %(class CreateBird < Lotus::Model::Migration) 
       end
     end
