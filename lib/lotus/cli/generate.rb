@@ -5,6 +5,7 @@ require 'lotus/environment'
 module Lotus
   class Generate < Thor
     include Thor::Actions
+
     desc 'migration NAME', 'generates a model migration'
     def migration(name = nil)
       if options[:help] || name.nil?
