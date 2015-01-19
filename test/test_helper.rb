@@ -73,4 +73,37 @@ class FakeRackBuilder
   end
 end
 
+class DependenciesReporter
+  LOTUS_GEMS = [
+    'lotus-utils',
+    'lotus-validations',
+    'lotus-router',
+    'lotus-model',
+    'lotus-view',
+    'lotus-controller'
+  ].freeze
+
+  def initialize
+    @dependencies = dependencies
+  end
+
+  def run
+    return unless ENV['TRAVIS']
+
+    dependencies.each do |dep|
+      source = dep.source
+      puts "#{ dep.name } - #{ source.revision }"
+    end
+  end
+
+  private
+  def dependencies
+    Bundler.environment.dependencies.find_all do |dep|
+      LOTUS_GEMS.include?(dep.name)
+    end
+  end
+end
+
+DependenciesReporter.new.run
 require 'fixtures'
+
