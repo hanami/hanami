@@ -10,13 +10,12 @@ module Lotus
 
       def start
         opts = {
-          migration_name:   migration_name,
-          migration_time:   migration_time,
+          migration_file:   migration_file,
           migration_class:  migration_class,
         }
 
         templates = {
-          'migration.rb.tt' => "db/migrate/#{ migration_file_name(opts[:migration_time],opts[:migration_name]) }.rb"
+          'migration.rb.tt' => "db/migrate/#{ opts[:migration_file] }.rb"
         }
 
         templates.each do |src, dst|
@@ -26,8 +25,8 @@ module Lotus
 
       private
 
-      def migration_file_name(time, name)
-        "#{time}_#{name}"
+      def migration_file
+        "#{migration_time}_#{migration_name}"
       end
     end
   end

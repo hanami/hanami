@@ -9,10 +9,8 @@ module Lotus
         attr_reader :migration_name, :migration_time, :migration_class, :cli, :source, :target
 
         def initialize(name, environment, cli)
-          name = Lotus::Utils::String.new(name)
-          @migration_name = name.underscore
+          set_migration_name(name)
           @migration_time = generate_timestamp
-          @migration_class = name.classify
 
           @target = Pathname.new(environment.root)
           @source = Pathname.new(::File.dirname(__FILE__) + '/../../generators/migration/')
@@ -27,6 +25,12 @@ module Lotus
         end
 
         private
+
+        def set_migration_name(name)
+          name = Lotus::Utils::String.new(name)
+          @migration_name = name.underscore
+          @migration_class = name.classify
+        end
         
         def generate_timestamp
           Time.now.strftime("%Y%m%d%H%M%S")

@@ -28,7 +28,7 @@ describe Lotus::Commands::Generate::Migration do
     chdir_to_root
   end
 
-  describe 'start' do
+  describe '#start' do
     let(:migration_name) { 'create_bird' }
     it 'generates a timestamped migration file' do
       Time.stub :now, Time.new(1970,1,1,23,01,05) do
