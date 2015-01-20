@@ -15,7 +15,7 @@ module Lotus
         }
 
         templates = {
-          'migration.rb.tt' => "db/migrate/#{ opts[:migration_file] }.rb"
+          'migration.rb.tt' => "db/migrations/#{ opts[:migration_file] }.rb"
         }
 
         templates.each do |src, dst|
