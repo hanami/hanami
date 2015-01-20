@@ -4,7 +4,7 @@ require 'lotus/commands/generate/migration'
 describe Lotus::Commands::Generate::Migration do
   let(:opts)    { Hash.new }
   let(:env)     { Lotus::Environment.new(opts) }
-  let(:command) { Lotus::Commands::Generate::Migration.new(migration_name, env, cli) }
+  let(:command) { Lotus::Commands::Generate::Migration.new(migration_names, env, cli) }
   let(:cli)     { Lotus::Generate.new }
 
   def create_temporary_dir
@@ -29,12 +29,24 @@ describe Lotus::Commands::Generate::Migration do
   end
 
   describe '#start' do
-    let(:migration_name) { 'create_bird' }
-    it 'generates a timestamped migration file' do
-      Time.stub :now, Time.new(1970,1,1,23,01,05) do
-        capture_io { command.start }
-        content = @root.join('db/migrations/19700101230105_create_bird.rb').read
-        content.must_match %(class CreateBird < Lotus::Model::Migration) 
+    describe 'with a single argument' do
+      let(:migration_names) { ['create_bird'] }
+      it 'generates a timestamped migration file in the project root' do
+        Time.stub :now, Time.new(1970,1,1,23,01,05) do
+          capture_io { command.start }
+          content = @root.join('db/migrations/19700101230105_create_bird.rb').read
+          content.must_match %(class CreateBird < Lotus::Model::Migration) 
+        end
+      end
+    end
+    describe 'with two arguments' do
+      let(:migration_names) { ['web', 'create_chirp'] }
+      it 'generates a timestamped migration file in the slice folder' do
+        Time.stub :now, Time.new(1970,1,1,23,01,05) do
+          capture_io { command.start }
+          content = @root.join('apps/web/db/migrations/19700101230105_create_chirp.rb').read
+          content.must_match %(class CreateChirp < Lotus::Model::Migration) 
+        end
       end
     end
   end

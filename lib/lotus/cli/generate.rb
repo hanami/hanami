@@ -6,13 +6,13 @@ module Lotus
   class Generate < Thor
     include Thor::Actions
 
-    desc 'migration NAME', 'generates a model migration'
-    def migration(name = nil)
-      if options[:help] || name.nil?
+    desc 'migration [SLICE] NAME', 'generates a model migration'
+    def migration(*names)
+      if options[:help] || names.empty? || names.length > 2
         invoke :help, ['migration']
       else
         require 'lotus/commands/generate/migration'
-        Lotus::Commands::Generate::Migration.new(name, environment, self).start
+        Lotus::Commands::Generate::Migration.new(names, environment, self).start
       end
     end
 
