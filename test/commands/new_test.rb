@@ -167,7 +167,7 @@ describe Lotus::Commands::New do
         content.must_match %(Lotus::Model.configure)
         content.must_match %(adapter type: :file_system, uri: ENV['CHIRP_DATABASE_URL'])
         content.must_match %(mapping do)
-        content.must_match %(mapping "{__dir__}/config/mapping")
+        content.must_match %(mapping "\#{__dir__}/config/mapping")
       end
     end
 
