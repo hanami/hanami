@@ -2,93 +2,140 @@ require 'logger'
 require 'lotus/utils/string'
 
 module Lotus
-  # Lotus default logger
+  # Lotus logger
   #
-  # Implement with the same interface of ruby std ::Logger
-  # Opts out the logdev parameter and always use STDOUT as outout device
+  # Implement with the same interface of Ruby std lib `Logger`.
+  # It uses `STDOUT` as output device.
   #
-  # Lotus logger also has the app tag concept, which used to identify
-  # which application the log come from.
   #
-  # Lotus Logger default comes with Lotus application
-  # and uses name of highest module namespace as app_tag
   #
-  # When stands alone, Lotus Logger tries to infer app tag from highest namespace
-  # When has no namespace, Lotus Logger takes [Shared] as default app tag
+  # When a Lotus application is initialized, it creates a logger for that specific application.
+  # For instance for a `Bookshelf::Application` a `Bookshelf::Logger` will be available.
   #
-  # @example
-  #   #1 Logger with namespace
-  #   module TestApp
-  #     class AppLogger << Lotus::Logger; end
-  #     def log
-  #       Applogger.new.info('foo')
-  #       #=> output: I, [2015-01-10T21:55:12.727259 #80487]  INFO -- [TestApp] : foo
+  # This is useful for auto-tagging the output. Eg (`[Booshelf]`).
+  #
+  # When used stand alone (eg. `Lotus::Logger.info`), it tags lines with `[Shared]`.
+  #
+  #
+  #
+  # The available severity levels are the same of `Logger`:
+  #
+  #   * debug
+  #   * error
+  #   * fatal
+  #   * info
+  #   * unknown
+  #   * warn
+  #
+  # Those levels are available both as class and instance methods.
+  #
+  # @since x.x.x
+  #
+  # @see http://www.ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger.html
+  # @see http://www.ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger/Severity.html
+  #
+  # @example Basic usage
+  #   require 'lotus'
+  #
+  #   module Bookshelf
+  #     class Application < Lotus::Application
   #     end
   #   end
   #
-  #   #2 Logger without namespace
-  #   class AppLogger < Lotus::Logger
-  #   end
-  #   Applogger.new.info('foo')
-  #   #=> output: I, [2015-01-10T21:55:12.727259 #80487]  INFO -- [Shared] : foo
+  #   # Initialize the application with the following code:
+  #   Bookshelf::Application.load!
+  #   # or
+  #   Bookshelf::Application.new
   #
-  #   #3 Logger inside a lotus application
-  #   module LotusModule
-  #     class App < Lotus::Application
-  #       load!
-  #     end
-  #   end
-  #   LotusModule::Logger.info('foo')
-  #   => output: I, [2015-01-10T21:55:12.727259 #80487]  INFO -- [LotusModule] : foo
+  #   Bookshelf::Logger.info('Hello')
+  #   # => I, [2015-01-10T21:55:12.727259 #80487]  INFO -- [Bookshelf] : Hello
   #
-  # @see ::Logger
+  #   Bookshelf::Logger.new.info('Hello')
+  #   # => I, [2015-01-10T21:55:12.727259 #80487]  INFO -- [Bookshelf] : Hello
   #
-  # @since 0.2.1
+  # @example Standalone usage
+  #   require 'lotus'
+  #
+  #   Lotus::Logger.info('Hello')
+  #   # => I, [2015-01-10T21:55:12.727259 #80487]  INFO -- [Lotus] : Hello
+  #
+  #   Lotus::Logger.new.info('Hello')
+  #   # => I, [2015-01-10T21:55:12.727259 #80487]  INFO -- [Lotus] : Hello
+  #
+  # @example Custom tagging
+  #   require 'lotus'
+  #
+  #   Lotus::Logger.new('FOO').info('Hello')
+  #   # => I, [2015-01-10T21:55:12.727259 #80487]  INFO -- [FOO] : Hello
   class Logger < ::Logger
-
-    attr_accessor :app_tag
-
-    # Override Ruby's Logger#initialize
+    # Lotus::Logger default formatter
     #
-    # @param logdev is default to STDOUT
+    # @since x.x.x
+    # @api private
     #
-    # @since 0.2.1
-    def initialize(app_tag=nil, *args)
-      super(STDOUT, *args)
-      @app_tag = app_tag
-      @formatter = Lotus::Logger::Formatter.new.tap { |f| f.app_tag = self.app_tag }
-    end
-
-    # app_tag is the identification of current app
-    # app_tag is default to use highest namespace if current namespace
-    # if app_tag is blank, lotus use default app_tag 'shared'
-    # @param logdev is default to STDOUT
-    #
-    # @since 0.2.1
-    def app_tag
-      @app_tag || _app_tag_from_namespace || _default_app_tag
-    end
-
+    # @see http://www.ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger/Formatter.html
     class Formatter < ::Logger::Formatter
-      attr_accessor :app_tag
+      # @since x.x.x
+      # @api private
+      attr_writer :application_name
 
+      # @since x.x.x
+      # @api private
+      #
+      # @see http://www.ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger/Formatter.html#method-i-call
       def call(severity, time, progname, msg)
-        time = time.utc
-        progname = "[#{@app_tag}] #{progname}"
-        super(severity, time, progname, msg)
+        progname = "[#{@application_name}] #{progname}"
+        super(severity, time.utc, progname, msg)
       end
     end
 
-    private
-    def _app_tag_from_namespace
-      class_name = self.class.name
-      return nil unless class_name.index('::')
+    # Default application name.
+    # This is used as a fallback for tagging purposes.
+    #
+    # @since x.x.x
+    # @api private
+    DEFAULT_APPLICATION_NAME = 'Lotus'.freeze
 
-      Utils::String.new(class_name).namespace
+    # @since x.x.x
+    # @api private
+    attr_writer :application_name
+
+    # Initialize a logger
+    #
+    # @param application_name [String] an optional application name used for
+    #   tagging purposes
+    #
+    # @since x.x.x
+    def initialize(application_name = nil)
+      super(STDOUT)
+
+      @application_name = application_name
+      @formatter        = Lotus::Logger::Formatter.new.tap { |f| f.application_name = self.application_name }
     end
 
-    def _default_app_tag
-      'Shared'
+    # Returns the current application name, this is used for tagging purposes
+    #
+    # @return [String] the application name
+    #
+    # @since x.x.x
+    def application_name
+      @application_name || _application_name_from_namespace || _default_application_name
+    end
+
+    private
+    # @since x.x.x
+    # @api private
+    def _application_name_from_namespace
+      class_name = self.class.name
+      namespace  = Utils::String.new(class_name).namespace
+
+      class_name != namespace and return namespace
+    end
+
+    # @since x.x.x
+    # @api private
+    def _default_application_name
+      DEFAULT_APPLICATION_NAME
     end
   end
 end

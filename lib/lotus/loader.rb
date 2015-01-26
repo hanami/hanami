@@ -2,7 +2,6 @@ require 'lotus/utils/class'
 require 'lotus/utils/kernel'
 require 'lotus/utils/string'
 require 'lotus/routes'
-require 'lotus/logger'
 require 'lotus/routing/default'
 require 'lotus/action/cookies'
 require 'lotus/action/session'
@@ -41,7 +40,7 @@ module Lotus
       _configure_model_framework! if defined?(Lotus::Model)
       _configure_controller_framework!
       _configure_view_framework!
-      _configure_static_variables!
+      _configure_logger!
     end
 
     def _configure_controller_framework!
@@ -89,11 +88,7 @@ module Lotus
       end
     end
 
-    def _configure_static_variables!
-      _initialize_logger!
-    end
-
-    def _initialize_logger!
+    def _configure_logger!
       unless application_module.const_defined?('Logger', false)
         logger = Lotus::Logger.new(application_module.to_s)
         application_module.const_set('Logger', logger)

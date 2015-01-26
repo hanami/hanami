@@ -80,12 +80,13 @@ describe Lotus::Loader do
         it 'has app module name along with log output' do
           output =
             stub_stdout_constant do
-              module CocacolaShop
+              module BeerShop
                 class Application < Lotus::Application; load!; end
               end
-              CocacolaShop::Logger.info 'foo'
+              BeerShop::Logger.info 'foo'
             end
-          output.must_match /CocacolaShop/
+
+          output.must_match(/BeerShop/)
         end
       end
     end
