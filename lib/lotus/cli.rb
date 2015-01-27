@@ -46,6 +46,18 @@ module Lotus
         Lotus::Commands::Console.new(environment).start
       end
     end
+    
+    desc 'dbconsole', 'starts a sql console'
+    method_option :environment,           desc: 'path to environment configuration (config/environment.rb)'
+
+    def dbconsole(name = nil)
+      if options[:help]
+        invoke :help, ['dbconsole']
+      else
+        require 'lotus/commands/dbconsole'
+        Lotus::Commands::DBConsole.new(name, environment).start
+      end
+    end
 
     desc 'routes', 'prints routes'
     method_option :environment,                 desc: 'path to environment configuration (config/environment.rb)'
