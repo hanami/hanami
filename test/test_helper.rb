@@ -73,4 +73,66 @@ class FakeRackBuilder
   end
 end
 
+class DependenciesReporter
+  LOTUS_GEMS = [
+    'lotus-utils',
+    'lotus-validations',
+    'lotus-router',
+    'lotus-model',
+    'lotus-view',
+    'lotus-controller'
+  ].freeze
+
+  def initialize
+    @dependencies = dependencies
+  end
+
+  def run
+    return unless ENV['TRAVIS']
+
+    dependencies.each do |dep|
+      source = dep.source
+      puts "#{ dep.name } - #{ source.revision }"
+    end
+  end
+
+  private
+  def dependencies
+    Bundler.environment.dependencies.find_all do |dep|
+      LOTUS_GEMS.include?(dep.name)
+    end
+  end
+end
+
+DependenciesReporter.new.run
+
+def stub_stdout_constant
+  begin_block = <<-BLOCK
+    original_verbosity = $VERBOSE
+    $VERBOSE = nil
+
+    origin_stdout = STDOUT
+    STDOUT = StringIO.new
+  BLOCK
+  TOPLEVEL_BINDING.eval begin_block
+
+  yield
+  return_str = STDOUT.string
+
+  ensure_block = <<-BLOCK
+    STDOUT = origin_stdout
+    $VERBOSE = original_verbosity
+  BLOCK
+  TOPLEVEL_BINDING.eval ensure_block
+
+  return_str
+end
+
+
+def stub_time_now
+  Time.stub :now, Time.utc(1988, 9, 1, 0, 0, 0) do
+    yield
+  end
+end
+
 require 'fixtures'

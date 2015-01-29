@@ -18,6 +18,7 @@ gem 'lotus-model', '<%= config[:lotus_model_version] %>'
 
 group :test do
 <%- if config[:test] == 'rspec' -%>
+  gem 'rspec'
 <%- else -%>
   gem 'minitest'
 <%- end -%>

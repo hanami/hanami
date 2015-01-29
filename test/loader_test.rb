@@ -15,6 +15,7 @@ describe Lotus::Loader do
         assert defined?(CoffeeShop::Entity),     'expected CoffeeShop::Entity'
         assert defined?(CoffeeShop::Repository), 'expected CoffeeShop::Repository'
         assert defined?(CoffeeShop::Presenter),  'expected CoffeeShop::Presenter'
+        assert defined?(CoffeeShop::Logger),     'expected CoffeeShop::Logger'
       end
 
       it 'generates per application classes' do
@@ -72,6 +73,20 @@ describe Lotus::Loader do
       describe 'middleware' do
         it 'preloads the middleware' do
           @application.middleware.must_be_kind_of(Lotus::Middleware)
+        end
+      end
+
+      describe 'logger' do
+        it 'has app module name along with log output' do
+          output =
+            stub_stdout_constant do
+              module BeerShop
+                class Application < Lotus::Application; load!; end
+              end
+              BeerShop::Logger.info 'foo'
+            end
+
+          output.must_match(/BeerShop/)
         end
       end
     end

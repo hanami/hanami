@@ -153,7 +153,7 @@ describe 'A full stack Lotus application' do
   describe 'RESTful CRUD' do
     before do
       @book = ::Book.new(name: 'The path to success')
-      BookRepository.persist(@book)
+      @book = BookRepository.persist(@book)
     end
 
     after do
@@ -207,7 +207,7 @@ describe 'A full stack Lotus application' do
       response.body.must_include '<p id="book_name">The path to failure</p>'
     end
 
-    it 'handles update action' do
+    it 'handles create action' do
       post "/books", name: 'The art of Zen'
 
       response.status.must_equal 302

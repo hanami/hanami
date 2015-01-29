@@ -1,4 +1,4 @@
-Copyright (c) 2014 Luca Guidi
+Copyright © 2014-2015 Luca Guidi
 
 MIT License
 

@@ -75,6 +75,15 @@ describe Lotus::Commands::New do
         end
       end
 
+      describe 'rspec' do
+        let(:opts) { container_options.merge(test: 'rspec') }
+
+        it 'includes rspec' do
+          content = @root.join('Gemfile').read
+          content.must_match %(gem 'rspec')
+        end
+      end
+
       describe 'production group' do
         it 'includes a server example' do
           content = @root.join('Gemfile').read
@@ -93,6 +102,16 @@ describe Lotus::Commands::New do
           content.must_match %(t.libs    << 'spec')
           content.must_match %(task default: :test)
           content.must_match %(task spec: :test)
+        end
+      end
+
+      describe 'rspec' do
+        let(:opts) { container_options.merge(test: 'rspec') }
+
+        it 'generates it' do
+          content = @root.join('Rakefile').read
+          content.must_match %(RSpec::Core::RakeTask.new(:spec))
+          content.must_match %(task default: :spec)
         end
       end
     end
@@ -143,11 +162,24 @@ describe Lotus::Commands::New do
     describe 'lib/chirp.rb' do
       it 'generates it' do
         content = @root.join('lib/chirp.rb').read
-        content.must_match 'Dir["#{ __dir__ }/**/*.rb"].each { |file| require_relative file }'
+        content.must_match 'Dir["#{ __dir__ }/chirp/**/*.rb"].each { |file| require_relative file }'
         content.must_match %(require 'lotus/model')
         content.must_match %(Lotus::Model.configure)
         content.must_match %(adapter type: :file_system, uri: ENV['CHIRP_DATABASE_URL'])
         content.must_match %(mapping do)
+        content.must_match %(mapping "\#{__dir__}/config/mapping")
+      end
+    end
+
+    describe 'lib/config/mapping.rb' do
+      it 'generates it' do
+        content = @root.join('lib/config/mapping.rb').read
+        content.must_match %(# collection :users do)
+        content.must_match %(#   entity     User)
+        content.must_match %(#   repository UserRepository)
+        content.must_match %(#   attribute :id,   Integer)
+        content.must_match %(#   attribute :name, String)
+        content.must_match %(# end)
       end
     end
 
@@ -169,6 +201,14 @@ describe Lotus::Commands::New do
       end
     end
 
+    describe 'empty spec/* directory' do
+      it 'generates it' do
+        @root.join('spec/chirp/entities').must_be :directory?
+        @root.join('spec/chirp/repositories').must_be :directory?
+        @root.join('spec/support').must_be :directory?
+      end
+    end
+
     describe 'testing' do
       describe 'when minitest (default)' do
         describe 'spec/chirp/entities' do
@@ -184,24 +224,85 @@ describe Lotus::Commands::New do
         end
 
         describe 'spec/spec_helper.rb' do
-          it 'generates it' do
-            content = @root.join('spec/spec_helper.rb').read
-            content.must_match %(ENV['LOTUS_ENV'] ||= 'test')
-            content.must_match %(require_relative '../config/environment')
-            content.must_match %(require 'minitest/autorun')
-            content.must_match %(Lotus::Application.preload!)
+          describe 'minitest (default)' do
+            it 'generates it' do
+              content = @root.join('spec/spec_helper.rb').read
+              content.must_match %(ENV['LOTUS_ENV'] ||= 'test')
+              content.must_match %(require_relative '../config/environment')
+              content.must_match %(require 'minitest/autorun')
+              content.must_match %(Lotus::Application.preload!)
+            end
+          end
+
+          describe 'rspec' do
+            let(:opts) { container_options.merge(test: 'rspec') }
+
+            it 'generates it' do
+              content = @root.join('spec/spec_helper.rb').read
+              content.must_match %(ENV['LOTUS_ENV'] ||= 'test')
+              content.must_match %(require_relative '../config/environment')
+              content.must_match %(RSpec.configure do |config|)
+              content.must_match %(config.before(:suite) { Lotus::Application.preload! })
+              content.must_match %(config.filter_run :focus)
+              content.must_match %(config.run_all_when_everything_filtered = true)
+
+              content.must_match %(if config.files_to_run.one?)
+              content.must_match %(config.default_formatter = 'doc')
+
+              content.must_match %(config.order = :random)
+              content.must_match %(Kernel.srand config.seed)
+
+              content.must_match %(config.expect_with :rspec do |expectations|)
+              content.must_match %(expectations.syntax = :expect)
+
+              content.must_match %(config.mock_with :rspec do |mocks|)
+              content.must_match %(mocks.syntax = :expect)
+              content.must_match %(mocks.verify_partial_doubles = true)
+            end
           end
         end
 
         describe 'spec/features_helper.rb' do
-          it 'generates it' do
-            content = @root.join('spec/features_helper.rb').read
-            content.must_match %(require_relative './spec_helper')
-            content.must_match %(require 'capybara')
-            content.must_match %(require 'capybara/dsl')
-            content.must_match %(Capybara.app = Lotus::Container.new)
-            content.must_match %(class MiniTest::Spec)
-            content.must_match %(include Capybara::DSL)
+          describe 'minitest (default)' do
+            it 'generates it' do
+              content = @root.join('spec/features_helper.rb').read
+              content.must_match %(require_relative './spec_helper')
+              content.must_match %(require 'capybara')
+              content.must_match %(require 'capybara/dsl')
+              content.must_match %(Capybara.app = Lotus::Container.new)
+              content.must_match %(class MiniTest::Spec)
+              content.must_match %(include Capybara::DSL)
+            end
+          end
+
+          describe 'rspec' do
+            let(:opts) { container_options.merge(test: 'rspec') }
+
+            it 'generates it' do
+              content = @root.join('spec/features_helper.rb').read
+              content.must_match %(require_relative './spec_helper')
+              content.must_match %(require 'capybara')
+              content.must_match %(require 'capybara/rspec')
+              content.must_match %(RSpec.configure do |config|)
+              content.must_match %(config.include RSpec::FeatureExampleGroup)
+              content.must_match %(config.include Capybara::DSL)
+              content.must_match %(config.include Capybara::RSpecMatchers)
+            end
+          end
+        end
+
+        describe 'spec/support/capybara.rb' do
+          describe 'rspec' do
+            let(:opts) { container_options.merge(test: 'rspec') }
+
+            it 'generates it' do
+              content = @root.join('spec/support/capybara.rb').read
+              content.must_match %(module RSpec)
+              content.must_match %(module FeatureExampleGroup)
+              content.must_match %(def self.included(group))
+              content.must_match %(group.metadata[:type] = :feature)
+              content.must_match %(Capybara.app = Lotus::Container.new)
+            end
           end
         end
       end
@@ -388,6 +489,76 @@ describe Lotus::Commands::New do
           end
         end
       end
+    end
+
+    describe 'when app_name is .' do
+      let(:app_name) { '.' }
+
+      describe 'config/environment.rb' do
+        it 'generates it' do
+          content = @root.join('config/environment.rb').read
+          content.must_match %(require_relative '../lib/new')
+        end
+      end
+
+      describe 'lib/new' do
+        it 'generates it' do
+          @root.join('lib/new').must_be :directory?
+        end
+      end
+
+      describe 'lib/new.rb' do
+        it 'generates it' do
+          @root.join('lib/new.rb').must_be :file?
+          content = @root.join('lib/new.rb').read
+          content.must_match %(adapter type: :file_system, uri: ENV['NEW_DATABASE_URL'])
+        end
+      end
+
+      describe 'config/.env.development' do
+        it 'generates it' do
+          content = @root.join('config/.env.development').read
+          content.must_match %(NEW_DATABASE_URL="file:///db/new_development")
+        end
+      end
+
+      describe 'config/.env.test' do
+        it 'generates it' do
+          content = @root.join('config/.env.test').read
+          content.must_match %(NEW_DATABASE_URL="file:///db/new_test")
+        end
+      end
+    end
+  end
+
+  describe 'application path' do
+    def container_options
+      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false]
+    end
+
+    let(:opts)      { container_options }
+    let(:app_name)  { 'chirp' }
+
+    before do
+      capture_io { command.start }
+    end
+
+    describe 'when a path is provided' do
+      let(:opts) { container_options.merge(path: 'my_lotus_app') }
+
+      it 'generates the app at the specific path' do
+        @root.dirname().join('my_lotus_app').must_be :directory?
+      end
+    end
+  end
+
+  describe 'when a path is provided as the app name' do
+    let(:opts)      { Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false] }
+    let(:app_name)  { 'lib/chirp' }
+
+    it 'raises an ArgumentError' do
+      exception = -> { command.start }.must_raise ArgumentError
+      exception.message.must_equal 'Invalid application name. If you want to set application path, please use --path option'
     end
   end
 end

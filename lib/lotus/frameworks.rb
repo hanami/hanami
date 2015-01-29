@@ -1,29 +1,10 @@
 require 'lotus/router'
 require 'lotus/view'
 require 'lotus/controller'
+require 'lotus/action/glue'
 
-module Lotus
-  module Frameworks
-    module Action
-      module Rack
-        ENV_KEY = 'lotus.action'.freeze
-
-        protected
-        def finish
-          super
-          @_env[ENV_KEY] = self
-        end
-      end
-    end
-  end
-end
-
-Lotus::Action::Rack.class_eval do
-  prepend Lotus::Frameworks::Action::Rack
-end
-
-Lotus::Action.class_eval do
-  def to_rendering
-    exposures.merge(format: format)
+Lotus::Controller.configure do
+  prepare do
+    include Lotus::Action::Glue
   end
 end
