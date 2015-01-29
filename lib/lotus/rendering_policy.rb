@@ -47,7 +47,7 @@ module Lotus
     def _render_action(action, response)
       if successful?(response)
         view_for(action, response).render(
-          action.to_rendering
+          action.exposures
         )
       end
     end
