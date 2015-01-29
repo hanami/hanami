@@ -14,13 +14,8 @@ module Lotus
 
     LOTUS_ACTION = 'lotus.action'.freeze
 
-    SUCCESSFUL_STATUSES   = (200..201).freeze
-    STATUSES_WITHOUT_BODY = Set.new((100..199).to_a << 204 << 205 << 301 << 302 << 304).freeze
-    EMPTY_BODY            = Array.new.freeze
-    RENDERABLE_FORMATS    = [:all, :html].freeze
-    CONTENT_TYPE          = 'Content-Type'.freeze
-    REQUEST_METHOD        = 'REQUEST_METHOD'.freeze
-    HEAD                  = 'HEAD'.freeze
+    SUCCESSFUL_STATUSES = (200..201).freeze
+    RENDERABLE_FORMATS  = [:all, :html].freeze
 
     def initialize(configuration)
       @controller_pattern = %r{#{ configuration.controller_pattern.gsub(/\%\{(controller|action)\}/) { "(?<#{ $1 }>(.*))" } }}
@@ -30,7 +25,7 @@ module Lotus
     end
 
     def render(env, response)
-      body = _render(env, response) || _render_head(env)
+      body = _render(env, response)
 
       response[BODY] = Array(body) unless body.nil?
       response
@@ -58,26 +53,16 @@ module Lotus
       end
     end
 
-    def _render_head(env)
-      EMPTY_BODY if head?(env)
-    end
-
     def renderable?(env)
-      !head?(env) and
-        env.delete(LOTUS_ACTION)
+      ((action = env.delete(LOTUS_ACTION)) && action.renderable? ) and action
     end
 
     def successful?(response)
       SUCCESSFUL_STATUSES.include?(response[STATUS])
     end
 
-    def head?(env)
-      env[REQUEST_METHOD] == HEAD
-    end
-
     def render_status_page?(action, response)
-      RENDERABLE_FORMATS.include?(action.format) &&
-        !STATUSES_WITHOUT_BODY.include?(response[STATUS])
+      RENDERABLE_FORMATS.include?(action.format)
     end
 
     def view_for(action, response)
