@@ -3,19 +3,18 @@ require 'lotus/utils/class'
 module Lotus
   module Commands
     class DBConsole
-      attr_reader :name, :options, :environment
+      attr_reader :name, :env_options, :environment, :options
 
-      def initialize(name, environment)
+      def initialize(name, environment, options)
         @name        = name
         @environment = environment
-        @options     = environment.to_options
+        @env_options = environment.to_options
+        @options     = options
         load_config
       end
 
       def start
         exec connection_string
-      rescue NotImplementedError
-        raise 'Your adapter does not support db console.'
       end
 
       private
@@ -37,11 +36,11 @@ module Lotus
       end
 
       def connection_string
-        adapter_class.new(mapper, adapter_config.uri).connection_string
+        adapter_class.new(mapper, adapter_config.uri).connection_string(options)
       end
 
       def load_config
-        require @options[:env_config]
+        require @env_options[:env_config]
       end
     end
   end
