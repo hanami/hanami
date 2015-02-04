@@ -1,12 +1,20 @@
 require 'lotus'
 require 'lotus/model'
-require 'sqlite3'
+
+ADAPTER_TYPE =  if RUBY_ENGINE == 'jruby'
+                  require 'jdbc/sqlite3'
+                  Jdbc::SQLite3.load_driver
+                  'jdbc:sqlite'
+                else
+                  require 'sqlite3'
+                  'sqlite'
+                end
 
 require 'lotus/model/adapters/sql_adapter'
 db = Pathname.new(File.dirname(__FILE__)).join('../tmp/test.db')
 db.dirname.mkpath      # create directory if not exist
 db.delete if db.exist? # delete file if exist
-SQLITE_CONNECTION_STRING = "sqlite://#{ db }"
+SQLITE_CONNECTION_STRING = "#{ADAPTER_TYPE}://#{ db }"
 
 DB = Sequel.connect(SQLITE_CONNECTION_STRING)
 
