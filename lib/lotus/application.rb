@@ -145,7 +145,14 @@ module Lotus
       Lotus::Loader.new(application).load!
     end
 
-    # Preload all the registered applications
+    # Preload all the registered applications, by yielding their configurations
+    # and preparing the frameworks.
+    #
+    # This is useful for testing suites, where we want to make Lotus frameworks
+    # ready, but not preload applications code.
+    #
+    # This allows to test components such as views or actions in isolation and
+    # to have faster boot times.
     #
     # @return [void]
     #
@@ -154,6 +161,24 @@ module Lotus
       synchronize do
         applications.each(&:load!)
       end
+
+      nil
+    end
+
+    # Full preload for all the registered applications.
+    #
+    # This is useful in console where we want all the application code available.
+    #
+    # @return [void]
+    #
+    # @since x.x.x
+    # @api private
+    def self.preload_applications!
+      synchronize do
+        applications.each {|app| app.new }
+      end
+
+      nil
     end
 
     # Return the configuration for this application
