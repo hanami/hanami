@@ -281,12 +281,20 @@ describe Lotus::Commands::New do
               content.must_match %(Kernel.srand config.seed)
 
               content.must_match %(config.expect_with :rspec do |expectations|)
-              content.must_match %(expectations.syntax = :expect)
 
               content.must_match %(config.mock_with :rspec do |mocks|)
-              content.must_match %(mocks.syntax = :expect)
               content.must_match %(mocks.verify_partial_doubles = true)
             end
+          end
+        end
+
+        describe '.rspec' do
+          let(:opts) { container_options.merge(test: 'rspec') }
+
+          it 'generates it' do
+            content = @root.join('.rspec').read
+            content.must_match %(--color)
+            content.must_match %(--require spec_helper)
           end
         end
 

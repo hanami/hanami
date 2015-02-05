@@ -46,15 +46,12 @@ module Lotus
           "public/stylesheets"
         ]
 
-        case options[:test]
-        when 'rspec'
-        else # minitest (default)
-          empty_directories << [
-            "../../spec/#{ opts[:slice_name] }/features",
-            "../../spec/#{ opts[:slice_name] }/controllers",
-            "../../spec/#{ opts[:slice_name] }/views"
-          ]
-        end
+        # Add testing directories (spec/ is the default for both MiniTest and RSpec)
+        empty_directories << [
+          "../../spec/#{ opts[:slice_name] }/features",
+          "../../spec/#{ opts[:slice_name] }/controllers",
+          "../../spec/#{ opts[:slice_name] }/views"
+        ]
 
         ##
         # config/environment.rb
