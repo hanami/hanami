@@ -175,7 +175,7 @@ module Lotus
     # @api private
     def self.preload_applications!
       synchronize do
-        applications.each {|app| app.new }
+        applications.each { |app| app.new }
       end
 
       nil
