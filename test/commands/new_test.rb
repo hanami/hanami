@@ -149,6 +149,15 @@ describe Lotus::Commands::New do
         content.must_match %(# Define ENV variables for development environment)
         content.must_match %(CHIRP_DATABASE_URL="file:///db/chirp_development")
       end
+
+      describe "with non-simple application name" do
+        let(:app_name) { "chirp-two" }
+
+        it "sanitizes application names for env variables" do
+          content = @root.join('config/.env.development').read
+          content.must_match %(CHIRP_TWO_DATABASE_URL="file:///db/chirp-two_development")
+        end
+      end
     end
 
     describe 'config/.env.test' do
@@ -156,6 +165,15 @@ describe Lotus::Commands::New do
         content = @root.join('config/.env.test').read
         content.must_match %(# Define ENV variables for test environment)
         content.must_match %(CHIRP_DATABASE_URL="file:///db/chirp_test")
+      end
+
+      describe "with non-simple application name" do
+        let(:app_name) { "chirp-two" }
+
+        it "sanitizes application names for env variables" do
+          content = @root.join('config/.env.test').read
+          content.must_match %(CHIRP_TWO_DATABASE_URL="file:///db/chirp-two_test")
+        end
       end
     end
 
@@ -168,6 +186,16 @@ describe Lotus::Commands::New do
         content.must_match %(adapter type: :file_system, uri: ENV['CHIRP_DATABASE_URL'])
         content.must_match %(mapping do)
         content.must_match %(mapping "\#{__dir__}/config/mapping")
+      end
+
+      describe "with non-simple application name" do
+        let(:app_name) { "chirp-two" }
+
+        it "sanitizes application names for env variables" do
+          content = @root.join('lib/chirp-two.rb').read
+          content.must_match 'Dir["#{ __dir__ }/chirp-two/**/*.rb"].each { |file| require_relative file }'
+          content.must_match %(adapter type: :file_system, uri: ENV['CHIRP_TWO_DATABASE_URL'])
+        end
       end
     end
 

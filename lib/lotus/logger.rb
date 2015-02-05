@@ -29,7 +29,7 @@ module Lotus
   #
   # Those levels are available both as class and instance methods.
   #
-  # @since x.x.x
+  # @since 0.2.1
   #
   # @see http://www.ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger.html
   # @see http://www.ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger/Severity.html
@@ -70,16 +70,16 @@ module Lotus
   class Logger < ::Logger
     # Lotus::Logger default formatter
     #
-    # @since x.x.x
+    # @since 0.2.1
     # @api private
     #
     # @see http://www.ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger/Formatter.html
     class Formatter < ::Logger::Formatter
-      # @since x.x.x
+      # @since 0.2.1
       # @api private
       attr_writer :application_name
 
-      # @since x.x.x
+      # @since 0.2.1
       # @api private
       #
       # @see http://www.ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger/Formatter.html#method-i-call
@@ -92,11 +92,11 @@ module Lotus
     # Default application name.
     # This is used as a fallback for tagging purposes.
     #
-    # @since x.x.x
+    # @since 0.2.1
     # @api private
     DEFAULT_APPLICATION_NAME = 'Lotus'.freeze
 
-    # @since x.x.x
+    # @since 0.2.1
     # @api private
     attr_writer :application_name
 
@@ -105,7 +105,7 @@ module Lotus
     # @param application_name [String] an optional application name used for
     #   tagging purposes
     #
-    # @since x.x.x
+    # @since 0.2.1
     def initialize(application_name = nil)
       super(STDOUT)
 
@@ -117,13 +117,13 @@ module Lotus
     #
     # @return [String] the application name
     #
-    # @since x.x.x
+    # @since 0.2.1
     def application_name
       @application_name || _application_name_from_namespace || _default_application_name
     end
 
     private
-    # @since x.x.x
+    # @since 0.2.1
     # @api private
     def _application_name_from_namespace
       class_name = self.class.name
@@ -132,7 +132,7 @@ module Lotus
       class_name != namespace and return namespace
     end
 
-    # @since x.x.x
+    # @since 0.2.1
     # @api private
     def _default_application_name
       DEFAULT_APPLICATION_NAME

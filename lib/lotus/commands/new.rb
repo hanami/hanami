@@ -1,4 +1,5 @@
 require 'pathname'
+require 'lotus/application_name'
 require 'lotus/utils/string'
 require 'lotus/utils/class'
 
@@ -9,12 +10,12 @@ module Lotus
 
       attr_reader :app_name, :source, :target, :cli, :options
 
-      def initialize(app_name, environment, cli)
-        @app_name = _get_real_app_name(app_name)
+      def initialize(app_name_or_path, environment, cli)
+        @app_name = ApplicationName.new(_get_real_app_name(app_name_or_path))
         @options  = environment.to_options
         @arch     = @options.fetch(:architecture)
 
-        @target   = Pathname.pwd.join(@options.fetch(:path, app_name))
+        @target   = Pathname.pwd.join(@options.fetch(:path, app_name_or_path))
         @source   = Pathname.new(@options.fetch(:source) { ::File.dirname(__FILE__) + '/../generators/application/' }).join(@arch)
 
         @cli      = cli
@@ -29,12 +30,12 @@ module Lotus
       end
 
       private
-      def _get_real_app_name(app_name)
-        if app_name.include?(::File::SEPARATOR)
+      def _get_real_app_name(app_name_or_path)
+        if app_name_or_path.include?(::File::SEPARATOR)
           raise ArgumentError.new("Invalid application name. If you want to set application path, please use --path option")
         end
 
-        app_name == '.' ? ::File.basename(Dir.getwd) : app_name
+        app_name_or_path == '.' ? ::File.basename(Dir.getwd) : app_name_or_path
       end
     end
   end
