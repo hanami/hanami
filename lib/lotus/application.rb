@@ -171,7 +171,7 @@ module Lotus
     #
     # @return [void]
     #
-    # @since x.x.x
+    # @since 0.2.1
     # @api private
     def self.preload_applications!
       synchronize do

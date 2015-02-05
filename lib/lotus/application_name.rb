@@ -1,12 +1,12 @@
 module Lotus
   # An application name.
   #
-  # @since x.x.x
+  # @since 0.2.1
   class ApplicationName
 
     # A list of words that are prohibited from forming the application name
     #
-    # @since x.x.x
+    # @since 0.2.1
     RESERVED_WORDS = %w(lotus).freeze
 
 
@@ -27,7 +27,7 @@ module Lotus
     #
     # @return [Lotus::ApplicationName] a new instance of the application name
     #
-    # @since x.x.x
+    # @since 0.2.1
     def initialize(name)
       @name = sanitize(name)
       ensure_validity!
@@ -39,7 +39,7 @@ module Lotus
     # @example
     #   ApplicationName.new("my-App ").to_s # => "my-app"
     #
-    # @since x.x.x
+    # @since 0.2.1
     def to_s
       @name
     end
@@ -51,7 +51,7 @@ module Lotus
     # @example
     #   ApplicationName.new("my-app").to_env_s => "MY_APP"
     #
-    # @since x.x.x
+    # @since 0.2.1
     def to_env_s
       @name.upcase.gsub(/\W/, '_')
     end
@@ -63,7 +63,7 @@ module Lotus
     # @example
     #   Lotus::ApplicationName.invalid?("lotus") # => true
     #
-    # @since x.x.x
+    # @since 0.2.1
     def self.invalid?(name)
       RESERVED_WORDS.include?(name)
     end
@@ -74,7 +74,7 @@ module Lotus
     # Raises RuntimeError with explanation if the provided name is invalid.
     #
     # @api private
-    # @since x.x.x
+    # @since 0.2.1
     def ensure_validity!
       if self.class.invalid?(@name)
         raise RuntimeError,
@@ -87,7 +87,7 @@ module Lotus
     # Cleans a string to be a functioning application name.
     #
     # @api private
-    # @since x.x.x
+    # @since 0.2.1
     def sanitize(name)
       name
         .downcase
