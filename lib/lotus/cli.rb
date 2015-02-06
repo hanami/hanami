@@ -8,7 +8,7 @@ module Lotus
 
     desc 'version', 'prints Lotus version'
     def version
-      puts Lotus::VERSION
+      puts "v#{ Lotus::VERSION }"
     end
 
     desc 'server', 'starts a lotus server'
