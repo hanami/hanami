@@ -10,7 +10,8 @@ A complete web framework for Ruby
 - [Hieu Nguyen] RSpec support for application generator: `--test=rspec` or `--test=minitest` (default)
 
 ### Fixed
-- [Rob Yurkowski] Ensure application name doesn't contain special or forbidden characters.
+- [Luca Guidi] `lotus version` to previx `v` (eg `v0.2.1`)
+- [Rob Yurkowski] Ensure application name doesn't contain special or forbidden characters
 - [Luca Guidi] Ensure all the applications are loaded in console
 - [Trung Lê] Container architecture: preload only `lib/<appname>/**/*.rb`
 - [Hieu Nguyen] Fixed `lotus new` to print usage when application name isn't provided
