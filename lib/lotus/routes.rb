@@ -31,7 +31,7 @@ module Lotus
     #
     # @see http://rdoc.info/gems/lotus-router/Lotus/Router#path-instance_method
     #
-    # @example
+    # @example Basic example
     #   require 'lotus'
     #
     #   module Bookshelf
@@ -48,6 +48,25 @@ module Lotus
     #     # => '/login'
     #
     #   Bookshelf::Routes.path(:login, return_to: '/dashboard')
+    #     # => '/login?return_to=%2Fdashboard'
+    #
+    # @example Dynamic finders
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         routes do
+    #           get '/login', to: 'sessions#new', as: :login
+    #         end
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Routes.login_path
+    #     # => '/login'
+    #
+    #   Bookshelf::Routes.login_path(return_to: '/dashboard')
     #     # => '/login?return_to=%2Fdashboard'
     def path(name, *args)
       @routes.path(name, *args)
@@ -67,7 +86,7 @@ module Lotus
     #
     # @see http://rdoc.info/gems/lotus-router/Lotus/Router#url-instance_method
     #
-    # @example
+    # @example Basic example
     #   require 'lotus'
     #
     #   module Bookshelf
@@ -88,8 +107,43 @@ module Lotus
     #
     #   Bookshelf::Routes.url(:login, return_to: '/dashboard')
     #     # => 'https://bookshelf.org/login?return_to=%2Fdashboard'
+    #
+    # @example Dynamic finders
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         routes do
+    #           scheme 'https'
+    #           host   'bookshelf.org'
+    #
+    #           get '/login', to: 'sessions#new', as: :login
+    #         end
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Routes.login_url
+    #     # => 'https://bookshelf.org/login'
+    #
+    #   Bookshelf::Routes.login_url(return_to: '/dashboard')
+    #     # => 'https://bookshelf.org/login?return_to=%2Fdashboard'
     def url(name, *args)
       @routes.url(name, *args)
+    end
+
+    protected
+    # @since x.x.x
+    # @api private
+    def method_missing(m, *args)
+      named_route, type = m.to_s.split(/\_(path|url)\z/)
+
+      if type
+        public_send(type, named_route.to_sym, *args)
+      else
+        super
+      end
     end
   end
 end
