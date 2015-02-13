@@ -6,12 +6,12 @@ module <%= config[:classified_slice_name] %>
       #
 
       # Define the root path of this application.
-      # All the paths specified in this configuration are relative to this one.
+      # All paths specified in this configuration are relative to path below.
       #
       root __dir__
 
       # Relative load paths where this application will recursively load the code.
-      # Remember to add directories here when you create new.
+      # When you add new directories, remember to add them here.
       #
       load_paths << [
         'controllers',
@@ -102,11 +102,11 @@ module <%= config[:classified_slice_name] %>
       # TEMPLATES
       #
 
-      # The layout to be used by all the views
+      # The layout to be used by all views
       #
       layout :application # It will load <%= config[:classified_slice_name] %>::Views::ApplicationLayout
 
-      # The relative path where to find the templates
+      # The relative path to templates
       #
       # templates 'templates'
 
@@ -130,8 +130,8 @@ module <%= config[:classified_slice_name] %>
       # FRAMEWORKS
       #
 
-      # Configure the code to be yielded each time <%= config[:classified_slice_name] %>::Action will be included
-      # This is useful for share common functionalities
+      # Configure the code that will yield each time <%= config[:classified_slice_name] %>::Action is included
+      # This is useful for sharing common functionality
       #
       # See: http://www.rubydoc.info/gems/lotus-controller#Configuration
       controller.prepare do
@@ -139,8 +139,8 @@ module <%= config[:classified_slice_name] %>
         # before :authenticate!    # run an authentication before callback
       end
 
-      # Configure the code to be yielded each time <%= config[:classified_slice_name] %>::View will be included
-      # This is useful for share common functionalities
+      # Configure the code that will yield each time <%= config[:classified_slice_name] %>::View is included
+      # This is useful for sharing common functionality
       #
       # See: http://www.rubydoc.info/gems/lotus-view#Configuration
       view.prepare do
