@@ -11,7 +11,7 @@ ADAPTER_TYPE =  if RUBY_ENGINE == 'jruby'
                 end
 
 require 'lotus/model/adapters/sql_adapter'
-db = Pathname.new(File.dirname(__FILE__)).join('../tmp/test.db')
+db = Pathname.new(File.dirname(__FILE__)).join('../tmp/test.sqlite3')
 db.dirname.mkpath      # create directory if not exist
 db.delete if db.exist? # delete file if exist
 SQLITE_CONNECTION_STRING = "#{ADAPTER_TYPE}://#{ db }"

@@ -235,7 +235,7 @@ module Bookshelf
       #           uri:  String, 'file:///db/bookshelf'
       #                         'memory://localhost/bookshelf'
       #                         'sqlite:memory:'
-      #                         'sqlite://db/bookshelf.db'
+      #                         'sqlite://db/bookshelf.sqlite3'
       #                         'postgres://localhost/bookshelf'
       #                         'mysql://localhost/bookshelf'
       #
