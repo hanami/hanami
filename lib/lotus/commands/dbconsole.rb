@@ -3,13 +3,12 @@ require 'lotus/utils/class'
 module Lotus
   module Commands
     class DBConsole
-      attr_reader :name, :env_options, :environment, :options
+      attr_reader :name, :env_options, :environment
 
-      def initialize(name, environment, options)
+      def initialize(name, environment)
         @name        = name
         @environment = environment
         @env_options = environment.to_options
-        @options     = options
         load_config
       end
 
@@ -36,7 +35,7 @@ module Lotus
       end
 
       def connection_string
-        adapter_class.new(mapper, adapter_config.uri).connection_string(options)
+        adapter_class.new(mapper, adapter_config.uri).connection_string
       end
 
       def load_config

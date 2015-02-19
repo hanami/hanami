@@ -49,19 +49,13 @@ module Lotus
     
     desc 'dbconsole', 'starts a sql console'
     method_option :environment,                 desc: 'path to environment configuration (config/environment.rb)'
-    method_option :database,     aliases: '-D', desc: 'the database name'
-    method_option :username,     aliases: '-u', desc: 'the database username'
-    method_option :password,     aliases: '-p', desc: 'the database password'
-    method_option :host,         aliases: '-H', desc: 'the database server host'
-    method_option :port,         aliases: '-P', desc: 'the database server port'
-    method_option :help,         aliases: '-h', desc: 'displays the usage method'
 
     def dbconsole(name = nil)
       if options[:help]
         invoke :help, ['dbconsole']
       else
         require 'lotus/commands/dbconsole'
-        Lotus::Commands::DBConsole.new(name, environment, options).start
+        Lotus::Commands::DBConsole.new(name, environment).start
       end
     end
 
