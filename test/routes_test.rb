@@ -31,4 +31,30 @@ describe Lotus::Routes do
       -> { @routes.url(:unknown) }.must_raise Lotus::Routing::InvalidRouteException
     end
   end
+
+  describe 'dynamic finders' do
+    describe 'for relative URLs' do
+      it 'recognizes named route' do
+        @routes.root_path.must_equal '/'
+      end
+
+      it "raises an error if an unknown path is invoked" do
+        -> { @routes.unknown_path }.must_raise Lotus::Routing::InvalidRouteException
+      end
+    end
+
+    describe 'for absolute URLs' do
+      it 'recognizes named route' do
+        @routes.root_url.must_equal "#{ @scheme }://#{ @host }/"
+      end
+
+      it "raises an error if an unknown url is invoked" do
+        -> { @routes.unknown_url }.must_raise Lotus::Routing::InvalidRouteException
+      end
+    end
+
+    it 'raises an error for unknown methods' do
+      -> { @routes.foo }.must_raise NoMethodError
+    end
+  end
 end

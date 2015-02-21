@@ -46,6 +46,7 @@ module Lotus
           when 'rspec'
             templates.merge!(
               'Rakefile.rspec.tt'           => 'Rakefile',
+              'rspec.rspec.tt'              => '.rspec',
               'spec_helper.rb.rspec.tt'     => 'spec/spec_helper.rb',
               'features_helper.rb.rspec.tt' => 'spec/features_helper.rb',
               'capybara.rb.rspec.tt'        => 'spec/support/capybara.rb'

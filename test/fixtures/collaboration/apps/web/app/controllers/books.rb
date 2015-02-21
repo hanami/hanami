@@ -53,7 +53,7 @@ module Collaboration::Controllers::Books
 
     def call(params)
       @book = Book.new(params)
-      BookRepository.create(@book)
+      @book = BookRepository.create(@book)
 
       redirect_to Collaboration::Routes.url(:books, :id => @book.id)
     end
@@ -65,7 +65,7 @@ module Collaboration::Controllers::Books
     def call(params)
       @book = BookRepository.find(params[:id])
       @book.update(params)
-      BookRepository.update(@book)
+      @book = BookRepository.update(@book)
 
       redirect_to Collaboration::Routes.url(:books, :id => @book.id)
     end

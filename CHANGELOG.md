@@ -1,6 +1,21 @@
 # Lotus
 A complete web framework for Ruby
 
+## v0.2.1 - 2015-02-06
+### Added
+- [Huy Đỗ] Introduced `Lotus::Logger`
+- [Jimmy Zhang] `lotus new` accepts a `--path` argument
+- [Jimmy Zhang] Application generator for the current directory (`lotus new .`). This is useful to provide a web deliverable for existing Ruby gems.
+- [Trung Lê] Add example mapping file for application generator: `lib/config/mapping.rb`
+- [Hiếu Nguyễn] RSpec support for application generator: `--test=rspec` or `--test=minitest` (default)
+
+### Fixed
+- [Luca Guidi] `lotus version` to previx `v` (eg `v0.2.1`)
+- [Rob Yurkowski] Ensure application name doesn't contain special or forbidden characters
+- [Luca Guidi] Ensure all the applications are loaded in console
+- [Trung Lê] Container architecture: preload only `lib/<appname>/**/*.rb`
+- [Hiếu Nguyễn] Fixed `lotus new` to print usage when application name isn't provided
+
 ## v0.2.0 - 2014-06-23
 ### Added
 - [Luca Guidi] Introduced `lotus new` as a command to generate applications. It supports "container" architecture for now.

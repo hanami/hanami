@@ -17,7 +17,7 @@ module Lotus
 
       # Localhost string for detecting localhost host configuration
       #
-      # @since x.x.x
+      # @since 0.2.0
       # @api private
       BLACKLISTED_DOMAINS = %w(localhost).freeze
 

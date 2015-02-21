@@ -149,6 +149,15 @@ describe Lotus::Commands::New do
         content.must_match %(# Define ENV variables for development environment)
         content.must_match %(CHIRP_DATABASE_URL="file:///db/chirp_development")
       end
+
+      describe "with non-simple application name" do
+        let(:app_name) { "chirp-two" }
+
+        it "sanitizes application names for env variables" do
+          content = @root.join('config/.env.development').read
+          content.must_match %(CHIRP_TWO_DATABASE_URL="file:///db/chirp-two_development")
+        end
+      end
     end
 
     describe 'config/.env.test' do
@@ -156,6 +165,15 @@ describe Lotus::Commands::New do
         content = @root.join('config/.env.test').read
         content.must_match %(# Define ENV variables for test environment)
         content.must_match %(CHIRP_DATABASE_URL="file:///db/chirp_test")
+      end
+
+      describe "with non-simple application name" do
+        let(:app_name) { "chirp-two" }
+
+        it "sanitizes application names for env variables" do
+          content = @root.join('config/.env.test').read
+          content.must_match %(CHIRP_TWO_DATABASE_URL="file:///db/chirp-two_test")
+        end
       end
     end
 
@@ -167,7 +185,17 @@ describe Lotus::Commands::New do
         content.must_match %(Lotus::Model.configure)
         content.must_match %(adapter type: :file_system, uri: ENV['CHIRP_DATABASE_URL'])
         content.must_match %(mapping do)
-        content.must_match %(mapping "{__dir__}/config/mapping")
+        content.must_match %(mapping "\#{__dir__}/config/mapping")
+      end
+
+      describe "with non-simple application name" do
+        let(:app_name) { "chirp-two" }
+
+        it "sanitizes application names for env variables" do
+          content = @root.join('lib/chirp-two.rb').read
+          content.must_match 'Dir["#{ __dir__ }/chirp-two/**/*.rb"].each { |file| require_relative file }'
+          content.must_match %(adapter type: :file_system, uri: ENV['CHIRP_TWO_DATABASE_URL'])
+        end
       end
     end
 
@@ -253,12 +281,20 @@ describe Lotus::Commands::New do
               content.must_match %(Kernel.srand config.seed)
 
               content.must_match %(config.expect_with :rspec do |expectations|)
-              content.must_match %(expectations.syntax = :expect)
 
               content.must_match %(config.mock_with :rspec do |mocks|)
-              content.must_match %(mocks.syntax = :expect)
               content.must_match %(mocks.verify_partial_doubles = true)
             end
+          end
+        end
+
+        describe '.rspec' do
+          let(:opts) { container_options.merge(test: 'rspec') }
+
+          it 'generates it' do
+            content = @root.join('.rspec').read
+            content.must_match %(--color)
+            content.must_match %(--require spec_helper)
           end
         end
 
@@ -489,6 +525,76 @@ describe Lotus::Commands::New do
           end
         end
       end
+    end
+
+    describe 'when app_name is .' do
+      let(:app_name) { '.' }
+
+      describe 'config/environment.rb' do
+        it 'generates it' do
+          content = @root.join('config/environment.rb').read
+          content.must_match %(require_relative '../lib/new')
+        end
+      end
+
+      describe 'lib/new' do
+        it 'generates it' do
+          @root.join('lib/new').must_be :directory?
+        end
+      end
+
+      describe 'lib/new.rb' do
+        it 'generates it' do
+          @root.join('lib/new.rb').must_be :file?
+          content = @root.join('lib/new.rb').read
+          content.must_match %(adapter type: :file_system, uri: ENV['NEW_DATABASE_URL'])
+        end
+      end
+
+      describe 'config/.env.development' do
+        it 'generates it' do
+          content = @root.join('config/.env.development').read
+          content.must_match %(NEW_DATABASE_URL="file:///db/new_development")
+        end
+      end
+
+      describe 'config/.env.test' do
+        it 'generates it' do
+          content = @root.join('config/.env.test').read
+          content.must_match %(NEW_DATABASE_URL="file:///db/new_test")
+        end
+      end
+    end
+  end
+
+  describe 'application path' do
+    def container_options
+      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false]
+    end
+
+    let(:opts)      { container_options }
+    let(:app_name)  { 'chirp' }
+
+    before do
+      capture_io { command.start }
+    end
+
+    describe 'when a path is provided' do
+      let(:opts) { container_options.merge(path: 'my_lotus_app') }
+
+      it 'generates the app at the specific path' do
+        @root.dirname().join('my_lotus_app').must_be :directory?
+      end
+    end
+  end
+
+  describe 'when a path is provided as the app name' do
+    let(:opts)      { Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false] }
+    let(:app_name)  { 'lib/chirp' }
+
+    it 'raises an ArgumentError' do
+      exception = -> { command.start }.must_raise ArgumentError
+      exception.message.must_equal 'Invalid application name. If you want to set application path, please use --path option'
     end
   end
 end
