@@ -19,7 +19,13 @@ module Lotus
       private
 
       def config
-        Lotus::Model.configuration
+        if name
+          app_constant = Lotus::Utils::Class.load!(Lotus::Utils::String.new(name).classify)
+          Lotus::Utils::Class.load!('Application', app_constant).load!
+          Lotus::Utils::Class.load!('Model', app_constant).configuration
+        else
+          Lotus::Model.configuration
+        end
       end
 
       def adapter_config
