@@ -10,7 +10,7 @@ Lotus::Model.configure do
   #    adapter type: :memory, uri: 'memory://localhost/<%= config[:app_name] %>_development'
   #
   #  * SQL adapter
-  #    adapter type: :sql, uri: 'sqlite://db/<%= config[:app_name] %>_development.db'
+  #    adapter type: :sql, uri: 'sqlite://db/<%= config[:app_name] %>_development.sqlite3'
   #    adapter type: :sql, uri: 'postgres://localhost/<%= config[:app_name] %>_development'
   #    adapter type: :sql, uri: 'mysql://localhost/<%= config[:app_name] %>_development'
   #
