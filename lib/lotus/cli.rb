@@ -88,7 +88,7 @@ module Lotus
         invoke :help, ['db']
       else
         require 'lotus/commands/db'
-        Lotus::Commands::DB.new(environment).start
+        Lotus::Commands::DB.new(command, environment).start
       end
     end
 
