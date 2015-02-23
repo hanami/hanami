@@ -20,9 +20,9 @@ module Lotus
 
       def config
         if name
-          app_constant = Lotus::Utils::Class.load!(Lotus::Utils::String.new(name).classify)
-          Lotus::Utils::Class.load!('Application', app_constant).load!
-          Lotus::Utils::Class.load!('Model', app_constant).configuration
+          app_constant = Lotus::Utils::Class.load_from_pattern!(Lotus::Utils::String.new(name).classify)
+          Lotus::Utils::Class.load_from_pattern!("#{app_constant}::Application").load!
+          Lotus::Utils::Class.load_from_pattern!("#{app_constant}::Model").configuration
         else
           Lotus::Model.configuration
         end
@@ -37,7 +37,7 @@ module Lotus
       end
 
       def adapter_class
-        Lotus::Utils::Class.load!(adapter_config.class_name, Lotus::Model::Adapters)
+        Lotus::Utils::Class.load_from_pattern!(adapter_config.class_name, Lotus::Model::Adapters)
       end
 
       def connection_string
