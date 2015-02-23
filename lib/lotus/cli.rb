@@ -78,6 +78,20 @@ module Lotus
       end
     end
 
+
+    desc 'db', 'run database migrations'
+    method_option :STEP,              desc:  'number of steps', type: :string
+    method_option :help,   aliases: '-h', desc: 'displays the usage method'
+
+    def db(command = nil)
+      if options[:help]
+        invoke :help, ['db']
+      else
+        require 'lotus/commands/db'
+        Lotus::Commands::DB.new(environment).start
+      end
+    end
+
     private
 
     def environment
