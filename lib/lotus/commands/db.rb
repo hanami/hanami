@@ -4,25 +4,22 @@ require 'lotus/model'
 module Lotus
   module Commands
     class DB
-      attr_reader :command, :environment
+      attr_reader :environment, :migrator
 
-      def initialize(command,environment)
-        @command = command
+      def initialize(environment)
         @environment = environment
         load_environment
       end
 
-      def start
-        execute 
+      def migrate
+        migrator.migrate
+      end
+
+      def rollback
+        migrator.rollback
       end
 
       private 
-
-      def execute
-        migrator.send(@command)
-      rescue NotImplementedError
-        raise 'Your command it is not supported.'
-      end
 
       def migrator
         Lotus::Model::Migrator.new(adapter_config)

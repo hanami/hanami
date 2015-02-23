@@ -78,20 +78,37 @@ module Lotus
       end
     end
 
+    class DB < Thor 
 
-    desc 'db', 'run database migrations'
-    method_option :STEP,              desc:  'number of steps', type: :string
-    method_option :help,   aliases: '-h', desc: 'displays the usage method'
+      require 'lotus/commands/db'
+      desc 'migrate', 'run your migrate'
 
-    def db(command = nil)
-      if options[:help]
-        invoke :help, ['db']
-      else
-        require 'lotus/commands/db'
-        Lotus::Commands::DB.new(command, environment).start
+      def migrate
+        if options[:help] 
+          invoke :help, ['migrate']
+        else
+          Lotus::Commands::DB.new(environment).migrate
+        end
+      end
+      
+      desc 'rollback', 'roll back your migrations'
+      def rollback
+        if options[:help] 
+          invoke :help, ['rollback']
+        else
+          Lotus::Commands::DB.new(environment).migrate
+        end
+      end
+
+      def environment
+        Lotus::Environment.new(options)
       end
     end
 
+    desc 'db SUBCOMMAND', 'run database migrations'
+    subcommand 'db', DB
+
+    
     private
 
     def environment
