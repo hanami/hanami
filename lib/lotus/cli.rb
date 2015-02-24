@@ -8,7 +8,7 @@ module Lotus
 
     namespace :db
     require 'lotus/commands/db'
-    desc 'migrate', 'run your migrate'
+    desc 'migrate', 'run your migration'
 
     def migrate
       if options[:help] 
@@ -18,7 +18,7 @@ module Lotus
       end
     end
     
-    desc 'rollback', 'roll back your migrations'
+    desc 'rollback', 'roll back your migration'
     method_option :step,   desc: 'number of stpes to roll back' , type: :numeric
     def rollback
       if options[:help] 
