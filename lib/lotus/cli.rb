@@ -10,11 +10,11 @@ module Lotus
     require 'lotus/commands/db'
     desc 'migrate', 'run your migration'
 
-    def migrate
+    def migrate(name=nil)
       if options[:help] 
         invoke :help, ['migrate']
       else
-        Lotus::Commands::DB.new(environment).migrate
+        Lotus::Commands::DB.new(name,environment).migrate
       end
     end
     
