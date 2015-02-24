@@ -4,19 +4,23 @@ require 'lotus/model'
 module Lotus
   module Commands
     class DB
-      attr_reader :environment, :migrator
+      attr_reader :environment, :options
+      DEFAULTS = { step: 1 }
 
       def initialize(environment)
         @environment = environment
-        load_environment
+        @options = merge_options(@environment)
       end
 
       def migrate
+        load_environment
         migrator.migrate
       end
 
       def rollback
-        migrator.rollback
+        load_environment
+        step = options.fetch(:step)
+        migrator.rollback(step: step)
       end
 
       private 
@@ -31,6 +35,10 @@ module Lotus
 
       def load_environment
         require @environment.env_config
+      end
+
+      def merge_options(env)
+        DEFAULTS.merge(env.to_options)
       end
     end
   end 
