@@ -5,7 +5,7 @@ module Lotus
   module Commands
     class DB
       attr_reader :environment, :options
-      DEFAULTS = { step: 1 }
+      DEFAULTS = { step:1 }
 
       def initialize(environment)
         @environment = environment
@@ -19,11 +19,14 @@ module Lotus
 
       def rollback
         load_environment
-        step = options.fetch(:step)
         migrator.rollback(step: step)
       end
 
       private 
+
+      def step
+        options.fetch(:step) 
+      end
 
       def migrator
         Lotus::Model::Migrator.new(adapter_config)
