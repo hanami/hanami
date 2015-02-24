@@ -4,30 +4,30 @@ require 'lotus/model'
 module Lotus
   module Commands
     class DB
-      attr_reader :environment, :options, :name
-      DEFAULTS = { step:1 }
 
-      def initialize(name=nil,environment)
-        @name = name
-        @environment = environment
-        @options = merge_options(@environment)
+      DEFAULT_STEP = 1 
+
+      def initialize(name=nil, environment)
+        @name         = name
+        @environment  = environment
+        @options      = @environment.to_options
+        load_environment
+        @migrator     = Lotus::Model::Migrator.new(adapter_config)
       end
 
       def migrate
-        load_environment
-        migrator.migrate
+        @migrator.migrate
       end
 
       def rollback
-        load_environment
-        migrator.rollback(step: step)
+        @migrator.rollback(step: step)
       end
 
       private 
 
       def config
-        if name
-          app_constant = Lotus::Utils::Class.load_from_pattern!(Lotus::Utils::String.new(name).classify)
+        if @name
+          app_constant = Lotus::Utils::Class.load_from_pattern!(Lotus::Utils::String.new(@name).classify)
           Lotus::Utils::Class.load_from_pattern!("#{app_constant}::Application").load!
           Lotus::Utils::Class.load_from_pattern!("#{app_constant}::Model").configuration
         else
@@ -36,11 +36,7 @@ module Lotus
       end
 
       def step
-        options.fetch(:step) 
-      end
-
-      def migrator
-        Lotus::Model::Migrator.new(adapter_config)
+        @options.fetch(:step, DEFAULT_STEP) 
       end
 
       def adapter_config

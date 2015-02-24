@@ -5,21 +5,20 @@ require 'lotus/version'
 module Lotus
 
   class DBSubcommand < Thor 
-
-    namespace :db
     require 'lotus/commands/db'
-    desc 'migrate', 'run your migration'
+    namespace :db
 
+    desc 'migrate', 'run your migration'
     def migrate(name=nil)
       if options[:help] 
         invoke :help, ['migrate']
       else
-        Lotus::Commands::DB.new(name,environment).migrate
+        Lotus::Commands::DB.new(name, environment).migrate
       end
     end
     
-    desc 'rollback', 'roll back your migration'
-    method_option :step,   desc: 'number of stpes to roll back' , type: :numeric
+    desc 'rollback', 'rollback your migration'
+    method_option :step, desc:'number of stpes to roll back', type: :numeric
     def rollback
       if options[:help] 
         invoke :help, ['rollback']
