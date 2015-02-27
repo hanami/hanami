@@ -2,6 +2,7 @@ require 'thread'
 require 'pathname'
 require 'dotenv'
 require 'lotus/utils/hash'
+require 'lotus/lotusrc'
 
 module Lotus
   # Define and expose information about the Lotus environment.
@@ -156,6 +157,7 @@ module Lotus
     #   # other settings (eg `XYZ`) will be left untouched.
     def initialize(options = {})
       @options = Utils::Hash.new(options).symbolize!.freeze
+      @options.merge! Lotus::Lotusrc.new(root, self.to_options).read
       @mutex   = Mutex.new
       @mutex.synchronize { set_env_vars! }
     end

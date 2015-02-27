@@ -433,4 +433,23 @@ describe Lotus::Environment do
       end
     end
   end
+
+  describe '#to_options' do
+    before do
+      @old_pwd = Dir.pwd
+      Dir.chdir 'test/fixtures/lotusrc/exists'
+      @env = Lotus::Environment.new
+    end
+
+    after do
+      Dir.chdir @old_pwd
+    end
+
+    it 'lotusrc merge options in environemnt options' do
+      options = @env.to_options
+      options[:architecture].must_equal 'container'
+      options[:test].must_equal 'minitest'
+      options[:template].must_equal 'erb'
+    end
+  end
 end
