@@ -29,8 +29,8 @@ describe 'A full stack Lotus application' do
     it "returns default headers' value" do
       get '/'
 
-      response.headers['X-Frame-Options'].must_be_nil
-      response.headers['Content-Security-Policy'].must_be_nil
+      response.headers.key?('X-Frame-Options').must_equal         false
+      response.headers.key?('Content-Security-Policy').must_equal false
     end
   end
 
