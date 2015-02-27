@@ -1,3 +1,4 @@
+require 'shellwords'
 require 'lotus/generators/abstract'
 require 'lotus/generators/slice'
 
@@ -75,7 +76,18 @@ module Lotus
             cli.template(source.join(gitkeep), target.join(dir, gitkeep), opts)
           end
 
+          unless git_dir_present?
+            cli.template(source.join('gitignore.tt'), target.join('.gitignore'), opts)
+            cli.run("git init #{Shellwords.escape(target)}", capture: true)
+          end
+
           @slice_generator.start
+        end
+
+        private
+
+        def git_dir_present?
+          File.directory?(source.join('.git'))
         end
       end
     end

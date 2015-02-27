@@ -144,6 +144,14 @@ describe Lotus::Commands::New do
       end
     end
 
+    describe '.gitignore' do
+      it 'generates it' do
+        content = @root.join('.gitignore').read
+        content.must_match %(/db/chirp_development)
+        content.must_match %(/db/chirp_test)
+      end
+    end
+
     describe 'config/environment.rb' do
       it 'generates it' do
         content = @root.join('config/environment.rb').read
