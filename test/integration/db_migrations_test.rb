@@ -29,7 +29,7 @@ describe 'CLI db migration' do
       db_command.migrate   
     end
 
-    describe 'when not pass lotus app' do
+    describe 'when app param is not specified' do
       it 'applies migrations located on db/migration' do
         sequel.table_exists?(:posts).must_equal true
         sequel.table_exists?(:comments).must_equal true
@@ -37,7 +37,7 @@ describe 'CLI db migration' do
       end
     end
     
-    describe 'when pass lotus app' do
+    describe 'when app param is specified' do
       let(:app_name) { "web" }
 
       it 'applies migrations located on apps/web/db/migration' do
@@ -54,7 +54,7 @@ describe 'CLI db migration' do
       db_command.rollback
     end
 
-    describe 'when pass lotus app' do
+    describe 'when app param is not specified' do
       it 'rollback last migration located on db/migration' do
         sequel.table_exists?(:comments).must_equal false
         sequel.table_exists?(:posts).must_equal true
@@ -72,7 +72,7 @@ describe 'CLI db migration' do
       end
     end
 
-    describe 'when not pass lotus app' do
+    describe 'when app param is specified' do
       let(:app_name) { "web" }
 
       it 'rollback last migration located on apps/web/db/migration' do

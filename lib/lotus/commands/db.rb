@@ -3,10 +3,28 @@ require 'lotus/model'
 
 module Lotus
   module Commands
+    # Database migration 
+    # 
+    # Apply database changes, by runnning migrations up (migate) or down (rollback)
+    #   
+    # It is run with:
+    #
+    #   `bundle exec lotus db migrate`
+    #   `bundle exec lotus db rollback`
+    #
+    # Allows user to specify lotus app and number of steps in case of rollback
+    #
+    #   `bundle exec lotus db migrate web`
+    #   `bundle exec lotus db rollback web --step=2`
+    #
+    # This feature uses Lotus::Model::Migratior to execute migrations 
+    #
+    # @since x.x.x
+    # @api private
     class DB
 
       DEFAULT_STEP = 1 
-      APP_MIGRATION_DIRECOTRY = "apps/web/db/migrations".freeze
+      APPS_DIRECOTRY = "apps".freeze
       MIGRATION_DIRECTORY = "db/migrations".freeze
 
       def initialize(name=nil, environment)
@@ -14,13 +32,20 @@ module Lotus
         @environment  = environment
         @options      = @environment.to_options
         load_environment
-        @migrator     = Lotus::Model::Migrator.new(adapter_config)
+        @migrator     = Lotus::Model::Migrator.new(adapter_config, logger: Lotus::Logger.new)
       end
 
+      # Apply all migrations up located on specified directory
+      # the directories could be located on root/db/migrations
+      # or root/apps/#{app}/db/migrations
       def migrate
         @migrator.migrate(directory: migration_directory)
       end
 
+      # Apply migrations down located on specified directory
+      # the directories could be  root/db/migrations
+      # or root/apps/#{app}/db/migrations
+      # A number of steps could be specified by `--step` option
       def rollback
         @migrator.rollback(directory: migration_directory, step: step)
       end
@@ -39,7 +64,7 @@ module Lotus
 
       def migration_directory
         if @name 
-          pwd.join(APP_MIGRATION_DIRECOTRY)
+          pwd.join(APPS_DIRECOTRY, @name, MIGRATION_DIRECTORY)
         else
           pwd.join(MIGRATION_DIRECTORY)
         end
