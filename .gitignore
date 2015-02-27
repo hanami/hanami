@@ -22,3 +22,4 @@ tmp
 mkmf.log
 .greenbar
 .DS_Store
+.lotusrc
