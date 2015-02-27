@@ -7,6 +7,7 @@ require 'lotus/config/routes'
 require 'lotus/config/mapping'
 require 'lotus/config/sessions'
 require 'lotus/config/configure'
+require 'lotus/config/security'
 
 module Lotus
   # Configuration for a Lotus application
@@ -67,6 +68,39 @@ module Lotus
       evaluate_configurations!
 
       self
+    end
+
+    # Returns the security policy
+    #
+    # @return [Lotus::Config::Security]
+    #
+    # @since x.x.x
+    #
+    # @see Lotus::Config::Security
+    #
+    # @example Getting values
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.security.x_frame_options # => 'DENY'
+    #   Bookshelf::Application.configuration.security.content_security_policy # => "connect-src 'self'; script-src 'self';"
+    #
+    # @example Setting values
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.security.x_frame_options 'ALLOW ALL'
+    #   Bookshelf::Application.configuration.security.content_security_policy "script-src 'self' https://apis.google.com"
+    def security
+      @security ||= Config::Security.new
     end
 
     # The root of the application
