@@ -29,8 +29,8 @@ describe 'A full stack Lotus application' do
     it "returns default headers' value" do
       get '/'
 
-      response.headers['X-Frame-Options'].must_equal 'DENY'
-      response.headers['Content-Security-Policy'].must_equal "connect-src 'self'; script-src 'self';"
+      response.headers['X-Frame-Options'].must_be_nil
+      response.headers['Content-Security-Policy'].must_be_nil
     end
   end
 

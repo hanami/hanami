@@ -13,29 +13,8 @@ module Lotus
       # @since x.x.x
       # @api private
       #
-      # @see Lotus::Config::Security#initialize
-      X_FRAME_OPTIONS_DEFAULT = 'DENY'.freeze
-
-      # @since x.x.x
-      # @api private
-      #
       # @see Lotus::Loader#_configure_controller_framework!
       CONTENT_SECURITY_POLICY_HEADER = 'Content-Security-Policy'.freeze
-
-      # @since x.x.x
-      # @api private
-      #
-      # @see Lotus::Config::Security#initialize
-      CONTENT_SECURITY_POLICY_DEFAULT = "connect-src 'self'; script-src 'self';".freeze
-
-      # Set security headers with default values
-      #
-      # @since x.x.x
-      # @api private
-      def initialize
-        @x_frame_options         = X_FRAME_OPTIONS_DEFAULT
-        @content_security_policy = CONTENT_SECURITY_POLICY_DEFAULT
-      end
 
       # X-Frame-Options headers' value
       #

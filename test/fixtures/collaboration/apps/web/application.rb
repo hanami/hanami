@@ -40,6 +40,12 @@ module Collaboration
 
       adapter type: :sql, uri: SQLITE_CONNECTION_STRING
       mapping 'config/mapping'
+
+      #
+      # SIMULATE DISABLED SECURITY HEADERS
+      #
+      # security.x_frame_options         "DENY"
+      # security.content_security_policy "connect-src 'self'"
     end
   end
 end

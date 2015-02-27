@@ -407,6 +407,10 @@ describe Lotus::Commands::New do
 
         content.must_match %(# serve_assets false)
 
+        # security
+        content.must_match %(security.x_frame_options "DENY")
+        content.must_match %(security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';")
+
         content.must_match %(controller.prepare)
         content.must_match %(view.prepare)
 

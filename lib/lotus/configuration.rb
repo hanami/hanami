@@ -83,22 +83,27 @@ module Lotus
     #
     #   module Bookshelf
     #     class Application < Lotus::Application
+    #       configure do
+    #         security.x_frame_options         "ALLOW ALL"
+    #         security.content_security_policy "script-src 'self' https://apis.example.com"
+    #       end
     #     end
     #   end
     #
-    #   Bookshelf::Application.configuration.security.x_frame_options # => 'DENY'
-    #   Bookshelf::Application.configuration.security.content_security_policy # => "connect-src 'self'; script-src 'self';"
+    #   Bookshelf::Application.configuration.security.x_frame_options         # => "ALLOW ALL"
+    #   Bookshelf::Application.configuration.security.content_security_policy # => "script-src 'self' https://apis.example.com"
     #
     # @example Setting values
     #   require 'lotus'
     #
     #   module Bookshelf
     #     class Application < Lotus::Application
+    #       configure do
+    #         security.x_frame_options         "ALLOW ALL"
+    #         security.content_security_policy "script-src 'self' https://apis.example.com"
+    #       end
     #     end
     #   end
-    #
-    #   Bookshelf::Application.configuration.security.x_frame_options 'ALLOW ALL'
-    #   Bookshelf::Application.configuration.security.content_security_policy "script-src 'self' https://apis.google.com"
     def security
       @security ||= Config::Security.new
     end
