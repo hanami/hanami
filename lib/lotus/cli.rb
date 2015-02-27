@@ -19,11 +19,12 @@ module Lotus
     
     desc 'rollback', 'rollback your migration'
     method_option :step, desc:'number of stpes to roll back', type: :numeric
-    def rollback
+
+    def rollback(name=nil)
       if options[:help] 
         invoke :help, ['rollback']
       else
-        Lotus::Commands::DB.new(environment).rollback
+        Lotus::Commands::DB.new(name, environment).rollback
       end
     end
 

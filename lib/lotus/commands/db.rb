@@ -6,6 +6,8 @@ module Lotus
     class DB
 
       DEFAULT_STEP = 1 
+      APP_MIGRATION_DIRECOTRY = "apps/web/db/migrations".freeze
+      MIGRATION_DIRECTORY = "db/migrations".freeze
 
       def initialize(name=nil, environment)
         @name         = name
@@ -16,11 +18,11 @@ module Lotus
       end
 
       def migrate
-        @migrator.migrate
+        @migrator.migrate(directory: migration_directory)
       end
 
       def rollback
-        @migrator.rollback(step: step)
+        @migrator.rollback(directory: migration_directory, step: step)
       end
 
       private 
@@ -35,6 +37,18 @@ module Lotus
         end
       end
 
+      def migration_directory
+        if @name 
+          pwd.join(APP_MIGRATION_DIRECOTRY)
+        else
+          pwd.join(MIGRATION_DIRECTORY)
+        end
+      end
+      
+      def pwd
+        @pwd ||= Pathname.new(Dir.pwd)
+      end
+      
       def step
         @options.fetch(:step, DEFAULT_STEP) 
       end
