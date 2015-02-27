@@ -127,6 +127,18 @@ module <%= config[:classified_slice_name] %>
       # serve_assets false
 
       ##
+      # SECURITY
+      #
+
+      # Specify X-Frame-Options and Content-Security-Police headers
+      #
+      # Default to 'DENY'
+      # security.x_frame_options 'ALLOW ALL'
+      #
+      # Default to "connect-src 'self'; script-src 'self';"
+      # security.content_security_policy "script-src 'self' https://lotusrb.org"
+
+      ##
       # FRAMEWORKS
       #
 
