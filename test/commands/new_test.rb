@@ -124,6 +124,26 @@ describe Lotus::Commands::New do
       end
     end
 
+    describe '.lotusrc' do
+      describe 'minitest (default)' do
+        it 'generates it' do
+          content = @root.join('.lotusrc').read
+          content.must_match %(architecture=container)
+          content.must_match %(test=minitest)
+          content.must_match %(template=erb)
+        end
+      end
+
+      describe 'rspec' do
+        let(:opts) { container_options.merge(test: 'rspec') }
+
+        it 'generates it' do
+          content = @root.join('.lotusrc').read
+          content.must_match %(test=rspec)
+        end
+      end
+    end
+
     describe 'config/environment.rb' do
       it 'generates it' do
         content = @root.join('config/environment.rb').read

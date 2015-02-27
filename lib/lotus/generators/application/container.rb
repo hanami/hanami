@@ -26,6 +26,7 @@ module Lotus
           }
 
           templates = {
+            'lotusrc.tt'                 => '.lotusrc',
             'Gemfile.tt'                 => 'Gemfile',
             'config.ru.tt'               => 'config.ru',
             'config/environment.rb.tt'   => 'config/environment.rb',
