@@ -1,0 +1,7 @@
+class <%= config[:migration_class] %> < Lotus::Model::Migration
+  def up
+  end
+
+  def down
+  end
+end
