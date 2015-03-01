@@ -221,7 +221,7 @@ describe Lotus::Commands::New do
         end
       end
 
-      describe 'with non default adapter' do
+      describe 'adapter option' do
         describe 'with mysql' do
           let(:opts) { container_options.merge(adapter: 'mysql') }
           it 'generates db config for mysql' do
@@ -280,7 +280,7 @@ describe Lotus::Commands::New do
         end
       end
 
-      describe 'with non default adapter' do
+      describe 'adapter option' do
         describe 'with mysql' do
           let(:opts) { container_options.merge(adapter: 'mysql') }
           it 'generates db config for mysql' do
@@ -344,7 +344,7 @@ describe Lotus::Commands::New do
         end
       end
 
-      describe 'adapter types' do
+      describe 'adapter option' do
         describe 'mysql' do
           let(:opts) { container_options.merge(adapter: 'mysql') }
           it 'generates adapter config for mysql' do
