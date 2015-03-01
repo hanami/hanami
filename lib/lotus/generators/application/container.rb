@@ -12,6 +12,7 @@ module Lotus
           @slice_generator     = Slice.new(command)
           @lotus_head          = options.fetch(:lotus_head)
           @test                = options[:test]
+          @adapter             = options[:adapter]
           @lotus_model_version = '~> 0.2'
 
           cli.class.source_root(source)
@@ -23,6 +24,8 @@ module Lotus
             app_name:            app_name,
             lotus_head:          @lotus_head,
             test:                @test,
+            adapter:             @adapter,
+            adapter_type:        adapter_type,
             lotus_model_version: @lotus_model_version
           }
 
@@ -88,6 +91,17 @@ module Lotus
 
         def git_dir_present?
           File.directory?(source.join('.git'))
+        end
+
+        def adapter_type
+          case @adapter
+          when 'mysql', 'mysql2', 'postgresql', 'sqlite3'
+            :sql
+          when 'filesystem'
+            :file_system
+          when 'memory'
+            :memory
+          end
         end
       end
     end
