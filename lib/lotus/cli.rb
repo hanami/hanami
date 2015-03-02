@@ -79,8 +79,7 @@ module Lotus
     end
 
     require 'lotus/commands/db'
-    desc 'db [SUBCOMMAND]', 'manage set of DB operations'
-    subcommand 'db', Lotus::Commands::DB
+    register Lotus::Commands::DB, 'db', 'db [SUBCOMMAND]', 'manage set of DB operations'
 
     private
 
