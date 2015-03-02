@@ -3,29 +3,6 @@ require 'lotus/environment'
 require 'lotus/version'
 
 module Lotus
-
-  class DBSubcommand < Thor
-    namespace :db
-
-    desc 'console', 'start DB console'
-    method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-
-    def console(name = nil)
-      if options[:help]
-        invoke :help, ['console']
-      else
-        require 'lotus/commands/db/console'
-        Lotus::Commands::DB::Console.new(name, environment).start
-      end
-    end
-
-    private
-
-    def environment
-      Lotus::Environment.new(options)
-    end
-  end
-
   class Cli < Thor
     include Thor::Actions
 
@@ -101,8 +78,9 @@ module Lotus
       end
     end
 
+    require 'lotus/commands/db'
     desc 'db console', 'start DB console'
-    subcommand 'db', DBSubcommand
+    subcommand 'db', Lotus::Commands::DB
 
     private
 

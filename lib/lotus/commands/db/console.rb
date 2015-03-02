@@ -2,7 +2,7 @@ require 'lotus/utils/class'
 
 module Lotus
   module Commands
-    module DB
+    class DB
       class Console
         attr_reader :name, :env_options, :environment
 
