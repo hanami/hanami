@@ -79,7 +79,7 @@ module Lotus
     end
 
     require 'lotus/commands/db'
-    desc 'db console', 'start DB console'
+    desc 'db [SUBCOMMAND]', 'manage set of DB operations'
     subcommand 'db', Lotus::Commands::DB
 
     private
