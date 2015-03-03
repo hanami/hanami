@@ -46,9 +46,6 @@ module Lotus
           })
         end
 
-        ##
-        # New files
-        #
         templates.each do |src, dst|
           cli.template(source.join(src), target.join(dst), opts)
         end

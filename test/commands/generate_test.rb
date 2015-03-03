@@ -56,11 +56,10 @@ describe Lotus::Commands::Generate do
           content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
           content.must_match %(require 'spec_helper')
           content.must_match %(describe Web::Controllers::Dashboard::Index do)
-          content.must_match %(  before do)
-          content.must_match %(    @action = Web::Controllers::Dashboard::Index.new)
-          content.must_match %(  end)
+          content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
+          content.must_match %(  let(:params) { Hash[] })
           content.must_match %(  it "is successful" do)
-          content.must_match %(    response = @action.call({}))
+          content.must_match %(    response = action.call(params))
           content.must_match %(    response[0].must_equal 200)
         end
       end
@@ -72,11 +71,10 @@ describe Lotus::Commands::Generate do
           content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
           content.must_match %(require 'spec_helper')
           content.must_match %(describe Web::Controllers::Dashboard::Index do)
-          content.must_match %(  before do)
-          content.must_match %(    @action = Web::Controllers::Dashboard::Index.new)
-          content.must_match %(  end)
+          content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
+          content.must_match %(  let(:params) { Hash[] })
           content.must_match %(  it "is successful" do)
-          content.must_match %(    response = @action.call({}))
+          content.must_match %(    response = action.call(params))
           content.must_match %(    expect(response[0]).to eq 200)
         end
       end
@@ -97,12 +95,11 @@ describe Lotus::Commands::Generate do
           content = @root.join('spec/web/views/dashboard/index_spec.rb').read
           content.must_match %(require 'spec_helper')
           content.must_match %(describe Web::Views::Dashboard::Index do)
-          content.must_match %(  before do)
-          content.must_match %(    @template = Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb'))
-          content.must_match %(    @view     = Web::Views::Dashboard::Index.new(@template, {foo: 'bar'}))
-          content.must_match %(  end)
+          content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
+          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })
+          content.must_match %(  let(:view)      { Web::Views::Dashboard::Index.new(template, exposures) })
           content.must_match %(  it "exposes #foo" do)
-          content.must_match %(    @view.foo.must_equal 'bar')
+          content.must_match %(    view.foo.must_equal exposures.fetch(:foo))
           content.must_match %(  end)
         end
       end
@@ -114,12 +111,11 @@ describe Lotus::Commands::Generate do
           content = @root.join('spec/web/views/dashboard/index_spec.rb').read
           content.must_match %(require 'spec_helper')
           content.must_match %(describe Web::Views::Dashboard::Index do)
-          content.must_match %(  before do)
-          content.must_match %(    @template = Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb'))
-          content.must_match %(    @view     = Web::Views::Dashboard::Index.new(@template, {foo: 'bar'}))
-          content.must_match %(  end)
+          content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
+          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })
+          content.must_match %(  let(:view)      { Web::Views::Dashboard::Index.new(template, exposures) })
           content.must_match %(  it "exposes #foo" do)
-          content.must_match %(    expect(@view.foo).to eq 'bar')
+          content.must_match %(    expect(view.foo).to eq exposures.fetch(:foo))
           content.must_match %(  end)
         end
       end
