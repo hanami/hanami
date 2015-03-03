@@ -1,0 +1,12 @@
+require 'spec_helper'
+
+describe <%= config[:app] %>::Controllers::<%= config[:controller] %>::<%= config[:action] %> do
+  before do
+    @action = <%= config[:app] %>::Controllers::<%= config[:controller] %>::<%= config[:action] %>.new
+  end
+
+  it "is successful" do
+    response = @action.call({})
+    response[0].must_equal 200
+  end
+end

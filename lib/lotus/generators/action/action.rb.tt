@@ -1,0 +1,8 @@
+module <%= config[:app] %>::Controllers::<%= config[:controller] %>
+  class <%= config[:action] %>
+    include <%= config[:app] %>::Action
+
+    def call(params)
+    end
+  end
+end

@@ -1,0 +1,12 @@
+require 'spec_helper'
+
+describe <%= config[:app] %>::Views::<%= config[:controller] %>::<%= config[:action] %> do
+  before do
+    @template = Lotus::View::Template.new('<%= config[:template_path] %>')
+    @view     = <%= config[:app] %>::Views::<%= config[:controller] %>::<%= config[:action] %>.new(@template, {foo: 'bar'})
+  end
+
+  it "exposes #foo" do
+    expect(@view.foo).to eq 'bar'
+  end
+end
