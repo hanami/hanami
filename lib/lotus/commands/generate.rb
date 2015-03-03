@@ -1,3 +1,6 @@
+require 'lotus/utils/string'
+require 'lotus/utils/class'
+
 module Lotus
   module Commands
     class Generate
@@ -7,10 +10,9 @@ module Lotus
 
       def initialize(type, app_name, name, env, cli)
         @cli      = cli
-        @options  = env.to_options
+        @options  = env.to_options.merge(cli.options)
 
         @app_name = app_name
-        @app_root = "apps/#{ @app_name }"
         @app      = Utils::String.new(@app_name).classify
 
         @name     = name
@@ -25,6 +27,10 @@ module Lotus
 
       def start
         @generator.start
+      end
+
+      def app_root
+        @app_root ||= [@options[:path], @app_name].join(::File::SEPARATOR)
       end
     end
   end

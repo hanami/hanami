@@ -46,7 +46,7 @@ module Lotus
         Lotus::Commands::Console.new(environment).start
       end
     end
-    
+
     desc 'dbconsole', 'starts a sql console'
     method_option :environment,                 desc: 'path to environment configuration (config/environment.rb)'
 
@@ -87,6 +87,19 @@ module Lotus
       else
         require 'lotus/commands/new'
         Lotus::Commands::New.new(name, environment, self).start
+      end
+    end
+
+    desc 'generate', 'generates a new action'
+    method_option :path,                desc: 'applications path',        type: :string, default: 'apps'
+    method_option :help, aliases: '-h', desc: 'displays the usage method'
+
+    def generate(type = nil, app_name = nil, name = nil)
+      if options[:help] || (type.nil? && app_name.nil? && name.nil?)
+        invoke :help, ['generate']
+      else
+        require 'lotus/commands/generate'
+        Lotus::Commands::Generate.new(type, app_name, name, environment, self).start
       end
     end
 
