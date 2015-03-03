@@ -1,3 +1,4 @@
 architecture=container
 test=<%= config[:test] %>
 template=erb
+adapter=<%= config[:adapter] %>

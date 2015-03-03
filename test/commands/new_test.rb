@@ -176,6 +176,40 @@ describe Lotus::Commands::New do
           content.must_match %(test=rspec)
         end
       end
+
+      describe 'adapter option' do
+        describe 'mysql' do
+          let(:opts) { container_options.merge(adapter: 'mysql') }
+          it 'includes mysql' do
+            content = @root.join('.lotusrc').read
+            content.must_match %(adapter=mysql)
+          end
+        end
+
+        describe 'mysql2' do
+          let(:opts) { container_options.merge(adapter: 'mysql2') }
+          it 'includes mysql2' do
+            content = @root.join('.lotusrc').read
+            content.must_match %(adapter=mysql2)
+          end
+        end
+
+        describe 'postgresql' do
+          let(:opts) { container_options.merge(adapter: 'postgresql') }
+          it 'includes postgresql' do
+            content = @root.join('.lotusrc').read
+            content.must_match %(adapter=postgresql)
+          end
+        end
+
+        describe 'sqlite3' do
+          let(:opts) { container_options.merge(adapter: 'sqlite3') }
+          it 'includes sqlite3' do
+            content = @root.join('.lotusrc').read
+            content.must_match %(adapter=sqlite3)
+          end
+        end
+      end
     end
 
     describe '.gitignore' do
@@ -761,7 +795,7 @@ describe Lotus::Commands::New do
 
   describe 'application path' do
     def container_options
-      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false]
+      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false, adapter: 'filesystem']
     end
 
     let(:opts)      { container_options }

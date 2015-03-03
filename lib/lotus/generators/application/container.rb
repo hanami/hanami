@@ -26,6 +26,7 @@ module Lotus
             test:                @test,
             adapter:             @adapter,
             adapter_type:        adapter_type,
+            adapter_uri:         adapter_uri,
             lotus_model_version: @lotus_model_version
           }
 
@@ -101,6 +102,30 @@ module Lotus
             :file_system
           when 'memory'
             :memory
+          end
+        end
+
+        def adapter_uri
+          {
+            development: "#{adapter_base_uri}_development",
+            test: "#{adapter_base_uri}_test"
+          }
+        end
+
+        def adapter_base_uri
+          case @adapter
+          when 'mysql'
+            "mysql://localhost/#{app_name}"
+          when 'mysql2'
+            "mysql2://localhost/#{app_name}"
+          when 'postgresql'
+            "postgresql://localhost/#{app_name}"
+          when 'sqlite3'
+            "sqlite://db/#{app_name}"
+          when 'memory'
+            "memory://localhost/#{app_name}"
+          else 'filesystem'
+            "file:///db/#{app_name}"
           end
         end
       end
