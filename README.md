@@ -4,7 +4,7 @@ A complete web framework for Ruby
 
 ## Frameworks
 
-Lotus combines together small but yet powerful frameworks:
+Lotus combines small yet powerful frameworks:
 
 * [**Lotus::Utils**](https://github.com/lotus/utils) - Ruby core extentions and class utilities
 * [**Lotus::Router**](https://github.com/lotus/router) - Rack compatible HTTP router for Ruby
@@ -13,8 +13,8 @@ Lotus combines together small but yet powerful frameworks:
 * [**Lotus::View**](https://github.com/lotus/view) - Presentation with a separation between views and templates
 * [**Lotus::Controller**](https://github.com/lotus/controller) - Full featured, fast and testable actions for Rack
 
-All those components are designed to be used independently from each other or to work together in a Lotus application.
-If your aren't familiar with them, please take time to go through their READMEs.
+These components are designed to be used independently or together in a Lotus application.
+If you aren't familiar with them, please take time to go through their READMEs.
 
 ## Status
 
@@ -62,13 +62,13 @@ Developers can arrange the layout of their projects as they prefer.
 There is a suggested architecture that can be easily changed with a few settings.
 
 Lotus encourages the use of Ruby namespaces. This is based on the experience of working on dozens of projects.
-By using Ruby namespaces, as your code grows it can be split with less effort. In other words, Lotus is providing gentle guidance for **avoid monolithic applications**.
+By using Ruby namespaces, as your code grows it can be split with less effort. In other words, Lotus is providing gentle guidance for **avoiding monolithic applications**.
 
 Lotus has a smart **mechanism of duplication of its frameworks**.
 It allows multiple copies of the framework and multiple applications to run in the **same Ruby process**.
-In other words, Lotus applications are ready to be split into smaller parts but these parts can coexist in the same heap space.
+In other words, Lotus applications are ready to be split into smaller parts, but these parts can coexist in the same heap space.
 
-All this adaptability can be helpful to bend the framework for your advanced needs, but we recognize the need of a guidance in standard architectures.
+All this adaptability can be helpful to bend the framework for your advanced requirements, but we recognize the need for guidance in standard architectures.
 For this reason Lotus is shipped with code generators.
 
 
@@ -76,29 +76,28 @@ For this reason Lotus is shipped with code generators.
 
 **TL;DR: Develop your application like a gem. Implement use cases in `lib/`. Use one or more Lotus applications in `apps/`.**
 
-This is the default architecture.
-When your are about to start a new project use it.
+This is the default architecture. Use it when you are ready to begin a new project.
 
 The core of this architecture lives in `lib/`, where developers should build features **independently from the delivery mechanism**.
 
-Imagine you are building a personal finance application, and you have a feature called _"register expense"_. This functionality involves `Money` and `Expense` Ruby objects and the need of persisting data into a database. You can have those classes living in `lib/pocket/money.rb` and `lib/pocket/expense.rb` and use [Lotus::Model](https://github.com/lotus/model) to persist them.
+Imagine you are building a personal finance application, and you have a feature called _"register expense."_ This functionality involves `Money` and `Expense` Ruby objects and the need for persisting data into a database. You can have those classes living in `lib/pocket/money.rb` and `lib/pocket/expense.rb` and use [Lotus::Model](https://github.com/lotus/model) to persist them.
 
 It's based on a few simple concepts: **use cases** and **applications**.
 Use cases (features) should be implemented in `lib/` with a combination of pure objects and the needed Ruby gems.
-One or more Lotus applications live in `apps/`. They are isolated each other, and depend only on the code in `lib/`.
+One or more Lotus applications live in `apps/`. They are isolated from each other, and depend only on the code in `lib/`.
 
-Each of them should serve for only one purpose: user facing web application, administrative backend, JSON API, metrics dashboard, etc.
+Each application should serve only one purpose: user-facing web application, administrative backend, JSON API, metrics dashboard, etc.
 
 This architecture has important advantages:
 
-  * **Code reusability.** You can consume a feature from the Web UI or from a HTTP API. Each one can be different Lotus application or simple Rack based endpoints.
+  * **Code reusability.** You can consume a feature from the Web UI or from a HTTP API. Each can be a different Lotus application or simple Rack-based endpoints.
   * **Decoupled components.** The core of your application depends only on a few gems and it doesn't need to worry about the Web/HTTP/Console/Background jobs.
-  * **Applications are built like a gem**, this ease the process of package them and share between projects, without the need of carry a lot of dependencies.
-  * **Avoid monoliths**. Each Lotus application under `apps/` is a candidate for later on extraction into a separated [_microservice_](http://martinfowler.com/articles/microservices.html).
+  * **Applications are built like gems.** This eases the process of packaging and sharing them among projects, without the need for many dependencies.
+  * **Avoid monoliths**. Each Lotus application under `apps/` is a candidate for later extraction into a separated [_microservice_](http://martinfowler.com/articles/microservices.html).
 
-The last point is crucial. In the early days of a new project is really convenient to build and deploy all the code together.
-But as the time passes, it can become nearly impossible to extract sets of cohesive functionalities into separated deliverables.
-Lotus helps to plan those things ahead of time, but without the burden that is required by those choices, because it support multiple applications natively.
+The last point is crucial. In the early days of a new project it is convenient to build and deploy all the code together.
+However, as time passes, it can become nearly impossible to extract sets of cohesive functionalities into separated deliverables.
+Lotus helps to plan those things ahead of time, but without the burden that is required by those choices, because it supports multiple applications natively.
 
 Here's the name _**container**_: a Lotus _"shell"_ that can run multiple micro applications in the same process.
 
@@ -122,7 +121,7 @@ _upcoming_
 * Lotus expects controllers, actions and views to have a specific pattern (see [Configuration](#configuration) for customizations)
 * All the commands must be run from the root of the project. If this requirement cannot be satisfied, please hardcode the path with `Configuration#root`.
 * The template name must reflect the name of the corresponding view: `Bookshelf::Views::Dashboard::Index` for `dashboard/index.html.erb`.
-* All the static files are served by the internal Rack middleware stack.
+* All static files are served by the internal Rack middleware stack.
 * The application expects to find static files under `public/` (see `Configuration#assets`)
 * If the public folder doesn't exist, it doesn't serve static files.
 
@@ -235,7 +234,7 @@ module Bookshelf
       #           uri:  String, 'file:///db/bookshelf'
       #                         'memory://localhost/bookshelf'
       #                         'sqlite:memory:'
-      #                         'sqlite://db/bookshelf.db'
+      #                         'sqlite://db/bookshelf.sqlite3'
       #                         'postgres://localhost/bookshelf'
       #                         'mysql://localhost/bookshelf'
       #
@@ -346,7 +345,7 @@ It supports **code reloading** feature by default, useful for development purpos
 
 ### Console
 
-It starts a REPL, by using the engine defined in your `Gemfile`. It defaults to IRb. **Run it from the root of the application**.
+It starts a REPL, by using the engine defined in your `Gemfile`. It defaults to IRB. **Run it from the root of the application**.
 
 ```shell
 % bundle exec lotus console

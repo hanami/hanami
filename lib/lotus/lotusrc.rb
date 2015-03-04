@@ -1,0 +1,143 @@
+require 'pathname'
+require 'dotenv'
+
+module Lotus
+  # Create and read the .lotusrc file in the root of the application
+  #
+  # @since x.x.x
+  # @api private
+  class Lotusrc
+    # Lotusrc name file
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Lotus::Lotusrc#path_file
+    FILE_NAME = '.lotusrc'.freeze
+
+    # Architecture default value
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Lotus::Lotusrc#read
+    DEFAULT_ARCHITECTURE = 'container'.freeze
+
+    # Architecture key for writing the lotusrc file
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Lotus::Lotusrc#read
+    ARCHITECTURE_KEY = 'architecture'.freeze
+
+    # Test suite default value
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Lotus::Lotusrc#read
+    DEFAULT_TEST_SUITE = 'minitest'.freeze
+
+    # Test suite key for writing the lotusrc file
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Lotus::Lotusrc#read
+    TEST_KEY = 'test'.freeze
+
+    # Template default value
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Lotus::Lotusrc#read
+    DEFAULT_TEMPLATE = 'erb'.freeze
+
+    # Template key for writing the lotusrc file
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Lotus::Lotusrc#read
+    TEMPLATE_KEY = 'template'.freeze
+
+    # Initialize Lotusrc class with application's root and enviroment options.
+    # Create the lotusrc file if it doesn't exist in the root given.
+    #
+    # @param [Pathname] Application's root
+    # @param [Hash] Environment's options
+    #
+    # @see Lotus::Environment#initialize
+    def initialize(root, options = {})
+      @root    = root
+      @options = options
+      create
+    end
+
+    # Read lotusrc file and parse it's values.
+    #
+    # @return [Lotus::Utils::Hash] parsed values
+    #
+    # @example Default values if file doesn't exist
+    #   Lotus::Lotusrc.new(Pathname.new(Dir.pwd)).read
+    #    # => { architecture: 'container', test: 'minitest', template: 'erb' }
+    #
+    # @example Custom values if file doesn't exist
+    #   options = { architect: 'application', test: 'rspec', template: 'slim' }
+    #   Lotus::Lotusrc.new(Pathname.new(Dir.pwd), options).read
+    #    # => { architecture: 'application', test: 'rspec', template: 'slim' }
+    def read
+      if exists?
+        lotusrc_options = Dotenv.load path_file
+        Utils::Hash.new(lotusrc_options).symbolize!
+      end
+    end
+
+    private
+
+    # Create lotusrc file if exists
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Lotus::Lotusrc::DEFAULT_ARCHITECTURE
+    # @see Lotus::Lotusrc::ARCHITECTURE_KEY
+    # @see Lotus::Lotusrc::DEFAULT_TEST_SUITE
+    # @see Lotus::Lotusrc::TEST_KEY
+    # @see Lotus::Lotusrc::DEFAULT_TEMPLATE
+    # @see Lotus::Lotusrc::TEMPLATE_KEY
+    def create
+      unless exists?
+        rcfile = File.new(path_file, "w")
+        rcfile.puts "#{ ARCHITECTURE_KEY }=#{ @options.fetch(:architecture, DEFAULT_ARCHITECTURE) }"
+        rcfile.puts "#{ TEST_KEY }=#{ @options.fetch(:test, DEFAULT_TEST_SUITE) }"
+        rcfile.puts "#{ TEMPLATE_KEY }=#{ @options.fetch(:template, DEFAULT_TEMPLATE) }"
+        rcfile.close
+      end
+    end
+
+    # Check if lotusrc file exists
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @return [Boolean] lotusrc file's path existing
+    def exists?
+      path_file.exist?
+    end
+
+    # Return the lotusrc file's path
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @return [Pathname] lotusrc file's path
+    #
+    # @see Lotus::Lotusrc::FILE_NAME
+    def path_file
+      @root.join FILE_NAME
+    end
+  end
+end

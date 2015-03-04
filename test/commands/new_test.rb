@@ -124,6 +124,34 @@ describe Lotus::Commands::New do
       end
     end
 
+    describe '.lotusrc' do
+      describe 'minitest (default)' do
+        it 'generates it' do
+          content = @root.join('.lotusrc').read
+          content.must_match %(architecture=container)
+          content.must_match %(test=minitest)
+          content.must_match %(template=erb)
+        end
+      end
+
+      describe 'rspec' do
+        let(:opts) { container_options.merge(test: 'rspec') }
+
+        it 'generates it' do
+          content = @root.join('.lotusrc').read
+          content.must_match %(test=rspec)
+        end
+      end
+    end
+
+    describe '.gitignore' do
+      it 'generates it' do
+        content = @root.join('.gitignore').read
+        content.must_match %(/db/chirp_development)
+        content.must_match %(/db/chirp_test)
+      end
+    end
+
     describe 'config/environment.rb' do
       it 'generates it' do
         content = @root.join('config/environment.rb').read
@@ -406,6 +434,10 @@ describe Lotus::Commands::New do
         content.must_match %(#   'vendor/javascripts')
 
         content.must_match %(# serve_assets false)
+
+        # security
+        content.must_match %(security.x_frame_options "DENY")
+        content.must_match %(security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';")
 
         content.must_match %(controller.prepare)
         content.must_match %(view.prepare)

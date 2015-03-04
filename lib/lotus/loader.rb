@@ -5,6 +5,7 @@ require 'lotus/routes'
 require 'lotus/routing/default'
 require 'lotus/action/cookies'
 require 'lotus/action/session'
+require 'lotus/config/security'
 
 module Lotus
   # Load an application
@@ -49,6 +50,10 @@ module Lotus
         controller = Lotus::Controller.duplicate(namespace) do
           handle_exceptions config.handle_exceptions
           default_format    config.default_format
+          default_headers({
+            Lotus::Config::Security::X_FRAME_OPTIONS_HEADER         => config.security.x_frame_options,
+            Lotus::Config::Security::CONTENT_SECURITY_POLICY_HEADER => config.security.content_security_policy
+          })
 
           prepare { include Lotus::Action::Cookies } if config.cookies
           prepare { include Lotus::Action::Session } if config.sessions.enabled?

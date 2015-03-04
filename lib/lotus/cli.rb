@@ -3,38 +3,6 @@ require 'lotus/environment'
 require 'lotus/version'
 
 module Lotus
-
-  class DBSubcommand < Thor 
-    require 'lotus/commands/db'
-    namespace :db
-
-    desc 'migrate', 'run your migration'
-    def migrate
-      if options[:help] 
-        invoke :help, ['migrate']
-      else
-        Lotus::Commands::DB.new(environment).migrate
-      end
-    end
-    
-    desc 'rollback', 'rollback your migration'
-    method_option :step, desc:'number of stpes to roll back', type: :numeric
-
-    def rollback
-      if options[:help] 
-        invoke :help, ['rollback']
-      else
-        Lotus::Commands::DB.new(environment).rollback
-      end
-    end
-
-    private 
-    def environment
-      Lotus::Environment.new(options)
-    end
-
-  end
-
   class Cli < Thor
     include Thor::Actions
 
@@ -110,15 +78,13 @@ module Lotus
       end
     end
 
-    desc 'db', 'run database migrations'
-    subcommand 'db', DBSubcommand
+    require 'lotus/commands/db'
+    register Lotus::Commands::DB, 'db', 'db [SUBCOMMAND]', 'manage set of DB operations'
 
+    private
 
-    private 
     def environment
       Lotus::Environment.new(options)
     end
   end
-
-
 end
