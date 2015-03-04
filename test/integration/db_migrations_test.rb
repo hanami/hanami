@@ -1,6 +1,6 @@
 require 'test_helper'
 require 'lotus/environment'
-require 'lotus/commands/db'
+require 'lotus/commands/db/migrator'
 require  FIXTURES_ROOT.join('sql_adapter')
 
 
@@ -11,7 +11,7 @@ describe 'CLI db migration' do
   let(:adapter_config) { Lotus::Model::Config::Adapter.new(type: :sql, uri: SQLITE_CONNECTION_STRING) }
   let(:sequel)         { Sequel.connect(adapter_config.uri) }
   let(:env)            { Lotus::Environment.new(opts) }
-  let(:db_command)     { Lotus::Commands::DB.new(app_name, env) } 
+  let(:db_command)     { Lotus::Commands::DB::Migrator.new(app_name, env) } 
 
   before do
     @current_dir = Dir.pwd
