@@ -19,6 +19,8 @@ Lotus::Model.configure do
   ##
   # Database mapping
   #
+  # Intended for specifying application wide mappings.
+  #
   # You can specify mapping file to load with:
   #
   # mapping "#{__dir__}/config/mapping"
