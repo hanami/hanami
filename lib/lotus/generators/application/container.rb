@@ -12,7 +12,7 @@ module Lotus
           @slice_generator     = Slice.new(command)
           @lotus_head          = options.fetch(:lotus_head)
           @test                = options[:test]
-          @adapter             = options[:adapter]
+          @database            = options[:database]
           @lotus_model_version = '~> 0.2'
 
           cli.class.source_root(source)
@@ -24,8 +24,8 @@ module Lotus
             app_name:            app_name,
             lotus_head:          @lotus_head,
             test:                @test,
-            adapter:             @adapter,
-            adapter_config:      adapter_config,
+            database:            @database,
+            database_config:     database_config,
             lotus_model_version: @lotus_model_version
           }
 
@@ -93,25 +93,25 @@ module Lotus
           File.directory?(source.join('.git'))
         end
 
-        def adapter_config
+        def database_config
           {
-            gem: adapter_gem,
-            uri: adapter_uri,
-            type: adapter_type
+            gem: database_gem,
+            uri: database_uri,
+            type: database_type
           }
         end
 
-        def adapter_gem
+        def database_gem
           {
             'mysql'      => 'mysql',
             'mysql2'     => 'mysql2',
             'postgresql' => 'pg',
             'sqlite3'    => 'sqlite3'
-          }[@adapter]
+          }[@database]
         end
 
-        def adapter_type
-          case @adapter
+        def database_type
+          case @database
           when 'mysql', 'mysql2', 'postgresql', 'sqlite3'
             :sql
           when 'filesystem'
@@ -121,15 +121,15 @@ module Lotus
           end
         end
 
-        def adapter_uri
+        def database_uri
           {
-            development: "#{adapter_base_uri}_development",
-            test: "#{adapter_base_uri}_test"
+            development: "#{database_base_uri}_development",
+            test: "#{database_base_uri}_test"
           }
         end
 
-        def adapter_base_uri
-          case @adapter
+        def database_base_uri
+          case @database
           when 'mysql'
             "mysql://localhost/#{app_name}"
           when 'mysql2'

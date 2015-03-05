@@ -73,7 +73,7 @@ module Lotus
     end
 
     desc 'new', 'generates a new application'
-    method_option :adapter,                       desc: 'application persistence adapter', type: :string,  default: 'filesystem'
+    method_option :database,       aliases: '-d', desc: 'application database', type: :string, default: 'filesystem'
     method_option :architecture,   aliases: '-a', desc: 'application architecture',   type: :string,  default: 'container'
     method_option :application,                   desc: 'application name',           type: :string,  default: 'web'
     method_option :application_base_url,          desc: 'application base url',       type: :string,  default: '/'

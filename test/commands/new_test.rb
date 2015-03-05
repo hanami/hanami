@@ -31,7 +31,7 @@ describe Lotus::Commands::New do
 
   describe 'container architecture' do
     def container_options
-      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false, adapter: 'filesystem']
+      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false, database: 'filesystem']
     end
 
     let(:opts)     { container_options }
@@ -92,9 +92,9 @@ describe Lotus::Commands::New do
         end
       end
 
-      describe 'adapter option' do
+      describe 'database option' do
         describe 'mysql' do
-          let(:opts) { container_options.merge(adapter: 'mysql') }
+          let(:opts) { container_options.merge(database: 'mysql') }
           it 'includes mysql' do
             content = @root.join('Gemfile').read
             content.must_match %(gem 'mysql')
@@ -102,7 +102,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'mysql2' do
-          let(:opts) { container_options.merge(adapter: 'mysql2') }
+          let(:opts) { container_options.merge(database: 'mysql2') }
           it 'includes mysql2' do
             content = @root.join('Gemfile').read
             content.must_match %(gem 'mysql2')
@@ -110,7 +110,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'postgresql' do
-          let(:opts) { container_options.merge(adapter: 'postgresql') }
+          let(:opts) { container_options.merge(database: 'postgresql') }
           it 'includes postgresql' do
             content = @root.join('Gemfile').read
             content.must_match %(gem 'pg')
@@ -118,7 +118,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'sqlite3' do
-          let(:opts) { container_options.merge(adapter: 'sqlite3') }
+          let(:opts) { container_options.merge(database: 'sqlite3') }
           it 'includes sqlite3' do
             content = @root.join('Gemfile').read
             content.must_match %(gem 'sqlite3')
@@ -221,9 +221,9 @@ describe Lotus::Commands::New do
         end
       end
 
-      describe 'adapter option' do
+      describe 'database option' do
         describe 'with mysql' do
-          let(:opts) { container_options.merge(adapter: 'mysql') }
+          let(:opts) { container_options.merge(database: 'mysql') }
           it 'generates db config for mysql' do
             content = @root.join('config/.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="mysql://localhost/chirp_development")
@@ -231,7 +231,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'with mysql2' do
-          let(:opts) { container_options.merge(adapter: 'mysql2') }
+          let(:opts) { container_options.merge(database: 'mysql2') }
           it 'generates db config for mysql2' do
             content = @root.join('config/.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="mysql2://localhost/chirp_development")
@@ -239,7 +239,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'with postgresql' do
-          let(:opts) { container_options.merge(adapter: 'postgresql') }
+          let(:opts) { container_options.merge(database: 'postgresql') }
           it 'generates db config for postgresql' do
             content = @root.join('config/.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="postgresql://localhost/chirp_development")
@@ -247,15 +247,23 @@ describe Lotus::Commands::New do
         end
 
         describe 'with sqlite3' do
-          let(:opts) { container_options.merge(adapter: 'sqlite3') }
+          let(:opts) { container_options.merge(database: 'sqlite3') }
           it 'generates db config for sqlite3' do
             content = @root.join('config/.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_development")
           end
+
+          describe 'with non-simple application name' do
+            let(:app_name) { "chirp'two" }
+            it 'escapes the database url' do
+              content = @root.join('config/.env.development').read
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_development")
+            end
+          end
         end
 
         describe 'with memory' do
-          let(:opts) { container_options.merge(adapter: 'memory') }
+          let(:opts) { container_options.merge(database: 'memory') }
           it 'generates db config for memory' do
             content = @root.join('config/.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="memory://localhost/chirp_development")
@@ -280,9 +288,9 @@ describe Lotus::Commands::New do
         end
       end
 
-      describe 'adapter option' do
+      describe 'database option' do
         describe 'with mysql' do
-          let(:opts) { container_options.merge(adapter: 'mysql') }
+          let(:opts) { container_options.merge(database: 'mysql') }
           it 'generates db config for mysql' do
             content = @root.join('config/.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="mysql://localhost/chirp_test")
@@ -290,7 +298,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'with mysql2' do
-          let(:opts) { container_options.merge(adapter: 'mysql2') }
+          let(:opts) { container_options.merge(database: 'mysql2') }
           it 'generates db config for mysql2' do
             content = @root.join('config/.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="mysql2://localhost/chirp_test")
@@ -298,7 +306,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'with postgresql' do
-          let(:opts) { container_options.merge(adapter: 'postgresql') }
+          let(:opts) { container_options.merge(database: 'postgresql') }
           it 'generates db config for postgresql' do
             content = @root.join('config/.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="postgresql://localhost/chirp_test")
@@ -306,15 +314,23 @@ describe Lotus::Commands::New do
         end
 
         describe 'with sqlite3' do
-          let(:opts) { container_options.merge(adapter: 'sqlite3') }
+          let(:opts) { container_options.merge(database: 'sqlite3') }
           it 'generates db config for sqlite3' do
             content = @root.join('config/.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_test")
           end
+
+          describe 'with non-simple application name' do
+            let(:app_name) { "chirp'two" }
+            it 'escapes the database url' do
+              content = @root.join('config/.env.test').read
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_test")
+            end
+          end
         end
 
         describe 'with memory' do
-          let(:opts) { container_options.merge(adapter: 'memory') }
+          let(:opts) { container_options.merge(database: 'memory') }
           it 'generates db config for memory' do
             content = @root.join('config/.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="memory://localhost/chirp_test")
@@ -344,9 +360,9 @@ describe Lotus::Commands::New do
         end
       end
 
-      describe 'adapter option' do
+      describe 'database option' do
         describe 'mysql' do
-          let(:opts) { container_options.merge(adapter: 'mysql') }
+          let(:opts) { container_options.merge(database: 'mysql') }
           it 'generates adapter config for mysql' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
@@ -354,7 +370,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'mysql2' do
-          let(:opts) { container_options.merge(adapter: 'mysql2') }
+          let(:opts) { container_options.merge(database: 'mysql2') }
           it 'generates adapter config for mysql2' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
@@ -362,7 +378,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'postgresql' do
-          let(:opts) { container_options.merge(adapter: 'postgresql') }
+          let(:opts) { container_options.merge(database: 'postgresql') }
           it 'generates adapter config for postgresql' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
@@ -370,7 +386,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'sqlite3' do
-          let(:opts) { container_options.merge(adapter: 'sqlite3') }
+          let(:opts) { container_options.merge(database: 'sqlite3') }
           it 'generates adapter config for sqlite3' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
@@ -378,7 +394,7 @@ describe Lotus::Commands::New do
         end
 
         describe 'memory' do
-          let(:opts) { container_options.merge(adapter: 'memory') }
+          let(:opts) { container_options.merge(database: 'memory') }
           it 'generates adapter config for memory' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :memory, uri: ENV['CHIRP_DATABASE_URL'])
@@ -761,7 +777,7 @@ describe Lotus::Commands::New do
 
   describe 'application path' do
     def container_options
-      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false, adapter: 'filesystem']
+      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false, database: 'filesystem']
     end
 
     let(:opts)      { container_options }
