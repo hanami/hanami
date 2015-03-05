@@ -25,8 +25,7 @@ module Lotus
             lotus_head:          @lotus_head,
             test:                @test,
             adapter:             @adapter,
-            adapter_type:        adapter_type,
-            adapter_uri:         adapter_uri,
+            adapter_config:      adapter_config,
             lotus_model_version: @lotus_model_version
           }
 
@@ -94,6 +93,23 @@ module Lotus
           File.directory?(source.join('.git'))
         end
 
+        def adapter_config
+          {
+            gem: adapter_gem,
+            uri: adapter_uri,
+            type: adapter_type
+          }
+        end
+
+        def adapter_gem
+          {
+            'mysql'      => 'mysql',
+            'mysql2'     => 'mysql2',
+            'postgresql' => 'pg',
+            'sqlite3'    => 'sqlite3'
+          }[@adapter]
+        end
+
         def adapter_type
           case @adapter
           when 'mysql', 'mysql2', 'postgresql', 'sqlite3'
@@ -121,10 +137,10 @@ module Lotus
           when 'postgresql'
             "postgresql://localhost/#{app_name}"
           when 'sqlite3'
-            "sqlite://db/#{app_name}"
+            "sqlite://db/#{Shellwords.escape(app_name)}"
           when 'memory'
             "memory://localhost/#{app_name}"
-          else 'filesystem'
+          else
             "file:///db/#{app_name}"
           end
         end

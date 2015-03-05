@@ -16,14 +16,8 @@ gem 'lotusrb',      '<%= Lotus::VERSION %>'
 gem 'lotus-model', '<%= config[:lotus_model_version] %>'
 <%- end -%>
 
-<%- if config[:adapter] == 'mysql' %>
-gem 'mysql'
-<%- elsif config[:adapter] == 'mysql2' %>
-gem 'mysql2'
-<%- elsif config[:adapter] == 'postgresql' %>
-gem 'pg'
-<%- elsif config[:adapter] == 'sqlite3' %>
-gem 'sqlite3'
+<%- if config[:adapter_config][:gem] %>
+gem '<%= config[:adapter_config][:gem] %>'
 <%- end -%>
 
 group :test do
