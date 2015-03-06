@@ -5,13 +5,12 @@ require  FIXTURES_ROOT.join('sql_adapter')
 
 
 describe 'CLI db migration' do
-  let(:app_name)       { nil }
   let(:config)         { FIXTURES_ROOT.join('migrations/config/environment') }
   let(:opts)           { Hash[environment: config] }
   let(:adapter_config) { Lotus::Model::Config::Adapter.new(type: :sql, uri: SQLITE_CONNECTION_STRING) }
   let(:sequel)         { Sequel.connect(adapter_config.uri) }
   let(:env)            { Lotus::Environment.new(opts) }
-  let(:db_command)     { Lotus::Commands::DB::Migrator.new(app_name, env) } 
+  let(:db_command)     { Lotus::Commands::DB::Migrator.new(env) } 
 
   before do
     @current_dir = Dir.pwd
@@ -28,23 +27,11 @@ describe 'CLI db migration' do
     before do
       db_command.migrate   
     end
-
-    describe 'when app param is not specified' do
-      it 'applies migrations located on db/migration' do
-        sequel.table_exists?(:posts).must_equal true
-        sequel.table_exists?(:comments).must_equal true
-        sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal ['20150122124515_create_posts.rb', '20150222124516_create_comments.rb']
-      end
-    end
-    
-    describe 'when app param is specified' do
-      let(:app_name) { "web" }
-
-      it 'applies migrations located on apps/web/db/migration' do
-        sequel.table_exists?(:tasks).must_equal true
-        sequel.table_exists?(:todos).must_equal true
-        sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal ['20150226211334_create_task.rb', '20150226211534_create_todo.rb']
-      end
+  
+    it 'applies migrations located on db/migration' do
+      sequel.table_exists?(:posts).must_equal true
+      sequel.table_exists?(:comments).must_equal true
+      sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal ['20150122124515_create_posts.rb', '20150222124516_create_comments.rb']
     end
   end
 
@@ -54,41 +41,19 @@ describe 'CLI db migration' do
       db_command.rollback
     end
 
-    describe 'when app param is not specified' do
-      it 'rollback last migration located on db/migration' do
-        sequel.table_exists?(:comments).must_equal false
-        sequel.table_exists?(:posts).must_equal true
-        sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal ['20150122124515_create_posts.rb']
-      end
-
-      describe "when pass step" do
-        let(:opts) { Hash[environment: config, step: 2] }
-
-        it 'rollback 2 last migrations located on db/migration' do
-          sequel.table_exists?(:comments).must_equal false
-          sequel.table_exists?(:posts).must_equal false
-          sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal []
-        end
-      end
+    it 'rollback last migration located on db/migration' do
+      sequel.table_exists?(:comments).must_equal false
+      sequel.table_exists?(:posts).must_equal true
+      sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal ['20150122124515_create_posts.rb']
     end
 
-    describe 'when app param is specified' do
-      let(:app_name) { "web" }
+    describe "when step were specified" do
+      let(:opts) { Hash[environment: config, step: 2] }
 
-      it 'rollback last migration located on apps/web/db/migration' do
-        sequel.table_exists?(:todos).must_equal false
-        sequel.table_exists?(:tasks).must_equal true
-        sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal ['20150226211334_create_task.rb']
-      end
-
-      describe "when pass step" do
-        let(:opts) { Hash[environment: config, step: 2] }
-
-        it 'rollback 2 last migrations located on apps/web/db/migration' do
-          sequel.table_exists?(:todos).must_equal false
-          sequel.table_exists?(:tasks).must_equal false
-          sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal []
-        end
+      it 'rollback 2 last migrations located on db/migration' do
+        sequel.table_exists?(:comments).must_equal false
+        sequel.table_exists?(:posts).must_equal false
+        sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal []
       end
     end
   end
