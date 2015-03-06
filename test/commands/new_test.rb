@@ -592,7 +592,7 @@ describe Lotus::Commands::New do
         content.must_match %(# mapping 'config/mapping')
 
         content.must_match %(layout :application)
-        content.must_match %(# templates 'templates')
+        content.must_match %(templates 'templates')
 
         content.must_match %(# cookies true)
 

@@ -108,7 +108,7 @@ module <%= config[:classified_slice_name] %>
 
       # The relative path to templates
       #
-      # templates 'templates'
+      templates 'templates'
 
       ##
       # ASSETS
