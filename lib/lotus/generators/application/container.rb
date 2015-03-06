@@ -9,11 +9,12 @@ module Lotus
         def initialize(command)
           super
 
-          @slice_generator     = Slice.new(command)
-          @lotus_head          = options.fetch(:lotus_head)
-          @test                = options[:test]
-          @database            = options[:database]
-          @lotus_model_version = '~> 0.2'
+          @slice_generator        = Slice.new(command)
+          @lotus_head             = options.fetch(:lotus_head)
+          @test                   = options[:test]
+          @database               = options[:database]
+          @lotus_model_version    = '~> 0.2'
+          @lotus_helpers_version  = '~> 0.0'
 
           cli.class.source_root(source)
         end
@@ -21,12 +22,13 @@ module Lotus
         def start
 
           opts      = {
-            app_name:            app_name,
-            lotus_head:          @lotus_head,
-            test:                @test,
-            database:            @database,
-            database_config:     database_config,
-            lotus_model_version: @lotus_model_version
+            app_name:               app_name,
+            lotus_head:             @lotus_head,
+            test:                   @test,
+            database:               @database,
+            database_config:        database_config,
+            lotus_model_version:    @lotus_model_version,
+            lotus_helpers_version:  @lotus_helpers_version
           }
 
           templates = {
