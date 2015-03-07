@@ -8,6 +8,7 @@ require 'lotus/config/mapping'
 require 'lotus/config/sessions'
 require 'lotus/config/configure'
 require 'lotus/config/security'
+require 'lotus/config/cookies'
 
 module Lotus
   # Configuration for a Lotus application
@@ -465,13 +466,14 @@ module Lotus
     # an argument, it will set the corresponding instance variable. When
     # called without, it will return the already set value, or the default.
     #
-    # @overload cookies(value)
-    #   Sets the given value.
+    # @overload cookies(value, options)
+    #   Sets the given value with their options.
     #   @param value [TrueClass, FalseClass]
+    #   @param options [Hash]
     #
     # @overload cookies
     #   Gets the value.
-    #   @return [TrueClass, FalseClass]
+    #   @return [Lotus::Config::Cookies]
     #
     # @example Getting the value
     #   require 'lotus'
@@ -482,7 +484,7 @@ module Lotus
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => false
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=false, @default_options={:httponly=>true}>
     #
     # @example Setting the value
     #   require 'lotus'
@@ -490,13 +492,13 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         cookies true
+    #         cookies true, { domain: 'lotusrb.org' }
     #       end
     #     end
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => true
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=true, @default_options={:domain=>'lotusrb.org', :httponly=>true}>
     #
     # @example Setting a new value after one is set.
     #   require 'lotus'
@@ -511,13 +513,13 @@ module Lotus
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => true
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=true, @default_options={:httponly=>true}>
     #
-    def cookies(value = nil)
+    def cookies(value = nil, options = {})
       if value.nil?
-        @cookies || false
+        @cookies ||= Config::Cookies.new
       else
-        @cookies = value
+        @cookies = Config::Cookies.new(value, options)
       end
     end
 
