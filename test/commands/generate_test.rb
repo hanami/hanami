@@ -270,4 +270,45 @@ describe Lotus::Commands::Generate do
       end
     end
   end
+
+  describe 'app' do
+    let(:target)      { 'app' }
+    let(:target_name) { '' }
+    let(:app_name)    { 'api' }
+    let(:environment_config_path) { @root.join('config/environment.rb') }
+    let(:environment_development_path) { @root.join('config/.env.development') }
+    let(:environment_test_path) { @root.join('config/.env.test') }
+
+    before do
+      @root.join('config').mkpath
+      FileUtils.touch(environment_config_path)
+      FileUtils.touch(environment_development_path)
+      FileUtils.touch(environment_test_path)
+      capture_io { command.start }
+    end
+
+    describe 'lib/generate/api/application.rb' do
+      it 'generates it' do
+        content = @root.join('apps/api/application.rb').read
+        content.must_match %(require 'lotus/helpers')
+        content.must_match %(module Api)
+        content.must_match %(configure do)
+        content.must_match %(root __dir__)
+        content.must_match %(load_paths << [)
+        content.must_match %('controllers',)
+        content.must_match %('views')
+        content.must_match %(routes 'config/routes')
+        content.must_match %(security.x_frame_options "DENY")
+        content.must_match %(security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';")
+        content.must_match %(controller.prepare do)
+        content.must_match %(view.prepare do)
+        content.must_match %(include Lotus::Helpers)
+        content.must_match %(configure :development)
+        content.must_match %(configure :test do)
+        content.must_match %(handle_exceptions false)
+        content.must_match %(serve_assets      true)
+        content.must_match %(configure :production do)
+      end
+    end
+  end
 end

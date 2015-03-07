@@ -58,13 +58,13 @@ module Lotus
         #
 
         # Add "require_relative '../apps/web/application'"
-        cli.gsub_file target.join('config/environment.rb'), /require_relative (.*)/ do |match|
-          match << "\nrequire_relative '../apps/#{ opts[:slice_name] }/application'"
+        cli.inject_into_file target.join('config/environment.rb'), after: /require_relative '\.\.\/lib\/(.*)'/ do
+          "\nrequire_relative '../apps/#{ opts[:slice_name] }/application'"
         end
 
         # Mount slice inside "Lotus::Container.configure"
-        cli.gsub_file target.join('config/environment.rb'), /(mount (.*)|Lotus::Container.configure do)/ do |match|
-          match << "\n  mount #{ opts[:classified_slice_name] }::Application, at: '#{ opts[:slice_base_url] }'"
+        cli.inject_into_file target.join('config/environment.rb'), after: /Lotus::Container.configure do/ do |match|
+          "\n  mount #{ opts[:classified_slice_name] }::Application, at: '#{ opts[:slice_base_url] }'"
         end
 
         ##
