@@ -46,8 +46,9 @@ describe Lotus::Commands::New do
         content = @root.join('Gemfile').read
         content.must_match %(gem 'bundler')
         content.must_match %(gem 'rake')
-        content.must_match %(gem 'lotusrb',      '#{ Lotus::VERSION }')
-        content.must_match %(gem 'lotus-model', '~> 0.2')
+        content.must_match %(gem 'lotusrb',       '#{ Lotus::VERSION }')
+        content.must_match %(gem 'lotus-model',   '~> 0.2')
+        content.must_match %(gem 'lotus-helpers', '~> 0.0')
         content.must_match %(gem 'capybara')
       end
 
@@ -579,6 +580,7 @@ describe Lotus::Commands::New do
     describe 'apps/web/application.rb' do
       it 'generates it' do
         content = @root.join('apps/web/application.rb').read
+        content.must_match %(require 'lotus/helpers')
         content.must_match %(module Web)
         content.must_match %(class Application < Lotus::Application)
 
@@ -617,6 +619,7 @@ describe Lotus::Commands::New do
 
         content.must_match %(controller.prepare)
         content.must_match %(view.prepare)
+        content.must_match %(include Lotus::Helpers)
 
         # per environment configuration
         content.must_match %(configure :development do)
