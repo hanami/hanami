@@ -11,6 +11,7 @@ Lotus combines small yet powerful frameworks:
 * [**Lotus::Validations**](https://github.com/lotus/validations) - Validation mixin for Ruby objects
 * [**Lotus::Model**](https://github.com/lotus/model) - Persistence with entities, repositories and data mapper
 * [**Lotus::View**](https://github.com/lotus/view) - Presentation with a separation between views and templates
+* [**Lotus::Helpers**](https://github.com/lotus/helpers) - Presentation helpers for views
 * [**Lotus::Controller**](https://github.com/lotus/controller) - Full featured, fast and testable actions for Rack
 
 These components are designed to be used independently or together in a Lotus application.
