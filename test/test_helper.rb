@@ -135,4 +135,5 @@ def stub_time_now
   end
 end
 
+$pwd = Dir.pwd
 require 'fixtures'

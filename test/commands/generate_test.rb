@@ -3,7 +3,7 @@ require 'lotus/cli'
 require 'lotus/commands/generate'
 
 describe Lotus::Commands::Generate do
-  let(:opts)     { Hash.new }
+  let(:opts)     { default_options }
   let(:env)      { Lotus::Environment.new(opts) }
   let(:command)  { Lotus::Commands::Generate.new(target, app_name, target_name, env, cli) }
   let(:cli)      { Lotus::Cli.new }
@@ -22,6 +22,10 @@ describe Lotus::Commands::Generate do
 
   def chdir_to_root
     Dir.chdir(@pwd)
+  end
+
+  def default_options
+    Hash[path: 'apps']
   end
 
   before do
@@ -65,7 +69,7 @@ describe Lotus::Commands::Generate do
       end
 
       describe 'rspec' do
-        let(:opts) { Hash[test: 'rspec'] }
+        let(:opts) { default_options.merge(test: 'rspec') }
 
         it 'generates it' do
           content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
@@ -105,7 +109,7 @@ describe Lotus::Commands::Generate do
       end
 
       describe 'rspec' do
-        let(:opts) { Hash[test: 'rspec'] }
+        let(:opts) { default_options.merge(test: 'rspec') }
 
         it 'generates it' do
           content = @root.join('spec/web/views/dashboard/index_spec.rb').read
