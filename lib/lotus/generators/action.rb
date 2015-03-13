@@ -46,12 +46,30 @@ module Lotus
           })
         end
 
+        generate_route
+
         templates.each do |src, dst|
           cli.template(source.join(src), target.join(dst), opts)
         end
       end
 
       private
+      def generate_route
+        path = target.join(_routes_path)
+        path.dirname.mkpath
+
+        FileUtils.touch(path)
+
+        # Insert at the top of the file
+        cli.insert_into_file _routes_path, before: /(.*)/ do
+          "get '/#{ @controller }', to: '#{ name }'"
+        end
+      end
+
+      def _routes_path
+        "#{ Pathname.new(app_root).join('config', 'routes') }#{ SUFFIX }"
+      end
+
       def _action_path
         "#{ Pathname.new(app_root).join('controllers', @controller, @action) }#{ SUFFIX }"
       end

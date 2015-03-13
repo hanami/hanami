@@ -44,6 +44,13 @@ describe Lotus::Commands::Generate do
       capture_io { command.start }
     end
 
+    describe 'apps/web/config/routes.rb' do
+      it 'generates it' do
+        content = @root.join('apps/web/config/routes.rb').read
+        content.must_match %(get '/dashboard', to: 'dashboard#index')
+      end
+    end
+
     describe 'apps/web/controllers/dashboard/index.rb' do
       it 'generates it' do
         content = @root.join('apps/web/controllers/dashboard/index.rb').read
