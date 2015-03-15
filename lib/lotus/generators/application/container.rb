@@ -14,7 +14,6 @@ module Lotus
           @test                  = options[:test]
           @database              = options[:database]
           @lotus_model_version   = '~> 0.2'
-          @lotus_helpers_version = '~> 0.0'
 
           cli.class.source_root(source)
         end
@@ -28,7 +27,6 @@ module Lotus
             database:              @database,
             database_config:       database_config,
             lotus_model_version:   @lotus_model_version,
-            lotus_helpers_version: @lotus_helpers_version
           }
 
           templates = {
