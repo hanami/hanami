@@ -4,6 +4,7 @@ describe Lotus::Lotusrc do
   describe '#read' do
     describe 'file exists' do
       before do
+        Dir.chdir($pwd)
         @old_pwd = Dir.pwd
         Dir.chdir 'test/fixtures/lotusrc/exists'
         @root = Pathname.new(Dir.pwd)

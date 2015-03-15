@@ -2,7 +2,8 @@ require 'test_helper'
 
 describe 'lotus generate' do
   describe 'action' do
-    let(:options) { '' }
+    let(:options)  { '' }
+    let(:app_name) { 'web' }
 
     def create_temporary_dir
       @tmp = Pathname.new(@pwd = Dir.pwd).join('tmp/integration/cli/generate')
@@ -18,7 +19,7 @@ describe 'lotus generate' do
     end
 
     def generate_action
-      `bundle exec lotus generate action web dashboard#index`
+      `bundle exec lotus generate action #{ app_name } dashboard#index`
     end
 
     def chdir_to_root
@@ -66,6 +67,18 @@ describe 'lotus generate' do
       it 'generates view spec' do
         content = @root.join('spec/web/views/dashboard/index_spec.rb').read
         content.must_include %(expect)
+      end
+    end
+
+    describe 'with unknown application' do
+      let(:app_name) { 'unknown' }
+
+      it "doesn't generate the action" do
+        @root.join('apps/unknown/controllers/dashboard/index.rb').wont_be      :exist?
+        @root.join('apps/unknown/views/dashboard/index.rb').wont_be            :exist?
+        @root.join('apps/unknown/templates/dashboard/index.html.erb').wont_be  :exist?
+        @root.join('spec/unknown/controllers/dashboard/index_spec.rb').wont_be :exist?
+        @root.join('spec/unknown/views/dashboard/index_spec.rb').wont_be       :exist?
       end
     end
   end

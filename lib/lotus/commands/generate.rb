@@ -6,6 +6,9 @@ module Lotus
     class Generate
       GENERATORS_NAMESPACE = "Lotus::Generators::%s".freeze
 
+      class Error < ::StandardError
+      end
+
       attr_reader :cli, :source, :target, :app, :app_name, :app_root, :name, :options
 
       def initialize(type, app_name, name, env, cli)
@@ -27,6 +30,9 @@ module Lotus
 
       def start
         @generator.start
+      rescue Error => e
+        puts e.message
+        exit 1
       end
 
       def app_root

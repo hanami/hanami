@@ -15,6 +15,7 @@ describe Lotus::Environment do
   describe '#initialize' do
     describe 'env vars' do
       before do
+        Dir.chdir($pwd)
         @env = Lotus::Environment.new(config: 'test/fixtures/config')
       end
 
@@ -437,7 +438,9 @@ describe Lotus::Environment do
   describe '#to_options' do
     before do
       @old_pwd = Dir.pwd
-      Dir.chdir 'test/fixtures/lotusrc/exists'
+      path = Pathname.new('test/fixtures/lotusrc/exists')
+      path.mkpath
+      Dir.chdir(path)
       @env = Lotus::Environment.new
     end
 

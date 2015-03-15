@@ -10,14 +10,14 @@ describe Lotus::Commands::Generate do
   let(:app_name) { 'web' }
 
   def create_temporary_dir
-    tmp = Pathname.new(@pwd = Dir.pwd).join('tmp/generators/generate')
-    tmp.rmtree if tmp.exist?
-    tmp.mkpath
+    @tmp = Pathname.new(@pwd = Dir.pwd).join('tmp/generators/generate')
+    @tmp.rmtree if @tmp.exist?
+    @tmp.mkpath
 
-    tmp.join('apps', app_name).mkpath
+    @tmp.join('apps', app_name).mkpath
 
-    Dir.chdir(tmp)
-    @root = tmp
+    Dir.chdir(@tmp)
+    @root = @tmp
   end
 
   def chdir_to_root
@@ -40,102 +40,117 @@ describe Lotus::Commands::Generate do
     let(:target)      { :action }
     let(:target_name) { 'dashboard#index' }
 
-    before do
-      capture_io { command.start }
-    end
-
-    describe 'apps/web/config/routes.rb' do
-      it 'generates it' do
-        content = @root.join('apps/web/config/routes.rb').read
-        content.must_match %(get '/dashboard', to: 'dashboard#index')
+    describe 'with valid arguments' do
+      before do
+        capture_io { command.start }
       end
-    end
 
-    describe 'apps/web/controllers/dashboard/index.rb' do
-      it 'generates it' do
-        content = @root.join('apps/web/controllers/dashboard/index.rb').read
-        content.must_match %(module Web::Controllers::Dashboard)
-        content.must_match %(  class Index)
-        content.must_match %(    include Web::Action)
-        content.must_match %(    def call(params))
-      end
-    end
-
-    describe 'spec/web/controllers/dashboard/index_spec.rb' do
-      describe 'minitest (default)' do
+      describe 'apps/web/config/routes.rb' do
         it 'generates it' do
-          content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(describe Web::Controllers::Dashboard::Index do)
-          content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
-          content.must_match %(  let(:params) { Hash[] })
-          content.must_match %(  it "is successful" do)
-          content.must_match %(    response = action.call(params))
-          content.must_match %(    response[0].must_equal 200)
+          content = @root.join('apps/web/config/routes.rb').read
+          content.must_match %(get '/dashboard', to: 'dashboard#index')
         end
       end
 
-      describe 'rspec' do
-        let(:opts) { default_options.merge(test: 'rspec') }
-
+      describe 'apps/web/controllers/dashboard/index.rb' do
         it 'generates it' do
-          content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(describe Web::Controllers::Dashboard::Index do)
-          content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
-          content.must_match %(  let(:params) { Hash[] })
-          content.must_match %(  it "is successful" do)
-          content.must_match %(    response = action.call(params))
-          content.must_match %(    expect(response[0]).to eq 200)
+          content = @root.join('apps/web/controllers/dashboard/index.rb').read
+          content.must_match %(module Web::Controllers::Dashboard)
+          content.must_match %(  class Index)
+          content.must_match %(    include Web::Action)
+          content.must_match %(    def call(params))
+        end
+      end
+
+      describe 'spec/web/controllers/dashboard/index_spec.rb' do
+        describe 'minitest (default)' do
+          it 'generates it' do
+            content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(describe Web::Controllers::Dashboard::Index do)
+            content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
+            content.must_match %(  let(:params) { Hash[] })
+            content.must_match %(  it "is successful" do)
+            content.must_match %(    response = action.call(params))
+            content.must_match %(    response[0].must_equal 200)
+          end
+        end
+
+        describe 'rspec' do
+          let(:opts) { default_options.merge(test: 'rspec') }
+
+          it 'generates it' do
+            content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(describe Web::Controllers::Dashboard::Index do)
+            content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
+            content.must_match %(  let(:params) { Hash[] })
+            content.must_match %(  it "is successful" do)
+            content.must_match %(    response = action.call(params))
+            content.must_match %(    expect(response[0]).to eq 200)
+          end
+        end
+      end
+
+      describe 'apps/web/views/dashboard/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/views/dashboard/index.rb').read
+          content.must_match %(module Web::Views::Dashboard)
+          content.must_match %(  class Index)
+          content.must_match %(    include Web::View)
+        end
+      end
+
+      describe 'spec/web/views/dashboard/index_spec.rb' do
+        describe 'minitest (default)' do
+          it 'generates it' do
+            content = @root.join('spec/web/views/dashboard/index_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(describe Web::Views::Dashboard::Index do)
+            content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
+            content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })
+            content.must_match %(  let(:view)      { Web::Views::Dashboard::Index.new(template, exposures) })
+            content.must_match %(  it "exposes #foo" do)
+            content.must_match %(    view.foo.must_equal exposures.fetch(:foo))
+            content.must_match %(  end)
+          end
+        end
+
+        describe 'rspec' do
+          let(:opts) { default_options.merge(test: 'rspec') }
+
+          it 'generates it' do
+            content = @root.join('spec/web/views/dashboard/index_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(describe Web::Views::Dashboard::Index do)
+            content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
+            content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })
+            content.must_match %(  let(:view)      { Web::Views::Dashboard::Index.new(template, exposures) })
+            content.must_match %(  it "exposes #foo" do)
+            content.must_match %(    expect(view.foo).to eq exposures.fetch(:foo))
+            content.must_match %(  end)
+          end
+        end
+      end
+
+      describe 'apps/web/templates/dashboard/index.html.erb' do
+        it 'generates it' do
+          content = @root.join('apps/web/templates/dashboard/index.html.erb').read
+          content.must_be :empty?
         end
       end
     end
 
-    describe 'apps/web/views/dashboard/index.rb' do
-      it 'generates it' do
-        content = @root.join('apps/web/views/dashboard/index.rb').read
-        content.must_match %(module Web::Views::Dashboard)
-        content.must_match %(  class Index)
-        content.must_match %(    include Web::View)
-      end
-    end
-
-    describe 'spec/web/views/dashboard/index_spec.rb' do
-      describe 'minitest (default)' do
-        it 'generates it' do
-          content = @root.join('spec/web/views/dashboard/index_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(describe Web::Views::Dashboard::Index do)
-          content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
-          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })
-          content.must_match %(  let(:view)      { Web::Views::Dashboard::Index.new(template, exposures) })
-          content.must_match %(  it "exposes #foo" do)
-          content.must_match %(    view.foo.must_equal exposures.fetch(:foo))
-          content.must_match %(  end)
-        end
+    describe 'with unknown app' do
+      before do
+        # force not-existing app
+        @tmp.join('apps', app_name).rmtree
       end
 
-      describe 'rspec' do
-        let(:opts) { default_options.merge(test: 'rspec') }
+      let(:app_name) { 'unknown' }
 
-        it 'generates it' do
-          content = @root.join('spec/web/views/dashboard/index_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(describe Web::Views::Dashboard::Index do)
-          content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
-          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })
-          content.must_match %(  let(:view)      { Web::Views::Dashboard::Index.new(template, exposures) })
-          content.must_match %(  it "exposes #foo" do)
-          content.must_match %(    expect(view.foo).to eq exposures.fetch(:foo))
-          content.must_match %(  end)
-        end
-      end
-    end
-
-    describe 'apps/web/templates/dashboard/index.html.erb' do
-      it 'generates it' do
-        content = @root.join('apps/web/templates/dashboard/index.html.erb').read
-        content.must_be :empty?
+      it 'raises error' do
+        -> { capture_io { command.start } }.must_raise SystemExit
       end
     end
   end

@@ -20,6 +20,8 @@ module Lotus
       end
 
       def start
+        assert_existing_app!
+
         opts = {
           app:           app,
           controller:    @controller_name,
@@ -54,6 +56,12 @@ module Lotus
       end
 
       private
+      def assert_existing_app!
+        unless target.join(app_root).exist?
+          raise Lotus::Commands::Generate::Error.new("Unknown app: `#{ app_name }'")
+        end
+      end
+
       def generate_route
         path = target.join(_routes_path)
         path.dirname.mkpath
