@@ -6,7 +6,7 @@ class Order
   attributes :size, :coffee, :qty
 end
 
-class OrderRepository
+module OrderRepository
   include Lotus::Repository
 end
 

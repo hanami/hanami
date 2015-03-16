@@ -1,3 +1,3 @@
-class BookRepository
+module BookRepository
   include Lotus::Repository
 end
