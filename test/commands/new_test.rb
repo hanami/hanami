@@ -61,6 +61,7 @@ describe Lotus::Commands::New do
           content.must_match %(gem 'lotus-utils',       require: false, github: 'lotus/utils')
           content.must_match %(gem 'lotus-router',      require: false, github: 'lotus/router')
           content.must_match %(gem 'lotus-validations', require: false, github: 'lotus/validations')
+          content.must_match %(gem 'lotus-helpers',     require: false, github: 'lotus/helpers')
           content.must_match %(gem 'lotus-controller',  require: false, github: 'lotus/controller')
           content.must_match %(gem 'lotus-view',        require: false, github: 'lotus/view')
           content.must_match %(gem 'lotus-model',       require: false, github: 'lotus/model')
