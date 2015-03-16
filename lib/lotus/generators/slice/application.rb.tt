@@ -1,3 +1,5 @@
+require 'lotus/helpers'
+
 module <%= config[:classified_slice_name] %>
   class Application < Lotus::Application
     configure do
@@ -108,7 +110,7 @@ module <%= config[:classified_slice_name] %>
 
       # The relative path to templates
       #
-      # templates 'templates'
+      templates 'templates'
 
       ##
       # ASSETS
@@ -194,7 +196,7 @@ module <%= config[:classified_slice_name] %>
       #
       # See: http://www.rubydoc.info/gems/lotus-view#Configuration
       view.prepare do
-        # include MyRoutingHelpers # included in all the views
+        include Lotus::Helpers
       end
     end
 

@@ -55,7 +55,10 @@ module Lotus
             Lotus::Config::Security::CONTENT_SECURITY_POLICY_HEADER => config.security.content_security_policy
           })
 
-          prepare { include Lotus::Action::Cookies } if config.cookies
+          if config.cookies.enabled?
+            prepare { include Lotus::Action::Cookies }
+            default_cookies_options config.cookies.default_options
+          end
           prepare { include Lotus::Action::Session } if config.sessions.enabled?
 
           config.controller.__apply(self)
