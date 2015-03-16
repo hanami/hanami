@@ -69,8 +69,8 @@ module Lotus
         FileUtils.touch(path)
 
         # Insert at the top of the file
-        cli.insert_into_file _routes_path, before: /(.*)/ do
-          "get '/#{ @controller }', to: '#{ name }'"
+        cli.insert_into_file _routes_path, before: /\A(.*)/ do
+          "get '/#{ @controller }', to: '#{ name }'\n"
         end
       end
 
