@@ -34,6 +34,7 @@ describe Lotus::Lotusrc do
 
     describe "file doesn't exist" do
       before do
+        Dir.chdir($pwd)
         @old_pwd = Dir.pwd
         Dir.chdir 'test/fixtures/lotusrc/no_exists'
         @root = Pathname.new(Dir.pwd)
