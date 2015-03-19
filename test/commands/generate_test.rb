@@ -67,6 +67,7 @@ describe Lotus::Commands::Generate do
           it 'generates it' do
             content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
             content.must_match %(require 'spec_helper')
+            content.must_match %(require_relative '../../../../apps/web/controllers/dashboard/index')
             content.must_match %(describe Web::Controllers::Dashboard::Index do)
             content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
             content.must_match %(  let(:params) { Hash[] })
@@ -82,6 +83,7 @@ describe Lotus::Commands::Generate do
           it 'generates it' do
             content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
             content.must_match %(require 'spec_helper')
+            content.must_match %(require_relative '../../../../apps/web/controllers/dashboard/index')
             content.must_match %(describe Web::Controllers::Dashboard::Index do)
             content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
             content.must_match %(  let(:params) { Hash[] })
@@ -106,6 +108,7 @@ describe Lotus::Commands::Generate do
           it 'generates it' do
             content = @root.join('spec/web/views/dashboard/index_spec.rb').read
             content.must_match %(require 'spec_helper')
+            content.must_match %(require_relative '../../../../apps/web/views/dashboard/index')
             content.must_match %(describe Web::Views::Dashboard::Index do)
             content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
             content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })
@@ -122,6 +125,7 @@ describe Lotus::Commands::Generate do
           it 'generates it' do
             content = @root.join('spec/web/views/dashboard/index_spec.rb').read
             content.must_match %(require 'spec_helper')
+            content.must_match %(require_relative '../../../../apps/web/views/dashboard/index')
             content.must_match %(describe Web::Views::Dashboard::Index do)
             content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
             content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })

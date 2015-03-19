@@ -26,6 +26,8 @@ module Lotus
           app:           app,
           controller:    @controller_name,
           action:        @action_name,
+          action_path:   _action_path_without_suffix,
+          view_path:     _view_path_without_suffix,
           template_path: _template_path,
         }
 
@@ -79,11 +81,19 @@ module Lotus
       end
 
       def _action_path
-        app_root.join("controllers", @controller, "#{ @action }#{ SUFFIX }")
+        _action_path_without_suffix.to_s + SUFFIX
       end
 
       def _view_path
-        app_root.join("views", @controller, "#{ @action }#{ SUFFIX }")
+        _view_path_without_suffix.to_s + SUFFIX
+      end
+
+      def _action_path_without_suffix
+        app_root.join("controllers", @controller, "#{ @action }")
+      end
+
+      def _view_path_without_suffix
+        app_root.join("views", @controller, "#{ @action }")
       end
 
       def _template_path
