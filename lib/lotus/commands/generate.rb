@@ -9,7 +9,7 @@ module Lotus
       class Error < ::StandardError
       end
 
-      attr_reader :cli, :source, :target, :app, :app_name, :app_root, :name, :options
+      attr_reader :cli, :source, :target, :app, :app_name, :name, :options
 
       def initialize(type, app_name, name, env, cli)
         @cli      = cli
@@ -19,17 +19,14 @@ module Lotus
         @app      = Utils::String.new(@app_name).classify
 
         @name     = name
+        @type     = type
 
-        @source = Pathname.new(::File.dirname(__FILE__) + '/../generators/action/').realpath
-        @target = Pathname.pwd.realpath
-
-        require "lotus/generators/#{ type }"
-        generator  = Utils::String.new(type).classify
-        @generator = Utils::Class.load!(GENERATORS_NAMESPACE % generator).new(self)
+        @source   = Pathname.new(::File.dirname(__FILE__) + '/../generators/action/').realpath
+        @target   = Pathname.pwd.realpath
       end
 
       def start
-        @generator.start
+        generator.start
       rescue Error => e
         puts e.message
         exit 1
@@ -37,6 +34,13 @@ module Lotus
 
       def app_root
         @app_root ||= [@options[:path], @app_name].join(::File::SEPARATOR)
+      end
+
+      private
+      def generator
+        require "lotus/generators/#{ @type }"
+        class_name = Utils::String.new(@type).classify
+        Utils::Class.load!(GENERATORS_NAMESPACE % class_name).new(self)
       end
     end
   end
