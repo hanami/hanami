@@ -2,8 +2,10 @@ require 'test_helper'
 
 describe 'lotus generate' do
   describe 'action' do
-    let(:options)  { '' }
-    let(:app_name) { 'web' }
+    let(:options)           { '' }
+    let(:app_name)          { 'web' }
+    let(:template_engine)   { 'erb' }
+    let(:framework_testing) { 'minitest' }
 
     def create_temporary_dir
       @tmp = Pathname.new(@pwd = Dir.pwd).join('tmp/integration/cli/generate')
@@ -16,6 +18,14 @@ describe 'lotus generate' do
     def generate_application
       `bundle exec lotus new #{ @app_name = 'delivery' }#{ options }`
       Dir.chdir(@root = @tmp.join(@app_name))
+
+      File.open(@root.join('.lotusrc'), 'w') do |f|
+        f.write <<-LOTUSRC
+architecture=container
+test=#{ framework_testing }
+template=#{ template_engine }
+        LOTUSRC
+      end
     end
 
     def generate_action
@@ -57,7 +67,7 @@ describe 'lotus generate' do
     end
 
     describe 'when application is generated with rspec' do
-      let(:options) { ' --test=rspec' }
+      let(:framework_testing) { 'rspec' }
 
       it 'generates action spec' do
         content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
@@ -67,6 +77,14 @@ describe 'lotus generate' do
       it 'generates view spec' do
         content = @root.join('spec/web/views/dashboard/index_spec.rb').read
         content.must_include %(expect)
+      end
+    end
+
+    describe 'when application is generated with HAML' do
+      let(:template_engine) { 'haml' }
+
+      it 'generates HAML template' do
+        @root.join('apps/web/templates/dashboard/index.html.haml').must_be :exist?
       end
     end
 
