@@ -1,3 +1,4 @@
+require 'pathname'
 require 'lotus/utils/string'
 require 'lotus/utils/class'
 
@@ -21,7 +22,7 @@ module Lotus
         @name     = name
         @type     = type
 
-        @source   = Pathname.new(::File.dirname(__FILE__) + '/../generators/action/').realpath
+        @source   = Pathname.new(::File.dirname(__FILE__) + "/../generators/#{ @type }/").realpath
         @target   = Pathname.pwd.realpath
       end
 
@@ -33,7 +34,11 @@ module Lotus
       end
 
       def app_root
-        @app_root ||= [@options[:path], @app_name].join(::File::SEPARATOR)
+        @app_root ||= Pathname.new([@options[:path], @app_name].join(::File::SEPARATOR))
+      end
+
+      def spec_root
+        @spec_root ||= Pathname.new('spec')
       end
 
       private

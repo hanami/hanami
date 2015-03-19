@@ -75,27 +75,27 @@ module Lotus
       end
 
       def _routes_path
-        "#{ Pathname.new(app_root).join('config', 'routes') }#{ SUFFIX }"
+        app_root.join("config", "routes#{ SUFFIX }")
       end
 
       def _action_path
-        "#{ Pathname.new(app_root).join('controllers', @controller, @action) }#{ SUFFIX }"
+        app_root.join("controllers", @controller, "#{ @action }#{ SUFFIX }")
       end
 
       def _view_path
-        "#{ Pathname.new(app_root).join('views', @controller, @action) }#{ SUFFIX }"
+        app_root.join("views", @controller, "#{ @action }#{ SUFFIX }")
       end
 
       def _template_path
-        "#{ Pathname.new(app_root).join('templates', @controller, @action) }#{ TEMPLATE_SUFFIX }#{ options.fetch(:template) { DEFAULT_TEMPLATE }}"
+        app_root.join("templates", @controller, "#{ @action }#{ TEMPLATE_SUFFIX }#{ options.fetch(:template) { DEFAULT_TEMPLATE } }")
       end
 
       def _action_spec_path
-        "#{ Pathname.new('spec').join(app_name, 'controllers', @controller, "#{ @action }_spec") }#{ SUFFIX }"
+        spec_root.join(app_name, 'controllers', @controller, "#{ @action }_spec#{ SUFFIX }")
       end
 
       def _view_spec_path
-        "#{ Pathname.new('spec').join(app_name, 'views', @controller, "#{ @action }_spec") }#{ SUFFIX }"
+        spec_root.join(app_name, 'views', @controller, "#{ @action }_spec#{ SUFFIX }")
       end
     end
   end
