@@ -57,7 +57,7 @@ module Lotus
 
           if config.cookies.enabled?
             prepare { include Lotus::Action::Cookies }
-            default_cookies_options config.cookies.default_options
+            cookies config.cookies.default_options
           end
           prepare { include Lotus::Action::Session } if config.sessions.enabled?
 
