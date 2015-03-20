@@ -7,6 +7,7 @@ describe Lotus::Commands::Console do
   let(:console) { Lotus::Commands::Console.new(env) }
 
   before do
+    Dir.chdir($pwd)
     Lotus::Application.clear_registered_applications!
   end
 

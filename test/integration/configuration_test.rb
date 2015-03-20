@@ -6,6 +6,7 @@ describe 'Configurable application' do
   include Rack::Test::Methods
 
   before do
+    Dir.chdir($pwd)
     @current_dir = Dir.pwd
     Dir.chdir FIXTURES_ROOT.join('configurable')
     @app = Configurable::Application.new

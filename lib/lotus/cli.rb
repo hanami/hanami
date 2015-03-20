@@ -79,6 +79,21 @@ module Lotus
       end
     end
 
+    desc 'generate', 'generates a new action'
+    method_option :path,                desc: 'applications path',        type: :string, default: 'apps'
+    method_option :help, aliases: '-h', desc: 'displays the usage method'
+
+    # @since 0.3.0
+    # @api private
+    def generate(type = nil, app_name = nil, name = nil)
+      if options[:help] || (type.nil? && app_name.nil? && name.nil?)
+        invoke :help, ['generate']
+      else
+        require 'lotus/commands/generate'
+        Lotus::Commands::Generate.new(type, app_name, name, environment, self).start
+      end
+    end
+
     require 'lotus/commands/db'
     register Lotus::Commands::DB, 'db', 'db [SUBCOMMAND]', 'manage set of DB operations'
 

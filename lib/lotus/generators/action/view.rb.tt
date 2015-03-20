@@ -1,0 +1,5 @@
+module <%= config[:app] %>::Views::<%= config[:controller] %>
+  class <%= config[:action] %>
+    include <%= config[:app] %>::View
+  end
+end
