@@ -3,12 +3,27 @@ require 'lotus/utils/string'
 
 module Lotus
   module Generators
+    # @since 0.3.0
+    # @api private
     class Action < Abstract
+      # @since 0.3.0
+      # @api private
       ACTION_SEPARATOR = /\/|\#/
+
+      # @since 0.3.0
+      # @api private
       SUFFIX           = '.rb'.freeze
+
+      # @since 0.3.0
+      # @api private
       TEMPLATE_SUFFIX  = '.html.'.freeze
+
+      # @since 0.3.0
+      # @api private
       DEFAULT_TEMPLATE = 'erb'.freeze
 
+      # @since 0.3.0
+      # @api private
       def initialize(command)
         super
 
@@ -19,6 +34,8 @@ module Lotus
         cli.class.source_root(source)
       end
 
+      # @since 0.3.0
+      # @api private
       def start
         assert_existing_app!
 
@@ -58,12 +75,16 @@ module Lotus
       end
 
       private
+      # @since 0.3.0
+      # @api private
       def assert_existing_app!
         unless target.join(app_root).exist?
           raise Lotus::Commands::Generate::Error.new("Unknown app: `#{ app_name }'")
         end
       end
 
+      # @since 0.3.0
+      # @api private
       def generate_route
         path = target.join(_routes_path)
         path.dirname.mkpath
@@ -76,34 +97,50 @@ module Lotus
         end
       end
 
+      # @since 0.3.0
+      # @api private
       def _routes_path
         app_root.join("config", "routes#{ SUFFIX }")
       end
 
+      # @since 0.3.0
+      # @api private
       def _action_path
         _action_path_without_suffix.to_s + SUFFIX
       end
 
+      # @since 0.3.0
+      # @api private
       def _view_path
         _view_path_without_suffix.to_s + SUFFIX
       end
 
+      # @since 0.3.0
+      # @api private
       def _action_path_without_suffix
         app_root.join("controllers", @controller, "#{ @action }")
       end
 
+      # @since 0.3.0
+      # @api private
       def _view_path_without_suffix
         app_root.join("views", @controller, "#{ @action }")
       end
 
+      # @since 0.3.0
+      # @api private
       def _template_path
         app_root.join("templates", @controller, "#{ @action }#{ TEMPLATE_SUFFIX }#{ options.fetch(:template) { DEFAULT_TEMPLATE } }")
       end
 
+      # @since 0.3.0
+      # @api private
       def _action_spec_path
         spec_root.join(app_name, 'controllers', @controller, "#{ @action }_spec#{ SUFFIX }")
       end
 
+      # @since 0.3.0
+      # @api private
       def _view_spec_path
         spec_root.join(app_name, 'views', @controller, "#{ @action }_spec#{ SUFFIX }")
       end

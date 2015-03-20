@@ -83,6 +83,8 @@ module Lotus
     method_option :path,                desc: 'applications path',        type: :string, default: 'apps'
     method_option :help, aliases: '-h', desc: 'displays the usage method'
 
+    # @since 0.3.0
+    # @api private
     def generate(type = nil, app_name = nil, name = nil)
       if options[:help] || (type.nil? && app_name.nil? && name.nil?)
         invoke :help, ['generate']
