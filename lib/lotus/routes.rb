@@ -1,3 +1,5 @@
+require 'lotus/utils/escape'
+
 module Lotus
   # Routes factory
   #
@@ -23,7 +25,7 @@ module Lotus
     # @param args [Array,nil] an optional set of arguments that is passed down
     #   to the wrapped route set.
     #
-    # @return [String] the corresponding relative URL
+    # @return [Lotus::Utils::Escape::SafeString] the corresponding relative URL
     #
     # @raise Lotus::Routing::InvalidRouteException
     #
@@ -69,7 +71,7 @@ module Lotus
     #   Bookshelf::Routes.login_path(return_to: '/dashboard')
     #     # => '/login?return_to=%2Fdashboard'
     def path(name, *args)
-      @routes.path(name, *args)
+      Utils::Escape::SafeString.new(@routes.path(name, *args))
     end
 
     # Return an absolute path for the given route name
@@ -78,7 +80,7 @@ module Lotus
     # @param args [Array,nil] an optional set of arguments that is passed down
     #   to the wrapped route set.
     #
-    # @return [String] the corresponding absolute URL
+    # @return [Lotus::Utils::Escape::SafeString] the corresponding absolute URL
     #
     # @raise Lotus::Routing::InvalidRouteException
     #
@@ -130,7 +132,7 @@ module Lotus
     #   Bookshelf::Routes.login_url(return_to: '/dashboard')
     #     # => 'https://bookshelf.org/login?return_to=%2Fdashboard'
     def url(name, *args)
-      @routes.url(name, *args)
+      Utils::Escape::SafeString.new(@routes.url(name, *args))
     end
 
     protected

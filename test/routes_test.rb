@@ -20,6 +20,10 @@ describe Lotus::Routes do
     it 'raises an error when the path cannot be found' do
       -> { @routes.path(:unknown) }.must_raise Lotus::Routing::InvalidRouteException
     end
+
+    it 'returns safe string' do
+      @routes.path(:root).must_be_kind_of Lotus::Utils::Escape::SafeString
+    end
   end
 
   describe '#url' do
@@ -29,6 +33,10 @@ describe Lotus::Routes do
 
     it 'raises an error when the url cannot be found' do
       -> { @routes.url(:unknown) }.must_raise Lotus::Routing::InvalidRouteException
+    end
+
+    it 'returns safe string' do
+      @routes.url(:root).must_be_kind_of Lotus::Utils::Escape::SafeString
     end
   end
 
