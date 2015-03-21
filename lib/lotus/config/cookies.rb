@@ -2,7 +2,7 @@ module Lotus
   module Config
     # Cookies configuration
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     class Cookies
 
@@ -10,7 +10,7 @@ module Lotus
       #
       # @return [Hash] options for cookies
       #
-      # @since x.x.x
+      # @since 0.3.0
       # @api private
       attr_reader :default_options
 
@@ -23,7 +23,7 @@ module Lotus
       # @param enabled [TrueClass, FalseClass] enable cookies
       # @param options [Hash] optional cookies options
       #
-      # @since x.x.x
+      # @since 0.3.0
       # @api private
       #
       # @see https://github.com/rack/rack/blob/master/lib/rack/utils.rb #set_cookie_header!
@@ -37,7 +37,7 @@ module Lotus
       #
       # @return [TrueClass, FalseClass] enabled cookies
       #
-      # @since x.x.x
+      # @since 0.3.0
       # @api private
       def enabled?
         !!@enabled

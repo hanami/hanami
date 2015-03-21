@@ -156,8 +156,8 @@ module Lotus
     #   # the one defined in the parent (eg `FOO` is overwritten). All the
     #   # other settings (eg `XYZ`) will be left untouched.
     def initialize(options = {})
-      @options = Utils::Hash.new(options).symbolize!.freeze
-      @options.merge! Lotus::Lotusrc.new(root, self.to_options).read
+      @options = Lotus::Lotusrc.new(root).read
+      @options.merge! Utils::Hash.new(options).symbolize!
       @mutex   = Mutex.new
       @mutex.synchronize { set_env_vars! }
     end

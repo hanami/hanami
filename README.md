@@ -9,6 +9,7 @@ Lotus combines small yet powerful frameworks:
 * [**Lotus::Utils**](https://github.com/lotus/utils) - Ruby core extentions and class utilities
 * [**Lotus::Router**](https://github.com/lotus/router) - Rack compatible HTTP router for Ruby
 * [**Lotus::Validations**](https://github.com/lotus/validations) - Validation mixin for Ruby objects
+* [**Lotus::Helpers**](https://github.com/lotus/helpers) - View helpers for Ruby applications
 * [**Lotus::Model**](https://github.com/lotus/model) - Persistence with entities, repositories and data mapper
 * [**Lotus::View**](https://github.com/lotus/view) - Presentation with a separation between views and templates
 * [**Lotus::Helpers**](https://github.com/lotus/helpers) - Presentation helpers for views
@@ -33,7 +34,8 @@ If you aren't familiar with them, please take time to go through their READMEs.
 * API Doc: http://rdoc.info/gems/lotusrb
 * Bugs/Issues: https://github.com/lotus/lotus/issues
 * Support: http://stackoverflow.com/questions/tagged/lotus-ruby
-* Chat: https://gitter.im/lotus/chat
+* Forum: https://discuss.lotusrb.org
+* Chat: http://chat.lotusrb.org
 
 ## Rubies
 
@@ -290,6 +292,22 @@ module Bookshelf
       #
       serve_assets true
 
+      ###########################
+      # SECURITY CONFIGURATIONS #
+      ###########################
+
+      # Set a default value for X-Frame-Options HTTP header
+      # Argument: String
+      # Remove this line to disable this feature
+      #
+      security.x_frame_options "DENY"
+
+      # Set a default value for Content-Security-Policy HTTP header
+      # Argument: String
+      # Remove this line to disable this feature
+      #
+      security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';"
+
       #############################
       # FRAMEWORKS CONFIGURATIONS #
       #############################
@@ -301,7 +319,7 @@ module Bookshelf
       # Argument: Proc
       #
       view.prepare do
-        include MyCustomRoutingHelpers # included by all the views
+        include Lotus::Helpers # they will be included in all the views
       end
 
       # Low level configuration for Lotus::Controller (optional)
@@ -344,12 +362,45 @@ It supports **code reloading** feature by default, useful for development purpos
 % bundle exec lotus server
 ```
 
+### Generators
+
+#### Action generator
+
+It generates an **action**, a **view**, a **template**, a **route** and the relative unit tests.
+
+```shell
+% bundle exec lotus generate action web dashboard#index
+```
+
+The `web` argument is the name of the application under `apps/`.
+The `dashboard#index` argument is the name of the controller and the name of the action.
+
+It generates Minitest/RSpec files according to `test` setting in `.lotusrc`.
+It generates an empty template with the template engine extension (`template`) setting in `.lotusrc`.
+
+It generates the following files:
+
+  * `apps/web/controllers/dashboard/index.rb`
+  * `spec/web/controllers/dashboard/index_spec.rb`
+  * `apps/web/views/dashboard/index.rb`
+  * `spec/web/views/dashboard/index_spec.rb`
+  * `apps/web/templates/dashboard/index.html.erb` (**empty file**)
+  * Amend `apps/web/config/routes.rb` with a new route
+
 ### Console
 
 It starts a REPL, by using the engine defined in your `Gemfile`. It defaults to IRB. **Run it from the root of the application**.
 
 ```shell
 % bundle exec lotus console
+```
+
+### Database console
+
+It starts a database REPL, by looking at your database configuration under `lib/. **Run it from the root of the application**.
+
+```shell
+% bundle exec lotus db console
 ```
 
 It supports **code reloading** via the `reload!` command.

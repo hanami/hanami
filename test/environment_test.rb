@@ -15,6 +15,7 @@ describe Lotus::Environment do
   describe '#initialize' do
     describe 'env vars' do
       before do
+        Dir.chdir($pwd)
         @env = Lotus::Environment.new(config: 'test/fixtures/config')
       end
 
@@ -434,10 +435,68 @@ describe Lotus::Environment do
     end
   end
 
+  describe 'lotusrc' do
+    describe 'with existing file' do
+      before do
+        @old_pwd = Dir.pwd
+
+        # This .lotusrc has test=minitest
+        path = Pathname.new('test/fixtures/lotusrc/exists')
+        path.mkpath
+        Dir.chdir(path)
+      end
+
+      after do
+        Dir.chdir @old_pwd
+      end
+
+      it 'uses defaults if no inline args' do
+        env = Lotus::Environment.new
+        env.to_options.fetch(:test).must_equal 'minitest'
+      end
+
+      it 'gives priority to inline args' do
+        # Simulate lotus new bookshelf --test=rspec
+        env = Lotus::Environment.new(test: 'rspec')
+        env.to_options.fetch(:test).must_equal 'rspec'
+      end
+    end
+
+    describe 'with unexisting file' do
+      before do
+        @old_pwd = Dir.pwd
+
+        path = Pathname.new('test/fixtures/lotusrc/no_exists')
+        path.mkpath
+
+        Dir.chdir(path)
+
+        @env = Lotus::Environment.new
+      end
+
+      after do
+        Dir.chdir @old_pwd
+      end
+
+      it 'uses defaults if no inline args' do
+        env = Lotus::Environment.new
+        env.to_options.fetch(:test).must_equal 'minitest'
+      end
+
+      it 'gives priority to inline args' do
+        # Simulate lotus new bookshelf --test=rspec
+        env = Lotus::Environment.new(test: 'rspec')
+        env.to_options.fetch(:test).must_equal 'rspec'
+      end
+    end
+  end
+
   describe '#to_options' do
     before do
       @old_pwd = Dir.pwd
-      Dir.chdir 'test/fixtures/lotusrc/exists'
+      path = Pathname.new('test/fixtures/lotusrc/exists')
+      path.mkpath
+      Dir.chdir(path)
       @env = Lotus::Environment.new
     end
 

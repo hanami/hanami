@@ -13,6 +13,7 @@ describe Lotus::Configuration do
 
     @namespace     = MockApp
     @configuration = Lotus::Configuration.new
+    Dir.chdir($pwd)
   end
 
   after do
