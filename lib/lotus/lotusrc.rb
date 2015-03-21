@@ -73,6 +73,9 @@ module Lotus
     def initialize(root, options = {})
       @root    = root
       @options = options
+
+      # NOTE this line is here in order to auto-upgrade applications generated
+      # with lotusrb < 0.3.0. Consider to remove it in the future.
       create
     end
 
