@@ -136,7 +136,7 @@ module Lotus
     end
 
     protected
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     def method_missing(m, *args)
       named_route, type = m.to_s.split(/\_(path|url)\z/)

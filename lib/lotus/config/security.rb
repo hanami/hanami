@@ -2,15 +2,15 @@ module Lotus
   module Config
     # Security policies are stored here.
     #
-    # @since x.x.x
+    # @since 0.3.0
     class Security
-      # @since x.x.x
+      # @since 0.3.0
       # @api private
       #
       # @see Lotus::Loader#_configure_controller_framework!
       X_FRAME_OPTIONS_HEADER = 'X-Frame-Options'.freeze
 
-      # @since x.x.x
+      # @since 0.3.0
       # @api private
       #
       # @see Lotus::Loader#_configure_controller_framework!
@@ -26,7 +26,7 @@ module Lotus
       #   Gets the value
       #   @return [String] X-Frame-Options header's value
       #
-      # @since x.x.x
+      # @since 0.3.0
       def x_frame_options(value = nil)
         if value.nil?
           @x_frame_options
@@ -34,7 +34,6 @@ module Lotus
           @x_frame_options = value
         end
       end
-
 
       # Content-Policy-Security headers' value
       #
@@ -46,7 +45,7 @@ module Lotus
       #   Gets the value
       #   @return [String] Content-Security-Policy header's value
       #
-      # @since x.x.x
+      # @since 0.3.0
       def content_security_policy(value = nil)
         if value.nil?
           @content_security_policy

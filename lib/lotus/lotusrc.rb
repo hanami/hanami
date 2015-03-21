@@ -4,12 +4,12 @@ require 'dotenv'
 module Lotus
   # Create and read the .lotusrc file in the root of the application
   #
-  # @since x.x.x
+  # @since 0.3.0
   # @api private
   class Lotusrc
     # Lotusrc name file
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     #
     # @see Lotus::Lotusrc#path_file
@@ -17,7 +17,7 @@ module Lotus
 
     # Architecture default value
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     #
     # @see Lotus::Lotusrc#read
@@ -25,7 +25,7 @@ module Lotus
 
     # Architecture key for writing the lotusrc file
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     #
     # @see Lotus::Lotusrc#read
@@ -33,7 +33,7 @@ module Lotus
 
     # Test suite default value
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     #
     # @see Lotus::Lotusrc#read
@@ -41,7 +41,7 @@ module Lotus
 
     # Test suite key for writing the lotusrc file
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     #
     # @see Lotus::Lotusrc#read
@@ -49,7 +49,7 @@ module Lotus
 
     # Template default value
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     #
     # @see Lotus::Lotusrc#read
@@ -57,7 +57,7 @@ module Lotus
 
     # Template key for writing the lotusrc file
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     #
     # @see Lotus::Lotusrc#read
@@ -66,8 +66,8 @@ module Lotus
     # Initialize Lotusrc class with application's root and enviroment options.
     # Create the lotusrc file if it doesn't exist in the root given.
     #
-    # @param [Pathname] Application's root
-    # @param [Hash] Environment's options
+    # @param root [Pathname] Application's root
+    # @param options [Hash] Environment's options
     #
     # @see Lotus::Environment#initialize
     def initialize(root, options = {})
@@ -102,7 +102,7 @@ module Lotus
 
     # Create lotusrc file if exists
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     #
     # @see Lotus::Lotusrc::DEFAULT_ARCHITECTURE
@@ -123,7 +123,7 @@ module Lotus
 
     # Check if lotusrc file exists
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     #
     # @return [Boolean] lotusrc file's path existing
@@ -133,7 +133,7 @@ module Lotus
 
     # Return the lotusrc file's path
     #
-    # @since x.x.x
+    # @since 0.3.0
     # @api private
     #
     # @return [Pathname] lotusrc file's path

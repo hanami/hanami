@@ -1,6 +1,23 @@
 # Lotus
 A complete web framework for Ruby
 
+## v0.3.0 - 2015-03-23
+### Added
+- [Luca Guidi] Introduced action generator. Eg. `bundle exec lotus generate action web dashboard#index`
+- [Alfonso Uceda Pompa] Allow to specify default coookies options in application configuration. Eg. `cookies true, { domain: 'lotusrb.org' }`
+- [Tom Kadwill] Include `Lotus::Helpers` in views.
+- [Linus Pettersson] Allow to specify `--database` CLI option when generate a new application. Eg. `lotus new bookshelf --database=postgresql`
+- [Linus Pettersson] Initialize a Git repository when generating a new application
+- [Alfonso Uceda Pompa] Produce `.lotusrc` when generating a new application
+- [Alfonso Uceda Pompa] Security HTTP headers. `X-Frame-Options` and `Content-Security-Policy` are now enabled by default.
+- [Linus Pettersson] Database console. Run with `bundle exec lotus db console`
+- [Luca Guidi] Dynamic finders for relative and absolute routes. It implements method missing: `Web::Routes.home_path` will resolve to `Web::Routes.path(:home)`.
+
+### Changed
+– [Alfonso Uceda Pompa] Cookies will send `HttpOnly` by default. This is for security reasons.
+- [Jan Lelis] Enable `templates` configuration for new generated apps
+- [Mark Connell] Change SQLite file extension from `.db` to `.sqlite3`
+
 ## v0.2.1 - 2015-02-06
 ### Added
 - [Huy Đỗ] Introduced `Lotus::Logger`
