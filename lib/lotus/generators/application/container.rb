@@ -106,13 +106,15 @@ module Lotus
             'mysql'      => 'mysql',
             'mysql2'     => 'mysql2',
             'postgresql' => 'pg',
+            'postgres'   => 'pg',
+            'sqlite'     => 'sqlite3',
             'sqlite3'    => 'sqlite3'
           }[@database]
         end
 
         def database_type
           case @database
-          when 'mysql', 'mysql2', 'postgresql', 'sqlite3'
+          when 'mysql', 'mysql2', 'postgresql', 'postgres', 'sqlite', 'sqlite3'
             :sql
           when 'filesystem'
             :file_system
@@ -134,9 +136,9 @@ module Lotus
             "mysql://localhost/#{app_name}"
           when 'mysql2'
             "mysql2://localhost/#{app_name}"
-          when 'postgresql'
-            "postgresql://localhost/#{app_name}"
-          when 'sqlite3'
+          when 'postgresql', 'postgres'
+            "postgres://localhost/#{app_name}"
+          when 'sqlite', 'sqlite3'
             "sqlite://db/#{Shellwords.escape(app_name)}"
           when 'memory'
             "memory://localhost/#{app_name}"
