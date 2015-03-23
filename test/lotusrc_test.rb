@@ -65,6 +65,8 @@ describe Lotus::Lotusrc do
       describe 'custom values' do
         before do
           @file = Pathname.new(Dir.pwd).join('.lotusrc')
+          @file.unlink if @file.exist?
+
           options = { architecture: 'application', test: 'rspec', template: 'slim' }
           @lotusrc = Lotus::Lotusrc.new(@root, options)
         end
