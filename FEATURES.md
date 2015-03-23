@@ -11,6 +11,8 @@
 - Routing helpers in views and templates (Eg. `routes.home_path`).
 - `lotus new` supports `--database` (Eg. `lotus new bookshelf --database=postgresql`).
 - Initialize a Git repository when generate a new application
+- Security: XSS (Cross Site Scripting) protections
+- Security: Clickhijacking protection
 - Security: Cookies are set as `HttpOnly` by default.
 - Security: enable by default `X-Frame-Options` and `Content-Security-Policy` HTTP headers for new generated applications.
 - Security: auto-escape output of presenters.
@@ -88,4 +90,5 @@
 - Named routes, routes constraints, variables, catch-all
 - Compatibility with Lotus::Controller
 - HTTP redirect from the router
-- Basic HTTP routing compatible with Rack
+- HTTP routing compatible with Rack
+- Thread safety
