@@ -112,15 +112,35 @@ describe Lotus::Commands::New do
 
         describe 'postgresql' do
           let(:opts) { container_options.merge(database: 'postgresql') }
-          it 'includes postgresql' do
+
+          it 'includes pg' do
             content = @root.join('Gemfile').read
             content.must_match %(gem 'pg')
           end
         end
 
+        describe 'postgres' do
+          let(:opts) { container_options.merge(database: 'postgres') }
+
+          it 'includes pg' do
+            content = @root.join('Gemfile').read
+            content.must_match %(gem 'pg')
+          end
+        end
+
+        describe 'sqlite' do
+          let(:opts) { container_options.merge(database: 'sqlite') }
+
+          it 'includes sqlite3 gem' do
+            content = @root.join('Gemfile').read
+            content.must_match %(gem 'sqlite3')
+          end
+        end
+
         describe 'sqlite3' do
           let(:opts) { container_options.merge(database: 'sqlite3') }
-          it 'includes sqlite3' do
+
+          it 'includes sqlite3 gem' do
             content = @root.join('Gemfile').read
             content.must_match %(gem 'sqlite3')
           end
@@ -241,9 +261,37 @@ describe Lotus::Commands::New do
 
         describe 'with postgresql' do
           let(:opts) { container_options.merge(database: 'postgresql') }
+
           it 'generates db config for postgresql' do
             content = @root.join('config/.env.development').read
-            content.must_match %(CHIRP_DATABASE_URL="postgresql://localhost/chirp_development")
+            content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_development")
+          end
+        end
+
+        describe 'with postgres' do
+          let(:opts) { container_options.merge(database: 'postgres') }
+
+          it 'generates db config for postgres' do
+            content = @root.join('config/.env.development').read
+            content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_development")
+          end
+        end
+
+        describe 'with sqlite' do
+          let(:opts) { container_options.merge(database: 'sqlite') }
+
+          it 'generates db config for sqlite' do
+            content = @root.join('config/.env.development').read
+            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_development")
+          end
+
+          describe 'with non-simple application name' do
+            let(:app_name) { "chirp'two" }
+
+            it 'escapes the database url' do
+              content = @root.join('config/.env.development').read
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_development")
+            end
           end
         end
 
@@ -308,9 +356,37 @@ describe Lotus::Commands::New do
 
         describe 'with postgresql' do
           let(:opts) { container_options.merge(database: 'postgresql') }
+
           it 'generates db config for postgresql' do
             content = @root.join('config/.env.test').read
-            content.must_match %(CHIRP_DATABASE_URL="postgresql://localhost/chirp_test")
+            content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_test")
+          end
+        end
+
+        describe 'with postgres' do
+          let(:opts) { container_options.merge(database: 'postgres') }
+
+          it 'generates db config for postgres' do
+            content = @root.join('config/.env.test').read
+            content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_test")
+          end
+        end
+
+        describe 'with sqlite' do
+          let(:opts) { container_options.merge(database: 'sqlite') }
+
+          it 'generates db config for sqlite' do
+            content = @root.join('config/.env.test').read
+            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_test")
+          end
+
+          describe 'with non-simple application name' do
+            let(:app_name) { "chirp'two" }
+
+            it 'escapes the database url' do
+              content = @root.join('config/.env.test').read
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_test")
+            end
           end
         end
 
@@ -381,6 +457,24 @@ describe Lotus::Commands::New do
         describe 'postgresql' do
           let(:opts) { container_options.merge(database: 'postgresql') }
           it 'generates adapter config for postgresql' do
+            content = @root.join('lib/chirp.rb').read
+            content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+          end
+        end
+
+        describe 'postgres' do
+          let(:opts) { container_options.merge(database: 'postgres') }
+
+          it 'generates adapter config for postgres' do
+            content = @root.join('lib/chirp.rb').read
+            content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+          end
+        end
+
+        describe 'sqlite' do
+          let(:opts) { container_options.merge(database: 'sqlite') }
+
+          it 'generates adapter config for sqlite' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
           end
