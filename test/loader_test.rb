@@ -5,6 +5,17 @@ describe Lotus::Loader do
     @application = CoffeeShop::Application.new
   end
 
+  describe '.load!' do
+    before do
+      Reviews::Application.load!
+    end
+
+    # Bug: https://github.com/lotus/lotus/issues/187
+    it 'generates per application routes' do
+      assert defined?(Reviews::Routes), 'expected Reviews::Routes'
+    end
+  end
+
   describe '#load!' do
     describe 'frameworks' do
       it 'generates per application frameworks' do
@@ -18,7 +29,7 @@ describe Lotus::Loader do
         assert defined?(CoffeeShop::Logger),     'expected CoffeeShop::Logger'
       end
 
-      it 'generates per application classes' do
+      it 'generates per application routes' do
         assert defined?(CoffeeShop::Routes), 'expected CoffeeShop::Routes'
       end
 
