@@ -18,11 +18,11 @@ module Lotus
 
       # @since 0.3.0
       # @api private
-      attr_reader :cli, :source, :target, :app, :app_name, :name, :options
+      attr_reader :cli, :source, :target, :app, :app_name, :name, :options, :resource, :env
 
       # @since 0.3.0
       # @api private
-      def initialize(type, app_name, name, env, cli)
+      def initialize(type, app_name, name, env, cli, resource = nil)
         @cli      = cli
         @options  = env.to_options.merge(cli.options)
 
@@ -34,6 +34,9 @@ module Lotus
 
         @source   = Pathname.new(::File.dirname(__FILE__) + "/../generators/#{ @type }/").realpath
         @target   = Pathname.pwd.realpath
+
+        @env = env
+        @resource = resource
       end
 
       # @since 0.3.0
@@ -55,6 +58,11 @@ module Lotus
       # @api private
       def spec_root
         @spec_root ||= Pathname.new('spec')
+      end
+
+      def model_root
+        @model_root ||= Pathname.new(['lib', target.to_s.split(::File::SEPARATOR).last]
+          .join(::File::SEPARATOR))
       end
 
       private
