@@ -6,6 +6,7 @@ describe 'lotus generate' do
     let(:app_name)          { 'web' }
     let(:template_engine)   { 'erb' }
     let(:framework_testing) { 'minitest' }
+    let(:klass)             { 'test' }
 
     def create_temporary_dir
       @tmp = Pathname.new(@pwd = Dir.pwd).join('tmp/integration/cli/generate')
@@ -32,6 +33,10 @@ template=#{ template_engine }
       `bundle exec lotus generate action #{ app_name } dashboard#index`
     end
 
+    def generate_model
+      `bundle exec lotus generate model #{ klass }`
+    end
+
     def chdir_to_root
       Dir.chdir(@pwd)
     end
@@ -40,10 +45,18 @@ template=#{ template_engine }
       create_temporary_dir
       generate_application
       generate_action
+      generate_model
     end
 
     def after
       chdir_to_root
+    end
+
+    it 'generates model' do
+      @root.join('lib/delivery/entities/test.rb').must_be                      :exist?
+      @root.join('lib/delivery/repositories/test_repository.rb').must_be       :exist?
+      @root.join('spec/delivery/entities/test_spec.rb').must_be                :exist?
+      @root.join('spec/delivery/repositories/test_repository_spec.rb').must_be :exist?
     end
 
     it 'generates an action' do
