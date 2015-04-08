@@ -86,14 +86,16 @@ module Lotus
       # @since 0.3.0
       # @api private
       def generate_route
-        path = target.join(_routes_path)
-        path.dirname.mkpath
+        unless resource
+          path = target.join(_routes_path)
+          path.dirname.mkpath
 
-        FileUtils.touch(path)
+          FileUtils.touch(path)
 
-        # Insert at the top of the file
-        cli.insert_into_file _routes_path, before: /\A(.*)/ do
-          "get '/#{ @controller }', to: '#{ name }'\n"
+          # Insert at the top of the file
+          cli.insert_into_file _routes_path, before: /\A(.*)/ do
+            "get '/#{ @controller }', to: '#{ name }'\n"
+          end
         end
       end
 
