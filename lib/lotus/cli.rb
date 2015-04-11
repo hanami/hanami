@@ -80,13 +80,14 @@ module Lotus
     end
 
     desc 'generate', 'generates a new action'
-    method_option :path,                desc: 'applications path',        type: :string, default: 'apps'
+    method_option :path,                desc: 'applications path',                                         type: :string,  default: 'apps'
+    method_option :skip_view,           desc: 'skip the creation of view and templates (only for action)', type: :boolean, default: false
     method_option :help, aliases: '-h', desc: 'displays the usage method'
 
     # @since 0.3.0
     # @api private
     def generate(type = nil, app_name = nil, name = nil)
-      if options[:help] || (type.nil? && app_name.nil? && name.nil?)
+      if options[:help] || (type.nil? && app_name.nil? && name.nil?) || (options[:skip_view] && type != 'action')
         invoke :help, ['generate']
       else
         require 'lotus/commands/generate'
