@@ -33,6 +33,10 @@ template=#{ template_engine }
       `bundle exec lotus generate action #{ app_name } dashboard#index`
     end
 
+    def generate_action_without_view
+      `bundle exec lotus generate action #{ app_name } dashboard#foo --skip-view`
+    end
+
     def generate_model
       `bundle exec lotus generate model #{ klass }`
     end
@@ -45,6 +49,7 @@ template=#{ template_engine }
       create_temporary_dir
       generate_application
       generate_action
+      generate_action_without_view
       generate_model
     end
 
@@ -65,6 +70,14 @@ template=#{ template_engine }
       @root.join('apps/web/templates/dashboard/index.html.erb').must_be  :exist?
       @root.join('spec/web/controllers/dashboard/index_spec.rb').must_be :exist?
       @root.join('spec/web/views/dashboard/index_spec.rb').must_be       :exist?
+    end
+
+    it 'generates an action without view' do
+      @root.join('apps/web/controllers/dashboard/foo.rb').must_be      :exist?
+      @root.join('apps/web/views/dashboard/foo.rb').wont_be            :exist?
+      @root.join('apps/web/templates/dashboard/foo.html.erb').wont_be  :exist?
+      @root.join('spec/web/controllers/dashboard/foo_spec.rb').must_be :exist?
+      @root.join('spec/web/views/dashboard/foo_spec.rb').wont_be       :exist?
     end
 
     describe 'when application is generated with minitest' do
