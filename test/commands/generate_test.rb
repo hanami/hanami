@@ -145,6 +145,28 @@ describe Lotus::Commands::Generate do
       end
     end
 
+    describe 'with --skip-view flag' do
+      let(:opts) { default_options.merge(skip_view: true) }
+
+      describe 'apps/web/views/dashboard/index.rb' do
+        it 'does not generate it' do
+          @root.join('apps/web/views/dashboard/index.rb').exist?.must_be_same_as false
+        end
+      end
+
+      describe 'apps/web/templates/dashboard/index.html.erb' do
+        it 'does not generate it' do
+          @root.join('apps/web/views/dashboard/index.rb').exist?.must_be_same_as false
+        end
+      end
+
+      describe 'spec/web/views/dashboard/index_spec.rb' do
+        it 'does not generate it' do
+          @root.join('spec/web/views/dashboard/index_spec.rb').exist?.must_be_same_as false
+        end
+      end
+    end
+
     describe 'with unknown app' do
       before do
         # force not-existing app
