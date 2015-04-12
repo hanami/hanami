@@ -87,7 +87,7 @@ module Lotus
     # @since 0.3.0
     # @api private
     def generate(type = nil, app_name = nil, name = nil)
-      if options[:help] || (type.nil? && app_name.nil? && name.nil?) || (options[:skip_view] && type != 'action')
+      if options[:help] || (type.nil? && app_name.nil? && name.nil?)
         invoke :help, ['generate']
       else
         require 'lotus/commands/generate'

@@ -49,11 +49,11 @@ module Lotus
         }
 
         test_type = case options[:test]
-        when 'rspec'
-          'rspec'
-        else
-          'minitest'
-        end
+                    when 'rspec'
+                      'rspec'
+                    else
+                      'minitest'
+                    end
 
         templates = {
           'action.rb.tt' => _action_path,
