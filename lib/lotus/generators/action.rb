@@ -48,23 +48,23 @@ module Lotus
           template_path: _template_path,
         }
 
-        case options[:test]
+        test_type = case options[:test]
         when 'rspec'
-          test_type = 'rspec'
+          'rspec'
         else
-          test_type = 'minitest'
+          'minitest'
         end
 
         templates = {
           'action.rb.tt' => _action_path,
-          'action_spec.' + test_type + '.tt' => _action_spec_path,
+          "action_spec.#{test_type}.tt" => _action_spec_path,
         }
 
         if !options[:skip_view]
           templates.merge!({
             'view.rb.tt'   => _view_path,
             'template.tt'  => _template_path,
-            'view_spec.' + test_type + '.tt' => _view_spec_path,
+            "view_spec.#{test_type}.tt" => _view_spec_path,
           })
         end
 
