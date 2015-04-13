@@ -59,6 +59,7 @@ describe Lotus::Commands::Generate do
           content.must_match %(  class Index)
           content.must_match %(    include Web::Action)
           content.must_match %(    def call(params))
+          content.wont_match %(      self.body = 'OK')
         end
       end
 
@@ -147,6 +148,10 @@ describe Lotus::Commands::Generate do
 
     describe 'with --skip-view flag' do
       let(:opts) { default_options.merge(skip_view: true) }
+
+      before do
+        capture_io { command.start }
+      end
 
       describe 'apps/web/controllers/dashboard/index.rb' do
         it 'generates it' do
