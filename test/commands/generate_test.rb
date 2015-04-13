@@ -148,6 +148,17 @@ describe Lotus::Commands::Generate do
     describe 'with --skip-view flag' do
       let(:opts) { default_options.merge(skip_view: true) }
 
+      describe 'apps/web/controllers/dashboard/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/controllers/dashboard/index.rb').read
+          content.must_match %(module Web::Controllers::Dashboard)
+          content.must_match %(  class Index)
+          content.must_match %(    include Web::Action)
+          content.must_match %(    def call(params))
+          content.must_match %(      self.body = 'OK')
+        end
+      end
+
       describe 'apps/web/views/dashboard/index.rb' do
         it 'does not generate it' do
           @root.join('apps/web/views/dashboard/index.rb').exist?.must_be_same_as false
