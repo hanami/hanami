@@ -56,15 +56,19 @@ module Lotus
                     end
 
         templates = {
-          'action.rb.tt' => _action_path,
           "action_spec.#{test_type}.tt" => _action_spec_path,
         }
 
         if !options[:skip_view]
           templates.merge!({
+            'action.rb.tt' => _action_path,
             'view.rb.tt'   => _view_path,
             'template.tt'  => _template_path,
             "view_spec.#{test_type}.tt" => _view_spec_path,
+          })
+        else
+          templates.merge!({
+            'action_without_view.rb.tt' => _action_path,
           })
         end
 
