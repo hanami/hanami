@@ -75,22 +75,14 @@ module Lotus
       configuration.configure(environment, &blk)
     end
 
-    # Return the routes for this application
+    # Set and return routes for this application
     #
-    # @return [Lotus::Router] a route set
-    #
-    # @since 0.1.0
-    #
-    # @see Lotus::Configuration#routes
-    attr_reader :routes
-
-    # Set the routes for this application
-    #
-    # @param [Lotus::Router]
-    #
+    # @param [Lotus::Router]
     # @since 0.1.0
     # @api private
-    attr_writer :routes
+    #
+    # @see Lotus::Configuration#routes
+    attr_accessor :routes
 
     # Rendering policy
     #
