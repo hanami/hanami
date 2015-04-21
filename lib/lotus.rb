@@ -2,6 +2,7 @@ require 'lotus/version'
 require 'lotus/application'
 require 'lotus/container'
 require 'lotus/logger'
+require 'lotus/root'
 
 # A complete web framework for Ruby
 #
