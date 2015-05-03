@@ -1,7 +1,8 @@
 require 'pathname'
+require 'lotus/environment'
 
 module Lotus
   def self.root
-    Pathname.new(Dir.pwd)
+    Lotus::Environment.new.root
   end    
 end
