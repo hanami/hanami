@@ -6,7 +6,7 @@ A complete web framework for Ruby
 
 Lotus combines small yet powerful frameworks:
 
-* [**Lotus::Utils**](https://github.com/lotus/utils) - Ruby core extentions and class utilities
+* [**Lotus::Utils**](https://github.com/lotus/utils) - Ruby core extensions and class utilities
 * [**Lotus::Router**](https://github.com/lotus/router) - Rack compatible HTTP router for Ruby
 * [**Lotus::Validations**](https://github.com/lotus/validations) - Validation mixin for Ruby objects
 * [**Lotus::Helpers**](https://github.com/lotus/helpers) - View helpers for Ruby applications
