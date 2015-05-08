@@ -4,6 +4,7 @@ describe Lotus::Lotusrc do
   describe '#read' do
     describe 'file exists' do
       before do
+        Dir.chdir($pwd)
         @old_pwd = Dir.pwd
         Dir.chdir 'test/fixtures/lotusrc/exists'
         @root = Pathname.new(Dir.pwd)
@@ -33,6 +34,7 @@ describe Lotus::Lotusrc do
 
     describe "file doesn't exist" do
       before do
+        Dir.chdir($pwd)
         @old_pwd = Dir.pwd
         Dir.chdir 'test/fixtures/lotusrc/no_exists'
         @root = Pathname.new(Dir.pwd)
@@ -63,6 +65,8 @@ describe Lotus::Lotusrc do
       describe 'custom values' do
         before do
           @file = Pathname.new(Dir.pwd).join('.lotusrc')
+          @file.unlink if @file.exist?
+
           options = { architecture: 'application', test: 'rspec', template: 'slim' }
           @lotusrc = Lotus::Lotusrc.new(@root, options)
         end

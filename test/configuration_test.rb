@@ -13,6 +13,7 @@ describe Lotus::Configuration do
 
     @namespace     = MockApp
     @configuration = Lotus::Configuration.new
+    Dir.chdir($pwd)
   end
 
   after do
@@ -393,7 +394,7 @@ describe Lotus::Configuration do
   describe '#cookies' do
     describe "when not previously set" do
       it "is false" do
-        @configuration.cookies.must_equal false
+        @configuration.cookies.enabled?.must_equal false
       end
     end
 
@@ -403,7 +404,7 @@ describe Lotus::Configuration do
       end
 
       it "returns the configured value" do
-        @configuration.cookies.must_equal true
+        @configuration.cookies.enabled?.must_equal true
       end
     end
 
@@ -418,7 +419,7 @@ describe Lotus::Configuration do
         end
 
         it "returns it" do
-          @configuration.cookies.must_equal false
+          @configuration.cookies.enabled?.must_equal false
         end
       end
     end

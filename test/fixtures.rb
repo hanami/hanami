@@ -41,9 +41,13 @@ module CoffeeShop
   end
 end
 
-class RackApp
-  def self.call(env)
-    [200, {}, ['Hello from RackApp']]
+module Reviews
+  class Application < Lotus::Application
+    configure do
+      routes do
+        get '/', to: ->{}, as: :root
+      end
+    end
   end
 end
 

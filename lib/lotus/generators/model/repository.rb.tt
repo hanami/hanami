@@ -1,0 +1,5 @@
+require 'lotus/repository'
+
+class <%= config[:model_name] %>Repository
+  include Lotus::Repository
+end

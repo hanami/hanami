@@ -9,10 +9,11 @@ module Lotus
         def initialize(command)
           super
 
-          @slice_generator     = Slice.new(command)
-          @lotus_head          = options.fetch(:lotus_head)
-          @test                = options[:test]
-          @lotus_model_version = '~> 0.2'
+          @slice_generator       = Slice.new(command)
+          @lotus_head            = options.fetch(:lotus_head)
+          @test                  = options[:test]
+          @database              = options[:database]
+          @lotus_model_version   = '~> 0.3'
 
           cli.class.source_root(source)
         end
@@ -20,10 +21,12 @@ module Lotus
         def start
 
           opts      = {
-            app_name:            app_name,
-            lotus_head:          @lotus_head,
-            test:                @test,
-            lotus_model_version: @lotus_model_version
+            app_name:              app_name,
+            lotus_head:            @lotus_head,
+            test:                  @test,
+            database:              @database,
+            database_config:       database_config,
+            lotus_model_version:   @lotus_model_version,
           }
 
           templates = {
@@ -88,6 +91,60 @@ module Lotus
 
         def git_dir_present?
           File.directory?(source.join('.git'))
+        end
+
+        def database_config
+          {
+            gem: database_gem,
+            uri: database_uri,
+            type: database_type
+          }
+        end
+
+        def database_gem
+          {
+            'mysql'      => 'mysql',
+            'mysql2'     => 'mysql2',
+            'postgresql' => 'pg',
+            'postgres'   => 'pg',
+            'sqlite'     => 'sqlite3',
+            'sqlite3'    => 'sqlite3'
+          }[@database]
+        end
+
+        def database_type
+          case @database
+          when 'mysql', 'mysql2', 'postgresql', 'postgres', 'sqlite', 'sqlite3'
+            :sql
+          when 'filesystem'
+            :file_system
+          when 'memory'
+            :memory
+          end
+        end
+
+        def database_uri
+          {
+            development: "#{database_base_uri}_development",
+            test: "#{database_base_uri}_test"
+          }
+        end
+
+        def database_base_uri
+          case @database
+          when 'mysql'
+            "mysql://localhost/#{app_name}"
+          when 'mysql2'
+            "mysql2://localhost/#{app_name}"
+          when 'postgresql', 'postgres'
+            "postgres://localhost/#{app_name}"
+          when 'sqlite', 'sqlite3'
+            "sqlite://db/#{Shellwords.escape(app_name)}"
+          when 'memory'
+            "memory://localhost/#{app_name}"
+          else
+            "file:///db/#{app_name}"
+          end
         end
       end
     end

@@ -31,7 +31,7 @@ describe Lotus::Commands::New do
 
   describe 'container architecture' do
     def container_options
-      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false]
+      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false, database: 'filesystem']
     end
 
     let(:opts)     { container_options }
@@ -46,8 +46,8 @@ describe Lotus::Commands::New do
         content = @root.join('Gemfile').read
         content.must_match %(gem 'bundler')
         content.must_match %(gem 'rake')
-        content.must_match %(gem 'lotusrb',      '#{ Lotus::VERSION }')
-        content.must_match %(gem 'lotus-model', '~> 0.2')
+        content.must_match %(gem 'lotusrb',       '#{ Lotus::VERSION }')
+        content.must_match %(gem 'lotus-model',   '~> 0.3')
         content.must_match %(gem 'capybara')
       end
 
@@ -61,6 +61,7 @@ describe Lotus::Commands::New do
           content.must_match %(gem 'lotus-utils',       require: false, github: 'lotus/utils')
           content.must_match %(gem 'lotus-router',      require: false, github: 'lotus/router')
           content.must_match %(gem 'lotus-validations', require: false, github: 'lotus/validations')
+          content.must_match %(gem 'lotus-helpers',     require: false, github: 'lotus/helpers')
           content.must_match %(gem 'lotus-controller',  require: false, github: 'lotus/controller')
           content.must_match %(gem 'lotus-view',        require: false, github: 'lotus/view')
           content.must_match %(gem 'lotus-model',       require: false, github: 'lotus/model')
@@ -89,6 +90,60 @@ describe Lotus::Commands::New do
           content = @root.join('Gemfile').read
           content.must_match %(group :production do)
           content.must_match %(# gem 'puma')
+        end
+      end
+
+      describe 'database option' do
+        describe 'mysql' do
+          let(:opts) { container_options.merge(database: 'mysql') }
+          it 'includes mysql' do
+            content = @root.join('Gemfile').read
+            content.must_match %(gem 'mysql')
+          end
+        end
+
+        describe 'mysql2' do
+          let(:opts) { container_options.merge(database: 'mysql2') }
+          it 'includes mysql2' do
+            content = @root.join('Gemfile').read
+            content.must_match %(gem 'mysql2')
+          end
+        end
+
+        describe 'postgresql' do
+          let(:opts) { container_options.merge(database: 'postgresql') }
+
+          it 'includes pg' do
+            content = @root.join('Gemfile').read
+            content.must_match %(gem 'pg')
+          end
+        end
+
+        describe 'postgres' do
+          let(:opts) { container_options.merge(database: 'postgres') }
+
+          it 'includes pg' do
+            content = @root.join('Gemfile').read
+            content.must_match %(gem 'pg')
+          end
+        end
+
+        describe 'sqlite' do
+          let(:opts) { container_options.merge(database: 'sqlite') }
+
+          it 'includes sqlite3 gem' do
+            content = @root.join('Gemfile').read
+            content.must_match %(gem 'sqlite3')
+          end
+        end
+
+        describe 'sqlite3' do
+          let(:opts) { container_options.merge(database: 'sqlite3') }
+
+          it 'includes sqlite3 gem' do
+            content = @root.join('Gemfile').read
+            content.must_match %(gem 'sqlite3')
+          end
         end
       end
     end
@@ -186,6 +241,84 @@ describe Lotus::Commands::New do
           content.must_match %(CHIRP_TWO_DATABASE_URL="file:///db/chirp-two_development")
         end
       end
+
+      describe 'database option' do
+        describe 'with mysql' do
+          let(:opts) { container_options.merge(database: 'mysql') }
+          it 'generates db config for mysql' do
+            content = @root.join('config/.env.development').read
+            content.must_match %(CHIRP_DATABASE_URL="mysql://localhost/chirp_development")
+          end
+        end
+
+        describe 'with mysql2' do
+          let(:opts) { container_options.merge(database: 'mysql2') }
+          it 'generates db config for mysql2' do
+            content = @root.join('config/.env.development').read
+            content.must_match %(CHIRP_DATABASE_URL="mysql2://localhost/chirp_development")
+          end
+        end
+
+        describe 'with postgresql' do
+          let(:opts) { container_options.merge(database: 'postgresql') }
+
+          it 'generates db config for postgresql' do
+            content = @root.join('config/.env.development').read
+            content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_development")
+          end
+        end
+
+        describe 'with postgres' do
+          let(:opts) { container_options.merge(database: 'postgres') }
+
+          it 'generates db config for postgres' do
+            content = @root.join('config/.env.development').read
+            content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_development")
+          end
+        end
+
+        describe 'with sqlite' do
+          let(:opts) { container_options.merge(database: 'sqlite') }
+
+          it 'generates db config for sqlite' do
+            content = @root.join('config/.env.development').read
+            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_development")
+          end
+
+          describe 'with non-simple application name' do
+            let(:app_name) { "chirp'two" }
+
+            it 'escapes the database url' do
+              content = @root.join('config/.env.development').read
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_development")
+            end
+          end
+        end
+
+        describe 'with sqlite3' do
+          let(:opts) { container_options.merge(database: 'sqlite3') }
+          it 'generates db config for sqlite3' do
+            content = @root.join('config/.env.development').read
+            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_development")
+          end
+
+          describe 'with non-simple application name' do
+            let(:app_name) { "chirp'two" }
+            it 'escapes the database url' do
+              content = @root.join('config/.env.development').read
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_development")
+            end
+          end
+        end
+
+        describe 'with memory' do
+          let(:opts) { container_options.merge(database: 'memory') }
+          it 'generates db config for memory' do
+            content = @root.join('config/.env.development').read
+            content.must_match %(CHIRP_DATABASE_URL="memory://localhost/chirp_development")
+          end
+        end
+      end
     end
 
     describe 'config/.env.test' do
@@ -201,6 +334,84 @@ describe Lotus::Commands::New do
         it "sanitizes application names for env variables" do
           content = @root.join('config/.env.test').read
           content.must_match %(CHIRP_TWO_DATABASE_URL="file:///db/chirp-two_test")
+        end
+      end
+
+      describe 'database option' do
+        describe 'with mysql' do
+          let(:opts) { container_options.merge(database: 'mysql') }
+          it 'generates db config for mysql' do
+            content = @root.join('config/.env.test').read
+            content.must_match %(CHIRP_DATABASE_URL="mysql://localhost/chirp_test")
+          end
+        end
+
+        describe 'with mysql2' do
+          let(:opts) { container_options.merge(database: 'mysql2') }
+          it 'generates db config for mysql2' do
+            content = @root.join('config/.env.test').read
+            content.must_match %(CHIRP_DATABASE_URL="mysql2://localhost/chirp_test")
+          end
+        end
+
+        describe 'with postgresql' do
+          let(:opts) { container_options.merge(database: 'postgresql') }
+
+          it 'generates db config for postgresql' do
+            content = @root.join('config/.env.test').read
+            content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_test")
+          end
+        end
+
+        describe 'with postgres' do
+          let(:opts) { container_options.merge(database: 'postgres') }
+
+          it 'generates db config for postgres' do
+            content = @root.join('config/.env.test').read
+            content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_test")
+          end
+        end
+
+        describe 'with sqlite' do
+          let(:opts) { container_options.merge(database: 'sqlite') }
+
+          it 'generates db config for sqlite' do
+            content = @root.join('config/.env.test').read
+            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_test")
+          end
+
+          describe 'with non-simple application name' do
+            let(:app_name) { "chirp'two" }
+
+            it 'escapes the database url' do
+              content = @root.join('config/.env.test').read
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_test")
+            end
+          end
+        end
+
+        describe 'with sqlite3' do
+          let(:opts) { container_options.merge(database: 'sqlite3') }
+          it 'generates db config for sqlite3' do
+            content = @root.join('config/.env.test').read
+            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_test")
+          end
+
+          describe 'with non-simple application name' do
+            let(:app_name) { "chirp'two" }
+            it 'escapes the database url' do
+              content = @root.join('config/.env.test').read
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_test")
+            end
+          end
+        end
+
+        describe 'with memory' do
+          let(:opts) { container_options.merge(database: 'memory') }
+          it 'generates db config for memory' do
+            content = @root.join('config/.env.test').read
+            content.must_match %(CHIRP_DATABASE_URL="memory://localhost/chirp_test")
+          end
         end
       end
     end
@@ -223,6 +434,66 @@ describe Lotus::Commands::New do
           content = @root.join('lib/chirp-two.rb').read
           content.must_match 'Dir["#{ __dir__ }/chirp-two/**/*.rb"].each { |file| require_relative file }'
           content.must_match %(adapter type: :file_system, uri: ENV['CHIRP_TWO_DATABASE_URL'])
+        end
+      end
+
+      describe 'database option' do
+        describe 'mysql' do
+          let(:opts) { container_options.merge(database: 'mysql') }
+          it 'generates adapter config for mysql' do
+            content = @root.join('lib/chirp.rb').read
+            content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+          end
+        end
+
+        describe 'mysql2' do
+          let(:opts) { container_options.merge(database: 'mysql2') }
+          it 'generates adapter config for mysql2' do
+            content = @root.join('lib/chirp.rb').read
+            content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+          end
+        end
+
+        describe 'postgresql' do
+          let(:opts) { container_options.merge(database: 'postgresql') }
+          it 'generates adapter config for postgresql' do
+            content = @root.join('lib/chirp.rb').read
+            content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+          end
+        end
+
+        describe 'postgres' do
+          let(:opts) { container_options.merge(database: 'postgres') }
+
+          it 'generates adapter config for postgres' do
+            content = @root.join('lib/chirp.rb').read
+            content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+          end
+        end
+
+        describe 'sqlite' do
+          let(:opts) { container_options.merge(database: 'sqlite') }
+
+          it 'generates adapter config for sqlite' do
+            content = @root.join('lib/chirp.rb').read
+            content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+          end
+        end
+
+        describe 'sqlite3' do
+          let(:opts) { container_options.merge(database: 'sqlite3') }
+          it 'generates adapter config for sqlite3' do
+            content = @root.join('lib/chirp.rb').read
+            content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+          end
+        end
+
+        describe 'memory' do
+          let(:opts) { container_options.merge(database: 'memory') }
+          it 'generates adapter config for memory' do
+            content = @root.join('lib/chirp.rb').read
+            content.must_match %(adapter type: :memory, uri: ENV['CHIRP_DATABASE_URL'])
+          end
         end
       end
     end
@@ -403,6 +674,7 @@ describe Lotus::Commands::New do
     describe 'apps/web/application.rb' do
       it 'generates it' do
         content = @root.join('apps/web/application.rb').read
+        content.must_match %(require 'lotus/helpers')
         content.must_match %(module Web)
         content.must_match %(class Application < Lotus::Application)
 
@@ -416,7 +688,7 @@ describe Lotus::Commands::New do
         content.must_match %(# mapping 'config/mapping')
 
         content.must_match %(layout :application)
-        content.must_match %(# templates 'templates')
+        content.must_match %(templates 'templates')
 
         content.must_match %(# cookies true)
 
@@ -441,6 +713,7 @@ describe Lotus::Commands::New do
 
         content.must_match %(controller.prepare)
         content.must_match %(view.prepare)
+        content.must_match %(include Lotus::Helpers)
 
         # per environment configuration
         content.must_match %(configure :development do)
@@ -601,7 +874,7 @@ describe Lotus::Commands::New do
 
   describe 'application path' do
     def container_options
-      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false]
+      Hash[architecture: 'container', application: 'web', application_base_url: '/', lotus_head: false, database: 'filesystem']
     end
 
     let(:opts)      { container_options }

@@ -8,6 +8,7 @@ require 'lotus/config/mapping'
 require 'lotus/config/sessions'
 require 'lotus/config/configure'
 require 'lotus/config/security'
+require 'lotus/config/cookies'
 
 module Lotus
   # Configuration for a Lotus application
@@ -36,7 +37,6 @@ module Lotus
     # set a path for the specific environment.
     #
     # @param environment [Symbol,nil] the configuration environment name
-    # @param environment [String,nil] the configuration path of a specific environment
     # @param blk [Proc] the configuration block
     #
     # @return [self]
@@ -74,7 +74,7 @@ module Lotus
     #
     # @return [Lotus::Config::Security]
     #
-    # @since x.x.x
+    # @since 0.3.0
     #
     # @see Lotus::Config::Security
     #
@@ -465,13 +465,14 @@ module Lotus
     # an argument, it will set the corresponding instance variable. When
     # called without, it will return the already set value, or the default.
     #
-    # @overload cookies(value)
-    #   Sets the given value.
+    # @overload cookies(value, options)
+    #   Sets the given value with their options.
     #   @param value [TrueClass, FalseClass]
+    #   @param options [Hash]
     #
     # @overload cookies
     #   Gets the value.
-    #   @return [TrueClass, FalseClass]
+    #   @return [Lotus::Config::Cookies]
     #
     # @example Getting the value
     #   require 'lotus'
@@ -482,7 +483,7 @@ module Lotus
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => false
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=false, @default_options={:httponly=>true}>
     #
     # @example Setting the value
     #   require 'lotus'
@@ -490,13 +491,13 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         cookies true
+    #         cookies true, { domain: 'lotusrb.org' }
     #       end
     #     end
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => true
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=true, @default_options={:domain=>'lotusrb.org', :httponly=>true}>
     #
     # @example Setting a new value after one is set.
     #   require 'lotus'
@@ -511,13 +512,13 @@ module Lotus
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => true
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=true, @default_options={:httponly=>true}>
     #
-    def cookies(value = nil)
+    def cookies(value = nil, options = {})
       if value.nil?
-        @cookies || false
+        @cookies ||= Config::Cookies.new
       else
-        @cookies = value
+        @cookies = Config::Cookies.new(value, options)
       end
     end
 
@@ -1173,14 +1174,15 @@ module Lotus
     # setting helps to understand the namespace where to find applications'
     # controllers and actions.
     #
-    # By default this equals to `"Controllers::%{controller}::%{action}"`
+    # By default this equals to <tt>"Controllers::%{controller}::%{action}"</tt>
     # That means controllers must be structured like this:
-    # `Bookshelf::Controllers::Dashboard::Index`, where `Bookshelf` is the
-    # application module, `Controllers` is the first value specified in the
-    # pattern, `Dashboard` the controller and `Index` the action.
+    # <tt>Bookshelf::Controllers::Dashboard::Index</tt>, where <tt>Bookshelf</tt>
+    # is the application module, <tt>Controllers</tt> is the first value
+    # specified in the pattern, <tt>Dashboard</tt> the controller and
+    # <tt>Index</tt> the action.
     #
-    # This pattern MUST always contain `"%{controller}"` and `%{action}`.
-    # This pattern SHOULD be used accordingly to `#view_pattern` value.
+    # This pattern MUST always contain <tt>"%{controller}"</tt> and <tt>%{action}</tt>.
+    # This pattern SHOULD be used accordingly to <tt>#view_pattern</tt> value.
     #
     # This is part of a DSL, for this reason when this method is called with
     # an argument, it will set the corresponding instance variable. When
@@ -1306,15 +1308,15 @@ module Lotus
     # setting helps to understand the namespace where to find applications'
     # views:.
     #
-    # By default this equals to `"Views::%{controller}::%{action}"`
+    # By default this equals to <tt>"Views::%{controller}::%{action}"</tt>
     # That means views must be structured like this:
-    # `Bookshelf::Views::Dashboard::Index`, where `Bookshelf` is the
-    # application module, `Views` is the first value specified in the
-    # pattern, `Dashboard` a module corresponding to the controller name
-    # and `Index` the view, corresponding to the action name.
+    # <tt>Bookshelf::Views::Dashboard::Index</tt>, where <tt>Bookshelf</tt> is
+    # the application module, <tt>Views</tt> is the first value specified in the
+    # pattern, <tt>Dashboard</tt> a module corresponding to the controller name
+    # and <tt>Index</tt> the view, corresponding to the action name.
     #
-    # This pattern MUST always contain `"%{controller}"` and `%{action}`.
-    # This pattern SHOULD be used accordingly to `#controller_pattern` value.
+    # This pattern MUST always contain <tt>"%{controller}"</tt> and <tt>%{action}</tt>.
+    # This pattern SHOULD be used accordingly to <tt>#controller_pattern</tt> value.
     #
     # This is part of a DSL, for this reason when this method is called with
     # an argument, it will set the corresponding instance variable. When

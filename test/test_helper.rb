@@ -34,6 +34,11 @@ Minitest::Test.class_eval do
   end
 end
 
+Minitest.after_run do
+  lotusrc = Pathname.new(__dir__ + '/../.lotusrc')
+  lotusrc.delete if lotusrc.exist?
+end
+
 Lotus::Application.class_eval do
   def self.clear_registered_applications!
     synchronize do
@@ -135,4 +140,5 @@ def stub_time_now
   end
 end
 
+$pwd = Dir.pwd
 require 'fixtures'

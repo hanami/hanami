@@ -3,6 +3,7 @@ require 'lotus/middleware'
 
 describe Lotus::Middleware do
   before do
+    Dir.chdir($pwd)
     config = config_blk
     MockApp = Module.new
     MockApp::Application = Class.new(Lotus::Application) do

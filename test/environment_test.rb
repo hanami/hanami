@@ -15,6 +15,7 @@ describe Lotus::Environment do
   describe '#initialize' do
     describe 'env vars' do
       before do
+        Dir.chdir($pwd)
         @env = Lotus::Environment.new(config: 'test/fixtures/config')
       end
 
@@ -113,6 +114,86 @@ describe Lotus::Environment do
 
         ENV['LOTUS_ENV'] = 'test'
         @env.environment.must_equal 'development'
+      end
+    end
+  end
+
+  describe '#environment?' do
+    describe 'when environment is matched' do
+      before do
+        ENV['LOTUS_ENV'] = 'test'
+        @env = Lotus::Environment.new
+      end
+
+      describe 'when single name' do
+        describe 'when environment var is symbol' do
+          it 'returns true' do
+            @env.environment?(:test).must_equal true
+          end
+        end
+        describe 'when environment var is string' do
+          it 'returns true' do
+            @env.environment?("test").must_equal true
+          end
+        end
+      end
+
+      describe 'when multiple names' do
+        describe 'when environment vars are symbol' do
+          it 'returns true' do
+            @env.environment?(:development, :test, :production).must_equal true
+          end
+        end
+        describe 'when environment vars are string' do
+          it 'returns true' do
+            @env.environment?("development", "test", "production").must_equal true
+          end
+        end
+
+        describe 'when environment vars include string and symbol' do
+          it 'returns true' do
+            @env.environment?(:development, "test", "production").must_equal true
+          end
+        end
+      end
+    end
+
+    describe 'when environment is not matched' do
+      before do
+        ENV['LOTUS_ENV'] = 'development'
+        @env = Lotus::Environment.new
+      end
+
+      describe 'when single name' do
+        describe 'when environment var is symbol' do
+          it 'returns false' do
+            @env.environment?(:test).must_equal false
+          end
+        end
+        describe 'when environment var is string' do
+          it 'returns false' do
+            @env.environment?("test").must_equal false
+          end
+        end
+      end
+
+      describe 'when multiple names' do
+        describe 'when environment vars are symbol' do
+          it 'returns false' do
+            @env.environment?(:test, :production).must_equal false
+          end
+        end
+        describe 'when environment vars are string' do
+          it 'returns false' do
+            @env.environment?("test", "production").must_equal false
+          end
+        end
+
+        describe 'when environment vars include string and symbol' do
+          it 'returns false' do
+            @env.environment?(:test, "production").must_equal false
+          end
+        end
       end
     end
   end
@@ -434,10 +515,68 @@ describe Lotus::Environment do
     end
   end
 
+  describe 'lotusrc' do
+    describe 'with existing file' do
+      before do
+        @old_pwd = Dir.pwd
+
+        # This .lotusrc has test=minitest
+        path = Pathname.new('test/fixtures/lotusrc/exists')
+        path.mkpath
+        Dir.chdir(path)
+      end
+
+      after do
+        Dir.chdir @old_pwd
+      end
+
+      it 'uses defaults if no inline args' do
+        env = Lotus::Environment.new
+        env.to_options.fetch(:test).must_equal 'minitest'
+      end
+
+      it 'gives priority to inline args' do
+        # Simulate lotus new bookshelf --test=rspec
+        env = Lotus::Environment.new(test: 'rspec')
+        env.to_options.fetch(:test).must_equal 'rspec'
+      end
+    end
+
+    describe 'with unexisting file' do
+      before do
+        @old_pwd = Dir.pwd
+
+        path = Pathname.new('test/fixtures/lotusrc/no_exists')
+        path.mkpath
+
+        Dir.chdir(path)
+
+        @env = Lotus::Environment.new
+      end
+
+      after do
+        Dir.chdir @old_pwd
+      end
+
+      it 'uses defaults if no inline args' do
+        env = Lotus::Environment.new
+        env.to_options.fetch(:test).must_equal 'minitest'
+      end
+
+      it 'gives priority to inline args' do
+        # Simulate lotus new bookshelf --test=rspec
+        env = Lotus::Environment.new(test: 'rspec')
+        env.to_options.fetch(:test).must_equal 'rspec'
+      end
+    end
+  end
+
   describe '#to_options' do
     before do
       @old_pwd = Dir.pwd
-      Dir.chdir 'test/fixtures/lotusrc/exists'
+      path = Pathname.new('test/fixtures/lotusrc/exists')
+      path.mkpath
+      Dir.chdir(path)
       @env = Lotus::Environment.new
     end
 

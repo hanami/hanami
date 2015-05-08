@@ -55,8 +55,8 @@ module Lotus
     # Add a middleware to the stack.
     #
     # @param middleware [Object] a Rack middleware
-    # @param *args [Array] optional arguments to pass to the Rack middleware
-    # @param &blk [Proc] an optional block to pass to the Rack middleware
+    # @param args [Array] optional arguments to pass to the Rack middleware
+    # @param blk [Proc] an optional block to pass to the Rack middleware
     #
     # @return [Array] the middleware that was added
     #

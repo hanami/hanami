@@ -156,8 +156,8 @@ module Lotus
     #   # the one defined in the parent (eg `FOO` is overwritten). All the
     #   # other settings (eg `XYZ`) will be left untouched.
     def initialize(options = {})
-      @options = Utils::Hash.new(options).symbolize!.freeze
-      @options.merge! Lotus::Lotusrc.new(root, self.to_options).read
+      @options = Lotus::Lotusrc.new(root).read
+      @options.merge! Utils::Hash.new(options).symbolize!
       @mutex   = Mutex.new
       @mutex.synchronize { set_env_vars! }
     end
@@ -178,6 +178,13 @@ module Lotus
     # @see Lotus::Environment::DEFAULT_ENV
     def environment
       @environment ||= ENV[LOTUS_ENV] || ENV[RACK_ENV] || DEFAULT_ENV
+    end
+
+    # @since x.x.x
+    #
+    # @see Lotus.env?(name)
+    def environment?(*names)
+      names.map(&:to_s).include?(environment)
     end
 
     # A set of Bundler groups

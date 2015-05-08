@@ -61,12 +61,13 @@ module Lotus
     end
 
     desc 'new', 'generates a new application'
-    method_option :architecture,   aliases: '-a', desc: 'application architecture',   type: :string,  default: 'container'
-    method_option :application,                   desc: 'application name',           type: :string,  default: 'web'
-    method_option :application_base_url,          desc: 'application base url',       type: :string,  default: '/'
-    method_option :path,                          desc: 'path',                       type: :string
+    method_option :database,       aliases: '-d', desc: 'application database',     type: :string,  default: 'filesystem'
+    method_option :architecture,   aliases: '-a', desc: 'application architecture', type: :string,  default: 'container'
+    method_option :application,                   desc: 'application name',         type: :string,  default: 'web'
+    method_option :application_base_url,          desc: 'application base url',     type: :string,  default: '/'
+    method_option :path,                          desc: 'path',                     type: :string
     method_option :test,                          desc: 'application test framework (rspec/minitest)', type: :string,  default: 'minitest'
-    method_option :lotus_head,                    desc: 'use Lotus HEAD',             type: :boolean, default: false
+    method_option :lotus_head,                    desc: 'use Lotus HEAD',           type: :boolean, default: false
     method_option :help,           aliases: '-h', desc: 'displays the usage method'
 
     def new(name = nil)
@@ -75,6 +76,22 @@ module Lotus
       else
         require 'lotus/commands/new'
         Lotus::Commands::New.new(name, environment, self).start
+      end
+    end
+
+    desc 'generate', 'generates a new action'
+    method_option :path,                desc: 'applications path',                                         type: :string,  default: 'apps'
+    method_option :skip_view,           desc: 'skip the creation of view and templates (only for action)', type: :boolean, default: false
+    method_option :help, aliases: '-h', desc: 'displays the usage method'
+
+    # @since 0.3.0
+    # @api private
+    def generate(type = nil, app_name = nil, name = nil)
+      if options[:help] || (type.nil? && app_name.nil? && name.nil?)
+        invoke :help, ['generate']
+      else
+        require 'lotus/commands/generate'
+        Lotus::Commands::Generate.new(type, app_name, name, environment, self).start
       end
     end
 

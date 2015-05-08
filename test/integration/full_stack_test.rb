@@ -71,8 +71,8 @@ describe 'A full stack Lotus application' do
 
     response.status.must_equal 418
 
-    response.body.must_match %(<title>I'm a teapot</title>)
-    response.body.must_match %(<h1>I'm a teapot (418)</h1>)
+    response.body.must_match %(<title>I&apos;m a teapot</title>)
+    response.body.must_match %(<h1>I&apos;m a teapot (418)</h1>)
   end
 
   it "when html, it renders a custom page for not found resources" do
@@ -198,7 +198,7 @@ describe 'A full stack Lotus application' do
       patch "/books/#{@book.id}", name: 'The path to failure'
 
       response.status.must_equal 302
-      response.body.must_be_empty
+      response.body.must_equal "Found"
 
       follow_redirect!
 
@@ -211,7 +211,7 @@ describe 'A full stack Lotus application' do
       post "/books", name: 'The art of Zen'
 
       response.status.must_equal 302
-      response.body.must_be_empty
+      response.body.must_equal "Found"
 
       follow_redirect!
 
@@ -224,7 +224,7 @@ describe 'A full stack Lotus application' do
       delete "/books/#{@book.id}"
 
       response.status.must_equal 302
-      response.body.must_be_empty
+      response.body.must_equal "Found"
 
       follow_redirect!
 
