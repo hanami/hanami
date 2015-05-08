@@ -31,7 +31,8 @@ describe 'CLI db migration' do
     it 'applies migrations located on db/migration' do
       sequel.table_exists?(:posts).must_equal true
       sequel.table_exists?(:comments).must_equal true
-      sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal ['20150122124515_create_posts.rb', '20150222124516_create_comments.rb']
+      p sequel.from(:schema_migrations).all
+      sequel.from(:schema_migrations).all.map { |row| row[:version] }.must_equal ['20150122124515', '20150222124516']
     end
   end
 
@@ -44,7 +45,7 @@ describe 'CLI db migration' do
     it 'rollback last migration located on db/migration' do
       sequel.table_exists?(:comments).must_equal false
       sequel.table_exists?(:posts).must_equal true
-      sequel.from(:schema_migrations).all.map { |row| row[:filename] }.must_equal ['20150122124515_create_posts.rb']
+      sequel.from(:schema_migrations).all.map { |row| row[:version] }.must_equal ['20150122124515']
     end
 
     describe "when step were specified" do
