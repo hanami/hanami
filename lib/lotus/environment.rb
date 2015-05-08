@@ -180,6 +180,13 @@ module Lotus
       @environment ||= ENV[LOTUS_ENV] || ENV[RACK_ENV] || DEFAULT_ENV
     end
 
+    # @since x.x.x
+    #
+    # @see Lotus.env?(name)
+    def environment?(*names)
+      names.map(&:to_s).include?(environment)
+    end
+
     # A set of Bundler groups
     #
     # @return [Array] A set of groups
