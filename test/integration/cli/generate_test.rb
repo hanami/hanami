@@ -4,6 +4,7 @@ describe 'lotus generate' do
   describe 'action' do
     let(:options)           { '' }
     let(:app_name)          { 'web' }
+    let(:new_app_name)      { 'api' }
     let(:template_engine)   { 'erb' }
     let(:framework_testing) { 'minitest' }
     let(:klass)             { 'test' }
@@ -41,6 +42,10 @@ template=#{ template_engine }
       `bundle exec lotus generate model #{ klass }`
     end
 
+    def generate_container
+      `bundle exec lotus generate app #{ new_app_name } #{ new_options }`
+    end
+
     def chdir_to_root
       Dir.chdir(@pwd)
     end
@@ -50,18 +55,10 @@ template=#{ template_engine }
       generate_application
       generate_action
       generate_action_without_view
-      generate_model
     end
 
     def after
       chdir_to_root
-    end
-
-    it 'generates model' do
-      @root.join('lib/delivery/entities/test.rb').must_be                      :exist?
-      @root.join('lib/delivery/repositories/test_repository.rb').must_be       :exist?
-      @root.join('spec/delivery/entities/test_spec.rb').must_be                :exist?
-      @root.join('spec/delivery/repositories/test_repository_spec.rb').must_be :exist?
     end
 
     it 'generates an action' do
@@ -78,6 +75,59 @@ template=#{ template_engine }
       @root.join('apps/web/templates/dashboard/foo.html.erb').wont_be  :exist?
       @root.join('spec/web/controllers/dashboard/foo_spec.rb').must_be :exist?
       @root.join('spec/web/views/dashboard/foo_spec.rb').wont_be       :exist?
+    end
+
+    describe 'when application generates new model' do
+      before do
+        generate_model
+      end
+
+      it 'generates model' do
+        @root.join('lib/delivery/entities/test.rb').must_be                      :exist?
+        @root.join('lib/delivery/repositories/test_repository.rb').must_be       :exist?
+        @root.join('spec/delivery/entities/test_spec.rb').must_be                :exist?
+        @root.join('spec/delivery/repositories/test_repository_spec.rb').must_be :exist?
+      end
+    end
+
+    describe 'when application generates new container' do
+      let(:new_options) { '' }
+
+      before do
+        generate_container
+      end
+
+      it 'generates new container' do
+        @root.join('apps/api/controllers/home/index.rb').must_be             :exist?
+        @root.join('apps/api/views/home/index.rb').must_be                   :exist?
+        @root.join('apps/api/templates/home/index.html.erb').must_be         :exist?
+        @root.join('apps/api/application.rb').must_be                        :exist?
+        @root.join('apps/api/config/routes.rb').must_be                      :exist?
+        @root.join('apps/api/config/mapping.rb').must_be                     :exist?
+        @root.join('apps/api/views/application_layout.rb').must_be           :exist?
+        @root.join('apps/api/templates/application.html.erb').must_be        :exist?
+      end
+
+      it 'inserts configuration files' do
+        content = @root.join('config/environment.rb').read
+        content.must_match %(mount Api::Application, at: '/api')
+        content.must_match %(require_relative '../apps/api/application')
+        content = @root.join('config/.env.development').read
+        content.must_match %(API_DATABASE_URL)
+        content.must_match %(API_SESSIONS_SECRET)
+        content = @root.join('config/.env.test').read
+        content.must_match %(API_DATABASE_URL)
+        content.must_match %(API_SESSIONS_SECRET)
+      end
+
+      describe 'with options application base url' do
+        let(:new_options) { ' --application-base-url=/api_v1' }
+
+        it 'inserts configuration files' do
+          content = @root.join('config/environment.rb').read
+          content.must_match %(mount Api::Application, at: '/api_v1')
+        end
+      end
     end
 
     describe 'when application is generated with minitest' do
