@@ -59,6 +59,7 @@ describe Lotus::Commands::Generate do
           content.must_match %(  class Index)
           content.must_match %(    include Web::Action)
           content.must_match %(    def call(params))
+          content.wont_match %(      self.body = 'OK')
         end
       end
 
@@ -145,6 +146,43 @@ describe Lotus::Commands::Generate do
       end
     end
 
+    describe 'with --skip-view flag' do
+      let(:opts) { default_options.merge(skip_view: true) }
+
+      before do
+        capture_io { command.start }
+      end
+
+      describe 'apps/web/controllers/dashboard/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/controllers/dashboard/index.rb').read
+          content.must_match %(module Web::Controllers::Dashboard)
+          content.must_match %(  class Index)
+          content.must_match %(    include Web::Action)
+          content.must_match %(    def call(params))
+          content.must_match %(      self.body = 'OK')
+        end
+      end
+
+      describe 'apps/web/views/dashboard/index.rb' do
+        it 'does not generate it' do
+          @root.join('apps/web/views/dashboard/index.rb').exist?.must_be_same_as false
+        end
+      end
+
+      describe 'apps/web/templates/dashboard/index.html.erb' do
+        it 'does not generate it' do
+          @root.join('apps/web/views/dashboard/index.rb').exist?.must_be_same_as false
+        end
+      end
+
+      describe 'spec/web/views/dashboard/index_spec.rb' do
+        it 'does not generate it' do
+          @root.join('spec/web/views/dashboard/index_spec.rb').exist?.must_be_same_as false
+        end
+      end
+    end
+
     describe 'with unknown app' do
       before do
         # force not-existing app
@@ -155,6 +193,121 @@ describe Lotus::Commands::Generate do
 
       it 'raises error' do
         -> { capture_io { command.start } }.must_raise SystemExit
+      end
+    end
+  end
+
+  describe 'model' do
+    let(:target)      { :model }
+    let(:target_name) { '' }
+    let(:app_name)    { 'post' }
+
+    before do
+      capture_io { command.start }
+    end
+
+    describe 'lib/generate/entities/post.rb' do
+      it 'generates it' do
+        content = @root.join('lib/generate/entities/post.rb').read
+        content.must_match %(require 'lotus/entity')
+        content.must_match %(class Post)
+        content.must_match %(  include Lotus::Entity)
+        content.must_match %(end)
+      end
+    end
+
+    describe 'lib/generate/repositories/post.rb' do
+      it 'generates it' do
+        content = @root.join('lib/generate/repositories/post_repository.rb').read
+        content.must_match %(require 'lotus/repository')
+        content.must_match %(class PostRepository)
+        content.must_match %(  include Lotus::Repository)
+        content.must_match %(end)
+      end
+    end
+
+    describe 'spec/generate/entities/post_spec.rb' do
+      describe 'minitest (default)' do
+        it 'generates it' do
+          content = @root.join('spec/generate/entities/post_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(describe Post do)
+          content.must_match %(end)
+        end
+      end
+
+      describe 'rspec' do
+        let(:opts) { default_options.merge(test: 'rspec') }
+
+        it 'generates it' do
+          content = @root.join('spec/generate/entities/post_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(describe Post do)
+          content.must_match %(end)
+        end
+      end
+    end
+
+    describe 'spec/generate/repositories/post_repository_spec.rb' do
+      describe 'minitest (default)' do
+        it 'generates it' do
+          content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(describe PostRepository do)
+          content.must_match %(end)
+        end
+      end
+
+      describe 'rspec' do
+        let(:opts) { default_options.merge(test: 'rspec') }
+
+        it 'generates it' do
+          content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(describe PostRepository do)
+          content.must_match %(end)
+        end
+      end
+    end
+  end
+
+  describe 'app' do
+    let(:target)      { 'app' }
+    let(:target_name) { '' }
+    let(:app_name)    { 'admin' }
+    let(:environment_config_path) { @root.join('config/environment.rb') }
+    let(:environment_development_path) { @root.join('config/.env.development') }
+    let(:environment_test_path) { @root.join('config/.env.test') }
+
+    before do
+      @root.join('config').mkpath
+      FileUtils.touch(environment_config_path)
+      FileUtils.touch(environment_development_path)
+      FileUtils.touch(environment_test_path)
+      capture_io { command.start }
+    end
+
+    describe 'lib/generate/admin/application.rb' do
+      it 'generates it' do
+        content = @root.join('apps/admin/application.rb').read
+        content.must_match %(require 'lotus/helpers')
+        content.must_match %(module Admin)
+        content.must_match %(configure do)
+        content.must_match %(root __dir__)
+        content.must_match %(load_paths << [)
+        content.must_match %('controllers',)
+        content.must_match %('views')
+        content.must_match %(routes 'config/routes')
+        content.must_match %(security.x_frame_options "DENY")
+        content.must_match %(security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';")
+        content.must_match %(controller.prepare do)
+        content.must_match %(view.prepare do)
+        content.must_match %(include Lotus::Helpers)
+        content.must_match %(configure :development)
+        content.must_match %(configure :test do)
+        content.must_match %(handle_exceptions false)
+        content.must_match %(serve_assets      true)
+        content.must_match %(configure :production do)
       end
     end
   end

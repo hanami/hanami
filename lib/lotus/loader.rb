@@ -138,11 +138,12 @@ module Lotus
     end
 
     def load_rack!
+      _assign_routes_to_application_module!
+
       return if application.is_a?(Class)
       _assign_rendering_policy!
       _assign_rack_routes!
       _load_rack_middleware!
-      _assign_routes_to_application_module!
     end
 
     def _assign_rendering_policy!
@@ -150,17 +151,7 @@ module Lotus
     end
 
     def _assign_rack_routes!
-      resolver    = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: namespace)
-      default_app = Lotus::Routing::Default.new
-      application.routes = Lotus::Router.new(
-        parsers:     configuration.body_parsers,
-        resolver:    resolver,
-        default_app: default_app,
-        scheme:      configuration.scheme,
-        host:        configuration.host,
-        port:        configuration.port,
-        &configuration.routes
-      )
+      application.routes = application_routes
     end
 
     def _load_rack_middleware!
@@ -169,7 +160,7 @@ module Lotus
 
     def _assign_routes_to_application_module!
       unless application_module.const_defined?('Routes')
-        routes = Lotus::Routes.new(application.routes)
+        routes = Lotus::Routes.new(application_routes)
         application_module.const_set('Routes', routes)
       end
     end
@@ -177,6 +168,20 @@ module Lotus
     def application_module
       @application_module ||= Utils::Class.load!(
         Utils::String.new(application.name).namespace
+      )
+    end
+
+    def application_routes
+      resolver    = Lotus::Routing::EndpointResolver.new(pattern: configuration.controller_pattern, namespace: namespace)
+      default_app = Lotus::Routing::Default.new
+      Lotus::Router.new(
+        parsers:     configuration.body_parsers,
+        resolver:    resolver,
+        default_app: default_app,
+        scheme:      configuration.scheme,
+        host:        configuration.host,
+        port:        configuration.port,
+        &configuration.routes
       )
     end
 

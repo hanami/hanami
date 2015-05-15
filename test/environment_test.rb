@@ -118,6 +118,86 @@ describe Lotus::Environment do
     end
   end
 
+  describe '#environment?' do
+    describe 'when environment is matched' do
+      before do
+        ENV['LOTUS_ENV'] = 'test'
+        @env = Lotus::Environment.new
+      end
+
+      describe 'when single name' do
+        describe 'when environment var is symbol' do
+          it 'returns true' do
+            @env.environment?(:test).must_equal true
+          end
+        end
+        describe 'when environment var is string' do
+          it 'returns true' do
+            @env.environment?("test").must_equal true
+          end
+        end
+      end
+
+      describe 'when multiple names' do
+        describe 'when environment vars are symbol' do
+          it 'returns true' do
+            @env.environment?(:development, :test, :production).must_equal true
+          end
+        end
+        describe 'when environment vars are string' do
+          it 'returns true' do
+            @env.environment?("development", "test", "production").must_equal true
+          end
+        end
+
+        describe 'when environment vars include string and symbol' do
+          it 'returns true' do
+            @env.environment?(:development, "test", "production").must_equal true
+          end
+        end
+      end
+    end
+
+    describe 'when environment is not matched' do
+      before do
+        ENV['LOTUS_ENV'] = 'development'
+        @env = Lotus::Environment.new
+      end
+
+      describe 'when single name' do
+        describe 'when environment var is symbol' do
+          it 'returns false' do
+            @env.environment?(:test).must_equal false
+          end
+        end
+        describe 'when environment var is string' do
+          it 'returns false' do
+            @env.environment?("test").must_equal false
+          end
+        end
+      end
+
+      describe 'when multiple names' do
+        describe 'when environment vars are symbol' do
+          it 'returns false' do
+            @env.environment?(:test, :production).must_equal false
+          end
+        end
+        describe 'when environment vars are string' do
+          it 'returns false' do
+            @env.environment?("test", "production").must_equal false
+          end
+        end
+
+        describe 'when environment vars include string and symbol' do
+          it 'returns false' do
+            @env.environment?(:test, "production").must_equal false
+          end
+        end
+      end
+    end
+  end
+
   describe '#bundler_groups' do
     before do
       @env = Lotus::Environment.new

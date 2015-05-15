@@ -6,13 +6,12 @@ A complete web framework for Ruby
 
 Lotus combines small yet powerful frameworks:
 
-* [**Lotus::Utils**](https://github.com/lotus/utils) - Ruby core extentions and class utilities
+* [**Lotus::Utils**](https://github.com/lotus/utils) - Ruby core extensions and class utilities
 * [**Lotus::Router**](https://github.com/lotus/router) - Rack compatible HTTP router for Ruby
 * [**Lotus::Validations**](https://github.com/lotus/validations) - Validation mixin for Ruby objects
 * [**Lotus::Helpers**](https://github.com/lotus/helpers) - View helpers for Ruby applications
 * [**Lotus::Model**](https://github.com/lotus/model) - Persistence with entities, repositories and data mapper
 * [**Lotus::View**](https://github.com/lotus/view) - Presentation with a separation between views and templates
-* [**Lotus::Helpers**](https://github.com/lotus/helpers) - Presentation helpers for views
 * [**Lotus::Controller**](https://github.com/lotus/controller) - Full featured, fast and testable actions for Rack
 
 These components are designed to be used independently or together in a Lotus application.

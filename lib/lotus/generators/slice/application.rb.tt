@@ -52,8 +52,18 @@ module <%= config[:classified_slice_name] %>
       # port 443
 
       # Enable cookies
+      # Argument: boolean to toggle the feature
+      #           A Hash with options
       #
-      # cookies true
+      # Options: :domain   - The domain (String - nil by default, not required)
+      #          :path     - Restrict cookies to a relative URI (String - nil by default)
+      #          :max_age  - Cookies expiration expressed in seconds (Integer - nil by default)
+      #          :secure   - Restrict cookies to secure connections
+      #                      (Boolean - Automatically set on true if currenlty using a secure connection)
+      #                      See #scheme and #ssl?
+      #          :httponly - Prevent JavaScript access (Boolean - true by default)
+      #
+      # cookies true, {}
 
       # Enable sessions
       # Argument: Symbol the Rack session adapter

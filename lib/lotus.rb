@@ -2,6 +2,7 @@ require 'lotus/version'
 require 'lotus/application'
 require 'lotus/container'
 require 'lotus/logger'
+require 'lotus/environment'
 
 # A complete web framework for Ruby
 #
@@ -9,4 +10,46 @@ require 'lotus/logger'
 #
 # @see http://lotusrb.org
 module Lotus
+
+  # Return the current environment
+  #
+  # @return [String] the current environment
+  #
+  # @since 0.3.1
+  #
+  # @see Lotus::Environment#environment
+  #
+  # @example
+  #   Lotus.env => "development"
+  def self.env
+    Environment.new.environment
+  end
+
+  # Check to see if specified environment(s) matches the current environment.
+  #
+  # If multiple names are given, it returns true, if at least one of them
+  # matches the current environment.
+  #
+  # @return [TrueClass,FalseClass] the result of the check
+  #
+  # @since 0.3.1
+  #
+  # @see Lotus.env
+  #
+  # @example Single name
+  #   puts ENV['LOTUS_ENV'] # => "development"
+  #
+  #   Lotus.env?(:development)  # => true
+  #   Lotus.env?('development') # => true
+  #
+  #   Lotus.env?(:production)   # => false
+  #
+  # @example Multiple names
+  #   puts ENV['LOTUS_ENV'] # => "development"
+  #
+  #   Lotus.env?(:development, :test)   # => true
+  #   Lotus.env?(:production, :staging) # => false
+  def self.env?(*names)
+    Environment.new.environment?(*names)
+  end
 end
