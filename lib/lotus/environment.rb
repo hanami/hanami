@@ -180,7 +180,7 @@ module Lotus
       @environment ||= ENV[LOTUS_ENV] || ENV[RACK_ENV] || DEFAULT_ENV
     end
 
-    # @since x.x.x
+    # @since 0.3.1
     #
     # @see Lotus.env?(name)
     def environment?(*names)

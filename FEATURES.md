@@ -3,6 +3,17 @@
 
 ## Features
 
+## v0.3.1 - 2015-05-15
+
+- CLI: `lotus generate app admin` creates a new application (`apps/admin`).
+- CLI: `lotus generate model user`. It generates entity, repository and related unit test files.
+- `Lotus.env` and `Lotus.env?` for current environment introspection (eg. `Lotus.env?(:test)` or `Lotus.env?(:staging, :production)`)
+- Allow repositories to execute raw query/commands against database
+- Automatic timestamps update for entities
+– Dirty Tracking for entities (via `Lotus::Entity::DirtyTracking`)
+- Nested RESTful resource(s)
+- String pluralization and singularization
+
 ## v0.3.0 - 2015-03-23
 
 - CLI: `lotus generate action web dashboard#index`. It generates an action, a view, a template, a route and related unit test files.

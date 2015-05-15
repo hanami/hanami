@@ -58,7 +58,7 @@ module Lotus
         @spec_root ||= Pathname.new('spec')
       end
 
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def model_root
         @model_root ||= Pathname.new(['lib', ::File.basename(Dir.getwd)]
@@ -74,7 +74,7 @@ module Lotus
         Utils::Class.load!(GENERATORS_NAMESPACE % class_name).new(self)
       end
 
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def sanitize_app_name_options(app_name)
         {
@@ -83,7 +83,7 @@ module Lotus
         }
       end
 
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def sanitize_type(type)
         type == APP ? SLICE_TYPE : type

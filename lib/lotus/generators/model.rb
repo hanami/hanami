@@ -5,7 +5,7 @@ module Lotus
   module Generators
     class Model < Abstract
 
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def initialize(command)
         super
@@ -16,7 +16,7 @@ module Lotus
         cli.class.source_root(source)
       end
 
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def start
         opts = {
@@ -47,25 +47,25 @@ module Lotus
       end
 
       private
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def _entity_path
         model_root.join("entities", "#{@model}.rb").to_s
       end
 
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def _repository_path
         model_root.join("repositories", "#{@model}_repository.rb").to_s
       end
 
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def _entity_spec_path
         spec_root.join(::File.basename(Dir.getwd), 'entities', "#{ @model }_spec.rb")
       end
 
-      # @since x.x.x
+      # @since 0.3.1
       # @api private
       def _repository_spec_path
         spec_root.join(::File.basename(Dir.getwd), 'repositories',
