@@ -3,9 +3,9 @@ A complete web framework for Ruby
 
 ## v0.3.1 - 2015-05-15
 ### Added
-- [Hieu Nguyen] Introduced application generator (eg. `bundle exec lotus generate app admin` creates `apps/admin`).
-- [Ngoc Nguyen] Introduced model generator (eg. `bundle exec lotus generate model user` creates entity, repository and test files).
-- [Ngoc Nguyen] Introduced `Lotus.env`, `Lotus.env?` for current environment introspection (eg. `Lotus.env?(:test)` or `Lotus.env?(:staging, :production)`)
+- [Hiếu Nguyễn] Introduced application generator (eg. `bundle exec lotus generate app admin` creates `apps/admin`).
+- [Ngọc Nguyễn] Introduced model generator (eg. `bundle exec lotus generate model user` creates entity, repository and test files).
+- [Ngọc Nguyễn] Introduced `Lotus.env`, `Lotus.env?` for current environment introspection (eg. `Lotus.env?(:test)` or `Lotus.env?(:staging, :production)`)
 - [Miguel Molina] Skip view creation when an action is generated via `--skip-view` CLI arg.
 
 ### Fixed
