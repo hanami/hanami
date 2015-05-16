@@ -22,15 +22,16 @@ module Lotus
       #
       # @param enabled [TrueClass, FalseClass] enable cookies
       # @param options [Hash] optional cookies options
+      # @param configuration [Lotus::Configuration] the application configuration
       #
       # @since 0.3.0
       # @api private
       #
       # @see https://github.com/rack/rack/blob/master/lib/rack/utils.rb #set_cookie_header!
       # @see https://www.owasp.org/index.php/HttpOnly
-      def initialize(enabled = false, options = {})
+      def initialize(enabled = false, options = {}, configuration = nil)
         @enabled         = enabled
-        @default_options = { httponly: true }.merge(options)
+        @default_options = { httponly: true, secure: !!(configuration && configuration.ssl?) }.merge(options)
       end
 
       # Return if cookies are enabled

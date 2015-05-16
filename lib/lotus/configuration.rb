@@ -483,7 +483,7 @@ module Lotus
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=false, @default_options={:httponly=>true}>
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=false, @default_options={:httponly=>true, :secure=>false}>
     #
     # @example Setting the value
     #   require 'lotus'
@@ -497,7 +497,7 @@ module Lotus
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=true, @default_options={:domain=>'lotusrb.org', :httponly=>true}>
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=true, @default_options={:domain=>'lotusrb.org', :httponly=>true, :secure=>false}>
     #
     # @example Setting a new value after one is set.
     #   require 'lotus'
@@ -507,18 +507,20 @@ module Lotus
     #       configure do
     #         cookies false
     #         cookies true
+    #
+    #         scheme 'https'
     #       end
     #     end
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=true, @default_options={:httponly=>true}>
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=true, @default_options={:httponly=>true, :secure=>true}>
     #
     def cookies(value = nil, options = {})
       if value.nil?
         @cookies ||= Config::Cookies.new
       else
-        @cookies = Config::Cookies.new(value, options)
+        @cookies = Config::Cookies.new(value, options, self)
       end
     end
 
