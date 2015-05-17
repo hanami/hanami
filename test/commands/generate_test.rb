@@ -195,6 +195,14 @@ describe Lotus::Commands::Generate do
         -> { capture_io { command.start } }.must_raise SystemExit
       end
     end
+
+    describe 'without action name' do
+    let(:target_name) { 'users' }
+
+      it 'raises error' do
+        -> { capture_io { command.start } }.must_raise SystemExit
+      end
+    end
   end
 
   describe 'model' do
