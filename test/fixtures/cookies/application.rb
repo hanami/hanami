@@ -2,7 +2,7 @@ module CookiesApp
   class Application < Lotus::Application
     configure do
       # Activate Cookies
-      cookies true, { domain: 'lotusrb.org', path: '/another_controller', secure: true }
+      cookies domain: 'lotusrb.org', path: '/another_controller', secure: true
 
       routes do
         get '/get_cookies',              to: 'cookies#get'
