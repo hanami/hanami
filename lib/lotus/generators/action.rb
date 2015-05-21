@@ -38,6 +38,7 @@ module Lotus
       # @api private
       def start
         assert_existing_app!
+        assert_action!
 
         opts = {
           app:           app,
@@ -85,6 +86,14 @@ module Lotus
       def assert_existing_app!
         unless target.join(app_root).exist?
           raise Lotus::Commands::Generate::Error.new("Unknown app: `#{ app_name }'")
+        end
+      end
+
+      # @since x.x.x
+      # @api private
+      def assert_action!
+        if @action.nil?
+          raise Lotus::Commands::Generate::Error.new("Unknown action, please add action's name with this syntax controller_name#action_name")
         end
       end
 
