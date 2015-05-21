@@ -22,35 +22,35 @@ module Lotus
       #
       # @param options [Hash, TrueClass, FalseClass] optional cookies options
       #
-      # @since x.x.x
+      # @since 0.3.0
       # @api private
       #
       # @see https://github.com/rack/rack/blob/master/lib/rack/utils.rb #set_cookie_header!
       # @see https://www.owasp.org/index.php/HttpOnly
       #
-      # @example with boolean option
+      # @example Enable cookies with boolean
+      #   module Web
+      #     class Application < Lotus::Application
+      #       configure do
+      #         # ...
+      #         cookies true
+      #       end
+      #     end
+      #   end
       #
-      #  require 'lotus/config/cookies'
-      #
-      #  cookies_config = Lotus::Config::Cookies.new(true)
-      #  # => #<Lotus::Config::Cookies:0x007fb902c55978 @options=true, @default_options={:httponly=>true}>
-      #  cookies_config.enabled? # => true
-      #
-      #  cookies_config = Lotus::Config::Cookies.new(false)
-      #  # => #<Lotus::Config::Cookies:0x007fb902c55978 @options=false, @default_options={:httponly=>true}>
-      #  cookies_config.enabled? # => false
-      #
-      # @example with hash option
-      #
-      #  require 'lotus/config/cookies'
-      #
-      #  cookies_config = Lotus::Config::Cookies.new(max_age: true)
-      #  # => #<Lotus::Config::Cookies:0x007fb902c37f40 @options={:max_age=>true}, @default_options={:httponly=>true, :max_age=>true}>
-      #  cookies_config.enabled? # => true
+      # @example Enable cookies with options
+      #   module Web
+      #     class Application < Lotus::Application
+      #       configure do
+      #         # ...
+      #         cookies max_age: 300
+      #       end
+      #     end
+      #   end
       def initialize(options = {})
         @options         = options
         @default_options = { httponly: true }
-        @default_options.merge!(options) if options.is_a? Hash
+        @default_options.merge!(options) if options.is_a?(::Hash)
       end
 
       # Return if cookies are enabled
