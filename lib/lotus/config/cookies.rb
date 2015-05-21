@@ -21,6 +21,7 @@ module Lotus
       # Eg. alert(document.cookie) will fail
       #
       # @param options [Hash, TrueClass, FalseClass] optional cookies options
+      # @param configuration [Lotus::Configuration] the application configuration
       #
       # @since 0.3.0
       # @api private
@@ -47,9 +48,9 @@ module Lotus
       #       end
       #     end
       #   end
-      def initialize(options = {})
+      def initialize(configuration, options = {})
         @options         = options
-        @default_options = { httponly: true }
+        @default_options = { httponly: true, secure: configuration.ssl? }
         @default_options.merge!(options) if options.is_a?(::Hash)
       end
 
@@ -60,7 +61,7 @@ module Lotus
       # @since 0.3.0
       # @api private
       def enabled?
-        @options.respond_to?(:empty?) ? !@options.empty? : @options
+        @options.respond_to?(:empty?) ? !@options.empty? : !!@options
       end
     end
   end
