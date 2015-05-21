@@ -81,12 +81,24 @@ template=#{ template_engine }
       before do
         generate_model
       end
+      describe 'when model names are Underscored names.' do
+        it 'generates model' do
+          @root.join('lib/delivery/entities/test.rb').must_be                      :exist?
+          @root.join('lib/delivery/repositories/test_repository.rb').must_be       :exist?
+          @root.join('spec/delivery/entities/test_spec.rb').must_be                :exist?
+          @root.join('spec/delivery/repositories/test_repository_spec.rb').must_be :exist?
+        end
+      end
 
-      it 'generates model' do
-        @root.join('lib/delivery/entities/test.rb').must_be                      :exist?
-        @root.join('lib/delivery/repositories/test_repository.rb').must_be       :exist?
-        @root.join('spec/delivery/entities/test_spec.rb').must_be                :exist?
-        @root.join('spec/delivery/repositories/test_repository_spec.rb').must_be :exist?
+      describe 'when model names are CamelCase names.' do
+        let(:klass) { 'TestCase' }
+
+        it 'generates model' do
+          @root.join('lib/delivery/entities/test_case.rb').must_be                      :exist?
+          @root.join('lib/delivery/repositories/test_case_repository.rb').must_be       :exist?
+          @root.join('spec/delivery/entities/test_case_spec.rb').must_be                :exist?
+          @root.join('spec/delivery/repositories/test_case_repository_spec.rb').must_be :exist?
+        end
       end
     end
 

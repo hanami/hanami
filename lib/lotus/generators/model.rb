@@ -10,7 +10,7 @@ module Lotus
       def initialize(command)
         super
 
-        @model = app_name
+        @model = Utils::String.new(app_name).underscore
         @model_name = Utils::String.new(@model).classify
 
         cli.class.source_root(source)
