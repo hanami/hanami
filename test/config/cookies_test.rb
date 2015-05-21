@@ -13,12 +13,17 @@ describe Lotus::Config::Cookies do
       cookies = Lotus::Config::Cookies.new(true)
       cookies.enabled?.must_equal true
     end
+
+    it 'is true if options are passed' do
+      cookies = Lotus::Config::Cookies.new(max_age: 300)
+      cookies.enabled?.must_equal true
+    end
   end
 
   describe "#options" do
     it 'get options if they are passed' do
       options = { domain: 'lotusrb.org', path: '/controller', secure: true, httponly: true }
-      cookies = Lotus::Config::Cookies.new(true, options)
+      cookies = Lotus::Config::Cookies.new(options)
       cookies.default_options.must_equal options
     end
 
@@ -28,7 +33,7 @@ describe Lotus::Config::Cookies do
     end
 
     it 'disabling httponly' do
-      cookies = Lotus::Config::Cookies.new(true, {httponly: false})
+      cookies = Lotus::Config::Cookies.new(httponly: false)
       cookies.default_options.must_equal({ httponly: false })
     end
   end

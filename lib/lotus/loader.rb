@@ -3,7 +3,6 @@ require 'lotus/utils/kernel'
 require 'lotus/utils/string'
 require 'lotus/routes'
 require 'lotus/routing/default'
-require 'lotus/action/cookies'
 require 'lotus/action/session'
 require 'lotus/config/security'
 
@@ -56,6 +55,7 @@ module Lotus
           })
 
           if config.cookies.enabled?
+            require 'lotus/action/cookies'
             prepare { include Lotus::Action::Cookies }
             cookies config.cookies.default_options
           end
