@@ -217,7 +217,6 @@ describe Lotus::Commands::Generate do
     describe 'lib/generate/entities/post.rb' do
       it 'generates it' do
         content = @root.join('lib/generate/entities/post.rb').read
-        content.must_match %(require 'lotus/entity')
         content.must_match %(class Post)
         content.must_match %(  include Lotus::Entity)
         content.must_match %(end)
@@ -227,7 +226,6 @@ describe Lotus::Commands::Generate do
     describe 'lib/generate/repositories/post.rb' do
       it 'generates it' do
         content = @root.join('lib/generate/repositories/post_repository.rb').read
-        content.must_match %(require 'lotus/repository')
         content.must_match %(class PostRepository)
         content.must_match %(  include Lotus::Repository)
         content.must_match %(end)
