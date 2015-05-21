@@ -233,5 +233,11 @@ describe 'A full stack Lotus application' do
     end
   end
 
+  it 'test route helpers in actions' do
+    get '/redirected_routes'
+
+    response.status.must_equal 302
+    response.headers['Location'].must_equal '/action_legacy'
+  end
 end
 

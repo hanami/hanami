@@ -44,7 +44,7 @@ module Collaboration::Controllers::Books
       @book = BookRepository.find(params[:id])
       BookRepository.delete(@book)
 
-      redirect_to Collaboration::Routes.url(:books)
+      redirect_to routes.url(:books)
     end
   end
 
@@ -55,7 +55,7 @@ module Collaboration::Controllers::Books
       @book = Book.new(params)
       @book = BookRepository.create(@book)
 
-      redirect_to Collaboration::Routes.url(:book, id: @book.id)
+      redirect_to routes.url(:book, :id => @book.id)
     end
   end
 
@@ -67,7 +67,7 @@ module Collaboration::Controllers::Books
       @book.update(params)
       @book = BookRepository.update(@book)
 
-      redirect_to Collaboration::Routes.url(:book, id: @book.id)
+      redirect_to routes.url(:book, :id => @book.id)
     end
   end
 end
