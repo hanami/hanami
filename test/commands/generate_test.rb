@@ -195,6 +195,14 @@ describe Lotus::Commands::Generate do
         -> { capture_io { command.start } }.must_raise SystemExit
       end
     end
+
+    describe 'without action name' do
+    let(:target_name) { 'users' }
+
+      it 'raises error' do
+        -> { capture_io { command.start } }.must_raise SystemExit
+      end
+    end
   end
 
   describe 'model' do
@@ -209,7 +217,6 @@ describe Lotus::Commands::Generate do
     describe 'lib/generate/entities/post.rb' do
       it 'generates it' do
         content = @root.join('lib/generate/entities/post.rb').read
-        content.must_match %(require 'lotus/entity')
         content.must_match %(class Post)
         content.must_match %(  include Lotus::Entity)
         content.must_match %(end)
@@ -219,7 +226,6 @@ describe Lotus::Commands::Generate do
     describe 'lib/generate/repositories/post.rb' do
       it 'generates it' do
         content = @root.join('lib/generate/repositories/post_repository.rb').read
-        content.must_match %(require 'lotus/repository')
         content.must_match %(class PostRepository)
         content.must_match %(  include Lotus::Repository)
         content.must_match %(end)
@@ -242,7 +248,7 @@ describe Lotus::Commands::Generate do
         it 'generates it' do
           content = @root.join('spec/generate/entities/post_spec.rb').read
           content.must_match %(require 'spec_helper')
-          content.must_match %(describe Post do)
+          content.must_match %(RSpec.describe Post do)
           content.must_match %(end)
         end
       end
@@ -264,7 +270,7 @@ describe Lotus::Commands::Generate do
         it 'generates it' do
           content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
           content.must_match %(require 'spec_helper')
-          content.must_match %(describe PostRepository do)
+          content.must_match %(RSpec.describe PostRepository do)
           content.must_match %(end)
         end
       end

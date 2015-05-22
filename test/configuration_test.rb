@@ -394,7 +394,8 @@ describe Lotus::Configuration do
   describe '#cookies' do
     describe "when not previously set" do
       it "is false" do
-        @configuration.cookies.enabled?.must_equal false
+        cookies = @configuration.cookies
+        cookies.enabled?.must_equal false
       end
     end
 

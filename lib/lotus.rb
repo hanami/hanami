@@ -10,6 +10,17 @@ require 'lotus/environment'
 #
 # @see http://lotusrb.org
 module Lotus
+  # Return root of the project (top level directory).
+  #
+  # @return [Pathname] root path
+  #
+  # @since 0.3.2
+  #
+  # @example
+  #   Lotus.root # => #<Pathname:/Users/luca/Code/bookshelf>
+  def self.root
+    environment.root
+  end
 
   # Return the current environment
   #
@@ -22,7 +33,7 @@ module Lotus
   # @example
   #   Lotus.env => "development"
   def self.env
-    Environment.new.environment
+    environment.environment
   end
 
   # Check to see if specified environment(s) matches the current environment.
@@ -50,6 +61,16 @@ module Lotus
   #   Lotus.env?(:development, :test)   # => true
   #   Lotus.env?(:production, :staging) # => false
   def self.env?(*names)
-    Environment.new.environment?(*names)
+    environment.environment?(*names)
+  end
+
+  # Return environment
+  #
+  # @return [Lotus::Environment] environment
+  #
+  # @api private
+  # @since 0.3.2
+  def self.environment
+    Environment.new
   end
 end

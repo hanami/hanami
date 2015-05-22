@@ -568,8 +568,8 @@ describe Lotus::Commands::New do
               content = @root.join('spec/spec_helper.rb').read
               content.must_match %(ENV['LOTUS_ENV'] ||= 'test')
               content.must_match %(require_relative '../config/environment')
+              content.must_match %(Lotus::Application.preload!)
               content.must_match %(RSpec.configure do |config|)
-              content.must_match %(config.before(:suite) { Lotus::Application.preload! })
               content.must_match %(config.filter_run :focus)
               content.must_match %(config.run_all_when_everything_filtered = true)
 

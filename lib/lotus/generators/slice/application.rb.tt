@@ -63,7 +63,9 @@ module <%= config[:classified_slice_name] %>
       #                      See #scheme and #ssl?
       #          :httponly - Prevent JavaScript access (Boolean - true by default)
       #
-      # cookies true, {}
+      # cookies true
+      # or
+      # cookies max_age: 300
 
       # Enable sessions
       # Argument: Symbol the Rack session adapter

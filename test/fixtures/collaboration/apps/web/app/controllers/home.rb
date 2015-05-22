@@ -18,7 +18,7 @@ module Collaboration::Controllers::Home
     include Collaboration::Action
 
     def call(params)
-      redirect_to Collaboration::Routes.url(:root)
+      redirect_to routes.url(:root)
     end
   end
 end

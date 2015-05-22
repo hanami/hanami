@@ -45,4 +45,18 @@ describe 'Sessions' do
     response.status.must_equal 200
     response.body.must_equal ''
   end
+
+  it 'sends file' do
+    get '/download'
+
+    response.status.must_equal 200
+    response.body.wont_be :empty?
+  end
+
+  it 'returns empty body for HEAD requests (with file send)' do
+    head '/download'
+
+    response.status.must_equal 200
+    response.body.must_equal ''
+  end
 end

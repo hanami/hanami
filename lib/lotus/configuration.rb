@@ -465,10 +465,9 @@ module Lotus
     # an argument, it will set the corresponding instance variable. When
     # called without, it will return the already set value, or the default.
     #
-    # @overload cookies(value, options)
+    # @overload cookies(options)
     #   Sets the given value with their options.
-    #   @param value [TrueClass, FalseClass]
-    #   @param options [Hash]
+    #   @param options [Hash, TrueClass, FalseClass]
     #
     # @overload cookies
     #   Gets the value.
@@ -483,7 +482,7 @@ module Lotus
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=false, @default_options={:httponly=>true}>
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @options={}, @default_options={:httponly=>true, :secure=>false}>
     #
     # @example Setting the value
     #   require 'lotus'
@@ -491,34 +490,18 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         cookies true, { domain: 'lotusrb.org' }
+    #         cookies domain: 'lotusrb.org'
     #       end
     #     end
     #   end
     #
     #   Bookshelf::Application.configuration.cookies
-    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=true, @default_options={:domain=>'lotusrb.org', :httponly=>true}>
-    #
-    # @example Setting a new value after one is set.
-    #   require 'lotus'
-    #
-    #   module Bookshelf
-    #     class Application < Lotus::Application
-    #       configure do
-    #         cookies false
-    #         cookies true
-    #       end
-    #     end
-    #   end
-    #
-    #   Bookshelf::Application.configuration.cookies
-    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @enabled=true, @default_options={:httponly=>true}>
-    #
-    def cookies(value = nil, options = {})
-      if value.nil?
-        @cookies ||= Config::Cookies.new
+    #     # => #<Lotus::Config::Cookies:0x0000000329f880 @options={:domain=>'lotusrb.org'}, @default_options={:domain=>'lotusrb.org', :httponly=>true, :secure=>false}>
+    def cookies(options = nil)
+      if options.nil?
+        @cookies ||= Config::Cookies.new(self, options)
       else
-        @cookies = Config::Cookies.new(value, options)
+        @cookies = Config::Cookies.new(self, options)
       end
     end
 

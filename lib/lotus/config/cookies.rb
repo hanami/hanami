@@ -20,17 +20,38 @@ module Lotus
       # Prevent attackers to steal cookies via JavaScript,
       # Eg. alert(document.cookie) will fail
       #
-      # @param enabled [TrueClass, FalseClass] enable cookies
-      # @param options [Hash] optional cookies options
+      # @param options [Hash, TrueClass, FalseClass] optional cookies options
+      # @param configuration [Lotus::Configuration] the application configuration
       #
       # @since 0.3.0
       # @api private
       #
       # @see https://github.com/rack/rack/blob/master/lib/rack/utils.rb #set_cookie_header!
       # @see https://www.owasp.org/index.php/HttpOnly
-      def initialize(enabled = false, options = {})
-        @enabled         = enabled
-        @default_options = { httponly: true }.merge(options)
+      #
+      # @example Enable cookies with boolean
+      #   module Web
+      #     class Application < Lotus::Application
+      #       configure do
+      #         # ...
+      #         cookies true
+      #       end
+      #     end
+      #   end
+      #
+      # @example Enable cookies with options
+      #   module Web
+      #     class Application < Lotus::Application
+      #       configure do
+      #         # ...
+      #         cookies max_age: 300
+      #       end
+      #     end
+      #   end
+      def initialize(configuration, options = {})
+        @options         = options
+        @default_options = { httponly: true, secure: configuration.ssl? }
+        @default_options.merge!(options) if options.is_a?(::Hash)
       end
 
       # Return if cookies are enabled
@@ -40,7 +61,7 @@ module Lotus
       # @since 0.3.0
       # @api private
       def enabled?
-        !!@enabled
+        @options.respond_to?(:empty?) ? !@options.empty? : !!@options
       end
     end
   end

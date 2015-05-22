@@ -34,8 +34,16 @@ template=#{ template_engine }
       `bundle exec lotus generate action #{ app_name } dashboard#index`
     end
 
+    def generate_action_with_camlcase
+      `bundle exec lotus generate action #{ app_name } AncientBooks#ToggleVisibility`
+    end
+
     def generate_action_without_view
       `bundle exec lotus generate action #{ app_name } dashboard#foo --skip-view`
+    end
+
+    def generate_action_with_camlcase_without_view
+      `bundle exec lotus generate action #{ app_name } DashBoard#TestCase --skip-view`
     end
 
     def generate_model
@@ -61,32 +69,70 @@ template=#{ template_engine }
       chdir_to_root
     end
 
-    it 'generates an action' do
-      @root.join('apps/web/controllers/dashboard/index.rb').must_be      :exist?
-      @root.join('apps/web/views/dashboard/index.rb').must_be            :exist?
-      @root.join('apps/web/templates/dashboard/index.html.erb').must_be  :exist?
-      @root.join('spec/web/controllers/dashboard/index_spec.rb').must_be :exist?
-      @root.join('spec/web/views/dashboard/index_spec.rb').must_be       :exist?
-    end
+    describe 'when application generates new action' do
+      describe 'when controllers, action name are Underscored names.' do
+        it 'generates an action' do
+          @root.join('apps/web/controllers/dashboard/index.rb').must_be      :exist?
+          @root.join('apps/web/views/dashboard/index.rb').must_be            :exist?
+          @root.join('apps/web/templates/dashboard/index.html.erb').must_be  :exist?
+          @root.join('spec/web/controllers/dashboard/index_spec.rb').must_be :exist?
+          @root.join('spec/web/views/dashboard/index_spec.rb').must_be       :exist?
+        end
 
-    it 'generates an action without view' do
-      @root.join('apps/web/controllers/dashboard/foo.rb').must_be      :exist?
-      @root.join('apps/web/views/dashboard/foo.rb').wont_be            :exist?
-      @root.join('apps/web/templates/dashboard/foo.html.erb').wont_be  :exist?
-      @root.join('spec/web/controllers/dashboard/foo_spec.rb').must_be :exist?
-      @root.join('spec/web/views/dashboard/foo_spec.rb').wont_be       :exist?
+        it 'generates an action without view' do
+          @root.join('apps/web/controllers/dashboard/foo.rb').must_be      :exist?
+          @root.join('apps/web/views/dashboard/foo.rb').wont_be            :exist?
+          @root.join('apps/web/templates/dashboard/foo.html.erb').wont_be  :exist?
+          @root.join('spec/web/controllers/dashboard/foo_spec.rb').must_be :exist?
+          @root.join('spec/web/views/dashboard/foo_spec.rb').wont_be       :exist?
+        end
+      end
+
+      describe 'when controllers, action name are CamelCase names.' do
+        before do
+          generate_action_with_camlcase
+          generate_action_with_camlcase_without_view
+        end
+        it 'generates an action' do
+          @root.join('apps/web/controllers/ancient_books/toggle_visibility.rb').must_be      :exist?
+          @root.join('apps/web/views/ancient_books/toggle_visibility.rb').must_be            :exist?
+          @root.join('apps/web/templates/ancient_books/toggle_visibility.html.erb').must_be  :exist?
+          @root.join('spec/web/controllers/ancient_books/toggle_visibility_spec.rb').must_be :exist?
+          @root.join('spec/web/views/ancient_books/toggle_visibility_spec.rb').must_be       :exist?
+        end
+
+        it 'generates an action without view' do
+          @root.join('apps/web/controllers/dash_board/test_case.rb').must_be      :exist?
+          @root.join('apps/web/views/dash_board/test_case.rb').wont_be            :exist?
+          @root.join('apps/web/templates/dash_board/test_case.html.erb').wont_be  :exist?
+          @root.join('spec/web/controllers/dash_board/test_case_spec.rb').must_be :exist?
+          @root.join('spec/web/views/dash_board/test_case_spec.rb').wont_be       :exist?
+        end
+      end
     end
 
     describe 'when application generates new model' do
       before do
         generate_model
       end
+      describe 'when model names are Underscored names.' do
+        it 'generates model' do
+          @root.join('lib/delivery/entities/test.rb').must_be                      :exist?
+          @root.join('lib/delivery/repositories/test_repository.rb').must_be       :exist?
+          @root.join('spec/delivery/entities/test_spec.rb').must_be                :exist?
+          @root.join('spec/delivery/repositories/test_repository_spec.rb').must_be :exist?
+        end
+      end
 
-      it 'generates model' do
-        @root.join('lib/delivery/entities/test.rb').must_be                      :exist?
-        @root.join('lib/delivery/repositories/test_repository.rb').must_be       :exist?
-        @root.join('spec/delivery/entities/test_spec.rb').must_be                :exist?
-        @root.join('spec/delivery/repositories/test_repository_spec.rb').must_be :exist?
+      describe 'when model names are CamelCase names.' do
+        let(:klass) { 'TestCase' }
+
+        it 'generates model' do
+          @root.join('lib/delivery/entities/test_case.rb').must_be                      :exist?
+          @root.join('lib/delivery/repositories/test_case_repository.rb').must_be       :exist?
+          @root.join('spec/delivery/entities/test_case_spec.rb').must_be                :exist?
+          @root.join('spec/delivery/repositories/test_case_repository_spec.rb').must_be :exist?
+        end
       end
     end
 

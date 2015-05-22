@@ -3,9 +3,9 @@ require 'lotus/utils/kernel'
 require 'lotus/utils/string'
 require 'lotus/routes'
 require 'lotus/routing/default'
-require 'lotus/action/cookies'
 require 'lotus/action/session'
 require 'lotus/config/security'
+require 'lotus/action/routing_helpers'
 
 module Lotus
   # Load an application
@@ -56,10 +56,12 @@ module Lotus
           })
 
           if config.cookies.enabled?
+            require 'lotus/action/cookies'
             prepare { include Lotus::Action::Cookies }
             cookies config.cookies.default_options
           end
           prepare { include Lotus::Action::Session } if config.sessions.enabled?
+          prepare { include Lotus::Action::RoutingHelpers }
 
           config.controller.__apply(self)
         end

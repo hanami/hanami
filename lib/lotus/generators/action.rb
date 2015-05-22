@@ -27,7 +27,8 @@ module Lotus
       def initialize(command)
         super
 
-        @controller, @action = name.split(ACTION_SEPARATOR)
+        @name = Utils::String.new(name).underscore
+        @controller, @action = @name.split(ACTION_SEPARATOR)
         @controller_name     = Utils::String.new(@controller).classify
         @action_name         = Utils::String.new(@action).classify
 
@@ -38,6 +39,7 @@ module Lotus
       # @api private
       def start
         assert_existing_app!
+        assert_action!
 
         opts = {
           app:           app,
@@ -88,6 +90,14 @@ module Lotus
         end
       end
 
+      # @since 0.3.2
+      # @api private
+      def assert_action!
+        if @action.nil?
+          raise Lotus::Commands::Generate::Error.new("Unknown action, please add action's name with this syntax controller_name#action_name")
+        end
+      end
+
       # @since 0.3.0
       # @api private
       def generate_route
@@ -98,7 +108,7 @@ module Lotus
 
         # Insert at the top of the file
         cli.insert_into_file _routes_path, before: /\A(.*)/ do
-          "get '/#{ @controller }', to: '#{ name }'\n"
+          "get '/#{ @controller }', to: '#{ @name }'\n"
         end
       end
 
