@@ -248,7 +248,7 @@ describe Lotus::Commands::Generate do
         it 'generates it' do
           content = @root.join('spec/generate/entities/post_spec.rb').read
           content.must_match %(require 'spec_helper')
-          content.must_match %(describe Post do)
+          content.must_match %(RSpec.describe Post do)
           content.must_match %(end)
         end
       end
@@ -270,7 +270,7 @@ describe Lotus::Commands::Generate do
         it 'generates it' do
           content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
           content.must_match %(require 'spec_helper')
-          content.must_match %(describe PostRepository do)
+          content.must_match %(RSpec.describe PostRepository do)
           content.must_match %(end)
         end
       end
