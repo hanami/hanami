@@ -5,7 +5,6 @@ A complete web framework for Ruby
 ### Added
 - [Alfonso Uceda Pompa] Automatic secure cookies if the current connection is using HTTPS.
 - [Alfonso Uceda Pompa] Routing helpers for actions (via `#routes`).
-- [Alfonso Uceda Pompa] Rake task `:environment`
 - [My Mai] Introduced `Lotus.root`. It returns the top level directory of the project.
 
 ### Fixed
