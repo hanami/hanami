@@ -14,7 +14,7 @@ module Lotus
   #
   # @return [Pathname] root path
   #
-  # @since x.x.x
+  # @since 0.3.2
   #
   # @example
   #   Lotus.root # => #<Pathname:/Users/luca/Code/bookshelf>
@@ -69,7 +69,7 @@ module Lotus
   # @return [Lotus::Environment] environment
   #
   # @api private
-  # @since x.x.x
+  # @since 0.3.2
   def self.environment
     Environment.new
   end

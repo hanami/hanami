@@ -90,7 +90,7 @@ module Lotus
         end
       end
 
-      # @since x.x.x
+      # @since 0.3.2
       # @api private
       def assert_action!
         if @action.nil?

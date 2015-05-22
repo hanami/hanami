@@ -1,6 +1,20 @@
 # Lotus
 A complete web framework for Ruby
 
+## v0.3.2 - 2015-05-22
+### Added
+- [Alfonso Uceda Pompa] Automatic secure cookies if the current connection is using HTTPS.
+- [Alfonso Uceda Pompa] Routing helpers for actions (via `#routes`).
+- [Alfonso Uceda Pompa] Rake task `:environment`
+- [My Mai] Introduced `Lotus.root`. It returns the top level directory of the project.
+
+### Fixed
+- [Ngọc Nguyễn] Model generator should use new RSpec syntax.
+- [Ngọc Nguyễn] Model generator must respect file name conventions for Ruby.
+- [Ngọc Nguyễn] Action generator must respect file name conventions for Ruby.
+- [Alfonso Uceda Pompa] Action generator must raise error if name isn't provided.
+- [Luca Guidi] Container generator for RSpec let the application to be preloaded (discard `config.before(:suite)`)
+
 ## v0.3.1 - 2015-05-15
 ### Added
 - [Hiếu Nguyễn] Introduced application generator (eg. `bundle exec lotus generate app admin` creates `apps/admin`).

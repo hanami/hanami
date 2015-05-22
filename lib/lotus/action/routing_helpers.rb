@@ -9,7 +9,7 @@ module Lotus
     #
     # Included by default in every controller.
     #
-    # @since x.x.x
+    # @since 0.3.2
     #
     # @example Usage in controller
     #   require 'lotus'
