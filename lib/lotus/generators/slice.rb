@@ -72,12 +72,12 @@ module Lotus
         #
         ['development', 'test'].each do |environment|
           # Add WEB_DATABASE_URL="file:///db/web_development"
-          cli.append_to_file target.join("config/.env.#{ environment }") do
+          cli.append_to_file target.join(".env.#{ environment }") do
             %(#{ opts[:upcase_slice_name] }_DATABASE_URL="file:///db/#{ opts[:slice_name] }_#{ environment }"\n)
           end
 
           # Add WEB_SESSIONS_SECRET="abc123" (random hex)
-          cli.append_to_file target.join("config/.env.#{ environment }") do
+          cli.append_to_file target.join(".env.#{ environment }") do
             %(#{ opts[:upcase_slice_name] }_SESSIONS_SECRET="#{ SecureRandom.hex(32) }"\n)
           end
         end

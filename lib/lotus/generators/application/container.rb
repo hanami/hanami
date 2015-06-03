@@ -30,15 +30,15 @@ module Lotus
           }
 
           templates = {
-            'lotusrc.tt'                 => '.lotusrc',
-            'Gemfile.tt'                 => 'Gemfile',
-            'config.ru.tt'               => 'config.ru',
-            'config/environment.rb.tt'   => 'config/environment.rb',
-            'config/.env.tt'             => 'config/.env',
-            'config/.env.development.tt' => 'config/.env.development',
-            'config/.env.test.tt'        => 'config/.env.test',
-            'lib/app_name.rb.tt'         => "lib/#{ app_name }.rb",
-            'lib/config/mapping.rb.tt'   => 'lib/config/mapping.rb',
+            'lotusrc.tt'               => '.lotusrc',
+            '.env.tt'                  => '.env',
+            '.env.development.tt'      => '.env.development',
+            '.env.test.tt'             => '.env.test',
+            'Gemfile.tt'               => 'Gemfile',
+            'config.ru.tt'             => 'config.ru',
+            'config/environment.rb.tt' => 'config/environment.rb',
+            'lib/app_name.rb.tt'       => "lib/#{ app_name }.rb",
+            'lib/config/mapping.rb.tt' => 'lib/config/mapping.rb',
           }
 
           empty_directories = [
