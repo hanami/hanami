@@ -15,8 +15,12 @@ describe Lotus::Environment do
   describe '#initialize' do
     describe 'env vars' do
       before do
+        Dir.chdir($pwd + '/test/fixtures')
+        @env = Lotus::Environment.new
+      end
+
+      after do
         Dir.chdir($pwd)
-        @env = Lotus::Environment.new(config: 'test/fixtures/config')
       end
 
       it 'sets env vars from .env' do
@@ -30,6 +34,8 @@ describe Lotus::Environment do
 
       describe 'when the .env is missing' do
         before do
+          Dir.chdir($pwd)
+
           ENV['FOO'] = nil
           ENV['BAZ'] = nil
 
@@ -42,13 +48,13 @@ describe Lotus::Environment do
         end
       end
 
-      describe 'when the environment .env is missing' do
+      describe 'when the .env for the current environment is missing' do
         before do
           ENV['LOTUS_ENV'] = 'test'
           ENV['BAZ'] = nil
           ENV['WAT'] = nil
 
-          @env = Lotus::Environment.new(config: 'test/fixtures/config')
+          @env = Lotus::Environment.new
         end
 
         it "doesn't set env vars" do

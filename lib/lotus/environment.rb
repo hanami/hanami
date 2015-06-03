@@ -121,17 +121,17 @@ module Lotus
     #
     # @example Define ENV variables from .env
     #
-    #   # % tree config/
-    #   #   config
+    #   # % tree .
+    #   #   .
+    #   #   # ...
     #   #   ├── .env
-    #   #   ├── .env.development
-    #   #   └── environment.rb
+    #   #   └── .env.development
     #
-    #   # % cat config/.env
+    #   # % cat .env
     #   #   FOO="bar"
     #   #   XYZ="yes"
     #
-    #   # % cat config/.env.development
+    #   # % cat .env.development
     #   #   FOO="ok"
     #
     #   require 'lotus/environment'
@@ -373,8 +373,8 @@ module Lotus
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      Dotenv.load     config.join(DEFAULT_DOTENV)
-      Dotenv.overload config.join(DEFAULT_DOTENV_ENV % environment)
+      Dotenv.load     root.join(DEFAULT_DOTENV)
+      Dotenv.overload root.join(DEFAULT_DOTENV_ENV % environment)
     end
 
     # @since 0.1.0

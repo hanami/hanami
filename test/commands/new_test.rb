@@ -219,16 +219,16 @@ describe Lotus::Commands::New do
       end
     end
 
-    describe 'config/.env' do
+    describe '.env' do
       it 'generates it' do
-        content = @root.join('config/.env').read
+        content = @root.join('.env').read
         content.must_match %(# Define ENV variables)
       end
     end
 
-    describe 'config/.env.development' do
+    describe '.env.development' do
       it 'generates it' do
-        content = @root.join('config/.env.development').read
+        content = @root.join('.env.development').read
         content.must_match %(# Define ENV variables for development environment)
         content.must_match %(CHIRP_DATABASE_URL="file:///db/chirp_development")
       end
@@ -237,7 +237,7 @@ describe Lotus::Commands::New do
         let(:app_name) { "chirp-two" }
 
         it "sanitizes application names for env variables" do
-          content = @root.join('config/.env.development').read
+          content = @root.join('.env.development').read
           content.must_match %(CHIRP_TWO_DATABASE_URL="file:///db/chirp-two_development")
         end
       end
@@ -245,16 +245,18 @@ describe Lotus::Commands::New do
       describe 'database option' do
         describe 'with mysql' do
           let(:opts) { container_options.merge(database: 'mysql') }
+
           it 'generates db config for mysql' do
-            content = @root.join('config/.env.development').read
+            content = @root.join('.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="mysql://localhost/chirp_development")
           end
         end
 
         describe 'with mysql2' do
           let(:opts) { container_options.merge(database: 'mysql2') }
+
           it 'generates db config for mysql2' do
-            content = @root.join('config/.env.development').read
+            content = @root.join('.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="mysql2://localhost/chirp_development")
           end
         end
@@ -263,7 +265,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'postgresql') }
 
           it 'generates db config for postgresql' do
-            content = @root.join('config/.env.development').read
+            content = @root.join('.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_development")
           end
         end
@@ -272,7 +274,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'postgres') }
 
           it 'generates db config for postgres' do
-            content = @root.join('config/.env.development').read
+            content = @root.join('.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_development")
           end
         end
@@ -281,7 +283,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'sqlite') }
 
           it 'generates db config for sqlite' do
-            content = @root.join('config/.env.development').read
+            content = @root.join('.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_development")
           end
 
@@ -289,7 +291,7 @@ describe Lotus::Commands::New do
             let(:app_name) { "chirp'two" }
 
             it 'escapes the database url' do
-              content = @root.join('config/.env.development').read
+              content = @root.join('.env.development').read
               content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_development")
             end
           end
@@ -298,14 +300,15 @@ describe Lotus::Commands::New do
         describe 'with sqlite3' do
           let(:opts) { container_options.merge(database: 'sqlite3') }
           it 'generates db config for sqlite3' do
-            content = @root.join('config/.env.development').read
+            content = @root.join('.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_development")
           end
 
           describe 'with non-simple application name' do
             let(:app_name) { "chirp'two" }
+
             it 'escapes the database url' do
-              content = @root.join('config/.env.development').read
+              content = @root.join('.env.development').read
               content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_development")
             end
           end
@@ -313,17 +316,18 @@ describe Lotus::Commands::New do
 
         describe 'with memory' do
           let(:opts) { container_options.merge(database: 'memory') }
+
           it 'generates db config for memory' do
-            content = @root.join('config/.env.development').read
+            content = @root.join('.env.development').read
             content.must_match %(CHIRP_DATABASE_URL="memory://localhost/chirp_development")
           end
         end
       end
     end
 
-    describe 'config/.env.test' do
+    describe '.env.test' do
       it 'generates it' do
-        content = @root.join('config/.env.test').read
+        content = @root.join('.env.test').read
         content.must_match %(# Define ENV variables for test environment)
         content.must_match %(CHIRP_DATABASE_URL="file:///db/chirp_test")
       end
@@ -332,7 +336,7 @@ describe Lotus::Commands::New do
         let(:app_name) { "chirp-two" }
 
         it "sanitizes application names for env variables" do
-          content = @root.join('config/.env.test').read
+          content = @root.join('.env.test').read
           content.must_match %(CHIRP_TWO_DATABASE_URL="file:///db/chirp-two_test")
         end
       end
@@ -341,7 +345,7 @@ describe Lotus::Commands::New do
         describe 'with mysql' do
           let(:opts) { container_options.merge(database: 'mysql') }
           it 'generates db config for mysql' do
-            content = @root.join('config/.env.test').read
+            content = @root.join('.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="mysql://localhost/chirp_test")
           end
         end
@@ -349,7 +353,7 @@ describe Lotus::Commands::New do
         describe 'with mysql2' do
           let(:opts) { container_options.merge(database: 'mysql2') }
           it 'generates db config for mysql2' do
-            content = @root.join('config/.env.test').read
+            content = @root.join('.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="mysql2://localhost/chirp_test")
           end
         end
@@ -358,7 +362,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'postgresql') }
 
           it 'generates db config for postgresql' do
-            content = @root.join('config/.env.test').read
+            content = @root.join('.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_test")
           end
         end
@@ -367,7 +371,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'postgres') }
 
           it 'generates db config for postgres' do
-            content = @root.join('config/.env.test').read
+            content = @root.join('.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="postgres://localhost/chirp_test")
           end
         end
@@ -376,7 +380,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'sqlite') }
 
           it 'generates db config for sqlite' do
-            content = @root.join('config/.env.test').read
+            content = @root.join('.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_test")
           end
 
@@ -384,7 +388,7 @@ describe Lotus::Commands::New do
             let(:app_name) { "chirp'two" }
 
             it 'escapes the database url' do
-              content = @root.join('config/.env.test').read
+              content = @root.join('.env.test').read
               content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_test")
             end
           end
@@ -393,14 +397,14 @@ describe Lotus::Commands::New do
         describe 'with sqlite3' do
           let(:opts) { container_options.merge(database: 'sqlite3') }
           it 'generates db config for sqlite3' do
-            content = @root.join('config/.env.test').read
+            content = @root.join('.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_test")
           end
 
           describe 'with non-simple application name' do
             let(:app_name) { "chirp'two" }
             it 'escapes the database url' do
-              content = @root.join('config/.env.test').read
+              content = @root.join('.env.test').read
               content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_test")
             end
           end
@@ -409,7 +413,7 @@ describe Lotus::Commands::New do
         describe 'with memory' do
           let(:opts) { container_options.merge(database: 'memory') }
           it 'generates db config for memory' do
-            content = @root.join('config/.env.test').read
+            content = @root.join('.env.test').read
             content.must_match %(CHIRP_DATABASE_URL="memory://localhost/chirp_test")
           end
         end
@@ -655,17 +659,17 @@ describe Lotus::Commands::New do
       end
     end
 
-    describe 'config/.env.development' do
+    describe '.env.development' do
       it 'patches the file to reference slice env vars' do
-        content = @root.join('config/.env.development').read
+        content = @root.join('.env.development').read
         content.must_match %(WEB_DATABASE_URL="file:///db/web_development")
         content.must_match %r{WEB_SESSIONS_SECRET="[\w]{64}"}
       end
     end
 
-    describe 'config/.env.test' do
+    describe '.env.test' do
       it 'patches the file to reference slice env vars' do
-        content = @root.join('config/.env.test').read
+        content = @root.join('.env.test').read
         content.must_match %(WEB_DATABASE_URL="file:///db/web_test")
         content.must_match %r{WEB_SESSIONS_SECRET="[\w]{64}"}
       end
@@ -856,16 +860,16 @@ describe Lotus::Commands::New do
         end
       end
 
-      describe 'config/.env.development' do
+      describe '.env.development' do
         it 'generates it' do
-          content = @root.join('config/.env.development').read
+          content = @root.join('.env.development').read
           content.must_match %(NEW_DATABASE_URL="file:///db/new_development")
         end
       end
 
-      describe 'config/.env.test' do
+      describe '.env.test' do
         it 'generates it' do
-          content = @root.join('config/.env.test').read
+          content = @root.join('.env.test').read
           content.must_match %(NEW_DATABASE_URL="file:///db/new_test")
         end
       end

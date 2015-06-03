@@ -282,8 +282,8 @@ describe Lotus::Commands::Generate do
     let(:target_name) { '' }
     let(:app_name)    { 'admin' }
     let(:environment_config_path) { @root.join('config/environment.rb') }
-    let(:environment_development_path) { @root.join('config/.env.development') }
-    let(:environment_test_path) { @root.join('config/.env.test') }
+    let(:environment_development_path) { @root.join('.env.development') }
+    let(:environment_test_path) { @root.join('.env.test') }
 
     before do
       @root.join('config').mkpath
