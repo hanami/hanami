@@ -30,6 +30,15 @@ describe Lotus::Lotusrc do
         options[:test].must_equal 'minitest'
         options[:template].must_equal 'erb'
       end
+
+      # Bug: https://github.com/lotus/lotus/issues/243
+      it "doesn't pollute ENV" do
+        @lotusrc.read
+
+        ENV.key?('architecture').must_equal false
+        ENV.key?('test').must_equal false
+        ENV.key?('template').must_equal false
+      end
     end
 
     describe "file doesn't exist" do
