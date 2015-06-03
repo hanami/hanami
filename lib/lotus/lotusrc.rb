@@ -1,5 +1,5 @@
 require 'pathname'
-require 'dotenv'
+require 'dotenv/parser'
 
 module Lotus
   # Create and read the .lotusrc file in the root of the application
@@ -93,8 +93,9 @@ module Lotus
     #    # => { architecture: 'application', test: 'rspec', template: 'slim' }
     def read
       if exists?
-        lotusrc_options = Dotenv.load path_file
-        Utils::Hash.new(lotusrc_options).symbolize!
+        Utils::Hash.new(
+          Dotenv::Parser.call(content)
+        ).symbolize!
       end
     end
 
@@ -141,6 +142,10 @@ module Lotus
     # @see Lotus::Lotusrc::FILE_NAME
     def path_file
       @root.join FILE_NAME
+    end
+
+    def content
+      path_file.read
     end
   end
 end
