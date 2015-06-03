@@ -3,6 +3,13 @@
 
 ## Features
 
+## v0.3.2 - 2015-05-22
+
+- Automatic secure cookies
+- Routing helpers for actions
+- Send files from actions
+- `Lotus.root` returns top level directory of the project.
+
 ## v0.3.1 - 2015-05-15
 
 - CLI: `lotus generate app admin` creates a new application (`apps/admin`).
