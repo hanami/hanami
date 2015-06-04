@@ -181,8 +181,10 @@ describe 'A full stack Lotus application' do
 
       response.status.must_equal 200
 
-      response.body.must_include "<form accept-charset=\"UTF-8\" action=\"/books/#{@book.id}\" method=\"patch\">"
-      response.body.must_include '<input name="book[name]" placeholder="Name" type="text" value="The path to success" />'
+      response.body.must_include %(<form action="/books/#{ @book.id }" method="POST" accept-charset="utf-8" id="book-form">)
+      response.body.must_include %(<input type="hidden" name="_method" value="PATCH">)
+      response.body.must_include %(<input type="hidden" name="_csrf_token" value="t0k3n">)
+      response.body.must_include %(<input type="text" name="book[name]" id="book-name" value="The path to success" placeholder="Name">)
     end
 
     it 'handles new action' do
@@ -190,12 +192,13 @@ describe 'A full stack Lotus application' do
 
       response.status.must_equal 200
 
-      response.body.must_include '<form accept-charset="UTF-8" action="/books" method="post">'
-      response.body.must_include '<input name="book[name]" placeholder="Name" type="text" value="" />'
+      response.body.must_include %(<form action="/books" method="POST" accept-charset="utf-8" id="book-form">)
+      response.body.must_include %(<input type="hidden" name="_csrf_token" value="t0k3n">)
+      response.body.must_include %(<input type="text" name="book[name]" id="book-name" value="" placeholder="Name">)
     end
 
     it 'handles update action' do
-      patch "/books/#{@book.id}", name: 'The path to failure'
+      patch "/books/#{@book.id}", book: {name: 'The path to enlightenment'}, '_csrf_token' => 't0k3n'
 
       response.status.must_equal 302
       response.body.must_equal "Found"
@@ -204,11 +207,11 @@ describe 'A full stack Lotus application' do
 
       response.status.must_equal 200
       response.body.must_include "<p id=\"book_id\">#{@book.id}</p>"
-      response.body.must_include '<p id="book_name">The path to failure</p>'
+      response.body.must_include '<p id="book_name">The path to enlightenment</p>'
     end
 
     it 'handles create action' do
-      post "/books", name: 'The art of Zen'
+      post "/books", book: {name: 'The art of Zen'}, '_csrf_token' => 't0k3n'
 
       response.status.must_equal 302
       response.body.must_equal "Found"
@@ -219,9 +222,8 @@ describe 'A full stack Lotus application' do
       response.body.must_include '<p id="book_name">The art of Zen</p>'
     end
 
-
     it 'handles destroy action' do
-      delete "/books/#{@book.id}"
+      delete "/books/#{@book.id}", '_csrf_token' => 't0k3n'
 
       response.status.must_equal 302
       response.body.must_equal "Found"
@@ -230,6 +232,29 @@ describe 'A full stack Lotus application' do
 
       response.status.must_equal 200
       response.body.must_include 'There are 0 books'
+    end
+  end
+
+  describe "CSRF Protection" do
+    it "handles create action" do
+      post "/authors", name: "L"
+
+      response.status.must_equal 500
+      response.body.must_match "Internal Server Error"
+    end
+
+    it "handles update action" do
+      patch "/authors/15", name: "MG"
+
+      response.status.must_equal 500
+      response.body.must_match "Internal Server Error"
+    end
+
+    it "handles destroy action" do
+      delete "/authors/99"
+
+      response.status.must_equal 500
+      response.body.must_match "Internal Server Error"
     end
   end
 

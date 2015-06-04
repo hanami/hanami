@@ -10,3 +10,4 @@ get '/redirected_routes',  to: 'redirected_routes#index'
 redirect '/legacy',   to: '/'
 
 resources :books
+resources :authors, only: [:create, :update, :destroy]

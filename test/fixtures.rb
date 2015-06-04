@@ -72,3 +72,85 @@ class TinyApp < Lotus::Application
     end
   end
 end
+
+class CSRFAction
+  include Lotus::Action
+  include Lotus::Action::Session
+  include Lotus::Action::CSRFProtection
+
+  configuration.handle_exceptions false
+
+  expose :csrf_token
+
+  # Ensure _csrf_token param won't be filtered
+  params do
+    param :name
+  end
+
+  def initialize
+    generate_csrf_token
+  end
+
+  def call(env)
+    # ...
+  end
+
+  private
+
+  def set_csrf_token
+    session[:_csrf_token] ||= @csrf_token || generate_csrf_token
+  end
+
+  def generate_csrf_token
+    @csrf_token = super
+  end
+end
+
+class FilteredParams < Lotus::Action::Params
+  param :name
+end
+
+class FilteredCSRFAction
+  include Lotus::Action
+  include Lotus::Action::Session
+  include Lotus::Action::CSRFProtection
+
+  expose :csrf_token
+
+  # Ensure _csrf_token param won't be filtered
+  params FilteredParams
+
+  def initialize
+    generate_csrf_token
+  end
+
+  def call(env)
+    # ...
+  end
+
+  private
+
+  def set_csrf_token
+    session[:_csrf_token] ||= @csrf_token || generate_csrf_token
+  end
+
+  def generate_csrf_token
+    @csrf_token = super
+  end
+end
+
+class DisabledCSRFAction
+  include Lotus::Action
+  include Lotus::Action::Session
+  include Lotus::Action::CSRFProtection
+
+  def call(env)
+    # ...
+  end
+
+  private
+
+  def verify_csrf_token?
+    false
+  end
+end
