@@ -8,6 +8,14 @@ module SessionsApp
         get    '/get_session'  , to: 'sessions#show'
         delete '/clear_session', to: 'sessions#destroy'
       end
+
+      controller.prepare do
+        include Module.new {
+          def generate_csrf_token
+            'app123'
+          end
+        }
+      end
     end
 
     load!

@@ -53,8 +53,6 @@ module Collaboration
       end
 
       controller.prepare do
-        expose :session
-        include Lotus::Action::CSRFProtection
         include Module.new {
           private
           def generate_csrf_token
