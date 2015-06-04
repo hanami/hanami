@@ -33,7 +33,6 @@ module Lotus
         templates = {
           'application.rb.tt'                 => 'application.rb',
           'config/routes.rb.tt'               => 'config/routes.rb',
-          'config/mapping.rb.tt'              => 'config/mapping.rb',
           'action.rb.tt'                      => 'controllers/home/index.rb',
           'views/application_layout.rb.tt'    => 'views/application_layout.rb',
           'templates/application.html.erb.tt' => 'templates/application.html.erb',

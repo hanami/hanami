@@ -92,27 +92,6 @@ module <%= config[:classified_slice_name] %>
       # body_parsers :json
 
       ##
-      # DATABASE
-      #
-
-      # Configure a database adapter
-      # Argument: A Hash with the settings
-      #           type: Symbol, :file_system, :memory and :sql
-      #           uri:  String, 'file:///db/bookshelf'
-      #                         'memory://localhost/bookshelf'
-      #                         'sqlite:memory:'
-      #                         'sqlite://db/bookshelf.sqlite3'
-      #                         'postgres://localhost/bookshelf'
-      #                         'mysql://localhost/bookshelf'
-      #
-      # adapter type: :file_system, uri: ENV['<%= config[:upcase_slice_name] %>_DATABASE_URL']
-
-      # Configure a database mapping
-      # See: http://www.rubydoc.info/gems/lotus-model#Data_Mapper
-      #
-      # mapping 'config/mapping'
-
-      ##
       # TEMPLATES
       #
 
