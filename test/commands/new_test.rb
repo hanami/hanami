@@ -686,10 +686,7 @@ describe Lotus::Commands::New do
         content.must_match %(configure do)
         content.must_match %(root __dir__)
 
-        content.must_match %(# adapter type: :file_system, uri: ENV['WEB_DATABASE_URL'])
-
         content.must_match %(routes 'config/routes')
-        content.must_match %(# mapping 'config/mapping')
 
         content.must_match %(layout :application)
         content.must_match %(templates 'templates')
@@ -740,13 +737,6 @@ describe Lotus::Commands::New do
         content = @root.join('apps/web/config/routes.rb').read
         content.must_match %(# Configure your routes here)
         content.must_match %(# get '/', to: 'home#index')
-      end
-    end
-
-    describe 'apps/web/config/mapping.rb' do
-      it 'generates it' do
-        content = @root.join('apps/web/config/mapping.rb').read
-        content.must_match %(# Configure your database mapping here)
       end
     end
 
