@@ -1,5 +1,6 @@
 require 'lotus'
 require 'lotus/model'
+require 'lotus/helpers'
 
 ADAPTER_TYPE =  if RUBY_ENGINE == 'jruby'
                   require 'jdbc/sqlite3'
@@ -31,6 +32,7 @@ module Collaboration
       routes  'config/routes'
 
       serve_assets true
+      sessions :cookie, secret: SecureRandom.hex
 
       assets << [
         'public',
@@ -41,11 +43,23 @@ module Collaboration
       adapter type: :sql, uri: SQLITE_CONNECTION_STRING
       mapping 'config/mapping'
 
-      #
       # SIMULATE DISABLED SECURITY HEADERS
       #
       # security.x_frame_options         "DENY"
       # security.content_security_policy "connect-src 'self'"
+
+      view.prepare do
+        include Lotus::Helpers
+      end
+
+      controller.prepare do
+        include Module.new {
+          private
+          def generate_csrf_token
+            't0k3n'
+          end
+        }
+      end
     end
   end
 end

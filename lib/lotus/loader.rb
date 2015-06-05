@@ -60,7 +60,14 @@ module Lotus
             prepare { include Lotus::Action::Cookies }
             cookies config.cookies.default_options
           end
-          prepare { include Lotus::Action::Session } if config.sessions.enabled?
+
+          if config.sessions.enabled?
+            prepare do
+              include Lotus::Action::Session
+              include Lotus::Action::CSRFProtection
+            end
+          end
+
           prepare { include Lotus::Action::RoutingHelpers }
 
           config.controller.__apply(self)

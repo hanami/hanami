@@ -1,6 +1,4 @@
 module Collaboration::Controllers::Books
-  include Collaboration::Controller
-
   class New
     include Collaboration::Action
     expose :book
@@ -52,7 +50,7 @@ module Collaboration::Controllers::Books
     include Collaboration::Action
 
     def call(params)
-      @book = Book.new(params)
+      @book = Book.new(params[:book])
       @book = BookRepository.create(@book)
 
       redirect_to routes.url(:book, :id => @book.id)
@@ -64,7 +62,7 @@ module Collaboration::Controllers::Books
 
     def call(params)
       @book = BookRepository.find(params[:id])
-      @book.update(params)
+      @book.update(params[:book])
       @book = BookRepository.update(@book)
 
       redirect_to routes.url(:book, :id => @book.id)

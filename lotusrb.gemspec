@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'lotus-utils',      '~> 0.4'
   spec.add_dependency 'lotus-router',     '~> 0.4'
-  spec.add_dependency 'lotus-controller', '~> 0.4'
+  spec.add_dependency 'lotus-controller', '~> 0.4', '>= 0.4.4'
   spec.add_dependency 'lotus-view',       '~> 0.4'
   spec.add_dependency 'lotus-helpers',    '~> 0.2'
   spec.add_dependency 'shotgun',          '~> 0.9'
