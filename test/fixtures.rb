@@ -154,3 +154,85 @@ class DisabledCSRFAction
     false
   end
 end
+
+module ForceSslApp
+  class Application < Lotus::Application
+    configure do
+      host 'localhost'
+      force_ssl true
+
+      routes do
+        get     '/', to: 'home#show'
+        post    '/', to: 'home#show'
+        put     '/', to: 'home#show'
+        patch   '/', to: 'home#show'
+        delete  '/', to: 'home#show'
+        options '/', to: 'home#show'
+     end
+    end
+
+    load!
+  end
+
+  module Controllers::Home
+    class Show
+      include ForceSslApp::Action
+
+      def call(params)
+        self.body = 'this is the body'
+      end
+    end
+  end
+end
+
+module ContainerForceSsl
+  class Application < Lotus::Application
+    configure do
+      routes do
+        get     '/', to: 'home#show'
+      end
+
+      force_ssl true
+
+      controller.default_headers({'Strict-Transport-Security' => 'max-age=31536000'})
+    end
+
+    load!
+  end
+
+  module Controllers
+    module Home
+      class Show
+        include ContainerForceSsl::Action
+
+        def call(params)
+          self.body = 'hello ContainerForceSsl'
+        end
+      end
+    end
+  end
+end
+
+module ContainerNoForceSsl
+  class Application < Lotus::Application
+    configure do
+      routes do
+        get     '/', to: 'home#show'
+      end
+    end
+
+    load!
+  end
+
+  module Controllers
+    module Home
+      class Show
+        include ContainerNoForceSsl::Action
+
+        def call(params)
+          self.body = 'hello ContainerNoForceSsl'
+        end
+      end
+    end
+  end
+end

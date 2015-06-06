@@ -5,14 +5,17 @@ module Lotus
   class Container
     attr_reader :routes
 
-    def self.configure(&blk)
-      Mutex.new.synchronize { @@configuration = blk }
+    def self.configure(options = {}, &blk)
+      Mutex.new.synchronize do
+        @@options       = options
+        @@configuration = blk
+      end
     end
 
     def initialize
       Mutex.new.synchronize do
         assert_configuration_presence!
-        @routes = Lotus::Router.new(&@@configuration)
+        @routes = Lotus::Router.new(@@options, &@@configuration)
       end
     end
 

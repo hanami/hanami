@@ -13,6 +13,10 @@ module Lotus
   # @since 0.1.0
   # @api private
   class Loader
+
+    STRICT_TRANSPORT_SECURITY_HEADER = 'Strict-Transport-Security'.freeze
+    STRICT_TRANSPORT_SECURITY_DEFAULT_VALUE = 'max-age=31536000'.freeze
+
     def initialize(application)
       @application   = application
       @configuration = @application.configuration
@@ -54,6 +58,7 @@ module Lotus
             Lotus::Config::Security::X_FRAME_OPTIONS_HEADER         => config.security.x_frame_options,
             Lotus::Config::Security::CONTENT_SECURITY_POLICY_HEADER => config.security.content_security_policy
           })
+          default_headers.merge!(STRICT_TRANSPORT_SECURITY_HEADER => STRICT_TRANSPORT_SECURITY_DEFAULT_VALUE) if config.force_ssl
 
           if config.cookies.enabled?
             require 'lotus/action/cookies'
@@ -190,6 +195,7 @@ module Lotus
         scheme:      configuration.scheme,
         host:        configuration.host,
         port:        configuration.port,
+        force_ssl:   configuration.force_ssl,
         &configuration.routes
       )
     end
