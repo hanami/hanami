@@ -1627,6 +1627,20 @@ module Lotus
       @view ||= Config::FrameworkConfiguration.new
     end
 
+    # This options is used as a bridge between container and router application.
+    #
+    # @return [String, NilClass] path prefix for routes
+    #
+    # @since x.x.x
+    # @api private
+    def path_prefix(value = nil)
+      if value.nil?
+        @path_prefix
+      else
+        @path_prefix = value
+      end
+    end
+
     private
     # @since 0.2.0
     # @api private

@@ -3,6 +3,21 @@ require 'lotus/router'
 
 module Lotus
   class Container
+    class Router < ::Lotus::Router
+      def mount(app, options)
+        if lotus_app?(app)
+          app = app.new(path_prefix: options.fetch(:at))
+        end
+        super(app, options)
+      end
+
+      private
+
+      def lotus_app?(app)
+        app.ancestors.include? Lotus::Application
+      end
+    end
+
     attr_reader :routes
 
     def self.configure(&blk)
@@ -12,7 +27,7 @@ module Lotus
     def initialize
       Mutex.new.synchronize do
         assert_configuration_presence!
-        @routes = Lotus::Router.new(&@@configuration)
+        @routes = Router.new(&@@configuration)
       end
     end
 
