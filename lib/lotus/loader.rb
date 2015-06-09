@@ -190,6 +190,7 @@ module Lotus
         scheme:      configuration.scheme,
         host:        configuration.host,
         port:        configuration.port,
+        prefix:      configuration.path_prefix,
         &configuration.routes
       )
     end
