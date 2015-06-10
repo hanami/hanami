@@ -219,6 +219,14 @@ describe Lotus::Commands::New do
       end
     end
 
+    describe 'config/loader.rb' do
+      it 'generates it' do
+        content = @root.join('config/loader.rb').read
+        content.must_match %(require_relative './environment')
+        content.must_match %(Lotus::Application.preload_applications!)
+      end
+    end
+
     describe '.env' do
       it 'generates it' do
         content = @root.join('.env').read
@@ -659,6 +667,14 @@ describe Lotus::Commands::New do
       end
     end
 
+    describe 'config/loader.rb' do
+      it 'generates it' do
+        content = @root.join('config/loader.rb').read
+        content.must_match %(require_relative './environment')
+        content.must_match %(Lotus::Application.preload_applications!)
+      end
+    end
+
     describe '.env.development' do
       it 'patches the file to reference slice env vars' do
         content = @root.join('.env.development').read
@@ -833,6 +849,14 @@ describe Lotus::Commands::New do
         it 'generates it' do
           content = @root.join('config/environment.rb').read
           content.must_match %(require_relative '../lib/new')
+        end
+      end
+
+      describe 'config/loader.rb' do
+        it 'generates it' do
+          content = @root.join('config/loader.rb').read
+          content.must_match %(require_relative './environment')
+          content.must_match %(Lotus::Application.preload_applications!)
         end
       end
 
