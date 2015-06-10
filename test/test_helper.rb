@@ -133,12 +133,5 @@ def stub_stdout_constant
   return_str
 end
 
-
-def stub_time_now
-  Time.stub :now, Time.utc(1988, 9, 1, 0, 0, 0) do
-    yield
-  end
-end
-
 $pwd = Dir.pwd
 require 'fixtures'
