@@ -154,3 +154,23 @@ class DisabledCSRFAction
     false
   end
 end
+
+module Admin
+  class Application < Lotus::Application
+    configure do
+      routes do
+        get '/home', to: 'home#index', as: :home
+      end
+    end
+  end
+end
+
+module CallCenter
+  class Application < Lotus::Application
+    configure do
+      routes do
+        get '/home', to: 'home#index', as: :home
+      end
+    end
+  end
+end
