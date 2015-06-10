@@ -2,6 +2,7 @@ require 'lotus/utils/class_attribute'
 require 'lotus/frameworks'
 require 'lotus/configuration'
 require 'lotus/loader'
+require 'lotus/logger'
 require 'lotus/rendering_policy'
 require 'lotus/middleware'
 
