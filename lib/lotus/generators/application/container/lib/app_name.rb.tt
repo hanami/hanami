@@ -2,6 +2,7 @@ require 'lotus/model'
 Dir["#{ __dir__ }/<%= config[:app_name] %>/**/*.rb"].each { |file| require_relative file }
 
 Lotus::Model.configure do
+  ##
   # Database adapter
   #
   # Available options:
@@ -16,6 +17,14 @@ Lotus::Model.configure do
   #
   adapter type: :<%= config[:database_config][:type] %>, uri: ENV['<%= config[:app_name].to_env_s %>_DATABASE_URL']
 
+  <%- if config[:database_config][:type] == :sql -%>
+  ##
+  # Migrations
+  #
+  migrations 'db/migrations'
+  schema     'db/schema.sql'
+
+  <%- end -%>
   ##
   # Database mapping
   #
