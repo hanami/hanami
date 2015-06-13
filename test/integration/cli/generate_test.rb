@@ -8,6 +8,7 @@ describe 'lotus generate' do
     let(:template_engine)   { 'erb' }
     let(:framework_testing) { 'minitest' }
     let(:klass)             { 'test' }
+    let(:migration_name)    { 'create_books' }
 
     def create_temporary_dir
       @tmp = Pathname.new(@pwd = Dir.pwd).join('tmp/integration/cli/generate')
@@ -50,12 +51,16 @@ template=#{ template_engine }
       `bundle exec lotus generate model #{ klass }`
     end
 
+    def generate_migration
+      `bundle exec lotus generate migration #{ migration_name }`
+    end
+
     def generate_container
       `bundle exec lotus generate app #{ new_app_name } #{ new_options }`
     end
 
     def chdir_to_root
-      Dir.chdir(@pwd)
+      Dir.chdir($pwd)
     end
 
     before do
@@ -133,6 +138,19 @@ template=#{ template_engine }
           @root.join('spec/delivery/entities/test_case_spec.rb').must_be                :exist?
           @root.join('spec/delivery/repositories/test_case_repository_spec.rb').must_be :exist?
         end
+      end
+    end
+
+    describe 'when application generates new migration' do
+      let(:options) { ' --database=sqlite3' }
+
+      before do
+        generate_migration
+      end
+
+      it 'generates it' do
+        migration = @root.join('db/migrations').children.last
+        migration.basename.to_s.must_match(/\A[\d]{14}\_create\_books\.rb\z/)
       end
     end
 

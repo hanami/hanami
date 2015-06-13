@@ -20,12 +20,13 @@ module Lotus
 
       # @since 0.3.0
       # @api private
-      attr_reader :cli, :source, :target, :app, :app_name, :name, :options
+      attr_reader :cli, :source, :target, :app, :app_name, :name, :options, :env
 
       # @since 0.3.0
       # @api private
       def initialize(type, app_name, name, env, cli)
         @cli      = cli
+        @env      = env
         @name     = name
 
         @type = sanitize_type(type)

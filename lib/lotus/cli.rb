@@ -79,7 +79,7 @@ module Lotus
       end
     end
 
-    desc 'generate', 'generates a new action'
+    desc 'generate', 'generates action, model or migration'
     method_option :application_base_url, desc: 'application base url',     type: :string
     method_option :path,                desc: 'applications path',                                         type: :string,  default: 'apps'
     method_option :skip_view,           desc: 'skip the creation of view and templates (only for action)', type: :boolean, default: false
