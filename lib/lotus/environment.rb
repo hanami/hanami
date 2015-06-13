@@ -315,6 +315,16 @@ module Lotus
       root.join(@options.fetch(:environment) { config.join(DEFAULT_ENVIRONMENT_CONFIG) })
     end
 
+    # Require application environment
+    #
+    # Eg <tt>require "config/environment"</tt>.
+    #
+    # @since x.x.x
+    # @api private
+    def require_application_environment
+      require env_config.to_s
+    end
+
     # Determine if activate code reloading for the current environment while
     # running the server.
     #

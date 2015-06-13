@@ -29,7 +29,7 @@ module Lotus
         name        = Utils::String.new(app_name).underscore
         filename    = FILENAME % { timestamp: timestamp, name: name }
 
-        require env.env_config # require "config/environment.rb" from application
+        env.require_application_environment
         @destination = Lotus::Model.configuration.migrations.join(filename)
 
         cli.class.source_root(source)

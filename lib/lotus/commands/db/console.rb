@@ -10,7 +10,7 @@ module Lotus
           @name        = name
           @environment = environment
           @env_options = environment.to_options
-          load_config
+          @environment.require_application_environment
         end
 
         def start
@@ -43,10 +43,6 @@ module Lotus
 
         def connection_string
           adapter_class.new(mapper, adapter_config.uri).connection_string
-        end
-
-        def load_config
-          require @env_options[:env_config]
         end
       end
     end

@@ -17,10 +17,91 @@ module Lotus
         end
       end
 
+      desc 'db create', 'create database'
+
+      desc 'create', 'create database for current environment'
+      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+
+      def create
+        if options[:help]
+          invoke :help, ['create']
+        else
+          assert_allowed_environment!
+          require 'lotus/commands/db/create'
+          Lotus::Commands::DB::Create.new(environment).start
+        end
+      end
+
+      desc 'db drop', 'create database'
+
+      desc 'drop', 'drop database for current environment'
+      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+
+      def drop
+        if options[:help]
+          invoke :help, ['drop']
+        else
+          assert_allowed_environment!
+          require 'lotus/commands/db/drop'
+          Lotus::Commands::DB::Drop.new(environment).start
+        end
+      end
+
+      desc 'db migrate', 'migrate database'
+
+      desc 'migrate', 'migrate database for current environment'
+      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+
+      def migrate(version = nil)
+        if options[:help]
+          invoke :help, ['migrate']
+        else
+          require 'lotus/commands/db/migrate'
+          Lotus::Commands::DB::Migrate.new(environment, version).start
+        end
+      end
+
+      desc 'db apply', 'apply database changes'
+
+      desc 'apply', 'migrate, dump schema, delete migrations (experimental)'
+      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+
+      def apply
+        if options[:help]
+          invoke :help, ['apply']
+        else
+          assert_allowed_environment!([:test, :production])
+          require 'lotus/commands/db/apply'
+          Lotus::Commands::DB::Apply.new(environment).start
+        end
+      end
+
+      desc 'db prepare', 'prepare database'
+
+      desc 'prepare', 'create and migrate database'
+      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+
+      def prepare
+        if options[:help]
+          invoke :help, ['prepare']
+        else
+          assert_allowed_environment!
+          require 'lotus/commands/db/prepare'
+          Lotus::Commands::DB::Prepare.new(environment).start
+        end
+      end
+
       private
 
       def environment
         Lotus::Environment.new(options)
+      end
+
+      def assert_allowed_environment!(env = :production)
+        if environment.environment?(*env)
+          puts "Can't run this command in production mode"
+          exit 1
+        end
       end
     end
   end
