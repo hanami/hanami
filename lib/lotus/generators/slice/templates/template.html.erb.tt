@@ -1,2 +1,0 @@
-<h1>Welcome to Lotus!</h1>
-<h3>This template is rendered by <code><%= config[:classified_slice_name] %>::Views::Home::Index</code> and it's available at: <code>apps/<%= config[:slice_name] %>/templates/home/index.html.erb</code></h3>

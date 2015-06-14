@@ -1,8 +1,0 @@
-module <%= config[:classified_slice_name] %>::Controllers::Home
-  class Index
-    include <%= config[:classified_slice_name] %>::Action
-
-    def call(params)
-    end
-  end
-end
