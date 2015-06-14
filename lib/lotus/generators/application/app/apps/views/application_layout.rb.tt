@@ -1,0 +1,7 @@
+module <%= config[:classified_app_name] %>
+  module Views
+    class ApplicationLayout
+      include <%= config[:classified_app_name] %>::Layout
+    end
+  end
+end
