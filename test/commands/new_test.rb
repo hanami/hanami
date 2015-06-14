@@ -769,23 +769,6 @@ describe Lotus::Commands::New do
       it 'generates it' do
         content = @root.join('apps/web/config/routes.rb').read
         content.must_match %(# Configure your routes here)
-        content.must_match %(# get '/', to: 'home#index')
-      end
-    end
-
-    describe 'apps/web/controllers' do
-      it 'generates it' do
-        @root.join('apps/web/controllers').must_be :exist?
-      end
-    end
-
-    describe 'apps/web/controllers/home/index.rb' do
-      it 'generates it' do
-        content = @root.join('apps/web/controllers/home/index.rb').read
-        content.must_match %(module Web::Controllers::Home)
-        content.must_match %(class Index)
-        content.must_match %(include Web::Action)
-        content.must_match "def call(params)"
       end
     end
 
@@ -804,23 +787,6 @@ describe Lotus::Commands::New do
         content = @root.join('apps/web/templates/application.html.erb').read
         content.must_match %(<title>Web</title>)
         content.must_match %(<%= yield %>)
-      end
-    end
-
-    describe 'apps/web/views/home/index.rb' do
-      it 'generates it' do
-        content = @root.join('apps/web/views/home/index.rb').read
-        content.must_match %(module Web::Views::Home)
-        content.must_match %(class Index)
-        content.must_match %(include Web::View)
-      end
-    end
-
-    describe 'apps/web/templates/home/index.html.rb' do
-      it 'generates it' do
-        content = @root.join('apps/web/templates/home/index.html.erb').read
-        content.must_match %(<h1>Welcome to Lotus!</h1>)
-        content.must_match %(<h3>This template is rendered by <code>Web::Views::Home::Index</code> and it's available at: <code>apps/web/templates/home/index.html.erb</code></h3>)
       end
     end
 
