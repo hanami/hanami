@@ -79,6 +79,10 @@ MIGRATION
     `LOTUS_ENV="#{ lotus_env }" bundle exec lotus db prepare`
   end
 
+  def db_version
+    `LOTUS_ENV="#{ lotus_env }" bundle exec lotus db version`
+  end
+
   def chdir_to_root
     Dir.chdir($pwd)
   end
@@ -86,6 +90,10 @@ MIGRATION
   before do
     create_temporary_dir
     generate_application
+  end
+
+  after do
+    chdir_to_root
   end
 
   let(:lotus_env) { 'development' }
@@ -353,6 +361,42 @@ MIGRATION
 
         connection.tables.must_be :empty?
       end
+    end
+  end
+
+  describe 'version' do
+    before do
+      db_create
+      db_migrate
+    end
+
+    describe 'default environment' do
+      it 'prints current database version' do
+        out = db_version
+
+        out.must_equal "20150613152815\n"
+      end
+    end
+
+    describe 'test environment' do
+      let(:lotus_env) { 'test' }
+
+      it 'prints current database version' do
+        out = db_version
+
+        out.must_equal "20150613152815\n"
+      end
+    end
+
+    describe 'production environment' do
+      let(:lotus_env) { 'production' }
+
+      it 'prints current database version'
+      # it 'prints current database version' do
+      #   out = db_version
+
+      #   out.must_equal "20150613152815\n"
+      # end
     end
   end
 end
