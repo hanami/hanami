@@ -284,7 +284,7 @@ describe Lotus::Commands::New do
 
           it 'generates db config for sqlite' do
             content = @root.join('.env.development').read
-            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_development")
+            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_development.sqlite")
           end
 
           describe 'with non-simple application name' do
@@ -292,7 +292,7 @@ describe Lotus::Commands::New do
 
             it 'escapes the database url' do
               content = @root.join('.env.development').read
-              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_development")
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_development.sqlite")
             end
           end
         end
@@ -301,7 +301,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'sqlite3') }
           it 'generates db config for sqlite3' do
             content = @root.join('.env.development').read
-            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_development")
+            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_development.sqlite")
           end
 
           describe 'with non-simple application name' do
@@ -309,7 +309,7 @@ describe Lotus::Commands::New do
 
             it 'escapes the database url' do
               content = @root.join('.env.development').read
-              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_development")
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_development.sqlite")
             end
           end
         end
@@ -381,7 +381,7 @@ describe Lotus::Commands::New do
 
           it 'generates db config for sqlite' do
             content = @root.join('.env.test').read
-            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_test")
+            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_test.sqlite")
           end
 
           describe 'with non-simple application name' do
@@ -389,7 +389,7 @@ describe Lotus::Commands::New do
 
             it 'escapes the database url' do
               content = @root.join('.env.test').read
-              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_test")
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_test.sqlite")
             end
           end
         end
@@ -398,14 +398,14 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'sqlite3') }
           it 'generates db config for sqlite3' do
             content = @root.join('.env.test').read
-            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_test")
+            content.must_match %(CHIRP_DATABASE_URL="sqlite://db/chirp_test.sqlite")
           end
 
           describe 'with non-simple application name' do
             let(:app_name) { "chirp'two" }
             it 'escapes the database url' do
               content = @root.join('.env.test').read
-              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_test")
+              content.must_match %(CHIRP_TWO_DATABASE_URL="sqlite://db/chirp\\'two_test.sqlite")
             end
           end
         end
