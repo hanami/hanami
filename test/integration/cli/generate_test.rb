@@ -66,7 +66,7 @@ template=#{ template_engine }
       generate_action_without_view
     end
 
-    def after
+    after do
       chdir_to_root
     end
 
@@ -114,7 +114,7 @@ template=#{ template_engine }
       describe 'when application use application architecture' do
         let(:architecture) { 'app' }
         let(:app_name) { nil }
-        
+
         it 'generates an action' do
           @root.join('apps/controllers/dashboard/index.rb').must_be      :exist?
           @root.join('apps/views/dashboard/index.rb').must_be            :exist?
