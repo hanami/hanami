@@ -46,7 +46,7 @@ module Lotus
             "lib/#{ app_name }/repositories"
           ]
 
-          empty_directories << if database_type == :sql
+          empty_directories << if sql_database?
             "db/migrations"
           else
             "db"
@@ -69,7 +69,7 @@ module Lotus
             )
           end
 
-          if database_type == :sql
+          if sql_database?
             templates.merge!(
               'schema.sql.tt' => 'db/schema.sql'
             )
@@ -132,6 +132,10 @@ module Lotus
           when 'memory'
             :memory
           end
+        end
+
+        def sql_database?
+          database_type == :sql
         end
 
         def database_uri

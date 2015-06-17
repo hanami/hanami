@@ -32,7 +32,7 @@ module Lotus
         end
       end
 
-      desc 'db drop', 'create database'
+      desc 'db drop', 'drop database'
 
       desc 'drop', 'drop database for current environment'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
