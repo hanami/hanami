@@ -9,7 +9,7 @@ module Lotus
         super
 
         options.merge!(app_name_options)
-        @slice_generator       = Slice.new(command)
+        @slice_generator = Slice.new(command)
 
         cli.class.source_root(source)
       end

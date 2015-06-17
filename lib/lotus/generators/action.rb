@@ -115,7 +115,7 @@ module Lotus
       # @since 0.3.0
       # @api private
       def _routes_path
-        app_root.join("config", "routes#{ SUFFIX }")
+        env.root.join("config", "routes#{ SUFFIX }")
       end
 
       # @since 0.3.0

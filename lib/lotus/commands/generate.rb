@@ -50,7 +50,11 @@ module Lotus
       # @since 0.3.0
       # @api private
       def app_root
-        @app_root ||= Pathname.new([@options[:path], @app_name].join(::File::SEPARATOR))
+        @app_root ||= begin
+          result = Pathname.new(@options[:apps_path])
+          result = result.join(@app_name) if @env.container?
+          result
+        end
       end
 
       # @since 0.3.0

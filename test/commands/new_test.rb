@@ -974,7 +974,7 @@ describe Lotus::Commands::New do
       it 'generates it' do
         content = @root.join('config.ru').read
         content.must_match %(require './config/environment')
-        content.must_match %(run Lotus::Container.new)
+        content.must_match %(run Chirp::Application.new)
       end
     end
 
@@ -1013,10 +1013,7 @@ describe Lotus::Commands::New do
         content.must_match %(require 'bundler/setup')
         content.must_match %(require 'lotus/setup')
         content.must_match %(require_relative '../lib/chirp')
-        content.must_match %(require_relative '../apps/application')
-
-        content.must_match %(Lotus::Container.configure)
-        content.must_match %(mount Chirp::Application, at: '/')
+        content.must_match %(require_relative '../config/application')
       end
     end
 
@@ -1411,7 +1408,7 @@ describe Lotus::Commands::New do
               content.must_match %(require_relative './spec_helper')
               content.must_match %(require 'capybara')
               content.must_match %(require 'capybara/dsl')
-              content.must_match %(Capybara.app = Lotus::Container.new)
+              content.must_match %(Capybara.app = Chirp::Application.new)
               content.must_match %(class MiniTest::Spec)
               content.must_match %(include Capybara::DSL)
             end
@@ -1443,7 +1440,7 @@ describe Lotus::Commands::New do
               content.must_match %(module FeatureExampleGroup)
               content.must_match %(def self.included(group))
               content.must_match %(group.metadata[:type] = :feature)
-              content.must_match %(Capybara.app = Lotus::Container.new)
+              content.must_match %(Capybara.app = Chirp::Application.new)
             end
           end
         end
@@ -1454,9 +1451,9 @@ describe Lotus::Commands::New do
     # SLICE
     ################
 
-    describe 'apps/application.rb' do
+    describe 'config/application.rb' do
       it 'generates it' do
-        content = @root.join('apps/application.rb').read
+        content = @root.join('config/application.rb').read
         content.must_match %(require 'lotus/helpers')
         content.must_match %(module Chirp)
         content.must_match %(class Application < Lotus::Application)
@@ -1511,33 +1508,28 @@ describe Lotus::Commands::New do
       end
     end
 
-    describe 'apps/config/routes.rb' do
+    describe 'config/routes.rb' do
       it 'generates it' do
-        content = @root.join('apps/config/routes.rb').read
+        content = @root.join('config/routes.rb').read
         content.must_match %(# Configure your routes here)
-        content.must_match %(# get '/', to: 'home#index')
       end
     end
 
-    describe 'apps/controllers' do
+    describe 'app/controllers' do
       it 'generates it' do
-        @root.join('apps/controllers').must_be :exist?
+        @root.join('app/controllers').must_be :exist?
       end
     end
 
-    describe 'apps/controllers/home/index.rb' do
+    describe 'app/views' do
       it 'generates it' do
-        content = @root.join('apps/controllers/home/index.rb').read
-        content.must_match %(module Chirp::Controllers::Home)
-        content.must_match %(class Index)
-        content.must_match %(include Chirp::Action)
-        content.must_match "def call(params)"
+        @root.join('app/views').must_be :exist?
       end
     end
 
-    describe 'apps/views/application_layout.rb' do
+    describe 'app/views/application_layout.rb' do
       it 'generates it' do
-        content = @root.join('apps/views/application_layout.rb').read
+        content = @root.join('app/views/application_layout.rb').read
         content.must_match %(module Chirp)
         content.must_match %(module Views)
         content.must_match %(class ApplicationLayout)
@@ -1545,40 +1537,23 @@ describe Lotus::Commands::New do
       end
     end
 
-    describe 'apps/templates/application.html.rb' do
+    describe 'app/templates/application.html.rb' do
       it 'generates it' do
-        content = @root.join('apps/templates/application.html.erb').read
+        content = @root.join('app/templates/application.html.erb').read
         content.must_match %(<title>Chirp</title>)
         content.must_match %(<%= yield %>)
       end
     end
 
-    describe 'apps/views/home/index.rb' do
+    describe 'public/javascripts' do
       it 'generates it' do
-        content = @root.join('apps/views/home/index.rb').read
-        content.must_match %(module Chirp::Views::Home)
-        content.must_match %(class Index)
-        content.must_match %(include Chirp::View)
+        @root.join('public/javascripts').must_be :exist?
       end
     end
 
-    describe 'apps/templates/home/index.html.rb' do
+    describe 'public/stylesheets' do
       it 'generates it' do
-        content = @root.join('apps/templates/home/index.html.erb').read
-        content.must_match %(<h1>Welcome to Lotus!</h1>)
-        content.must_match %(<h3>This template is rendered by <code>Chirp::Views::Home::Index</code> and it's available at: <code>apps/templates/home/index.html.erb</code></h3>)
-      end
-    end
-
-    describe 'apps/public/javascripts' do
-      it 'generates it' do
-        @root.join('apps/public/javascripts').must_be :exist?
-      end
-    end
-
-    describe 'apps/public/stylesheets' do
-      it 'generates it' do
-        @root.join('apps/public/stylesheets').must_be :exist?
+        @root.join('public/stylesheets').must_be :exist?
       end
     end
 

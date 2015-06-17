@@ -34,30 +34,29 @@ module Lotus
           }
 
           templates = {
-            'lotusrc.tt'                             => '.lotusrc',
-            '.env.tt'                                => '.env',
-            '.env.development.tt'                    => '.env.development',
-            '.env.test.tt'                           => '.env.test',
-            'Gemfile.tt'                             => 'Gemfile',
-            'config.ru.tt'                           => 'config.ru',
-            'config/environment.rb.tt'               => 'config/environment.rb',
-            'lib/app_name.rb.tt'                     => "lib/#{ app_name }.rb",
-            'lib/config/mapping.rb.tt'               => 'lib/config/mapping.rb',
-            'apps/application.rb.tt'                 => 'apps/application.rb',
-            'apps/config/routes.rb.tt'               => 'apps/config/routes.rb',
-            'apps/action.rb.tt'                      => 'apps/controllers/home/index.rb',
-            'apps/views/application_layout.rb.tt'    => 'apps/views/application_layout.rb',
-            'apps/templates/application.html.erb.tt' => 'apps/templates/application.html.erb',
-            'apps/view.rb.tt'                        => 'apps/views/home/index.rb',
-            'apps/templates/template.html.erb.tt'    => 'apps/templates/home/index.html.erb',
+            'lotusrc.tt'                        => '.lotusrc',
+            '.env.tt'                           => '.env',
+            '.env.development.tt'               => '.env.development',
+            '.env.test.tt'                      => '.env.test',
+            'Gemfile.tt'                        => 'Gemfile',
+            'config.ru.tt'                      => 'config.ru',
+            'config/environment.rb.tt'          => 'config/environment.rb',
+            'lib/app_name.rb.tt'                => "lib/#{ app_name }.rb",
+            'lib/config/mapping.rb.tt'          => 'lib/config/mapping.rb',
+            'config/application.rb.tt'          => 'config/application.rb',
+            'config/routes.rb.tt'               => 'config/routes.rb',
+            'views/application_layout.rb.tt'    => 'app/views/application_layout.rb',
+            'templates/application.html.erb.tt' => 'app/templates/application.html.erb',
           }
 
           empty_directories = [
+            "app/controllers",
+            "app/views",
             "db",
             "lib/#{ app_name }/entities",
             "lib/#{ app_name }/repositories",
-            "apps/public/javascripts",
-            "apps/public/stylesheets"
+            "public/javascripts",
+            "public/stylesheets"
           ]
 
           # Add testing directories (spec/ is the default for both MiniTest and RSpec)

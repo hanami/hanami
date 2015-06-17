@@ -94,6 +94,22 @@ module Lotus
     # @api private
     CODE_RELOADING = { 'development' => true }.freeze
 
+    # @since x.x.x
+    # @api private
+    CONTAINER = 'container'.freeze
+
+    # @since x.x.x
+    # @api private
+    CONTAINER_PATH = 'apps'.freeze
+
+    # @since x.x.x
+    # @api private
+    APPLICATION = 'app'.freeze
+
+    # @since x.x.x
+    # @api private
+    APPLICATION_PATH = 'app'.freeze
+
     # Initialize a Lotus environment
     #
     # It accepts an optional set of configurations from the CLI commands.
@@ -347,6 +363,32 @@ module Lotus
       @options.fetch(:code_reloading) { !!CODE_RELOADING[environment] }
     end
 
+    # @since x.x.x
+    # @api private
+    def architecture
+      @options.fetch(:architecture) {
+        puts "Cannot recognize Lotus architecture, please check `.lotusrc'"
+        exit 1
+      }
+    end
+
+    # @since x.x.x
+    # @api private
+    def container?
+      architecture == CONTAINER
+    end
+
+    # @since x.x.x
+    # @api private
+    def apps_path
+      @options.fetch(:path) {
+        case architecture
+        when CONTAINER   then CONTAINER_PATH
+        when APPLICATION then APPLICATION_PATH
+        end
+      }
+    end
+
     # Serialize the most relevant settings into a Hash
     #
     # @return [Lotus::Utils::Hash]
@@ -357,6 +399,7 @@ module Lotus
       @options.merge(
         environment: environment,
         env_config:  env_config,
+        apps_path:   apps_path,
         rackup:      rackup,
         host:        host,
         port:        port

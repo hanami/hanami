@@ -1,3 +1,3 @@
 require './config/environment'
 
-run Lotus::Container.new
+run <%= config[:classified_app_name] %>::Application.new

@@ -20,7 +20,7 @@ describe 'lotus generate' do
     end
 
     def generate_application
-      `bundle exec lotus new #{ @app_name = 'delivery' }#{ options }`
+      `bundle exec lotus new #{ @app_name = 'delivery' } --architecture=#{ architecture }#{ options }`
       Dir.chdir(@root = @tmp.join(@app_name))
 
       File.open(@root.join('.lotusrc'), 'w') do |f|
@@ -121,17 +121,19 @@ template=#{ template_engine }
         let(:app_name) { nil }
 
         it 'generates an action' do
-          @root.join('apps/controllers/dashboard/index.rb').must_be      :exist?
-          @root.join('apps/views/dashboard/index.rb').must_be            :exist?
-          @root.join('apps/templates/dashboard/index.html.erb').must_be  :exist?
+          @root.join('app/controllers/dashboard/index.rb').must_be      :exist?
+          @root.join('app/views/dashboard/index.rb').must_be            :exist?
+          @root.join('app/templates/dashboard/index.html.erb').must_be  :exist?
           @root.join('spec/controllers/dashboard/index_spec.rb').must_be :exist?
           @root.join('spec/views/dashboard/index_spec.rb').must_be       :exist?
+
+          @root.join('config/routes.rb').read.must_include %(get '/dashboard', to: 'dashboard#index')
         end
 
         it 'generates an action without view' do
-          @root.join('apps/controllers/dashboard/foo.rb').must_be      :exist?
-          @root.join('apps/views/dashboard/foo.rb').wont_be            :exist?
-          @root.join('apps/templates/dashboard/foo.html.erb').wont_be  :exist?
+          @root.join('app/controllers/dashboard/foo.rb').must_be      :exist?
+          @root.join('app/views/dashboard/foo.rb').wont_be            :exist?
+          @root.join('app/templates/dashboard/foo.html.erb').wont_be  :exist?
           @root.join('spec/controllers/dashboard/foo_spec.rb').must_be :exist?
           @root.join('spec/views/dashboard/foo_spec.rb').wont_be       :exist?
         end
