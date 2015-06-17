@@ -810,4 +810,19 @@ describe Lotus::Configuration do
       -> { @configuration.handle_exceptions(false) }.must_raise RuntimeError
     end
   end
+
+  describe '#force_ssl' do
+    describe "when not previously set" do
+      it 'defaults to a specific value' do
+        @configuration.force_ssl.must_equal false
+      end
+    end
+
+    describe "when called with an argument" do
+      it 'sets the value' do
+        @configuration.force_ssl true
+        @configuration.force_ssl.must_equal true
+      end
+    end
+  end
 end

@@ -5,9 +5,7 @@ module Lotus
   class Container
     class Router < ::Lotus::Router
       def mount(app, options)
-        if lotus_app?(app)
-          app = app.new(path_prefix: options.fetch(:at))
-        end
+        app = app.new(path_prefix: options.fetch(:at)) if lotus_app?(app)
         super(app, options)
       end
 
@@ -20,8 +18,11 @@ module Lotus
 
     attr_reader :routes
 
-    def self.configure(&blk)
-      Mutex.new.synchronize { @@configuration = blk }
+    def self.configure(options = {}, &blk)
+      Mutex.new.synchronize do
+        @@options       = options
+        @@configuration = blk
+      end
     end
 
     def initialize
