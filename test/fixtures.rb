@@ -178,7 +178,6 @@ end
 module ForceSslApp
   class Application < Lotus::Application
     configure do
-      host 'localhost'
       force_ssl true
 
       routes do
