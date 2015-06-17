@@ -106,7 +106,8 @@ module Lotus
     # @return [Lotus::Application] a new instance of the application
     #
     # @since 0.1.0
-    def initialize
+    def initialize(options = {})
+      self.class.configuration.path_prefix options[:path_prefix]
       self.class.load!(self)
     end
 
