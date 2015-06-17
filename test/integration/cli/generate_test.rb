@@ -5,6 +5,7 @@ describe 'lotus generate' do
     let(:options)           { '' }
     let(:app_name)          { 'web' }
     let(:new_app_name)      { 'api' }
+    let(:architecture)      { 'container' }
     let(:template_engine)   { 'erb' }
     let(:framework_testing) { 'minitest' }
     let(:klass)             { 'test' }
@@ -24,7 +25,7 @@ describe 'lotus generate' do
 
       File.open(@root.join('.lotusrc'), 'w') do |f|
         f.write <<-LOTUSRC
-architecture=container
+architecture=#{ architecture }
 test=#{ framework_testing }
 template=#{ template_engine }
         LOTUSRC
@@ -70,7 +71,7 @@ template=#{ template_engine }
       generate_action_without_view
     end
 
-    def after
+    after do
       chdir_to_root
     end
 
@@ -112,6 +113,27 @@ template=#{ template_engine }
           @root.join('apps/web/templates/dash_board/test_case.html.erb').wont_be  :exist?
           @root.join('spec/web/controllers/dash_board/test_case_spec.rb').must_be :exist?
           @root.join('spec/web/views/dash_board/test_case_spec.rb').wont_be       :exist?
+        end
+      end
+
+      describe 'when application use application architecture' do
+        let(:architecture) { 'app' }
+        let(:app_name) { nil }
+
+        it 'generates an action' do
+          @root.join('apps/controllers/dashboard/index.rb').must_be      :exist?
+          @root.join('apps/views/dashboard/index.rb').must_be            :exist?
+          @root.join('apps/templates/dashboard/index.html.erb').must_be  :exist?
+          @root.join('spec/controllers/dashboard/index_spec.rb').must_be :exist?
+          @root.join('spec/views/dashboard/index_spec.rb').must_be       :exist?
+        end
+
+        it 'generates an action without view' do
+          @root.join('apps/controllers/dashboard/foo.rb').must_be      :exist?
+          @root.join('apps/views/dashboard/foo.rb').wont_be            :exist?
+          @root.join('apps/templates/dashboard/foo.html.erb').wont_be  :exist?
+          @root.join('spec/controllers/dashboard/foo_spec.rb').must_be :exist?
+          @root.join('spec/views/dashboard/foo_spec.rb').wont_be       :exist?
         end
       end
     end

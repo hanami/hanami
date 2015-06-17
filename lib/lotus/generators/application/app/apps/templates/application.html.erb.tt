@@ -1,0 +1,9 @@
+<!doctype HTML>
+<html>
+  <head>
+    <title><%= config[:classified_app_name] %></title>
+  </head>
+  <body>
+    <%%= yield %>
+  </body>
+</html>

@@ -10,8 +10,7 @@ module Lotus
       # @since 0.3.0
       # @api private
       GENERATORS_NAMESPACE = "Lotus::Generators::%s".freeze
-      APP = 'app'.freeze
-      SLICE_TYPE = 'slice'.freeze
+      APP_ARCHITECTURE = 'app'.freeze
 
       # @since 0.3.0
       # @api private
@@ -28,14 +27,15 @@ module Lotus
         @cli      = cli
         @env      = env
         @name     = name
+        @options  = env.to_options.merge(cli.options)
 
-        @type = sanitize_type(type)
-        @app_name = app_name
+        sanitize_input(app_name, name)
+        @type     = type
+
         @source   = Pathname.new(::File.dirname(__FILE__) + "/../generators/#{ @type }/").realpath
         @target   = Pathname.pwd.realpath
 
         @app      = Utils::String.new(@app_name).classify
-        @options  = sanitize_app_name_options(app_name).merge(env.to_options.merge(cli.options))
       end
 
       # @since 0.3.0
@@ -75,19 +75,14 @@ module Lotus
         Utils::Class.load!(GENERATORS_NAMESPACE % class_name).new(self)
       end
 
-      # @since 0.3.1
-      # @api private
-      def sanitize_app_name_options(app_name)
-        {
-          application: app_name,
-          application_base_url: "/#{app_name}"
-        }
-      end
-
-      # @since 0.3.1
-      # @api private
-      def sanitize_type(type)
-        type == APP ? SLICE_TYPE : type
+      def sanitize_input(app_name, name)
+        if options[:architecture] == APP_ARCHITECTURE
+          @app_name = ''
+          @name     = app_name
+        else
+          @app_name = app_name
+          @name     = name
+        end
       end
     end
   end

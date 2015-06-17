@@ -1,0 +1,8 @@
+module <%= config[:classified_app_name] %>::Controllers::Home
+  class Index
+    include <%= config[:classified_app_name] %>::Action
+
+    def call(params)
+    end
+  end
+end
