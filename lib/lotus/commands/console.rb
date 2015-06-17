@@ -24,7 +24,7 @@ module Lotus
       def start
         # Clear out ARGV so Pry/IRB don't attempt to parse the rest
         ARGV.shift until ARGV.empty?
-        require @environment.env_config.to_s
+        @environment.require_application_environment
 
         # Add convenience methods to the main:Object binding
         TOPLEVEL_BINDING.eval('self').send(:include, Methods)

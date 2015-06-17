@@ -42,10 +42,15 @@ module Lotus
           }
 
           empty_directories = [
-            "db",
             "lib/#{ app_name }/entities",
             "lib/#{ app_name }/repositories"
           ]
+
+          empty_directories << if sql_database?
+            "db/migrations"
+          else
+            "db"
+          end
 
           case options[:test]
           when 'rspec'
@@ -61,6 +66,12 @@ module Lotus
               'Rakefile.minitest.tt'           => 'Rakefile',
               'spec_helper.rb.minitest.tt'     => 'spec/spec_helper.rb',
               'features_helper.rb.minitest.tt' => 'spec/features_helper.rb'
+            )
+          end
+
+          if sql_database?
+            templates.merge!(
+              'schema.sql.tt' => 'db/schema.sql'
             )
           end
 
@@ -121,6 +132,10 @@ module Lotus
           when 'memory'
             :memory
           end
+        end
+
+        def sql_database?
+          database_type == :sql
         end
 
         def database_uri
