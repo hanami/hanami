@@ -91,6 +91,11 @@ module <%= config[:classified_slice_name] %>
       #
       # body_parsers :json
 
+      # When it's true and the router receives a non-encrypted request (http),
+      # it redirects to the secure equivalent resource (https). Default disabled.
+      #
+      # force_ssl true
+
       ##
       # TEMPLATES
       #

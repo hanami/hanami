@@ -108,6 +108,21 @@ module Lotus
       @security ||= Config::Security.new
     end
 
+    # Force ssl redirection if http scheme is set
+    #
+    # @return [Boolean]
+    #
+    # @since x.x.x
+    #
+    # @see Lotus::Routing::ForceSsl
+    def force_ssl(value = nil)
+      if value
+        @force_ssl = value
+      else
+        @force_ssl || false
+      end
+    end
+
     # The root of the application
     #
     # By default it returns the current directory, for this reason, **all the
