@@ -140,8 +140,8 @@ module Lotus
 
         def database_uri
           {
-            development: "#{database_base_uri}_development",
-            test: "#{database_base_uri}_test"
+            development: database_environment_uri(:development),
+            test: database_environment_uri(:test)
           }
         end
 
@@ -159,6 +159,15 @@ module Lotus
             "memory://localhost/#{app_name}"
           else
             "file:///db/#{app_name}"
+          end
+        end
+
+        def database_environment_uri(environment)
+          case @database
+          when 'sqlite', 'sqlite3'
+            "#{database_base_uri}_#{environment}.sqlite"
+          else
+            "#{database_base_uri}_#{environment}"
           end
         end
       end
