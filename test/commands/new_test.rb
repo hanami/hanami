@@ -695,7 +695,7 @@ describe Lotus::Commands::New do
     describe '.env.development' do
       it 'patches the file to reference slice env vars' do
         content = @root.join('.env.development').read
-        content.must_match %(WEB_DATABASE_URL="file:///db/web_development")
+        content.wont_match %(WEB_DATABASE_URL="file:///db/web_development")
         content.must_match %r{WEB_SESSIONS_SECRET="[\w]{64}"}
       end
     end
@@ -703,7 +703,7 @@ describe Lotus::Commands::New do
     describe '.env.test' do
       it 'patches the file to reference slice env vars' do
         content = @root.join('.env.test').read
-        content.must_match %(WEB_DATABASE_URL="file:///db/web_test")
+        content.wont_match %(WEB_DATABASE_URL="file:///db/web_test")
         content.must_match %r{WEB_SESSIONS_SECRET="[\w]{64}"}
       end
     end

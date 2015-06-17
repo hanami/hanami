@@ -176,10 +176,10 @@ template=#{ template_engine }
         content.must_match %(mount Api::Application, at: '/api')
         content.must_match %(require_relative '../apps/api/application')
         content = @root.join('.env.development').read
-        content.must_match %(API_DATABASE_URL)
+        content.wont_match %(API_DATABASE_URL)
         content.must_match %(API_SESSIONS_SECRET)
         content = @root.join('.env.test').read
-        content.must_match %(API_DATABASE_URL)
+        content.wont_match %(API_DATABASE_URL)
         content.must_match %(API_SESSIONS_SECRET)
       end
 
