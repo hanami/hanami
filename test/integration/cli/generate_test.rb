@@ -162,9 +162,10 @@ template=#{ template_engine }
       end
 
       it 'generates new container' do
-        @root.join('apps/api/controllers/home/index.rb').must_be      :exist?
-        @root.join('apps/api/views/home/index.rb').must_be            :exist?
-        @root.join('apps/api/templates/home/index.html.erb').must_be  :exist?
+        @root.join('apps/api/controllers/home/index.rb').wont_be      :exist?
+        @root.join('apps/api/views/home/index.rb').wont_be            :exist?
+        @root.join('apps/api/templates/home/index.html.erb').wont_be  :exist?
+
         @root.join('apps/api/application.rb').must_be                 :exist?
         @root.join('apps/api/config/routes.rb').must_be               :exist?
         @root.join('apps/api/views/application_layout.rb').must_be    :exist?
