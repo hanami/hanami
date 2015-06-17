@@ -1,0 +1,9 @@
+require 'rubygems'
+require 'bundler/setup'
+require 'lotus/setup'
+require_relative '../lib/<%= config[:app_name] %>'
+require_relative '../apps/application'
+
+Lotus::Container.configure do
+  mount <%= config[:classified_app_name] %>::Application, at: '<%= config[:application_base_url] %>'
+end

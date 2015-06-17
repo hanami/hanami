@@ -1,0 +1,5 @@
+module <%= config[:classified_app_name] %>::Views::Home
+  class Index
+    include <%= config[:classified_app_name] %>::View
+  end
+end
