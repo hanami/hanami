@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../../../../<%= config[:view_path] %>'
+require_relative '<%= config[:relative_view_path] %>'
 
 describe <%= config[:app] %>::Views::<%= config[:controller] %>::<%= config[:action] %> do
   let(:exposures) { Hash[foo: 'bar'] }

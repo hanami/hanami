@@ -42,12 +42,14 @@ module Lotus
         assert_action!
 
         opts = {
-          app:           app,
-          controller:    @controller_name,
-          action:        @action_name,
-          action_path:   _action_path_without_suffix,
-          view_path:     _view_path_without_suffix,
-          template_path: _template_path,
+          app:                  app,
+          controller:           @controller_name,
+          action:               @action_name,
+          action_path:          _action_path_without_suffix,
+          relative_action_path: _relative_action_path,
+          relative_view_path:   _relative_view_path,
+          view_path:            _view_path_without_suffix,
+          template_path:        _template_path,
         }
 
         test_type = case options[:test]
@@ -98,6 +100,15 @@ module Lotus
         end
       end
 
+      def app
+        if env.container?
+          super
+        else
+          env.require_application_environment
+          Utils::String.new(Lotus::Application.applications.first).namespace
+        end
+      end
+
       # @since 0.3.0
       # @api private
       def generate_route
@@ -115,7 +126,8 @@ module Lotus
       # @since 0.3.0
       # @api private
       def _routes_path
-        env.root.join("config", "routes#{ SUFFIX }")
+        routes_root = env.container? ? app_root : env.root
+        routes_root.join("config", "routes#{ SUFFIX }")
       end
 
       # @since 0.3.0
@@ -158,6 +170,24 @@ module Lotus
       # @api private
       def _view_spec_path
         spec_root.join(app_name, 'views', @controller, "#{ @action }_spec#{ SUFFIX }")
+      end
+
+      # @since x.x.x
+      # @api private
+      def _relative_action_path
+        result = '../../../'
+        result << '../' if env.container?
+        result << _action_path_without_suffix.to_s
+        result
+      end
+
+      # @since x.x.x
+      # @api private
+      def _relative_view_path
+        result = '../../../'
+        result << '../' if env.container?
+        result << _view_path_without_suffix.to_s
+        result
       end
     end
   end

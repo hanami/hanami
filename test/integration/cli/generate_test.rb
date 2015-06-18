@@ -121,6 +121,8 @@ template=#{ template_engine }
         let(:app_name) { nil }
 
         it 'generates an action' do
+          sleep 0.1 # required when running CI
+
           @root.join('app/controllers/dashboard/index.rb').must_be      :exist?
           @root.join('app/views/dashboard/index.rb').must_be            :exist?
           @root.join('app/templates/dashboard/index.html.erb').must_be  :exist?
@@ -131,6 +133,8 @@ template=#{ template_engine }
         end
 
         it 'generates an action without view' do
+          sleep 0.1 # required when running CI
+
           @root.join('app/controllers/dashboard/foo.rb').must_be      :exist?
           @root.join('app/views/dashboard/foo.rb').wont_be            :exist?
           @root.join('app/templates/dashboard/foo.html.erb').wont_be  :exist?
