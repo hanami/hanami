@@ -17,6 +17,7 @@ if ENV['COVERAGE'] == 'true'
 end
 
 FIXTURES_ROOT = Pathname(File.dirname(__FILE__) + '/fixtures').realpath
+ENV_LOCALHOST = !!ENV['TRAVIS'] ? '0.0.0.0' : 'localhost'
 
 require 'minitest/autorun'
 $:.unshift 'lib'

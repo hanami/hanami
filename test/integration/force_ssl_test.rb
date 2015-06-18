@@ -22,7 +22,7 @@ describe 'ForceSslApp' do
 
       response.status.must_equal              301
       response.body.must_equal                ''
-      response.headers['Location'].must_equal 'https://localhost:2300/'
+      response.headers['Location'].must_equal "https://#{ ENV_LOCALHOST }:2300/"
     end
 
     %w{post put patch delete options}.each do |verb|
@@ -31,14 +31,14 @@ describe 'ForceSslApp' do
 
         response.status.must_equal              307
         response.body.must_equal                ''
-        response.headers['Location'].must_equal 'https://localhost:2300/'
+        response.headers['Location'].must_equal "https://#{ ENV_LOCALHOST }:2300/"
       end
     end
   end
 
   describe 'with HTTPS scheme' do
     it 'returns the resource' do
-      get 'https://localhost:2300/'
+      get "https://#{ ENV_LOCALHOST }:2300/"
 
       response.status.must_equal 200
       response.body.must_equal   'this is the body'
@@ -49,7 +49,7 @@ describe 'ForceSslApp' do
 
     %w{post put patch delete options}.each do |verb|
       it "redirects to the same resource that uses SSL, and forces the same method (#{ verb })" do
-        public_send verb, 'https://localhost:2300/'
+        public_send verb, "https://#{ ENV_LOCALHOST }:2300/"
 
         response.status.must_equal 200
         response.body.must_equal   'this is the body'
