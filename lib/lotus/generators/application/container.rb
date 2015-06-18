@@ -13,7 +13,7 @@ module Lotus
           @lotus_head            = options.fetch(:lotus_head)
           @test                  = options[:test]
           @database              = options[:database]
-          @lotus_model_version   = '~> 0.3'
+          @lotus_model_version   = '~> 0.4'
 
           cli.class.source_root(source)
         end
