@@ -163,13 +163,13 @@ module Lotus
       # @since 0.3.0
       # @api private
       def _action_spec_path
-        spec_root.join(app_name, 'controllers', @controller, "#{ @action }_spec#{ SUFFIX }")
+        spec_root.join(app_name.to_s, 'controllers', @controller, "#{ @action }_spec#{ SUFFIX }")
       end
 
       # @since 0.3.0
       # @api private
       def _view_spec_path
-        spec_root.join(app_name, 'views', @controller, "#{ @action }_spec#{ SUFFIX }")
+        spec_root.join(app_name.to_s, 'views', @controller, "#{ @action }_spec#{ SUFFIX }")
       end
 
       # @since x.x.x

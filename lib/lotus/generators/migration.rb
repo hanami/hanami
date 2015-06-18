@@ -48,6 +48,8 @@ module Lotus
 
       private
 
+      # @since x.x.x
+      # @api private
       def name
         Utils::String.new(app_name || super).underscore
       end

@@ -10,9 +10,7 @@ module Lotus
       def initialize(command)
         super
 
-        @model = Utils::String.new(app_name).underscore
-        @model_name = Utils::String.new(@model).classify
-
+        @model_name = Utils::String.new(name).classify
         cli.class.source_root(source)
       end
 
@@ -50,28 +48,33 @@ module Lotus
       # @since 0.3.1
       # @api private
       def _entity_path
-        model_root.join("entities", "#{@model}.rb").to_s
+        model_root.join("entities", "#{ name }.rb").to_s
       end
 
       # @since 0.3.1
       # @api private
       def _repository_path
-        model_root.join("repositories", "#{@model}_repository.rb").to_s
+        model_root.join("repositories", "#{ name }_repository.rb").to_s
       end
 
       # @since 0.3.1
       # @api private
       def _entity_spec_path
-        spec_root.join(::File.basename(Dir.getwd), 'entities', "#{ @model }_spec.rb")
+        spec_root.join(::File.basename(Dir.getwd), 'entities', "#{ name }_spec.rb")
       end
 
       # @since 0.3.1
       # @api private
       def _repository_spec_path
         spec_root.join(::File.basename(Dir.getwd), 'repositories',
-          "#{ @model }_repository_spec.rb")
+          "#{ name }_repository_spec.rb")
       end
 
+      # @since x.x.x
+      # @api private
+      def name
+        Utils::String.new(app_name || super).underscore
+      end
     end
   end
 end
