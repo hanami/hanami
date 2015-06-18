@@ -1247,6 +1247,8 @@ describe Lotus::Commands::New do
           it 'generates adapter config for mysql' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+            content.must_match %(migrations 'db/migrations')
+            content.must_match %(schema     'db/schema.sql')
           end
         end
 
@@ -1255,6 +1257,8 @@ describe Lotus::Commands::New do
           it 'generates adapter config for mysql2' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+            content.must_match %(migrations 'db/migrations')
+            content.must_match %(schema     'db/schema.sql')
           end
         end
 
@@ -1263,6 +1267,8 @@ describe Lotus::Commands::New do
           it 'generates adapter config for postgresql' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+            content.must_match %(migrations 'db/migrations')
+            content.must_match %(schema     'db/schema.sql')
           end
         end
 
@@ -1272,6 +1278,8 @@ describe Lotus::Commands::New do
           it 'generates adapter config for postgres' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+            content.must_match %(migrations 'db/migrations')
+            content.must_match %(schema     'db/schema.sql')
           end
         end
 
@@ -1281,6 +1289,8 @@ describe Lotus::Commands::New do
           it 'generates adapter config for sqlite' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+            content.must_match %(migrations 'db/migrations')
+            content.must_match %(schema     'db/schema.sql')
           end
         end
 
@@ -1289,6 +1299,8 @@ describe Lotus::Commands::New do
           it 'generates adapter config for sqlite3' do
             content = @root.join('lib/chirp.rb').read
             content.must_match %(adapter type: :sql, uri: ENV['CHIRP_DATABASE_URL'])
+            content.must_match %(migrations 'db/migrations')
+            content.must_match %(schema     'db/schema.sql')
           end
         end
 
@@ -1316,7 +1328,26 @@ describe Lotus::Commands::New do
 
     describe 'db' do
       it 'generates it' do
-        @root.join('db').must_be :directory?
+        @root.join('db').must_be            :directory?
+        @root.join('db/migrations').wont_be :exist?
+      end
+
+      ['postgres', 'postgresql', 'mysql', 'mysql2', 'sqlite', 'sqlite3'].each do |database|
+        describe "with #{ database }" do
+          let(:opts) { container_options.merge(database: database) }
+
+          it "generates 'db/migrations'" do
+            @root.join('db/migrations').must_be          :directory?
+            @root.join('db/migrations/.gitkeep').must_be :exist?
+
+            @root.join('db/.gitkeep').wont_be :exist?
+          end
+
+          it "generates empty 'db/schema.sql'" do
+            @root.join('db/schema.sql').must_be      :exist?
+            @root.join('db/schema.sql').read.must_be :empty?
+          end
+        end
       end
     end
 

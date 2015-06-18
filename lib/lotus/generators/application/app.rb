@@ -52,12 +52,17 @@ module Lotus
           empty_directories = [
             "app/controllers",
             "app/views",
-            "db",
             "lib/#{ app_name }/entities",
             "lib/#{ app_name }/repositories",
             "public/javascripts",
             "public/stylesheets"
           ]
+
+          empty_directories << if sql_database?
+            "db/migrations"
+          else
+            "db"
+          end
 
           # Add testing directories (spec/ is the default for both MiniTest and RSpec)
           empty_directories << [
@@ -88,6 +93,12 @@ module Lotus
             "spec/#{ app_name }/repositories",
             "spec/support"
           ]
+
+          if sql_database?
+            templates.merge!(
+              'schema.sql.tt' => 'db/schema.sql'
+            )
+          end
 
           templates.each do |src, dst|
             cli.template(source.join(src), target.join(dst), opts)
@@ -127,6 +138,10 @@ module Lotus
             'sqlite'     => 'sqlite3',
             'sqlite3'    => 'sqlite3'
           }[@database]
+        end
+
+        def sql_database?
+          database_type == :sql
         end
 
         def database_type

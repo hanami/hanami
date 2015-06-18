@@ -25,9 +25,8 @@ module Lotus
       def initialize(command)
         super
 
-        timestamp   = Time.now.utc.strftime(TIMESTAMP_FORMAT)
-        name        = Utils::String.new(app_name).underscore
-        filename    = FILENAME % { timestamp: timestamp, name: name }
+        timestamp = Time.now.utc.strftime(TIMESTAMP_FORMAT)
+        filename  = FILENAME % { timestamp: timestamp, name: name }
 
         env.require_application_environment
         @destination = Lotus::Model.configuration.migrations.join(filename)
@@ -45,6 +44,12 @@ module Lotus
         templates.each do |src, dst|
           cli.template(source.join(src), target.join(dst), {})
         end
+      end
+
+      private
+
+      def name
+        Utils::String.new(app_name || super).underscore
       end
     end
   end

@@ -81,7 +81,7 @@ module Lotus
 
       def sanitize_input(app_name, name)
         if options[:architecture] == APP_ARCHITECTURE
-          @app_name = ''
+          @app_name = nil
           @name     = app_name
         else
           @app_name = app_name
