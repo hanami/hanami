@@ -10,14 +10,14 @@ module <%= config[:classified_app_name] %>
       # Define the root path of this application.
       # All paths specified in this configuration are relative to path below.
       #
-      root __dir__
+      root "#{ __dir__ }/.."
 
       # Relative load paths where this application will recursively load the code.
       # When you add new directories, remember to add them here.
       #
       load_paths << [
-        'controllers',
-        'views'
+        'app/controllers',
+        'app/views'
       ]
 
       # Handle exceptions with HTTP statuses (true) or don't catch them (false).
@@ -103,7 +103,7 @@ module <%= config[:classified_app_name] %>
 
       # The relative path to templates
       #
-      templates 'templates'
+      templates 'app/templates'
 
       ##
       # ASSETS

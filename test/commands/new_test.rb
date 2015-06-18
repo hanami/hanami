@@ -1460,20 +1460,20 @@ describe Lotus::Commands::New do
 
         # main configure block
         content.must_match %(configure do)
-        content.must_match %(root __dir__)
+        content.must_match 'root "#{ __dir__ }/.."'
 
         content.must_match %(routes 'config/routes')
 
         content.must_match %(layout :application)
-        content.must_match %(templates 'templates')
+        content.must_match %(templates 'app/templates')
 
         content.must_match %(# cookies true)
 
         content.must_match %(# sessions :cookie, secret: ENV['CHIRP_SESSIONS_SECRET'])
 
         content.must_match %(load_paths << [)
-        content.must_match %('controllers')
-        content.must_match %('views')
+        content.must_match %('app/controllers')
+        content.must_match %('app/views')
 
         content.must_match %(# middleware.use Rack::Protection)
 
