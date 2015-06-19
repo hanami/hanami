@@ -74,7 +74,7 @@ module Lotus
       # @since 0.3.0
       # @api private
       def generator
-        require "lotus/generators/#{ @type }"
+        require "lotus/generators/#{ @type }.rb"
         class_name = Utils::String.new(@type).classify
         Utils::Class.load!(GENERATORS_NAMESPACE % class_name).new(self)
       end
