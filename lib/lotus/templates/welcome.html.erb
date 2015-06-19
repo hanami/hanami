@@ -11,7 +11,7 @@
       h3 { font-size: 20px; line-height: 22px; color: #666; }
       hr { margin: 2em; color: #ecf0f1; }
       ul { text-align: center; }
-      li { display: inline; margin: 3em; line-height: 24px; list-style-type: none; vertical-align: text-top;}
+      li { display: inline; margin: 2em; line-height: 24px; list-style-type: none; vertical-align: text-top;}
       p { margin-top: 60px; text-align: center; }
       a { color: #333; padding: 1px; }
       code { padding: .2em; background-color: #ecf0f1 }
@@ -30,12 +30,13 @@
       <h3>Lotus is Open Source Software for MVC web development.<br />
         It's simple, fast and lightweight.</h3>
 
-      <p>Please generate a new action with <code>bundle exec lotus generate action web home#index</code>.</p>
+      <p>Please generate a new action with:<br><code>bundle exec lotus generate action<%= application_name %> home#index</code>.</p>
 
       <hr style="margin-top: 4em;"/>
       <div id="content">
         <ul>
           <li><a href="http://lotusrb.org">Website</a></li>
+          <li><a href="http://lotusrb.org/guides">Guides</a></li>
           <li><a href="http://www.rubydoc.info/gems/lotusrb">API docs</a></li>
           <li><a href="https://github.com/lotus/lotus">Source code</a></li>
           <li><a href="https://gitter.im/lotus/chat">Chat</a></li>
@@ -43,7 +44,7 @@
       </div>
     </div>
     <div id="footer">
-      &copy; 2015 Luca Guidi &mdash; Lotus is released under the MIT License.
+      &copy; 2014 - present Luca Guidi &mdash; Lotus is released under the MIT License.
     </div>
   </body>
 </html>
