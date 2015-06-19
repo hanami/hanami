@@ -24,15 +24,15 @@ module Lotus
 
       # @since 0.3.0
       # @api private
-      def initialize(command)
-        super
+      def initialize(command, environment, app_name, name)
+        super(command, environment)
 
         @name = Utils::String.new(name).underscore
         @controller, @action = @name.split(ACTION_SEPARATOR)
         @controller_name     = Utils::String.new(@controller).classify
         @action_name         = Utils::String.new(@action).classify
 
-        cli.class.source_root(source)
+        command.class.source_root(source)
       end
 
       # @since 0.3.0

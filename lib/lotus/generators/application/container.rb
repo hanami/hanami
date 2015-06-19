@@ -6,10 +6,10 @@ module Lotus
   module Generators
     module Application
       class Container < Abstract
-        def initialize(command)
-          super
+        def initialize(command, environment)
+          super(command, environment)
 
-          @slice_generator       = Slice.new(command)
+          @slice_generator       = Slice.new(command, environment)
           @lotus_head            = options.fetch(:lotus_head)
           @test                  = options[:test]
           @database              = options[:database]

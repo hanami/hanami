@@ -22,7 +22,7 @@ module Lotus
 
         require "lotus/generators/application/#{ @arch }"
         command  = Utils::String.new(@arch).classify
-        @command = Utils::Class.load!(GENERATORS_NAMESPACE % command).new(self)
+        @command = Utils::Class.load!(GENERATORS_NAMESPACE % command).new(self, environment)
       end
 
       def start

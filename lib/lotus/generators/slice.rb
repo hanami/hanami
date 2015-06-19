@@ -6,8 +6,8 @@ require 'lotus/application_name'
 module Lotus
   module Generators
     class Slice < Abstract
-      def initialize(command)
-        super
+      def initialize(command, environment)
+        super(command, environment)
 
         application_name       = ApplicationName.new(options.fetch(:application))
         @slice_name            = application_name.to_s

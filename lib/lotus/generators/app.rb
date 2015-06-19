@@ -5,8 +5,9 @@ require 'lotus/generators/slice'
 module Lotus
   module Generators
     class App < Abstract
-      def initialize(command)
-        super
+      def initialize(command, environment, name)
+        super(command, environment)
+        assert_architecture!
 
         options.merge!(app_name_options)
         @slice_generator = Slice.new(command)
@@ -19,6 +20,15 @@ module Lotus
       end
 
       private
+
+      # @since x.x.x
+      # @api private
+      def assert_architecture!
+        unless environment.container?
+          puts "New applications can be only generated with Container architecture"
+          exit 1
+        end
+      end
 
       # @since x.x.x
       # @api private
