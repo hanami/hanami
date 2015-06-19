@@ -773,6 +773,18 @@ describe Lotus::Commands::New do
       end
     end
 
+    describe 'apps/web/controllers' do
+      it 'generates it' do
+        @root.join('apps/web/controllers').must_be :exist?
+      end
+    end
+
+    describe 'apps/web/views' do
+      it 'generates it' do
+        @root.join('apps/web/views').must_be :exist?
+      end
+    end
+
     describe 'apps/web/views/application_layout.rb' do
       it 'generates it' do
         content = @root.join('apps/web/views/application_layout.rb').read

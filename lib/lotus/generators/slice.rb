@@ -38,6 +38,7 @@ module Lotus
         }
 
         empty_directories = [
+          'controllers',
           'public/javascripts',
           'public/stylesheets'
         ]
