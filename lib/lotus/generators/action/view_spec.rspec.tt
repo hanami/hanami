@@ -5,6 +5,7 @@ describe <%= config[:app] %>::Views::<%= config[:controller] %>::<%= config[:act
   let(:exposures) { Hash[foo: 'bar'] }
   let(:template)  { Lotus::View::Template.new('<%= config[:template_path] %>') }
   let(:view)      { <%= config[:app] %>::Views::<%= config[:controller] %>::<%= config[:action] %>.new(template, exposures) }
+  let(:rendered)  { view.render }
 
   it "exposes #foo" do
     expect(view.foo).to eq exposures.fetch(:foo)
