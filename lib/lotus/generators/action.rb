@@ -119,8 +119,14 @@ module Lotus
 
         # Insert at the top of the file
         cli.insert_into_file _routes_path, before: /\A(.*)/ do
-          "get '/#{ @controller }', to: '#{ @name }'\n"
+          "get '#{ _route_url }', to: '#{ @name }'\n"
         end
+      end
+
+      # @since x.x.x
+      # @api private
+      def _route_url
+        options.fetch(:url, "/#{ @controller }")
       end
 
       # @since 0.3.0
