@@ -1,6 +1,26 @@
 # Lotus
 A complete web framework for Ruby
 
+## v0.4.0 - 2015-06-23
+### Added
+- [Luca Guidi] Database migrations and new CLI commands for database operations
+- [Luca Guidi] Cross Site Request Forgery (CSRF) protection
+- [Hiếu Nguyễn & Luca Guidi] Application Architecture
+- [Alfonso Uceda Pompa] Force SSL for applications
+- [Luca Guidi] Introduced `--url` CLI argument for action generator
+- [Luca Guidi] Added `rendered` "let" variable for new generated tests for views
+
+### Fixed
+- [Alfonso Uceda Pompa] Fix generated routes for Container applications mounted on a path different from `/`.
+- [Luca Guidi] Reading `.lotusrc` pollutes `ENV` with unwanted variables.
+- [Alfonso Uceda Pompa] Added sqlite extension to SQLite/SQLite3 database URL.
+
+### Changed
+- [Luca Guidi] `.env`, `.env.development` and `.env.test` are generated and expected to be placed at the root of the project.
+- [Luca Guidi] Remove database mapping from generated apps.
+- [Trung Lê & Luca Guidi] Remove default generated from new apps.
+- [Luca Guidi] New application should depend on `lotus-model ~> 0.4`
+
 ## v0.3.2 - 2015-05-22
 ### Added
 - [Alfonso Uceda Pompa] Automatic secure cookies if the current connection is using HTTPS.

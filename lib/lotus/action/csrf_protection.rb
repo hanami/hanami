@@ -4,7 +4,7 @@ module Lotus
   module Action
     # Invalid CSRF Token
     #
-    # @since x.x.x
+    # @since 0.4.0
     class InvalidCSRFTokenError < ::StandardError
     end
 
@@ -28,7 +28,7 @@ module Lotus
     #
     # We can disable this check on action basis, by overriding <tt>#verify_csrf_token?</tt>.
     #
-    # @since x.x.x
+    # @since 0.4.0
     #
     # @see https://www.owasp.org/index.php/Cross-Site_Request_Forgery_%28CSRF%29
     # @see https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet
@@ -72,7 +72,7 @@ module Lotus
       #
       # This key is shared with <tt>lotus-controller</tt> and <tt>lotus-helpers</tt>
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       CSRF_TOKEN = :_csrf_token
 
@@ -81,7 +81,7 @@ module Lotus
       # By default, the check isn't performed if the request method is included
       # in this list.
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       IDEMPOTENT_HTTP_METHODS = Hash[
         'GET'     => true,
@@ -90,7 +90,7 @@ module Lotus
         'OPTIONS' => true
       ].freeze
 
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def self.included(action)
         action.class_eval do
@@ -101,7 +101,7 @@ module Lotus
       private
       # Set CSRF Token in session
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def set_csrf_token
         session[CSRF_TOKEN] ||= generate_csrf_token
@@ -115,7 +115,7 @@ module Lotus
       # To bypass the security check, please override <tt>#verify_csrf_token?</tt>.
       # For custom handling of an attack, please override <tt>#handle_invalid_csrf_token</tt>.
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def verify_csrf_token
         handle_invalid_csrf_token if invalid_csrf_token?
@@ -125,7 +125,7 @@ module Lotus
       #
       # Don't override this method.
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def invalid_csrf_token?
         verify_csrf_token? &&
@@ -134,7 +134,7 @@ module Lotus
 
       # Generates a random CSRF Token
       #
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def generate_csrf_token
         SecureRandom.hex(32)
@@ -144,7 +144,7 @@ module Lotus
       #
       # Override and return <tt>false</tt> if you want to bypass security check.
       #
-      # @since x.x.x
+      # @since 0.4.0
       def verify_csrf_token?
         !IDEMPOTENT_HTTP_METHODS[request_method]
       end
@@ -157,7 +157,7 @@ module Lotus
       #
       # @raise [Lotus::Action::InvalidCSRFTokenError]
       #
-      # @since x.x.x
+      # @since 0.4.0
       def handle_invalid_csrf_token
         session.clear
         raise InvalidCSRFTokenError.new

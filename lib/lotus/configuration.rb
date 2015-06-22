@@ -112,7 +112,7 @@ module Lotus
     #
     # @return [Boolean]
     #
-    # @since x.x.x
+    # @since 0.4.0
     #
     # @see Lotus::Routing::ForceSsl
     def force_ssl(value = nil)
@@ -1646,7 +1646,7 @@ module Lotus
     #
     # @return [String, NilClass] path prefix for routes
     #
-    # @since x.x.x
+    # @since 0.4.0
     # @api private
     def path_prefix(value = nil)
       if value.nil?

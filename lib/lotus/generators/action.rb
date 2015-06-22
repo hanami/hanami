@@ -123,7 +123,7 @@ module Lotus
         end
       end
 
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def _route_url
         options.fetch(:url, "/#{ @controller }")
@@ -178,7 +178,7 @@ module Lotus
         spec_root.join(app_name.to_s, 'views', @controller, "#{ @action }_spec#{ SUFFIX }")
       end
 
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def _relative_action_path
         result = '../../../'
@@ -187,7 +187,7 @@ module Lotus
         result
       end
 
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def _relative_view_path
         result = '../../../'

@@ -3,6 +3,16 @@
 
 ## Features
 
+## v0.4.0 - 2015-06-23
+
+- Application architecture
+- Database migrations
+- CLI: `lotus db` commands: `create`, `drop`, `prepare`, `migrate`, `version`, `apply`.
+- HTML5 Form helpers
+- Cross Site Request Forgery (CSRF) protection
+- Force SSL
+- Number formatting helper
+
 ## v0.3.2 - 2015-05-22
 
 - Automatic secure cookies

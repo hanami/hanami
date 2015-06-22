@@ -70,7 +70,7 @@ module Lotus
           "#{ name }_repository_spec.rb")
       end
 
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def name
         Utils::String.new(app_name || super).underscore

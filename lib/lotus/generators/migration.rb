@@ -3,24 +3,24 @@ require 'lotus/utils/string'
 
 module Lotus
   module Generators
-    # @since x.x.x
+    # @since 0.4.0
     # @api private
     class Migration < Abstract
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       #
       # @example
       #   20150612160502
       TIMESTAMP_FORMAT = '%Y%m%d%H%M%S'.freeze
 
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       #
       # @example
       #   20150612160502_create_books.rb
       FILENAME = '%{timestamp}_%{name}.rb'.freeze
 
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def initialize(command)
         super
@@ -34,7 +34,7 @@ module Lotus
         cli.class.source_root(source)
       end
 
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def start
         templates = {
@@ -48,7 +48,7 @@ module Lotus
 
       private
 
-      # @since x.x.x
+      # @since 0.4.0
       # @api private
       def name
         Utils::String.new(app_name || super).underscore
