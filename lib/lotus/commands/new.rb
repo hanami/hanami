@@ -1,4 +1,5 @@
 require 'pathname'
+require 'securerandom'
 require 'lotus/application_name'
 require 'lotus/utils/string'
 require 'lotus/utils/class'

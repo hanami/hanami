@@ -1,6 +1,7 @@
 require 'lotus'
 require 'lotus/model'
 require 'lotus/helpers'
+require 'securerandom'
 
 ADAPTER_TYPE =  if RUBY_ENGINE == 'jruby'
                   require 'jdbc/sqlite3'
