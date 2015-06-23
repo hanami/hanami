@@ -95,7 +95,7 @@ module Lotus
       def self.included(action)
         action.class_eval do
           before :set_csrf_token, :verify_csrf_token
-        end
+        end unless Lotus.env?(:test)
       end
 
       private
