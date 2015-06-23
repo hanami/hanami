@@ -46,6 +46,38 @@ describe Lotus::Action::CSRFProtection do
         status.must_equal 200
       end
     end
+
+    describe "when LOTUS_ENV is 'test'" do
+      before do
+        @lotus_env       = ENV['LOTUS_ENV']
+        ENV['LOTUS_ENV'] = 'test'
+
+        @action = Class.new do
+          include Lotus::Action
+          include Lotus::Action::Session
+          include Lotus::Action::CSRFProtection
+
+          configuration.handle_exceptions false
+
+          def call(env)
+            # ...
+          end
+        end.new
+      end
+
+      after do
+        ENV['LOTUS_ENV'] = @lotus_env
+      end
+
+      [ 'POST', 'PATCH', 'PUT', 'DELETE' ].each do |verb|
+        it "doesn't raises error if token doesn't match (#{ verb })" do
+          env = Rack::MockRequest.env_for('/', method: verb, params: { '_csrf_token' => 'nope' })
+          status, _, _ = @action.call(env)
+
+          status.must_equal 200
+        end
+      end
+    end
   end
 
   describe "with concrete params" do
