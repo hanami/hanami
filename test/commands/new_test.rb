@@ -1041,6 +1041,7 @@ describe Lotus::Commands::New do
         content = @root.join('.env.development').read
         content.must_match %(# Define ENV variables for development environment)
         content.must_match %(CHIRP_DATABASE_URL="file:///db/chirp_development")
+        content.wont_match %(CHIRP_SESSIONS_SECRET="")
         content.must_match %(CHIRP_SESSIONS_SECRET=)
       end
 
@@ -1141,6 +1142,7 @@ describe Lotus::Commands::New do
         content = @root.join('.env.test').read
         content.must_match %(# Define ENV variables for test environment)
         content.must_match %(CHIRP_DATABASE_URL="file:///db/chirp_test")
+        content.wont_match %(CHIRP_SESSIONS_SECRET="")
         content.must_match %(CHIRP_SESSIONS_SECRET=)
       end
 
