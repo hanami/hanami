@@ -92,7 +92,7 @@ describe Lotus::Action::CSRFProtection do
 
       after do
         ENV['LOTUS_ENV'] = @lotus_env
-        ENV['RACK_ENV'] = @rack_env
+        ENV['RACK_ENV']  = @rack_env
       end
 
       [ 'POST', 'PATCH', 'PUT', 'DELETE' ].each do |verb|

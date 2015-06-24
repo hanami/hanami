@@ -236,6 +236,18 @@ describe 'A full stack Lotus application' do
   end
 
   describe "CSRF Protection" do
+    before do
+      @lotus_env       = ENV['LOTUS_ENV']
+      @rack_env        = ENV['RACK_ENV']
+      ENV['LOTUS_ENV'] = 'test'
+      ENV['RACK_ENV']  = 'test'
+    end
+
+    after do
+      ENV['LOTUS_ENV'] = @lotus_env
+      ENV['RACK_ENV']  = @rack_env
+    end
+
     it "handles create action" do
       post "/authors", name: "L"
 
