@@ -1,6 +1,7 @@
 require 'thread'
 require 'pathname'
 require 'dotenv'
+require 'lotus/utils'
 require 'lotus/utils/hash'
 require 'lotus/lotusrc'
 
