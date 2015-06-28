@@ -1,2 +1,5 @@
 /db/<%= config[:app_name] %>_development
 /db/<%= config[:app_name] %>_test
+.env
+.env.test
+.env.development
