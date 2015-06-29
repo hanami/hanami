@@ -188,7 +188,7 @@ module ContainerForceSsl
   class Application < Lotus::Application
     configure do
       routes do
-        get     '/', to: 'home#show'
+        get '/', to: 'home#show'
       end
 
       force_ssl true
@@ -216,7 +216,7 @@ module ContainerNoForceSsl
   class Application < Lotus::Application
     configure do
       routes do
-        get     '/', to: 'home#show'
+        get '/', to: 'home#show'
       end
     end
 
@@ -240,18 +240,16 @@ module Back
   class Application < Lotus::Application
     configure do
       routes do
-        get     '/home', to: 'home#show', as: :home
-        get     '/users', to: 'users#index'
+        get '/home',  to: 'home#show', as: :home
+        get '/users', to: 'users#index'
       end
     end
-
-    load!
   end
 
   module Controllers
     module Home
       class Show
-        include Back::Action
+        include Lotus::Action
 
         def call(params)
           self.body = 'hello Back'
@@ -260,7 +258,7 @@ module Back
     end
     module Users
       class Index
-        include Back::Action
+        include Lotus::Action
 
         def call(params)
           self.body = 'hello from Back users endpoint'
@@ -269,21 +267,20 @@ module Back
     end
   end
 end
+
 module Front
   class Application < Lotus::Application
     configure do
       routes do
-        get     '/home', to: 'home#show', as: :home
+        get '/home', to: 'home#show', as: :home
       end
     end
-
-    load!
   end
 
   module Controllers
     module Home
       class Show
-        include Front::Action
+        include Lotus::Action
 
         def call(params)
           self.body = 'hello Front'

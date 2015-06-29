@@ -11,6 +11,8 @@ describe Lotus::Container do
     end
 
     @container = Lotus::Container.new
+    Front::Application.load!
+    Back::Application.load!
   end
 
   def app
@@ -21,7 +23,7 @@ describe Lotus::Container do
     last_response
   end
 
-  it 'should reach to endpoints' do
+  it 'reach to endpoints' do
     get '/back/home'
     response.status.must_equal 200
     response.body.must_equal 'hello Back'
@@ -35,7 +37,7 @@ describe Lotus::Container do
     response.body.must_equal 'hello from Back users endpoint'
   end
 
-  it 'should print correct routes' do
+  it 'print correct routes' do
     matches = [
       'GET, HEAD  /front/home                    Front::Controllers::Home::Show',
       'GET, HEAD  /back/home                     Back::Controllers::Home::Show',
@@ -46,7 +48,7 @@ describe Lotus::Container do
     end
   end
 
-  it 'should generate correct urls with route helpers' do
+  it 'generate correct urls with route helpers' do
     Front::Routes.path(:home).must_equal '/front/home'
     Back::Routes.path(:home).must_equal '/back/home'
   end
