@@ -240,7 +240,7 @@ module Back
   class Application < Lotus::Application
     configure do
       routes do
-        get     '/home', to: 'home#show'
+        get     '/home', to: 'home#show', as: :home
         get     '/users', to: 'users#index'
       end
     end
@@ -273,7 +273,7 @@ module Front
   class Application < Lotus::Application
     configure do
       routes do
-        get     '/home', to: 'home#show'
+        get     '/home', to: 'home#show', as: :home
       end
     end
 

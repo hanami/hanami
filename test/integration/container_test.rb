@@ -45,4 +45,9 @@ describe Lotus::Container do
       @container.routes.inspector.to_s.must_match match
     end
   end
+
+  it 'should generate correct urls with route helpers' do
+    Front::Routes.path(:home).must_equal '/front/home'
+    Back::Routes.path(:home).must_equal '/back/home'
+  end
 end
