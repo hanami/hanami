@@ -169,10 +169,12 @@ describe Lotus::Commands::Console do
       before do
         @old_pwd = Dir.pwd
         Dir.chdir 'test/fixtures/microservices'
+        Lotus::Container.class_variable_set(:@@configuration, Proc.new{})
       end
 
       after do
         Dir.chdir @old_pwd
+        Lotus::Container.remove_class_variable(:@@configuration)
       end
 
       it 'requires that file and starts a console session' do
@@ -202,6 +204,14 @@ describe Lotus::Commands::Console do
         Hash[environment: 'test/fixtures/microservices/config/environment']
       }
 
+      before do
+        Lotus::Container.class_variable_set(:@@configuration, Proc.new{})
+      end
+
+      after do
+        Lotus::Container.remove_class_variable(:@@configuration)
+      end
+
       it 'requires that file and starts a console session' do
         console.stub :engine, @engine do
           console.start
@@ -230,10 +240,12 @@ describe Lotus::Commands::Console do
 
       @engine = Minitest::Mock.new
       @engine.expect(:start, nil)
+      Lotus::Container.class_variable_set(:@@configuration, Proc.new{})
     end
 
     after do
       Lotus::Utils::IO.silence_warnings { TOPLEVEL_BINDING = @old_main }
+      Lotus::Container.remove_class_variable(:@@configuration)
     end
 
     it 'mixes convenience methods into the TOPLEVEL_BINDING' do
