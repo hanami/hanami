@@ -155,26 +155,6 @@ class DisabledCSRFAction
   end
 end
 
-module Admin
-  class Application < Lotus::Application
-    configure do
-      routes do
-        get '/home', to: 'home#index', as: :home
-      end
-    end
-  end
-end
-
-module CallCenter
-  class Application < Lotus::Application
-    configure do
-      routes do
-        get '/home', to: 'home#index', as: :home
-      end
-    end
-  end
-end
-
 module ForceSslApp
   class Application < Lotus::Application
     configure do
@@ -208,7 +188,7 @@ module ContainerForceSsl
   class Application < Lotus::Application
     configure do
       routes do
-        get     '/', to: 'home#show'
+        get '/', to: 'home#show'
       end
 
       force_ssl true
@@ -236,7 +216,7 @@ module ContainerNoForceSsl
   class Application < Lotus::Application
     configure do
       routes do
-        get     '/', to: 'home#show'
+        get '/', to: 'home#show'
       end
     end
 
@@ -255,3 +235,58 @@ module ContainerNoForceSsl
     end
   end
 end
+
+module Back
+  class Application < Lotus::Application
+    configure do
+      routes do
+        get '/home',  to: 'home#show', as: :home
+        get '/users', to: 'users#index'
+      end
+    end
+  end
+
+  module Controllers
+    module Home
+      class Show
+        include Lotus::Action
+
+        def call(params)
+          self.body = 'hello Back'
+        end
+      end
+    end
+    module Users
+      class Index
+        include Lotus::Action
+
+        def call(params)
+          self.body = 'hello from Back users endpoint'
+        end
+      end
+    end
+  end
+end
+
+module Front
+  class Application < Lotus::Application
+    configure do
+      routes do
+        get '/home', to: 'home#show', as: :home
+      end
+    end
+  end
+
+  module Controllers
+    module Home
+      class Show
+        include Lotus::Action
+
+        def call(params)
+          self.body = 'hello Front'
+        end
+      end
+    end
+  end
+end
+
