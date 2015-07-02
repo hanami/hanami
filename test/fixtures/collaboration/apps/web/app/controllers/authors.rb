@@ -3,7 +3,6 @@ module Collaboration::Controllers::Authors
     include Collaboration::Action
 
     def call(params)
-      verify_csrf_token
       # pretend it was going to persist
     end
   end
@@ -12,7 +11,6 @@ module Collaboration::Controllers::Authors
     include Collaboration::Action
 
     def call(params)
-      verify_csrf_token
       # pretend it was going to persist
     end
   end
@@ -21,7 +19,6 @@ module Collaboration::Controllers::Authors
     include Collaboration::Action
 
     def call(params)
-      verify_csrf_token
       # pretend it was going to persist
     end
   end

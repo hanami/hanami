@@ -4,7 +4,6 @@ module Collaboration::Controllers::Books
     expose :book
 
     def call(params)
-      set_csrf_token
       @book = Book.new
     end
   end
@@ -32,7 +31,6 @@ module Collaboration::Controllers::Books
     expose :book
 
     def call(params)
-      set_csrf_token
       @book = BookRepository.find(params[:id])
     end
   end
