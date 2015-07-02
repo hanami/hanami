@@ -148,6 +148,64 @@ describe Lotus::Commands::Generate do
       end
     end
 
+    # See https://github.com/lotus/lotus/issues/282
+    describe 'with slash separator' do
+      let(:target_name) { 'authors/index' }
+
+      before do
+        capture_io { command.start }
+      end
+
+      describe 'apps/web/config/routes.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/config/routes.rb').read
+          content.must_match %(get '/authors', to: 'authors#index')
+        end
+      end
+
+      describe 'apps/web/controllers/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/controllers/authors/index.rb').read
+          content.must_match %(module Web::Controllers::Authors)
+        end
+      end
+
+      describe 'spec/web/controllers/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/controllers/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/controllers/authors/index')
+          content.must_match %(describe Web::Controllers::Authors::Index do)
+          content.must_match %(  let(:action) { Web::Controllers::Authors::Index.new })
+        end
+      end
+
+      describe 'apps/web/views/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/views/authors/index.rb').read
+          content.must_match %(module Web::Views::Authors)
+        end
+      end
+
+      describe 'spec/web/views/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/views/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/views/authors/index')
+          content.must_match %(describe Web::Views::Authors::Index do)
+          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/authors/index.html.erb') })
+          content.must_match %(  let(:view)      { Web::Views::Authors::Index.new(template, exposures) })
+        end
+      end
+
+      describe 'apps/web/templates/authors/index.html.erb' do
+        it 'generates it' do
+          content = @root.join('apps/web/templates/authors/index.html.erb').read
+          content.must_be :empty?
+        end
+      end
+    end
+
     describe 'with --skip-view flag' do
       let(:opts) { default_options.merge(skip_view: true) }
 

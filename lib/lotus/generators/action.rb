@@ -10,6 +10,10 @@ module Lotus
       # @api private
       ACTION_SEPARATOR = /\/|\#/
 
+      # @since x.x.x
+      # @api private
+      ROUTE_ENDPOINT_SEPARATOR = '#'.freeze
+
       # @since 0.3.0
       # @api private
       SUFFIX           = '.rb'.freeze
@@ -119,7 +123,7 @@ module Lotus
 
         # Insert at the top of the file
         cli.insert_into_file _routes_path, before: /\A(.*)/ do
-          "get '#{ _route_url }', to: '#{ @name }'\n"
+          "get '#{ _route_url }', to: '#{ _route_endpoint }'\n"
         end
       end
 
@@ -127,6 +131,12 @@ module Lotus
       # @api private
       def _route_url
         options.fetch(:url, "/#{ @controller }")
+      end
+
+      # @since x.x.x
+      # @api private
+      def _route_endpoint
+        "#{ @controller }#{ROUTE_ENDPOINT_SEPARATOR}#{ @action }"
       end
 
       # @since 0.3.0
