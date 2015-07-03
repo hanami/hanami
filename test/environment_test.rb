@@ -32,6 +32,14 @@ describe Lotus::Environment do
         ENV['WAT'].must_equal 'true'
       end
 
+      it 'sets env vars from .env.local' do
+        ENV['BAR'].must_equal 'other_foo'
+      end
+
+      it 'sets env vars from local environment .env' do
+        ENV['DEV'].must_equal 'true'
+      end
+
       describe 'when the .env is missing' do
         before do
           Dir.chdir($pwd)
