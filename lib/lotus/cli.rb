@@ -61,7 +61,7 @@ module Lotus
     end
 
     desc 'new', 'generates a new application'
-    method_option :database,             aliases: ['-d', '--db']    desc: 'application database (filesystem/memory/postgresql/sqlite3/mysql)', type: :string,  default: 'filesystem'
+    method_option :database,             aliases: ['-d', '--db'],   desc: 'application database (filesystem/memory/postgresql/sqlite3/mysql)', type: :string,  default: 'filesystem'
     method_option :architecture,         aliases: ['-a', '--arch'], desc: 'application architecture (container/app)', type: :string, default: 'container'
     method_option :application,                                     desc: 'application name',         type: :string,  default: 'web'
     method_option :application_base_url,                            desc: 'application base url',     type: :string,  default: '/'
