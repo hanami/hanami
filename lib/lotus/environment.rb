@@ -41,6 +41,18 @@ module Lotus
     # @api private
     DEFAULT_DOTENV_ENV = '.env.%s'.freeze
 
+    # Default `.env.local` file name
+    #
+    # @since x.x.x
+    # @api private
+    DEFAULT_DOTENV_LOCAL = '.env.local'.freeze
+
+    # Default local `.env` per environment file name
+    #
+    # @since x.x.x
+    # @api private
+    DEFAULT_DOTENV_ENV_LOCAL = '.env.%s.local'.freeze
+
     # Default configuration directory under application root
     #
     # @since 0.2.0
@@ -435,6 +447,8 @@ module Lotus
     def set_application_env_vars!
       Dotenv.load     root.join(DEFAULT_DOTENV)
       Dotenv.overload root.join(DEFAULT_DOTENV_ENV % environment)
+      Dotenv.overload root.join(DEFAULT_DOTENV_LOCAL)
+      Dotenv.overload root.join(DEFAULT_DOTENV_ENV_LOCAL % environment)
     end
 
     # @since 0.1.0
