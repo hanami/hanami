@@ -26,7 +26,7 @@ module Lotus
             test:                  @test,
             database:              @database,
             database_config:       database_config,
-            lotus_model_version:   @lotus_model_version,
+            lotus_model_version:   @lotus_model_version
           }
 
           templates = {
@@ -39,6 +39,7 @@ module Lotus
             'config/environment.rb.tt' => 'config/environment.rb',
             'lib/app_name.rb.tt'       => "lib/#{ app_name }.rb",
             'lib/config/mapping.rb.tt' => 'lib/config/mapping.rb',
+            'lib/tasks/env.rake.tt'    => 'lib/tasks/env.rake'
           }
 
           empty_directories = [

@@ -158,6 +158,7 @@ describe Lotus::Commands::New do
           content.must_match %(t.libs    << 'spec')
           content.must_match %(task default: :test)
           content.must_match %(task spec: :test)
+          content.must_match %(Dir.glob('lib/tasks/*.rake').each { |r| load r })
         end
       end
 
@@ -168,6 +169,7 @@ describe Lotus::Commands::New do
           content = @root.join('Rakefile').read
           content.must_match %(RSpec::Core::RakeTask.new(:spec))
           content.must_match %(task default: :spec)
+          content.must_match %(Dir.glob('lib/tasks/*.rake').each { |r| load r })
         end
       end
     end
@@ -551,6 +553,16 @@ describe Lotus::Commands::New do
             @root.join('db/schema.sql').read.must_be :empty?
           end
         end
+      end
+    end
+
+    describe 'lib/tasks/env.rake' do
+      it 'generates it' do
+        content = @root.join('lib/tasks/env.rake').read
+        content.must_match %(task :environment do)
+        content.must_match %(  require 'lotus/environment')
+        content.must_match %(  require Lotus::Environment.new.env_config)
+        content.must_match %(end)
       end
     end
 
@@ -1362,6 +1374,16 @@ describe Lotus::Commands::New do
             @root.join('db/schema.sql').read.must_be :empty?
           end
         end
+      end
+    end
+
+    describe 'lib/tasks/env.rake' do
+      it 'generates it' do
+        content = @root.join('lib/tasks/env.rake').read
+        content.must_match %(task :environment do)
+        content.must_match %(  require 'lotus/environment')
+        content.must_match %(  require Lotus::Environment.new.env_config)
+        content.must_match %(end)
       end
     end
 
