@@ -83,7 +83,6 @@ describe Lotus::Commands::Generate do
 
           it 'generates it' do
             content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
-            content.must_match %(require 'spec_helper')
             content.must_match %(require_relative '../../../../apps/web/controllers/dashboard/index')
             content.must_match %(describe Web::Controllers::Dashboard::Index do)
             content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
@@ -126,7 +125,6 @@ describe Lotus::Commands::Generate do
 
           it 'generates it' do
             content = @root.join('spec/web/views/dashboard/index_spec.rb').read
-            content.must_match %(require 'spec_helper')
             content.must_match %(require_relative '../../../../apps/web/views/dashboard/index')
             content.must_match %(describe Web::Views::Dashboard::Index do)
             content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
@@ -424,7 +422,6 @@ describe Lotus::Commands::Generate do
 
           it 'generates it' do
             content = @root.join('spec/generate/entities/post_spec.rb').read
-            content.must_match %(require 'spec_helper')
             content.must_match %(RSpec.describe Post do)
             content.must_match %(end)
           end
@@ -446,7 +443,6 @@ describe Lotus::Commands::Generate do
 
           it 'generates it' do
             content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
-            content.must_match %(require 'spec_helper')
             content.must_match %(RSpec.describe PostRepository do)
             content.must_match %(end)
           end
