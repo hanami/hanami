@@ -87,7 +87,7 @@ describe Lotus::Commands::Generate do
             content.must_match %(describe Web::Controllers::Dashboard::Index do)
             content.must_match %(  let(:action) { described_class.new })
             content.must_match %(  let(:params) { Hash[] })
-            content.must_match %(  it "is successful" do)
+            content.must_match %(  it 'is successful' do)
             content.must_match %(    response = action.call(params))
             content.must_match %(    expect(response[0]).to eq 200)
           end
@@ -131,7 +131,7 @@ describe Lotus::Commands::Generate do
             content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })
             content.must_match %(  let(:view)      { described_class.new(template, exposures) })
             content.must_match %(  let(:rendered)  { view.render })
-            content.must_match %(  it "exposes #foo" do)
+            content.must_match %(  it 'exposes #foo' do)
             content.must_match %(    expect(view.foo).to eq exposures.fetch(:foo))
             content.must_match %(  end)
           end
