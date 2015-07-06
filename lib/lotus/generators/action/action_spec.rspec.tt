@@ -1,7 +1,7 @@
 require_relative '<%= config[:relative_action_path] %>'
 
 describe <%= config[:app] %>::Controllers::<%= config[:controller] %>::<%= config[:action] %> do
-  let(:action) { <%= config[:app] %>::Controllers::<%= config[:controller] %>::<%= config[:action] %>.new }
+  let(:action) { described_class.new }
   let(:params) { Hash[] }
 
   it "is successful" do
