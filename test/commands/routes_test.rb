@@ -31,8 +31,9 @@ describe Lotus::Commands::Routes do
           %(GET, HEAD  /                              TinyApp::Controllers::Home::Index)
         ]
 
+        actual = Lotus::Container.new.routes.inspector.to_s
         expectations.each do |expectation|
-          routes.start.must_include(expectation)
+          actual.must_include(expectation)
         end
       end
     end
@@ -66,8 +67,9 @@ describe Lotus::Commands::Routes do
           %(/welcome                       MySingleApplication::Controllers::Home::Welcome)
         ]
 
+        actual = Lotus::Application.applications.first.new.routes.inspector.to_s
         expectations.each do |expectation|
-          routes.start.must_include(expectation)
+          actual.must_include(expectation)
         end
       end
     end

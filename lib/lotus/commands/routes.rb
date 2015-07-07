@@ -7,7 +7,7 @@ module Lotus
       end
 
       def start
-        app.routes.inspector.to_s
+        puts app.routes.inspector.to_s
       end
 
       private
