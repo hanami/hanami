@@ -110,8 +110,7 @@ module Lotus
           end
 
           unless git_dir_present?
-            src_gitignore = if database_type == :file_system then 'gitignore.tt' else '.gitignore' end
-            cli.template(source.join(src_gitignore), target.join('.gitignore'), opts)
+            cli.template(source.join(database_type == :file_system ? 'gitignore.tt' : '.gitignore'), target.join('.gitignore'), opts)
             cli.run("git init #{Shellwords.escape(target)}", capture: true)
           end
         end
