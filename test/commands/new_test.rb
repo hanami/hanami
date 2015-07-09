@@ -160,7 +160,7 @@ describe Lotus::Commands::New do
           let(:opts)    { container_options.merge(database: 'foodb') }
 
           it 'raises an exception' do
-            exception = -> { command.start }.must_raise RuntimeError
+            exception = -> { capture_io { command.start } }.must_raise RuntimeError
             exception.message.must_equal '"foodb" is not a valid database type'
           end
         end
@@ -226,11 +226,26 @@ describe Lotus::Commands::New do
     end
 
     describe '.gitignore' do
-      it 'generates it' do
-        capture_io { command.start }
-        content = @root.join('.gitignore').read
-        content.must_match %(/db/chirp_development)
-        content.must_match %(/db/chirp_test)
+      describe 'when the database type is file system' do
+        let(:opts) { container_options.merge(test: 'filesystem') }
+
+        it 'generates it with content' do
+          capture_io { command.start }
+          content = @root.join('.gitignore').read
+          content.must_match %(/db/chirp_development)
+          content.must_match %(/db/chirp_test)
+        end
+      end
+
+      describe 'when the database type is not file system' do
+        let(:opts) { container_options.merge(database: 'sqlite') }
+
+        it 'generates it without content' do
+          capture_io { command.start }
+          content = @root.join('.gitignore').read
+          content.wont_match %(/db/chirp_development)
+          content.wont_match %(/db/chirp_test)
+        end
       end
     end
 
@@ -1036,7 +1051,7 @@ describe Lotus::Commands::New do
           let(:opts)    { container_options.merge(database: 'foodb') }
 
           it 'raises an exception' do
-            exception = -> { command.start }.must_raise RuntimeError
+            exception = -> { capture_io { command.start } }.must_raise RuntimeError
             exception.message.must_equal '"foodb" is not a valid database type'
           end
         end
@@ -1104,11 +1119,26 @@ describe Lotus::Commands::New do
     end
 
     describe '.gitignore' do
-      it 'generates it' do
-        capture_io { command.start }
-        content = @root.join('.gitignore').read
-        content.must_match %(/db/chirp_development)
-        content.must_match %(/db/chirp_test)
+      describe 'when the database type is file system' do
+        let(:opts) { container_options.merge(test: 'filesystem') }
+
+        it 'generates it with content' do
+          capture_io { command.start }
+          content = @root.join('.gitignore').read
+          content.must_match %(/db/chirp_development)
+          content.must_match %(/db/chirp_test)
+        end
+      end
+
+      describe 'when the database type is not file system' do
+        let(:opts) { container_options.merge(database: 'sqlite') }
+
+        it 'generates it without content' do
+          capture_io { command.start }
+          content = @root.join('.gitignore').read
+          content.wont_match %(/db/chirp_development)
+          content.wont_match %(/db/chirp_test)
+        end
       end
     end
 
