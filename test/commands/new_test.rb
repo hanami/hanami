@@ -3,11 +3,12 @@ require 'lotus/cli'
 require 'lotus/commands/new'
 
 describe Lotus::Commands::New do
-  let(:opts)    { Hash.new }
-  let(:env)     { Lotus::Environment.new(opts) }
-  let(:command) { Lotus::Commands::New.new(app_name, env, cli) }
-  let(:cli)     { Lotus::Cli.new }
+  let(:opts)         { Hash.new }
+  let(:env)          { Lotus::Environment.new(opts) }
+  let(:command)      { Lotus::Commands::New.new(app_name, env, cli) }
+  let(:cli)          { Lotus::Cli.new }
   let(:architecture) { 'container' }
+  let(:autorun)      { true }
 
   def create_temporary_dir
     tmp = Pathname.new(@pwd = Dir.pwd).join('tmp/generators/new')
@@ -39,7 +40,7 @@ describe Lotus::Commands::New do
     let(:app_name) { 'chirp' }
 
     before do
-      capture_io { command.start }
+      if autorun then capture_io { command.start } end
     end
 
     describe 'Gemfile' do
@@ -144,6 +145,16 @@ describe Lotus::Commands::New do
           it 'includes sqlite3 gem' do
             content = @root.join('Gemfile').read
             content.must_match %(gem 'sqlite3')
+          end
+        end
+
+        describe 'invalid option' do
+          let(:opts)    { container_options.merge(database: 'foodb') }
+          let(:autorun) { false }
+
+          it 'raises an exception' do
+            exception = -> { command.start }.must_raise RuntimeError
+            exception.message.must_equal '"foodb" is not a valid database type'
           end
         end
       end
@@ -849,7 +860,7 @@ describe Lotus::Commands::New do
     let(:architecture) { 'app' }
 
     before do
-      capture_io { command.start }
+      if autorun then capture_io { command.start } end
     end
 
     describe 'Gemfile' do
@@ -954,6 +965,16 @@ describe Lotus::Commands::New do
           it 'includes sqlite3 gem' do
             content = @root.join('Gemfile').read
             content.must_match %(gem 'sqlite3')
+          end
+        end
+
+        describe 'invalid option' do
+          let(:opts)    { container_options.merge(database: 'foodb') }
+          let(:autorun) { false }
+
+          it 'raises an exception' do
+            exception = -> { command.start }.must_raise RuntimeError
+            exception.message.must_equal '"foodb" is not a valid database type'
           end
         end
       end

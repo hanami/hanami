@@ -174,8 +174,10 @@ module Lotus
             "sqlite://db/#{Shellwords.escape(app_name)}"
           when 'memory'
             "memory://localhost/#{app_name}"
-          else
+          when 'filesystem'
             "file:///db/#{app_name}"
+          else
+            raise "\"#{@database}\" is not a valid database type"
           end
         end
       end
