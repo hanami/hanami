@@ -9,7 +9,9 @@ A complete web framework for Ruby
 - [Alfonso Uceda Pompa] Ensure to load correctly apps in `lotus console`
 - [Alfonso Uceda Pompa] Ensure to not duplicate prefix for Container mounted apps (eg `/admin/admin/dashboard`)
 - [Alfonso Uceda Pompa] Ensure generator for application arch to generate session secret
+- [Alfonso Uceda Pompa & Trung Lê & Hiếu Nguyễn] Exit unsuccessfully when `lotus generate model` doesn't receive a mandatory name for model
 - [Miguel Molina] Exit unsuccessfully when `lotus new --database` receives an unknown value
+- [Luca Guidi] Ensure to prepend sessions middleware, so other Rack components can have access to HTTP session
 
 ## v0.4.0 - 2015-06-23
 ### Added
