@@ -216,6 +216,15 @@ describe Lotus::Commands::Generate do
       capture_io { command.start }
     end
 
+    describe 'without model name' do
+      let(:app_name) { '' }
+
+      it 'raises error' do
+        exception = -> { capture_io { command.start } }.must_raise SystemExit
+        exception.message.must_equal 'Missing model name'
+      end
+    end
+
     describe 'lib/generate/entities/post.rb' do
       it 'generates it' do
         content = @root.join('lib/generate/entities/post.rb').read
