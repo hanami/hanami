@@ -110,7 +110,7 @@ module Lotus
           end
 
           unless git_dir_present?
-            cli.template(source.join('gitignore.tt'), target.join('.gitignore'), opts)
+            cli.template(source.join(database_type == :file_system ? 'gitignore.tt' : '.gitignore'), target.join('.gitignore'), opts)
             cli.run("git init #{Shellwords.escape(target)}", capture: true)
           end
         end
@@ -174,8 +174,10 @@ module Lotus
             "sqlite://db/#{Shellwords.escape(app_name)}"
           when 'memory'
             "memory://localhost/#{app_name}"
-          else
+          when 'filesystem'
             "file:///db/#{app_name}"
+          else
+            raise "\"#{@database}\" is not a valid database type"
           end
         end
       end

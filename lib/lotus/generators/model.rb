@@ -17,6 +17,8 @@ module Lotus
       # @since 0.3.1
       # @api private
       def start
+        assert_model!
+
         opts = {
           model_name: @model_name
         }
@@ -74,6 +76,14 @@ module Lotus
       # @api private
       def name
         Utils::String.new(app_name || super).underscore
+      end
+
+      # @since 0.4.1
+      # @api private
+      def assert_model!
+        if @model_name.nil? || @model_name.empty?
+          raise Lotus::Commands::Generate::Error.new("Missing model name")
+        end
       end
     end
   end

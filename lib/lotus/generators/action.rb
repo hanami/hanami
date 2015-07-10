@@ -10,6 +10,14 @@ module Lotus
       # @api private
       ACTION_SEPARATOR = /\/|\#/
 
+      # @since 0.4.1
+      # @api private
+      ROUTE_ENDPOINT_SEPARATOR = '#'.freeze
+
+      # @since 0.4.1
+      # @api private
+      QUOTED_NAME = /(\"|\'|\\)/
+
       # @since 0.3.0
       # @api private
       SUFFIX           = '.rb'.freeze
@@ -27,7 +35,7 @@ module Lotus
       def initialize(command)
         super
 
-        @name = Utils::String.new(name).underscore
+        @name = Utils::String.new(name).underscore.gsub(QUOTED_NAME, '')
         @controller, @action = @name.split(ACTION_SEPARATOR)
         @controller_name     = Utils::String.new(@controller).classify
         @action_name         = Utils::String.new(@action).classify
@@ -119,7 +127,7 @@ module Lotus
 
         # Insert at the top of the file
         cli.insert_into_file _routes_path, before: /\A(.*)/ do
-          "get '#{ _route_url }', to: '#{ @name }'\n"
+          "get '#{ _route_url }', to: '#{ _route_endpoint }'\n"
         end
       end
 
@@ -127,6 +135,12 @@ module Lotus
       # @api private
       def _route_url
         options.fetch(:url, "/#{ @controller }")
+      end
+
+      # @since 0.4.1
+      # @api private
+      def _route_endpoint
+        "#{ @controller }#{ROUTE_ENDPOINT_SEPARATOR}#{ @action }"
       end
 
       # @since 0.3.0

@@ -62,7 +62,7 @@ module Lotus
     #
     # @since 0.2.0
     def use(middleware, *args, &blk)
-      @stack << [middleware, args, blk]
+      @stack.unshift [middleware, args, blk]
     end
 
     # @api private

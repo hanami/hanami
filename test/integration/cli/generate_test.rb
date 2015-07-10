@@ -179,8 +179,10 @@ template=#{ template_engine }
       end
 
       it 'generates it' do
-        migration = @root.join('db/migrations').children.last
-        migration.basename.to_s.must_match(/\A[\d]{14}\_create\_books\.rb\z/)
+        migrations = @root.join('db/migrations').children.select do |pathname|
+          pathname.basename.to_s.include? migration_name
+        end
+        migrations.first.basename.to_s.must_match(/\A[\d]{14}\_create\_books\.rb\z/)
       end
     end
 

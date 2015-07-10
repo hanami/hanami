@@ -1,6 +1,7 @@
 require 'thread'
 require 'pathname'
 require 'dotenv'
+require 'lotus/utils'
 require 'lotus/utils/hash'
 require 'lotus/lotusrc'
 
@@ -360,7 +361,13 @@ module Lotus
     # @see Lotus::Commands::Server
     # @see Lotus::Environment::CODE_RELOADING
     def code_reloading?
-      @options.fetch(:code_reloading) { !!CODE_RELOADING[environment] }
+      # JRuby doesn't implement fork that's why shotgun cannot be used.
+      if Utils.jruby?
+        puts "JRuby doesn't support code reloading."
+        false
+      else
+        @options.fetch(:code_reloading) { !!CODE_RELOADING[environment] }
+      end
     end
 
     # @since 0.4.0

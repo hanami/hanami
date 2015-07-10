@@ -28,8 +28,8 @@ module Lotus
 
         # Add convenience methods to the main:Object binding
         TOPLEVEL_BINDING.eval('self').send(:include, Methods)
-        Lotus::Application.preload_applications!
 
+        load_application
         engine.start
       end
 
@@ -56,6 +56,14 @@ module Lotus
             raise ArgumentError.new("Unknown console engine: #{ engine }")
           }
         )
+      end
+
+      def load_application
+        if @environment.container?
+          Lotus::Container.new
+        else
+          Lotus::Application.preload_applications!
+        end
       end
     end
   end

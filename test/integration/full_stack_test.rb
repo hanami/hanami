@@ -6,12 +6,14 @@ describe 'A full stack Lotus application' do
   include Rack::Test::Methods
 
   before do
+    ENV['LOTUS_ENV'] = 'development'
     @current_dir = Dir.pwd
     Dir.chdir FIXTURES_ROOT.join('collaboration/apps/web')
     @app = Collaboration::Application.new
   end
 
   after do
+    ENV['LOTUS_ENV'] = 'test'
     Dir.chdir @current_dir
     @current_dir = nil
   end
@@ -237,21 +239,21 @@ describe 'A full stack Lotus application' do
 
   describe "CSRF Protection" do
     it "handles create action" do
-      post "/authors", name: "L"
+      post "/authors", name: "L", _csrf_token: 'invalid'
 
       response.status.must_equal 500
       response.body.must_match "Internal Server Error"
     end
 
     it "handles update action" do
-      patch "/authors/15", name: "MG"
+      patch "/authors/15", name: "MG", _csrf_token: 'invalid'
 
       response.status.must_equal 500
       response.body.must_match "Internal Server Error"
     end
 
     it "handles destroy action" do
-      delete "/authors/99"
+      delete "/authors/99", _csrf_token: 'invalid'
 
       response.status.must_equal 500
       response.body.must_match "Internal Server Error"

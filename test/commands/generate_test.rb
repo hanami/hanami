@@ -148,6 +148,180 @@ describe Lotus::Commands::Generate do
       end
     end
 
+    # See https://github.com/lotus/lotus/issues/282
+    describe 'with quoted name' do
+      let(:target_name) { "'authors#index'" }
+
+      before do
+        capture_io { command.start }
+      end
+
+      describe 'apps/web/config/routes.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/config/routes.rb').read
+          content.must_match %(get '/authors', to: 'authors#index')
+        end
+      end
+
+      describe 'apps/web/controllers/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/controllers/authors/index.rb').read
+          content.must_match %(module Web::Controllers::Authors)
+        end
+      end
+
+      describe 'spec/web/controllers/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/controllers/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/controllers/authors/index')
+          content.must_match %(describe Web::Controllers::Authors::Index do)
+          content.must_match %(  let(:action) { Web::Controllers::Authors::Index.new })
+        end
+      end
+
+      describe 'apps/web/views/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/views/authors/index.rb').read
+          content.must_match %(module Web::Views::Authors)
+        end
+      end
+
+      describe 'spec/web/views/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/views/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/views/authors/index')
+          content.must_match %(describe Web::Views::Authors::Index do)
+          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/authors/index.html.erb') })
+          content.must_match %(  let(:view)      { Web::Views::Authors::Index.new(template, exposures) })
+        end
+      end
+
+      describe 'apps/web/templates/authors/index.html.erb' do
+        it 'generates it' do
+          content = @root.join('apps/web/templates/authors/index.html.erb').read
+          content.must_be :empty?
+        end
+      end
+    end
+
+    # See https://github.com/lotus/lotus/issues/282
+    describe 'with double quoted name' do
+      let(:target_name) { '"authors#index"' }
+
+      before do
+        capture_io { command.start }
+      end
+
+      describe 'apps/web/config/routes.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/config/routes.rb').read
+          content.must_match %(get '/authors', to: 'authors#index')
+        end
+      end
+
+      describe 'apps/web/controllers/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/controllers/authors/index.rb').read
+          content.must_match %(module Web::Controllers::Authors)
+        end
+      end
+
+      describe 'spec/web/controllers/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/controllers/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/controllers/authors/index')
+          content.must_match %(describe Web::Controllers::Authors::Index do)
+          content.must_match %(  let(:action) { Web::Controllers::Authors::Index.new })
+        end
+      end
+
+      describe 'apps/web/views/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/views/authors/index.rb').read
+          content.must_match %(module Web::Views::Authors)
+        end
+      end
+
+      describe 'spec/web/views/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/views/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/views/authors/index')
+          content.must_match %(describe Web::Views::Authors::Index do)
+          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/authors/index.html.erb') })
+          content.must_match %(  let(:view)      { Web::Views::Authors::Index.new(template, exposures) })
+        end
+      end
+
+      describe 'apps/web/templates/authors/index.html.erb' do
+        it 'generates it' do
+          content = @root.join('apps/web/templates/authors/index.html.erb').read
+          content.must_be :empty?
+        end
+      end
+    end
+
+    # See https://github.com/lotus/lotus/issues/282
+    describe 'with escaped name' do
+      let(:target_name) { 'authors\#index' }
+
+      before do
+        capture_io { command.start }
+      end
+
+      describe 'apps/web/config/routes.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/config/routes.rb').read
+          content.must_match %(get '/authors', to: 'authors#index')
+        end
+      end
+
+      describe 'apps/web/controllers/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/controllers/authors/index.rb').read
+          content.must_match %(module Web::Controllers::Authors)
+        end
+      end
+
+      describe 'spec/web/controllers/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/controllers/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/controllers/authors/index')
+          content.must_match %(describe Web::Controllers::Authors::Index do)
+          content.must_match %(  let(:action) { Web::Controllers::Authors::Index.new })
+        end
+      end
+
+      describe 'apps/web/views/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/views/authors/index.rb').read
+          content.must_match %(module Web::Views::Authors)
+        end
+      end
+
+      describe 'spec/web/views/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/views/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/views/authors/index')
+          content.must_match %(describe Web::Views::Authors::Index do)
+          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/authors/index.html.erb') })
+          content.must_match %(  let(:view)      { Web::Views::Authors::Index.new(template, exposures) })
+        end
+      end
+
+      describe 'apps/web/templates/authors/index.html.erb' do
+        it 'generates it' do
+          content = @root.join('apps/web/templates/authors/index.html.erb').read
+          content.must_be :empty?
+        end
+      end
+    end
+
     describe 'with --skip-view flag' do
       let(:opts) { default_options.merge(skip_view: true) }
 
@@ -199,7 +373,7 @@ describe Lotus::Commands::Generate do
     end
 
     describe 'without action name' do
-    let(:target_name) { 'users' }
+      let(:target_name) { 'users' }
 
       it 'raises error' do
         -> { capture_io { command.start } }.must_raise SystemExit
@@ -212,69 +386,79 @@ describe Lotus::Commands::Generate do
     let(:target_name) { '' }
     let(:app_name)    { 'post' }
 
-    before do
-      capture_io { command.start }
-    end
-
-    describe 'lib/generate/entities/post.rb' do
-      it 'generates it' do
-        content = @root.join('lib/generate/entities/post.rb').read
-        content.must_match %(class Post)
-        content.must_match %(  include Lotus::Entity)
-        content.must_match %(end)
+    describe 'with valid arguments' do
+      before do
+        capture_io { command.start }
       end
-    end
 
-    describe 'lib/generate/repositories/post.rb' do
-      it 'generates it' do
-        content = @root.join('lib/generate/repositories/post_repository.rb').read
-        content.must_match %(class PostRepository)
-        content.must_match %(  include Lotus::Repository)
-        content.must_match %(end)
-      end
-    end
-
-    describe 'spec/generate/entities/post_spec.rb' do
-      describe 'minitest (default)' do
+      describe 'lib/generate/entities/post.rb' do
         it 'generates it' do
-          content = @root.join('spec/generate/entities/post_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(describe Post do)
+          content = @root.join('lib/generate/entities/post.rb').read
+          content.must_match %(class Post)
+          content.must_match %(  include Lotus::Entity)
           content.must_match %(end)
         end
       end
 
-      describe 'rspec' do
-        let(:opts) { default_options.merge(test: 'rspec') }
-
+      describe 'lib/generate/repositories/post.rb' do
         it 'generates it' do
-          content = @root.join('spec/generate/entities/post_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(RSpec.describe Post do)
+          content = @root.join('lib/generate/repositories/post_repository.rb').read
+          content.must_match %(class PostRepository)
+          content.must_match %(  include Lotus::Repository)
           content.must_match %(end)
+        end
+      end
+
+      describe 'spec/generate/entities/post_spec.rb' do
+        describe 'minitest (default)' do
+          it 'generates it' do
+            content = @root.join('spec/generate/entities/post_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(describe Post do)
+            content.must_match %(end)
+          end
+        end
+
+        describe 'rspec' do
+          let(:opts) { default_options.merge(test: 'rspec') }
+
+          it 'generates it' do
+            content = @root.join('spec/generate/entities/post_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(RSpec.describe Post do)
+            content.must_match %(end)
+          end
+        end
+      end
+
+      describe 'spec/generate/repositories/post_repository_spec.rb' do
+        describe 'minitest (default)' do
+          it 'generates it' do
+            content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(describe PostRepository do)
+            content.must_match %(end)
+          end
+        end
+
+        describe 'rspec' do
+          let(:opts) { default_options.merge(test: 'rspec') }
+
+          it 'generates it' do
+            content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(RSpec.describe PostRepository do)
+            content.must_match %(end)
+          end
         end
       end
     end
 
-    describe 'spec/generate/repositories/post_repository_spec.rb' do
-      describe 'minitest (default)' do
-        it 'generates it' do
-          content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(describe PostRepository do)
-          content.must_match %(end)
-        end
-      end
+    describe 'without model name' do
+      let(:app_name) { '' }
 
-      describe 'rspec' do
-        let(:opts) { default_options.merge(test: 'rspec') }
-
-        it 'generates it' do
-          content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(RSpec.describe PostRepository do)
-          content.must_match %(end)
-        end
+      it 'raises error' do
+        -> { capture_io { command.start } }.must_raise SystemExit
       end
     end
   end
