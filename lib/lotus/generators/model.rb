@@ -11,6 +11,12 @@ module Lotus
         super
 
         @model_name = Utils::String.new(name).classify
+
+        if @model_name.empty?
+          puts 'Missing model name'
+          exit 1
+        end
+
         cli.class.source_root(source)
       end
 
