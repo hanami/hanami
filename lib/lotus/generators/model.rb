@@ -78,7 +78,7 @@ module Lotus
         Utils::String.new(app_name || super).underscore
       end
 
-      # @since x.x.x
+      # @since 0.4.1
       # @api private
       def assert_model!
         if @model_name.nil? || @model_name.empty?

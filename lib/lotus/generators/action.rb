@@ -10,11 +10,11 @@ module Lotus
       # @api private
       ACTION_SEPARATOR = /\/|\#/
 
-      # @since x.x.x
+      # @since 0.4.1
       # @api private
       ROUTE_ENDPOINT_SEPARATOR = '#'.freeze
 
-      # @since x.x.x
+      # @since 0.4.1
       # @api private
       QUOTED_NAME = /(\"|\'|\\)/
 
@@ -137,7 +137,7 @@ module Lotus
         options.fetch(:url, "/#{ @controller }")
       end
 
-      # @since x.x.x
+      # @since 0.4.1
       # @api private
       def _route_endpoint
         "#{ @controller }#{ROUTE_ENDPOINT_SEPARATOR}#{ @action }"
