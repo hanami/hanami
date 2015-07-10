@@ -373,7 +373,7 @@ describe Lotus::Commands::Generate do
     end
 
     describe 'without action name' do
-    let(:target_name) { 'users' }
+      let(:target_name) { 'users' }
 
       it 'raises error' do
         -> { capture_io { command.start } }.must_raise SystemExit
@@ -386,69 +386,79 @@ describe Lotus::Commands::Generate do
     let(:target_name) { '' }
     let(:app_name)    { 'post' }
 
-    before do
-      capture_io { command.start }
-    end
-
-    describe 'lib/generate/entities/post.rb' do
-      it 'generates it' do
-        content = @root.join('lib/generate/entities/post.rb').read
-        content.must_match %(class Post)
-        content.must_match %(  include Lotus::Entity)
-        content.must_match %(end)
+    describe 'with valid arguments' do
+      before do
+        capture_io { command.start }
       end
-    end
 
-    describe 'lib/generate/repositories/post.rb' do
-      it 'generates it' do
-        content = @root.join('lib/generate/repositories/post_repository.rb').read
-        content.must_match %(class PostRepository)
-        content.must_match %(  include Lotus::Repository)
-        content.must_match %(end)
-      end
-    end
-
-    describe 'spec/generate/entities/post_spec.rb' do
-      describe 'minitest (default)' do
+      describe 'lib/generate/entities/post.rb' do
         it 'generates it' do
-          content = @root.join('spec/generate/entities/post_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(describe Post do)
+          content = @root.join('lib/generate/entities/post.rb').read
+          content.must_match %(class Post)
+          content.must_match %(  include Lotus::Entity)
           content.must_match %(end)
         end
       end
 
-      describe 'rspec' do
-        let(:opts) { default_options.merge(test: 'rspec') }
-
+      describe 'lib/generate/repositories/post.rb' do
         it 'generates it' do
-          content = @root.join('spec/generate/entities/post_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(RSpec.describe Post do)
+          content = @root.join('lib/generate/repositories/post_repository.rb').read
+          content.must_match %(class PostRepository)
+          content.must_match %(  include Lotus::Repository)
           content.must_match %(end)
+        end
+      end
+
+      describe 'spec/generate/entities/post_spec.rb' do
+        describe 'minitest (default)' do
+          it 'generates it' do
+            content = @root.join('spec/generate/entities/post_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(describe Post do)
+            content.must_match %(end)
+          end
+        end
+
+        describe 'rspec' do
+          let(:opts) { default_options.merge(test: 'rspec') }
+
+          it 'generates it' do
+            content = @root.join('spec/generate/entities/post_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(RSpec.describe Post do)
+            content.must_match %(end)
+          end
+        end
+      end
+
+      describe 'spec/generate/repositories/post_repository_spec.rb' do
+        describe 'minitest (default)' do
+          it 'generates it' do
+            content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(describe PostRepository do)
+            content.must_match %(end)
+          end
+        end
+
+        describe 'rspec' do
+          let(:opts) { default_options.merge(test: 'rspec') }
+
+          it 'generates it' do
+            content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
+            content.must_match %(require 'spec_helper')
+            content.must_match %(RSpec.describe PostRepository do)
+            content.must_match %(end)
+          end
         end
       end
     end
 
-    describe 'spec/generate/repositories/post_repository_spec.rb' do
-      describe 'minitest (default)' do
-        it 'generates it' do
-          content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(describe PostRepository do)
-          content.must_match %(end)
-        end
-      end
+    describe 'without model name' do
+      let(:app_name) { '' }
 
-      describe 'rspec' do
-        let(:opts) { default_options.merge(test: 'rspec') }
-
-        it 'generates it' do
-          content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
-          content.must_match %(require 'spec_helper')
-          content.must_match %(RSpec.describe PostRepository do)
-          content.must_match %(end)
-        end
+      it 'raises error' do
+        -> { capture_io { command.start } }.must_raise SystemExit
       end
     end
   end
