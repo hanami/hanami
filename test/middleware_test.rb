@@ -5,14 +5,19 @@ describe Lotus::Middleware do
   before do
     Dir.chdir($pwd)
     config = config_blk
-    MockApp = Module.new
+
+    MockMiddleware = Object.new
+    MockApp        = Module.new
+
     MockApp::Application = Class.new(Lotus::Application) do
       configure(&config)
     end
   end
 
   after do
-    Object.send(:remove_const, :MockApp)
+    [:MockMiddleware, :MockApp].each do |klass|
+      Object.__send__(:remove_const, klass)
+    end
   end
 
   let(:application)   { MockApp::Application.new }
@@ -23,6 +28,12 @@ describe Lotus::Middleware do
       root 'test/fixtures/collaboration/apps/web'
       serve_assets true
     end
+  end
+
+  # See https://github.com/lotus/lotus/issues/283
+  it 'prepends new added middleware' do
+    middleware.use MockMiddleware
+    middleware.stack.first.must_equal [MockMiddleware, [], nil]
   end
 
   it 'contains Rack::MethodOverride by default' do
