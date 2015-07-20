@@ -83,12 +83,11 @@ describe Lotus::Commands::Generate do
 
           it 'generates it' do
             content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
-            content.must_match %(require 'spec_helper')
             content.must_match %(require_relative '../../../../apps/web/controllers/dashboard/index')
             content.must_match %(describe Web::Controllers::Dashboard::Index do)
-            content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
+            content.must_match %(  let(:action) { described_class.new })
             content.must_match %(  let(:params) { Hash[] })
-            content.must_match %(  it "is successful" do)
+            content.must_match %(  it 'is successful' do)
             content.must_match %(    response = action.call(params))
             content.must_match %(    expect(response[0]).to eq 200)
           end
@@ -126,14 +125,13 @@ describe Lotus::Commands::Generate do
 
           it 'generates it' do
             content = @root.join('spec/web/views/dashboard/index_spec.rb').read
-            content.must_match %(require 'spec_helper')
             content.must_match %(require_relative '../../../../apps/web/views/dashboard/index')
             content.must_match %(describe Web::Views::Dashboard::Index do)
             content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
             content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })
-            content.must_match %(  let(:view)      { Web::Views::Dashboard::Index.new(template, exposures) })
+            content.must_match %(  let(:view)      { described_class.new(template, exposures) })
             content.must_match %(  let(:rendered)  { view.render })
-            content.must_match %(  it "exposes #foo" do)
+            content.must_match %(  it 'exposes #foo' do)
             content.must_match %(    expect(view.foo).to eq exposures.fetch(:foo))
             content.must_match %(  end)
           end
@@ -424,7 +422,6 @@ describe Lotus::Commands::Generate do
 
           it 'generates it' do
             content = @root.join('spec/generate/entities/post_spec.rb').read
-            content.must_match %(require 'spec_helper')
             content.must_match %(RSpec.describe Post do)
             content.must_match %(end)
           end
@@ -446,7 +443,6 @@ describe Lotus::Commands::Generate do
 
           it 'generates it' do
             content = @root.join('spec/generate/repositories/post_repository_spec.rb').read
-            content.must_match %(require 'spec_helper')
             content.must_match %(RSpec.describe PostRepository do)
             content.must_match %(end)
           end
