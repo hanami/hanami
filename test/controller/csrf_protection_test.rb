@@ -70,7 +70,7 @@ describe Lotus::Action::CSRFProtection do
       end
     end
 
-    describe "when LOTUS_ENV is't 'test'" do
+    describe "when LOTUS_ENV isn't 'test'" do
       before do
         @lotus_env       = ENV['LOTUS_ENV']
         @rack_env        = ENV['RACK_ENV']
