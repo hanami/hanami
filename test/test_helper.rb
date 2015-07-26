@@ -22,6 +22,10 @@ ENV_LOCALHOST = !!ENV['TRAVIS'] ? '0.0.0.0' : 'localhost'
 require 'minitest/autorun'
 require 'support/assertions'
 
+# Skip MRI specifc specs
+require 'minispec-metadata'
+MinispecMetadata.add_tag_string('~engine:mri') if RUBY_ENGINE != 'ruby'
+
 $:.unshift 'lib'
 require 'lotus'
 

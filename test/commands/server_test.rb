@@ -264,7 +264,7 @@ describe Lotus::Commands::Server do
     end
   end
 
-  describe 'code reloading' do
+  describe 'code reloading', engine: :mri do
     describe 'when enabled' do
       let(:opts) { Hash[code_reloading: true] }
 
