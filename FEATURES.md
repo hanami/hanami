@@ -3,6 +3,8 @@
 
 ## Features
 
+## v0.4.1 - 2015-07-10
+
 ## v0.4.0 - 2015-06-23
 
 - Application architecture

@@ -83,12 +83,11 @@ describe Lotus::Commands::Action do
 
           it 'generates it' do
             content = @root.join('spec/web/controllers/dashboard/index_spec.rb').read
-            content.must_match %(require 'spec_helper')
             content.must_match %(require_relative '../../../../apps/web/controllers/dashboard/index')
             content.must_match %(describe Web::Controllers::Dashboard::Index do)
-            content.must_match %(  let(:action) { Web::Controllers::Dashboard::Index.new })
+            content.must_match %(  let(:action) { described_class.new })
             content.must_match %(  let(:params) { Hash[] })
-            content.must_match %(  it "is successful" do)
+            content.must_match %(  it 'is successful' do)
             content.must_match %(    response = action.call(params))
             content.must_match %(    expect(response[0]).to eq 200)
           end
@@ -126,14 +125,13 @@ describe Lotus::Commands::Action do
 
           it 'generates it' do
             content = @root.join('spec/web/views/dashboard/index_spec.rb').read
-            content.must_match %(require 'spec_helper')
             content.must_match %(require_relative '../../../../apps/web/views/dashboard/index')
             content.must_match %(describe Web::Views::Dashboard::Index do)
             content.must_match %(  let(:exposures) { Hash[foo: 'bar'] })
             content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/dashboard/index.html.erb') })
-            content.must_match %(  let(:view)      { Web::Views::Dashboard::Index.new(template, exposures) })
+            content.must_match %(  let(:view)      { described_class.new(template, exposures) })
             content.must_match %(  let(:rendered)  { view.render })
-            content.must_match %(  it "exposes #foo" do)
+            content.must_match %(  it 'exposes #foo' do)
             content.must_match %(    expect(view.foo).to eq exposures.fetch(:foo))
             content.must_match %(  end)
           end
@@ -143,6 +141,180 @@ describe Lotus::Commands::Action do
       describe 'apps/web/templates/dashboard/index.html.erb' do
         it 'generates it' do
           content = @root.join('apps/web/templates/dashboard/index.html.erb').read
+          content.must_be :empty?
+        end
+      end
+    end
+
+    # See https://github.com/lotus/lotus/issues/282
+    describe 'with quoted name' do
+      let(:target_name) { "'authors#index'" }
+
+      before do
+        capture_io { command.start }
+      end
+
+      describe 'apps/web/config/routes.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/config/routes.rb').read
+          content.must_match %(get '/authors', to: 'authors#index')
+        end
+      end
+
+      describe 'apps/web/controllers/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/controllers/authors/index.rb').read
+          content.must_match %(module Web::Controllers::Authors)
+        end
+      end
+
+      describe 'spec/web/controllers/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/controllers/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/controllers/authors/index')
+          content.must_match %(describe Web::Controllers::Authors::Index do)
+          content.must_match %(  let(:action) { Web::Controllers::Authors::Index.new })
+        end
+      end
+
+      describe 'apps/web/views/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/views/authors/index.rb').read
+          content.must_match %(module Web::Views::Authors)
+        end
+      end
+
+      describe 'spec/web/views/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/views/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/views/authors/index')
+          content.must_match %(describe Web::Views::Authors::Index do)
+          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/authors/index.html.erb') })
+          content.must_match %(  let(:view)      { Web::Views::Authors::Index.new(template, exposures) })
+        end
+      end
+
+      describe 'apps/web/templates/authors/index.html.erb' do
+        it 'generates it' do
+          content = @root.join('apps/web/templates/authors/index.html.erb').read
+          content.must_be :empty?
+        end
+      end
+    end
+
+    # See https://github.com/lotus/lotus/issues/282
+    describe 'with double quoted name' do
+      let(:target_name) { '"authors#index"' }
+
+      before do
+        capture_io { command.start }
+      end
+
+      describe 'apps/web/config/routes.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/config/routes.rb').read
+          content.must_match %(get '/authors', to: 'authors#index')
+        end
+      end
+
+      describe 'apps/web/controllers/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/controllers/authors/index.rb').read
+          content.must_match %(module Web::Controllers::Authors)
+        end
+      end
+
+      describe 'spec/web/controllers/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/controllers/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/controllers/authors/index')
+          content.must_match %(describe Web::Controllers::Authors::Index do)
+          content.must_match %(  let(:action) { Web::Controllers::Authors::Index.new })
+        end
+      end
+
+      describe 'apps/web/views/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/views/authors/index.rb').read
+          content.must_match %(module Web::Views::Authors)
+        end
+      end
+
+      describe 'spec/web/views/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/views/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/views/authors/index')
+          content.must_match %(describe Web::Views::Authors::Index do)
+          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/authors/index.html.erb') })
+          content.must_match %(  let(:view)      { Web::Views::Authors::Index.new(template, exposures) })
+        end
+      end
+
+      describe 'apps/web/templates/authors/index.html.erb' do
+        it 'generates it' do
+          content = @root.join('apps/web/templates/authors/index.html.erb').read
+          content.must_be :empty?
+        end
+      end
+    end
+
+    # See https://github.com/lotus/lotus/issues/282
+    describe 'with escaped name' do
+      let(:target_name) { 'authors\#index' }
+
+      before do
+        capture_io { command.start }
+      end
+
+      describe 'apps/web/config/routes.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/config/routes.rb').read
+          content.must_match %(get '/authors', to: 'authors#index')
+        end
+      end
+
+      describe 'apps/web/controllers/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/controllers/authors/index.rb').read
+          content.must_match %(module Web::Controllers::Authors)
+        end
+      end
+
+      describe 'spec/web/controllers/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/controllers/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/controllers/authors/index')
+          content.must_match %(describe Web::Controllers::Authors::Index do)
+          content.must_match %(  let(:action) { Web::Controllers::Authors::Index.new })
+        end
+      end
+
+      describe 'apps/web/views/authors/index.rb' do
+        it 'generates it' do
+          content = @root.join('apps/web/views/authors/index.rb').read
+          content.must_match %(module Web::Views::Authors)
+        end
+      end
+
+      describe 'spec/web/views/authors/index_spec.rb' do
+        it 'generates it' do
+          content = @root.join('spec/web/views/authors/index_spec.rb').read
+          content.must_match %(require 'spec_helper')
+          content.must_match %(require_relative '../../../../apps/web/views/authors/index')
+          content.must_match %(describe Web::Views::Authors::Index do)
+          content.must_match %(  let(:template)  { Lotus::View::Template.new('apps/web/templates/authors/index.html.erb') })
+          content.must_match %(  let(:view)      { Web::Views::Authors::Index.new(template, exposures) })
+        end
+      end
+
+      describe 'apps/web/templates/authors/index.html.erb' do
+        it 'generates it' do
+          content = @root.join('apps/web/templates/authors/index.html.erb').read
           content.must_be :empty?
         end
       end
@@ -199,11 +371,13 @@ describe Lotus::Commands::Action do
     end
 
     describe 'without action name' do
-    let(:target_name) { 'users' }
+      let(:target_name) { 'users' }
 
       it 'raises error' do
         -> { capture_io { command.start } }.must_raise SystemExit
       end
     end
   end
+
+
 end

@@ -3,10 +3,10 @@ require 'lotus/cli'
 require 'lotus/commands/new'
 
 describe Lotus::Commands::New do
-  let(:opts)    { Hash.new }
-  let(:env)     { Lotus::Environment.new(opts) }
-  let(:command) { Lotus::Commands::New.new(app_name, env, cli) }
-  let(:cli)     { Lotus::Cli.new }
+  let(:opts)         { Hash.new }
+  let(:env)          { Lotus::Environment.new(opts) }
+  let(:command)      { Lotus::Commands::New.new(app_name, env, cli) }
+  let(:cli)          { Lotus::Cli.new }
   let(:architecture) { 'container' }
 
   def create_temporary_dir
@@ -38,12 +38,9 @@ describe Lotus::Commands::New do
     let(:opts)     { container_options }
     let(:app_name) { 'chirp' }
 
-    before do
-      capture_io { command.start }
-    end
-
     describe 'Gemfile' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('Gemfile').read
         content.must_match %(gem 'bundler')
         content.must_match %(gem 'rake')
@@ -56,6 +53,7 @@ describe Lotus::Commands::New do
         let(:opts) { container_options.merge(lotus_head: true) }
 
         it 'generates it' do
+          capture_io { command.start }
           content = @root.join('Gemfile').read
           content.must_match %(gem 'bundler')
           content.must_match %(gem 'rake')
@@ -72,6 +70,7 @@ describe Lotus::Commands::New do
 
       describe 'minitest (default)' do
         it 'includes minitest' do
+          capture_io { command.start }
           content = @root.join('Gemfile').read
           content.must_match %(gem 'minitest')
         end
@@ -81,6 +80,7 @@ describe Lotus::Commands::New do
         let(:opts) { container_options.merge(test: 'rspec') }
 
         it 'includes rspec' do
+          capture_io { command.start }
           content = @root.join('Gemfile').read
           content.must_match %(gem 'rspec')
         end
@@ -88,6 +88,7 @@ describe Lotus::Commands::New do
 
       describe 'production group' do
         it 'includes a server example' do
+          capture_io { command.start }
           content = @root.join('Gemfile').read
           content.must_match %(group :production do)
           content.must_match %(# gem 'puma')
@@ -97,7 +98,9 @@ describe Lotus::Commands::New do
       describe 'database option' do
         describe 'mysql' do
           let(:opts) { container_options.merge(database: 'mysql') }
+
           it 'includes mysql' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'mysql')
           end
@@ -105,7 +108,9 @@ describe Lotus::Commands::New do
 
         describe 'mysql2' do
           let(:opts) { container_options.merge(database: 'mysql2') }
+
           it 'includes mysql2' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'mysql2')
           end
@@ -115,6 +120,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'postgresql') }
 
           it 'includes pg' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'pg')
           end
@@ -124,6 +130,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'postgres') }
 
           it 'includes pg' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'pg')
           end
@@ -133,6 +140,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'sqlite') }
 
           it 'includes sqlite3 gem' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'sqlite3')
           end
@@ -142,8 +150,18 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'sqlite3') }
 
           it 'includes sqlite3 gem' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'sqlite3')
+          end
+        end
+
+        describe 'invalid option' do
+          let(:opts)    { container_options.merge(database: 'foodb') }
+
+          it 'raises an exception' do
+            exception = -> { capture_io { command.start } }.must_raise RuntimeError
+            exception.message.must_equal '"foodb" is not a valid database type'
           end
         end
       end
@@ -152,6 +170,7 @@ describe Lotus::Commands::New do
     describe 'Rakefile' do
       describe 'minitest (default)' do
         it 'generates it' do
+          capture_io { command.start }
           content = @root.join('Rakefile').read
           content.must_match %(Rake::TestTask.new)
           content.must_match %(t.pattern = 'spec/**/*_spec.rb')
@@ -165,6 +184,7 @@ describe Lotus::Commands::New do
         let(:opts) { container_options.merge(test: 'rspec') }
 
         it 'generates it' do
+          capture_io { command.start }
           content = @root.join('Rakefile').read
           content.must_match %(RSpec::Core::RakeTask.new(:spec))
           content.must_match %(task default: :spec)
@@ -174,6 +194,7 @@ describe Lotus::Commands::New do
 
     describe 'config.ru' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('config.ru').read
         content.must_match %(require './config/environment')
         content.must_match %(run Lotus::Container.new)
@@ -181,6 +202,10 @@ describe Lotus::Commands::New do
     end
 
     describe '.lotusrc' do
+      before do
+        capture_io { command.start }
+      end
+
       describe 'minitest (default)' do
         it 'generates it' do
           content = @root.join('.lotusrc').read
@@ -201,15 +226,32 @@ describe Lotus::Commands::New do
     end
 
     describe '.gitignore' do
-      it 'generates it' do
-        content = @root.join('.gitignore').read
-        content.must_match %(/db/chirp_development)
-        content.must_match %(/db/chirp_test)
+      describe 'when the database type is file system' do
+        let(:opts) { container_options.merge(test: 'filesystem') }
+
+        it 'generates it with content' do
+          capture_io { command.start }
+          content = @root.join('.gitignore').read
+          content.must_match %(/db/chirp_development)
+          content.must_match %(/db/chirp_test)
+        end
+      end
+
+      describe 'when the database type is not file system' do
+        let(:opts) { container_options.merge(database: 'sqlite') }
+
+        it 'generates it without content' do
+          capture_io { command.start }
+          content = @root.join('.gitignore').read
+          content.wont_match %(/db/chirp_development)
+          content.wont_match %(/db/chirp_test)
+        end
       end
     end
 
     describe 'config/environment.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('config/environment.rb').read
         content.must_match %(require 'rubygems')
         content.must_match %(require 'bundler/setup')
@@ -222,12 +264,17 @@ describe Lotus::Commands::New do
 
     describe '.env' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('.env').read
         content.must_match %(# Define ENV variables)
       end
     end
 
     describe '.env.development' do
+      before do
+        capture_io { command.start }
+      end
+
       it 'generates it' do
         content = @root.join('.env.development').read
         content.must_match %(# Define ENV variables for development environment)
@@ -327,6 +374,10 @@ describe Lotus::Commands::New do
     end
 
     describe '.env.test' do
+      before do
+        capture_io { command.start }
+      end
+
       it 'generates it' do
         content = @root.join('.env.test').read
         content.must_match %(# Define ENV variables for test environment)
@@ -422,6 +473,10 @@ describe Lotus::Commands::New do
     end
 
     describe 'lib/chirp.rb' do
+      before do
+        capture_io { command.start }
+      end
+
       it 'generates it' do
         content = @root.join('lib/chirp.rb').read
         content.must_match 'Dir["#{ __dir__ }/chirp/**/*.rb"].each { |file| require_relative file }'
@@ -519,6 +574,7 @@ describe Lotus::Commands::New do
 
     describe 'lib/config/mapping.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('lib/config/mapping.rb').read
         content.must_match %(# collection :users do)
         content.must_match %(#   entity     User)
@@ -530,6 +586,10 @@ describe Lotus::Commands::New do
     end
 
     describe 'db' do
+      before do
+        capture_io { command.start }
+      end
+
       it 'generates it' do
         @root.join('db').must_be            :directory?
         @root.join('db/migrations').wont_be :exist?
@@ -556,18 +616,21 @@ describe Lotus::Commands::New do
 
     describe 'lib/chirp/entities' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('lib/chirp/entities').must_be :directory?
       end
     end
 
     describe 'lib/chirp/repositories' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('lib/chirp/repositories').must_be :directory?
       end
     end
 
     describe 'empty spec/* directory' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('spec/chirp/entities').must_be :directory?
         @root.join('spec/chirp/repositories').must_be :directory?
         @root.join('spec/support').must_be :directory?
@@ -575,6 +638,10 @@ describe Lotus::Commands::New do
     end
 
     describe 'testing' do
+      before do
+        capture_io { command.start }
+      end
+
       describe 'when minitest (default)' do
         describe 'spec/chirp/entities' do
           it 'generates it' do
@@ -687,6 +754,7 @@ describe Lotus::Commands::New do
 
     describe 'config/environment.rb' do
       it 'patches the file to reference slice' do
+        capture_io { command.start }
         content = @root.join('config/environment.rb').read
         content.must_match %(require_relative '../apps/web/application')
         content.must_match %(mount Web::Application, at: '/')
@@ -695,6 +763,7 @@ describe Lotus::Commands::New do
 
     describe '.env.development' do
       it 'patches the file to reference slice env vars' do
+        capture_io { command.start }
         content = @root.join('.env.development').read
         content.wont_match %(WEB_DATABASE_URL="file:///db/web_development")
         content.must_match %r{WEB_SESSIONS_SECRET="[\w]{64}"}
@@ -703,6 +772,7 @@ describe Lotus::Commands::New do
 
     describe '.env.test' do
       it 'patches the file to reference slice env vars' do
+        capture_io { command.start }
         content = @root.join('.env.test').read
         content.wont_match %(WEB_DATABASE_URL="file:///db/web_test")
         content.must_match %r{WEB_SESSIONS_SECRET="[\w]{64}"}
@@ -711,6 +781,7 @@ describe Lotus::Commands::New do
 
     describe 'apps/web/application.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('apps/web/application.rb').read
         content.must_match %(require 'lotus/helpers')
         content.must_match %(module Web)
@@ -768,6 +839,7 @@ describe Lotus::Commands::New do
 
     describe 'apps/web/config/routes.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('apps/web/config/routes.rb').read
         content.must_match %(# Configure your routes here)
       end
@@ -775,18 +847,21 @@ describe Lotus::Commands::New do
 
     describe 'apps/web/controllers' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('apps/web/controllers').must_be :exist?
       end
     end
 
     describe 'apps/web/views' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('apps/web/views').must_be :exist?
       end
     end
 
     describe 'apps/web/views/application_layout.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('apps/web/views/application_layout.rb').read
         content.must_match %(module Web)
         content.must_match %(module Views)
@@ -797,6 +872,7 @@ describe Lotus::Commands::New do
 
     describe 'apps/web/templates/application.html.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('apps/web/templates/application.html.erb').read
         content.must_match %(<title>Web</title>)
         content.must_match %(<%= yield %>)
@@ -805,18 +881,23 @@ describe Lotus::Commands::New do
 
     describe 'apps/web/public/javascripts' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('apps/web/public/javascripts').must_be :exist?
       end
     end
 
     describe 'apps/web/public/stylesheets' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('apps/web/public/stylesheets').must_be :exist?
       end
     end
 
-
     describe 'testing' do
+      before do
+        capture_io { command.start }
+      end
+
       describe 'when minitest (default)' do
         describe 'spec/web/features' do
           it 'generates it' do
@@ -848,12 +929,9 @@ describe Lotus::Commands::New do
     let(:app_name) { 'chirp' }
     let(:architecture) { 'app' }
 
-    before do
-      capture_io { command.start }
-    end
-
     describe 'Gemfile' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('Gemfile').read
         content.must_match %(gem 'bundler')
         content.must_match %(gem 'rake')
@@ -866,6 +944,7 @@ describe Lotus::Commands::New do
         let(:opts) { container_options.merge(lotus_head: true) }
 
         it 'generates it' do
+          capture_io { command.start }
           content = @root.join('Gemfile').read
           content.must_match %(gem 'bundler')
           content.must_match %(gem 'rake')
@@ -882,6 +961,7 @@ describe Lotus::Commands::New do
 
       describe 'minitest (default)' do
         it 'includes minitest' do
+          capture_io { command.start }
           content = @root.join('Gemfile').read
           content.must_match %(gem 'minitest')
         end
@@ -891,6 +971,7 @@ describe Lotus::Commands::New do
         let(:opts) { container_options.merge(test: 'rspec') }
 
         it 'includes rspec' do
+          capture_io { command.start }
           content = @root.join('Gemfile').read
           content.must_match %(gem 'rspec')
         end
@@ -898,6 +979,7 @@ describe Lotus::Commands::New do
 
       describe 'production group' do
         it 'includes a server example' do
+          capture_io { command.start }
           content = @root.join('Gemfile').read
           content.must_match %(group :production do)
           content.must_match %(# gem 'puma')
@@ -907,7 +989,9 @@ describe Lotus::Commands::New do
       describe 'database option' do
         describe 'mysql' do
           let(:opts) { container_options.merge(database: 'mysql') }
+
           it 'includes mysql' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'mysql')
           end
@@ -915,7 +999,9 @@ describe Lotus::Commands::New do
 
         describe 'mysql2' do
           let(:opts) { container_options.merge(database: 'mysql2') }
+
           it 'includes mysql2' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'mysql2')
           end
@@ -925,6 +1011,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'postgresql') }
 
           it 'includes pg' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'pg')
           end
@@ -934,6 +1021,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'postgres') }
 
           it 'includes pg' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'pg')
           end
@@ -943,6 +1031,7 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'sqlite') }
 
           it 'includes sqlite3 gem' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'sqlite3')
           end
@@ -952,14 +1041,28 @@ describe Lotus::Commands::New do
           let(:opts) { container_options.merge(database: 'sqlite3') }
 
           it 'includes sqlite3 gem' do
+            capture_io { command.start }
             content = @root.join('Gemfile').read
             content.must_match %(gem 'sqlite3')
+          end
+        end
+
+        describe 'invalid option' do
+          let(:opts)    { container_options.merge(database: 'foodb') }
+
+          it 'raises an exception' do
+            exception = -> { capture_io { command.start } }.must_raise RuntimeError
+            exception.message.must_equal '"foodb" is not a valid database type'
           end
         end
       end
     end
 
     describe 'Rakefile' do
+      before do
+        capture_io { command.start }
+      end
+
       describe 'minitest (default)' do
         it 'generates it' do
           content = @root.join('Rakefile').read
@@ -984,6 +1087,7 @@ describe Lotus::Commands::New do
 
     describe 'config.ru' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('config.ru').read
         content.must_match %(require './config/environment')
         content.must_match %(run Chirp::Application.new)
@@ -991,6 +1095,10 @@ describe Lotus::Commands::New do
     end
 
     describe '.lotusrc' do
+      before do
+        capture_io { command.start }
+      end
+
       describe 'minitest (default)' do
         it 'generates it' do
           content = @root.join('.lotusrc').read
@@ -1011,15 +1119,32 @@ describe Lotus::Commands::New do
     end
 
     describe '.gitignore' do
-      it 'generates it' do
-        content = @root.join('.gitignore').read
-        content.must_match %(/db/chirp_development)
-        content.must_match %(/db/chirp_test)
+      describe 'when the database type is file system' do
+        let(:opts) { container_options.merge(test: 'filesystem') }
+
+        it 'generates it with content' do
+          capture_io { command.start }
+          content = @root.join('.gitignore').read
+          content.must_match %(/db/chirp_development)
+          content.must_match %(/db/chirp_test)
+        end
+      end
+
+      describe 'when the database type is not file system' do
+        let(:opts) { container_options.merge(database: 'sqlite') }
+
+        it 'generates it without content' do
+          capture_io { command.start }
+          content = @root.join('.gitignore').read
+          content.wont_match %(/db/chirp_development)
+          content.wont_match %(/db/chirp_test)
+        end
       end
     end
 
     describe 'config/environment.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('config/environment.rb').read
         content.must_match %(require 'rubygems')
         content.must_match %(require 'bundler/setup')
@@ -1031,12 +1156,17 @@ describe Lotus::Commands::New do
 
     describe '.env' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('.env').read
         content.must_match %(# Define ENV variables)
       end
     end
 
     describe '.env.development' do
+      before do
+        capture_io { command.start }
+      end
+
       it 'generates it' do
         content = @root.join('.env.development').read
         content.must_match %(# Define ENV variables for development environment)
@@ -1138,6 +1268,10 @@ describe Lotus::Commands::New do
     end
 
     describe '.env.test' do
+      before do
+        capture_io { command.start }
+      end
+
       it 'generates it' do
         content = @root.join('.env.test').read
         content.must_match %(# Define ENV variables for test environment)
@@ -1235,6 +1369,10 @@ describe Lotus::Commands::New do
     end
 
     describe 'lib/chirp.rb' do
+      before do
+        capture_io { command.start }
+      end
+
       it 'generates it' do
         content = @root.join('lib/chirp.rb').read
         content.must_match 'Dir["#{ __dir__ }/chirp/**/*.rb"].each { |file| require_relative file }'
@@ -1330,6 +1468,7 @@ describe Lotus::Commands::New do
 
     describe 'lib/config/mapping.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('lib/config/mapping.rb').read
         content.must_match %(# collection :users do)
         content.must_match %(#   entity     User)
@@ -1341,6 +1480,10 @@ describe Lotus::Commands::New do
     end
 
     describe 'db' do
+      before do
+        capture_io { command.start }
+      end
+
       it 'generates it' do
         @root.join('db').must_be            :directory?
         @root.join('db/migrations').wont_be :exist?
@@ -1367,18 +1510,21 @@ describe Lotus::Commands::New do
 
     describe 'lib/chirp/entities' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('lib/chirp/entities').must_be :directory?
       end
     end
 
     describe 'lib/chirp/repositories' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('lib/chirp/repositories').must_be :directory?
       end
     end
 
     describe 'empty spec/* directory' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('spec/chirp/entities').must_be :directory?
         @root.join('spec/chirp/repositories').must_be :directory?
         @root.join('spec/support').must_be :directory?
@@ -1386,6 +1532,10 @@ describe Lotus::Commands::New do
     end
 
     describe 'testing' do
+      before do
+        capture_io { command.start }
+      end
+
       describe 'when minitest (default)' do
         describe 'spec/chirp/entities' do
           it 'generates it' do
@@ -1498,6 +1648,7 @@ describe Lotus::Commands::New do
 
     describe 'config/application.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('config/application.rb').read
         content.must_match %(require 'lotus/helpers')
         content.must_match %(module Chirp)
@@ -1555,6 +1706,7 @@ describe Lotus::Commands::New do
 
     describe 'config/routes.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('config/routes.rb').read
         content.must_match %(# Configure your routes here)
       end
@@ -1562,18 +1714,21 @@ describe Lotus::Commands::New do
 
     describe 'app/controllers' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('app/controllers').must_be :exist?
       end
     end
 
     describe 'app/views' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('app/views').must_be :exist?
       end
     end
 
     describe 'app/views/application_layout.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('app/views/application_layout.rb').read
         content.must_match %(module Chirp)
         content.must_match %(module Views)
@@ -1584,6 +1739,7 @@ describe Lotus::Commands::New do
 
     describe 'app/templates/application.html.rb' do
       it 'generates it' do
+        capture_io { command.start }
         content = @root.join('app/templates/application.html.erb').read
         content.must_match %(<title>Chirp</title>)
         content.must_match %(<%= yield %>)
@@ -1592,17 +1748,23 @@ describe Lotus::Commands::New do
 
     describe 'public/javascripts' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('public/javascripts').must_be :exist?
       end
     end
 
     describe 'public/stylesheets' do
       it 'generates it' do
+        capture_io { command.start }
         @root.join('public/stylesheets').must_be :exist?
       end
     end
 
     describe 'testing' do
+      before do
+        capture_io { command.start }
+      end
+
       describe 'when minitest (default)' do
         describe 'spec/features' do
           it 'generates it' do

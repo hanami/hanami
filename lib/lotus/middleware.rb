@@ -62,7 +62,7 @@ module Lotus
     #
     # @since 0.2.0
     def use(middleware, *args, &blk)
-      @stack << [middleware, args, blk]
+      @stack.unshift [middleware, args, blk]
     end
 
     # @api private
@@ -94,7 +94,7 @@ module Lotus
     # @api private
     # @since 0.2.0
     def _load_default_welcome_page_for(application)
-      unless application.routes.defined?
+      unless Lotus.env?(:test) || application.routes.defined?
         require 'lotus/welcome'
         use Lotus::Welcome
       end
