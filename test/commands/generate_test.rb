@@ -40,16 +40,50 @@ describe Lotus::Commands::Generate do
     let(:target)      { :action }
     let(:target_name) { 'dashboard#index' }
 
+    describe 'http method for generated route' do
+      describe 'with valid method' do
+        before do
+          capture_io { command.start }
+        end
+
+        let(:content) { @root.join('apps/web/config/routes.rb').read }
+
+        describe 'default is get' do
+          it 'generates a get route' do
+            content.must_match %(get '/dashboard', to: 'dashboard#index')
+          end
+        end
+
+        describe 'normalizes method' do
+          let(:opts) { default_options.merge(method: 'GeT') }
+          it 'generates a get route' do
+            content.must_match %(get '/dashboard', to: 'dashboard#index')
+          end
+        end
+
+        HttpRouter::Route::VALID_HTTP_VERBS.each do |verb|
+          describe verb do
+            let(:opts) { default_options.merge(method: verb) }
+
+            it "generates a #{verb} route" do
+              content.must_match %(#{verb.downcase} '/dashboard', to: 'dashboard#index')
+            end
+          end
+        end
+      end
+
+      describe 'with invalid method' do
+        let(:opts) { default_options.merge(method: 'UNSUPPORTED') }
+
+        it 'raises error' do
+          -> { capture_io { command.start } }.must_raise SystemExit
+        end
+      end
+    end
+
     describe 'with valid arguments' do
       before do
         capture_io { command.start }
-      end
-
-      describe 'apps/web/config/routes.rb' do
-        it 'generates it' do
-          content = @root.join('apps/web/config/routes.rb').read
-          content.must_match %(get '/dashboard', to: 'dashboard#index')
-        end
       end
 
       describe 'apps/web/controllers/dashboard/index.rb' do
