@@ -100,6 +100,24 @@ module Lotus
     require 'lotus/commands/db'
     register Lotus::Commands::DB, 'db', 'db [SUBCOMMAND]', 'manage set of DB operations'
 
+    desc 'action [new]', 'generate new action'
+    method_option :application_base_url, desc: 'application base url',                                      type: :string
+    method_option :path,                 desc: 'applications path',                                         type: :string
+    method_option :url,                  desc: 'relative URL for action',                                   type: :string
+    method_option :skip_view,            desc: 'skip the creation of view and templates (only for action new)', type: :boolean, default: false
+    method_option :help, aliases: '-h',  desc: 'displays the usage method'
+
+    # @since 0.5.0
+    # @api private
+    def action_commands(type = nil, app_name = nil, name = nil)
+      if options[:help] || (type.nil? && app_name.nil? && name.nil?)
+        invoke :help, ['action']
+      else
+        require 'lotus/commands/action'
+        Lotus::Commands::Action.new(type, app_name, name, environment, self).start
+      end
+    end
+
     private
 
     def environment
