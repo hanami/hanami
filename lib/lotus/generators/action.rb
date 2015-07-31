@@ -1,5 +1,6 @@
 require 'lotus/generators/abstract'
 require 'lotus/utils/string'
+require 'lotus/routing/route'
 
 module Lotus
   module Generators
@@ -117,8 +118,8 @@ module Lotus
       # @since x.x.x
       # @api private
       def assert_http_method!
-        if !HttpRouter::Route::VALID_HTTP_VERBS.include?(_http_method.upcase)
-          raise Lotus::Commands::Generate::Error.new("Unknown HTTP method '#{_http_method}', please use one of #{HttpRouter::Route::VALID_HTTP_VERBS.join(', ')}.")
+        if !Lotus::Routing::Route::VALID_HTTP_VERBS.include?(_http_method.upcase)
+          raise Lotus::Commands::Generate::Error.new("Unknown HTTP method '#{_http_method}', please use one of #{Lotus::Routing::Route::VALID_HTTP_VERBS.join(', ')}.")
         end
       end
 

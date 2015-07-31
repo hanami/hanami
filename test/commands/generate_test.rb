@@ -1,6 +1,7 @@
 require 'test_helper'
 require 'lotus/cli'
 require 'lotus/commands/generate'
+require 'lotus/routing/route'
 
 describe Lotus::Commands::Generate do
   let(:opts)     { default_options }
@@ -61,7 +62,7 @@ describe Lotus::Commands::Generate do
           end
         end
 
-        HttpRouter::Route::VALID_HTTP_VERBS.each do |verb|
+        Lotus::Routing::Route::VALID_HTTP_VERBS.each do |verb|
           describe verb do
             let(:opts) { default_options.merge(method: verb) }
 
