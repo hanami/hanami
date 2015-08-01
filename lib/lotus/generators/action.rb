@@ -1,5 +1,6 @@
 require 'lotus/generators/abstract'
 require 'lotus/utils/string'
+require 'lotus/routing/route'
 
 module Lotus
   module Generators
@@ -30,6 +31,11 @@ module Lotus
       # @api private
       DEFAULT_TEMPLATE = 'erb'.freeze
 
+      # Default HTTP method used when generating an action.
+      # @since x.x.x
+      # @api private
+      DEFAULT_HTTP_METHOD = 'GET'.freeze
+
       # @since 0.3.0
       # @api private
       def initialize(command)
@@ -48,6 +54,7 @@ module Lotus
       def start
         assert_existing_app!
         assert_action!
+        assert_http_method!
 
         opts = {
           app:                  app,
@@ -108,6 +115,14 @@ module Lotus
         end
       end
 
+      # @since x.x.x
+      # @api private
+      def assert_http_method!
+        if !Lotus::Routing::Route::VALID_HTTP_VERBS.include?(_http_method.upcase)
+          raise Lotus::Commands::Generate::Error.new("Unknown HTTP method '#{_http_method}', please use one of #{Lotus::Routing::Route::VALID_HTTP_VERBS.join(', ')}.")
+        end
+      end
+
       def app
         if env.container?
           super
@@ -127,8 +142,14 @@ module Lotus
 
         # Insert at the top of the file
         cli.insert_into_file _routes_path, before: /\A(.*)/ do
-          "get '#{ _route_url }', to: '#{ _route_endpoint }'\n"
+          "#{ _http_method } '#{ _route_url }', to: '#{ _route_endpoint }'\n"
         end
+      end
+
+      # @since x.x.x
+      # @api private
+      def _http_method
+        options.fetch(:method, DEFAULT_HTTP_METHOD).downcase
       end
 
       # @since 0.4.0
