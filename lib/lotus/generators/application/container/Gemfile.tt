@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'bundler'
 gem 'rake'
-
 <%- if config[:lotus_head] -%>
 gem 'lotus-utils',       require: false, github: 'lotus/utils'
 gem 'lotus-router',      require: false, github: 'lotus/router'

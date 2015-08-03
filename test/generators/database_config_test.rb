@@ -19,6 +19,10 @@ describe Lotus::Generators::DatabaseConfig do
       it 'returns `:file_system` symbol' do
         database_config.type.must_equal :file_system
       end
+
+      it 'returns true' do
+        database_config.filesystem?.must_equal true
+      end
     end
 
     describe 'when engine is memory' do

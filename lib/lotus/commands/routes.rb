@@ -1,8 +1,8 @@
 module Lotus
   module Commands
     class Routes
-      def initialize(environment)
-        @environment = environment
+      def initialize(options)
+        @environment = Lotus::Environment.new(options)
         @environment.require_application_environment
       end
 

@@ -1,6 +1,7 @@
 module Lotus
   module Generators
     class DatabaseConfig
+
       SUPPORTED_ENGINES = {
         'mysql'      => { type: :sql,         mri: 'mysql2',  jruby: 'jdbc-mysql'    },
         'mysql2'     => { type: :sql,         mri: 'mysql2',  jruby: 'jdbc-mysql'    },
@@ -11,6 +12,8 @@ module Lotus
         'filesystem' => { type: :file_system, mri: nil,       jruby: nil             },
         'memory'     => { type: :memory,      mri: nil,       jruby: nil             }
       }.freeze
+
+      DEFAULT_ENGINE = 'filesystem'.freeze
 
       attr_reader :engine, :name
 
@@ -35,6 +38,10 @@ module Lotus
 
       def sql?
         type == :sql
+      end
+
+      def filesystem?
+        type == :file_system
       end
 
       private

@@ -3,8 +3,7 @@ require 'lotus/commands/console'
 
 describe Lotus::Commands::Console do
   let(:opts) { Hash.new }
-  let(:env)  { Lotus::Environment.new(opts) }
-  let(:console) { Lotus::Commands::Console.new(env) }
+  let(:console) { Lotus::Commands::Console.new(opts) }
 
   before do
     Dir.chdir($pwd)

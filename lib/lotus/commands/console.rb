@@ -14,11 +14,13 @@ module Lotus
         'irb'  => 'IRB'
       }.freeze
 
+      DEFAULT_ENGINE = 'irb'.freeze
+
       attr_reader :options
 
-      def initialize(environment)
-        @environment = environment
-        @options     = environment.to_options
+      def initialize(options)
+        @environment = Lotus::Environment.new(options)
+        @options     = @environment.to_options
       end
 
       def start
@@ -40,11 +42,7 @@ module Lotus
       private
 
       def engine_lookup
-        (ENGINES.find { |_, klass| Object.const_defined?(klass) } || default_engine).first
-      end
-
-      def default_engine
-        ENGINES.to_a.last
+        (ENGINES.find { |_, klass| Object.const_defined?(klass) } || DEFAULT_ENGINE).first
       end
 
       def load_engine(engine)

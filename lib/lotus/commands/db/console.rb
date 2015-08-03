@@ -4,13 +4,12 @@ module Lotus
   module Commands
     class DB
       class Console
-        attr_reader :name, :env_options, :environment
+        attr_reader :name, :env_options
 
-        def initialize(name, environment)
+        def initialize(options, name)
+          super(options)
           @name        = name
-          @environment = environment
           @env_options = environment.to_options
-          @environment.require_application_environment
         end
 
         def start

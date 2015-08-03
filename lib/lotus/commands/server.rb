@@ -19,8 +19,8 @@ module Lotus
     class Server < ::Rack::Server
       attr_reader :options
 
-      def initialize(env)
-        @_env    = env
+      def initialize(options)
+        @_env    = Lotus::Environment.new(options)
         @options = _extract_options(@_env)
 
         if code_reloading?
