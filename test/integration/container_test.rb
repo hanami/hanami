@@ -16,7 +16,7 @@ describe Lotus::Container do
   end
 
   after do
-    Lotus::Application.clear_registered_applications
+    Lotus::Application.clear_registered_applications!
   end
 
   def app

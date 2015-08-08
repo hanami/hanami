@@ -23,7 +23,7 @@ describe Lotus::Container do
     end
 
     after do
-      Lotus::Application.clear_registered_applications
+      Lotus::Application.clear_registered_applications!
     end
 
     it "doesn't force SSL if app doesn't has force_ssl turned on" do
@@ -54,7 +54,7 @@ describe Lotus::Container do
     end
 
     after do
-      Lotus::Application.clear_registered_applications
+      Lotus::Application.clear_registered_applications!
     end
 
     it "https request doesn't return Strict-Transport-Security header" do

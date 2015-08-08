@@ -19,7 +19,7 @@ describe 'Lotus microservices applications' do
   after do
     Dir.chdir @current_dir
     @current_dir = nil
-    Lotus::Application.clear_registered_applications
+    Lotus::Application.clear_registered_applications!
   end
 
   def app
