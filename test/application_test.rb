@@ -6,10 +6,10 @@ describe Lotus::Application do
   end
 
   it 'instantiate new configuration object when inherited' do
-    backend_app  = Backend::Application.new
-    frontend_app = Frontend::Application.new
+    coffee_shop_app  = CoffeeShop::Application.new
+    reviews_app = Reviews::Application.new
 
-    backend_app.configuration.wont_equal frontend_app.configuration
+    coffee_shop_app.configuration.wont_equal reviews_app.configuration
   end
 
   describe '.configure' do
