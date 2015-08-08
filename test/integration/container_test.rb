@@ -15,6 +15,10 @@ describe Lotus::Container do
     Back::Application.load!
   end
 
+  after do
+    Lotus::Application.clear_registered_applications
+  end
+
   def app
     @container
   end

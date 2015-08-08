@@ -22,6 +22,10 @@ describe Lotus::Container do
       @container = Lotus::Container.new
     end
 
+    after do
+      Lotus::Application.clear_registered_applications
+    end
+
     it "doesn't force SSL if app doesn't has force_ssl turned on" do
       get '/backend'
 
@@ -47,6 +51,10 @@ describe Lotus::Container do
       end
 
       @container = Lotus::Container.new
+    end
+
+    after do
+      Lotus::Application.clear_registered_applications
     end
 
     it "https request doesn't return Strict-Transport-Security header" do
