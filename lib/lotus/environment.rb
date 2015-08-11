@@ -174,7 +174,7 @@ module Lotus
     #   # other settings (eg `XYZ`) will be left untouched.
     def initialize(options = {})
       @options = Lotus::Lotusrc.new(root, options).read
-      @options.merge! Utils::Hash.new(options).symbolize!
+      @options.merge! Utils::Hash.new(options.clone).symbolize!
       @mutex   = Mutex.new
       @mutex.synchronize { set_env_vars! }
     end

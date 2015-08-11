@@ -62,6 +62,17 @@ describe Lotus::Environment do
           ENV['WAT'].must_be_nil
         end
       end
+
+      describe 'when arguments are passed in' do
+        before do
+          @options = {'a' => 'b'}
+          @env = Lotus::Environment.new(@options)
+        end
+
+        it 'does not modify the origin arguments' do
+          @options['a'].wont_equal nil
+        end
+      end
     end
   end
 
@@ -115,13 +126,14 @@ describe Lotus::Environment do
         @env = Lotus::Environment.new
       end
 
-      it 'always return the same value' do
+      it 'always returns the same value' do
         @env.environment.must_equal 'development'
 
         ENV['LOTUS_ENV'] = 'test'
         @env.environment.must_equal 'development'
       end
     end
+
   end
 
   describe '#environment?' do
