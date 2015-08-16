@@ -13,8 +13,8 @@ gem 'lotus-view',        require: false, github: 'lotus/view'
 gem 'lotus-model',       require: false, github: 'lotus/model'
 gem 'lotusrb',                           github: 'lotus/lotus'
 <%- else -%>
-gem 'lotusrb',       '<%= Lotus::VERSION %>'
-gem 'lotus-model',   '<%= config[:lotus_model_version] %>'
+gem 'lotusrb',     '<%= Lotus::VERSION %>'
+gem 'lotus-model', '<%= config[:lotus_model_version] %>'
 <%- end -%>
 
 <%- if config[:database_config][:gem] %>
