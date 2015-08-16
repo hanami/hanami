@@ -11,7 +11,9 @@ module Lotus
       # @api private
       def initialize(root)
         @root = root
-        @paths = Array(DEFAULT_DIRECTORY)
+        @paths = []
+
+        @paths << DEFAULT_DIRECTORY if Dir.exist?( root.join(DEFAULT_DIRECTORY) )
       end
 
       # @since 0.1.0
