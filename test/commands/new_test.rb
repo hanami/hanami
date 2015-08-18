@@ -44,8 +44,8 @@ describe Lotus::Commands::New do
         content = @root.join('Gemfile').read
         content.must_match %(gem 'bundler')
         content.must_match %(gem 'rake')
-        content.must_match %(gem 'lotusrb',       '#{ Lotus::VERSION }')
-        content.must_match %(gem 'lotus-model',   '~> 0.4')
+        content.must_match %r(gem 'lotusrb',\ +'#{ Lotus::VERSION }')
+        content.must_match %r(gem 'lotus-model',\ +'~> 0.4')
         content.must_match %(gem 'capybara')
       end
 
