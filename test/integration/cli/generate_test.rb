@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'fileutils'
 
 describe 'lotus generate' do
   describe 'action' do
@@ -13,7 +14,7 @@ describe 'lotus generate' do
 
     def create_temporary_dir
       @tmp = Pathname.new(@pwd = Dir.pwd).join('tmp/integration/cli/generate')
-      @tmp.rmtree if @tmp.exist?
+      FileUtils.rm_rf(@tmp)
       @tmp.mkpath
 
       Dir.chdir(@tmp)

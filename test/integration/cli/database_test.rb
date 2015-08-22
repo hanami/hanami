@@ -1,12 +1,13 @@
 require 'test_helper'
 require 'sequel'
+require 'fileutils'
 
 describe 'lotus db' do
-  ARCHITECTURES = ['container', 'app']
+  ARCHITECTURES = %w(container app)
 
   def create_temporary_dir
     @tmp = Pathname.new(@pwd = Dir.pwd).join('tmp/integration/cli/database')
-    @tmp.rmtree if @tmp.exist?
+    FileUtils.rm_rf(@tmp)
     @tmp.mkpath
 
     Dir.chdir(@tmp)
