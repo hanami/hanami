@@ -1,5 +1,6 @@
 require 'shellwords'
 require 'lotus/generators/abstract'
+require 'lotus/generators/database_config'
 
 module Lotus
   module Generators
@@ -8,13 +9,13 @@ module Lotus
         def initialize(command)
           super
 
-          @upcase_app_name       = app_name.to_env_s
-          @classified_app_name   = Utils::String.new(app_name).classify
-          @lotus_head            = options.fetch(:lotus_head)
-          @test                  = options[:test]
-          @database              = options[:database]
-          @application_base_url  = options[:application_base_url]
-          @lotus_model_version   = '~> 0.4'
+          @upcase_app_name      = app_name.to_env_s
+          @classified_app_name  = Utils::String.new(app_name).classify
+          @lotus_head           = options.fetch(:lotus_head)
+          @test                 = options[:test]
+          @database_config      = DatabaseConfig.new(options[:database], app_name)
+          @application_base_url = options[:application_base_url]
+          @lotus_model_version  = '~> 0.4'
 
           cli.class.source_root(source)
         end
@@ -22,15 +23,15 @@ module Lotus
         def start
 
           opts      = {
-            app_name:              app_name,
-            upcase_app_name:       @upcase_app_name,
-            classified_app_name:   @classified_app_name,
-            application_base_url:  @application_base_url,
-            lotus_head:            @lotus_head,
-            test:                  @test,
-            database:              @database,
-            database_config:       database_config,
-            lotus_model_version:   @lotus_model_version,
+            app_name:             app_name,
+            upcase_app_name:      @upcase_app_name,
+            classified_app_name:  @classified_app_name,
+            application_base_url: @application_base_url,
+            lotus_head:           @lotus_head,
+            test:                 @test,
+            database:             @database_config.engine,
+            database_config:      @database_config.to_hash,
+            lotus_model_version:  @lotus_model_version,
           }
 
           templates = {
@@ -58,7 +59,7 @@ module Lotus
             "public/stylesheets"
           ]
 
-          empty_directories << if sql_database?
+          empty_directories << if @database_config.sql?
             "db/migrations"
           else
             "db"
@@ -94,7 +95,7 @@ module Lotus
             "spec/support"
           ]
 
-          if sql_database?
+          if @database_config.sql?
             templates.merge!(
               'schema.sql.tt' => 'db/schema.sql'
             )
@@ -110,7 +111,7 @@ module Lotus
           end
 
           unless git_dir_present?
-            cli.template(source.join(database_type == :file_system ? 'gitignore.tt' : '.gitignore'), target.join('.gitignore'), opts)
+            cli.template(source.join(@database_config.type == :file_system ? 'gitignore.tt' : '.gitignore'), target.join('.gitignore'), opts)
             cli.run("git init #{Shellwords.escape(target)}", capture: true)
           end
         end
@@ -119,66 +120,6 @@ module Lotus
 
         def git_dir_present?
           File.directory?(source.join('.git'))
-        end
-
-        def database_config
-          {
-            gem: database_gem,
-            uri: database_uri,
-            type: database_type
-          }
-        end
-
-        def database_gem
-          {
-            'mysql'      => 'mysql',
-            'mysql2'     => 'mysql2',
-            'postgresql' => 'pg',
-            'postgres'   => 'pg',
-            'sqlite'     => 'sqlite3',
-            'sqlite3'    => 'sqlite3'
-          }[@database]
-        end
-
-        def sql_database?
-          database_type == :sql
-        end
-
-        def database_type
-          case @database
-          when 'mysql', 'mysql2', 'postgresql', 'postgres', 'sqlite', 'sqlite3'
-            :sql
-          when 'filesystem'
-            :file_system
-          when 'memory'
-            :memory
-          end
-        end
-
-        def database_uri
-          {
-            development: "#{database_base_uri}_development",
-            test: "#{database_base_uri}_test"
-          }
-        end
-
-        def database_base_uri
-          case @database
-          when 'mysql'
-            "mysql://localhost/#{app_name}"
-          when 'mysql2'
-            "mysql2://localhost/#{app_name}"
-          when 'postgresql', 'postgres'
-            "postgres://localhost/#{app_name}"
-          when 'sqlite', 'sqlite3'
-            "sqlite://db/#{Shellwords.escape(app_name)}"
-          when 'memory'
-            "memory://localhost/#{app_name}"
-          when 'filesystem'
-            "file:///db/#{app_name}"
-          else
-            raise "\"#{@database}\" is not a valid database type"
-          end
         end
       end
     end
