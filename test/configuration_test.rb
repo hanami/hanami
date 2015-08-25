@@ -825,4 +825,29 @@ describe Lotus::Configuration do
       end
     end
   end
+
+  describe '#logger' do
+    describe "when not previously set" do
+      before do
+        @configuration = Lotus::Configuration.new
+      end
+
+      it 'defaults to nil' do
+        @configuration.logger.must_be :nil?
+      end
+    end
+
+    describe "when the logger is set" do
+      before do
+        @logger = Logger.new(STDOUT)
+        @configuration = Lotus::Configuration.new
+        @configuration.logger @logger
+      end
+
+      it 'returns logger instance' do
+        @configuration.logger.must_equal @logger
+      end
+    end
+  end
+
 end
