@@ -1642,6 +1642,19 @@ module Lotus
       @view ||= Config::FrameworkConfiguration.new
     end
 
+    # This options is used to set/get the application_module logger instance
+    #
+    # @return [Logger, NilClass] logger instance
+    #
+    # @since 0.4.0
+    def logger(value = nil)
+      if value.nil?
+        @logger
+      else
+        @logger = value
+      end
+    end
+
     # This options is used as a bridge between container and router application.
     #
     # @return [String, NilClass] path prefix for routes
@@ -1657,6 +1670,7 @@ module Lotus
     end
 
     private
+
     # @since 0.2.0
     # @api private
     def evaluate_configurations!

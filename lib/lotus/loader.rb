@@ -112,7 +112,7 @@ module Lotus
 
     def _configure_logger!
       unless application_module.const_defined?('Logger', false)
-        logger = Lotus::Logger.new(application_module.to_s)
+        logger = configuration.logger || Lotus::Logger.new(application_module.to_s)
         application_module.const_set('Logger', logger)
       end
     end
