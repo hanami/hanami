@@ -88,29 +88,46 @@ describe Lotus::Loader do
       end
 
       describe 'logger' do
-        it 'has app module name along with log output' do
-          output =
-            stub_stdout_constant do
+
+        describe 'when not configured' do
+          before do
+            @output = stub_stdout_constant do
               module BeerShop
                 class Application < Lotus::Application; load!; end
               end
-              BeerShop::Logger.info 'foo'
-            end
-
-          output.must_match(/BeerShop/)
-        end
-
-        it 'supports configured custom logger' do
-          class MyLogger < Logger; end
-          module DrinkShop
-            class Application < Lotus::Application
-              configure do
-                logger MyLogger.new(STDOUT)
-              end
-              load!
             end
           end
-          DrinkShop::Logger.must_be_instance_of MyLogger
+          after do
+            Object.__send__(:remove_const, :BeerShop)
+          end
+
+          it 'load a default logger' do
+            BeerShop::Logger.must_be_instance_of Lotus::Logger
+          end
+          it 'has app module name along with log output' do
+            BeerShop::Logger.info 'foo'
+            @output.must_match(/BeerShop/)
+          end
+        end
+
+        describe 'when explicitly configured' do
+          before do
+            class MyLogger < Logger; end
+            module DrinkShop
+              class Application < Lotus::Application
+                configure { logger MyLogger.new(STDOUT) }
+                load!
+              end
+            end
+          end
+          after do
+            Object.__send__(:remove_const, :MyLogger)
+            Object.__send__(:remove_const, :DrinkShop)
+          end
+
+          it 'load the configured logger' do
+            DrinkShop::Logger.must_be_instance_of MyLogger
+          end
         end
       end
     end
