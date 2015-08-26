@@ -833,7 +833,7 @@ describe Lotus::Configuration do
       end
 
       it 'defaults to nil' do
-        @configuration.logger.must_be :nil?
+        @configuration.logger.must_be_nil
       end
     end
 

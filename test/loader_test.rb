@@ -99,6 +99,19 @@ describe Lotus::Loader do
 
           output.must_match(/BeerShop/)
         end
+
+        it 'supports configured custom logger' do
+          class MyLogger < Logger; end
+          module DrinkShop
+            class Application < Lotus::Application
+              configure do
+                logger MyLogger.new(STDOUT)
+              end
+              load!
+            end
+          end
+          DrinkShop::Logger.must_be_instance_of MyLogger
+        end
       end
     end
 
