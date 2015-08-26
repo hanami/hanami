@@ -1642,6 +1642,46 @@ module Lotus
       @view ||= Config::FrameworkConfiguration.new
     end
 
+    # Defines a logger instance to the configuration
+    #
+    # This logger instance will be used to set the logger available on application module
+    #
+    # If no logger instance is defined, a Lotus::Logger will be set by default
+    #
+    # @return [Logger, NilClass] logger instance
+    #
+    # @since x.x.x
+    #
+    # @example Define a logger
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         logger Logger.new(STDOUT)
+    #       end
+    #       load!
+    #     end
+    #
+    #     module Controllers::Error
+    #       include Bookshelf::Controller
+    #
+    #       action 'Index' do
+    #         def call(params)
+    #           Bookshelf::Logger.info "Logging to STDOUT"
+    #         end
+    #       end
+    #     end
+    #   end
+    #
+    def logger(value = nil)
+      if value.nil?
+        @logger
+      else
+        @logger = value
+      end
+    end
+
     # This options is used as a bridge between container and router application.
     #
     # @return [String, NilClass] path prefix for routes
@@ -1657,6 +1697,7 @@ module Lotus
     end
 
     private
+
     # @since 0.2.0
     # @api private
     def evaluate_configurations!
