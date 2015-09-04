@@ -45,6 +45,7 @@ module Lotus
       _configure_model_framework! if defined?(Lotus::Model)
       _configure_controller_framework!
       _configure_view_framework!
+      _configure_mailer_framework!
       _configure_logger!
     end
 
@@ -94,6 +95,19 @@ module Lotus
         end
 
         namespace.const_set('View', view)
+      end
+    end
+
+    def _configure_mailer_framework!
+      config = configuration
+      unless namespace.const_defined?('Mailer')
+        mailer = Lotus::Mailer.duplicate(namespace) do
+          root   config.templates
+
+          config.mailer.__apply(self)
+        end
+
+        namespace.const_set('Mailer', mailer)
       end
     end
 
