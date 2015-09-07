@@ -99,10 +99,10 @@ describe Lotus::Commands::New do
         describe 'mysql' do
           let(:opts) { container_options.merge(database: 'mysql') }
 
-          it 'includes mysql' do
+          it 'includes mysql2 adapter' do
             capture_io { command.start }
             content = @root.join('Gemfile').read
-            content.must_match %(gem 'mysql')
+            content.must_match %(gem 'mysql2')
           end
         end
 
@@ -296,7 +296,7 @@ describe Lotus::Commands::New do
 
           it 'generates db config for mysql' do
             content = @root.join('.env.development').read
-            content.must_match %(CHIRP_DATABASE_URL="mysql://localhost/chirp_development")
+            content.must_match %(CHIRP_DATABASE_URL="mysql2://localhost/chirp_development")
           end
         end
 
@@ -396,9 +396,9 @@ describe Lotus::Commands::New do
       describe 'database option' do
         describe 'with mysql' do
           let(:opts) { container_options.merge(database: 'mysql') }
-          it 'generates db config for mysql' do
+          it 'generates db config for mysql using mysql2 adapter' do
             content = @root.join('.env.test').read
-            content.must_match %(CHIRP_DATABASE_URL="mysql://localhost/chirp_test")
+            content.must_match %(CHIRP_DATABASE_URL="mysql2://localhost/chirp_test")
           end
         end
 
@@ -990,10 +990,10 @@ describe Lotus::Commands::New do
         describe 'mysql' do
           let(:opts) { container_options.merge(database: 'mysql') }
 
-          it 'includes mysql' do
+          it 'includes mysql2 adapter gem' do
             capture_io { command.start }
             content = @root.join('Gemfile').read
-            content.must_match %(gem 'mysql')
+            content.must_match %(gem 'mysql2')
           end
         end
 
@@ -1188,9 +1188,9 @@ describe Lotus::Commands::New do
         describe 'with mysql' do
           let(:opts) { container_options.merge(database: 'mysql') }
 
-          it 'generates db config for mysql' do
+          it 'generates db config for mysql using mysql2 adapter' do
             content = @root.join('.env.development').read
-            content.must_match %(CHIRP_DATABASE_URL="mysql://localhost/chirp_development")
+            content.must_match %(CHIRP_DATABASE_URL="mysql2://localhost/chirp_development")
           end
         end
 
@@ -1292,9 +1292,9 @@ describe Lotus::Commands::New do
       describe 'database option' do
         describe 'with mysql' do
           let(:opts) { container_options.merge(database: 'mysql') }
-          it 'generates db config for mysql' do
+          it 'generates db config for mysql using mysql2 adapter' do
             content = @root.join('.env.test').read
-            content.must_match %(CHIRP_DATABASE_URL="mysql://localhost/chirp_test")
+            content.must_match %(CHIRP_DATABASE_URL="mysql2://localhost/chirp_test")
           end
         end
 
