@@ -2,7 +2,7 @@ module Lotus
   module Generators
     class DatabaseConfig
       SUPPORTED_ENGINES = {
-        'mysql'      => { type: :sql,         mri: 'mysql',   jruby: 'jdbc-mysql'    },
+        'mysql'      => { type: :sql,         mri: 'mysql2',  jruby: 'jdbc-mysql'    },
         'mysql2'     => { type: :sql,         mri: 'mysql2',  jruby: 'jdbc-mysql'    },
         'postgresql' => { type: :sql,         mri: 'pg',      jruby: 'jdbc-postgres' },
         'postgres'   => { type: :sql,         mri: 'pg',      jruby: 'jdbc-postgres' },
@@ -60,9 +60,7 @@ module Lotus
 
       def base_uri
         case engine
-        when 'mysql'
-          "mysql://localhost/#{ name }"
-        when 'mysql2'
+        when 'mysql', 'mysql2'
           "mysql2://localhost/#{ name }"
         when 'postgresql', 'postgres'
           "postgres://localhost/#{ name }"
