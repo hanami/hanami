@@ -102,7 +102,7 @@ module Lotus
       config = configuration
       unless namespace.const_defined?('Mailer')
         mailer = Lotus::Mailer.duplicate(namespace) do
-          root   config.templates + '/mailers' #templates/mailers
+          root(config.mailer_templates)
 
           config.mailer.__apply(self)
         end

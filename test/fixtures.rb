@@ -19,6 +19,7 @@ module CoffeeShop
 
       load_paths.clear
       templates 'app/templates'
+      mailer_templates 'app/templates/mailers'
 
       default_response_format :html
 
@@ -292,4 +293,3 @@ module Front
     end
   end
 end
-

@@ -63,7 +63,7 @@ describe Lotus::Commands::New do
           content.must_match %(gem 'lotus-helpers',     require: false, github: 'lotus/helpers')
           content.must_match %(gem 'lotus-controller',  require: false, github: 'lotus/controller')
           content.must_match %(gem 'lotus-view',        require: false, github: 'lotus/view')
-          content.must_match %(gem 'lotus-mailer',        require: false, github: 'deigirls/mailer')
+          content.must_match %(gem 'lotus-mailer',      require: false, github: 'lotus/mailer')
           content.must_match %(gem 'lotus-model',       require: false, github: 'lotus/model')
           content.must_match %(gem 'lotusrb',                           github: 'lotus/lotus')
         end
