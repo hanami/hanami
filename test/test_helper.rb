@@ -86,7 +86,8 @@ class DependenciesReporter
     'lotus-router',
     'lotus-model',
     'lotus-view',
-    'lotus-controller'
+    'lotus-controller',
+    'lotus-mailer'
   ].freeze
 
   def initialize

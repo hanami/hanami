@@ -1623,6 +1623,11 @@ module Lotus
       @model ||= Config::FrameworkConfiguration.new
     end
 
+    # add doc
+    def mailer
+      @mailer ||= Config::FrameworkConfiguration.new
+    end
+
     # It lazily collects all the low level settings for Lotus::Controller's
     # configuration and applies them when the application is loaded.
     #

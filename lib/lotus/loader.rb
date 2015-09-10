@@ -45,7 +45,7 @@ module Lotus
       _configure_model_framework! if defined?(Lotus::Model)
       _configure_controller_framework!
       _configure_view_framework!
-      _configure_mailer_framework!
+      _configure_mailer_framework! if defined?(Lotus::Mailer)
       _configure_logger!
     end
 
@@ -102,7 +102,7 @@ module Lotus
       config = configuration
       unless namespace.const_defined?('Mailer')
         mailer = Lotus::Mailer.duplicate(namespace) do
-          root   config.templates
+          root   config.templates + '/mailers' #templates/mailers
 
           config.mailer.__apply(self)
         end
@@ -137,6 +137,7 @@ module Lotus
     def load_frameworks!
       _load_view_framework!
       _load_model_framework!
+      _load_mailer_framework!
     end
 
     def _load_view_framework!
@@ -153,6 +154,21 @@ module Lotus
       }
     end
 
+    def _load_mailer_framework!
+      return unless _load_mailer_framework?
+
+      application_module.module_eval %{
+        #{ application_module }::Mailer.load!
+      }
+    end
+
+    def _load_mailer_framework?
+      if _lotus_mailer_loaded? && application_module.const_defined?('Mailer')
+        mailer = application_module.const_get('Mailer')
+        !mailer.configuration.delivery_method.nil?
+      end
+    end
+
     def _load_model_framework?
       if _lotus_model_loaded? && application_module.const_defined?('Model')
         model = application_module.const_get('Model')
@@ -162,6 +178,10 @@ module Lotus
 
     def _lotus_model_loaded?
       defined?(Lotus::Model)
+    end
+
+    def _lotus_mailer_loaded?
+      defined?(Lotus::Mailer)
     end
 
     def load_configuration_load_paths!
