@@ -98,6 +98,24 @@ module Lotus
       end
     end
 
+    desc 'destroy', 'destroys action, model or migration'
+    method_option :application_base_url, desc: 'application base url',                                      type: :string
+    method_option :path,                 desc: 'applications path',                                         type: :string
+    method_option :url,                  desc: 'relative URL for action',                                   type: :string
+    method_option :method,               desc: "HTTP method for action. Upper/lower case is ignored. Must be one of GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS, TRACE.", type: :string, default: 'GET'
+    method_option :skip_view,            desc: 'skip the creation of view and templates (only for action)', type: :boolean, default: false
+    method_option :help, aliases: '-h',  desc: 'displays the usage method'
+
+    def destroy(type = nil, app_name = nil, name = nil)
+      if options[:help] || (type.nil? && app_name.nil? && name.nil?)
+        invoke :help, ['destroy']
+      else
+        require 'lotus/commands/generate'
+        self.behavior = :revoke
+        Lotus::Commands::Generate.new(type, app_name, name, environment, self).start
+      end
+    end
+
     require 'lotus/commands/db'
     register Lotus::Commands::DB, 'db', 'db [SUBCOMMAND]', 'manage set of DB operations'
 
