@@ -141,7 +141,7 @@ module Lotus
         FileUtils.touch(path)
 
         # Insert at the top of the file
-        cli.insert_into_file _routes_path, before: /\A(.*)/ do
+        cli.insert_into_file _routes_path, after: /\A/ do
           "#{ _http_method } '#{ _route_url }', to: '#{ _route_endpoint }'\n"
         end
       end
