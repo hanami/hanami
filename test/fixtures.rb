@@ -19,6 +19,8 @@ module CoffeeShop
       load_paths.clear
       templates 'app/templates'
 
+      default_response_format :html
+
       scheme 'https'
       host   'lotus-coffeeshop.org'
 

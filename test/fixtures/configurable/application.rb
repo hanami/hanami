@@ -18,7 +18,8 @@ module Configurable
       model.adapter type: :memory, uri: 'memory://localhost'
       model.mapping { }
 
-      controller.default_format :xml
+      controller.default_request_format :xml
+      controller.default_response_format :json
       controller.default_charset 'koi8-r'
       controller.prepare do
         include Authentication

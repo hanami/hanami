@@ -52,7 +52,8 @@ describe 'Configurable application' do
 
   describe "controller configuration" do
     it 'forwards settings' do
-      Configurable::Controller.configuration.default_format.must_equal  :xml
+      Configurable::Controller.configuration.default_request_format.must_equal  :xml
+      Configurable::Controller.configuration.default_response_format.must_equal  :json
       Configurable::Controller.configuration.default_charset.must_equal 'koi8-r'
     end
   end
