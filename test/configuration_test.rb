@@ -605,7 +605,40 @@ describe Lotus::Configuration do
     end
   end
 
+  describe '#default_format' do
+
+    describe "deprecation" do
+      it "outputs deprecation warning" do
+        _, err = capture_io do
+          @configuration.default_format :json
+        end
+        err.must_include "default_format is deprecated, please use default_request_format"
+      end
+    end
+
+    describe "when not previously set" do
+      it 'returns :html' do
+        @configuration.default_format.must_equal :html
+      end
+    end
+
+    describe "when set" do
+      before do
+        @configuration.default_format :json
+      end
+
+      it 'returns the value' do
+        @configuration.default_format.must_equal :json
+      end
+    end
+
+    it 'raises an error if the given format cannot be coerced into symbol' do
+      -> { @configuration.default_format(23) }.must_raise TypeError
+    end
+  end
+
   describe '#default_request_format' do
+
     describe "when not previously set" do
       it 'returns :html' do
         @configuration.default_request_format.must_equal :html

@@ -968,8 +968,6 @@ module Lotus
     #   Gets the value
     #   @return [Symbol]
     #
-    # @since 0.1.0
-    #
     # @see http://rdoc.info/gems/lotus-controller/Lotus/Controller/Configuration#default_request_format
     #
     # @example Getting the value
@@ -994,6 +992,8 @@ module Lotus
     #   end
     #
     #   Bookshelf::Application.configuration.default_request_format # => :json
+    #
+    # @since x.x.x
     def default_request_format(format = nil)
       if format
         @default_request_format = Utils::Kernel.Symbol(format)
@@ -1046,7 +1046,7 @@ module Lotus
     #
     #   Bookshelf::Application.configuration.default_request_format # => :json
     #
-    # @since 0.5.0 TODO: Confirm?
+    # @since x.x.x
     def default_response_format(format = nil)
       if format
         @default_response_format = Utils::Kernel.Symbol(format)
