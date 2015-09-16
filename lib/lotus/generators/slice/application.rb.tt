@@ -149,7 +149,7 @@ module <%= config[:classified_slice_name] %>
       # Web applications can send this header to mitigate Cross Site Scripting
       # (XSS) attacks.
       #
-      # The default value allows images, scripts, AJAX, and CSS from the same
+      # The default value allows images, scripts, AJAX, fonts and CSS from the same
       # origin, and does not allow any other resources to load (eg object,
       # frame, media, etc).
       #
@@ -172,7 +172,7 @@ module <%= config[:classified_slice_name] %>
       #  * http://content-security-policy.com/
       #  * https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_Content_Security_Policy
       #
-      security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';"
+      security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self';"
 
       ##
       # FRAMEWORKS

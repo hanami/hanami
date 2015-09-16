@@ -522,7 +522,7 @@ describe Lotus::Commands::Generate do
         content.must_match %('views')
         content.must_match %(routes 'config/routes')
         content.must_match %(security.x_frame_options "DENY")
-        content.must_match %(security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';")
+        content.must_match %(security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self';")
         content.must_match %(controller.prepare do)
         content.must_match %(view.prepare do)
         content.must_match %(include Lotus::Helpers)
