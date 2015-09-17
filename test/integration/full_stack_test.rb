@@ -45,6 +45,10 @@ describe 'A full stack Lotus application' do
     response.status.must_equal 200
     response.body.wont_be_empty
 
+    get '/javascripts/jquery.js'
+    response.status.must_equal 200
+    response.body.wont_be_empty
+
     get '/javascripts/application.js'
     response.status.must_equal 200
     response.body.wont_be_empty

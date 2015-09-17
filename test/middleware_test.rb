@@ -41,10 +41,18 @@ describe Lotus::Middleware do
   end
 
   describe "when it's configured with assets" do
-    let(:urls) { configuration.assets.entries.values.flatten }
+    let(:urls) {
+      Hash[
+        "/favicon.ico"                 => "favicon.ico",
+        "/fonts/cabin-medium.woff"     => "fonts/cabin-medium.woff",
+        "/images/application.jpg"      => "images/application.jpg",
+        "/javascripts/application.js"  => "javascripts/application.js",
+        "/stylesheets/application.css" => "stylesheets/application.css"
+      ]
+    }
 
     it 'contains only Rack::Static by default' do
-      middleware.stack.must_include [Rack::Static, [{ urls: urls, root: configuration.root.join('public').to_s }], nil]
+      middleware.stack.must_include [Rack::Static, [{ urls: urls, root: "test/fixtures/collaboration/apps/web/public"}], nil]
     end
   end
 
