@@ -25,11 +25,8 @@ module Lotus
       def initialize(command)
         super
 
-        timestamp = Time.now.utc.strftime(TIMESTAMP_FORMAT)
-        filename  = FILENAME % { timestamp: timestamp, name: name }
-
         env.require_application_environment
-        @destination = Lotus::Model.configuration.migrations.join(filename)
+        @destination = existing_migration || destination
 
         cli.class.source_root(source)
       end
@@ -52,6 +49,19 @@ module Lotus
       # @api private
       def name
         Utils::String.new(app_name || super).underscore
+      end
+
+      def destination
+        timestamp = Time.now.utc.strftime(TIMESTAMP_FORMAT)
+        filename  = FILENAME % { timestamp: timestamp, name: name }
+
+        Lotus::Model.configuration.migrations.join(filename)
+      end
+
+      def existing_migration
+        dirname = Lotus::Model.configuration.migrations
+
+        Dir.glob("#{dirname}/[0-9]*_#{name}.rb").first
       end
     end
   end
