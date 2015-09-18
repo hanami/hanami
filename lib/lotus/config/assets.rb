@@ -68,8 +68,6 @@ module Lotus
       def entries
         hash = Hash.new { |k, v| k[v] = [] }
         each do |path|
-          # require 'byebug'
-          # byebug
           if path.exist?
             hash[path.to_s] = path.children.map { |child| "/#{ child.basename }" }
           end
