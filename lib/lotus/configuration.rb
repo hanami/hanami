@@ -1,4 +1,5 @@
 require 'lotus/utils/kernel'
+require 'lotus/utils/deprecation'
 require 'lotus/environment'
 require 'lotus/config/framework_configuration'
 require 'lotus/config/load_paths'
@@ -958,18 +959,16 @@ module Lotus
     # an argument, it will set the corresponding instance variable. When
     # called without, it will return the already set value, or the default.
     #
-    # @overload default_format(format)
+    # @overload default_request_format(format)
     #   Sets the given value
     #   @param format [#to_sym] the symbol format
     #   @raise [TypeError] if it cannot be coerced to a symbol
     #
-    # @overload default_format
+    # @overload default_request_format
     #   Gets the value
     #   @return [Symbol]
     #
-    # @since 0.1.0
-    #
-    # @see http://rdoc.info/gems/lotus-controller/Lotus/Controller/Configuration#default_format
+    # @see http://rdoc.info/gems/lotus-controller/Lotus/Controller/Configuration#default_request_format
     #
     # @example Getting the value
     #   require 'lotus'
@@ -979,7 +978,7 @@ module Lotus
     #     end
     #   end
     #
-    #   Bookshelf::Application.configuration.default_format # => :html
+    #   Bookshelf::Application.configuration.default_request_format # => :html
     #
     # @example Setting the value
     #   require 'lotus'
@@ -987,18 +986,84 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         default_format :json
+    #         default_request_format :json
     #       end
     #     end
     #   end
     #
-    #   Bookshelf::Application.configuration.default_format # => :json
-    def default_format(format = nil)
+    #   Bookshelf::Application.configuration.default_request_format # => :json
+    #
+    # @since x.x.x
+    def default_request_format(format = nil)
       if format
-        @default_format = Utils::Kernel.Symbol(format)
+        @default_request_format = Utils::Kernel.Symbol(format)
       else
-        @default_format || :html
+        @default_request_format || :html
       end
+    end
+
+    # Set a format to be used for all responses regardless of the request type.
+    #
+    # The given format must be coercible to a symbol, and be a valid mime type
+    # alias. If it isn't, at the runtime the framework will raise a
+    # `Lotus::Controller::UnknownFormatError`.
+    #
+    # By default this value is `:html`.
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @overload default_response_format(format)
+    #   Sets the given value
+    #   @param format [#to_sym] the symbol format
+    #   @raise [TypeError] if it cannot be coerced to a symbol
+    #
+    # @overload default_response_format
+    #   Gets the value
+    #   @return [Symbol,nil]
+    #
+    # @example Getting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.default_response_format # => :html
+    #
+    # @example Setting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         default_response_format :json
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.default_request_format # => :json
+    #
+    # @since x.x.x
+    def default_response_format(format = nil)
+      if format
+        @default_response_format = Utils::Kernel.Symbol(format)
+      else
+        @default_response_format
+      end
+    end
+
+    # Set a format as default fallback for all the requests without a strict
+    # requirement for the mime type.
+    #
+    # @since 0.1.0
+    #
+    # @deprecated Use {#default_request_format} instead.
+    def default_format(format = nil)
+      Lotus::Utils::Deprecation.new('default_format is deprecated, please use default_request_format')
+      default_request_format(format)
     end
 
     # The URI scheme for this application.
@@ -1577,7 +1642,7 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         controller.default_format :json
+    #         controller.default_request_format :json
     #       end
     #     end
     #   end
