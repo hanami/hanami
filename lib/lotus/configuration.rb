@@ -376,6 +376,42 @@ module Lotus
       end
     end
 
+    # Mailer templates root.
+    # The application will recursively look for templates for the mailer under this path.
+    #
+    # By default it's equal to the application `root/mailer`.
+    #
+    # Otherwise, you can specify a different relative path under `root`.
+    #
+    # This is part of a DSL, for this reason when this method is called with
+    # an argument, it will set the corresponding instance variable. When
+    # called without, it will return the already set value, or the default.
+    #
+    # @since x.x.x
+    #
+    # @example Getting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.mailer_templates
+    #     # => #<Pathname:/root/path/mailer>
+    #
+    # @example Setting the value
+    #   require 'lotus'
+    #
+    #   module Bookshelf
+    #     class Application < Lotus::Application
+    #       configure do
+    #         mailer_templates 'app/templates/mailer'
+    #       end
+    #     end
+    #   end
+    #
+    #   Bookshelf::Application.configuration.mailer_templates
     def mailer_templates(value = nil)
       if value
         @mailer_templates = value
@@ -1642,7 +1678,7 @@ module Lotus
     #
     # @return [Lotus::Config::FrameworkConfiguration] the configuration
     #
-    # @since 0.2.0
+    # @since x.x.x
     #
     # @see http://www.rubydoc.info/gems/lotus-mailer/Lotus/Mailer/Configuration
     #
@@ -1666,7 +1702,7 @@ module Lotus
     #     class Application < Lotus::Application
     #       configure do
     #         delivery_method       :smtp
-    #         model.delivery_method :test
+    #         mailer.delivery_method :test
     #       end
     #     end
     #   end
