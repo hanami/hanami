@@ -519,29 +519,30 @@ describe Lotus::Configuration do
       before do
         @configuration.serve_assets true
       end
+
       describe 'with a directory name' do
         it 'returns the configured values' do
-          expectations = [
-            %(/stylesheets),
-            %(/favicon.ico),
-            %(/javascripts),
-            %(/fonts),
-            %(/images)
-          ]
-          actual = @configuration.assets.entries.values.flatten
-          expectations.each do |expectation|
-            actual.must_include expectation
+          expected_urls = {
+            "/favicon.ico"                 => "favicon.ico",
+            "/fonts/cabin-medium.woff"     => "fonts/cabin-medium.woff",
+            "/images/application.jpg"      => "images/application.jpg",
+            "/javascripts/application.js"  => "javascripts/application.js",
+            "/stylesheets/application.css" => "stylesheets/application.css"
+          }
+
+          counter      = 0
+          actual_urls  = {}
+          actual_roots = []
+
+          @configuration.assets.for_each_source do |source|
+            counter    += 1
+            actual_urls.merge!(source.urls)
+            actual_roots.push(source.root)
           end
-        end
-      end
 
-      describe 'if set with emtpy array' do
-        before do
-          @configuration.assets.instance_variable_set(:@paths, [])
-        end
-
-        it 'returns false' do
-          @configuration.assets.wont_be :any?
+          counter.must_equal      1
+          actual_urls.must_equal  expected_urls
+          actual_roots.must_equal ["test/fixtures/collaboration/apps/web/public"]
         end
       end
 
@@ -554,29 +555,32 @@ describe Lotus::Configuration do
         end
 
         it 'returns it' do
-          expectations = [
-            %(/stylesheets),
-            %(/favicon.ico),
-            %(/javascripts),
-            %(/fonts),
-            %(/images),
-            %(/foo.js),
-            %(/bar.js)
-          ]
-          actual = @configuration.assets.entries.values.flatten
-          expectations.each do |expectation|
-            actual.must_include expectation
-          end
-        end
+          expected_urls = {
+            "/favicon.ico"                 => "favicon.ico",
+            "/fonts/cabin-medium.woff"     => "fonts/cabin-medium.woff",
+            "/images/application.jpg"      => "images/application.jpg",
+            "/javascripts/application.js"  => "javascripts/application.js",
+            "/stylesheets/application.css" => "stylesheets/application.css",
+            "/foo.js"                      => "foo.js",
+            "/javascripts/jquery.js"       => "javascripts/jquery.js",
+            "/bar.js"                      => "bar.js"
+          }
 
-        describe 'if set with emtpy array' do
-          before do
-            @configuration.assets.instance_variable_set(:@paths, [])
+          counter      = 0
+          actual_urls  = {}
+          actual_roots = []
+
+          @configuration.assets.for_each_source do |source|
+            counter    += 1
+            actual_urls.merge!(source.urls)
+            actual_roots.push(source.root)
           end
 
-          it 'returns it' do
-            @configuration.assets.wont_be :any?
-          end
+          counter.must_equal      3
+          actual_urls.must_equal  expected_urls
+          actual_roots.must_equal ["test/fixtures/collaboration/apps/web/public",
+                                   "test/fixtures/collaboration/apps/web/vendor/assets",
+                                   "test/fixtures/collaboration/apps/web/vendor/another_assets_path"]
         end
       end
 
@@ -588,18 +592,29 @@ describe Lotus::Configuration do
         end
 
         it 'returns it' do
-          expectations = [
-            %(/stylesheets),
-            %(/favicon.ico),
-            %(/javascripts),
-            %(/fonts),
-            %(/images),
-            %(/lotus.js)
-          ]
-          actual = @configuration.assets.entries.values.flatten
-          expectations.each do |expectation|
-            actual.must_include expectation
+          expected_urls = {
+            "/favicon.ico"                 => "favicon.ico",
+            "/fonts/cabin-medium.woff"     => "fonts/cabin-medium.woff",
+            "/images/application.jpg"      => "images/application.jpg",
+            "/javascripts/application.js"  => "javascripts/application.js",
+            "/stylesheets/application.css" => "stylesheets/application.css",
+            "/lotus.js"                    => "lotus.js"
+          }
+
+          counter      = 0
+          actual_urls  = {}
+          actual_roots = []
+
+          @configuration.assets.for_each_source do |source|
+            counter    += 1
+            actual_urls.merge!(source.urls)
+            actual_roots.push(source.root)
           end
+
+          counter.must_equal 2
+          actual_urls.must_equal expected_urls
+          actual_roots.must_equal ["test/fixtures/collaboration/apps/web/public",
+                                   "test/fixtures/collaboration/vendor/assets"]
         end
       end
     end
