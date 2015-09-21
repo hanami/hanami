@@ -53,7 +53,8 @@ module Lotus
       unless namespace.const_defined?('Controller')
         controller = Lotus::Controller.duplicate(namespace) do
           handle_exceptions config.handle_exceptions
-          default_format    config.default_format
+          default_request_format config.default_request_format
+          default_response_format config.default_response_format
           default_headers({
             Lotus::Config::Security::X_FRAME_OPTIONS_HEADER         => config.security.x_frame_options,
             Lotus::Config::Security::CONTENT_SECURITY_POLICY_HEADER => config.security.content_security_policy
