@@ -32,7 +32,7 @@ module Lotus
       DEFAULT_TEMPLATE = 'erb'.freeze
 
       # Default HTTP method used when generating an action.
-      # @since x.x.x
+      # @since 0.5.0
       # @api private
       DEFAULT_HTTP_METHOD = 'GET'.freeze
 
@@ -115,7 +115,7 @@ module Lotus
         end
       end
 
-      # @since x.x.x
+      # @since 0.5.0
       # @api private
       def assert_http_method!
         if !Lotus::Routing::Route::VALID_HTTP_VERBS.include?(_http_method.upcase)
@@ -146,7 +146,7 @@ module Lotus
         end
       end
 
-      # @since x.x.x
+      # @since 0.5.0
       # @api private
       def _http_method
         options.fetch(:method, DEFAULT_HTTP_METHOD).downcase

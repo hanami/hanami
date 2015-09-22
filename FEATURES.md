@@ -3,6 +3,11 @@
 
 ## Features
 
+## v0.5.0 - 2015-09-23
+
+- SQL joins
+- Custom coercers for data mapper
+
 ## v0.4.1 - 2015-07-10
 
 ## v0.4.0 - 2015-06-23

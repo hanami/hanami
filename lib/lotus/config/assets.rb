@@ -9,26 +9,26 @@ module Lotus
 
       # Assets source (directory)
       #
-      # @since x.x.x
+      # @since 0.5.0
       # @api private
       class Source
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         BLANK         = ''.freeze
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         URL_SEPARATOR = '/'.freeze
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         attr_reader :urls
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         attr_reader :root
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def initialize(path)
           @path = path.to_s
@@ -55,7 +55,7 @@ module Lotus
         @paths = Array(DEFAULT_DIRECTORY)
       end
 
-      # @since x.x.x
+      # @since 0.5.0
       # @api private
       def for_each_source
         each do |path|

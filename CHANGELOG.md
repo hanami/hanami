@@ -1,6 +1,23 @@
 # Lotus
 A complete web framework for Ruby
 
+## v0.5.0 - 2015-09-23
+### Added
+- [Theo Felippe] Added configuration entries: `#default_request_format` and `default_response_format`
+- [Rodrigo Panachi] Introduced `logger` configuration for applications, to be used like this: `Web::Logger.debug`
+- [Ben Lovell] Simpler and less verbose RSpec tests
+- [Pascal Betz] Introduced `--method` CLI argument for action generator as a way to specify the HTTP verb
+
+### Fixed
+- [Luca Guidi] Handle conflicts between directories with the same name while serving static assets
+- [Derk-Jan Karrenbeld] Include default value `font-src: self` for CSP HTTP header
+- [Jack Huang] Make CLI arguments immutable for `Lotus::Environment`
+- [Andrii Ponomarov] Disable welcome page in test environment
+- [Alfonso Uceda Pompa] Print error message and exit when no name is provided to model generator
+
+### Changed
+- [Theo Felippe] Deprecated `#default_format` in favor of: `#default_request_format`
+
 ## v0.4.1 - 2015-07-10
 ### Added
 - [Trung Lê] Alias `--database` as `--db` for `lotus new`
