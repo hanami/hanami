@@ -15,7 +15,7 @@ module Lotus
           @test                 = options[:test]
           @database_config      = DatabaseConfig.new(options[:database], app_name)
           @application_base_url = options[:application_base_url]
-          @lotus_model_version  = '~> 0.4'
+          @lotus_model_version  = '~> 0.5'
 
           cli.class.source_root(source)
         end

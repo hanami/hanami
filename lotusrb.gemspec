@@ -19,11 +19,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.0.0'
 
-  spec.add_dependency 'lotus-utils',      '~> 0.5', '>= 0.5.1'
-  spec.add_dependency 'lotus-router',     '~> 0.4', '>= 0.4.2'
-  spec.add_dependency 'lotus-controller', '~> 0.4', '>= 0.4.4'
-  spec.add_dependency 'lotus-view',       '~> 0.4', '>= 0.4.3'
-  spec.add_dependency 'lotus-helpers',    '~> 0.2'
+  spec.add_dependency 'lotus-utils',      '~> 0.5', '>= 0.5.2'
+  spec.add_dependency 'lotus-router',     '~> 0.4', '>= 0.4.3'
+  spec.add_dependency 'lotus-controller', '~> 0.4', '>= 0.4.5'
+  spec.add_dependency 'lotus-view',       '~> 0.4', '>= 0.4.4'
+  spec.add_dependency 'lotus-helpers',    '~> 0.2', '>= 0.2.5'
   spec.add_dependency 'shotgun',          '~> 0.9'
   spec.add_dependency 'dotenv',           '~> 2.0'
   spec.add_dependency 'thor',             '~> 0.19'
