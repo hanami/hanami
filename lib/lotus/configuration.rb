@@ -1689,7 +1689,7 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         mailer.delivery_method :smtp'
+    #         mailer.delivery_method :smtp
     #       end
     #     end
     #   end
@@ -1701,7 +1701,7 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         delivery_method       :smtp
+    #         delivery_method :smtp
     #         mailer.delivery_method :test
     #       end
     #     end

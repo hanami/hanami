@@ -15,6 +15,7 @@ module Lotus
           @lotus_head           = options.fetch(:lotus_head)
           @test                 = options[:test]
           @lotus_model_version  = '~> 0.5'
+          @lotus_mailer_version = '~> 0.1'
 
           cli.class.source_root(source)
         end
@@ -27,6 +28,7 @@ module Lotus
             database:             @database_config.engine,
             database_config:      @database_config.to_hash,
             lotus_model_version:  @lotus_model_version,
+            lotus_mailer_version: @lotus_mailer_version,
           }
 
           templates = {
