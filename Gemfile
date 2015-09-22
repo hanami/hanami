@@ -13,7 +13,7 @@ gem 'lotus-controller',  '~> 0.4', require: false, github: 'lotus/controller',  
 gem 'lotus-view',        '~> 0.4', require: false, github: 'lotus/view',        branch: '0.4.x'
 gem 'lotus-model',       '~> 0.4', require: false, github: 'lotus/model',       branch: '0.4.x'
 gem 'lotus-helpers',     '~> 0.2', require: false, github: 'lotus/helpers',     branch: '0.2.x'
-gem 'lotus-mailer',      '~> 0.1', require: false, github: 'lotus/mailer',      branch: 'master'
+gem 'lotus-mailer',      '~> 0.1', require: false, github: 'lotus/mailer',      branch: '0.1.x'
 
 platforms :ruby do
   gem 'sqlite3'
