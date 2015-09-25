@@ -486,6 +486,10 @@ describe Lotus::Commands::New do
         content.must_match %(adapter type: :file_system, uri: ENV['CHIRP_DATABASE_URL'])
         content.must_match %(mapping do)
         content.must_match %(mapping "\#{__dir__}/config/mapping")
+        content.must_match %(require 'lotus/mailer')
+        content.must_match %(Lotus::Mailer.configure do)
+        content.must_match %(delivery_method do)
+        content.must_match %(test :test)
       end
 
       describe "with non-simple application name" do
@@ -634,6 +638,7 @@ describe Lotus::Commands::New do
         capture_io { command.start }
         @root.join('spec/chirp/entities').must_be :directory?
         @root.join('spec/chirp/repositories').must_be :directory?
+        @root.join('spec/chirp/mailers').must_be :directory?
         @root.join('spec/support').must_be :directory?
       end
     end
@@ -653,6 +658,12 @@ describe Lotus::Commands::New do
         describe 'spec/chirp/repositories' do
           it 'generates it' do
             @root.join('spec/chirp/repositories').must_be :directory?
+          end
+        end
+
+        describe 'spec/chirp/mailers' do
+          it 'generates it' do
+            @root.join('spec/chirp/mailers').must_be :directory?
           end
         end
 

@@ -45,7 +45,8 @@ module Lotus
 
           empty_directories = [
             "lib/#{ app_name }/entities",
-            "lib/#{ app_name }/repositories"
+            "lib/#{ app_name }/repositories",
+            "lib/#{ app_name }/mailers"
           ]
 
           empty_directories << if @database_config.sql?
@@ -80,6 +81,7 @@ module Lotus
           empty_directories << [
             "spec/#{ app_name }/entities",
             "spec/#{ app_name }/repositories",
+            "spec/#{ app_name }/mailers",
             "spec/support"
           ]
 
