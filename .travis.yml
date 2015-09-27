@@ -2,6 +2,9 @@ language: ruby
 sudo: false
 cache: bundler
 install: true
+env:
+  global:
+    - JRUBY_OPTS=--dev
 script:
   - 'if [[ "$TRAVIS_RUBY_VERSION" =~ "jruby" ]]; then rvm get head && rvm reload && rvm use --install $TRAVIS_RUBY_VERSION; fi'
   - 'bundle install'
