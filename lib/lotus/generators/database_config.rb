@@ -51,7 +51,7 @@ module Lotus
       end
 
       def platform_prefix
-        :jdbc if Lotus::Utils.jruby?
+        'jdbc:'.freeze if Lotus::Utils.jruby?
       end
 
       def uri
@@ -85,7 +85,7 @@ module Lotus
         when 'sqlite', 'sqlite3'
           "#{ platform_prefix }#{ base_uri }_#{ environment }.sqlite"
         else
-          "#{ platform_prefix }#{ base_uri }_#{ environment }"
+          "#{ platform_prefix if sql? }#{ base_uri }_#{ environment }"
         end
       end
     end

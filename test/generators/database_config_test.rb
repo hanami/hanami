@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'shellwords'
 require 'lotus/generators/database_config'
 
 describe Lotus::Generators::DatabaseConfig do
@@ -57,18 +58,36 @@ describe Lotus::Generators::DatabaseConfig do
   end
 
   describe '#to_hash' do
-    let(:engine) { 'postgres' }
-    let(:adapter_prefix) { :jdbc if Lotus::Utils.jruby? }
+    let(:adapter_prefix) { :'jdbc:' if Lotus::Utils.jruby? }
 
-    it 'returns a hash containing gem, connection URIs and type' do
-      database_config.to_hash.must_equal(
-        gem: (Lotus::Utils.jruby? ? 'jdbc-postgres' : 'pg'),
-        type: :sql,
-        uri: {
-          development: "#{ adapter_prefix }postgres://localhost/basecamp_development",
-          test: "#{ adapter_prefix }postgres://localhost/basecamp_test"
-        }
-      )
+    describe 'SQL databases' do
+      let(:engine) { 'postgres' }
+
+      it 'returns a hash containing gem, right connection URIs and type' do
+        database_config.to_hash.must_equal(
+          gem: (Lotus::Utils.jruby? ? 'jdbc-postgres' : 'pg'),
+          type: :sql,
+          uri: {
+            development: "#{ adapter_prefix }postgres://localhost/basecamp_development",
+            test: "#{ adapter_prefix }postgres://localhost/basecamp_test"
+          }
+        )
+      end
+    end
+
+    describe 'non-SQL databases' do
+      let(:engine) { 'filesystem' }
+
+      it 'returns a hash containing gem, right connection URIs and type' do
+        database_config.to_hash.must_equal(
+          gem: nil,
+          type: :file_system,
+          uri: {
+            development: "file:///db/basecamp_development",
+            test: "file:///db/basecamp_test"
+          }
+        )
+      end
     end
   end
 end
