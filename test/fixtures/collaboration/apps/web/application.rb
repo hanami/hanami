@@ -54,7 +54,12 @@ module Collaboration
       end
 
       controller.prepare do
+        # Always run CSRF Protection when running full stack integration specs, even when LOTUS_ENV is set to
+        # test (it may happen depending on the order of specs and the way minitest works)
+        before :set_csrf_token, :verify_csrf_token
+
         include Module.new {
+
           private
           def generate_csrf_token
             't0k3n'

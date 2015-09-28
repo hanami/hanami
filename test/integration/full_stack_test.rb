@@ -5,21 +5,16 @@ require 'fixtures/collaboration/apps/web/application'
 describe 'A full stack Lotus application' do
   include Rack::Test::Methods
 
+  attr_reader :app
+
   before do
-    ENV['LOTUS_ENV'] = 'development'
-    @current_dir = Dir.pwd
     Dir.chdir FIXTURES_ROOT.join('collaboration/apps/web')
+
     @app = Collaboration::Application.new
   end
 
   after do
-    ENV['LOTUS_ENV'] = 'test'
-    Dir.chdir @current_dir
-    @current_dir = nil
-  end
-
-  def app
-    @app
+    Dir.chdir($pwd)
   end
 
   def response
