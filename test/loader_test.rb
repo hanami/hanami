@@ -22,7 +22,6 @@ describe Lotus::Loader do
         assert defined?(CoffeeShop::Controller), 'expected CoffeeShop::Controller'
         assert defined?(CoffeeShop::Action),     'expected CoffeeShop::Action'
         assert defined?(CoffeeShop::View),       'expected CoffeeShop::View'
-        assert defined?(CoffeeShop::Mailer),     'expected CoffeeShop::Mailer'
         assert defined?(CoffeeShop::Model),      'expected CoffeeShop::Model'
         assert defined?(CoffeeShop::Entity),     'expected CoffeeShop::Entity'
         assert defined?(CoffeeShop::Repository), 'expected CoffeeShop::Repository'
