@@ -69,6 +69,7 @@ module Lotus
     method_option :test,                                            desc: 'application test framework (rspec/minitest)', type: :string, default: 'minitest'
     method_option :lotus_head,                                      desc: 'use Lotus HEAD',           type: :boolean, default: false
     method_option :help,                 aliases: '-h',             desc: 'displays the usage method'
+    method_option :skip_mailer,                                     desc: 'skips the mailer options'
 
     def new(name = nil)
       if options[:help] || name.nil?
@@ -79,13 +80,16 @@ module Lotus
       end
     end
 
-    desc 'generate', 'generates app, action, model or migration'
+    desc 'generate', 'generates app, action, model, mailer or migration'
     method_option :application_base_url, desc: 'application base url',                                      type: :string
     method_option :path,                 desc: 'applications path',                                         type: :string
     method_option :url,                  desc: 'relative URL for action',                                   type: :string
     method_option :method,               desc: "HTTP method for action. Upper/lower case is ignored. Must be one of GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS, TRACE.", type: :string, default: 'GET'
     method_option :skip_view,            desc: 'skip the creation of view and templates (only for action)', type: :boolean, default: false
     method_option :help, aliases: '-h',  desc: 'displays the usage method'
+    method_option :from,                 desc: 'defines sender address in mailer',                          type: :string
+    method_option :to,                   desc: 'defines recipient address in mailer',                       type: :string
+    method_option :subject,              desc: 'defines mailer subject',                                    type: :string
 
     # @since 0.3.0
     # @api private

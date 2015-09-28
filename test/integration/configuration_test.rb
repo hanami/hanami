@@ -52,7 +52,7 @@ describe 'Configurable application' do
 
   describe "mailer configuration" do
     it 'forwards settings' do
-      delivery = Configurable::Mailer.configuration.delivery_method
+      delivery = Mailers.configuration.delivery_method
       delivery.must_be_kind_of(Array)
     end
   end

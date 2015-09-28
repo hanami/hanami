@@ -1,7 +1,7 @@
 class Mailers::<%= config[:mailer] %>
   include Lotus::Mailer
 
-  from 'from@domain' # default value or the value set by --from flag
-  to     'to@domain'  # default value or the value set by --to flag
-  subject 'signup' # default value or the value set by --subject flag
+  from <%= config[:from] %>
+  to <%= config[:to] %>
+  subject <%= config[:subject] %>
 end

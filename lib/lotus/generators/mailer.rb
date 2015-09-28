@@ -29,8 +29,29 @@ module Lotus
       def start
         assert_mailer!
 
+        if (options[:from])
+          @from = "'#{options[:from]}'"
+        else
+          @from ="'from@domain' # default value or the value set by --from flag"
+        end
+
+        if (options[:to])
+          @to = "'#{options[:to]}'"
+        else
+          @to ="'to@domain' # default value or the value set by --to flag"
+        end
+
+        if (options[:subject])
+          @subject = "'#{options[:subject]}'"
+        else
+          @subject ="'signup' # default value or the value set by --subject flag"
+        end
+
         opts = {
           mailer: @mailer_name,
+          from: @from,
+          to: @to,
+          subject: @subject,
         }
 
         templates = {
