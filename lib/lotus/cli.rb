@@ -79,7 +79,7 @@ module Lotus
       end
     end
 
-    desc 'generate', 'generates app, action, model or migration'
+    desc 'generate', 'generates app, action, model, mailer or migration'
     method_option :application_base_url, desc: 'application base url',                                      type: :string
     method_option :path,                 desc: 'applications path',                                         type: :string
     method_option :url,                  desc: 'relative URL for action',                                   type: :string

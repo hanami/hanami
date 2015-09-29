@@ -10,6 +10,7 @@ Lotus combines small yet powerful frameworks:
 * [**Lotus::Router**](https://github.com/lotus/router) - Rack compatible HTTP router for Ruby
 * [**Lotus::Validations**](https://github.com/lotus/validations) - Validations mixin for Ruby objects
 * [**Lotus::Helpers**](https://github.com/lotus/helpers) - View helpers for Ruby applications
+* [**Lotus::Mailer**](https://github.com/lotus/mailer) - Mail for Ruby applications
 * [**Lotus::Model**](https://github.com/lotus/model) - Persistence with entities, repositories and data mapper
 * [**Lotus::View**](https://github.com/lotus/view) - Presentation with a separation between views and templates
 * [**Lotus::Controller**](https://github.com/lotus/controller) - Full featured, fast and testable actions for Rack

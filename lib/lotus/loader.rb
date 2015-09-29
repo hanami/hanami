@@ -150,6 +150,10 @@ module Lotus
       defined?(Lotus::Model)
     end
 
+    def _lotus_mailer_loaded?
+      defined?(Lotus::Mailer)
+    end
+
     def load_configuration_load_paths!
       configuration.load_paths.load!(configuration.root)
     end

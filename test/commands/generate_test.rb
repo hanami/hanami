@@ -534,4 +534,52 @@ describe Lotus::Commands::Generate do
       end
     end
   end
+
+  describe 'mailer' do
+    let(:target)      { 'mailer'}
+    let(:app_name)    { 'ForgotPassword' }
+    let(:target_name) { '' }
+
+    describe 'with no arguments' do
+      before do
+        capture_io { command.start }
+      end
+
+      describe 'lib/generate/signup.rb' do
+        it 'generates it' do
+          content = @root.join('lib/generate/mailers/forgot_password.rb').read
+          content.must_match %(class Mailers::ForgotPassword)
+          content.must_match %(  include Lotus::Mailer)
+          content.must_match %(  from    '<from>')
+          content.must_match %(  to      '<to>')
+          content.must_match %(  subject 'Hello')
+        end
+      end
+
+      describe 'spec/generate/mailers/signup_spec.rb' do
+        describe 'minitest (default)' do
+          it 'generates it' do
+            content = @root.join('spec/generate/mailers/forgot_password_spec.rb').read
+            content.must_match %(describe Mailers::ForgotPassword do)
+            content.must_match %(it 'delivers email' do)
+            content.must_match %(mail = Mailers::ForgotPassword.deliver)
+          end
+        end
+      end
+
+      describe 'lib/generate/mailers/templates/forgot_password.txt.erb' do
+        it 'generates it' do
+          content = @root.join('lib/generate/mailers/templates/forgot_password.txt.erb').read
+          content.must_be :empty?
+        end
+      end
+
+      describe 'lib/generate/mailers/templates/forgot_password.html.erb' do
+        it 'generates it' do
+          content = @root.join('lib/generate/mailers/templates/forgot_password.html.erb').read
+          content.must_be :empty?
+        end
+      end
+    end
+  end
 end

@@ -1,4 +1,5 @@
 require 'lotus/model'
+require 'lotus/mailer'
 
 class Order
   include Lotus::Entity
@@ -291,4 +292,3 @@ module Front
     end
   end
 end
-

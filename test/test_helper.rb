@@ -66,6 +66,8 @@ Lotus::Middleware.class_eval { attr_reader :stack }
 
 Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates').mkpath
 
+Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates/mailers').mkpath
+
 class FakeRackBuilder
   attr_reader :stack
 
@@ -86,7 +88,8 @@ class DependenciesReporter
     'lotus-router',
     'lotus-model',
     'lotus-view',
-    'lotus-controller'
+    'lotus-controller',
+    'lotus-mailer'
   ].freeze
 
   def initialize

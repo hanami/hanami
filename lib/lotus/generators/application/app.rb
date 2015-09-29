@@ -55,6 +55,7 @@ module Lotus
             "app/views",
             "lib/#{ app_name }/entities",
             "lib/#{ app_name }/repositories",
+            "lib/#{ app_name }/mailers",
             "public/javascripts",
             "public/stylesheets"
           ]
@@ -92,6 +93,7 @@ module Lotus
           empty_directories << [
             "spec/#{ app_name }/entities",
             "spec/#{ app_name }/repositories",
+            "spec/#{ app_name }/mailers",
             "spec/support"
           ]
 
