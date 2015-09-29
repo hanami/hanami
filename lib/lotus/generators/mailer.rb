@@ -67,7 +67,7 @@ module Lotus
       # @since 0.5.0
       # @api private
       def assert_mailer!
-        if @mailer_name.nil?
+        if @mailer_name.nil? || @mailer_name.empty?
           raise Lotus::Commands::Generate::Error.new("Missing mailer name")
         end
       end
@@ -75,7 +75,7 @@ module Lotus
       # @since 0.5.0
       # @api private
       def _mailer_path
-        core_root.join("#{ name }.rb").to_s
+        core_root.join('mailers', "#{ name }.rb").to_s
       end
 
       # @since 0.5.0

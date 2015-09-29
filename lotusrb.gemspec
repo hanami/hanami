@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'lotus-controller', '~> 0.4', '>= 0.4.5'
   spec.add_dependency 'lotus-view',       '~> 0.4', '>= 0.4.4'
   spec.add_dependency 'lotus-helpers',    '~> 0.2', '>= 0.2.5'
+  spec.add_dependency 'lotus-mailer',     '~> 0.1'
   spec.add_dependency 'shotgun',          '~> 0.9'
   spec.add_dependency 'dotenv',           '~> 2.0'
   spec.add_dependency 'thor',             '~> 0.19'

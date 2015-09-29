@@ -547,7 +547,7 @@ describe Lotus::Commands::Generate do
 
       describe 'lib/generate/signup.rb' do
         it 'generates it' do
-          content = @root.join('lib/generate/forgot_password.rb').read
+          content = @root.join('lib/generate/mailers/forgot_password.rb').read
           content.must_match %(class Mailers::ForgotPassword)
           content.must_match %(  include Lotus::Mailer)
           content.must_match %(  from    '<from>')
@@ -561,7 +561,8 @@ describe Lotus::Commands::Generate do
           it 'generates it' do
             content = @root.join('spec/generate/mailers/forgot_password_spec.rb').read
             content.must_match %(describe Mailers::ForgotPassword do)
-            content.must_match %(describe '.deliver' do)
+            content.must_match %(it 'delivers email' do)
+            content.must_match %(mail = Mailers::ForgotPassword.deliver)
           end
         end
       end

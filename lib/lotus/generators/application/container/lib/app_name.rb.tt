@@ -52,7 +52,7 @@ Lotus::Mailer.configure do
   root "#{ __dir__ }/<%= config[:app_name] %>/mailers"
 
   # See http://lotusrb.org/guides/mailers/delivery
-  delivery_method do
+  delivery do
     development :test
     test        :test
     # production :stmp, address: ENV['SMTP_PORT'], port: 1025

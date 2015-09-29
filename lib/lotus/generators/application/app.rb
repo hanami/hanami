@@ -16,7 +16,6 @@ module Lotus
           @database_config      = DatabaseConfig.new(options[:database], app_name)
           @application_base_url = options[:application_base_url]
           @lotus_model_version  = '~> 0.5'
-          @lotus_mailer_version = '~> 0.1'
 
           cli.class.source_root(source)
         end
@@ -33,7 +32,6 @@ module Lotus
             database:             @database_config.engine,
             database_config:      @database_config.to_hash,
             lotus_model_version:  @lotus_model_version,
-            lotus_mailer_version: @lotus_mailer_version,
           }
 
           templates = {

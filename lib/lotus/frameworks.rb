@@ -3,6 +3,8 @@ require 'lotus/view'
 require 'lotus/controller'
 require 'lotus/action/glue'
 require 'lotus/action/csrf_protection'
+require 'lotus/mailer'
+require 'lotus/mailer/glue'
 
 Lotus::Controller.configure do
   prepare do

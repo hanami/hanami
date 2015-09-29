@@ -16,7 +16,6 @@ gem 'lotusrb',                           github: 'lotus/lotus'
 <%- else -%>
 gem 'lotusrb',       '<%= Lotus::VERSION %>'
 gem 'lotus-model',   '<%= config[:lotus_model_version] %>'
-gem 'lotus-mailer',  '<%= config[:lotus_mailer_version] %>'
 <%- end -%>
 
 <%- if config[:database_config][:gem] %>

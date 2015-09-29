@@ -488,7 +488,7 @@ describe Lotus::Commands::New do
         content.must_match %(mapping "\#{__dir__}/config/mapping")
         content.must_match %(require 'lotus/mailer')
         content.must_match %(Lotus::Mailer.configure do)
-        content.must_match %(delivery_method do)
+        content.must_match %(delivery do)
         content.must_match %(development :test)
         content.must_match %(test        :test)
       end

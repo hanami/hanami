@@ -69,7 +69,6 @@ module Lotus
     method_option :test,                                            desc: 'application test framework (rspec/minitest)', type: :string, default: 'minitest'
     method_option :lotus_head,                                      desc: 'use Lotus HEAD',           type: :boolean, default: false
     method_option :help,                 aliases: '-h',             desc: 'displays the usage method'
-    method_option :skip_mailer,                                     desc: 'skips the mailer options'
 
     def new(name = nil)
       if options[:help] || name.nil?
