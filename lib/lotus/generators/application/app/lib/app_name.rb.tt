@@ -47,11 +47,13 @@ Lotus::Model.configure do
   end
 end.load!
 
-# Please consult Lotus::Mailer README for more details on available delivery method
 Lotus::Mailer.configure do
+  root "#{ __dir__ }/<%= config[:app_name] %>/mailers"
+
+  # See http://lotusrb.org/guides/mailers/delivery
   delivery_method do
-    # development CustomDeliveryMethod, username: ..., password: ....
-    # production :stmp, address: 'localhost', port: 1025
-    test :test # default test env to :test delivery method
+    development :test
+    test        :test
+    # production :stmp, address: ENV['SMTP_PORT'], port: 1025
   end
 end.load!

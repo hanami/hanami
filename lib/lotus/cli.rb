@@ -87,9 +87,6 @@ module Lotus
     method_option :method,               desc: "HTTP method for action. Upper/lower case is ignored. Must be one of GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS, TRACE.", type: :string, default: 'GET'
     method_option :skip_view,            desc: 'skip the creation of view and templates (only for action)', type: :boolean, default: false
     method_option :help, aliases: '-h',  desc: 'displays the usage method'
-    method_option :from,                 desc: 'defines sender address in mailer',                          type: :string
-    method_option :to,                   desc: 'defines recipient address in mailer',                       type: :string
-    method_option :subject,              desc: 'defines mailer subject',                                    type: :string
 
     # @since 0.3.0
     # @api private

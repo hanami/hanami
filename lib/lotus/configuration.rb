@@ -376,50 +376,6 @@ module Lotus
       end
     end
 
-    # Mailer templates root.
-    # The application will recursively look for templates for the mailer under this path.
-    #
-    # By default it's equal to the application `root/mailer`.
-    #
-    # Otherwise, you can specify a different relative path under `root`.
-    #
-    # This is part of a DSL, for this reason when this method is called with
-    # an argument, it will set the corresponding instance variable. When
-    # called without, it will return the already set value, or the default.
-    #
-    # @since x.x.x
-    #
-    # @example Getting the value
-    #   require 'lotus'
-    #
-    #   module Bookshelf
-    #     class Application < Lotus::Application
-    #     end
-    #   end
-    #
-    #   Bookshelf::Application.configuration.mailer_templates
-    #     # => #<Pathname:/root/path/mailer>
-    #
-    # @example Setting the value
-    #   require 'lotus'
-    #
-    #   module Bookshelf
-    #     class Application < Lotus::Application
-    #       configure do
-    #         mailer_templates 'app/templates/mailer'
-    #       end
-    #     end
-    #   end
-    #
-    #   Bookshelf::Application.configuration.mailer_templates
-    def mailer_templates(value = nil)
-      if value
-        @mailer_templates = value
-      else
-        root.join @mailer_templates.to_s
-      end
-    end
-
     # The application will serve the static assets under these directories.
     #
     # By default it's equal to the `public/` directory under the application
@@ -1665,51 +1621,6 @@ module Lotus
     #   # The memory adapter will override the SQL one
     def model
       @model ||= Config::FrameworkConfiguration.new
-    end
-
-    # It lazily collects all the low level settings for Lotus::Mailer's
-    # configuration and applies them when the application is loaded.
-    #
-    # NOTE: This forwards all the configurations to Lotus::Mailer, without
-    # checking them. Before to use this feature, please have a look at the
-    # current Lotus::Mailer version installed.
-    #
-    # NOTE: This may override some configurations of your application.
-    #
-    # @return [Lotus::Config::FrameworkConfiguration] the configuration
-    #
-    # @since x.x.x
-    #
-    # @see http://www.rubydoc.info/gems/lotus-mailer/Lotus/Mailer/Configuration
-    #
-    # @example Define a setting
-    #   require 'lotus'
-    #   require 'lotus/mailer'
-    #
-    #   module Bookshelf
-    #     class Application < Lotus::Application
-    #       configure do
-    #         mailer.delivery_method :smtp
-    #       end
-    #     end
-    #   end
-    #
-    # @example Override a setting
-    #   require 'lotus'
-    #   require 'lotus/mailer'
-    #
-    #   module Bookshelf
-    #     class Application < Lotus::Application
-    #       configure do
-    #         delivery_method :smtp
-    #         mailer.delivery_method :test
-    #       end
-    #     end
-    #   end
-    #
-    #   # The :test delivery method will override the :smtp
-    def mailer
-      @mailer ||= Config::FrameworkConfiguration.new
     end
 
     # It lazily collects all the low level settings for Lotus::Controller's

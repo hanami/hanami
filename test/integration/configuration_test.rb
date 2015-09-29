@@ -50,13 +50,6 @@ describe 'Configurable application' do
     end
   end
 
-  describe "mailer configuration" do
-    it 'forwards settings' do
-      delivery = Mailers.configuration.delivery_method
-      delivery.must_be_kind_of(Array)
-    end
-  end
-
   describe "controller configuration" do
     it 'forwards settings' do
       Configurable::Controller.configuration.default_request_format.must_equal  :xml

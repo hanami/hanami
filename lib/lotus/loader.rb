@@ -98,21 +98,15 @@ module Lotus
       end
     end
 
+    def _configure_mailer_framework!
+      unless namespace.const_defined?('Mailers')
+        Lotus::Mailer.configure do
+          namespace('Mailers')
+        end
 
-
-def _configure_mailer_framework!
-  config = configuration
-  unless namespace.const_defined?('Mailers')
-  	Lotus::Mailer.configure do
-      root(config.mailer_templates)
-      namespace('Mailers')
-      config.mailer.__apply(self)
-		end.load!
-		Object.const_set('Mailers', Module.new)
-  end
-end
-
-
+        Object.const_set('Mailers', Module.new)
+      end
+    end
 
     def _configure_model_framework!
       config = configuration

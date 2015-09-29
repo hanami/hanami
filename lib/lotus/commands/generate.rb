@@ -70,6 +70,10 @@ module Lotus
           .join(::File::SEPARATOR))
       end
 
+      # @since 0.5.0
+      # @api private
+      alias_method :core_root, :model_root
+
       private
       # @since 0.3.0
       # @api private

@@ -1,8 +1,9 @@
 # Lotus
 A complete web framework for Ruby
 
-## v0.5.0 - 2015-09-23
+## v0.5.0 - 2015-09-30
 ### Added
+- [Ines Coelho & Rosa Faria] Mailers
 - [Theo Felippe] Added configuration entries: `#default_request_format` and `default_response_format`
 - [Rodrigo Panachi] Introduced `logger` configuration for applications, to be used like this: `Web::Logger.debug`
 - [Ben Lovell] Simpler and less verbose RSpec tests

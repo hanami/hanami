@@ -18,8 +18,6 @@ module Configurable
       model.adapter type: :memory, uri: 'memory://localhost'
       model.mapping { }
 
-      mailer.delivery_method :smtp
-
       controller.default_request_format :xml
       controller.default_response_format :json
       controller.default_charset 'koi8-r'

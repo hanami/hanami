@@ -537,8 +537,8 @@ describe Lotus::Commands::Generate do
 
   describe 'mailer' do
     let(:target)      { 'mailer'}
-    let(:app_name) { 'signup' }
-    let(:target_name)    { '' }
+    let(:app_name)    { 'ForgotPassword' }
+    let(:target_name) { '' }
 
     describe 'with no arguments' do
       before do
@@ -547,73 +547,36 @@ describe Lotus::Commands::Generate do
 
       describe 'lib/generate/signup.rb' do
         it 'generates it' do
-          content = @root.join('lib/generate/signup.rb').read
-          content.must_match %(class Mailers::Signup)
+          content = @root.join('lib/generate/forgot_password.rb').read
+          content.must_match %(class Mailers::ForgotPassword)
           content.must_match %(  include Lotus::Mailer)
-          content.must_match %(  from 'from@domain')
-          content.must_match %(  to 'to@domain')
-          content.must_match %(  subject 'signup')
+          content.must_match %(  from    '<from>')
+          content.must_match %(  to      '<to>')
+          content.must_match %(  subject 'Hello')
         end
       end
 
       describe 'spec/generate/mailers/signup_spec.rb' do
         describe 'minitest (default)' do
           it 'generates it' do
-            content = @root.join('spec/generate/mailers/signup_spec.rb').read
-            content.must_match %(describe Mailers::Signup do)
+            content = @root.join('spec/generate/mailers/forgot_password_spec.rb').read
+            content.must_match %(describe Mailers::ForgotPassword do)
             content.must_match %(describe '.deliver' do)
           end
         end
       end
 
-      describe 'lib/generate/mailers/templates/signup.txt.erb' do
+      describe 'lib/generate/mailers/templates/forgot_password.txt.erb' do
         it 'generates it' do
-          content = @root.join('lib/generate/mailers/templates/signup.txt.erb').read
+          content = @root.join('lib/generate/mailers/templates/forgot_password.txt.erb').read
           content.must_be :empty?
         end
       end
-    end
 
-    describe 'with from argument' do
-      let(:opts) { default_options.merge(from: 'sender@example.com') }
-
-      describe 'lib/generate/signup.rb' do
-        before do
-          capture_io { command.start }
-        end
+      describe 'lib/generate/mailers/templates/forgot_password.html.erb' do
         it 'generates it' do
-          content = @root.join('lib/generate/signup.rb').read
-          content.must_match %(from 'sender@example.com')
-        end
-      end
-    end
-
-    describe 'with to argument' do
-      let(:opts) { default_options.merge(to: 'recipient@example.com') }
-
-      describe 'lib/generate/signup.rb' do
-        before do
-          capture_io { command.start }
-        end
-
-        it 'generates it' do
-          content = @root.join('lib/generate/signup.rb').read
-          content.must_match %(to 'recipient@example.com')
-        end
-      end
-    end
-
-    describe 'with subject arguments' do
-      let(:opts) { default_options.merge(subject: 'This is the subject') }
-
-      describe 'lib/generate/signup.rb' do
-        before do
-          capture_io { command.start }
-        end
-
-        it 'generates it' do
-          content = @root.join('lib/generate/signup.rb').read
-          content.must_match %(subject 'This is the subject')
+          content = @root.join('lib/generate/mailers/templates/forgot_password.html.erb').read
+          content.must_be :empty?
         end
       end
     end

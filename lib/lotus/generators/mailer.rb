@@ -3,19 +3,35 @@ require 'lotus/utils/string'
 
 module Lotus
   module Generators
-    # @since 0.3.0
+    # @since 0.5.0
     # @api private
     class Mailer < Abstract
 
-      # @since 0.3.0
+      # @since 0.5.0
       # @api private
-      TEMPLATE_SUFFIX  = '.txt.'.freeze
+      TXT_FORMAT  = '.txt'.freeze
 
-      # @since 0.3.0
+      # @since 0.5.0
       # @api private
-      DEFAULT_TEMPLATE = 'erb'.freeze
+      HTML_FORMAT  = '.html'.freeze
 
-      # @since 0.3.0
+      # @since 0.5.0
+      # @api private
+      DEFAULT_ENGINE = 'erb'.freeze
+
+      # @since 0.5.0
+      # @api private
+      DEFAULT_FROM = "'<from>'".freeze
+
+      # @since 0.5.0
+      # @api private
+      DEFAULT_TO = "'<to>'".freeze
+
+      # @since 0.5.0
+      # @api private
+      DEFAULT_SUBJECT = "'Hello'".freeze
+
+      # @since 0.5.0
       # @api private
       def initialize(command)
         super
@@ -24,40 +40,23 @@ module Lotus
         cli.class.source_root(source)
       end
 
-      # @since 0.3.0
+      # @since 0.5.0
       # @api private
       def start
         assert_mailer!
 
-        if (options[:from])
-          @from = "'#{options[:from]}'"
-        else
-          @from ="'from@domain' # default value or the value set by --from flag"
-        end
-
-        if (options[:to])
-          @to = "'#{options[:to]}'"
-        else
-          @to ="'to@domain' # default value or the value set by --to flag"
-        end
-
-        if (options[:subject])
-          @subject = "'#{options[:subject]}'"
-        else
-          @subject ="'signup' # default value or the value set by --subject flag"
-        end
-
         opts = {
-          mailer: @mailer_name,
-          from: @from,
-          to: @to,
-          subject: @subject,
+          mailer:  @mailer_name,
+          from:    DEFAULT_FROM,
+          to:      DEFAULT_TO,
+          subject: DEFAULT_SUBJECT,
         }
 
         templates = {
           'mailer_spec.rb.tt' => _mailer_spec_path,
-          'mailer.rb.tt' => _mailer_path,
-          'template.tt' => _template_path
+          'mailer.rb.tt'      => _mailer_path,
+          'template.txt.tt'   => _txt_template_path,
+          'template.html.tt'  => _html_template_path,
         }
 
         templates.each do |src, dst|
@@ -65,8 +64,7 @@ module Lotus
         end
       end
 
-
-      # @since 0.3.2
+      # @since 0.5.0
       # @api private
       def assert_mailer!
         if @mailer_name.nil?
@@ -74,14 +72,13 @@ module Lotus
         end
       end
 
-
-      # @since 0.3.0
+      # @since 0.5.0
       # @api private
       def _mailer_path
-        model_root.join("#{ name }.rb").to_s
+        core_root.join("#{ name }.rb").to_s
       end
 
-      # @since 0.3.0
+      # @since 0.5.0
       # @api private
       def _mailer_spec_path
         spec_root.join(::File.basename(Dir.getwd), 'mailers', "#{ name }_spec.rb")
@@ -89,16 +86,27 @@ module Lotus
 
       # @since 0.5.0
       # @api private
-      def _template_path
-        model_root.join("mailers/templates", "#{ name }#{ TEMPLATE_SUFFIX }#{ DEFAULT_TEMPLATE }")
+      def _txt_template_path
+        __template_path(TXT_FORMAT)
       end
 
-      # @since 0.4.0
+      # @since 0.5.0
+      # @api private
+      def _html_template_path
+        __template_path(HTML_FORMAT)
+      end
+
+      # @since 0.5.0
+      # @api private
+      def __template_path(format)
+        core_root.join('mailers', 'templates', "#{ name }#{ format }.#{ DEFAULT_ENGINE }")
+      end
+
+      # @since 0.5.0
       # @api private
       def name
         Utils::String.new(app_name || super).underscore
       end
-
     end
   end
 end

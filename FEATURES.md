@@ -3,8 +3,10 @@
 
 ## Features
 
-## v0.5.0 - 2015-09-23
+## v0.5.0 - 2015-09-30
 
+- Mailers
+- CLI: `lotus generate mailer`
 - SQL joins
 - Custom coercers for data mapper
 
