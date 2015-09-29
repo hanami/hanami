@@ -11,10 +11,12 @@ gem 'lotus-helpers',     require: false, github: 'lotus/helpers'
 gem 'lotus-controller',  require: false, github: 'lotus/controller'
 gem 'lotus-view',        require: false, github: 'lotus/view'
 gem 'lotus-model',       require: false, github: 'lotus/model'
+gem 'lotus-mailer',      require: false, github: 'lotus/mailer'
 gem 'lotusrb',                           github: 'lotus/lotus'
 <%- else -%>
 gem 'lotusrb',       '<%= Lotus::VERSION %>'
 gem 'lotus-model',   '<%= config[:lotus_model_version] %>'
+gem 'lotus-mailer',  '<%= config[:lotus_mailer_version] %>'
 <%- end -%>
 
 <%- if config[:database_config][:gem] %>

@@ -1,4 +1,5 @@
 require 'lotus/model'
+require 'lotus/mailer'
 Dir["#{ __dir__ }/<%= config[:app_name] %>/**/*.rb"].each { |file| require_relative file }
 
 Lotus::Model.configure do
@@ -44,5 +45,14 @@ Lotus::Model.configure do
     #   attribute :id,   Integer
     #   attribute :name, String
     # end
+  end
+end.load!
+
+# Please consult Lotus::Mailer README for more details on available delivery method
+Lotus::Mailer.configure do
+  delivery_method do
+    # development CustomDeliveryMethod, username: ..., password: ....
+    # production :stmp, address: 'localhost', port: 1025
+    test :test # default test env to :test delivery method
   end
 end.load!

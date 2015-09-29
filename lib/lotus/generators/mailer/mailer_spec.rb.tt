@@ -1,0 +1,7 @@
+require 'spec_helper'
+
+describe Mailers::<%= config[:mailer] %> do
+  describe '.deliver' do
+    # test goes here
+  end
+end
