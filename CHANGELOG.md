@@ -12,7 +12,7 @@ A complete web framework for Ruby
 ### Fixed
 - [Luca Guidi] Handle conflicts between directories with the same name while serving static assets
 - [Derk-Jan Karrenbeld] Include default value `font-src: self` for CSP HTTP header
-- [Jack Huang] Make CLI arguments immutable for `Lotus::Environment`
+- [Cam Huynh] Make CLI arguments immutable for `Lotus::Environment`
 - [Andrii Ponomarov] Disable welcome page in test environment
 - [Alfonso Uceda Pompa] Print error message and exit when no name is provided to model generator
 
