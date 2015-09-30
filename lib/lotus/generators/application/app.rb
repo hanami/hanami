@@ -56,6 +56,7 @@ module Lotus
             "lib/#{ app_name }/entities",
             "lib/#{ app_name }/repositories",
             "lib/#{ app_name }/mailers",
+            "lib/#{ app_name }/mailers/templates",
             "public/javascripts",
             "public/stylesheets"
           ]
