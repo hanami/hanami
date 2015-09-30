@@ -37,6 +37,7 @@ module Lotus
             'Gemfile.tt'               => 'Gemfile',
             'config.ru.tt'             => 'config.ru',
             'config/environment.rb.tt' => 'config/environment.rb',
+            'config/loader.rb.tt'      => 'config/loader.rb',
             'lib/app_name.rb.tt'       => "lib/#{ app_name }.rb",
             'lib/config/mapping.rb.tt' => 'lib/config/mapping.rb',
           }

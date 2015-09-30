@@ -263,6 +263,14 @@ describe Lotus::Commands::New do
       end
     end
 
+    describe 'config/loader.rb' do
+      it 'generates it' do
+        content = @root.join('config/loader.rb').read
+        content.must_match %(require_relative './environment')
+        content.must_match %(Lotus::Application.preload_applications!)
+      end
+    end
+
     describe '.env' do
       it 'generates it' do
         capture_io { command.start }
@@ -771,6 +779,14 @@ describe Lotus::Commands::New do
         content = @root.join('config/environment.rb').read
         content.must_match %(require_relative '../apps/web/application')
         content.must_match %(mount Web::Application, at: '/')
+      end
+    end
+
+    describe 'config/loader.rb' do
+      it 'generates it' do
+        content = @root.join('config/loader.rb').read
+        content.must_match %(require_relative './environment')
+        content.must_match %(Lotus::Application.preload_applications!)
       end
     end
 
@@ -1878,6 +1894,14 @@ describe Lotus::Commands::New do
         it 'generates it' do
           content = @root.join('config/environment.rb').read
           content.must_match %(require_relative '../lib/new')
+        end
+      end
+
+      describe 'config/loader.rb' do
+        it 'generates it' do
+          content = @root.join('config/loader.rb').read
+          content.must_match %(require_relative './environment')
+          content.must_match %(Lotus::Application.preload_applications!)
         end
       end
 
