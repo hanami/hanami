@@ -1536,6 +1536,20 @@ describe Lotus::Commands::New do
       end
     end
 
+    describe 'lib/chirp/mailers' do
+      it 'generates it' do
+        capture_io { command.start }
+        @root.join('lib/chirp/mailers').must_be :directory?
+      end
+    end
+
+    describe 'lib/chirp/mailers/templates' do
+      it 'generates it' do
+        capture_io { command.start }
+        @root.join('lib/chirp/mailers/templates').must_be :directory?
+      end
+    end
+
     describe 'empty spec/* directory' do
       it 'generates it' do
         capture_io { command.start }
