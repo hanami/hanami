@@ -98,6 +98,19 @@ module Lotus
       end
     end
 
+    desc 'destroy', 'destroys an action'
+    method_option :path,                desc: 'applications path',        type: :string, default: 'apps'
+    method_option :help, aliases: '-h', desc: 'displays the usage method'
+
+    def destroy(type = nil, app_name = nil, name = nil)
+      if options[:help] || (type.nil? && app_name.nil? && name.nil?)
+        invoke :help, ['destroy']
+      else
+        require 'lotus/commands/destroy'
+        Lotus::Commands::Destroy.new(type, app_name, name, environment, self).start
+      end
+    end
+
     require 'lotus/commands/db'
     register Lotus::Commands::DB, 'db', 'db [SUBCOMMAND]', 'manage set of DB operations'
 
