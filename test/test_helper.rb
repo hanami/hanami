@@ -20,10 +20,29 @@ FIXTURES_ROOT = Pathname(File.dirname(__FILE__) + '/fixtures').realpath
 ENV_LOCALHOST = !!ENV['TRAVIS'] ? '0.0.0.0' : 'localhost'
 
 require 'minitest/autorun'
+require 'support/assertions'
+
 $:.unshift 'lib'
 require 'lotus'
 
 Minitest::Test.class_eval do
+  def with_temp_dir(name = 'testapp', &block)
+    current_dir = Dir.pwd
+    temp_dir = Dir.mktmpdir
+    app_dir = File.join(temp_dir, name)
+
+    FileUtils.mkdir_p(app_dir)
+
+    begin
+      Dir.chdir(app_dir) do
+        yield(Pathname.new(current_dir))
+      end
+    ensure
+      FileUtils.rm_r(temp_dir)
+    end
+  end
+
+
   def self.isolate_me!
     require 'minitest/isolation'
 

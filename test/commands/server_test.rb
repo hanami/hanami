@@ -11,8 +11,7 @@ describe Lotus::Commands::Server do
     ENV['LOTUS_ENV']  = nil
     ENV['RACK_ENV']   = nil
 
-    @env    = Lotus::Environment.new(opts)
-    @server = Lotus::Commands::Server.new(@env)
+    @server = Lotus::Commands::Server.new(opts)
   end
 
   describe '#middleware' do
@@ -121,8 +120,7 @@ describe Lotus::Commands::Server do
       before do
         ENV['LOTUS_ENV'] = nil
         ENV['RACK_ENV']  = 'test'
-        @env    = Lotus::Environment.new(opts)
-        @server = Lotus::Commands::Server.new(@env)
+        @server = Lotus::Commands::Server.new(opts)
       end
 
       after do
@@ -144,8 +142,7 @@ describe Lotus::Commands::Server do
       before do
         ENV['RACK_ENV']  = nil
         ENV['LOTUS_ENV'] = 'staging'
-        @env    = Lotus::Environment.new(opts)
-        @server = Lotus::Commands::Server.new(@env)
+        @server = Lotus::Commands::Server.new(opts)
       end
 
       after do
@@ -167,8 +164,7 @@ describe Lotus::Commands::Server do
       before do
         ENV['RACK_ENV']  = 'staging'
         ENV['LOTUS_ENV'] = 'test'
-        @env    = Lotus::Environment.new(opts)
-        @server = Lotus::Commands::Server.new(@env)
+        @server = Lotus::Commands::Server.new(opts)
       end
 
       it 'gives the precendence to LOTUS_ENV' do

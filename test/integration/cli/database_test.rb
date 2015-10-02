@@ -14,7 +14,8 @@ describe 'lotus db' do
   end
 
   def generate_application
-    `bundle exec lotus new #{ @app_name = 'delivery' } --architecture="#{ architecture }" --database=sqlite3`
+    @app_name = 'delivery'
+    `bundle exec lotus new #{ @app_name } --architecture="#{ architecture }" --database=sqlite3`
     Dir.chdir(@root = @tmp.join(@app_name))
 
     File.open(@root.join('.env.development'), 'w') do |f|

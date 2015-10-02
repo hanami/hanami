@@ -1,110 +1,121 @@
 require 'thor'
-require 'lotus/environment'
 require 'lotus/version'
+
+require 'lotus/commands/new/app'
+require 'lotus/commands/new/container'
+require 'lotus/commands/console'
 
 module Lotus
   class Cli < Thor
     include Thor::Actions
 
     desc 'version', 'prints Lotus version'
+    long_desc <<-EOS
+    `lotus version` prints the version of the bundled lotus gem.
+    EOS
+
     def version
       puts "v#{ Lotus::VERSION }"
     end
 
     desc 'server', 'starts a lotus server'
-    method_option :port,      aliases: '-p', desc: 'The port to run the server on, '
-    method_option :server,                   desc: 'choose a specific Rack::Handler, e.g. webrick, thin etc'
-    method_option :rackup,                   desc: 'a rackup configuration file path to load (config.ru)'
-    method_option :host,                     desc: 'the host address to bind to'
-    method_option :debug,                    desc: 'turn on debug output'
-    method_option :warn,                     desc: 'turn on warnings'
-    method_option :daemonize,                desc: 'if true, the server will daemonize itself (fork, detach, etc)'
-    method_option :pid,                      desc: 'path to write a pid file after daemonize'
-    method_option :environment,              desc: 'path to environment configuration (config/environment.rb)'
-    method_option :code_reloading,           desc: 'code reloading', type: :boolean, default: true
-    method_option :help,      aliases: '-h', desc: 'displays the usage message'
+    long_desc <<-EOS
+    `lotus server` starts a server for the current lotus application.
+
+    $ > lotus server
+
+    $ > lotus server -p 4500
+    EOS
+
+    method_option :port, aliases: '-p', desc: 'The port to run the server on, '
+    method_option :server, desc: 'choose a specific Rack::Handler, e.g. webrick, thin etc'
+    method_option :rackup, desc: 'a rackup configuration file path to load (config.ru)'
+    method_option :host, desc: 'the host address to bind to'
+    method_option :debug, desc: 'turn on debug output'
+    method_option :warn, desc: 'turn on warnings'
+    method_option :daemonize, desc: 'if true, the server will daemonize itself (fork, detach, etc)'
+    method_option :pid, desc: 'path to write a pid file after daemonize'
+    method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+    method_option :code_reloading, desc: 'code reloading', type: :boolean, default: true
+    method_option :help, desc: 'displays the usage message'
 
     def server
       if options[:help]
         invoke :help, ['server']
       else
         require 'lotus/commands/server'
-        Lotus::Commands::Server.new(environment).start
+        Lotus::Commands::Server.new(options).start
       end
     end
 
     desc 'console', 'starts a lotus console'
-    method_option :environment,           desc: 'path to environment configuration (config/environment.rb)'
-    method_option :engine,                desc: 'choose a specific console engine: irb/pry/ripl (irb)'
-    method_option :help,   aliases: '-h', desc: 'displays the usage method'
+    long_desc <<-EOS
+    `lotus console` starts the interactive lotus console.
+
+    $ > lotus console --engine=pry
+    EOS
+
+    method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+    method_option :engine, desc: 'choose a specific console engine: (irb/pry/ripl)', default: Lotus::Commands::Console::DEFAULT_ENGINE
+    method_option :help, desc: 'displays the usage method'
 
     def console
       if options[:help]
         invoke :help, ['console']
       else
-        require 'lotus/commands/console'
-        Lotus::Commands::Console.new(environment).start
+        Lotus::Commands::Console.new(options).start
       end
     end
 
-    desc 'routes', 'prints routes'
-    method_option :environment,                 desc: 'path to environment configuration (config/environment.rb)'
-    method_option :help,         aliases: '-h', desc: 'displays the usage method'
+    desc 'new APPLICATION_NAME', 'generate a new lotus application'
+    long_desc <<-EOS
+      `lotus new` creates a new lotus application.
+      You can specify various options such as the database to be used as well as the path and architecture.
+
+      $ > lotus new fancy_app --application=container
+
+      $ > lotus new fancy_app --lotus_head
+    EOS
+
+    method_option :database, desc: "application database (#{Lotus::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: 'filesystem'
+    method_option :architecture, desc: 'application architecture (container/app)', default: Lotus::Commands::New::Abstract::DEFAULT_ARCHITECTURE
+    method_option :application_name, desc: 'application name, only for container', default: Lotus::Commands::New::Container::DEFAULT_APPLICATION_NAME
+    method_option :application_base_url, desc: 'application base url', default: Lotus::Commands::New::Abstract::DEFAULT_APPLICATION_BASE_URL
+    method_option :test, desc: 'application test framework (rspec/minitest)', default: Lotus::Generators::TestFramework::DEFAULT_FRAMEWORK
+    method_option :lotus_head, desc: 'use Lotus HEAD (true/false)', type: :boolean, default: false
+    method_option :help, desc: 'displays the usage method'
+
+    def new(application_name)
+      if options[:help]
+        invoke :help, ['new']
+      elsif options[:architecture] == 'app'
+        Lotus::Commands::New::App.new(options, application_name).start
+      else
+        Lotus::Commands::New::Container.new(options, application_name).start
+      end
+    end
+
+    desc 'routes', 'prints the routes'
+    long_desc <<-EOS
+      `lotus routes` outputs all the registered routes to the console.
+    EOS
+
+    method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+    method_option :help, desc: 'displays the usage method'
 
     def routes
       if options[:help]
         invoke :help, ['routes']
       else
         require 'lotus/commands/routes'
-        Lotus::Commands::Routes.new(environment).start
+        Lotus::Commands::Routes.new(options).start
       end
     end
 
-    desc 'new', 'generates a new application'
-    method_option :database,             aliases: ['-d', '--db'],   desc: 'application database (filesystem/memory/postgresql/sqlite3/mysql)', type: :string,  default: 'filesystem'
-    method_option :architecture,         aliases: ['-a', '--arch'], desc: 'application architecture (container/app)', type: :string, default: 'container'
-    method_option :application,                                     desc: 'application name',         type: :string,  default: 'web'
-    method_option :application_base_url,                            desc: 'application base url',     type: :string,  default: '/'
-    method_option :path,                                            desc: 'path',                     type: :string
-    method_option :test,                                            desc: 'application test framework (rspec/minitest)', type: :string, default: 'minitest'
-    method_option :lotus_head,                                      desc: 'use Lotus HEAD',           type: :boolean, default: false
-    method_option :help,                 aliases: '-h',             desc: 'displays the usage method'
+    require 'lotus/cli_sub_commands/db'
+    register Lotus::CliSubCommands::DB, 'db', 'db [SUBCOMMAND]', 'manage set of DB operations'
 
-    def new(name = nil)
-      if options[:help] || name.nil?
-        invoke :help, ['new']
-      else
-        require 'lotus/commands/new'
-        Lotus::Commands::New.new(name, environment, self).start
-      end
-    end
-
-    desc 'generate', 'generates app, action, model, mailer or migration'
-    method_option :application_base_url, desc: 'application base url',                                      type: :string
-    method_option :path,                 desc: 'applications path',                                         type: :string
-    method_option :url,                  desc: 'relative URL for action',                                   type: :string
-    method_option :method,               desc: "HTTP method for action. Upper/lower case is ignored. Must be one of GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS, TRACE.", type: :string, default: 'GET'
-    method_option :skip_view,            desc: 'skip the creation of view and templates (only for action)', type: :boolean, default: false
-    method_option :help, aliases: '-h',  desc: 'displays the usage method'
-
-    # @since 0.3.0
-    # @api private
-    def generate(type = nil, app_name = nil, name = nil)
-      if options[:help] || (type.nil? && app_name.nil? && name.nil?)
-        invoke :help, ['generate']
-      else
-        require 'lotus/commands/generate'
-        Lotus::Commands::Generate.new(type, app_name, name, environment, self).start
-      end
-    end
-
-    require 'lotus/commands/db'
-    register Lotus::Commands::DB, 'db', 'db [SUBCOMMAND]', 'manage set of DB operations'
-
-    private
-
-    def environment
-      Lotus::Environment.new(options)
-    end
+    require 'lotus/cli_sub_commands/generate'
+    register Lotus::CliSubCommands::Generate, 'generate', 'generate [SUBCOMMAND]', 'generate lotus classes'
   end
 end
