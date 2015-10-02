@@ -1,5 +1,13 @@
 module Lotus
   module Commands
+    # REPL that supports different engines.
+    #
+    # It is run with:
+    #
+    #   `bundle exec lotus console`
+    #
+    # @since 0.1.0
+    # @api private
     class Console
       module Methods
         def reload!
@@ -16,13 +24,19 @@ module Lotus
 
       DEFAULT_ENGINE = 'irb'.freeze
 
+      # @since 0.1.0
       attr_reader :options
 
+      # @param options [Hash] Environment's options
+      #
+      # @since 0.1.0
+      # @see Lotus::Environment#initialize
       def initialize(options)
         @environment = Lotus::Environment.new(options)
         @options     = @environment.to_options
       end
 
+      # @since 0.1.0
       def start
         # Clear out ARGV so Pry/IRB don't attempt to parse the rest
         ARGV.shift until ARGV.empty?
@@ -35,16 +49,22 @@ module Lotus
         engine.start
       end
 
+      # @since 0.1.0
+      # @api private
       def engine
         load_engine options.fetch(:engine) { engine_lookup }
       end
 
       private
 
+      # @since 0.1.0
+      # @api private
       def engine_lookup
         (ENGINES.find { |_, klass| Object.const_defined?(klass) } || DEFAULT_ENGINE).first
       end
 
+      # @since 0.1.0
+      # @api private
       def load_engine(engine)
         require engine
       rescue LoadError
@@ -56,6 +76,8 @@ module Lotus
         )
       end
 
+      # @since 0.1.0
+      # @api private
       def load_application
         if @environment.container?
           Lotus::Container.new

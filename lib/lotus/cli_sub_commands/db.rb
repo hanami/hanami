@@ -1,13 +1,18 @@
 module Lotus
   class CliSubCommands
+    # A set of subcommands related to DB
+    #
+    # It is run with:
+    #
+    #   `bundle exec lotus db`
+    #
+    # @since x.x.x
+    # @api private
     class DB < Thor
       namespace :db
 
-      desc 'db console', 'start DB console'
-
       desc 'console', 'start DB console'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-
       def console(name = nil)
         if options[:help]
           invoke :help, ['console']
@@ -17,11 +22,8 @@ module Lotus
         end
       end
 
-      desc 'db create', 'create database'
-
       desc 'create', 'create database for current environment'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-
       def create
         if options[:help]
           invoke :help, ['create']
@@ -32,11 +34,8 @@ module Lotus
         end
       end
 
-      desc 'db drop', 'drop database'
-
       desc 'drop', 'drop database for current environment'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-
       def drop
         if options[:help]
           invoke :help, ['drop']
@@ -47,11 +46,8 @@ module Lotus
         end
       end
 
-      desc 'db migrate', 'migrate database'
-
       desc 'migrate', 'migrate database for current environment'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-
       def migrate(version = nil)
         if options[:help]
           invoke :help, ['migrate']
@@ -61,11 +57,8 @@ module Lotus
         end
       end
 
-      desc 'db apply', 'apply database changes'
-
       desc 'apply', 'migrate, dump schema, delete migrations (experimental)'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-
       def apply
         if options[:help]
           invoke :help, ['apply']
@@ -76,11 +69,8 @@ module Lotus
         end
       end
 
-      desc 'db prepare', 'prepare database'
-
       desc 'prepare', 'create and migrate database'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-
       def prepare
         if options[:help]
           invoke :help, ['prepare']
@@ -91,11 +81,10 @@ module Lotus
         end
       end
 
-      desc 'db version', 'database version'
-
+      # @since x.x.x
+      # @api private
       desc 'version', 'current database version'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-
       def version
         if options[:help]
           invoke :help, ['version']
@@ -107,10 +96,14 @@ module Lotus
 
       private
 
+      # @since x.x.x
+      # @api private
       def environment
         Lotus::Environment.new(options)
       end
 
+      # @since x.x.x
+      # @api private
       def assert_allowed_environment!
         if environment.environment?(:production)
           puts "Can't run this command in production mode"
@@ -118,6 +111,8 @@ module Lotus
         end
       end
 
+      # @since x.x.x
+      # @api private
       def assert_development_environment!
         unless environment.environment?(:development)
           puts "This command can be ran only in development mode"

@@ -1,20 +1,18 @@
 require 'thor'
-require 'lotus/version'
-
+require 'lotus/commands/console'
 require 'lotus/commands/new/app'
 require 'lotus/commands/new/container'
-require 'lotus/commands/console'
 
 module Lotus
   class Cli < Thor
-    include Thor::Actions
+    # include Thor::Actions
 
     desc 'version', 'prints Lotus version'
     long_desc <<-EOS
     `lotus version` prints the version of the bundled lotus gem.
     EOS
-
     def version
+      require 'lotus/version'
       puts "v#{ Lotus::VERSION }"
     end
 
@@ -26,7 +24,6 @@ module Lotus
 
     $ > lotus server -p 4500
     EOS
-
     method_option :port, aliases: '-p', desc: 'The port to run the server on, '
     method_option :server, desc: 'choose a specific Rack::Handler, e.g. webrick, thin etc'
     method_option :rackup, desc: 'a rackup configuration file path to load (config.ru)'
@@ -38,7 +35,6 @@ module Lotus
     method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
     method_option :code_reloading, desc: 'code reloading', type: :boolean, default: true
     method_option :help, desc: 'displays the usage message'
-
     def server
       if options[:help]
         invoke :help, ['server']
@@ -54,11 +50,9 @@ module Lotus
 
     $ > lotus console --engine=pry
     EOS
-
     method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-    method_option :engine, desc: 'choose a specific console engine: (irb/pry/ripl)', default: Lotus::Commands::Console::DEFAULT_ENGINE
+    method_option :engine, desc: "choose a specific console engine: (#{Lotus::Commands::Console::ENGINES.keys.join('/')})", default: Lotus::Commands::Console::DEFAULT_ENGINE
     method_option :help, desc: 'displays the usage method'
-
     def console
       if options[:help]
         invoke :help, ['console']
@@ -76,15 +70,13 @@ module Lotus
 
       $ > lotus new fancy_app --lotus_head
     EOS
-
-    method_option :database, desc: "application database (#{Lotus::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: 'filesystem'
+    method_option :database, desc: "application database (#{Lotus::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Lotus::Generators::DatabaseConfig::DEFAULT_ENGINE
     method_option :architecture, desc: 'application architecture (container/app)', default: Lotus::Commands::New::Abstract::DEFAULT_ARCHITECTURE
     method_option :application_name, desc: 'application name, only for container', default: Lotus::Commands::New::Container::DEFAULT_APPLICATION_NAME
     method_option :application_base_url, desc: 'application base url', default: Lotus::Commands::New::Abstract::DEFAULT_APPLICATION_BASE_URL
-    method_option :test, desc: 'application test framework (rspec/minitest)', default: Lotus::Generators::TestFramework::DEFAULT_FRAMEWORK
+    method_option :test, desc: "application test framework (#{Lotus::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Lotus::Generators::TestFramework::DEFAULT_FRAMEWORK
     method_option :lotus_head, desc: 'use Lotus HEAD (true/false)', type: :boolean, default: false
     method_option :help, desc: 'displays the usage method'
-
     def new(application_name)
       if options[:help]
         invoke :help, ['new']
@@ -99,10 +91,8 @@ module Lotus
     long_desc <<-EOS
       `lotus routes` outputs all the registered routes to the console.
     EOS
-
     method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
     method_option :help, desc: 'displays the usage method'
-
     def routes
       if options[:help]
         invoke :help, ['routes']
