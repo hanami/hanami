@@ -15,6 +15,7 @@ module Lotus
           @generator = Lotus::Generators::Generator.new(template_source_path, base_path)
 
           assert_model_name!
+          assert_model_has_valid_name!
         end
 
         def start
@@ -32,6 +33,14 @@ module Lotus
         def assert_model_name!
           if model_name.nil? || model_name.strip.empty?
             raise ArgumentError.new('Model name nil or empty.')
+          end
+        end
+
+        # @since x.x.x
+        # @api private
+        def assert_model_has_valid_name!
+          unless model_name.match(/^[a-z]/i)
+            raise ArgumentError.new("Invalid model name")
           end
         end
 

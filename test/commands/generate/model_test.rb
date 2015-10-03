@@ -9,6 +9,10 @@ describe Lotus::Commands::Generate::Model do
       -> { Lotus::Commands::Generate::Model.new({}, '') }.must_raise ArgumentError
       -> { Lotus::Commands::Generate::Model.new({}, '   ') }.must_raise ArgumentError
     end
+
+    it 'validates model name' do
+      -> { Lotus::Commands::Generate::Model.new({}, '123') }.must_raise ArgumentError
+    end
   end
 
   describe 'sanitizes model name' do
