@@ -12,6 +12,8 @@ describe Lotus::Commands::Generate::Model do
 
     it 'validates model name' do
       -> { Lotus::Commands::Generate::Model.new({}, '123') }.must_raise ArgumentError
+      exception = -> { Lotus::Commands::Generate::Model.new({}, '123') }.must_raise ArgumentError
+      exception.message.must_equal "Invalid model name. The model name shouldn't begin with a number."
     end
   end
 

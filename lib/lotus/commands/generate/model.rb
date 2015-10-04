@@ -36,11 +36,12 @@ module Lotus
           end
         end
 
+        # Raises argument error if the model name begins with a number
         # @since x.x.x
         # @api private
         def assert_model_has_valid_name!
           unless model_name.match(/^[a-z]/i)
-            raise ArgumentError.new("Invalid model name")
+            raise ArgumentError.new("Invalid model name. The model name shouldn't begin with a number.")
           end
         end
 
