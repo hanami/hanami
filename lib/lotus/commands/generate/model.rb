@@ -30,6 +30,8 @@ module Lotus
 
         private
 
+        # @since x.x.x
+        # @api private
         def assert_model_name!
           if model_name.nil? || model_name.strip.empty?
             raise ArgumentError.new('Model name nil or empty.')
@@ -37,6 +39,7 @@ module Lotus
         end
 
         # Raises argument error if the model name begins with a number
+        #
         # @since x.x.x
         # @api private
         def assert_model_has_valid_name!
@@ -74,6 +77,8 @@ module Lotus
             "#{ model_name_underscored }_repository_spec.rb")
         end
 
+        # @since x.x.x
+        # @api private
         def model_name_underscored
           Utils::String.new(model_name).underscore
         end

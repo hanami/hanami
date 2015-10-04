@@ -5,9 +5,17 @@ require 'fileutils'
 describe Lotus::Commands::Generate::Model do
   describe 'with invalid arguments' do
     it 'requires model name' do
-      -> { Lotus::Commands::Generate::Model.new({}, nil) }.must_raise ArgumentError
-      -> { Lotus::Commands::Generate::Model.new({}, '') }.must_raise ArgumentError
-      -> { Lotus::Commands::Generate::Model.new({}, '   ') }.must_raise ArgumentError
+      assert_exception_raised(ArgumentError, 'Model name nil or empty.') do
+        Lotus::Commands::Generate::Model.new({}, nil)
+      end
+
+      assert_exception_raised(ArgumentError, 'Model name nil or empty.') do
+        Lotus::Commands::Generate::Model.new({}, '')
+      end
+
+      assert_exception_raised(ArgumentError, 'Model name nil or empty.') do
+        Lotus::Commands::Generate::Model.new({}, '   ')
+      end
     end
 
     it 'validates model name' do
