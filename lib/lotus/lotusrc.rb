@@ -144,6 +144,12 @@ module Lotus
       @root.join FILE_NAME
     end
 
+    # Return the content of lotusrc file
+    #
+    # @since 0.3.0
+    # @api private
+    #
+    # @return [String] content of lotusrc file
     def content
       path_file.read
     end

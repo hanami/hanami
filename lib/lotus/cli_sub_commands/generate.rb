@@ -4,11 +4,21 @@ require 'lotus/commands/generate/mailer'
 
 module Lotus
   class CliSubCommands
+    # A set of generator subcommands
+    #
+    # It is run with:
+    #
+    #   `bundle exec lotus generate`
+    #
+    # @since x.x.x
+    # @api private
     class Generate < Thor
       include Thor::Actions
 
       namespace :generate
 
+      # @since x.x.x
+      # @api private
       desc 'action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME', 'generate a lotus action'
       long_desc <<-EOS
         `lotus generate action` generates an an action, view and template along with specs and a route.
@@ -21,13 +31,11 @@ module Lotus
 
         > $ lotus generate action web cars#create --method=post
       EOS
-
       method_option :method, desc: "The HTTP method to be used for the generated route. Must be one of (#{Lotus::Routing::Route::VALID_HTTP_VERBS.join('/')})", default: Lotus::Commands::Generate::Action::DEFAULT_HTTP_METHOD
       method_option :url, desc: 'Relative URL for action, will be used for the route', default: nil
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .lotusrc file.'
       method_option :skip_view, desc: 'Skip the generation of the view. Also skips template generation.', default: false, type: :boolean
       method_option :template, desc: 'Extension to be used for the generated template. Default is defined through your .lotusrc file.'
-
       def actions(application_name, controller_and_action_name)
         if options[:help]
           invoke :help, ['action']
@@ -36,14 +44,12 @@ module Lotus
         end
       end
 
-
       desc 'migration NAME', 'generate a migration'
       long_desc <<-EOS
       `lotus generate migration` will generate an empty migration file.
 
       > $ lotus generate migration do_something
       EOS
-
       def migration(name)
         if options[:help]
           invoke :help, ['migration']
@@ -63,9 +69,7 @@ module Lotus
 
         > $ lotus generate model vehicles/car
       EOS
-
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .lotusrc file.'
-
       def model(name)
         if options[:help]
           invoke :help, ['model']
@@ -82,11 +86,9 @@ module Lotus
       > $ lotus generate mailer forgot_password
       > $ lotus generate mailer forgot_password --to "'log@bookshelf.com'" --from "'support@bookshelf.com'" --subject "'New Password'"
       EOS
-
       method_option :to, desc: 'sender email', default: Lotus::Commands::Generate::Mailer::DEFAULT_TO
       method_option :from, desc: 'sendee email', default: Lotus::Commands::Generate::Mailer::DEFAULT_FROM
       method_option :subject, desc: 'email subject', default: Lotus::Commands::Generate::Mailer::DEFAULT_SUBJECT
-
       def mailer(name)
         if options[:help]
           invoke :help, ['mailer']
@@ -94,7 +96,6 @@ module Lotus
           Lotus::Commands::Generate::Mailer.new(options, name).start
         end
       end
-
 
       desc 'app APPLICATION_NAME', 'generate an app'
       long_desc <<-EOS
@@ -106,9 +107,7 @@ module Lotus
 
         > $ lotus generate app reporting --url=/reports
       EOS
-
       method_option :application_base_url, desc: 'Base URL for the new app. If missing, then it is inferred from APPLICATION_NAME'
-
       def app(application_name)
         if options[:help]
           invoke :help, ['app']

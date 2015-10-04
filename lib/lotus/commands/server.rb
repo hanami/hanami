@@ -19,6 +19,10 @@ module Lotus
     class Server < ::Rack::Server
       attr_reader :options
 
+      # @param options [Hash] Environment's options
+      #
+      # @since 0.1.0
+      # @see Lotus::Environment#initialize
       def initialize(options)
         @_env    = Lotus::Environment.new(options)
         @options = _extract_options(@_env)
@@ -31,6 +35,8 @@ module Lotus
 
       # Primarily this removes the ::Rack::Chunked middleware
       # which is the cause of Safari content-length bugs.
+      #
+      # @since 0.1.0
       def middleware
         mw = Hash.new { |e, m| e[m] = [] }
         mw["deployment"].concat([::Rack::ContentLength, ::Rack::CommonLogger])
@@ -38,6 +44,9 @@ module Lotus
         mw
       end
 
+      # Kickstart shotgun preloader if code reloading is supported
+      #
+      # @since 0.1.0
       def start
         if code_reloading?
           Shotgun.enable_copy_on_write
@@ -48,6 +57,9 @@ module Lotus
       end
 
       private
+
+      # @since 0.1.0
+      # @api private
       def _extract_options(env)
         env.to_options.merge(
           config:      env.rackup.to_s,
@@ -57,6 +69,8 @@ module Lotus
         )
       end
 
+      # @since 0.1.0
+      # @api private
       def code_reloading?
         @_env.code_reloading?
       end
