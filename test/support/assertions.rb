@@ -1,5 +1,10 @@
 module Minitest
   module Assertions
+    def assert_exception_raised(exception_klass, message = nil, &block)
+      exception = block.must_raise exception_klass
+      exception.message.must_equal(message) if message
+    end
+
     # Compare file contents and ignore line endings and empty lines
     def assert_generated_file(expected, actual)
       assert_file_exists(expected)

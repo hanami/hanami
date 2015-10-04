@@ -29,12 +29,16 @@ module Lotus
 
         private
 
+        # @since x.x.x
+        # @api private
         def assert_model_name!
           if model_name.nil? || model_name.strip.empty?
             raise ArgumentError.new('Model name nil or empty.')
           end
         end
 
+        # @since x.x.x
+        # @api private
         def model_root
           Pathname.new('lib').join(::File.basename(Dir.getwd))
         end
@@ -64,6 +68,8 @@ module Lotus
             "#{ model_name_underscored }_repository_spec.rb")
         end
 
+        # @since x.x.x
+        # @api private
         def model_name_underscored
           Utils::String.new(model_name).underscore
         end
