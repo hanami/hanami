@@ -1,4 +1,6 @@
 require 'lotus/routing/route'
+require 'lotus/commands/generate/action'
+require 'lotus/commands/generate/mailer'
 
 module Lotus
   class CliSubCommands
@@ -38,7 +40,6 @@ module Lotus
         if options[:help]
           invoke :help, ['action']
         else
-          require 'lotus/commands/generate/action'
           Lotus::Commands::Generate::Action.new(options, application_name, controller_and_action_name).start
         end
       end
@@ -92,7 +93,6 @@ module Lotus
         if options[:help]
           invoke :help, ['mailer']
         else
-          require 'lotus/commands/generate/mailer'
           Lotus::Commands::Generate::Mailer.new(options, name).start
         end
       end
