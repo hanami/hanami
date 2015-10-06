@@ -241,6 +241,7 @@ describe Lotus::Commands::New::Container do
       assert_file_exists('spec/new_container/mailers/.gitkeep')
       assert_file_exists('spec/support/.gitkeep')
       assert_file_exists('db/.gitkeep')
+      assert_file_exists('.git')
       assert_generated_file(fixture_root.join("Rakefile.#{ test_framework }"), 'Rakefile')
       assert_generated_file(fixture_root.join('spec', "spec_helper.#{ test_framework }.rb"), 'spec/spec_helper.rb')
       assert_generated_file(fixture_root.join('spec', "features_helper.#{ test_framework }.rb"), 'spec/features_helper.rb')

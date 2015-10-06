@@ -67,7 +67,7 @@ module Lotus
         end
 
         def init_git
-          return if !git_dir_present?
+          return if git_dir_present?
           @generator.run("git init #{Shellwords.escape(target)}", capture: true)
         end
 

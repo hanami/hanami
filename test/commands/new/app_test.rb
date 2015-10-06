@@ -85,6 +85,7 @@ describe Lotus::Commands::New::App do
       assert_generated_file(fixture_root.join('spec', "spec_helper.#{ test_framework }.rb"), 'spec/spec_helper.rb')
       assert_generated_file(fixture_root.join('spec', "features_helper.#{ test_framework }.rb"), 'spec/features_helper.rb')
 
+      assert_file_exists('.git')
       assert_file_exists('app/controllers/.gitkeep')
       assert_file_exists('app/views/.gitkeep')
       assert_file_exists('lib/new_app/entities/.gitkeep')
