@@ -35,7 +35,9 @@ describe Lotus::Commands::Generate::Action do
       with_temp_dir do |original_wd|
         setup_container_app
         command = Lotus::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index')
+
         capture_io { command.start }
+
         assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/template.html.haml'), 'apps/web/templates/books/index.html.haml')
       end
     end
@@ -48,9 +50,7 @@ describe Lotus::Commands::Generate::Action do
             command = Lotus::Commands::Generate::Action.new({method: m}, 'web', 'books#index')
             capture_io { command.start }
 
-            expected = "#{m.downcase} '/books', to: 'books#index'"
-            actual = File.read('apps/web/config/routes.rb')
-            assert actual.include?(expected)
+            assert_file_includes('apps/web/config/routes.rb', "#{m.downcase} '/books', to: 'books#index'")
           end
         end
       end
@@ -58,12 +58,11 @@ describe Lotus::Commands::Generate::Action do
       it 'uses the --url option to specify the route url' do
         with_temp_dir do |original_wd|
           setup_container_app
+
           command = Lotus::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index')
           capture_io { command.start }
 
-          expected = "get '/mybooks', to: 'books#index'"
-          actual = File.read('apps/web/config/routes.rb')
-          assert actual.include?(expected)
+          assert_file_includes('apps/web/config/routes.rb', "get '/mybooks', to: 'books#index'")
         end
       end
     end
@@ -77,12 +76,7 @@ describe Lotus::Commands::Generate::Action do
             command = Lotus::Commands::Generate::Action.new({}, 'web', 'books#index')
             capture_io { command.start }
 
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'apps/web/config/routes.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_spec.container.minitest.rb'), 'spec/web/controllers/books/index_spec.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action.container.rb'), 'apps/web/controllers/books/index.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view.container.rb'), 'apps/web/views/books/index.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/template.html.erb'), 'apps/web/templates/books/index.html.erb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view_spec.container.minitest.rb'), 'spec/web/views/books/index_spec.rb')
+            assert_generated_container_action('minitest', original_wd)
           end
         end
 
@@ -97,9 +91,9 @@ describe Lotus::Commands::Generate::Action do
             assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_spec.container.minitest.rb'), 'spec/web/controllers/books/index_spec.rb')
             assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_without_view.container.rb'), 'apps/web/controllers/books/index.rb')
 
-            refute File.exist?('apps/web/views/books/index.rb')
-            refute File.exist?('apps/web/templates/books/index.html.erb')
-            refute File.exist?('spec/web/views/books/index_spec.rb')
+            refute_file_exists('apps/web/views/books/index.rb')
+            refute_file_exists('apps/web/templates/books/index.html.erb')
+            refute_file_exists('spec/web/views/books/index_spec.rb')
           end
         end
       end
@@ -112,12 +106,7 @@ describe Lotus::Commands::Generate::Action do
             command = Lotus::Commands::Generate::Action.new({test: 'rspec'}, 'web', 'books#index')
             capture_io { command.start }
 
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'apps/web/config/routes.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_spec.container.rspec.rb'), 'spec/web/controllers/books/index_spec.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action.container.rb'), 'apps/web/controllers/books/index.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view.container.rb'), 'apps/web/views/books/index.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/template.html.erb'), 'apps/web/templates/books/index.html.erb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view_spec.container.rspec.rb'), 'spec/web/views/books/index_spec.rb')
+            assert_generated_container_action('rspec', original_wd)
           end
         end
       end
@@ -132,12 +121,7 @@ describe Lotus::Commands::Generate::Action do
             command = Lotus::Commands::Generate::Action.new({}, 'testapp', 'books#index')
             capture_io { command.start }
 
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'config/routes.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_spec.app.minitest.rb'), 'spec/controllers/books/index_spec.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action.app.rb'), 'app/controllers/books/index.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view.app.rb'), 'app/views/books/index.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/template.html.erb'), 'app/templates/books/index.html.erb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view_spec.app.minitest.rb'), 'spec/views/books/index_spec.rb')
+            assert_generated_app_action('minitest', original_wd)
           end
         end
 
@@ -152,9 +136,9 @@ describe Lotus::Commands::Generate::Action do
             assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_spec.app.minitest.rb'), 'spec/controllers/books/index_spec.rb')
             assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_without_view.app.rb'), 'app/controllers/books/index.rb')
 
-            refute File.exist?('apps/web/views/books/index.rb')
-            refute File.exist?('apps/web/templates/books/index.html.erb')
-            refute File.exist?('spec/web/views/books/index_spec.rb')
+            refute_file_exists('apps/web/views/books/index.rb')
+            refute_file_exists('apps/web/templates/books/index.html.erb')
+            refute_file_exists('spec/web/views/books/index_spec.rb')
           end
         end
       end
@@ -167,17 +151,13 @@ describe Lotus::Commands::Generate::Action do
             command = Lotus::Commands::Generate::Action.new({test: 'rspec'}, 'testapp', 'books#index')
             capture_io { command.start }
 
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'config/routes.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_spec.app.rspec.rb'), 'spec/controllers/books/index_spec.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action.app.rb'), 'app/controllers/books/index.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view.app.rb'), 'app/views/books/index.rb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/template.html.erb'), 'app/templates/books/index.html.erb')
-            assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view_spec.app.rspec.rb'), 'spec/views/books/index_spec.rb')
+            assert_generated_app_action('rspec', original_wd)
           end
         end
       end
     end
   end
+
   describe 'with quoted arguments' do
     # See https://github.com/lotus/lotus/issues/282
     it 'accepts single quoted arguments' do
@@ -186,12 +166,7 @@ describe Lotus::Commands::Generate::Action do
         command = Lotus::Commands::Generate::Action.new({}, 'web', "'books#index'")
         capture_io { command.start }
 
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'apps/web/config/routes.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_spec.container.minitest.rb'), 'spec/web/controllers/books/index_spec.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action.container.rb'), 'apps/web/controllers/books/index.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view.container.rb'), 'apps/web/views/books/index.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/template.html.erb'), 'apps/web/templates/books/index.html.erb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view_spec.container.minitest.rb'), 'spec/web/views/books/index_spec.rb')
+        assert_generated_container_action('minitest', original_wd)
       end
     end
 
@@ -201,12 +176,7 @@ describe Lotus::Commands::Generate::Action do
         command = Lotus::Commands::Generate::Action.new({}, 'web', '"books#index"')
         capture_io { command.start }
 
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'apps/web/config/routes.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_spec.container.minitest.rb'), 'spec/web/controllers/books/index_spec.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action.container.rb'), 'apps/web/controllers/books/index.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view.container.rb'), 'apps/web/views/books/index.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/template.html.erb'), 'apps/web/templates/books/index.html.erb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view_spec.container.minitest.rb'), 'spec/web/views/books/index_spec.rb')
+        assert_generated_container_action('minitest', original_wd)
       end
     end
 
@@ -216,14 +186,27 @@ describe Lotus::Commands::Generate::Action do
         command = Lotus::Commands::Generate::Action.new({}, 'web', 'books\#index')
         capture_io { command.start }
 
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'apps/web/config/routes.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action_spec.container.minitest.rb'), 'spec/web/controllers/books/index_spec.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action.container.rb'), 'apps/web/controllers/books/index.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view.container.rb'), 'apps/web/views/books/index.rb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/template.html.erb'), 'apps/web/templates/books/index.html.erb')
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view_spec.container.minitest.rb'), 'spec/web/views/books/index_spec.rb')
+        assert_generated_container_action('minitest', original_wd)
       end
     end
+  end
+
+  def assert_generated_app_action(test_framework, original_wd)
+    assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'config/routes.rb')
+    assert_generated_file(original_wd.join("test/fixtures/commands/generate/action/action_spec.app.#{test_framework}.rb"), 'spec/controllers/books/index_spec.rb')
+    assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action.app.rb'), 'app/controllers/books/index.rb')
+    assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view.app.rb'), 'app/views/books/index.rb')
+    assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/template.html.erb'), 'app/templates/books/index.html.erb')
+    assert_generated_file(original_wd.join("test/fixtures/commands/generate/action/view_spec.app.#{test_framework}.rb"), 'spec/views/books/index_spec.rb')
+  end
+
+  def assert_generated_container_action(test_framework, original_wd)
+    assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'apps/web/config/routes.rb')
+    assert_generated_file(original_wd.join("test/fixtures/commands/generate/action/action_spec.container.#{test_framework}.rb"), 'spec/web/controllers/books/index_spec.rb')
+    assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/action.container.rb'), 'apps/web/controllers/books/index.rb')
+    assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/view.container.rb'), 'apps/web/views/books/index.rb')
+    assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/template.html.erb'), 'apps/web/templates/books/index.html.erb')
+    assert_generated_file(original_wd.join("test/fixtures/commands/generate/action/view_spec.container.#{test_framework}.rb"), 'spec/web/views/books/index_spec.rb')
   end
 
   def setup_container_app

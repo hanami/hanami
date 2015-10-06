@@ -22,6 +22,10 @@ module Minitest
       assert File.exist?(expected), "Expected #{expected} to exist but does not."
     end
 
+    def refute_file_exists(expected)
+      refute File.exist?(expected), "Expected #{expected} to NOT exist but does."
+    end
+
     # Asserts a given file have a content.
     # If the argument is a regexp, it will check if the regular expression
     # matches the given file content. If it's a string, it check if the
@@ -34,7 +38,7 @@ module Minitest
       contents.each do |content|
         case content
         when String
-          assert read.include?(content), "Expected #{read} to include #{content}, but does not."
+          assert read.include?(content), "Expected #{read} to include #{content} but does not."
         when Regexp
           assert_match content, read
         end
