@@ -38,19 +38,20 @@ describe Lotus::Commands::New::App do
         with_temp_dir do |original_wd|
           command = Lotus::Commands::New::App.new({}, 'new_app')
           capture_io { command.start }
-            assert_generated_app('minitest', original_wd)
-          end
+
+          assert_generated_app('minitest', original_wd)
         end
       end
     end
+  end
 
-    describe 'rspec' do
-      it 'creates files' do
-        with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::App.new({'test' => 'rspec'}, 'new_app')
-          capture_io { command.start }
-          assert_generated_app('rspec', original_wd)
-        end
+  describe 'rspec' do
+    it 'creates files' do
+      with_temp_dir do |original_wd|
+        command = Lotus::Commands::New::App.new({'test' => 'rspec'}, 'new_app')
+        capture_io { command.start }
+
+        assert_generated_app('rspec', original_wd)
       end
     end
   end
@@ -61,13 +62,13 @@ describe Lotus::Commands::New::App do
       assert_generated_file(fixture_root.join(".lotusrc.#{ test_framework }"), '.lotusrc')
       assert_generated_file(fixture_root.join('.env'), '.env')
 
-      actual_content = File.read('.env.development')
-      assert actual_content.include?('NEW_APP_DATABASE_URL="file:///db/new_app_development"')
-      assert actual_content.match(%r{NEW_APP_SESSIONS_SECRET="[\w]{64}"})
+      assert_file_includes('.env.development',
+                           'NEW_APP_DATABASE_URL="file:///db/new_app_development"',
+                           %r{NEW_APP_SESSIONS_SECRET="[\w]{64}"})
 
-      actual_content = File.read('.env.test')
-      assert actual_content.include?('NEW_APP_DATABASE_URL="file:///db/new_app_test"')
-      assert actual_content.match(%r{NEW_APP_SESSIONS_SECRET="[\w]{64}"})
+      assert_file_includes('.env.test',
+                           'NEW_APP_DATABASE_URL="file:///db/new_app_test"',
+                           %r{NEW_APP_SESSIONS_SECRET="[\w]{64}"})
 
       assert_generated_file(fixture_root.join("Gemfile.#{ test_framework }"), 'Gemfile')
       assert_generated_file(fixture_root.join('config.ru'), 'config.ru')
@@ -104,5 +105,6 @@ describe Lotus::Commands::New::App do
       assert_file_exists('spec/support/.gitkeep')
 
       assert_generated_file(fixture_root.join('.gitignore.fixture'), '.gitignore')
+    end
   end
 end
