@@ -80,9 +80,9 @@ module Lotus
           @generator.add_mapping('.gitkeep', 'controllers/.gitkeep')
           @generator.add_mapping('.gitkeep', 'public/javascripts/.gitkeep')
           @generator.add_mapping('.gitkeep', 'public/stylesheets/.gitkeep')
-          @generator.add_mapping('.gitkeep', '../../spec/admin/features/.gitkeep')
-          @generator.add_mapping('.gitkeep', '../../spec/admin/controllers/.gitkeep')
-          @generator.add_mapping('.gitkeep', '../../spec/admin/views/.gitkeep')
+          @generator.add_mapping('.gitkeep', "../../spec/#{ app_name }/features/.gitkeep")
+          @generator.add_mapping('.gitkeep', "../../spec/#{ app_name }/controllers/.gitkeep")
+          @generator.add_mapping('.gitkeep', "../../spec/#{ app_name }/views/.gitkeep")
 
 
           @generator.process_templates(template_options)
