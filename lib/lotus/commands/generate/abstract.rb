@@ -1,5 +1,6 @@
 require 'lotus/environment'
 require 'lotus/generators/test_framework'
+require 'lotus/version'
 require 'thor'
 
 module Lotus
