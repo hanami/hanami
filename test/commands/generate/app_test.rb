@@ -12,7 +12,7 @@ describe Lotus::Commands::Generate::App do
   end
 
   describe 'with valid arguments' do
-    it 'creates files' do
+    it 'generates configuration and template files' do
       with_temp_dir do |original_wd|
         setup_container_app(original_wd)
         command = Lotus::Commands::Generate::App.new({}, 'admin')
@@ -26,19 +26,30 @@ describe Lotus::Commands::Generate::App do
           content = File.read(".env.#{env}")
           assert (content =~ /ADMIN_SESSIONS_SECRET=\"[a-f, 0-9]{64}\"/), "Expected '#{content}' to contain a session secret property."
         end
-        #
+
         assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'application.rb'), 'apps/admin/application.rb')
         assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'layout.rb'), 'apps/admin/views/application_layout.rb')
         assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'layout.html.erb'), 'apps/admin/templates/application.html.erb')
         assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'routes.rb'), 'apps/admin/config/routes.rb')
+      end
+    end
 
-        # check empty directories have been created
-        assert File.exist?('apps/admin/controllers/.gitkeep'), 'Did not find .gitkeep for controllers directory'
-        assert File.exist?('apps/admin/public/javascripts/.gitkeep'), 'Did not find .gitkeep for javascripts directory'
-        assert File.exist?('apps/admin/public/stylesheets/.gitkeep'), 'Did not find .gitkeep for stylesheets directory'
-        assert File.exist?('spec/admin/features/.gitkeep'), 'Did not find .gitkeep for features directory'
-        assert File.exist?('spec/admin/controllers/.gitkeep'), 'Did not find .gitkeep for controllers directory'
-        assert File.exist?('spec/admin/views/.gitkeep'), 'Did not find .gitkeep for views directory'
+    it 'create files' do
+      with_temp_dir do |original_wd|
+        setup_container_app(original_wd)
+        command = Lotus::Commands::Generate::App.new({}, 'api')
+        capture_io { command.start }
+
+        assert_file_exists('apps/api/application.rb')
+        assert_file_exists('apps/api/views/application_layout.rb')
+        assert_file_exists('apps/api/templates/application.html.erb')
+        assert_file_exists('apps/api/config/routes.rb')
+        assert_file_exists('apps/api/controllers/.gitkeep')
+        assert_file_exists('apps/api/public/javascripts/.gitkeep')
+        assert_file_exists('apps/api/public/stylesheets/.gitkeep')
+        assert_file_exists('spec/api/features/.gitkeep')
+        assert_file_exists('spec/api/controllers/.gitkeep')
+        assert_file_exists('spec/api/views/.gitkeep')
       end
     end
 
@@ -60,7 +71,6 @@ describe Lotus::Commands::Generate::App do
       -> { Lotus::Commands::Generate::App.new({}, 'admin') }.must_raise ArgumentError
     end
   end
-
 
   def setup_container_app(original_wd)
     source = original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'environment.rb')
