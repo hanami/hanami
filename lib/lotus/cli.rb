@@ -66,12 +66,14 @@ module Lotus
       `lotus new` creates a new lotus application.
       You can specify various options such as the database to be used as well as the path and architecture.
 
-      $ > lotus new fancy_app --application=container
+      $ > lotus new fancy_app --application_name=admin
+
+      $ > lotus new fancy_app --arch=app
 
       $ > lotus new fancy_app --lotus_head
     EOS
-    method_option :database, desc: "application database (#{Lotus::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Lotus::Generators::DatabaseConfig::DEFAULT_ENGINE
-    method_option :architecture, desc: 'application architecture (container/app)', default: Lotus::Commands::New::Abstract::DEFAULT_ARCHITECTURE
+    method_option :database, aliases: ['-d', '--db'], desc: "application database (#{Lotus::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Lotus::Generators::DatabaseConfig::DEFAULT_ENGINE
+    method_option :architecture, aliases: ['-a', '--arch'], desc: 'application architecture (container/app)', default: Lotus::Commands::New::Abstract::DEFAULT_ARCHITECTURE
     method_option :application_name, desc: 'application name, only for container', default: Lotus::Commands::New::Container::DEFAULT_APPLICATION_NAME
     method_option :application_base_url, desc: 'application base url', default: Lotus::Commands::New::Abstract::DEFAULT_APPLICATION_BASE_URL
     method_option :test, desc: "application test framework (#{Lotus::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Lotus::Generators::TestFramework::DEFAULT_FRAMEWORK
