@@ -1,6 +1,4 @@
 require "lotus/commands/generate/abstract"
-require "lotus/generators/generator"
-require "lotus/utils/string"
 
 module Lotus
   module Commands
@@ -45,23 +43,18 @@ module Lotus
           @from             = options[:from] || DEFAULT_FROM
           @to               = options[:to] || DEFAULT_TO
           @subject          = options[:subject] || DEFAULT_SUBJECT
-          @generator        = Lotus::Generators::Generator.new(template_source_path, base_path)
 
           assert_name!
         end
 
-        # @since 0.5.0
+        # @since 0.x.x
         # @api private
-        def start
-          @generator.add_mapping("mailer_spec.rb.tt", mailer_spec_path)
-          @generator.add_mapping("mailer.rb.tt", mailer_path)
-          @generator.add_mapping("template.txt.tt", txt_template_path)
-          @generator.add_mapping("template.html.tt", html_template_path)
-
-          @generator.process_templates(template_options)
+        def map_templates
+          add_mapping("mailer_spec.rb.tt", mailer_spec_path)
+          add_mapping("mailer.rb.tt", mailer_path)
+          add_mapping("template.txt.tt", txt_template_path)
+          add_mapping("template.html.tt", html_template_path)
         end
-
-        private
 
         def template_options
           {
@@ -71,6 +64,8 @@ module Lotus
             subject: subject,
           }
         end
+
+        private
 
         # @since 0.5.0
         # @api private
@@ -117,7 +112,7 @@ module Lotus
         def core_root
           Pathname.new("lib").join(::File.basename(Dir.getwd))
         end
-     end
+      end
     end
   end
 end

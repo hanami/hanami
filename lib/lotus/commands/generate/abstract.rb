@@ -1,39 +1,39 @@
 require 'lotus/environment'
+require 'lotus/generators/generatable'
 require 'lotus/generators/test_framework'
 require 'lotus/version'
-require 'thor'
+require 'lotus/utils/string'
 
 module Lotus
   module Commands
     class Generate
       class Abstract
 
-        attr_reader :options, :base_path, :test_framework
+        include Lotus::Generators::Generatable
+
+        attr_reader :options, :target_path, :test_framework
 
         def initialize(options)
           @options = Lotus::Utils::Hash.new(options).symbolize!
           assert_options!
-          @base_path = Pathname.pwd
+
+          @target_path = Pathname.pwd
           @test_framework = Lotus::Generators::TestFramework.new(options[:test])
-        end
-
-        def start
-          raise NotImplementedError
-        end
-
-        private
-
-        def lotusrc_options
-          @lotusrc_options ||= Lotusrc.new(Pathname.new(base_path)).read
-        end
-
-        def environment
-          @environment ||= Lotus::Environment.new(options)
         end
 
         def template_source_path
           generator = self.class.name.split('::').last.downcase
           Pathname.new(::File.dirname(__FILE__) + "/../../generators/#{generator}/").realpath
+        end
+
+        private
+
+        def lotusrc_options
+          @lotusrc_options ||= Lotusrc.new(target_path).read
+        end
+
+        def environment
+          @environment ||= Lotus::Environment.new(options)
         end
 
         def template_engine

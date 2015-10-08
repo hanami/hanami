@@ -1,6 +1,4 @@
 require 'lotus/commands/generate/abstract'
-require 'lotus/utils/string'
-require 'lotus/generators/generator'
 
 module Lotus
   module Commands
@@ -23,15 +21,14 @@ module Lotus
         def initialize(options, migration_name)
           super(options)
           @migration_name = migration_name
-          @generator = Lotus::Generators::Generator.new(template_source_path, base_path)
+
           environment.require_application_environment
           assert_migration_name!
         end
 
-        def start
+        def map_templates
           destination_path = Lotus::Model.configuration.migrations.join(filename)
-          @generator.add_mapping('migration.rb.tt', destination_path)
-          @generator.process_templates
+          add_mapping('migration.rb.tt', destination_path)
         end
 
         private

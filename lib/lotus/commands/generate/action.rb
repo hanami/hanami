@@ -1,6 +1,4 @@
 require 'lotus/commands/generate/abstract'
-require 'lotus/generators/generator'
-require 'lotus/utils/string'
 require 'lotus/routing/route'
 
 module Lotus
@@ -38,11 +36,7 @@ module Lotus
           @application_name = Utils::String.new(application_name).classify
           @controller_name = Utils::String.new(controller_name).classify
           @action_name = Utils::String.new(action_name).classify
-
-          # Handle nested actions correctly
           @controller_pathname = Utils::String.new(@controller_name).underscore
-
-          @generator = Lotus::Generators::Generator.new(template_source_path, base_path)
 
           assert_application_name!
           assert_controller_name!
@@ -50,27 +44,21 @@ module Lotus
           assert_http_method!
         end
 
-        def start
-          generate_route
-          process_templates
+        def map_templates
+          add_mapping("action_spec.#{test_framework.framework}.tt", action_spec_path)
+
+          if skip_view?
+            add_mapping('action_without_view.rb.tt', action_path)
+          else
+            add_mapping('action.rb.tt', action_path)
+            add_mapping('view.rb.tt', view_path)
+            add_mapping('template.tt', template_path)
+            add_mapping("view_spec.#{test_framework.framework}.tt", view_spec_path)
+          end
         end
 
-        private
-
-        # @since x.x.x
-        # @api private
-        def process_templates
-          @generator.add_mapping("action_spec.#{test_framework.framework}.tt", action_spec_path)
-          if skip_view?
-            @generator.add_mapping('action_without_view.rb.tt', action_path)
-          else
-            @generator.add_mapping('action.rb.tt', action_path)
-            @generator.add_mapping('view.rb.tt', view_path)
-            @generator.add_mapping('template.tt', template_path)
-            @generator.add_mapping("view_spec.#{test_framework.framework}.tt", view_spec_path)
-          end
-
-          @generator.process_templates(template_options)
+        def post_process_templates
+          generate_route
         end
 
         # @since x.x.x
@@ -86,16 +74,15 @@ module Lotus
           }
         end
 
+        private
+
         # @since x.x.x
         # @api private
         def generate_route
           routes_path.dirname.mkpath
           FileUtils.touch(routes_path)
 
-          # Insert at the top of the file
-          @generator.inject_into_file routes_path, before: /\A(.*)/ do
-            "#{ http_method } '#{ route_url }', to: '#{ route_endpoint }'\n"
-          end
+          generator.prepend_to_file(routes_path, "#{ http_method } '#{ route_url }', to: '#{ route_endpoint }'\n")
         end
 
         def skip_view?
@@ -117,7 +104,7 @@ module Lotus
         # @since x.x.x
         # @api private
         def route_endpoint
-          "#{ @controller_pathname }#{ROUTE_ENDPOINT_SEPARATOR}#{ @action_name }".downcase
+          "#{ @controller_pathname }#{ ROUTE_ENDPOINT_SEPARATOR }#{ @action_name }".downcase
         end
 
         # @since x.x.x
