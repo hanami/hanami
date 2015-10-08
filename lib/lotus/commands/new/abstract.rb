@@ -1,15 +1,21 @@
-require 'lotus/utils/hash'
+require 'shellwords'
+require 'lotus/application_name'
 require 'lotus/generators/database_config'
+require 'lotus/generators/generatable'
 require 'lotus/generators/test_framework'
+require 'lotus/utils/hash'
 
 module Lotus
   module Commands
-    class New < Thor
+    class New
       class Abstract
+
+        include Lotus::Generators::Generatable
+
         DEFAULT_ARCHITECTURE = 'container'.freeze
         DEFAULT_APPLICATION_BASE_URL = '/'.freeze
 
-        attr_reader :options, :database_config, :test_framework
+        attr_reader :options, :target_path, :database_config, :test_framework
 
         def initialize(options, name)
           @options = Lotus::Utils::Hash.new(options).symbolize!
@@ -23,17 +29,19 @@ module Lotus
           @lotus_model_version = '~> 0.5'
           @database_config = Lotus::Generators::DatabaseConfig.new(options[:database], app_name)
           @test_framework = Lotus::Generators::TestFramework.new(options[:test])
-          @generator = Lotus::Generators::Generator.new(template_source_path, Pathname.new(real_app_name))
         end
 
         def start
           FileUtils.mkdir_p(real_app_name)
           Dir.chdir(real_app_name) do
-            start_in_app_dir
+            @target_path = Pathname.pwd
+
+            super
           end
         end
 
         private
+
         def lotusrc_options
           @lotusrc_options ||= Lotusrc.new(Pathname.new('.')).read
         end
@@ -44,14 +52,16 @@ module Lotus
 
         def add_sql_templates
           return if !database_config.sql?
-          @generator.add_mapping('schema.sql.tt', 'db/schema.sql')
+
+          add_mapping('schema.sql.tt', 'db/schema.sql')
         end
 
         def add_git_templates
           return if git_dir_present?
+
           source = database_config.filesystem? ? 'gitignore.tt' : '.gitignore'
           target = '.gitignore'
-          @generator.add_mapping(source, target)
+          add_mapping(source, target)
         end
 
         def real_app_name
@@ -68,7 +78,8 @@ module Lotus
 
         def init_git
           return if git_dir_present?
-          @generator.run("git init #{Shellwords.escape(target)}", capture: true)
+
+          generator.run("git init #{Shellwords.escape(target)}", capture: true)
         end
 
         def git_dir_present?
