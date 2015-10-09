@@ -20,9 +20,10 @@ describe Lotus::Commands::Generate::Migration do
         setup_app
         command = Lotus::Commands::Generate::Migration.new({}, 'something')
         capture_io { command.start }
-        files = Dir.glob('db/migrations/*_something.rb')
 
-        assert 1, files.size
+        assert_migration_exists('something')
+
+        files = Dir.glob('db/migrations/*_something.rb')
         assert_generated_file(original_wd.join('test/fixtures/commands/generate/migration/migration.rb'), files.first)
       end
     end
@@ -32,10 +33,14 @@ describe Lotus::Commands::Generate::Migration do
         setup_app
         command = Lotus::Commands::Generate::Migration.new({}, 'SoMe-Thing-Strange')
         capture_io { command.start }
-        files = Dir.glob('db/migrations/*_so_me_thing_strange.rb')
-        assert 1, files.size
+
+        assert_migration_exists('so_me_thing_strange')
       end
     end
+  end
+
+  def assert_migration_exists(name)
+    assert Dir.glob("db/migrations/[0-9]*_#{name}.rb").any?, "Expected migration #{name} to exist but does not."
   end
 
   def setup_app
