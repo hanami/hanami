@@ -82,6 +82,23 @@ describe Lotus::Commands::Generate::Mailer do
     end
   end
 
+  describe '#destroy' do
+    it 'destroys mailer and spec files' do
+      with_temp_dir do |original_wd|
+        capture_io {
+          Lotus::Commands::Generate::Mailer.new({}, 'ForgotPassword').start
+
+          Lotus::Commands::Generate::Mailer.new({}, 'ForgotPassword').destroy.start
+        }
+
+        refute_file_exists('lib/testapp/mailers/forgot_password.rb')
+        refute_file_exists('lib/testapp/mailers/templates/forgot_password.txt.erb')
+        refute_file_exists('lib/testapp/mailers/templates/forgot_password.html.erb')
+        refute_file_exists('spec/testapp/mailers/forgot_password_spec.rb')
+      end
+    end
+  end
+
   def assert_generated_mailer_and_spec(test, original_wd)
     assert_generated_file(original_wd.join('test/fixtures/commands/generate/mailer/forgot_password.rb'), 'lib/testapp/mailers/forgot_password.rb')
     assert_generated_file(original_wd.join('test/fixtures/commands/generate/mailer/forgot_password.txt.erb'), 'lib/testapp/mailers/templates/forgot_password.txt.erb')

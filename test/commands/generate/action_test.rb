@@ -202,6 +202,110 @@ describe Lotus::Commands::Generate::Action do
     end
   end
 
+  describe '#destroy' do
+    describe 'with container architecture' do
+      it 'destroys action, specs and templates' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+
+          capture_io {
+            Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').start
+
+            Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').destroy.start
+          }
+
+          refute_file_exists('spec/web/controllers/books/index_spec.rb')
+          refute_file_exists('apps/web/controllers/books/index.rb')
+          refute_file_exists('apps/web/views/books/index.rb')
+          refute_file_exists('apps/web/templates/books/index.html.erb')
+          refute_file_exists('spec/web/views/books/index_spec.rb')
+        end
+      end
+    end
+
+    describe 'with app architecture' do
+      it 'destroys action, specs and templates' do
+        with_temp_dir do |original_wd|
+          setup_app_app
+
+          capture_io {
+            Lotus::Commands::Generate::Action.new({}, 'testapp', 'books#index').start
+
+            Lotus::Commands::Generate::Action.new({}, 'testapp', 'books#index').destroy.start
+          }
+
+          refute_file_exists('spec/controllers/books/index_spec.rb')
+          refute_file_exists('app/controllers/books/index.rb')
+          refute_file_exists('app/views/books/index.rb')
+          refute_file_exists('app/templates/books/index.html.erb')
+          refute_file_exists('spec/views/books/index_spec.rb')
+        end
+      end
+    end
+
+    it 'erases route configuration' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+
+        capture_io {
+          Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').start
+
+          Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').destroy.start
+        }
+
+        refute_file_includes('apps/web/config/routes.rb', "get '/books', to: 'books#index'")
+      end
+    end
+
+    describe 'with --url' do
+      it 'erases route configuration' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+
+          capture_io {
+            Lotus::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').start
+
+            Lotus::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').destroy.start
+          }
+
+          refute_file_includes('apps/web/config/routes.rb', "get '/mybooks', to: 'books#index'")
+        end
+      end
+    end
+
+    describe 'with --method' do
+      it 'erases route configuration' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+
+          capture_io {
+            Lotus::Commands::Generate::Action.new({method: 'post'}, 'web', 'books#index').start
+
+            Lotus::Commands::Generate::Action.new({method: 'post'}, 'web', 'books#index').destroy.start
+          }
+
+          refute_file_includes('apps/web/config/routes.rb', "post '/books', to: 'books#index'")
+        end
+      end
+    end
+
+    describe 'with --template' do
+      it 'destroys template' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+
+          capture_io {
+            Lotus::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index').start
+
+            Lotus::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index').destroy.start
+          }
+
+          refute_file_exists('apps/web/templates/books/index.html.haml')
+        end
+      end
+    end
+  end
+
   def assert_generated_app_action(test_framework, original_wd)
     assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'config/routes.rb')
     assert_generated_file(original_wd.join("test/fixtures/commands/generate/action/action_spec.app.#{test_framework}.rb"), 'spec/controllers/books/index_spec.rb')

@@ -9,6 +9,11 @@ module Lotus
         process_templates
       end
 
+      def destroy
+        generator.behavior = :revoke
+        self
+      end
+
       def generator
         @generator ||= Lotus::Generators::Generator.new(template_source_path, target_path)
       end

@@ -44,5 +44,20 @@ module Minitest
         end
       end
     end
+
+    def refute_file_includes(expected, *contents)
+      assert_file_exists(expected)
+
+      read = File.read(expected)
+
+      contents.each do |content|
+        case content
+        when String
+          refute read.include?(content), "Expected #{read} to NOT include #{content} but does."
+        when Regexp
+          refute_match content, read
+        end
+      end
+    end
   end
 end

@@ -109,5 +109,8 @@ module Lotus
 
     require 'lotus/cli_sub_commands/generate'
     register Lotus::CliSubCommands::Generate, 'generate', 'generate [SUBCOMMAND]', 'generate lotus classes'
+
+    require 'lotus/cli_sub_commands/destroy'
+    register Lotus::CliSubCommands::Destroy, 'destroy', 'destroy [SUBCOMMAND]', 'destroy lotus classes'
   end
 end

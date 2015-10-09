@@ -39,8 +39,32 @@ describe Lotus::Commands::Generate::Migration do
     end
   end
 
+  describe '#destroy' do
+    it 'destroys the migration file' do
+      with_temp_dir do |original_wd|
+        setup_app
+
+        capture_io {
+          Lotus::Commands::Generate::Migration.new({}, 'create_books').start
+
+          Lotus::Commands::Generate::Migration.new({}, 'create_users').start
+
+          Lotus::Commands::Generate::Migration.new({}, 'create_books').destroy.start
+        }
+
+        assert_migration_exists('create_users')
+
+        refute_migration_exists('create_books')
+      end
+    end
+  end
+
   def assert_migration_exists(name)
     assert Dir.glob("db/migrations/[0-9]*_#{name}.rb").any?, "Expected migration #{name} to exist but does not."
+  end
+
+  def refute_migration_exists(name)
+    refute Dir.glob("db/migrations/[0-9]*_#{name}.rb").any?, "Expected migration #{name} to NOT exist but does."
   end
 
   def setup_app
