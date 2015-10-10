@@ -11,13 +11,14 @@ describe 'lotus/setup' do
         Bundler = Module.new do
           extend self
 
-          def require(groups)
+          def require(*groups)
             @required_groups = groups
           end
 
           def required_groups
             @required_groups
           end
+
         end
       end
 
@@ -32,7 +33,8 @@ describe 'lotus/setup' do
 
     it 'requires Bundler groups' do
       env = Lotus::Environment.new
-      Bundler.required_groups.must_equal(*env.bundler_groups)
+      Bundler.required_groups.must_equal(env.bundler_groups)
     end
+
   end
 end
