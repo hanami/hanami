@@ -222,8 +222,9 @@ describe Lotus::Environment do
     end
 
     it 'returns a set of groups for Bundler' do
-      @env.bundler_groups.must_equal [@env.environment]
+      @env.bundler_groups.must_equal [:default, @env.environment]
     end
+
   end
 
   describe '#config' do

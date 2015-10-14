@@ -213,7 +213,7 @@ module Lotus
     #
     # @see http://bundler.io/v1.7/groups.html
     def bundler_groups
-      [environment]
+      [:default, environment]
     end
 
     # Application's root
