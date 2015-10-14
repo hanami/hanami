@@ -42,6 +42,17 @@ describe Lotus::Commands::Generate::Action do
       end
     end
 
+    it "handles nested routes correctly" do
+      with_temp_dir do |original_wd|
+        setup_container_app
+        command = Lotus::Commands::Generate::Action.new({}, 'web', 'admin/books#index')
+        capture_io { command.start }
+
+        assert_file_exists 'apps/web/templates/admin/books/index.html.erb'
+        assert_file_includes('apps/web/config/routes.rb', "get '/admin/books', to: 'admin/books#index'")
+      end
+    end
+
     describe 'route options' do
       it 'uses the --method option to specify HTTP method in the route' do
         with_temp_dir do |original_wd|

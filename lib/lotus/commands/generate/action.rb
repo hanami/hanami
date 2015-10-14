@@ -33,11 +33,14 @@ module Lotus
 
           controller_and_action_name = Utils::String.new(controller_and_action_name).underscore.gsub(QUOTED_NAME, '')
 
-          controller_name, action_name = controller_and_action_name.split(ACTION_SEPARATOR)
+          controller_name, action_name = controller_and_action_name.split(ROUTE_ENDPOINT_SEPARATOR)
 
           @application_name = Utils::String.new(application_name).classify
           @controller_name = Utils::String.new(controller_name).classify
           @action_name = Utils::String.new(action_name).classify
+
+          # Handle nested actions correctly
+          @controller_pathname = Utils::String.new(@controller_name).underscore
 
           @generator = Lotus::Generators::Generator.new(template_source_path, base_path)
 
@@ -108,13 +111,13 @@ module Lotus
         # @since x.x.x
         # @api private
         def route_url
-          options.fetch(:url, "/#{ @controller_name.downcase }")
+          options.fetch(:url, "/#{ @controller_pathname }")
         end
 
         # @since x.x.x
         # @api private
         def route_endpoint
-          "#{ @controller_name }#{ROUTE_ENDPOINT_SEPARATOR}#{ @action_name }".downcase
+          "#{ @controller_pathname }#{ROUTE_ENDPOINT_SEPARATOR}#{ @action_name }".downcase
         end
 
         # @since x.x.x
@@ -185,23 +188,23 @@ module Lotus
         end
 
         def view_path
-          application_path.join('views', @controller_name.downcase, "#{@action_name.downcase}.rb")
+          application_path.join('views', @controller_pathname, "#{@action_name.downcase}.rb")
         end
 
         def view_spec_path
-          spec_root.join('views', @controller_name.downcase, "#{@action_name.downcase}_spec.rb")
+          spec_root.join('views', @controller_pathname, "#{@action_name.downcase}_spec.rb")
         end
 
         def template_path
-          application_path.join('templates', @controller_name.downcase, "#{@action_name.downcase}.html.#{template_engine}")
+          application_path.join('templates', @controller_pathname, "#{@action_name.downcase}.html.#{template_engine}")
         end
 
         def action_path
-          application_path.join('controllers', @controller_name.downcase, "#{@action_name.downcase}.rb")
+          application_path.join('controllers', @controller_pathname, "#{@action_name.downcase}.rb")
         end
 
         def action_spec_path
-          spec_root.join('controllers', @controller_name.downcase, "#{ @action_name.downcase}_spec.rb")
+          spec_root.join('controllers', @controller_pathname, "#{ @action_name.downcase}_spec.rb")
         end
 
         def spec_root
@@ -211,13 +214,13 @@ module Lotus
         def relative_action_path
           path = Pathname.new('.').join('..', '..', '..')
           path = path.join('..') if environment.container?
-          path.join(application_path, 'controllers', @controller_name.downcase, @action_name.downcase)
+          path.join(application_path, 'controllers', @controller_pathname, @action_name.downcase)
         end
 
         def relative_view_path
           path = Pathname.new('.').join('..', '..', '..')
           path = path.join('..') if environment.container?
-          path.join(application_path, 'views', @controller_name.downcase, @action_name.downcase)
+          path.join(application_path, 'views', @controller_pathname, @action_name.downcase)
         end
 
         def app_base_dir
