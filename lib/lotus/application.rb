@@ -213,8 +213,12 @@ module Lotus
     # @see http://rack.github.io
     # @see Lotus::Application#middleware
     def call(env)
-      renderer.render(env,
-                      middleware.call(env))
+      begin
+        renderer.render(env,
+                        middleware.call(env))
+      rescue StandardError => e
+        configuration.on_exception.call(e, env)
+      end
     end
 
     # Rack middleware stack

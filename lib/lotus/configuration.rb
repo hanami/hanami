@@ -1749,6 +1749,15 @@ module Lotus
       end
     end
 
+    def on_exception(&block)
+      if block
+        @on_exception = block
+      else
+        default = ->(exception, env) { raise exception }
+        @on_exception || default
+      end
+    end
+
     # This options is used as a bridge between container and router application.
     #
     # @return [String, NilClass] path prefix for routes
