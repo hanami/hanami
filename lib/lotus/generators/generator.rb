@@ -4,6 +4,10 @@ module Lotus
   module Generators
     class Generator
 
+      extend Forwardable
+
+      def_delegators :@processor, :run, :behavior=, :inject_into_file, :append_to_file, :prepend_to_file
+
       class Processor < Thor
         include Thor::Actions
       end
@@ -25,19 +29,6 @@ module Lotus
           @processor.template(@template_source_path.join(src), @target_path.join(dst), options)
         end
       end
-
-      def inject_into_file(file, config, &block)
-        @processor.inject_into_file(file, config, &block)
-      end
-
-      def append_to_file(file, &block)
-        @processor.append_to_file(file, &block)
-      end
-
-      def run(command, options)
-        @processor.run(command, options)
-      end
-
     end
   end
 end

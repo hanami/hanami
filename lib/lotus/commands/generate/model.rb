@@ -1,6 +1,4 @@
 require 'lotus/commands/generate/abstract'
-require 'lotus/generators/generator'
-require 'lotus/utils/string'
 
 module Lotus
   module Commands
@@ -12,20 +10,22 @@ module Lotus
         def initialize(options, model_name)
           super(options)
           @model_name = Utils::String.new(model_name).classify
-          @generator = Lotus::Generators::Generator.new(template_source_path, base_path)
 
           assert_model_name!
         end
 
-        def start
-          @generator.add_mapping('entity.rb.tt', entity_path)
-          @generator.add_mapping('repository.rb.tt', repository_path)
-          @generator.add_mapping("entity_spec.#{ test_framework.framework }.tt", entity_spec_path,)
-          @generator.add_mapping("repository_spec.#{ test_framework.framework }.tt", repository_spec_path)
-
-          @generator.process_templates(model_name: model_name)
+        def map_templates
+          add_mapping('entity.rb.tt', entity_path)
+          add_mapping('repository.rb.tt', repository_path)
+          add_mapping("entity_spec.#{ test_framework.framework }.tt", entity_spec_path,)
+          add_mapping("repository_spec.#{ test_framework.framework }.tt", repository_spec_path)
         end
 
+        def template_options
+          {
+            model_name: model_name
+          }
+        end
 
         private
 
@@ -73,13 +73,13 @@ module Lotus
         # @since x.x.x
         # @api private
         def entity_spec_path
-          base_path.join('spec', ::File.basename(Dir.getwd), 'entities', "#{ model_name_underscored }_spec.rb")
+          target_path.join('spec', ::File.basename(Dir.getwd), 'entities', "#{ model_name_underscored }_spec.rb")
         end
 
         # @since x.x.x
         # @api private
         def repository_spec_path
-          base_path.join('spec', ::File.basename(Dir.getwd), 'repositories',
+          target_path.join('spec', ::File.basename(Dir.getwd), 'repositories',
             "#{ model_name_underscored }_repository_spec.rb")
         end
 

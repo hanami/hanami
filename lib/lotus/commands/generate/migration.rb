@@ -1,11 +1,12 @@
 require 'lotus/commands/generate/abstract'
-require 'lotus/utils/string'
-require 'lotus/generators/generator'
 
 module Lotus
   module Commands
     class Generate
       class Migration < Abstract
+
+        attr_reader :name, :underscored_name
+
         # @since x.x.x
         # @api private
         #
@@ -20,31 +21,39 @@ module Lotus
         #   20150612160502_create_books.rb
         FILENAME_PATTERN = '%{timestamp}_%{name}.rb'.freeze
 
-        def initialize(options, migration_name)
+        def initialize(options, name)
           super(options)
-          @migration_name = migration_name
-          @generator = Lotus::Generators::Generator.new(template_source_path, base_path)
+
+          @name = name
+          @underscored_name = Utils::String.new(@name).underscore
+
           environment.require_application_environment
           assert_migration_name!
         end
 
-        def start
-          destination_path = Lotus::Model.configuration.migrations.join(filename)
-          @generator.add_mapping('migration.rb.tt', destination_path)
-          @generator.process_templates
+        def map_templates
+          add_mapping('migration.rb.tt', destination_path)
         end
 
         private
 
-        def filename
-          timestamp = Time.now.utc.strftime(TIMESTAMP_FORMAT)
-          underscored_migration_name = Utils::String.new(@migration_name).underscore
+        def destination_path
+          existing_migration_path || new_migration_path
+        end
 
-          FILENAME_PATTERN % { timestamp: timestamp, name: underscored_migration_name}
+        def existing_migration_path
+          Dir.glob("#{Lotus::Model.configuration.migrations}/[0-9]*_#{underscored_name}.rb").first
+        end
+
+        def new_migration_path
+          timestamp = Time.now.utc.strftime(TIMESTAMP_FORMAT)
+          filename = FILENAME_PATTERN % { timestamp: timestamp, name: underscored_name}
+
+          Lotus::Model.configuration.migrations.join(filename)
         end
 
         def assert_migration_name!
-          if @migration_name.nil? || @migration_name.strip.empty?
+          if name.nil? || name.strip.empty?
             raise ArgumentError.new('Migration name nil or empty')
           end
         end

@@ -65,4 +65,22 @@ describe Lotus::Commands::Generate::Model do
       end
     end
   end
+
+  describe '#destroy' do
+    it 'destroys model, repository and spec files' do
+      with_temp_dir do |original_wd|
+        capture_io {
+          Lotus::Commands::Generate::Model.new({}, 'car').start
+
+          Lotus::Commands::Generate::Model.new({}, 'car').destroy.start
+        }
+
+        refute_file_exists('spec/testapp/repositories/car_repository_spec.rb')
+        refute_file_exists('spec/testapp/entities/car_spec.rb')
+        refute_file_exists('lib/testapp/entities/car.rb')
+        refute_file_exists('lib/testapp/repositories/car_repository.rb')
+      end
+    end
+  end
+
 end
