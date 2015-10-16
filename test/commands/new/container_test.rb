@@ -33,10 +33,26 @@ describe Lotus::Commands::New::Container do
         capture_io { command.start }
         Dir.chdir('new-container') do
           actual_content = File.read('.env.development')
-          assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="file:///db/new-container_development"')
+          actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new-container_development"'
 
           actual_content = File.read('.env.test')
-          assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="file:///db/new-container_test"')
+          actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new-container_test"'
+        end
+      end
+    end
+
+    describe 'application name is a point' do
+      it 'generates application in current folder' do
+        with_temp_dir do |original_wd|
+         command = Lotus::Commands::New::Container.new({}, '.')
+          capture_io { command.start }
+          Dir.chdir('.') do
+            actual_content = File.read('.env.development')
+            actual_content.must_include 'TESTAPP_DATABASE_URL="file:///db/testapp_development"'
+
+            actual_content = File.read('.env.test')
+            actual_content.must_include 'TESTAPP_DATABASE_URL="file:///db/testapp_test"'
+          end
         end
       end
     end
@@ -50,10 +66,10 @@ describe Lotus::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="memory://localhost/new_container_development"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="memory://localhost/new_container_development"'
 
             actual_content = File.read('.env.test')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="memory://localhost/new_container_test"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="memory://localhost/new_container_test"'
 
             assert_generated_file(fixture_root.join('Gemfile.memory'), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.memory.rb'), 'lib/new_container.rb')
@@ -70,10 +86,10 @@ describe Lotus::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="file:///db/new_container_development"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_development"'
 
             actual_content = File.read('.env.test')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="file:///db/new_container_test"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_test"'
 
             assert_generated_file(fixture_root.join('Gemfile.filesystem'), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.filesystem.rb'), 'lib/new_container.rb')
@@ -90,10 +106,10 @@ describe Lotus::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="sqlite://db/new_container_development.sqlite"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="sqlite://db/new_container_development.sqlite"'
 
             actual_content = File.read('.env.test')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="sqlite://db/new_container_test.sqlite"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="sqlite://db/new_container_test.sqlite"'
 
             assert_generated_file(fixture_root.join('Gemfile.sqlite3'), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.sqlite3.rb'), 'lib/new_container.rb')
@@ -110,10 +126,10 @@ describe Lotus::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_development"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_development"'
 
             actual_content = File.read('.env.test')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_test"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_test"'
 
             assert_generated_file(fixture_root.join('Gemfile.postgres'), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.postgres.rb'), 'lib/new_container.rb')
@@ -130,10 +146,10 @@ describe Lotus::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="mysql2://localhost/new_container_development"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="mysql2://localhost/new_container_development"'
 
             actual_content = File.read('.env.test')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="mysql2://localhost/new_container_test"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="mysql2://localhost/new_container_test"'
 
             assert_generated_file(fixture_root.join('Gemfile.mysql2'), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.mysql2.rb'), 'lib/new_container.rb')
@@ -150,10 +166,10 @@ describe Lotus::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_development"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_development"'
 
             actual_content = File.read('.env.test')
-            assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_test"')
+            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_test"'
 
             assert_generated_file(fixture_root.join('Gemfile.postgres'), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.postgres.rb'), 'lib/new_container.rb')
@@ -219,12 +235,12 @@ describe Lotus::Commands::New::Container do
       assert_generated_file(fixture_root.join(".lotusrc.#{ test_framework }"), '.lotusrc')
       assert_generated_file(fixture_root.join('.env'), '.env')
       actual_content = File.read('.env.development')
-      assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="file:///db/new_container_development"')
-      assert actual_content.match(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
+      actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_development"'
+      actual_content.must_match(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
 
       actual_content = File.read('.env.test')
-      assert actual_content.include?('NEW_CONTAINER_DATABASE_URL="file:///db/new_container_test"')
-      assert actual_content.match(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
+      actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_test"'
+      actual_content.must_match %r{WEB_SESSIONS_SECRET="[\w]{64}"}
 
       assert_generated_file(fixture_root.join("Gemfile.#{ test_framework }"), 'Gemfile')
       assert_generated_file(fixture_root.join('config.ru'), 'config.ru')
