@@ -32,8 +32,8 @@ module Lotus
         end
 
         def start
-          FileUtils.mkdir_p(real_app_name)
-          Dir.chdir(real_app_name) do
+          FileUtils.mkdir_p(@name)
+          Dir.chdir(@name) do
             @target_path = Pathname.pwd
 
             super
