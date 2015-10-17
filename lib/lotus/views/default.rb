@@ -8,6 +8,7 @@ module Lotus
     # @api private
     class Default
       include Lotus::View
+
       configuration.reset!
 
       layout nil
@@ -20,7 +21,7 @@ module Lotus
 
       def self.render(root, template_name, context)
         format   = context[:format]
-        template = DefaultTemplateFinder.new(root, template_name, format).find
+        template = DefaultTemplateFinder.new(self, root, template_name, format).find
 
         if template
           new(template, context).render

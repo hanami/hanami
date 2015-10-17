@@ -5,9 +5,10 @@ module Lotus
       #
       # @since 0.2.0
       # @api private
-      def initialize(root, template_name, format)
-         @root    = root
-         @options = { template: template_name, format: format }
+      def initialize(view, root, template_name, format)
+        @view    = view
+        @root    = root
+        @options = { template: template_name, format: format }
       end
 
       private
