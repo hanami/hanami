@@ -21,7 +21,7 @@ module Lotus
         @engine = engine
         @name = name
 
-        SUPPORTED_ENGINES.key?(engine) or fail "\"#{ engine }\" is not a valid database type"
+        SUPPORTED_ENGINES.key?(engine.to_s) or fail "\"#{ engine }\" is not a valid database type"
       end
 
       def to_hash
@@ -51,7 +51,7 @@ module Lotus
       end
 
       def platform_prefix
-        :jdbc if Lotus::Utils.jruby?
+        'jdbc:'.freeze if Lotus::Utils.jruby?
       end
 
       def uri
@@ -68,7 +68,11 @@ module Lotus
       def base_uri
         case engine
         when 'mysql', 'mysql2'
-          "mysql2://localhost/#{ name }"
+          if Lotus::Utils.jruby?
+            "mysql://localhost/#{ name }"
+          else
+            "mysql2://localhost/#{ name }"
+          end
         when 'postgresql', 'postgres'
           "postgres://localhost/#{ name }"
         when 'sqlite', 'sqlite3'
@@ -85,7 +89,7 @@ module Lotus
         when 'sqlite', 'sqlite3'
           "#{ platform_prefix }#{ base_uri }_#{ environment }.sqlite"
         else
-          "#{ platform_prefix }#{ base_uri }_#{ environment }"
+          "#{ platform_prefix if sql? }#{ base_uri }_#{ environment }"
         end
       end
     end

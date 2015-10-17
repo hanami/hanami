@@ -474,7 +474,7 @@ describe Lotus::Environment do
     end
   end
 
-  describe '#code_reloading?' do
+  describe '#code_reloading?', engine: :mri do
     describe 'when not specified' do
       describe 'in the default env' do
         before do

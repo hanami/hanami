@@ -3,40 +3,52 @@ require 'sequel'
 require 'fileutils'
 
 describe 'lotus db' do
-  ARCHITECTURES = %w(container app)
+  let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby? }
+
+  architectures = {
+    container: nil,
+    app: nil
+  }
+
+  let(:lotus_env) { 'development' }
+  let(:app_name) { 'delivery' }
+  let(:tmp) { Pathname.new(Dir.pwd).join("tmp/integration/cli/database/#{ architecture }") }
+  let(:root) { tmp.join(app_name) }
 
   def create_temporary_dir
-    @tmp = Pathname.new(@pwd = Dir.pwd).join('tmp/integration/cli/database')
-    FileUtils.rm_rf(@tmp)
-    @tmp.mkpath
+    FileUtils.rm_rf(tmp)
+    tmp.mkpath
 
-    Dir.chdir(@tmp)
+    Dir.chdir(tmp)
   end
 
   def generate_application
-    @app_name = 'delivery'
-    `bundle exec lotus new #{ @app_name } --architecture="#{ architecture }" --database=sqlite3`
-    Dir.chdir(@root = @tmp.join(@app_name))
+    `lotus new #{ app_name } --architecture="#{ architecture }" --database=sqlite3`
+    Dir.chdir(root)
 
-    File.open(@root.join('.env.development'), 'w') do |f|
+    File.open(root.join('.env.development'), 'w') do |f|
       f.write <<-DOTENV
-#{ @app_name.upcase }_DATABASE_URL="sqlite://#{ @root.join("db/#{ @app_name }_development.sqlite3") }"
+#{ app_name.upcase }_DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }_development.sqlite3") }"
       DOTENV
     end
 
-    File.open(@root.join('.env.test'), 'w') do |f|
+    File.open(root.join('.env.test'), 'w') do |f|
       f.write <<-DOTENV
-#{ @app_name.upcase }_DATABASE_URL="sqlite://#{ @root.join("db/#{ @app_name }_test.sqlite3") }"
+#{ app_name.upcase }_DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }_test.sqlite3") }"
       DOTENV
     end
 
-    File.open(@root.join('.env'), 'w') do |f|
+    File.open(root.join('.env'), 'w') do |f|
       f.write <<-DOTENV
-#{ @app_name.upcase }_DATABASE_URL="sqlite://#{ @root.join("db/#{ @app_name }.sqlite3") }"
+#{ app_name.upcase }_DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }.sqlite3") }"
       DOTENV
     end
 
-    File.open(@root.join('db/migrations/20150613152241_create_users.rb'), 'w') do |f|
+    write_migrations
+  end
+
+  def write_migrations
+    File.open(root.join('db/migrations/20150613152241_create_users.rb'), 'w') do |f|
       f.write <<-MIGRATION
 Lotus::Model.migration do
   change do
@@ -49,7 +61,7 @@ end
 MIGRATION
     end
 
-    File.open(@root.join('db/migrations/20150613152815_add_name_to_users.rb'), 'w') do |f|
+    File.open(root.join('db/migrations/20150613152815_add_name_to_users.rb'), 'w') do |f|
       f.write <<-MIGRATION
 Lotus::Model.migration do
   change do
@@ -60,60 +72,61 @@ Lotus::Model.migration do
 end
 MIGRATION
     end
-
   end
 
   def db_create
-    `LOTUS_ENV="#{ lotus_env }" bundle exec lotus db create`
+    `LOTUS_ENV="#{ lotus_env }" lotus db create`
   end
 
   def db_drop
-    `LOTUS_ENV="#{ lotus_env }" bundle exec lotus db drop`
+    `LOTUS_ENV="#{ lotus_env }" lotus db drop`
   end
 
   def db_migrate(version = nil)
-    `LOTUS_ENV="#{ lotus_env }" bundle exec lotus db migrate #{ version }`
+    `LOTUS_ENV="#{ lotus_env }" lotus db migrate #{ version }`
   end
 
   def db_apply
-    `LOTUS_ENV="#{ lotus_env }" bundle exec lotus db apply`
+    `LOTUS_ENV="#{ lotus_env }" lotus db apply`
   end
 
   def db_prepare
-    `LOTUS_ENV="#{ lotus_env }" bundle exec lotus db prepare`
+    `LOTUS_ENV="#{ lotus_env }" lotus db prepare`
   end
 
   def db_version
-    `LOTUS_ENV="#{ lotus_env }" bundle exec lotus db version`
-  end
-
-  def chdir_to_root
-    Dir.chdir($pwd)
+    `LOTUS_ENV="#{ lotus_env }" lotus db version`
   end
 
   before do
-    create_temporary_dir
-    generate_application
+    unless architectures[architecture]
+      architectures[architecture] = begin
+                                      create_temporary_dir
+                                      generate_application
+
+                                      true
+                                    end
+    end
+
+    Dir.chdir(root)
+    FileUtils.rm_rf(Dir.glob(root.join('db/*.sqlite3').to_s))
   end
 
   after do
-    chdir_to_root
+    Dir.chdir($pwd)
+    FileUtils.rm_rf(Dir.glob(root.join('db/*.sqlite3').to_s))
   end
 
-  let(:lotus_env) { 'development' }
-
   describe 'create' do
-    before do
-      db_create
-    end
+    before { db_create }
 
-    ARCHITECTURES.each do |arch|
+    architectures.keys.each do |arch|
       describe "with #{ arch } architecture" do
         let(:architecture) { arch }
 
         describe 'default environment' do
           it 'creates database' do
-            @root.join("db/#{ @app_name }_development.sqlite3").must_be :exist?
+            root.join("db/#{ app_name }_development.sqlite3").must_be :exist?
           end
         end
 
@@ -121,7 +134,7 @@ MIGRATION
           let(:lotus_env) { 'test' }
 
           it 'creates database' do
-            @root.join("db/#{ @app_name }_test.sqlite3").must_be :exist?
+            root.join("db/#{ app_name }_test.sqlite3").must_be :exist?
           end
         end
 
@@ -129,7 +142,7 @@ MIGRATION
           let(:lotus_env) { 'production' }
 
           it "doesn't create database" do
-            @root.join("db/#{ @app_name }.sqlite3").wont_be :exist?
+            root.join("db/#{ app_name }.sqlite3").wont_be :exist?
           end
         end
       end
@@ -137,21 +150,16 @@ MIGRATION
   end
 
   describe 'drop' do
-    before do
-      # simulate pre-existing production database
-      FileUtils.touch @root.join("db/#{ @app_name }.sqlite3")
-
-      db_create
-      db_drop
-    end
-
-    ARCHITECTURES.each do |arch|
+    architectures.keys.each do |arch|
       describe "with #{ arch } architecture" do
         let(:architecture) { arch }
 
         describe 'default environment' do
           it 'drops database' do
-            @root.join("db/#{ @app_name }_development.sqlite3").wont_be :exist?
+            db_create
+            db_drop
+
+            root.join("db/#{ app_name }_development.sqlite3").wont_be :exist?
           end
         end
 
@@ -159,7 +167,10 @@ MIGRATION
           let(:lotus_env) { 'test' }
 
           it 'drops database' do
-            @root.join("db/#{ @app_name }_test.sqlite3").wont_be :exist?
+            db_create
+            db_drop
+
+            root.join("db/#{ app_name }_test.sqlite3").wont_be :exist?
           end
         end
 
@@ -167,7 +178,12 @@ MIGRATION
           let(:lotus_env) { 'production' }
 
           it "doesn't drop database" do
-            @root.join("db/#{ @app_name }.sqlite3").must_be :exist?
+            production_database = root.join("db/#{ app_name }.sqlite3")
+            FileUtils.touch production_database
+
+            root.join("db/#{ app_name }.sqlite3").must_be :exist?
+
+            FileUtils.rm_rf(production_database)
           end
         end
       end
@@ -177,17 +193,18 @@ MIGRATION
   describe 'migrate' do
     before do
       db_create
+      write_migrations
       db_migrate
     end
 
-    ARCHITECTURES.each do |arch|
+    architectures.keys.each do |arch|
       describe "with #{ arch } architecture" do
         let(:architecture) { arch }
 
         describe 'default environment' do
           it 'migrates database' do
-            database   = @root.join("db/#{ @app_name }_development.sqlite3")
-            connection = Sequel.connect("sqlite://#{ database }")
+            database   = root.join("db/#{ app_name }_development.sqlite3")
+            connection = Sequel.connect("#{ adapter_prefix }sqlite://#{ database }")
             version    = connection[:schema_migrations].to_a.last
 
             version.fetch(:filename).must_equal '20150613152815_add_name_to_users.rb'
@@ -198,8 +215,8 @@ MIGRATION
           let(:lotus_env) { 'test' }
 
           it 'migrates database' do
-            database   = @root.join("db/#{ @app_name }_test.sqlite3")
-            connection = Sequel.connect("sqlite://#{ database }")
+            database   = root.join("db/#{ app_name }_test.sqlite3")
+            connection = Sequel.connect("#{ adapter_prefix }sqlite://#{ database }")
             version    = connection[:schema_migrations].to_a.last
 
             version.fetch(:filename).must_equal '20150613152815_add_name_to_users.rb'
@@ -225,18 +242,19 @@ MIGRATION
   describe 'migrate with version' do
     before do
       db_create
+      write_migrations
       db_migrate
-      db_migrate "20150613152241"
+      db_migrate '20150613152241'
     end
 
-    ARCHITECTURES.each do |arch|
+    architectures.keys.each do |arch|
       describe "with #{ arch } architecture" do
         let(:architecture) { arch }
 
         describe 'default environment' do
           it 'migrates database' do
-            database   = @root.join("db/#{ @app_name }_development.sqlite3")
-            connection = Sequel.connect("sqlite://#{ database }")
+            database   = root.join("db/#{ app_name }_development.sqlite3")
+            connection = Sequel.connect("#{ adapter_prefix }sqlite://#{ database }")
             version    = connection[:schema_migrations].to_a.last
 
             version.fetch(:filename).must_equal '20150613152241_create_users.rb'
@@ -247,8 +265,8 @@ MIGRATION
           let(:lotus_env) { 'test' }
 
           it 'migrates database' do
-            database   = @root.join("db/#{ @app_name }_test.sqlite3")
-            connection = Sequel.connect("sqlite://#{ database }")
+            database   = root.join("db/#{ app_name }_test.sqlite3")
+            connection = Sequel.connect("#{ adapter_prefix }sqlite://#{ database }")
             version    = connection[:schema_migrations].to_a.last
 
             version.fetch(:filename).must_equal '20150613152241_create_users.rb'
@@ -273,69 +291,57 @@ MIGRATION
 
   describe 'apply' do
     before do
-      @root.join("db/schema.sql").delete
+      FileUtils.rm_rf(root.join('db/schema.sql'))
+      write_migrations
 
       db_create
       db_apply
     end
 
-    ARCHITECTURES.each do |arch|
+    after { write_migrations }
+
+    architectures.keys.each do |arch|
       describe "with #{ arch } architecture" do
         let(:architecture) { arch }
 
         describe 'default environment' do
-          it 'migrates database' do
-            database   = @root.join("db/#{ @app_name }_development.sqlite3")
-            connection = Sequel.connect("sqlite://#{ database }")
+          it 'migrates database generating schema and deleting migrations' do
+            database   = root.join("db/#{ app_name }_development.sqlite3")
+            connection = Sequel.connect("#{ adapter_prefix }sqlite://#{ database }")
             version    = connection[:schema_migrations].to_a.last
 
             version.fetch(:filename).must_equal '20150613152815_add_name_to_users.rb'
-          end
 
-          it 'generates schema.sql' do
-            @root.join("db/schema.sql").must_be :exist?
-          end
-
-          it 'deletes migrations' do
-            @root.join("db/migrations").children.must_be :empty?
+            root.join("db/schema.sql").must_be :exist?
+            root.join("db/migrations").children.must_be :empty?
           end
         end
 
         describe 'test environment' do
           let(:lotus_env) { 'test' }
 
-          it "doesn't migrate database" do
-            database   = @root.join("db/#{ @app_name }_test.sqlite3")
-            connection = Sequel.connect("sqlite://#{ database }")
+          it "doesn't migrate database without generating schema neither deleting migrations" do
+            database   = root.join("db/#{ app_name }_test.sqlite3")
+            connection = Sequel.connect("#{ adapter_prefix }sqlite://#{ database }")
 
             connection.tables.must_be :empty?
-          end
 
-          it "doesn't generate schema.sql" do
-            @root.join("db/schema.sql").wont_be :exist?
-          end
-
-          it "doesn't delete migrations" do
-            @root.join("db/migrations").children.wont_be :empty?
+            root.join("db/schema.sql").wont_be :exist?
+            root.join("db/migrations").children.wont_be :empty?
           end
         end
 
         describe 'production environment' do
           let(:lotus_env) { 'production' }
 
-          it "doesn't migrate database" do
-            database   = @root.join("db/#{ @app_name }.sqlite3")
-            connection = Sequel.connect("sqlite://#{ database }")
+          it "doesn't migrate database without generating schema neither deleting migrations" do
+            database   = root.join("db/#{ app_name }.sqlite3")
+            connection = Sequel.connect("#{ adapter_prefix }sqlite://#{ database }")
 
             connection.tables.must_be :empty?
-          end
 
-          it "doesn't generate schema.sql" do
-            @root.join("db/schema.sql").wont_be :exist?
-          end
-
-          it "doesn't delete migrations" do
-            @root.join("db/migrations").children.wont_be :empty?
+            root.join("db/schema.sql").wont_be :exist?
+            root.join("db/migrations").children.wont_be :empty?
           end
         end
       end
@@ -343,12 +349,14 @@ MIGRATION
   end
 
   describe 'prepare' do
+    let(:migration_file) { root.join('db/migrations/20150613154832_create_deliveries.rb') }
+
     before do
       db_create
       db_apply
       db_drop
 
-      File.open(@root.join('db/migrations/20150613154832_create_deliveries.rb'), 'w') do |f|
+      File.open(migration_file, 'w') do |f|
         f.write <<-MIGRATION
 Lotus::Model.migration do
   change do
@@ -364,12 +372,14 @@ MIGRATION
       db_prepare
     end
 
+    after { FileUtils.rm_rf(migration_file) }
+
     let(:architecture) { 'container' }
 
     describe 'default environment' do
       it 'creates and migrates database' do
-        database   = @root.join("db/#{ @app_name }_development.sqlite3")
-        connection = Sequel.connect("sqlite://#{ database }")
+        database   = root.join("db/#{ app_name }_development.sqlite3")
+        connection = Sequel.connect("#{ adapter_prefix }sqlite://#{ database }")
         version    = connection[:schema_migrations].to_a.last
 
         version.fetch(:filename).must_equal '20150613154832_create_deliveries.rb'
@@ -380,8 +390,8 @@ MIGRATION
       let(:lotus_env) { 'test' }
 
       it 'creates and migrates database' do
-        database   = @root.join("db/#{ @app_name }_test.sqlite3")
-        connection = Sequel.connect("sqlite://#{ database }")
+        database   = root.join("db/#{ app_name }_test.sqlite3")
+        connection = Sequel.connect("#{ adapter_prefix }sqlite://#{ database }")
         version    = connection[:schema_migrations].to_a.last
 
         version.fetch(:filename).must_equal '20150613154832_create_deliveries.rb'
@@ -392,8 +402,8 @@ MIGRATION
       let(:lotus_env) { 'production' }
 
       it "doesn't create database" do
-        database   = @root.join("db/#{ @app_name }.sqlite3")
-        connection = Sequel.connect("sqlite://#{ database }")
+        database   = root.join("db/#{ app_name }.sqlite3")
+        connection = Sequel.connect("#{ adapter_prefix }sqlite://#{ database }")
 
         connection.tables.must_be :empty?
       end
@@ -402,11 +412,13 @@ MIGRATION
 
   describe 'version' do
     before do
+      write_migrations
+
       db_create
       db_migrate
     end
 
-    ARCHITECTURES.each do |arch|
+    architectures.keys.each do |arch|
       describe "with #{ arch } architecture" do
         let(:architecture) { arch }
 

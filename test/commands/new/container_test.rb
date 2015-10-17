@@ -58,6 +58,8 @@ describe Lotus::Commands::New::Container do
     end
 
     describe 'databases' do
+      let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby? }
+
       it 'generates specific files for memory' do
         with_temp_dir do |original_wd|
           command = Lotus::Commands::New::Container.new({database: 'memory'}, 'new_container')
@@ -80,7 +82,7 @@ describe Lotus::Commands::New::Container do
 
       it 'generates specific files for filesystem' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({database: 'filesystem'}, 'new_container')
+          command = Lotus::Commands::New::Container.new({ database: 'filesystem' }, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
@@ -100,18 +102,18 @@ describe Lotus::Commands::New::Container do
 
       it 'generates specific files for sqlite3' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({database: 'sqlite3'}, 'new_container')
+          command = Lotus::Commands::New::Container.new({ database: 'sqlite3' }, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="sqlite://db/new_container_development.sqlite"'
+            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }sqlite://db/new_container_development.sqlite\"")
 
             actual_content = File.read('.env.test')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="sqlite://db/new_container_test.sqlite"'
+            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }sqlite://db/new_container_test.sqlite\"")
 
-            assert_generated_file(fixture_root.join('Gemfile.sqlite3'), 'Gemfile')
+            assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }sqlite3"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.sqlite3.rb'), 'lib/new_container.rb')
             assert_file_exists('db/migrations/.gitkeep')
           end
@@ -120,18 +122,18 @@ describe Lotus::Commands::New::Container do
 
       it 'generates specific files for postgres' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({database: 'postgres'}, 'new_container')
+          command = Lotus::Commands::New::Container.new({ database: 'postgres' }, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_development"'
+            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_development\"")
 
             actual_content = File.read('.env.test')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_test"'
+            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_test\"")
 
-            assert_generated_file(fixture_root.join('Gemfile.postgres'), 'Gemfile')
+            assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }postgres"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.postgres.rb'), 'lib/new_container.rb')
             assert_file_exists('db/migrations/.gitkeep')
           end
@@ -140,18 +142,19 @@ describe Lotus::Commands::New::Container do
 
       it 'generates specific files for mysql2' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({database: 'mysql2'}, 'new_container')
+          database = Lotus::Utils.jruby? ? :mysql : :mysql2
+          command = Lotus::Commands::New::Container.new({ database: 'mysql2' }, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="mysql2://localhost/new_container_development"'
+            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }#{ database }://localhost/new_container_development\"")
 
             actual_content = File.read('.env.test')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="mysql2://localhost/new_container_test"'
+            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }#{ database }://localhost/new_container_test\"")
 
-            assert_generated_file(fixture_root.join('Gemfile.mysql2'), 'Gemfile')
+            assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }mysql2"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.mysql2.rb'), 'lib/new_container.rb')
             assert_file_exists('db/migrations/.gitkeep')
           end
@@ -160,18 +163,18 @@ describe Lotus::Commands::New::Container do
 
       it 'generates specific files for postgres' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({database: 'postgres'}, 'new_container')
+          command = Lotus::Commands::New::Container.new({ database: 'postgres' }, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_development"'
+            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_development\"")
 
             actual_content = File.read('.env.test')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="postgres://localhost/new_container_test"'
+            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_test\"")
 
-            assert_generated_file(fixture_root.join('Gemfile.postgres'), 'Gemfile')
+            assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }postgres"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.postgres.rb'), 'lib/new_container.rb')
             assert_file_exists('db/migrations/.gitkeep')
           end
