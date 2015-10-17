@@ -245,6 +245,7 @@ module Back
       routes do
         get '/home',  to: 'home#show', as: :home
         get '/users', to: 'users#index'
+        get '/articles', to: 'articles#index'
       end
     end
   end
@@ -265,6 +266,15 @@ module Back
 
         def call(params)
           self.body = 'hello from Back users endpoint'
+        end
+      end
+    end
+    module Articles
+      class Index
+        include Lotus::Action
+
+        def call(params)
+          self.body = request.url
         end
       end
     end
