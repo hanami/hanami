@@ -66,7 +66,7 @@ module Lotus
     end
 
     def view_for(action, response)
-      if response[BODY].size == 0
+      if response[BODY].respond_to?(:empty?) && response[BODY].empty?
         captures = @controller_pattern.match(action.class.name)
         Utils::Class.load!(@view_pattern % { controller: captures[:controller], action: captures[:action] }, @namespace)
       else
