@@ -27,7 +27,7 @@ module Lotus
     def render(env, response)
       body = _render(env, response)
 
-      response[BODY] = Array(body) unless body.nil?
+      response[BODY] = Array(body) unless body.nil? || body.respond_to?(:each)
       response
     end
 
@@ -66,7 +66,7 @@ module Lotus
     end
 
     def view_for(action, response)
-      if response[BODY].empty?
+      if response[BODY].size == 0
         captures = @controller_pattern.match(action.class.name)
         Utils::Class.load!(@view_pattern % { controller: captures[:controller], action: captures[:action] }, @namespace)
       else
