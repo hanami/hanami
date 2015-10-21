@@ -22,11 +22,7 @@ module StreamingApp
       def call(params)
         self.format = :text
         self.body = Enumerator.new do |y|
-          y << "one"
-          sleep 0.5
-          y << "two"
-          sleep 0.5
-          y << "three"
+          %w(one two three).each { |s| y << s }
         end
       end
     end
