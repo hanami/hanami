@@ -29,7 +29,7 @@ module Lotus
         private
 
         def lotusrc_options
-          @lotusrc_options ||= Lotusrc.new(target_path).read
+          @lotusrc_options ||= Lotusrc.new(target_path).options
         end
 
         def environment

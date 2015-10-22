@@ -66,8 +66,7 @@ describe Lotus::Commands::Generate::App do
 
   it 'can not run for app architecture' do
     with_temp_dir do |original_wd|
-      Lotus::Lotusrc.new(Pathname.new('.'), architecture: 'app')
-
+      File.open('.lotusrc', 'w') { |file| file << "architecture=app"}
       -> { Lotus::Commands::Generate::App.new({}, 'admin') }.must_raise ArgumentError
     end
   end

@@ -325,15 +325,14 @@ describe Lotus::Commands::Generate::Action do
   end
 
   def setup_container_app
-    Lotus::Lotusrc.new(Pathname.new('.'), architecture: 'container')
-
+    File.open('.lotusrc', 'w') { |file| file << "architecture=container"}
     FileUtils.mkdir_p('apps/web') # simulate existing app
     FileUtils.mkdir_p('apps/web/config') # simulate existing routes file to see if route is prepended
     File.open('apps/web/config/routes.rb', 'w') { |file| file << "get '/cars', to: 'cars#index'"}
   end
 
   def setup_app_app
-    Lotus::Lotusrc.new(Pathname.new('.'), architecture: 'app')
+    File.open('.lotusrc', 'w') { |file| file << "architecture=app"}
     FileUtils.mkdir_p('app') # simulate existing app
     FileUtils.mkdir_p('config') # simulate existing routes file to see if route is prepended
     File.open('config/routes.rb', 'w') { |file| file << "get '/cars', to: 'cars#index'"}
