@@ -28,6 +28,7 @@ module Lotus
             database:              database_config.type,
             database_config:       database_config.to_hash,
             lotus_model_version:   lotus_model_version,
+            template_engine:       template_engine.engine
           }
         end
 

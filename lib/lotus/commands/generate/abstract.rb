@@ -37,11 +37,11 @@ module Lotus
         end
 
         def template_engine
-          options.fetch(:template, default_template_engine)
+          options.fetch(:template_engine, default_template_engine)
         end
 
         def default_template_engine
-          lotusrc_options.fetch(:template)
+          lotusrc_options.fetch(:template_engine)
         end
 
         def assert_options!

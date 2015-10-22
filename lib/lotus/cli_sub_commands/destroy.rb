@@ -22,7 +22,7 @@ module Lotus
 
       method_option :method, desc: "The HTTP method used when the route was generated. Must be one of (#{Lotus::Routing::Route::VALID_HTTP_VERBS.join('/')})", default: Lotus::Commands::Generate::Action::DEFAULT_HTTP_METHOD
       method_option :url, desc: 'Relative URL for action, will be used for the route', default: nil
-      method_option :template, desc: 'Extension used when the template was generated. Default is defined through your .lotusrc file.'
+      method_option :template_engine, desc: 'Extension used when the template was generated. Default is defined through your .lotusrc file.'
 
       def actions(application_name, controller_and_action_name)
         if options[:help]

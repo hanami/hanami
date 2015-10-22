@@ -35,7 +35,7 @@ module Lotus
       method_option :url, desc: 'Relative URL for action, will be used for the route', default: nil
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .lotusrc file.'
       method_option :skip_view, desc: 'Skip the generation of the view. Also skips template generation.', default: false, type: :boolean
-      method_option :template, desc: 'Extension to be used for the generated template. Default is defined through your .lotusrc file.'
+      method_option :template_engine, desc: 'Extension to be used for the generated template. Default is defined through your .lotusrc file.'
       def actions(application_name, controller_and_action_name)
         if options[:help]
           invoke :help, ['action']

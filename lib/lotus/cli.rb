@@ -72,11 +72,12 @@ module Lotus
 
       $ > lotus new fancy_app --lotus_head
     EOS
-    method_option :database, aliases: ['-d', '--db'], desc: "application database (#{Lotus::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Lotus::Generators::DatabaseConfig::DEFAULT_ENGINE
-    method_option :architecture, aliases: ['-a', '--arch'], desc: 'application architecture (container/app)', default: Lotus::Commands::New::Abstract::DEFAULT_ARCHITECTURE
+    method_option :database, aliases: ['-d', '--db'], desc: "application database (#{Lotus::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Lotus::DEFAULT_DATABASE_ENGINE
+    method_option :architecture, aliases: ['-a', '--arch'], desc: 'application architecture (container/app)', default: Lotus::DEFAULT_ARCHITECTURE
     method_option :application_name, desc: 'application name, only for container', default: Lotus::Commands::New::Container::DEFAULT_APPLICATION_NAME
-    method_option :application_base_url, desc: 'application base url', default: Lotus::Commands::New::Abstract::DEFAULT_APPLICATION_BASE_URL
-    method_option :test, desc: "application test framework (#{Lotus::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Lotus::Generators::TestFramework::DEFAULT_FRAMEWORK
+    method_option :template_engine, desc: "template engine (#{Lotus::Generators::TemplateEngine::SUPPORTED_ENGINES.join('/')})", default: Lotus::DEFAULT_TEMPLATE_ENGINE
+    method_option :application_base_url, desc: 'application base url', default: Lotus::DEFAULT_APPLICATION_BASE_URL
+    method_option :test, desc: "application test framework (#{Lotus::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Lotus::DEFAULT_TEST_FRAMEWORK
     method_option :lotus_head, desc: 'use Lotus HEAD (true/false)', type: :boolean, default: false
     method_option :help, desc: 'displays the usage method'
     def new(application_name)

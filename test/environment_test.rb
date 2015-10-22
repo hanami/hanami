@@ -607,7 +607,7 @@ describe Lotus::Environment do
       options = @env.to_options
       options[:architecture].must_equal 'container'
       options[:test].must_equal 'minitest'
-      options[:template].must_equal 'erb'
+      options[:template_engine].must_equal 'erb'
     end
   end
 end
