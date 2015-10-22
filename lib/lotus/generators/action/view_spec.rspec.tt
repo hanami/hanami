@@ -1,6 +1,6 @@
 require_relative '<%= config[:relative_view_path] %>'
 
-describe <%= config[:app] %>::Views::<%= config[:controller] %>::<%= config[:action] %> do
+RSpec.describe <%= config[:app] %>::Views::<%= config[:controller] %>::<%= config[:action] %> do
   let(:exposures) { Hash[foo: 'bar'] }
   let(:template)  { Lotus::View::Template.new('<%= config[:template_path] %>') }
   let(:view)      { described_class.new(template, exposures) }

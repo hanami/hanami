@@ -1,6 +1,6 @@
 require_relative '../../../../apps/web/controllers/books/index'
 
-describe Web::Controllers::Books::Index do
+RSpec.describe Web::Controllers::Books::Index do
   let(:action) { described_class.new }
   let(:params) { Hash[] }
 
