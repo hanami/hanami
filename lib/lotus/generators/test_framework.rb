@@ -4,7 +4,7 @@ module Lotus
       RSPEC = 'rspec'.freeze
       MINITEST = 'minitest'.freeze
       VALID_FRAMEWORKS = [RSPEC, MINITEST].freeze
-      DEFAULT_FRAMEWORK = MINITEST
+      DEFAULT_FRAMEWORK = Lotus::DEFAULT_TEST_FRAMEWORK
 
       attr_reader :framework
 
@@ -25,7 +25,7 @@ module Lotus
 
       def assert_framework!
         if !supported_framework?
-          raise ArgumentError.new("Unknown test framework '#{ framework}'. Please use one of #{ valid_test_frameworks.join(', ')}")
+          raise ArgumentError.new("Unknown test framework '#{ framework }'. Please use one of #{ valid_test_frameworks.join(', ') }")
         end
       end
 

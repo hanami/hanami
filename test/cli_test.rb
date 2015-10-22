@@ -17,8 +17,10 @@ describe Lotus::Cli do
       'application_name' => 'web',
       'application_base_url' => '/',
       'test' => 'minitest',
+      'template_engine' => 'erb',
       'lotus_head' => false}
     }
+
     describe 'container' do
       it 'calls the generator with application name and defaults' do
         ARGV.replace(%w{new fancy-app})
@@ -43,7 +45,6 @@ describe Lotus::Cli do
         ARGV.replace(%w{new fancy-app --database=memory --application_name=admin --application_base_url=/web-admin --test=rspec --lotus_head=true})
         assert_cli_calls_command(Lotus::Commands::New::Container, options, 'fancy-app')
       end
-
     end
 
     describe 'app' do
@@ -66,9 +67,10 @@ describe Lotus::Cli do
           'database' => 'memory',
           'application_base_url' => '/web-admin',
           'test' => 'rspec',
+          'template_engine' => 'slim',
           'lotus_head' => true
         )
-        ARGV.replace(%w{new fancy-app --database=memory --application_base_url=/web-admin --test=rspec --lotus_head=true --architecture=app})
+        ARGV.replace(%w{new fancy-app --database=memory --application_base_url=/web-admin --test=rspec --lotus_head=true --architecture=app --template_engine=slim})
         assert_cli_calls_command(Lotus::Commands::New::App, options, 'fancy-app')
       end
     end
@@ -85,8 +87,8 @@ describe Lotus::Cli do
       end
 
       it 'passes the supported options' do
-        ARGV.replace(%w{generate action app controller#action --method=put --url=/foo --test=rspec --template=haml})
-        options = default_options.merge('method' => 'put', 'url' => '/foo', 'test' => 'rspec', 'template' => 'haml')
+        ARGV.replace(%w{generate action app controller#action --method=put --url=/foo --test=rspec --template_engine=haml})
+        options = default_options.merge('method' => 'put', 'url' => '/foo', 'test' => 'rspec', 'template_engine' => 'haml')
 
         assert_cli_calls_command(Lotus::Commands::Generate::Action, options, 'app', 'controller#action')
       end

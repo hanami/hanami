@@ -1,14 +1,35 @@
-require 'lotus/version'
-require 'lotus/application'
-require 'lotus/container'
-require 'lotus/environment'
-
 # A complete web framework for Ruby
 #
 # @since 0.1.0
 #
 # @see http://lotusrb.org
 module Lotus
+
+  # Architecture default value
+  #
+  # @since 0.6.0
+  # @api private
+  DEFAULT_ARCHITECTURE = 'container'.freeze
+  DEFAULT_DATABASE_ENGINE = 'filesystem'.freeze
+  DEFAULT_APPLICATION_BASE_URL = '/'.freeze
+
+  # Test framework default value
+  #
+  # @since 0.6.0
+  # @api private
+  DEFAULT_TEST_FRAMEWORK = 'minitest'.freeze
+
+  # Template engine default value
+  #
+  # @since 0.6.0
+  # @api private
+  DEFAULT_TEMPLATE_ENGINE = 'erb'.freeze
+
+  require 'lotus/environment'
+  require 'lotus/version'
+  require 'lotus/application'
+  require 'lotus/container'
+
   # Return root of the project (top level directory).
   #
   # @return [Pathname] root path

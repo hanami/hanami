@@ -1,6 +1,7 @@
 require 'shellwords'
 require 'lotus/application_name'
 require 'lotus/generators/database_config'
+require 'lotus/generators/template_engine'
 require 'lotus/generators/generatable'
 require 'lotus/generators/test_framework'
 require 'lotus/utils/hash'
@@ -12,15 +13,12 @@ module Lotus
 
         include Lotus::Generators::Generatable
 
-        DEFAULT_ARCHITECTURE = 'container'.freeze
-        DEFAULT_APPLICATION_BASE_URL = '/'.freeze
-
-        attr_reader :options, :target_path, :database_config, :test_framework
+        attr_reader :options, :target_path, :database_config, :test_framework, :template_engine
 
         def initialize(options, name)
           @options = Lotus::Utils::Hash.new(options).symbolize!
           @name = name
-          @options[:database] ||= Lotus::Generators::DatabaseConfig::DEFAULT_ENGINE
+          @options[:database] ||= Lotus::DEFAULT_DATABASE_ENGINE
 
           assert_options!
           assert_name!
@@ -29,6 +27,7 @@ module Lotus
           @lotus_model_version = '~> 0.5'
           @database_config = Lotus::Generators::DatabaseConfig.new(options[:database], app_name)
           @test_framework = Lotus::Generators::TestFramework.new(options[:test])
+          @template_engine = Lotus::Generators::TemplateEngine.new(options[:template_engine])
         end
 
         def start
@@ -95,7 +94,7 @@ module Lotus
         end
 
         def architecture
-          options.fetch(:architecture, DEFAULT_ARCHITECTURE)
+          options.fetch(:architecture, Lotus::DEFAULT_ARCHITECTURE)
         end
 
         def assert_name!

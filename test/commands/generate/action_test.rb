@@ -31,10 +31,10 @@ describe Lotus::Commands::Generate::Action do
   end
 
   describe 'with valid arguments' do
-    it 'uses --template option as extension for the template' do
+    it 'uses --template_engine option as extension for the template' do
       with_temp_dir do |original_wd|
         setup_container_app
-        command = Lotus::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index')
+        command = Lotus::Commands::Generate::Action.new({template_engine: 'haml'}, 'web', 'books#index')
 
         capture_io { command.start }
 
@@ -289,15 +289,15 @@ describe Lotus::Commands::Generate::Action do
       end
     end
 
-    describe 'with --template' do
+    describe 'with --template_engine' do
       it 'destroys template' do
         with_temp_dir do |original_wd|
           setup_container_app
 
           capture_io {
-            Lotus::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index').start
+            Lotus::Commands::Generate::Action.new({template_engine: 'haml'}, 'web', 'books#index').start
 
-            Lotus::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index').destroy.start
+            Lotus::Commands::Generate::Action.new({template_engine: 'haml'}, 'web', 'books#index').destroy.start
           }
 
           refute_file_exists('apps/web/templates/books/index.html.haml')

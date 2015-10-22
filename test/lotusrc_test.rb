@@ -25,18 +25,14 @@ describe Lotus::Lotusrc do
         options = @lotusrc.options
         options[:architecture].must_equal 'container'
         options[:test].must_equal 'minitest'
-        options[:template].must_equal 'erb'
+        options[:template_engine].must_equal 'erb'
       end
 
       # Bug: https://github.com/lotus/lotus/issues/243
       it "doesn't pollute ENV" do
         ENV.key?('architecture').must_equal false
         ENV.key?('test').must_equal false
-        ENV.key?('template').must_equal false
-      end
-
-      it 'returns only environment options' do
-
+        ENV.key?('template_engine').must_equal false
       end
     end
 
@@ -67,7 +63,26 @@ describe Lotus::Lotusrc do
           options = @lotusrc.options
           options[:architecture].must_equal 'container'
           options[:test].must_equal 'minitest'
-          options[:template].must_equal 'erb'
+          options[:template_engine].must_equal 'erb'
+        end
+      end
+    end
+
+    describe 'legacy' do
+      before do
+        Dir.chdir($pwd)
+        @old_pwd = Dir.pwd
+        Dir.chdir 'test/fixtures/lotusrc/legacy'
+        @root = Pathname.new(Dir.pwd)
+      end
+
+      after do
+        Dir.chdir @old_pwd
+      end
+
+      describe "#exists?" do
+        it 'retuns false' do
+          Lotus::Lotusrc.new(@root).options[:template_engine].must_equal 'slim'
         end
       end
     end

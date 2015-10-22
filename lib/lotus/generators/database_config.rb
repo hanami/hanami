@@ -13,8 +13,6 @@ module Lotus
         'memory'     => { type: :memory,      mri: nil,       jruby: nil             }
       }.freeze
 
-      DEFAULT_ENGINE = 'filesystem'.freeze
-
       attr_reader :engine, :name
 
       def initialize(engine, name)

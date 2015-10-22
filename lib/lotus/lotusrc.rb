@@ -15,14 +15,6 @@ module Lotus
     # @see Lotus::Lotusrc#path_file
     FILE_NAME = '.lotusrc'.freeze
 
-    # Architecture default value
-    #
-    # @since 0.3.0
-    # @api private
-    #
-    # @see Lotus::Lotusrc#options
-    DEFAULT_ARCHITECTURE = 'container'.freeze
-
     # Architecture key for writing the lotusrc file
     #
     # @since 0.3.0
@@ -30,14 +22,6 @@ module Lotus
     #
     # @see Lotus::Lotusrc::DEFAULT_OPTIONS
     ARCHITECTURE_KEY = 'architecture'.freeze
-
-    # Test suite default value
-    #
-    # @since 0.3.0
-    # @api private
-    #
-    # @see Lotus::Lotusrc::DEFAULT_OPTIONS
-    DEFAULT_TEST_SUITE = 'minitest'.freeze
 
     # Test suite key for writing the lotusrc file
     #
@@ -47,21 +31,13 @@ module Lotus
     # @see Lotus::Lotusrc::DEFAULT_OPTIONS
     TEST_KEY = 'test'.freeze
 
-    # Template default value
+    # Template engine key for writing the lotusrc file
     #
-    # @since 0.3.0
+    # @since 0.6.0
     # @api private
     #
     # @see Lotus::Lotusrc::DEFAULT_OPTIONS
-    DEFAULT_TEMPLATE = 'erb'.freeze
-
-    # Template key for writing the lotusrc file
-    #
-    # @since 0.3.0
-    # @api private
-    #
-    # @see Lotus::Lotusrc::DEFAULT_OPTIONS
-    TEMPLATE_KEY = 'template'.freeze
+    TEMPLATE_ENGINE_KEY = 'template_engine'.freeze
 
     # Default values for writing the lotusrc file
     #
@@ -70,9 +46,9 @@ module Lotus
     #
     # @see Lotus::Lotusrc#options
     DEFAULT_OPTIONS = Utils::Hash.new({
-      ARCHITECTURE_KEY => DEFAULT_ARCHITECTURE,
-      TEST_KEY         => DEFAULT_TEST_SUITE,
-      TEMPLATE_KEY     => DEFAULT_TEMPLATE
+      ARCHITECTURE_KEY        => Lotus::DEFAULT_ARCHITECTURE,
+      TEST_KEY                => Lotus::DEFAULT_TEST_FRAMEWORK,
+      TEMPLATE_ENGINE_KEY     => Lotus::DEFAULT_TEMPLATE_ENGINE
     }).symbolize!.freeze
 
     # Initialize Lotusrc class with application's root and enviroment options.
@@ -90,12 +66,12 @@ module Lotus
     #
     # @example Default values if file doesn't exist
     #   Lotus::Lotusrc.new(Pathname.new(Dir.pwd)).options
-    #    # => { architecture: 'container', test: 'minitest', template: 'erb' }
+    #    # => { architecture: 'container', test: 'minitest', template_engine: 'erb' }
     #
     # @example Custom values if file doesn't exist
-    #   options = { architect: 'application', test: 'rspec', template: 'slim' }
+    #   options = { architect: 'application', test: 'rspec', template_engine: 'slim' }
     #   Lotus::Lotusrc.new(Pathname.new(Dir.pwd), options).options
-    #    # => { architecture: 'application', test: 'rspec', template: 'slim' }
+    #    # => { architecture: 'application', test: 'rspec', template_engine: 'slim' }
     def options
       @options ||= symbolize(DEFAULT_OPTIONS.merge(file_options))
     end
@@ -117,7 +93,11 @@ module Lotus
     end
 
     def file_options
-      symbolize(exists? ? Dotenv::Parser.call(content) : {})
+      symbolize(exists? ? Dotenv::Parser.call(content) : {}).tap do |hash|
+        if template_value = hash.delete(:template)
+          hash[:template_engine] ||= template_value
+        end
+      end
     end
 
     # Return the lotusrc file's path
