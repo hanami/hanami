@@ -76,7 +76,7 @@ module Lotus
     method_option :architecture, aliases: ['-a', '--arch'], desc: 'application architecture (container/app)', default: Lotus::Commands::New::Abstract::DEFAULT_ARCHITECTURE
     method_option :application_name, desc: 'application name, only for container', default: Lotus::Commands::New::Container::DEFAULT_APPLICATION_NAME
     method_option :application_base_url, desc: 'application base url', default: Lotus::Commands::New::Abstract::DEFAULT_APPLICATION_BASE_URL
-    method_option :test, desc: "application test framework (#{Lotus::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Lotus::Generators::TestFramework::DEFAULT_FRAMEWORK
+    method_option :test, desc: "application test framework (#{Lotus::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Lotus::Lotusrc::DEFAULT_TEST_SUITE
     method_option :lotus_head, desc: 'use Lotus HEAD (true/false)', type: :boolean, default: false
     method_option :help, desc: 'displays the usage method'
     def new(application_name)
