@@ -306,6 +306,33 @@ describe Lotus::Commands::Generate::Action do
     end
   end
 
+  describe 'respect lotusrc' do
+    it 'creates rspec templates' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+        FileUtils.cp original_wd.join('test', 'fixtures', 'lotusrc', 'with_rspec'), '.lotusrc'
+
+        capture_io {
+          Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').start
+        }
+        assert_generated_container_action('rspec', original_wd)
+      end
+    end
+
+    it 'accepts command arguments to override lotusrc' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+        FileUtils.cp original_wd.join('test', 'fixtures', 'lotusrc', 'with_rspec'), '.lotusrc'
+
+        capture_io {
+          Lotus::Commands::Generate::Action.new({test: 'minitest'}, 'web', 'books#index').start
+        }
+        assert_generated_container_action('minitest', original_wd)
+      end
+    end
+
+  end
+
   def assert_generated_app_action(test_framework, original_wd)
     assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'config/routes.rb')
     assert_generated_file(original_wd.join("test/fixtures/commands/generate/action/action_spec.app.#{test_framework}.rb"), 'spec/controllers/books/index_spec.rb')

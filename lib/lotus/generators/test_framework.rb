@@ -1,15 +1,15 @@
+require 'lotus/lotusrc'
 module Lotus
   module Generators
     class TestFramework
       RSPEC = 'rspec'.freeze
       MINITEST = 'minitest'.freeze
       VALID_FRAMEWORKS = [RSPEC, MINITEST].freeze
-      DEFAULT_FRAMEWORK = MINITEST
 
       attr_reader :framework
 
-      def initialize(framework)
-        @framework = (framework || DEFAULT_FRAMEWORK)
+      def initialize(lotusrc, framework)
+        @framework = (framework || lotusrc.options.fetch(:test))
         assert_framework!
       end
 
