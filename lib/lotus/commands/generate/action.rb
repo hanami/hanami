@@ -8,7 +8,7 @@ module Lotus
 
         # @since x.x.x
         # @api private
-        ACTION_SEPARATOR = /\/|\#/
+        ACTION_SEPARATOR = /[\/,#]/
 
         # @since x.x.x
         # @api private
@@ -31,10 +31,10 @@ module Lotus
 
           controller_and_action_name = Utils::String.new(controller_and_action_name).underscore.gsub(QUOTED_NAME, '')
 
-          controller_name, action_name = controller_and_action_name.split(ROUTE_ENDPOINT_SEPARATOR)
+          *controller_name, action_name = controller_and_action_name.split(ACTION_SEPARATOR)
 
           @application_name = Utils::String.new(application_name).classify
-          @controller_name = Utils::String.new(controller_name).classify
+          @controller_name = Utils::String.new(controller_name.join("/")).classify
           @action_name = Utils::String.new(action_name).classify
           @controller_pathname = Utils::String.new(@controller_name).underscore
 
@@ -118,7 +118,7 @@ module Lotus
         # @since x.x.x
         # @api private
         def assert_controller_name!
-          if @controller_name.nil?
+          if @controller_name.nil? || @controller_name.empty?
             raise ArgumentError.new("Unknown controller, please add controllers name with this syntax controller_name#action_name")
           end
         end
@@ -163,7 +163,7 @@ module Lotus
         # ./apps/APPLICATION_NAME for 'container'
         def application_path
           if environment.container?
-            applications_path.join(@application_name.downcase)
+            applications_path.join(@application_name.gsub(/(.)([A-Z])/,'\1_\2').downcase)
           else
             Pathname.new('app')
           end
