@@ -163,7 +163,7 @@ module Lotus
         # ./apps/APPLICATION_NAME for 'container'
         def application_path
           if environment.container?
-            applications_path.join(@application_name.gsub(/(.)([A-Z])/,'\1_\2').downcase)
+            applications_path.join(application_name_as_snake_case)
           else
             Pathname.new('app')
           end
@@ -212,12 +212,15 @@ module Lotus
 
         def app_base_dir
           if environment.container?
-            @application_name.downcase
+            application_name_as_snake_case
           else
             ''
           end
         end
 
+        def application_name_as_snake_case
+          @application_name.gsub(/(.)([A-Z])/,'\1_\2').downcase
+        end
       end
     end
   end
