@@ -89,6 +89,7 @@ describe Lotus::Commands::New::App do
       assert_file_exists('.git')
       assert_file_exists('app/controllers/.gitkeep')
       assert_file_exists('app/views/.gitkeep')
+      assert_file_exists('config/initializers/.gitkeep')
       assert_file_exists('lib/new_app/entities/.gitkeep')
       assert_file_exists('lib/new_app/repositories/.gitkeep')
       assert_file_exists('lib/new_app/mailers/.gitkeep')
