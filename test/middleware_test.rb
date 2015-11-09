@@ -52,7 +52,7 @@ describe Lotus::Middleware do
     }
 
     it 'contains only Rack::Static by default' do
-      middleware.stack.must_include [Rack::Static, [{ urls: urls, root: "test/fixtures/collaboration/apps/web/public"}], nil]
+      middleware.stack.must_include [Rack::Static, [{ urls: urls, root: "test/fixtures/collaboration/apps/web/assets"}], nil]
     end
   end
 

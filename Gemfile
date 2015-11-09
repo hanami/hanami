@@ -15,6 +15,7 @@ gem 'lotus-view',        '~> 0.4', require: false, github: 'lotus/view',        
 gem 'lotus-model',       '~> 0.5', require: false, github: 'lotus/model',       branch: '0.5.x'
 gem 'lotus-helpers',     '~> 0.2', require: false, github: 'lotus/helpers',     branch: '0.2.x'
 gem 'lotus-mailer',      '~> 0.1', require: false, github: 'lotus/mailer',      branch: '0.1.x'
+gem 'lotus-assets',      '~> 0.1', require: false, github: 'lotus/assets',      branch: 'master'
 
 platforms :ruby do
   gem 'sqlite3'

@@ -45,6 +45,7 @@ module Lotus
       _configure_model_framework! if defined?(Lotus::Model)
       _configure_controller_framework!
       _configure_view_framework!
+      _configure_assets_framework!
       _configure_logger!
     end
 
@@ -97,6 +98,25 @@ module Lotus
       end
     end
 
+    def _configure_assets_framework!
+      configuration.assets_destination = Lotus.root.join('public', 'assets')
+      config                           = configuration
+
+      unless application_module.const_defined?('Assets')
+        assets = Lotus::Assets.duplicate(namespace) do
+          root        config.root
+          destination config.assets_destination
+          prefix      config.path_prefix
+          manifest    Lotus.root.join('public', 'assets.json')
+          compile     true
+
+          config.assets.__apply(self)
+        end
+
+        application_module.const_set('Assets', assets)
+      end
+    end
+
     def _configure_model_framework!
       config = configuration
       if _lotus_model_loaded? && !application_module.const_defined?('Model')
@@ -122,12 +142,19 @@ module Lotus
 
     def load_frameworks!
       _load_view_framework!
+      _load_assets_framework!
       _load_model_framework!
     end
 
     def _load_view_framework!
       namespace.module_eval %{
         #{ namespace }::View.load!
+      }
+    end
+
+    def _load_assets_framework!
+      application_module.module_eval %{
+        #{ application_module }::Assets.load!
       }
     end
 

@@ -39,11 +39,12 @@ module Collaboration
       serve_assets true
       sessions :cookie, secret: SecureRandom.hex
 
-      assets << [
-        'public',
-        'vendor/assets',
-        '../../vendor/assets'
-      ]
+      assets do
+        sources << [
+          'vendor/assets',
+          '../../vendor/assets'
+        ]
+      end
 
       adapter type: :sql, uri: SQLITE_CONNECTION_STRING
       mapping 'config/mapping'

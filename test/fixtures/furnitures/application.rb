@@ -10,10 +10,6 @@ module Furnitures
 
       serve_assets true
 
-      assets << [
-        'public'
-      ]
-
       controller_pattern "%{controller}Controller::%{action}"
       view_pattern       "%{controller}::%{action}"
     end

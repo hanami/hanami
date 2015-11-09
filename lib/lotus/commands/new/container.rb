@@ -61,6 +61,7 @@ module Lotus
         end
 
         def add_empty_directories
+          add_mapping('.gitkeep', 'public/.gitkeep')
           add_mapping('.gitkeep', "lib/#{ app_name }/entities/.gitkeep")
           add_mapping('.gitkeep', "lib/#{ app_name }/repositories/.gitkeep")
           add_mapping('.gitkeep', "lib/#{ app_name }/mailers/.gitkeep")

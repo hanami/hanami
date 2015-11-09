@@ -116,7 +116,7 @@ module Lotus
     # #since 0.2.0
     def _load_asset_middlewares
       if @configuration.serve_assets
-        @configuration.assets.for_each_source do |source|
+        Config::Assets.new(@configuration).for_each_source do |source|
           use Rack::Static, urls: source.urls, root: source.root
         end
       end

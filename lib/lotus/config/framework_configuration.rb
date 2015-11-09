@@ -8,13 +8,16 @@ module Lotus
     class FrameworkConfiguration < BasicObject
       # @since 0.2.0
       # @api private
-      def initialize
+      def initialize(&blk)
+        @blk      = blk || ::Proc.new { }
         @settings = []
       end
 
       # @since 0.2.0
       # @api private
       def __apply(configuration)
+        configuration.instance_eval(&@blk)
+
         @settings.each do |(m, args, blk)|
           configuration.public_send(m, *args, &blk)
         end
