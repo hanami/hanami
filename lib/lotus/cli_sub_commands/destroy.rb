@@ -65,6 +65,21 @@ module Lotus
         end
       end
 
+      desc 'application NAME', 'destroy an application'
+      long_desc <<-EOS
+      `lotus destroy application` will destroy an application, along with templates and specs.
+
+      > $ lotus destroy application api
+      EOS
+      def application(name)
+        if options[:help]
+          invoke :help, ['app']
+        else
+          require 'lotus/commands/generate/app'
+          Lotus::Commands::Generate::App.new(options, name).destroy.start
+        end
+      end
+
       desc 'mailer NAME', 'destroy a mailer'
       long_desc <<-EOS
       `lotus destroy mailer` will destroy a mailer, along with templates and specs.
