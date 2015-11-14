@@ -71,6 +71,28 @@ describe Lotus::Commands::Generate::App do
     end
   end
 
+  describe '#destroy' do
+    it 'destroys destroy an application, along with templates and specs' do
+      with_temp_dir do |original_wd|
+        setup_container_app(original_wd)
+        capture_io {
+          Lotus::Commands::Generate::App.new({}, 'api').start
+          Lotus::Commands::Generate::App.new({}, 'api').destroy.start
+        }
+        refute_file_exists('apps/api/application.rb')
+        refute_file_exists('apps/api/views/application_layout.rb')
+        refute_file_exists('apps/api/templates/application.html.erb')
+        refute_file_exists('apps/api/config/routes.rb')
+        refute_file_exists('apps/api/controllers/.gitkeep')
+        refute_file_exists('apps/api/public/javascripts/.gitkeep')
+        refute_file_exists('apps/api/public/stylesheets/.gitkeep')
+        refute_file_exists('spec/api/features/.gitkeep')
+        refute_file_exists('spec/api/controllers/.gitkeep')
+        refute_file_exists('spec/api/views/.gitkeep')
+      end
+    end
+  end
+
   def setup_container_app(original_wd)
     source = original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'environment.rb')
     target = 'config/environment.rb'
