@@ -40,6 +40,7 @@ module Collaboration
       sessions :cookie, secret: SecureRandom.hex
 
       assets do
+        digest true # FIXME remove when global assets static handler will be implemented
         sources << [
           'vendor/assets',
           '../../vendor/assets'

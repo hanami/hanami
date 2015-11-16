@@ -63,6 +63,9 @@ module Lotus
         def to_a
           @sources
         end
+
+        def method_missing(*)
+        end
       end
 
       # @since 0.1.0
