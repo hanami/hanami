@@ -136,6 +136,15 @@ describe Lotus::Loader do
       end
     end
 
+    describe 'initializers' do
+
+      it 'loads all the initializers' do
+        assert_equal defined?(CollaborationInitializer1), 'constant'
+        assert_equal defined?(CollaborationInitializer2), 'constant'
+      end
+
+    end
+
     # describe 'finalization' do
     #   it 'freeze CoffeeShop::View' do
     #     CoffeeShop::View.configuration.root.must_be :frozen?

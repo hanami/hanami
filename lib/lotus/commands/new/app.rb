@@ -68,6 +68,7 @@ module Lotus
         end
 
         def add_empty_directories
+          add_mapping('.gitkeep', 'config/initializers/.gitkeep')
           add_mapping('.gitkeep', 'app/controllers/.gitkeep')
           add_mapping('.gitkeep', 'app/views/.gitkeep')
           add_mapping('.gitkeep', 'app/assets/images/.gitkeep')

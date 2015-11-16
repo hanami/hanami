@@ -1,7 +1,7 @@
 require 'test_helper'
 
 describe Lotus::Lotusrc do
-  describe '#read' do
+  describe '#options' do
     describe 'file exists' do
       before do
         Dir.chdir($pwd)
@@ -15,17 +15,14 @@ describe Lotus::Lotusrc do
         Dir.chdir @old_pwd
       end
 
-      it 'get values in the file' do
-        options = @lotusrc.read
-        options[:architecture].must_equal 'container'
-        options[:test].must_equal 'minitest'
-        options[:template].must_equal 'erb'
+      describe "#exists?" do
+        it 'retuns true' do
+          Lotus::Lotusrc.new(@root).exists?.must_equal true
+        end
       end
 
-      it 'get values although arguments are passed' do
-        options = { architecture: 'application', test: 'rspec', template: 'slim' }
-        lotusrc = Lotus::Lotusrc.new(@root, options)
-        options = lotusrc.read
+      it 'get values in the file' do
+        options = @lotusrc.options
         options[:architecture].must_equal 'container'
         options[:test].must_equal 'minitest'
         options[:template].must_equal 'erb'
@@ -33,11 +30,13 @@ describe Lotus::Lotusrc do
 
       # Bug: https://github.com/lotus/lotus/issues/243
       it "doesn't pollute ENV" do
-        @lotusrc.read
-
         ENV.key?('architecture').must_equal false
         ENV.key?('test').must_equal false
         ENV.key?('template').must_equal false
+      end
+
+      it 'returns only environment options' do
+
       end
     end
 
@@ -53,42 +52,22 @@ describe Lotus::Lotusrc do
         Dir.chdir @old_pwd
       end
 
-      describe 'default values' do
-        before do
-          @file = Pathname.new(Dir.pwd).join('.lotusrc')
-          @lotusrc = Lotus::Lotusrc.new(@root)
-        end
-
-        after do
-          File.delete(@file)
-        end
-
-        it 'read the file' do
-          options = @lotusrc.read
-          options[:architecture].must_equal 'container'
-          options[:test].must_equal 'minitest'
-          options[:template].must_equal 'erb'
+      describe "#exists?" do
+        it 'retuns false' do
+          Lotus::Lotusrc.new(@root).exists?.must_equal false
         end
       end
 
-      describe 'custom values' do
+      describe 'default values' do
         before do
-          @file = Pathname.new(Dir.pwd).join('.lotusrc')
-          @file.unlink if @file.exist?
-
-          options = { architecture: 'application', test: 'rspec', template: 'slim' }
-          @lotusrc = Lotus::Lotusrc.new(@root, options)
+          @lotusrc = Lotus::Lotusrc.new(@root)
         end
 
-        after do
-          File.delete(@file)
-        end
-
-        it 'read the file' do
-          options = @lotusrc.read
-          options[:architecture].must_equal 'application'
-          options[:test].must_equal 'rspec'
-          options[:template].must_equal 'slim'
+        it 'reads the file' do
+          options = @lotusrc.options
+          options[:architecture].must_equal 'container'
+          options[:test].must_equal 'minitest'
+          options[:template].must_equal 'erb'
         end
       end
     end

@@ -15,7 +15,7 @@ module Lotus
         DEFAULT_ARCHITECTURE = 'container'.freeze
         DEFAULT_APPLICATION_BASE_URL = '/'.freeze
 
-        attr_reader :options, :target_path, :database_config, :test_framework
+        attr_reader :options, :target_path, :database_config
 
         def initialize(options, name)
           @options = Lotus::Utils::Hash.new(options).symbolize!
@@ -28,7 +28,6 @@ module Lotus
 
           @lotus_model_version = '~> 0.5'
           @database_config = Lotus::Generators::DatabaseConfig.new(options[:database], app_name)
-          @test_framework = Lotus::Generators::TestFramework.new(options[:test])
         end
 
         def start
@@ -42,8 +41,12 @@ module Lotus
 
         private
 
-        def lotusrc_options
-          @lotusrc_options ||= Lotusrc.new(Pathname.new('.')).read
+        def test_framework
+          @test_framework ||= Lotus::Generators::TestFramework.new(lotusrc, options[:test])
+        end
+
+        def lotusrc
+          @lotusrc ||= Lotusrc.new(Pathname.new('.'))
         end
 
         def start_in_app_dir

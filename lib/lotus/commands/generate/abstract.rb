@@ -11,14 +11,13 @@ module Lotus
 
         include Lotus::Generators::Generatable
 
-        attr_reader :options, :target_path, :test_framework
+        attr_reader :options, :target_path
 
         def initialize(options)
           @options = Lotus::Utils::Hash.new(options).symbolize!
           assert_options!
 
           @target_path = Pathname.pwd
-          @test_framework = Lotus::Generators::TestFramework.new(options[:test])
         end
 
         def template_source_path
@@ -28,8 +27,16 @@ module Lotus
 
         private
 
+        def test_framework
+          @test_framework ||= Lotus::Generators::TestFramework.new(lotusrc, options[:test])
+        end
+
         def lotusrc_options
-          @lotusrc_options ||= Lotusrc.new(target_path).read
+          lotusrc.options
+        end
+
+        def lotusrc
+          @lotusrc ||= Lotusrc.new(target_path)
         end
 
         def environment

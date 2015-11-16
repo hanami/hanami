@@ -31,6 +31,7 @@ module Lotus
         load_configuration_load_paths!
         load_rack!
         load_frameworks!
+        load_initializers!
       end
     end
 
@@ -237,6 +238,12 @@ module Lotus
 
     def namespace
       configuration.namespace || application_module
+    end
+
+    def load_initializers!
+      Dir["#{configuration.root}/config/initializers/**/*.rb"].each do |file|
+        require file
+      end
     end
   end
 end

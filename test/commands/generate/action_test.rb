@@ -31,6 +31,17 @@ describe Lotus::Commands::Generate::Action do
   end
 
   describe 'with valid arguments' do
+    it 'allows user to pass / instead of # between controller and action' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+        command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/index')
+        capture_io { command.start }
+
+        assert_file_exists 'apps/web/templates/books/index.html.erb'
+        assert_file_includes('apps/web/config/routes.rb', "get '/books', to: 'books#index'")
+      end
+    end
+
     it 'uses --template option as extension for the template' do
       with_temp_dir do |original_wd|
         setup_container_app
@@ -46,6 +57,15 @@ describe Lotus::Commands::Generate::Action do
       with_temp_dir do |original_wd|
         setup_container_app
         command = Lotus::Commands::Generate::Action.new({}, 'web', 'admin/books#index')
+        capture_io { command.start }
+
+        assert_file_exists 'apps/web/templates/admin/books/index.html.erb'
+        assert_file_includes('apps/web/config/routes.rb', "get '/admin/books', to: 'admin/books#index'")
+      end
+
+      with_temp_dir do |original_wd|
+        setup_container_app
+        command = Lotus::Commands::Generate::Action.new({}, 'web', 'admin/books/index')
         capture_io { command.start }
 
         assert_file_exists 'apps/web/templates/admin/books/index.html.erb'
@@ -88,6 +108,22 @@ describe Lotus::Commands::Generate::Action do
             capture_io { command.start }
 
             assert_generated_container_action('minitest', original_wd)
+          end
+        end
+
+        it 'functions normally when app name has underscore' do
+          with_temp_dir do |original_wd|
+            setup_underscored_container_app
+
+            command = Lotus::Commands::Generate::Action.new({}, 'app_v1', 'books#index')
+            capture_io { command.start }
+
+            assert_file_exists('spec/app_v1/controllers/books/index_spec.rb')
+            assert_file_exists('apps/app_v1/controllers/books/index.rb')
+            assert_file_exists('apps/app_v1/views/books/index.rb')
+            assert_file_exists('apps/app_v1/templates/books/index.html.erb')
+            assert_file_exists('spec/app_v1/views/books/index_spec.rb')
+            assert_file_exists('apps/app_v1/config/routes.rb')
           end
         end
 
@@ -306,6 +342,33 @@ describe Lotus::Commands::Generate::Action do
     end
   end
 
+  describe 'respect lotusrc' do
+    it 'creates rspec templates' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+        FileUtils.cp original_wd.join('test', 'fixtures', 'lotusrc', 'with_rspec'), '.lotusrc'
+
+        capture_io {
+          Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').start
+        }
+        assert_generated_container_action('rspec', original_wd)
+      end
+    end
+
+    it 'accepts command arguments to override lotusrc' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+        FileUtils.cp original_wd.join('test', 'fixtures', 'lotusrc', 'with_rspec'), '.lotusrc'
+
+        capture_io {
+          Lotus::Commands::Generate::Action.new({test: 'minitest'}, 'web', 'books#index').start
+        }
+        assert_generated_container_action('minitest', original_wd)
+      end
+    end
+
+  end
+
   def assert_generated_app_action(test_framework, original_wd)
     assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'config/routes.rb')
     assert_generated_file(original_wd.join("test/fixtures/commands/generate/action/action_spec.app.#{test_framework}.rb"), 'spec/controllers/books/index_spec.rb')
@@ -325,15 +388,21 @@ describe Lotus::Commands::Generate::Action do
   end
 
   def setup_container_app
-    Lotus::Lotusrc.new(Pathname.new('.'), architecture: 'container')
-
+    File.open('.lotusrc', 'w') { |file| file << "architecture=container"}
     FileUtils.mkdir_p('apps/web') # simulate existing app
     FileUtils.mkdir_p('apps/web/config') # simulate existing routes file to see if route is prepended
     File.open('apps/web/config/routes.rb', 'w') { |file| file << "get '/cars', to: 'cars#index'"}
   end
 
+  def setup_underscored_container_app
+    File.open('.lotusrc', 'w') { |file| file << "architecture=container"}
+    FileUtils.mkdir_p('apps/app_v1') # simulate existing app
+    FileUtils.mkdir_p('apps/app_v1/config') # simulate existing routes file to see if route is prepended
+    File.open('apps/app_v1/config/routes.rb', 'w') { |file| file << "get '/cars', to: 'cars#index'"}
+  end
+
   def setup_app_app
-    Lotus::Lotusrc.new(Pathname.new('.'), architecture: 'app')
+    File.open('.lotusrc', 'w') { |file| file << "architecture=app"}
     FileUtils.mkdir_p('app') # simulate existing app
     FileUtils.mkdir_p('config') # simulate existing routes file to see if route is prepended
     File.open('config/routes.rb', 'w') { |file| file << "get '/cars', to: 'cars#index'"}
