@@ -52,4 +52,10 @@ describe Lotus::Container do
     Front::Routes.path(:home).must_equal '/front/home'
     Back::Routes.path(:home).must_equal '/back/home'
   end
+
+  it 'print correct request url' do
+    get '/back/articles'
+    response.status.must_equal 200
+    response.body.must_equal 'http://example.org/back/articles'
+  end
 end
