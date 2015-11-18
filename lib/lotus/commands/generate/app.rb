@@ -26,8 +26,9 @@ module Lotus
           add_mapping('templates/application.html.erb.tt', 'templates/application.html.erb')
 
           add_mapping('.gitkeep', 'controllers/.gitkeep')
-          add_mapping('.gitkeep', 'public/javascripts/.gitkeep')
-          add_mapping('.gitkeep', 'public/stylesheets/.gitkeep')
+          add_mapping('.gitkeep', 'assets/images/.gitkeep')
+          add_mapping('.gitkeep', 'assets/javascripts/.gitkeep')
+          add_mapping('.gitkeep', 'assets/stylesheets/.gitkeep')
           add_mapping('.gitkeep', "../../spec/#{ app_name }/features/.gitkeep")
           add_mapping('.gitkeep', "../../spec/#{ app_name }/controllers/.gitkeep")
           add_mapping('.gitkeep', "../../spec/#{ app_name }/views/.gitkeep")
@@ -38,7 +39,8 @@ module Lotus
             app_name:            app_name,
             upcase_app_name:     upcase_app_name,
             classified_app_name: classified_app_name,
-            app_base_url:        application_base_url
+            app_base_url:        application_base_url,
+            app_base_path:       application_base_path,
           }
         end
 
@@ -77,7 +79,7 @@ module Lotus
         end
 
         def target_path
-          base_path.join('apps', @application_name.to_s)
+          base_path.join(application_base_path)
         end
 
         def app_name
@@ -86,6 +88,10 @@ module Lotus
 
         def upcase_app_name
           @application_name.to_env_s
+        end
+
+        def application_base_path
+          ["apps", @application_name].join(::File::SEPARATOR)
         end
 
         def classified_app_name

@@ -21,6 +21,7 @@ module Lotus
     #
     # @see Lotus::Configuration#ssl?
     SSL_SCHEME = 'https'.freeze
+    attr_accessor :assets_destination
 
     # Initialize a new configuration instance
     #
@@ -409,18 +410,20 @@ module Lotus
     #     class Application < Lotus::Application
     #       configure do
     #         serve_assets true
-    #         assets << [
-    #           'vendor/assets'
-    #         ]
+    #
+    #         assets do
+    #           sources << [
+    #             'vendor/assets'
+    #           ]
+    #         end
     #       end
     #     end
     #   end
     #
     #   Bookshelf::Application.configuration.assets
     #     # => #<Lotus::Config::Assets @root=#<Pathname:/root/path/assets>, @paths=["public"]>
-    #
-    def assets
-      @assets ||= Config::Assets.new(root)
+    def assets(&blk)
+      @assets ||= Config::FrameworkConfiguration.new(&blk)
     end
 
     # Configure serving of assets

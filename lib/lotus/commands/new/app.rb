@@ -71,12 +71,14 @@ module Lotus
           add_mapping('.gitkeep', 'config/initializers/.gitkeep')
           add_mapping('.gitkeep', 'app/controllers/.gitkeep')
           add_mapping('.gitkeep', 'app/views/.gitkeep')
+          add_mapping('.gitkeep', 'app/assets/images/.gitkeep')
+          add_mapping('.gitkeep', 'app/assets/javascripts/.gitkeep')
+          add_mapping('.gitkeep', 'app/assets/stylesheets/.gitkeep')
           add_mapping('.gitkeep', "lib/#{ app_name }/entities/.gitkeep")
           add_mapping('.gitkeep', "lib/#{ app_name }/repositories/.gitkeep")
           add_mapping('.gitkeep', "lib/#{ app_name }/mailers/.gitkeep")
           add_mapping('.gitkeep', "lib/#{ app_name }/mailers/templates/.gitkeep")
-          add_mapping('.gitkeep', 'public/javascripts/.gitkeep')
-          add_mapping('.gitkeep', 'public/stylesheets/.gitkeep')
+          add_mapping('.gitkeep', 'public/.gitkeep')
 
           add_mapping('.gitkeep', 'spec/features/.gitkeep')
           add_mapping('.gitkeep', 'spec/controllers/.gitkeep')
@@ -103,6 +105,10 @@ module Lotus
         def classified_app_name
           Utils::String.new(app_name).classify
         end
+
+        # def application_base_path
+        #   [ 'apps', app_name ].join(::File::SEPARATOR)
+        # end
       end
     end
   end

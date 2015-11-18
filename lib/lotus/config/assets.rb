@@ -5,7 +5,7 @@ module Lotus
     # @since 0.1.0
     # @api private
     class Assets  < Utils::LoadPaths
-      DEFAULT_DIRECTORY = 'public'.freeze
+      DEFAULT_DIRECTORY = 'assets'.freeze
 
       # Assets source (directory)
       #
@@ -48,11 +48,33 @@ module Lotus
         end
       end
 
+      class Sources
+        attr_reader :sources
+
+        def initialize
+          @sources = []
+        end
+
+        def push(*paths)
+          @sources.push(*paths)
+        end
+        alias_method :<<, :push
+
+        def to_a
+          @sources
+        end
+
+        def method_missing(*)
+        end
+      end
+
       # @since 0.1.0
       # @api private
-      def initialize(root)
-        @root  = root
-        @paths = Array(DEFAULT_DIRECTORY)
+      def initialize(configuration)
+        @root  = configuration.root
+        @sources = Sources.new
+        configuration.assets.__apply(@sources)
+        @paths = Utils::Kernel.Array(@sources.to_a + [DEFAULT_DIRECTORY])
       end
 
       # @since 0.5.0

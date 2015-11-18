@@ -521,6 +521,12 @@ describe Lotus::Configuration do
       end
 
       describe 'with a directory name' do
+        before do
+          @configuration.assets do
+            sources << ['assets']
+          end
+        end
+
         it 'returns the configured values' do
           expected_urls = {
             "/favicon.ico"                 => "favicon.ico",
@@ -534,7 +540,7 @@ describe Lotus::Configuration do
           actual_urls  = {}
           actual_roots = []
 
-          @configuration.assets.for_each_source do |source|
+          Lotus::Config::Assets.new(@configuration).for_each_source do |source|
             counter    += 1
             actual_urls.merge!(source.urls)
             actual_roots.push(source.root)
@@ -542,16 +548,19 @@ describe Lotus::Configuration do
 
           counter.must_equal      1
           actual_urls.must_equal  expected_urls
-          actual_roots.must_equal ["test/fixtures/collaboration/apps/web/public"]
+          actual_roots.must_equal ["test/fixtures/collaboration/apps/web/assets"]
         end
       end
 
       describe 'adding new assets paths' do
         before do
-          @configuration.assets << [
-            'vendor/assets',
-            'vendor/another_assets_path'
-          ]
+          @configuration.assets do
+            sources << [
+              'assets',
+              'vendor/assets',
+              'vendor/another_assets_path'
+            ]
+          end
         end
 
         it 'returns it' do
@@ -570,25 +579,29 @@ describe Lotus::Configuration do
           actual_urls  = {}
           actual_roots = []
 
-          @configuration.assets.for_each_source do |source|
+          Lotus::Config::Assets.new(@configuration).for_each_source do |source|
             counter    += 1
             actual_urls.merge!(source.urls)
             actual_roots.push(source.root)
           end
 
-          counter.must_equal      3
-          actual_urls.must_equal  expected_urls
-          actual_roots.must_equal ["test/fixtures/collaboration/apps/web/public",
-                                   "test/fixtures/collaboration/apps/web/vendor/assets",
-                                   "test/fixtures/collaboration/apps/web/vendor/another_assets_path"]
+          counter.must_equal           3
+          actual_urls.must_equal       expected_urls
+          ["test/fixtures/collaboration/apps/web/assets",
+           "test/fixtures/collaboration/apps/web/vendor/assets",
+           "test/fixtures/collaboration/apps/web/vendor/another_assets_path"].each do |path|
+             actual_roots.must_include(path)
+           end
         end
       end
 
       describe 'adding relative path' do
         before do
-          @configuration.assets << [
-            '../../vendor/assets'
-          ]
+          @configuration.assets do
+            sources << [
+              '../../vendor/assets'
+            ]
+          end
         end
 
         it 'returns it' do
@@ -605,7 +618,7 @@ describe Lotus::Configuration do
           actual_urls  = {}
           actual_roots = []
 
-          @configuration.assets.for_each_source do |source|
+          Lotus::Config::Assets.new(@configuration).for_each_source do |source|
             counter    += 1
             actual_urls.merge!(source.urls)
             actual_roots.push(source.root)
@@ -613,8 +626,10 @@ describe Lotus::Configuration do
 
           counter.must_equal 2
           actual_urls.must_equal expected_urls
-          actual_roots.must_equal ["test/fixtures/collaboration/apps/web/public",
-                                   "test/fixtures/collaboration/vendor/assets"]
+          ["test/fixtures/collaboration/apps/web/assets",
+           "test/fixtures/collaboration/vendor/assets"].each do |path|
+            actual_roots.must_include(path)
+          end
         end
       end
     end
@@ -834,7 +849,7 @@ describe Lotus::Configuration do
     end
 
     it 'it raises error when try to mutate assets' do
-      -> { @configuration.assets << 'assets' }.must_raise RuntimeError
+      -> { @configuration.assets { sources << 'assets' } }.must_raise RuntimeError
     end
 
     it 'it raises error when try to mutate templates' do

@@ -11,10 +11,11 @@ module Frontend
 
       serve_assets true
 
-      assets << [
-        'assets',
-        'vendor/assets'
-      ]
+      assets do
+        sources << [
+          'vendor/assets'
+        ]
+      end
 
       routes do
         resource :sessions, only: [:new]

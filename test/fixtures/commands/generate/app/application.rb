@@ -118,11 +118,13 @@ module Admin
       #
 
       # Specify sources for assets
-      # The directory `public/` is added by default
+      # The directory `apps/admin/assets` is added by default
       #
-      # assets << [
-      #   'vendor/javascripts'
-      # ]
+      # assets do
+      #   sources << [
+      #     'vendor/assets'
+      #   ]
+      # end
 
       # Enabling serving assets
       # Defaults to false
