@@ -129,7 +129,7 @@ module Lotus
       # @api private
       def invalid_csrf_token?
         verify_csrf_token? &&
-          session[CSRF_TOKEN] != params[CSRF_TOKEN]
+          ! ::Rack::Utils.secure_compare(session[CSRF_TOKEN], params[CSRF_TOKEN])
       end
 
       # Generates a random CSRF Token
