@@ -27,6 +27,10 @@ describe Lotus::Environment do
         ENV['FOO'].must_equal 'bar'
       end
 
+      it 'sets port from .env' do
+        @env.port.must_equal 42
+      end
+
       it 'sets env vars from the environment .env' do
         ENV['BAZ'].must_equal 'yes' # override
         ENV['WAT'].must_equal 'true'

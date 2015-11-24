@@ -418,8 +418,8 @@ module Lotus
     # @since 0.1.0
     # @api private
     def set_env_vars!
-      set_lotus_env_vars!
       set_application_env_vars!
+      set_lotus_env_vars!
     end
 
     # @since 0.2.0
