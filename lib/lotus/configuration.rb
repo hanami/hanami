@@ -390,8 +390,6 @@ module Lotus
     #
     # @since 0.1.0
     #
-    # @see Lotus::Configuration#serve_assets
-    #
     # @example Getting the value
     #   require 'lotus'
     #
@@ -409,8 +407,6 @@ module Lotus
     #   module Bookshelf
     #     class Application < Lotus::Application
     #       configure do
-    #         serve_assets true
-    #
     #         assets do
     #           sources << [
     #             'vendor/assets'
@@ -424,57 +420,6 @@ module Lotus
     #     # => #<Lotus::Config::Assets @root=#<Pathname:/root/path/assets>, @paths=["public"]>
     def assets(&blk)
       @assets ||= Config::FrameworkConfiguration.new(&blk)
-    end
-
-    # Configure serving of assets
-    # Enable static assets (disabled by default).
-    #
-    # This is part of a DSL, for this reason when this method is called with
-    # an argument, it will set the corresponding instance variable. When
-    # called without, it will return the already set value, or the default.
-    #
-    # @since 0.2.0
-    #
-    # @overload serve_assets(value)
-    #   Sets the given value.
-    #   @param value [TrueClass, FalseClass]
-    #
-    # @overload serve_assets
-    #   Gets the value.
-    #   @return [TrueClass, FalseClass]
-    #
-    # @see Lotus::Configuration#assets
-    #
-    # @example Getting serve assets configuration by default
-    #   require 'lotus'
-    #
-    #   module Bookshelf
-    #     class Application < Lotus::Application
-    #     end
-    #   end
-    #
-    #   Bookshelf::Application.configuration.serve_assets
-    #     # => false
-    #
-    # @example Enabling static assets
-    #   require 'lotus'
-    #
-    #   module Bookshelf
-    #     class Application < Lotus::Application
-    #       configure do
-    #         serve_assets true
-    #       end
-    #     end
-    #   end
-    #
-    #   Bookshelf::Application.configuration.serve_assets
-    #     # => true
-    def serve_assets(value = nil)
-      if value.nil?
-        @serve_assets || false
-      else
-        @serve_assets = value
-      end
     end
 
     # Configure cookies

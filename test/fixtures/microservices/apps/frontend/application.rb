@@ -9,8 +9,6 @@ module Frontend
 
       layout :frontend
 
-      serve_assets true
-
       assets do
         sources << [
           'vendor/assets'

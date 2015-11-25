@@ -29,44 +29,6 @@ describe 'A full stack Lotus application' do
     response.body.must_match %(<h1>Welcome</h1>)
   end
 
-  it "doesn't try to render responses that aren't coming from an action" do
-    get '/favicon.ico'
-
-    response.status.must_equal 200
-  end
-
-  it "serves static files" do
-    get '/stylesheets/application.css'
-    response.status.must_equal 200
-    response.body.wont_be_empty
-
-    get '/javascripts/jquery.js'
-    response.status.must_equal 200
-    response.body.wont_be_empty
-
-    get '/javascripts/application.js'
-    response.status.must_equal 200
-    response.body.wont_be_empty
-
-    get '/images/application.jpg'
-    response.status.must_equal 200
-    response.body.wont_be_empty
-
-    get '/fonts/cabin-medium.woff'
-    response.status.must_equal 200
-    response.body.wont_be_empty
-
-    get '/stylesheets/not-found.css'
-    response.status.must_equal 404
-    response.body.wont_be_empty
-  end
-
-  it 'serves static files in relative path' do
-    get '/lotus.js'
-    response.status.must_equal 200
-    response.body.wont_be_empty
-  end
-
   it "when user provided a custom template, it renders a custom page" do
     request '/custom_error', 'HTTP_ACCEPT' => 'text/html'
 

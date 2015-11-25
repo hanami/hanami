@@ -100,15 +100,19 @@ module Lotus
     end
 
     def _configure_assets_framework!
-      configuration.assets_destination = Lotus.root.join('public', 'assets')
+      source                           = Lotus.environment.container? ? 'assets' : ['app', 'assets']
+      configuration.assets_destination = Lotus.public_directory.join('assets')
       config                           = configuration
 
       unless application_module.const_defined?('Assets')
         assets = Lotus::Assets.duplicate(namespace) do
           root        config.root
+
           destination config.assets_destination
           prefix      config.path_prefix
-          manifest    Lotus.root.join('public', 'assets.json')
+          sources <<  config.root.join(*source)
+
+          manifest    Lotus.public_directory.join('assets.json')
           compile     true
 
           config.assets.__apply(self)

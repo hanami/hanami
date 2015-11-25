@@ -36,7 +36,6 @@ module Collaboration
       load_paths << 'app'
       routes 'config/routes'
 
-      serve_assets true
       sessions :cookie, secret: SecureRandom.hex
 
       assets do
