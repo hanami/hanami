@@ -98,6 +98,48 @@ describe Lotus::Commands::Generate::Action do
       end
     end
 
+    describe 'resourceful HTTP default methods' do
+      it 'uses POST for "create" action' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/create')
+          capture_io { command.start }
+
+          assert_file_includes('apps/web/config/routes.rb', "post '/books', to: 'books#create'")
+        end
+      end
+
+      it 'uses PATCH for "update" action' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/update')
+          capture_io { command.start }
+
+          assert_file_includes('apps/web/config/routes.rb', "patch '/books', to: 'books#update'")
+        end
+      end
+
+      it 'uses DELETE for "destroy" action' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/destroy')
+          capture_io { command.start }
+
+          assert_file_includes('apps/web/config/routes.rb', "delete '/books', to: 'books#destroy'")
+        end
+      end
+
+      it 'does not override user specified http method' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+          command = Lotus::Commands::Generate::Action.new({method: 'get'}, 'web', 'books/create')
+          capture_io { command.start }
+
+          assert_file_includes('apps/web/config/routes.rb', "get '/books', to: 'books#create'")
+        end
+      end
+    end
+
     describe 'container architecture' do
       describe 'with minitest' do
         it 'generates the files' do
