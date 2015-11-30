@@ -5,8 +5,8 @@
     <style>
       * { margin: 0; padding: 0; }
       body { font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; color: #333; background-color: #ecf0f1; font-size: 16px; line-height: 24px; }
-      h1, h2, h3 { margin: -20px; line-height: 100px; text-align: center; }
-      h1 { font-size: 60px; color: #551e54; }
+      h2, h3 { margin: -20px; line-height: 100px; text-align: center; }
+      .logo { text-align: center; margin-top: 0.5em; }
       h2 { font-size: 30px; }
       h3 { font-size: 20px; line-height: 22px; color: #666; }
       hr { margin: 2em; color: #ecf0f1; }
@@ -23,7 +23,9 @@
   </head>
   <body>
     <div id="container">
-      <h1>Lotus</h1>
+      <div class="logo">
+        <img alt="Lotus Logo" src="data:image/png;base64,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"/>
+      </div>
       <hr />
       <h2>A complete web framework for Ruby</h2>
 
@@ -44,7 +46,7 @@
       </div>
     </div>
     <div id="footer">
-      &copy; 2014 - present Luca Guidi &mdash; Lotus is released under the MIT License.
+      &copy; <%= Time.now.year %> - present Luca Guidi &mdash; Lotus is released under the MIT License.
     </div>
   </body>
 </html>
