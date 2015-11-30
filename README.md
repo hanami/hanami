@@ -20,12 +20,12 @@ If you aren't familiar with them, please take time to go through their READMEs.
 
 ## Status
 
-[![Gem Version](https://badge.fury.io/rb/lotusrb.png)](http://badge.fury.io/rb/lotusrb)
-[![Build Status](https://secure.travis-ci.org/lotus/lotus.png?branch=master)](http://travis-ci.org/lotus/lotus?branch=master)
-[![Coverage](https://coveralls.io/repos/lotus/lotus/badge.png?branch=master)](https://coveralls.io/r/lotus/lotus)
-[![Code Climate](https://codeclimate.com/github/lotus/lotus.png)](https://codeclimate.com/github/lotus/lotus)
-[![Dependencies](https://gemnasium.com/lotus/lotus.png)](https://gemnasium.com/lotus/lotus)
-[![Inline docs](http://inch-ci.org/github/lotus/lotus.png)](http://inch-ci.org/github/lotus/lotus)
+[![Gem Version](https://badge.fury.io/rb/lotusrb.svg)](http://badge.fury.io/rb/lotusrb)
+[![Build Status](https://secure.travis-ci.org/lotus/lotus.svg?branch=master)](http://travis-ci.org/lotus/lotus?branch=master)
+[![Coverage](https://coveralls.io/repos/lotus/lotus/badge.svg?branch=master)](https://coveralls.io/r/lotus/lotus)
+[![Code Climate](https://codeclimate.com/github/lotus/lotus.svg)](https://codeclimate.com/github/lotus/lotus)
+[![Dependencies](https://gemnasium.com/lotus/lotus.svg)](https://gemnasium.com/lotus/lotus)
+[![Inline docs](http://inch-ci.org/github/lotus/lotus.svg)](http://inch-ci.org/github/lotus/lotus)
 
 ## Contact
 
