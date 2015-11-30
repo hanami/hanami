@@ -11,7 +11,14 @@ module Lotus
       ASSETS_ROOT_DIRECTORY = (PATH_SEPARATOR + 'assets').freeze
 
       # Generates the application-specific relative paths for assets
-      def asset_path(args)
+      def asset_path(args = '')
+        if args.kind_of? Array
+          args.unshift(ASSETS_ROOT_DIRECTORY).join(PATH_SEPARATOR)
+        elsif args.kind_of? String
+          ASSETS_ROOT_DIRECTORY + PATH_SEPARATOR + args
+        else
+          raise ArgumentError, "the uri-argument must be kind of an Array- or String-object"
+        end
       end
 
       # Generates the application-specific absolute URL for assets
