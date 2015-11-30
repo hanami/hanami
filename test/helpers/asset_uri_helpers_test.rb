@@ -13,5 +13,32 @@ describe Lotus::Helpers::AssetUriHelpers do
   end
 
   describe 'asset_path' do
+    it 'returns an absolute reference to the assets-directory, if called without prefix and parameter' do
+      @mixin_target.asset_path().must_equal '/assets/'
+    end
+
+    it 'assembles an array-parameter with one element to an absolute asset-reference with the single array-element as filename' do
+      @mixin_target.asset_path(['flat-file.txt']).must_equal '/assets/flat-file.txt'
+    end
+
+    it 'assembles an array with many elementes to an absolute subdirectory-reference with the last array-element as appended filename' do
+      @mixin_target.asset_path(
+        [:this, :is, :a, :deep, :directory, :structure, 'flat-file.txt']
+      ).must_equal('/assets/this/is/a/deep/directory/structure/flat-file.txt')
+    end
+
+    it 'assembles a single string-parameter to an absolute asset-reference with the single parameter as filename' do
+      @mixin_target.asset_path('super-file-name.txt').must_equal '/assets/super-file-name.txt'
+    end
+
+    it 'raises an ArgumentError if the argument is not kind of String or Array' do
+      proc {
+        @mixin_target.asset_path(5)
+      }.must_raise ArgumentError
+      proc {
+        @mixin_target.asset_path( {fancy_path: 'i/am/hip'} )
+      }.must_raise ArgumentError
+    end
+  end
   end
 end
