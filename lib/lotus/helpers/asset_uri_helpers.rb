@@ -5,6 +5,11 @@ module Lotus
     # @since  0.6.0
     # @api public
     module AssetUriHelpers
+      # HTTP-path-separator according to https://tools.ietf.org/html/rfc1738 - 3.3 HTTP
+      PATH_SEPARATOR = '/'.freeze
+
+      ASSETS_ROOT_DIRECTORY = (PATH_SEPARATOR + 'assets').freeze
+
       # Generates the application-specific relative paths for assets
       def asset_path(args)
       end
