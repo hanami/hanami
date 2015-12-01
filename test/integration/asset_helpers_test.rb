@@ -30,5 +30,23 @@ describe '' do
       response.body.must_include "<img src=\"/assets/application.jpg\" alt=\"Application\">"
     end
   end
+
+  describe 'video helper' do
+    it 'renders a video tag' do
+      get "/assets"
+
+      response.status.must_equal 200
+
+      response.body.must_include "<video src=\"/assets/movie.mp4\"></video>"
+    end
+
+    it 'renders a video tag with source tags' do
+      get "/assets"
+
+      response.status.must_equal 200
+
+      response.body.must_include %(<video>\nYour browser does not support the video tag\n<source src="/assets/movie.mp4" type="video/mp4">\n<source src="/assets/movie.ogg" type="video/ogg">\n</video>)
+    end
+  end
 end
 
