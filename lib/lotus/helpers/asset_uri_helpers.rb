@@ -1,3 +1,5 @@
+require 'uri'
+
 require 'pry'
 
 module Lotus
@@ -36,7 +38,7 @@ module Lotus
         @application_configuration = Object.const_get("#{application_name}::Application").configuration
         @assets_configuration = @application_configuration.assets
 
-        binding.pry
+        URI::Generic.build({scheme: url_scheme, host: URI.encode(url_domain), port: url_port, path: url_path}).to_s
       end
     end
   end
