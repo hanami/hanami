@@ -94,11 +94,8 @@ module Lotus
           root   config.templates
           layout config.layout
 
-<<<<<<< HEAD
           prepare { include Lotus::Helpers::AssetUriHelpers }
-=======
           prepare { include Lotus::Helpers::AssetTagHelpers }
->>>>>>> lotus/master
 
           config.view.__apply(self)
         end
