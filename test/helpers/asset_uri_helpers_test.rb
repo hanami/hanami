@@ -15,6 +15,9 @@ class AssetUriHelpersMixinTarget
   class Application
     def self.configuration; self; end
     def self.assets; self; end
+
+    def self.reset_config(conf = {}); @@mocked_attributes = conf; end
+    def self.method_missing(attr_name); @@mocked_attributes[attr_name] || nil; end
   end
 
   include Lotus::Helpers::AssetUriHelpers
