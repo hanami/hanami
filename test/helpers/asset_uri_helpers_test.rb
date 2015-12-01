@@ -33,7 +33,7 @@ describe Lotus::Helpers::AssetUriHelpers do
       before do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
-          domain: 'lotusrb.org'
+          host: 'lotusrb.org'
         })
       end
 
@@ -60,7 +60,7 @@ describe Lotus::Helpers::AssetUriHelpers do
       before do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
-          domain: 'lotusrb.org',
+          host: 'lotusrb.org',
           prefix: 'admin/'
         })
       end
@@ -76,7 +76,7 @@ describe Lotus::Helpers::AssetUriHelpers do
       before do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
-          domain: 'lotusrb.org'
+          host: 'lotusrb.org'
         })
       end
 
@@ -93,7 +93,7 @@ describe Lotus::Helpers::AssetUriHelpers do
       before do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
-          domain: 'lotusrb.org',
+          host: 'lotusrb.org',
           prefix: 'admin/'
         })
       end
@@ -107,11 +107,11 @@ describe Lotus::Helpers::AssetUriHelpers do
       end
     end
 
-    describe 'with custom scheme, domain or port' do
+    describe 'with custom scheme, host or port' do
       it 'returns a https-url to "this.is.my.lotusrb.org" and port "8080"' do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'https',
-          domain: 'this.is.my.lotusrb.org',
+          host: 'this.is.my.lotusrb.org',
           port: '8080'
         })
 
@@ -123,7 +123,7 @@ describe Lotus::Helpers::AssetUriHelpers do
       # it 'returns a ftp-url to the unicode-domain "tüpfelhyänenöhrchen.de" and port "22"' do
       #   AssetUriHelpersMixinTarget::Application.reset_config({
       #     scheme: 'ftp',
-      #     domain: 'tüpfelhyänenöhrchen.de',
+      #     host: 'tüpfelhyänenöhrchen.de',
       #     port: '22'
       #   })
       #

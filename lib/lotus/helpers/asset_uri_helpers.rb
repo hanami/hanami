@@ -26,6 +26,7 @@ module Lotus
             application_configuration,
             application_configuration.assets
           )
+          binding.pry
         end
 
         assets_prefix = @asset_uri_helpers_config[:assets].prefix.to_s
@@ -41,13 +42,14 @@ module Lotus
       def asset_url(*args)
         url_path = asset_path(args)
 
+        binding.pry
         url_scheme = @asset_uri_helpers_config[:app].scheme.to_s
-        url_domain = @asset_uri_helpers_config[:app].domain.to_s
+        url_host = @asset_uri_helpers_config[:app].host.to_s
         url_port = @asset_uri_helpers_config[:app].port.to_i
 
         url_port = nil if url_port <= 0
 
-        URI::Generic.build({scheme: url_scheme, host: url_domain, port: url_port, path: url_path}).to_s
+        URI::Generic.build({scheme: url_scheme, host: url_host, port: url_port, path: url_path}).to_s
       end
     end
   end
