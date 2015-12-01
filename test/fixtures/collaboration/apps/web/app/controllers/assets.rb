@@ -5,4 +5,11 @@ module Collaboration::Controllers::Assets
     def call(params)
     end
   end
+
+  class UseUriHelpers
+    include Collaboration::Action
+
+    def call(params)
+    end
+  end
 end
