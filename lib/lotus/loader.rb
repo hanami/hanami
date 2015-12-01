@@ -7,6 +7,7 @@ require 'lotus/action/session'
 require 'lotus/config/security'
 require 'lotus/action/routing_helpers'
 require 'lotus/helpers/asset_uri_helpers'
+require 'lotus/helpers/asset_tag_helpers'
 
 module Lotus
   # Load an application
@@ -93,7 +94,11 @@ module Lotus
           root   config.templates
           layout config.layout
 
+<<<<<<< HEAD
           prepare { include Lotus::Helpers::AssetUriHelpers }
+=======
+          prepare { include Lotus::Helpers::AssetTagHelpers }
+>>>>>>> lotus/master
 
           config.view.__apply(self)
         end

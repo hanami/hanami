@@ -6,6 +6,7 @@ get '/body',               to: 'rendering#body'
 get '/presenter',          to: 'rendering#presenter'
 get '/custom_error',       to: 'custom_error#index'
 get '/redirected_routes',  to: 'redirected_routes#index'
+get '/assets',             to: 'assets#index'
 
 redirect '/legacy',   to: '/'
 

@@ -23,6 +23,15 @@ module Lotus
         # @api private
         DEFAULT_HTTP_METHOD = 'GET'.freeze
 
+        # HTTP methods used when generating resourceful actions.
+        # @since x.x.x
+        # @api private
+        RESOURCEFUL_HTTP_METHODS =  {
+          "Create" => "POST",
+          "Update" => "PATCH",
+          "Destroy" => "DELETE"
+        }.freeze
+
         def initialize(options, application_name, controller_and_action_name)
           super(options)
           if !environment.container?
@@ -92,7 +101,13 @@ module Lotus
         # @since x.x.x
         # @api private
         def http_method
-          options.fetch(:method, DEFAULT_HTTP_METHOD).downcase
+          options.fetch(:method, resourceful_http_method).downcase
+        end
+
+        # @since x.x.x
+        # @api private
+        def resourceful_http_method
+          RESOURCEFUL_HTTP_METHODS.fetch(@action_name, DEFAULT_HTTP_METHOD)
         end
 
         # @since x.x.x
