@@ -54,28 +54,79 @@ describe Lotus::Helpers::AssetUriHelpers do
       it 'assembles a single string-parameter to an absolute asset-reference with the single parameter as filename' do
         @mixin_target.asset_path('super-file-name.txt').must_equal '/assets/super-file-name.txt'
       end
+    end
 
-      it 'raises an ArgumentError if the argument is not kind of String or Array' do
-        proc {
-          @mixin_target.asset_path(5)
-        }.must_raise ArgumentError
+    describe 'with prefix set to "admin/"' do
+      before do
+        AssetUriHelpersMixinTarget::Application.reset_config({
+          scheme: 'http',
+          domain: 'lotusrb.org',
+          prefix: 'admin/'
+        })
+      end
 
       it 'returns an absolute reference to the assets/admin-directory if called without parameter' do
         @mixin_target.asset_path().must_equal('/assets/admin/')
       end
     end
-
-
-    describe 'with prefix set to "admin/"' do
-      it 'returns an absolute reference to the assets/admin-directory if called without parameter' do
-        @mixin_target.asset_path().must_equal '/assets/admin/'
-      end
-    end
   end
 
   describe 'asset_url' do
-    it 'returns an absolute url to the assets-directory if called without parameters' do
-      @mixin_target.asset_url().must_equal 'http://lotusrb.org/assets/'
+    describe 'without prefix set' do
+      before do
+        AssetUriHelpersMixinTarget::Application.reset_config({
+          scheme: 'http',
+          domain: 'lotusrb.org'
+        })
+      end
+
+      it 'returns an absolute url to the assets-directory if called without parameters' do
+        @mixin_target.asset_url().must_equal('http://lotusrb.org/assets/')
+      end
+
+      it 'returns an absolute url to an asset if called with a filename' do
+        @mixin_target.asset_url('fancy-file.name.md').must_equal('http://lotusrb.org/assets/fancy-file.name.md')
+      end
+    end
+
+    describe 'with prefix set to "admin/"' do
+      before do
+        AssetUriHelpersMixinTarget::Application.reset_config({
+          scheme: 'http',
+          domain: 'lotusrb.org',
+          prefix: 'admin/'
+        })
+      end
+
+      it 'returns an absolute url to the prefixed assets-directory if called without parameters' do
+        @mixin_target.asset_url().must_equal('http://lotusrb.org/assets/admin/')
+      end
+
+      it 'returns an absolute url to a prefixed asset if called with a filename' do
+        @mixin_target.asset_url('fancy-file.name.md').must_equal( 'http://lotusrb.org/assets/admin/fancy-file.name.md')
+      end
+    end
+
+    describe 'with custom scheme, domain or port' do
+      it 'returns a https-url to "this.is.my.lotusrb.org" and port "8080"' do
+        AssetUriHelpersMixinTarget::Application.reset_config({
+          scheme: 'https',
+          domain: 'this.is.my.lotusrb.org',
+          port: '8080'
+        })
+
+        @mixin_target.asset_url().must_equal('https://this.is.my.lotusrb.org:8080/assets/')
+      end
+
+      it 'returns a ftp-url to the unicode-domain "tüpfelhyänenöhrchen.de" and port "22"' do
+        AssetUriHelpersMixinTarget::Application.reset_config({
+          scheme: 'ftp',
+          domain: 'tüpfelhyänenöhrchen.de',
+          port: '22'
+        })
+
+        @mixin_target.asset_url().must_equal('ftp://tüpfelhyänenöhrchen.de:22/assets/')
+      end
     end
   end
 end
