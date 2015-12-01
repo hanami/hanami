@@ -5,7 +5,7 @@ gem 'pry'
 
 if !ENV['TRAVIS']
   gem 'byebug', require: false, platforms: :mri if RUBY_VERSION >= '2.1.0'
-#  gem 'pry',    require: false, platforms: :jruby
+#  gem 'pry',    require: false, platforms: :jruby # TODO: enable me again
   gem 'yard',   require: false
 end
 
