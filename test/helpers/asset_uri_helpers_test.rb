@@ -29,15 +29,12 @@ describe Lotus::Helpers::AssetUriHelpers do
   end
 
   describe 'asset_path' do
-    before do
-      def AssetUriHelpersMixinTarget::Application::scheme; 'http'; end
-      def AssetUriHelpersMixinTarget::Application::domain; 'lotusrb.org'; end
-      def AssetUriHelpersMixinTarget::Application::port; end
-      def AssetUriHelpersMixinTarget::Application::prefix; end
-    end
-
     describe 'without prefix set' do
       before do
+        AssetUriHelpersMixinTarget::Application.reset_config({
+          scheme: 'http',
+          domain: 'lotusrb.org'
+        })
       end
 
       it 'returns an absolute reference to the assets-directory if called without parameter' do
