@@ -12,20 +12,20 @@ module Lotus
       # HTTP-path-separator according to https://tools.ietf.org/html/rfc1738 - 3.3 HTTP
       PATH_SEPARATOR = '/'.freeze
 
-      ASSETS_ROOT_DIRECTORY = (PATH_SEPARATOR + 'assets').freeze
+      ASSETS_ROOT_DIRECTORY = 'assets'.freeze
+
+      # Cache-Struct for references to <<app-name>>::Application.configuration and /.assets
+      ConfigReferences = Struct.new(:app, :assets)
 
       # Generates the application-specific relative paths for assets
-      def asset_path(args = '')
+      def asset_path(*args)
+        assets_prefix = @asset_uri_helpers_config[:assets].prefix.to_s
+        args.push('') if args.empty?
 
-        base_path = ASSETS_ROOT_DIRECTORY + PATH_SEPARATOR + @assets_configuration.prefix.to_s
-
-        base_path + (if args.kind_of? Array
-          args.join(PATH_SEPARATOR)
-        elsif args.kind_of? String
-          args
-        else
-          raise ArgumentError, "the uri-argument must be kind of an Array- or String-object"
-        end)
+        path_elements = ['', ASSETS_ROOT_DIRECTORY]
+        path_elements.concat(assets_prefix.split(PATH_SEPARATOR).compact) if !assets_prefix.empty?
+        path_elements.concat(args)
+        path_elements.join(PATH_SEPARATOR)
       end
 
       # Generates the application-specific absolute URL for assets
