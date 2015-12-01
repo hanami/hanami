@@ -19,6 +19,15 @@ module Lotus
 
       # Generates the application-specific relative paths for assets
       def asset_path(*args)
+        if @asset_uri_helpers_config.nil? == true then # initialize configuration-cache
+          application_name = self.class.name.split('::').first # extract app-name from class-name
+          application_configuration = Object.const_get("#{application_name}::Application").configuration
+          @asset_uri_helpers_config = Lotus::Helpers::AssetUriHelpers::ConfigReferences.new(
+            application_configuration,
+            application_configuration.assets
+          )
+        end
+
         assets_prefix = @asset_uri_helpers_config[:assets].prefix.to_s
         args.push('') if args.empty?
 
