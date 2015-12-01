@@ -38,16 +38,16 @@ module Lotus
       end
 
       # Generates the application-specific absolute URL for assets
-      def asset_url(args = '')
+      def asset_url(*args)
+        url_path = asset_path(args)
 
-      end
+        url_scheme = @asset_uri_helpers_config[:app].scheme.to_s
+        url_domain = @asset_uri_helpers_config[:app].domain.to_s
+        url_port = @asset_uri_helpers_config[:app].port.to_i
 
-      def AssetUriHelpers.included(foreign_module)
-        application_name = foreign_module.name.split('::').first
-        @application_configuration = Object.const_get("#{application_name}::Application").configuration
-        @assets_configuration = @application_configuration.assets
+        url_port = nil if url_port <= 0
 
-        URI::Generic.build({scheme: url_scheme, host: URI.encode(url_domain), port: url_port, path: url_path}).to_s
+        URI::Generic.build({scheme: url_scheme, host: url_domain, port: url_port, path: url_path}).to_s
       end
     end
   end
