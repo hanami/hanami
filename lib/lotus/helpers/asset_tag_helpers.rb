@@ -143,11 +143,9 @@ module Lotus
       #   This method will output:
       #   => <link href="/assets/myfavicon.ico" rel="shortcut icon" type="image/x-icon">
       #
-      def favicon(source = nil)
-        href = source || 'favicon.ico'
-
+      def favicon(source = 'favicon.ico')
         options = {}
-        options[:href] = asset_path(href)
+        options[:href] = asset_path(source)
         options[:rel] = 'shortcut icon'
         options[:type] = 'image/x-icon'
 
