@@ -20,6 +20,7 @@ module Lotus
           application_name = self.class.name.split('::').first # extract app-name from class-name
           @asset_uri_helpers_config_ref = Object.const_get("#{application_name}::Application").configuration
         end
+        binding.pry
         assets_prefix = @asset_uri_helpers_config.assets.prefix.to_s
         args.push('') if args.empty?
 
@@ -38,6 +39,8 @@ module Lotus
         url_port = @asset_uri_helpers_config_ref.port.to_i
 
         url_port = nil if url_port <= 0
+
+        binding.pry
 
         URI::Generic.build({scheme: url_scheme, host: url_host, port: url_port, path: url_path}).to_s
       end
