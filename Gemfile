@@ -26,6 +26,5 @@ platforms :jruby do
   gem 'jdbc-sqlite3'
 end
 
-gem 'excon',                require: false
 gem 'simplecov', '~> 0.11', require: false
 gem 'coveralls',            require: false
