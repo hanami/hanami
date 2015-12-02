@@ -37,9 +37,9 @@ module Lotus
         html.img(options)
       end
 
-      def asset_path(source)
-        "/assets/#{source}" # To be implemented
-      end
+      # def asset_path(source)
+      #   "/assets/#{source}" # To be implemented
+      # end
     end
   end
 end
