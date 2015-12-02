@@ -37,6 +37,26 @@ module Lotus
         html.img(options)
       end
 
+      # Creates a link tag for a favicon.
+      #
+      # @since x.x.x
+      # @api public
+      #
+      # @example Basic usage
+      #   <%= favicon %>
+      #     # => <link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
+      #
+      # @example HTML attributes
+      #  <%= favicon('favicon.png', rel: 'icon', type: 'image/png')
+      #    # => <link rel="icon" type="image/png" href="/assets/favicon.png">
+      def favicon(source = 'favicon.ico', options = {})
+        options[:href]   = asset_path(source)
+        options[:rel]  ||= 'shortcut icon'
+        options[:type] ||= 'image/x-icon'
+
+        html.link(options)
+      end
+
       def asset_path(source)
         "/assets/#{source}" # To be implemented
       end
