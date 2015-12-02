@@ -123,34 +123,6 @@ module Lotus
 
         html.video(blk, options)
       end
-
-      # Creates a favicon tag with an optional path.
-      #
-      # @since x.x.x
-      # @api public
-      #
-      # @example Usage.
-      #
-      #   <%= favicon %>
-      #
-      #   This method will output:
-      #   => <link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
-      #
-      # @example Usage with optional path.
-      #
-      #   <%= favicon 'myfavicon.ico' %>
-      #
-      #   This method will output:
-      #   => <link href="/assets/myfavicon.ico" rel="shortcut icon" type="image/x-icon">
-      #
-      def favicon(source = 'favicon.ico')
-        options = {}
-        options[:href] = asset_path(source)
-        options[:rel] = 'shortcut icon'
-        options[:type] = 'image/x-icon'
-
-        html.link(options)
-      end
     end
   end
 end

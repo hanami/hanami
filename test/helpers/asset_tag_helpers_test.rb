@@ -80,16 +80,4 @@ describe Lotus::Helpers::AssetTagHelpers do
       -> {view.video(content: true)}.must_raise ArgumentError
     end
   end
-
-  describe 'favicon' do
-    it 'renders a default icon' do
-      tag = view.favicon
-      tag.to_s.must_equal %(<link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">)
-    end
-
-    it 'renders an icon from optional path' do
-      tag = view.favicon('myfavicon.ico')
-      tag.to_s.must_equal %(<link href="/assets/myfavicon.ico" rel="shortcut icon" type="image/x-icon">)
-    end
-  end
 end
