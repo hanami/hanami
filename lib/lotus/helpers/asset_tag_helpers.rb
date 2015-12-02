@@ -126,7 +126,7 @@ module Lotus
 
       # Creates a favicon tag with an optional path.
       #
-      # @since 0.6.0
+      # @since x.x.x
       # @api public
       #
       # @example Usage.
