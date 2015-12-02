@@ -21,7 +21,7 @@ module Lotus
           @asset_uri_helpers_config_ref = Object.const_get("#{application_name}::Application").configuration
         end
         binding.pry
-        assets_prefix = @asset_uri_helpers_config.assets.prefix.to_s
+        assets_prefix = @asset_uri_helpers_config_ref.assets.prefix.to_s
         args.push('') if args.empty?
 
         path_elements = ['', ASSETS_ROOT_DIRECTORY]
