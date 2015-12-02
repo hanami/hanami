@@ -16,12 +16,7 @@ module Lotus
 
       # Generates the application-specific relative paths for assets
       def asset_path(*args)
-        if @asset_uri_helpers_config_ref.nil? == true then # initialize configuration-cache
-          application_name = self.class.name.split('::').first # extract app-name from class-name
-          @asset_uri_helpers_config_ref = Object.const_get("#{application_name}::Application").configuration
-        end
-        binding.pry
-        assets_prefix = @asset_uri_helpers_config_ref.assets.prefix.to_s
+        assets_prefix = _asset_config.prefix
         args.push('') if args.empty?
 
         path_elements = ['', ASSETS_ROOT_DIRECTORY]
@@ -32,17 +27,35 @@ module Lotus
 
       # Generates the application-specific absolute URL for assets
       def asset_url(*args)
-        url_path = asset_path(args)
+        path = asset_path(args)
 
-        url_scheme = @asset_uri_helpers_config_ref.scheme.to_s
-        url_host = @asset_uri_helpers_config_ref.host.to_s
-        url_port = @asset_uri_helpers_config_ref.port.to_i
+        scheme =  _application_config.scheme
+        host =    _application_config.host
+        port = if _application_config.port > 0 then
+          _application_config.port
+        else
+          nil # omits the whole port-token when the url will be build
+        end
 
-        url_port = nil if url_port <= 0
+        URI::Generic.build({scheme: scheme, host: host, port: port, path: path}).to_s
+      end
 
-        binding.pry
+      private
 
-        URI::Generic.build({scheme: url_scheme, host: url_host, port: url_port, path: url_path}).to_s
+      def _assets_class_name
+        "#{_application_module_name}::Assets"
+      end
+      def _application_class_name
+        "#{_application_module_name}::Application"
+      end
+      def _application_module_name
+        self.class.name.split('::').first # extract app-name from class-name
+      end
+      def _asset_config
+        @_asset_config ||= Kernel.const_get(_assets_class_name).configuration
+      end
+      def _application_config
+        @_application_config ||= Kernel.const_get(_application_class_name).configuration
       end
     end
   end
