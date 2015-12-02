@@ -14,22 +14,13 @@ module Lotus
 
       ASSETS_ROOT_DIRECTORY = 'assets'.freeze
 
-      # Cache-Struct for references to <<app-name>>::Application.configuration and /.assets
-      ConfigReferences = Struct.new(:app, :assets)
-
       # Generates the application-specific relative paths for assets
       def asset_path(*args)
-        if @asset_uri_helpers_config.nil? == true then # initialize configuration-cache
+        if @asset_uri_helpers_config_ref.nil? == true then # initialize configuration-cache
           application_name = self.class.name.split('::').first # extract app-name from class-name
-          application_configuration = Object.const_get("#{application_name}::Application").configuration
-          @asset_uri_helpers_config = Lotus::Helpers::AssetUriHelpers::ConfigReferences.new(
-            application_configuration,
-            application_configuration.assets
-          )
-          binding.pry
+          @asset_uri_helpers_config_ref = Object.const_get("#{application_name}::Application").configuration
         end
-
-        assets_prefix = @asset_uri_helpers_config[:assets].prefix.to_s
+        assets_prefix = @asset_uri_helpers_config.assets.prefix.to_s
         args.push('') if args.empty?
 
         path_elements = ['', ASSETS_ROOT_DIRECTORY]
@@ -42,10 +33,9 @@ module Lotus
       def asset_url(*args)
         url_path = asset_path(args)
 
-        binding.pry
-        url_scheme = @asset_uri_helpers_config[:app].scheme.to_s
-        url_host = @asset_uri_helpers_config[:app].host.to_s
-        url_port = @asset_uri_helpers_config[:app].port.to_i
+        url_scheme = @asset_uri_helpers_config_ref.scheme.to_s
+        url_host = @asset_uri_helpers_config_ref.host.to_s
+        url_port = @asset_uri_helpers_config_ref.port.to_i
 
         url_port = nil if url_port <= 0
 
