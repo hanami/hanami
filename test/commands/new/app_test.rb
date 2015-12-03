@@ -100,6 +100,7 @@ describe Lotus::Commands::New::App do
       assert_file_exists('lib/new_app/mailers/.gitkeep')
       assert_file_exists('lib/new_app/mailers/templates/.gitkeep')
       assert_file_exists('public/.gitkeep')
+      assert_file_exists('public/assets/favicon.ico')
       assert_file_exists('db/.gitkeep')
       assert_file_exists('spec/features/.gitkeep')
       assert_file_exists('spec/controllers/.gitkeep')
