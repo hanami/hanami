@@ -260,6 +260,7 @@ describe Lotus::Commands::New::Container do
       assert_file_exists('spec/new_container/repositories/.gitkeep')
       assert_file_exists('spec/new_container/mailers/.gitkeep')
       assert_file_exists('spec/support/.gitkeep')
+      assert_file_exists('public/assets/favicon.ico')
       assert_file_exists('db/.gitkeep')
       assert_file_exists('.git')
       assert_generated_file(fixture_root.join("Rakefile.#{ test_framework }"), 'Rakefile')
