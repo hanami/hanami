@@ -26,6 +26,22 @@ describe Lotus::Commands::New::Container do
     end
   end
 
+  describe 'serve static assets' do
+    it 'sets env var to true for development and test' do
+      with_temp_dir do |original_wd|
+        command = Lotus::Commands::New::Container.new({}, 'static_assets')
+        capture_io { command.start }
+        Dir.chdir('static_assets') do
+          actual_content = File.read('.env.development')
+          actual_content.must_include 'SERVE_STATIC_ASSETS="true"'
+
+          actual_content = File.read('.env.test')
+          actual_content.must_include 'SERVE_STATIC_ASSETS="true"'
+        end
+      end
+    end
+  end
+
   describe 'with valid arguments' do
     it 'application name with dash' do
       with_temp_dir do |original_wd|
