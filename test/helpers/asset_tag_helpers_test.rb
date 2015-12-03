@@ -28,6 +28,16 @@ describe Lotus::Helpers::AssetTagHelpers do
     end
   end
 
+  describe '#favicon' do
+    it 'renders' do
+      view.favicon.to_s.must_equal %(<link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">)
+    end
+
+    it 'renders with HTML attributes' do
+      view.favicon('favicon.png', rel: 'icon', type: 'image/png').to_s.must_equal %(<link rel="icon" type="image/png" href="/assets/favicon.png">)
+    end
+  end
+
   describe '#video' do
     it 'renders' do
       tag = view.video('movie.mp4')
