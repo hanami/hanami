@@ -418,7 +418,11 @@ module Lotus
     #   Bookshelf::Application.configuration.assets
     #     # => #<Lotus::Config::Assets @root=#<Pathname:/root/path/assets>, @paths=["public"]>
     def assets(&blk)
-      @assets ||= Config::FrameworkConfiguration.new(&blk)
+      if @assets
+        @assets.__add(&blk)
+      else
+        @assets ||= Config::FrameworkConfiguration.new(&blk)
+      end
     end
 
     # Configure cookies

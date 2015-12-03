@@ -9,18 +9,27 @@ module Lotus
       # @since 0.2.0
       # @api private
       def initialize(&blk)
-        @blk      = blk || ::Proc.new { }
+        @blocks   = [blk || ::Proc.new { }]
         @settings = []
       end
 
       # @since 0.2.0
       # @api private
       def __apply(configuration)
-        configuration.instance_eval(&@blk)
+        @blocks.compact.each do |blk|
+          configuration.instance_eval(&blk)
+        end
 
         @settings.each do |(m, args, blk)|
           configuration.public_send(m, *args, &blk)
         end
+      end
+
+      # @since x.x.x
+      # @api private
+      def __add(&blk)
+        @blocks << blk
+        self
       end
 
       # @since 0.2.0
