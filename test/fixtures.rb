@@ -1,6 +1,24 @@
 require 'lotus/model'
 require 'lotus/mailer'
 
+class FakeFrameworkConfiguration
+  def prefix(value = nil)
+    if value.nil?
+      @prefix
+    else
+      @prefix = value
+    end
+  end
+
+  def suffix(value = nil)
+    if value.nil?
+      @suffix
+    else
+      @suffix = value
+    end
+  end
+end
+
 class Order
   include Lotus::Entity
 

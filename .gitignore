@@ -23,3 +23,7 @@ mkmf.log
 .greenbar
 .DS_Store
 .lotusrc
+test/fixtures/static_assets/public/assets/*.css
+test/fixtures/static_assets/public/assets/*.js
+test/fixtures/static_assets_app/public/assets/*.css
+test/fixtures/static_assets_app/public/assets/*.js

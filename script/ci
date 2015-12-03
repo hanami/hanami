@@ -1,0 +1,37 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+run_unit_tests() {
+  bundle exec rake test:coverage
+}
+
+run_integration_tests() {
+  local pwd=$PWD
+  local root="$pwd/test/integration"
+
+  for test in $(find $root -name 'test_*.rb')
+  do
+    run_test $test
+
+    if [ $? -ne 0 ]; then
+      local exit_code=$?
+      echo "Failing test: $test"
+      exit $exit_code
+    fi
+  done
+}
+
+run_test() {
+  local test=$1
+
+  printf "\n\n\nRunning: $test\n"
+  ruby -Itest $test
+}
+
+main() {
+  run_unit_tests &&
+    run_integration_tests
+}
+
+main

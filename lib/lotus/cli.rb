@@ -70,7 +70,7 @@ module Lotus
 
       $ > lotus new fancy_app --arch=app
 
-      $ > lotus new fancy_app --lotus_head
+      $ > lotus new fancy_app --lotus-head=true
     EOS
     method_option :database, aliases: ['-d', '--db'], desc: "application database (#{Lotus::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Lotus::Generators::DatabaseConfig::DEFAULT_ENGINE
     method_option :architecture, aliases: ['-a', '--arch'], desc: 'application architecture (container/app)', default: Lotus::Commands::New::Abstract::DEFAULT_ARCHITECTURE

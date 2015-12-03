@@ -9,6 +9,8 @@ require 'lotus/environment'
 #
 # @see http://lotusrb.org
 module Lotus
+  DEFAULT_PUBLIC_DIRECTORY = 'public'.freeze
+
   # Return root of the project (top level directory).
   #
   # @return [Pathname] root path
@@ -19,6 +21,10 @@ module Lotus
   #   Lotus.root # => #<Pathname:/Users/luca/Code/bookshelf>
   def self.root
     environment.root
+  end
+
+  def self.public_directory
+    root.join(DEFAULT_PUBLIC_DIRECTORY)
   end
 
   # Return the current environment

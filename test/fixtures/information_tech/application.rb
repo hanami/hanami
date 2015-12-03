@@ -12,8 +12,6 @@ module InformationTech
 
       layout :app
 
-      serve_assets true
-
       routes do
         get '/hardware',      to: 'hardware#index'
         get '/error',         to: 'hardware#error'
