@@ -1,4 +1,5 @@
 require 'lotus/helpers'
+require 'lotus/assets'
 
 module NewApp
   class Application < Lotus::Application
@@ -192,6 +193,7 @@ module NewApp
       # See: http://www.rubydoc.info/gems/lotus-view#Configuration
       view.prepare do
         include Lotus::Helpers
+        include NewApp::Assets::Helpers
       end
     end
 

@@ -1,4 +1,5 @@
 require 'lotus/helpers'
+require 'lotus/assets'
 
 module Admin
   class Application < Lotus::Application
@@ -195,6 +196,7 @@ module Admin
       # See: http://www.rubydoc.info/gems/lotus-view#Configuration
       view.prepare do
         include Lotus::Helpers
+        include Admin::Assets::Helpers
       end
     end
 

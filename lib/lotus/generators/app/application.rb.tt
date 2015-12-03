@@ -1,4 +1,5 @@
 require 'lotus/helpers'
+require 'lotus/assets'
 
 module <%= config[:classified_app_name] %>
   class Application < Lotus::Application
@@ -195,6 +196,7 @@ module <%= config[:classified_app_name] %>
       # See: http://www.rubydoc.info/gems/lotus-view#Configuration
       view.prepare do
         include Lotus::Helpers
+        include <%= config[:classified_app_name] %>::Assets::Helpers
       end
     end
 
