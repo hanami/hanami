@@ -57,9 +57,9 @@ module Lotus
         html.link(options)
       end
 
-      def asset_path(source)
-        "/assets/#{source}" # To be implemented
-      end
+      # def asset_path(source)
+      #   "/assets/#{source}" # To be implemented
+      # end
 
       # Generates a video tag for the given arguments.
       #
