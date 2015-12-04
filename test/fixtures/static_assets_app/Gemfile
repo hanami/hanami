@@ -1,0 +1,26 @@
+source 'https://rubygems.org'
+
+gem 'bundler'
+gem 'rake'
+gem 'sass'
+
+gem 'lotus-utils',       '~> 0.6', github: 'lotus/utils',       branch: '0.6.x'
+gem 'lotus-validations', '~> 0.3', github: 'lotus/validations', branch: '0.3.x'
+gem 'lotus-router',      '~> 0.4', github: 'lotus/router',      branch: '0.5.x'
+gem 'lotus-controller',  '~> 0.4', github: 'lotus/controller',  branch: '0.4.x'
+gem 'lotus-view',        '~> 0.4', github: 'lotus/view',        branch: '0.4.x'
+gem 'lotus-model',       '~> 0.5', github: 'lotus/model',       branch: '0.5.x'
+gem 'lotus-helpers',     '~> 0.2', github: 'lotus/helpers',     branch: '0.2.x'
+gem 'lotus-mailer',      '~> 0.1', github: 'lotus/mailer',      branch: '0.1.x'
+gem 'lotus-assets',      '~> 0.1', github: 'lotus/assets',      branch: 'master'
+gem 'lotusrb', path:   '../../..'
+
+gem 'byebug', require: false
+group :test do
+  gem 'minitest'
+  gem 'capybara'
+end
+
+group :production do
+  # gem 'puma'
+end

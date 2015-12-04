@@ -80,8 +80,8 @@ module Lotus
     # @since 0.2.0
     def load_default_stack(application)
       @default_stack_loaded ||= begin
+        _load_assets_middleware
         _load_session_middleware
-        _load_asset_middlewares
         _load_default_welcome_page_for(application)
         use Rack::MethodOverride
 
@@ -110,15 +110,16 @@ module Lotus
       end
     end
 
-    # Add asset middlewares
+    # Use static assets middleware
     #
     # @api private
-    # #since 0.2.0
-    def _load_asset_middlewares
-      if @configuration.serve_assets
-        Config::Assets.new(@configuration).for_each_source do |source|
-          use Rack::Static, urls: source.urls, root: source.root
-        end
+    # @since x.x.x
+    def _load_assets_middleware
+      env = Lotus.environment
+
+      if !env.container? && env.serve_static_assets?
+        require 'lotus/static'
+        use Lotus::Static
       end
     end
   end

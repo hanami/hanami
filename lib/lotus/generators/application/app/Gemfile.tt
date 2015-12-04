@@ -12,6 +12,7 @@ gem 'lotus-controller',  require: false, github: 'lotus/controller'
 gem 'lotus-view',        require: false, github: 'lotus/view'
 gem 'lotus-model',       require: false, github: 'lotus/model'
 gem 'lotus-mailer',      require: false, github: 'lotus/mailer'
+gem 'lotus-assets',      require: false, github: 'lotus/assets'
 gem 'lotusrb',                           github: 'lotus/lotus'
 <%- else -%>
 gem 'lotusrb',       '<%= Lotus::VERSION %>'

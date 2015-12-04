@@ -111,6 +111,14 @@ module Lotus
     # @api private
     APPLICATION_PATH = 'app'.freeze
 
+    # @since 0.4.0
+    # @api private
+    SERVE_STATIC_ASSETS = 'SERVE_STATIC_ASSETS'.freeze
+
+    # @since 0.4.0
+    # @api private
+    SERVE_STATIC_ASSETS_ENABLED = 'true'.freeze
+
     # Initialize a Lotus environment
     #
     # It accepts an optional set of configurations from the CLI commands.
@@ -383,6 +391,12 @@ module Lotus
     # @api private
     def container?
       architecture == CONTAINER
+    end
+
+    # @since x.x.x
+    # @api private
+    def serve_static_assets?
+      SERVE_STATIC_ASSETS_ENABLED == ENV[SERVE_STATIC_ASSETS]
     end
 
     # @since 0.4.0

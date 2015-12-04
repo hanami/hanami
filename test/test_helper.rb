@@ -1,8 +1,4 @@
-require 'rubygems'
-require 'bundler/setup'
-
-# Autoloading 'tilt/erb' in a non thread-safe way
-require 'tilt/erb'
+require_relative './support/helper'
 
 if ENV['COVERAGE'] == 'true'
   require 'simplecov'
@@ -19,18 +15,9 @@ if ENV['COVERAGE'] == 'true'
   end
 end
 
-FIXTURES_ROOT = Pathname(File.dirname(__FILE__) + '/fixtures').realpath
-ENV_LOCALHOST = !!ENV['TRAVIS'] ? '0.0.0.0' : 'localhost'
-
-require 'minitest/autorun'
-require 'support/assertions'
-
 # Skip MRI specifc specs
 require 'minispec-metadata'
 MinispecMetadata.add_tag_string('~engine:mri') if RUBY_ENGINE != 'ruby'
-
-$:.unshift 'lib'
-require 'lotus'
 
 Minitest::Test.class_eval do
   def with_temp_dir(name = 'testapp', &block)
@@ -118,7 +105,8 @@ class DependenciesReporter
     'lotus-model',
     'lotus-view',
     'lotus-controller',
-    'lotus-mailer'
+    'lotus-mailer',
+    'lotus-assets'
   ].freeze
 
   def initialize
@@ -166,5 +154,4 @@ def stub_stdout_constant
   return_str
 end
 
-$pwd = Dir.pwd
 require 'fixtures'
