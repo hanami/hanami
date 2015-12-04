@@ -220,6 +220,18 @@ module NewApp
       # scheme 'https'
       # host   'example.org'
       # port   443
+
+      assets do
+        # Don't compile static assets in production mode (eg. Sass, ES6)
+        #
+        # See: http://www.rubydoc.info/gems/lotus-assets#Configuration
+        compile false
+
+        # Use digest file name for asset paths
+        #
+        # See: http://lotusrb.org/guides/assets/digest
+        digest  true
+      end
     end
   end
 end

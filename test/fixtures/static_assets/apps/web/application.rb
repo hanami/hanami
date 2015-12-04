@@ -223,6 +223,11 @@ module Web
       # scheme 'https'
       # host   'example.org'
       # port   443
+
+      assets do
+        compile false
+        digest  true
+      end
     end
   end
 end
