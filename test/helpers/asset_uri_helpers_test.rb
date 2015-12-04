@@ -12,12 +12,16 @@ require 'pry'
 
 # Prepare minimal mixin-target-class as local test-helper
 class AssetUriHelpersMixinTarget
-  class Application
+  class ConfigStub
     def self.configuration; self; end
-    def self.assets; self; end
 
-    def self.reset_config(conf = {}); @@mocked_attributes = conf; end
-    def self.method_missing(attr_name); @@mocked_attributes[attr_name] || nil; end
+    def self.reset_config(conf = {}); @_mocked_attributes = conf; end
+    def self.method_missing(attr_name); @_mocked_attributes[attr_name]; end
+  end
+
+  class Application < ConfigStub
+  end
+  class Assets < ConfigStub
   end
 
   include Lotus::Helpers::AssetUriHelpers
@@ -33,8 +37,10 @@ describe Lotus::Helpers::AssetUriHelpers do
       before do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
-          host: 'lotusrb.org'
+          host: 'lotusrb.org',
+          port: 0
         })
+        AssetUriHelpersMixinTarget::Assets.reset_config prefix: ''
       end
 
       it 'returns an absolute reference to the assets-directory if called without parameter' do
@@ -61,8 +67,9 @@ describe Lotus::Helpers::AssetUriHelpers do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
           host: 'lotusrb.org',
-          prefix: 'admin/'
+          port: 0
         })
+        AssetUriHelpersMixinTarget::Assets.reset_config prefix: 'admin/'
       end
 
       it 'returns an absolute reference to the assets/admin-directory if called without parameter' do
@@ -76,8 +83,10 @@ describe Lotus::Helpers::AssetUriHelpers do
       before do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
-          host: 'lotusrb.org'
+          host: 'lotusrb.org',
+          port: 0
         })
+        AssetUriHelpersMixinTarget::Assets.reset_config prefix: ''
       end
 
       it 'returns an absolute url to the assets-directory if called without parameters' do
@@ -94,8 +103,9 @@ describe Lotus::Helpers::AssetUriHelpers do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
           host: 'lotusrb.org',
-          prefix: 'admin/'
+          port: 0
         })
+        AssetUriHelpersMixinTarget::Assets.reset_config prefix: 'admin/'
       end
 
       it 'returns an absolute url to the prefixed assets-directory if called without parameters' do
@@ -112,8 +122,9 @@ describe Lotus::Helpers::AssetUriHelpers do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'https',
           host: 'this.is.my.lotusrb.org',
-          port: '8080'
+          port: 8080
         })
+        AssetUriHelpersMixinTarget::Assets.reset_config prefix: ''
 
         @mixin_target.asset_url().must_equal('https://this.is.my.lotusrb.org:8080/assets/')
       end
