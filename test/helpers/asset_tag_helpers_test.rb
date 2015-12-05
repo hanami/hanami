@@ -11,7 +11,9 @@ class ImageHelperView
     @params = Lotus::Action::Params.new(params)
   end
 
-  include HelpersTestHelpers::ConfigStub
+  def asset_path(source)
+    "/assets/#{source}"
+  end
 end
 
 describe Lotus::Helpers::AssetTagHelpers do
