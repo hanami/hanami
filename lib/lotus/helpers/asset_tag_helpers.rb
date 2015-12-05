@@ -7,6 +7,7 @@ module Lotus
     # @since 0.6.0
     # @api public
     module AssetTagHelpers
+      include Lotus::Helpers::AssetUriHelpers
       include Lotus::Helpers::HtmlHelper
 
       # Creates a img tag. Takes the asset path as the first parameter.
