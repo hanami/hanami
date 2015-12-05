@@ -1,5 +1,7 @@
 require 'test_helper'
 
+require_relative 'helpers_test_helpers'
+
 class ImageHelperView
   include Lotus::View
   include Lotus::Helpers::AssetTagHelpers
@@ -8,6 +10,8 @@ class ImageHelperView
   def initialize(params)
     @params = Lotus::Action::Params.new(params)
   end
+
+  include HelpersTestHelpers::ConfigStub
 end
 
 describe Lotus::Helpers::AssetTagHelpers do

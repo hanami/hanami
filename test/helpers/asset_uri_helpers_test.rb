@@ -1,28 +1,11 @@
 require 'test_helper'
 
 #require 'lotus/helpers/asset_uri_helpers.rb'
-require 'pry'
-#
-# # Prepare mock for Application-wise configuration-object
-# class AssetUriHelpersMixinTarget::Application
-#   def self.configuration
-#     @@application_configuration_mock ||= Minitest::Mock.new
-#   end
-# end
+require_relative 'helpers_test_helpers'
 
 # Prepare minimal mixin-target-class as local test-helper
 class AssetUriHelpersMixinTarget
-  class ConfigStub
-    def self.configuration; self; end
-
-    def self.reset_config(conf = {}); @_mocked_attributes = conf; end
-    def self.method_missing(attr_name); @_mocked_attributes[attr_name]; end
-  end
-
-  class Application < ConfigStub
-  end
-  class Assets < ConfigStub
-  end
+  include HelpersTestHelpers::ConfigStub
 
   include Lotus::Helpers::AssetUriHelpers
 end
