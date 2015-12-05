@@ -16,11 +16,11 @@ module Lotus
 
       # Generates the application-specific relative paths for assets
       def asset_path(*args)
-        assets_prefix = _asset_config.prefix
+        assets_prefix = _application_config.path_prefix
         args.push('') if args.empty?
 
         path_elements = ['', ASSETS_ROOT_DIRECTORY]
-        path_elements.concat(assets_prefix.split(PATH_SEPARATOR).compact) if !assets_prefix.empty?
+        path_elements.concat(assets_prefix.split(PATH_SEPARATOR).compact) if assets_prefix
         path_elements.concat(args)
         path_elements.join(PATH_SEPARATOR)
       end
@@ -42,17 +42,11 @@ module Lotus
 
       private
 
-      def _assets_class_name
-        "#{_application_module_name}::Assets"
-      end
       def _application_class_name
         "#{_application_module_name}::Application"
       end
       def _application_module_name
         self.class.name.split('::').first # extract app-name from class-name
-      end
-      def _asset_config
-        @_asset_config ||= Kernel.const_get(_assets_class_name).configuration
       end
       def _application_config
         @_application_config ||= Kernel.const_get(_application_class_name).configuration
