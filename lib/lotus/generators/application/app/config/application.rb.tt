@@ -192,6 +192,7 @@ module <%= config[:classified_app_name] %>
       # See: http://www.rubydoc.info/gems/lotus-view#Configuration
       view.prepare do
         include Lotus::Helpers
+        include Lotus::Helpers::AssetTagHelpers
       end
     end
 
