@@ -26,7 +26,6 @@ describe Lotus::Middleware do
   let(:config_blk) do
     proc do
       root 'test/fixtures/collaboration/apps/web'
-      serve_assets true
     end
   end
 
@@ -38,30 +37,6 @@ describe Lotus::Middleware do
 
   it 'contains Rack::MethodOverride by default' do
     middleware.stack.must_include [Rack::MethodOverride, [], nil]
-  end
-
-  describe "when it's configured with assets" do
-    let(:urls) {
-      Hash[
-        "/favicon.ico"                 => "favicon.ico",
-        "/fonts/cabin-medium.woff"     => "fonts/cabin-medium.woff",
-        "/images/application.jpg"      => "images/application.jpg",
-        "/javascripts/application.js"  => "javascripts/application.js",
-        "/stylesheets/application.css" => "stylesheets/application.css"
-      ]
-    }
-
-    it 'contains only Rack::Static by default' do
-      middleware.stack.must_include [Rack::Static, [{ urls: urls, root: "test/fixtures/collaboration/apps/web/assets"}], nil]
-    end
-  end
-
-  describe "when it's configured with disabled assets" do
-    let(:config_blk) { proc { serve_assets false } }
-
-    it 'does not include Rack::Static' do
-      middleware.stack.flatten.wont_include(Rack::Static)
-    end
   end
 
   describe "when it's configured with sessions" do

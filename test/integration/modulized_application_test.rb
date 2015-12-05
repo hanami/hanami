@@ -32,35 +32,6 @@ describe 'A modulized Lotus application' do
     response.body.must_match %(<h1>Catalog</h1>)
   end
 
-  it "doesn't try to render responses that aren't coming from an action" do
-    get '/favicon.ico'
-
-    response.status.must_equal 200
-    response.body.wont_be_empty
-  end
-
-  it "serves static files" do
-    get '/stylesheets/application.css'
-    response.status.must_equal 200
-    response.body.wont_be_empty
-
-    get '/javascripts/application.js'
-    response.status.must_equal 200
-    response.body.wont_be_empty
-
-    get '/images/application.jpg'
-    response.status.must_equal 200
-    response.body.wont_be_empty
-
-    get '/fonts/cabin-medium.woff'
-    response.status.must_equal 200
-    response.body.wont_be_empty
-
-    get '/stylesheets/not-found.css'
-    response.status.must_equal 404
-    response.body.wont_be_empty
-  end
-
   it "renders a custom page for not found resources" do
     get '/unknown'
 

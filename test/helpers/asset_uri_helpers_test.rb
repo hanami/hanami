@@ -1,24 +1,11 @@
 require 'test_helper'
 
 #require 'lotus/helpers/asset_uri_helpers.rb'
-require 'pry'
-#
-# # Prepare mock for Application-wise configuration-object
-# class AssetUriHelpersMixinTarget::Application
-#   def self.configuration
-#     @@application_configuration_mock ||= Minitest::Mock.new
-#   end
-# end
+require_relative 'helpers_test_helpers'
 
 # Prepare minimal mixin-target-class as local test-helper
 class AssetUriHelpersMixinTarget
-  class Application
-    def self.configuration; self; end
-    def self.assets; self; end
-
-    def self.reset_config(conf = {}); @@mocked_attributes = conf; end
-    def self.method_missing(attr_name); @@mocked_attributes[attr_name] || nil; end
-  end
+  include HelpersTestHelpers::ConfigStub
 
   include Lotus::Helpers::AssetUriHelpers
 end
@@ -33,7 +20,7 @@ describe Lotus::Helpers::AssetUriHelpers do
       before do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
-          domain: 'lotusrb.org'
+          host: 'lotusrb.org'
         })
       end
 
@@ -60,8 +47,8 @@ describe Lotus::Helpers::AssetUriHelpers do
       before do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
-          domain: 'lotusrb.org',
-          prefix: 'admin/'
+          host: 'lotusrb.org',
+          path_prefix: 'admin/'
         })
       end
 
@@ -76,7 +63,8 @@ describe Lotus::Helpers::AssetUriHelpers do
       before do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
-          domain: 'lotusrb.org'
+          host: 'lotusrb.org',
+          port: 0
         })
       end
 
@@ -93,8 +81,9 @@ describe Lotus::Helpers::AssetUriHelpers do
       before do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'http',
-          domain: 'lotusrb.org',
-          prefix: 'admin/'
+          host: 'lotusrb.org',
+          port: 0,
+          path_prefix: 'admin/'
         })
       end
 
@@ -107,12 +96,12 @@ describe Lotus::Helpers::AssetUriHelpers do
       end
     end
 
-    describe 'with custom scheme, domain or port' do
+    describe 'with custom scheme, host or port' do
       it 'returns a https-url to "this.is.my.lotusrb.org" and port "8080"' do
         AssetUriHelpersMixinTarget::Application.reset_config({
           scheme: 'https',
-          domain: 'this.is.my.lotusrb.org',
-          port: '8080'
+          host: 'this.is.my.lotusrb.org',
+          port: 8080
         })
 
         @mixin_target.asset_url().must_equal('https://this.is.my.lotusrb.org:8080/assets/')
@@ -123,7 +112,7 @@ describe Lotus::Helpers::AssetUriHelpers do
       # it 'returns a ftp-url to the unicode-domain "tüpfelhyänenöhrchen.de" and port "22"' do
       #   AssetUriHelpersMixinTarget::Application.reset_config({
       #     scheme: 'ftp',
-      #     domain: 'tüpfelhyänenöhrchen.de',
+      #     host: 'tüpfelhyänenöhrchen.de',
       #     port: '22'
       #   })
       #

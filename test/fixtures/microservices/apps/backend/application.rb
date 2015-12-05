@@ -7,8 +7,6 @@ module Backend
         'views'
       ]
 
-      serve_assets true
-
       layout :backend
 
       routes do

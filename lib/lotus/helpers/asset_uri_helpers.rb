@@ -14,40 +14,42 @@ module Lotus
 
       ASSETS_ROOT_DIRECTORY = 'assets'.freeze
 
-      # Cache-Struct for references to <<app-name>>::Application.configuration and /.assets
-      ConfigReferences = Struct.new(:app, :assets)
-
       # Generates the application-specific relative paths for assets
       def asset_path(*args)
-        if @asset_uri_helpers_config.nil? == true then # initialize configuration-cache
-          application_name = self.class.name.split('::').first # extract app-name from class-name
-          application_configuration = Object.const_get("#{application_name}::Application").configuration
-          @asset_uri_helpers_config = Lotus::Helpers::AssetUriHelpers::ConfigReferences.new(
-            application_configuration,
-            application_configuration.assets
-          )
-        end
-
-        assets_prefix = @asset_uri_helpers_config[:assets].prefix.to_s
+        assets_prefix = _application_config.path_prefix
         args.push('') if args.empty?
 
         path_elements = ['', ASSETS_ROOT_DIRECTORY]
-        path_elements.concat(assets_prefix.split(PATH_SEPARATOR).compact) if !assets_prefix.empty?
+        path_elements.concat(assets_prefix.split(PATH_SEPARATOR).compact) if assets_prefix
         path_elements.concat(args)
         path_elements.join(PATH_SEPARATOR)
       end
 
       # Generates the application-specific absolute URL for assets
       def asset_url(*args)
-        url_path = asset_path(args)
+        path = asset_path(args)
 
-        url_scheme = @asset_uri_helpers_config[:app].scheme.to_s
-        url_domain = @asset_uri_helpers_config[:app].domain.to_s
-        url_port = @asset_uri_helpers_config[:app].port.to_i
+        scheme =  _application_config.scheme
+        host =    _application_config.host
+        port = if _application_config.port > 0 then
+          _application_config.port
+        else
+          nil # omits the whole port-token when the url will be build
+        end
 
-        url_port = nil if url_port <= 0
+        URI::Generic.build({scheme: scheme, host: host, port: port, path: path}).to_s
+      end
 
-        URI::Generic.build({scheme: url_scheme, host: url_domain, port: url_port, path: url_path}).to_s
+      private
+
+      def _application_class_name
+        "#{_application_module_name}::Application"
+      end
+      def _application_module_name
+        self.class.name.split('::').first # extract app-name from class-name
+      end
+      def _application_config
+        @_application_config ||= Kernel.const_get(_application_class_name).configuration
       end
     end
   end
