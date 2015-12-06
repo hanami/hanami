@@ -34,6 +34,17 @@ describe Lotus::Commands::Generate::App do
       end
     end
 
+    it 'generate the application with valid ruby syntax for dasherized name' do
+      with_temp_dir do |original_wd|
+        setup_container_app(original_wd)
+        command = Lotus::Commands::Generate::App.new({}, 'test-app')
+        capture_io { command.start }
+
+        content = File.read("config/environment.rb")
+        content.must_include "mount TestApp::Application, at: '/test_app'"
+      end
+    end
+
     it 'create files' do
       with_temp_dir do |original_wd|
         setup_container_app(original_wd)
