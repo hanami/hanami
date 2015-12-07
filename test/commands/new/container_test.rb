@@ -49,10 +49,10 @@ describe Lotus::Commands::New::Container do
         capture_io { command.start }
         Dir.chdir('new-container') do
           actual_content = File.read('.env.development')
-          actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new-container_development"'
+          actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_development"'
 
           actual_content = File.read('.env.test')
-          actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new-container_test"'
+          actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_test"'
         end
       end
     end
