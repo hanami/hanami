@@ -1,4 +1,5 @@
 require 'lotus/routing/route'
+require 'lotus/cli_sub_commands/base'
 require 'lotus/commands/generate/action'
 require 'lotus/commands/generate/mailer'
 
@@ -12,9 +13,7 @@ module Lotus
     #
     # @since x.x.x
     # @api private
-    class Generate < Thor
-      include Thor::Actions
-
+    class Generate < Base
       namespace :generate
 
       # @since x.x.x
@@ -37,9 +36,7 @@ module Lotus
       method_option :skip_view, desc: 'Skip the generation of the view. Also skips template generation.', default: false, type: :boolean
       method_option :template, desc: 'Extension to be used for the generated template. Default is defined through your .lotusrc file.'
       def actions(application_name, controller_and_action_name)
-        if options[:help]
-          invoke :help, ['action']
-        else
+        invoke_help_action_or('action') do
           Lotus::Commands::Generate::Action.new(options, application_name, controller_and_action_name).start
         end
       end
@@ -51,9 +48,7 @@ module Lotus
       > $ lotus generate migration do_something
       EOS
       def migration(name)
-        if options[:help]
-          invoke :help, ['migration']
-        else
+        invoke_help_action_or('migration') do
           require 'lotus/commands/generate/migration'
           Lotus::Commands::Generate::Migration.new(options, name).start
         end
@@ -71,9 +66,7 @@ module Lotus
       EOS
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .lotusrc file.'
       def model(name)
-        if options[:help]
-          invoke :help, ['model']
-        else
+        invoke_help_action_or('model') do
           require 'lotus/commands/generate/model'
           Lotus::Commands::Generate::Model.new(options, name).start
         end
@@ -90,9 +83,7 @@ module Lotus
       method_option :from, desc: 'sendee email', default: Lotus::Commands::Generate::Mailer::DEFAULT_FROM
       method_option :subject, desc: 'email subject', default: Lotus::Commands::Generate::Mailer::DEFAULT_SUBJECT
       def mailer(name)
-        if options[:help]
-          invoke :help, ['mailer']
-        else
+        invoke_help_action_or('mailer') do
           Lotus::Commands::Generate::Mailer.new(options, name).start
         end
       end
@@ -109,9 +100,7 @@ module Lotus
       EOS
       method_option :application_base_url, desc: 'Base URL for the new app. If missing, then it is inferred from APPLICATION_NAME'
       def app(application_name)
-        if options[:help]
-          invoke :help, ['app']
-        else
+        invoke_help_action_or('app') do
           require 'lotus/commands/generate/app'
           Lotus::Commands::Generate::App.new(options, application_name).start
         end
