@@ -67,8 +67,11 @@ module Lotus
 
         > $ lotus generate model car
 
+        > $ lotus generate model car --attributes=brand,model
+
         > $ lotus generate model vehicles/car
       EOS
+      method_option :attributes, desc: 'Defines attributes for the generated model'
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .lotusrc file.'
       def model(name)
         if options[:help]

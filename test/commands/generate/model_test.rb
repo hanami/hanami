@@ -33,33 +33,48 @@ describe Lotus::Commands::Generate::Model do
         assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car.rb'), 'lib/testapp/entities/car.rb')
       end
     end
-
   end
 
   describe 'with valid arguments' do
-    describe 'with rspec' do
-      it 'creates model, repository and spec files' do
-        with_temp_dir do |original_wd|
-          command = Lotus::Commands::Generate::Model.new({'test' => 'rspec'}, 'car')
-          capture_io { command.start }
+    describe `test option` do
+      describe 'with rspec' do
+        it 'creates model, repository and spec files' do
+          with_temp_dir do |original_wd|
+            command = Lotus::Commands::Generate::Model.new({'test' => 'rspec'}, 'car')
+            capture_io { command.start }
 
-          assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_repository_spec.rspec.rb'), 'spec/testapp/repositories/car_repository_spec.rb')
-          assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_spec.rspec.rb'), 'spec/testapp/entities/car_spec.rb')
-          assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car.rb'), 'lib/testapp/entities/car.rb')
-          assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_repository.rb'), 'lib/testapp/repositories/car_repository.rb')
+            assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_repository_spec.rspec.rb'), 'spec/testapp/repositories/car_repository_spec.rb')
+            assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_spec.rspec.rb'), 'spec/testapp/entities/car_spec.rb')
+            assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car.rb'), 'lib/testapp/entities/car.rb')
+            assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_repository.rb'), 'lib/testapp/repositories/car_repository.rb')
+          end
+        end
+      end
+
+      describe 'with minitest' do
+        it 'creates model, repository and spec files' do
+          with_temp_dir do |original_wd|
+            command = Lotus::Commands::Generate::Model.new({}, 'car')
+            capture_io { command.start }
+
+            assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_repository_spec.minitest.rb'), 'spec/testapp/repositories/car_repository_spec.rb')
+            assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_spec.minitest.rb'), 'spec/testapp/entities/car_spec.rb')
+            assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car.rb'), 'lib/testapp/entities/car.rb')
+            assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_repository.rb'), 'lib/testapp/repositories/car_repository.rb')
+          end
         end
       end
     end
 
-    describe 'with minitest' do
+    describe 'attributes option' do
       it 'creates model, repository and spec files' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::Generate::Model.new({}, 'car')
+          command = Lotus::Commands::Generate::Model.new({'attributes' => 'brand,model'}, 'car')
           capture_io { command.start }
 
           assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_repository_spec.minitest.rb'), 'spec/testapp/repositories/car_repository_spec.rb')
           assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_spec.minitest.rb'), 'spec/testapp/entities/car_spec.rb')
-          assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car.rb'), 'lib/testapp/entities/car.rb')
+          assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_with_attributes.rb'), 'lib/testapp/entities/car.rb')
           assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_repository.rb'), 'lib/testapp/repositories/car_repository.rb')
         end
       end
@@ -82,5 +97,4 @@ describe Lotus::Commands::Generate::Model do
       end
     end
   end
-
 end
