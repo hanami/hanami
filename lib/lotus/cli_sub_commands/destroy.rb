@@ -1,10 +1,10 @@
 require 'lotus/routing/route'
+require 'lotus/cli_sub_commands/base'
 require 'lotus/commands/generate/action'
 
 module Lotus
   class CliSubCommands
-    class Destroy < Thor
-      include Thor::Actions
+    class Destroy < Base
       namespace :destroy
 
       desc 'action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME', 'destroy a lotus action'
@@ -25,9 +25,7 @@ module Lotus
       method_option :template, desc: 'Extension used when the template was generated. Default is defined through your .lotusrc file.'
 
       def actions(application_name, controller_and_action_name)
-        if options[:help]
-          invoke :help, ['action']
-        else
+        invoke_help_action_or('action') do
           Lotus::Commands::Generate::Action.new(options, application_name, controller_and_action_name).destroy.start
         end
       end
@@ -40,9 +38,7 @@ module Lotus
       EOS
 
       def migration(name)
-        if options[:help]
-          invoke :help, ['migration']
-        else
+        invoke_help_action_or('migration') do
           require 'lotus/commands/generate/migration'
           Lotus::Commands::Generate::Migration.new(options, name).destroy.start
         end
@@ -57,9 +53,7 @@ module Lotus
       EOS
 
       def model(name)
-        if options[:help]
-          invoke :help, ['model']
-        else
+        invoke_help_action_or('model') do
           require 'lotus/commands/generate/model'
           Lotus::Commands::Generate::Model.new(options, name).destroy.start
         end
@@ -72,9 +66,7 @@ module Lotus
       > $ lotus destroy application api
       EOS
       def application(name)
-        if options[:help]
-          invoke :help, ['app']
-        else
+        invoke_help_action_or('app') do
           require 'lotus/commands/generate/app'
           Lotus::Commands::Generate::App.new(options, name).destroy.start
         end
@@ -88,9 +80,7 @@ module Lotus
       EOS
 
       def mailer(name)
-        if options[:help]
-          invoke :help, ['mailer']
-        else
+        invoke_help_action_or('mailer') do
           require 'lotus/commands/generate/mailer'
 
           options[:behavior] = :revoke

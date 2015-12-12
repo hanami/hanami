@@ -1,3 +1,6 @@
+
+require 'lotus/cli_sub_commands/base'
+
 module Lotus
   class CliSubCommands
     # A set of subcommands related to DB
@@ -8,15 +11,13 @@ module Lotus
     #
     # @since x.x.x
     # @api private
-    class DB < Thor
+    class DB < Base
       namespace :db
 
       desc 'console', 'start DB console'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
       def console(name = nil)
-        if options[:help]
-          invoke :help, ['console']
-        else
+        invoke_help_action_or('console') do
           require 'lotus/commands/db/console'
           Lotus::Commands::DB::Console.new(options, name).start
         end
@@ -25,9 +26,7 @@ module Lotus
       desc 'create', 'create database for current environment'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
       def create
-        if options[:help]
-          invoke :help, ['create']
-        else
+        invoke_help_action_or('create') do
           assert_allowed_environment!
           require 'lotus/commands/db/create'
           Lotus::Commands::DB::Create.new(options).start
@@ -37,9 +36,7 @@ module Lotus
       desc 'drop', 'drop database for current environment'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
       def drop
-        if options[:help]
-          invoke :help, ['drop']
-        else
+        invoke_help_action_or('drop') do
           assert_allowed_environment!
           require 'lotus/commands/db/drop'
           Lotus::Commands::DB::Drop.new(options).start
@@ -49,9 +46,7 @@ module Lotus
       desc 'migrate', 'migrate database for current environment'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
       def migrate(version = nil)
-        if options[:help]
-          invoke :help, ['migrate']
-        else
+        invoke_help_action_or('migrate') do
           require 'lotus/commands/db/migrate'
           Lotus::Commands::DB::Migrate.new(options, version).start
         end
@@ -60,9 +55,7 @@ module Lotus
       desc 'apply', 'migrate, dump schema, delete migrations (experimental)'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
       def apply
-        if options[:help]
-          invoke :help, ['apply']
-        else
+        invoke_help_action_or('apply') do
           assert_development_environment!
           require 'lotus/commands/db/apply'
           Lotus::Commands::DB::Apply.new(options).start
@@ -72,9 +65,7 @@ module Lotus
       desc 'prepare', 'create and migrate database'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
       def prepare
-        if options[:help]
-          invoke :help, ['prepare']
-        else
+        invoke_help_action_or('prepare') do
           assert_allowed_environment!
           require 'lotus/commands/db/prepare'
           Lotus::Commands::DB::Prepare.new(options).start
@@ -86,9 +77,7 @@ module Lotus
       desc 'version', 'current database version'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
       def version
-        if options[:help]
-          invoke :help, ['version']
-        else
+        invoke_help_action_or('version') do
           require 'lotus/commands/db/version'
           Lotus::Commands::DB::Version.new(options).start
         end
