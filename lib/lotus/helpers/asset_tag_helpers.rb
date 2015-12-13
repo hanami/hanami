@@ -7,6 +7,7 @@ module Lotus
     # @since 0.6.0
     # @api public
     module AssetTagHelpers
+      include Lotus::Helpers::AssetUriHelpers
       include Lotus::Helpers::HtmlHelper
 
       # Creates a img tag. Takes the asset path as the first parameter.
@@ -57,9 +58,9 @@ module Lotus
         html.link(options)
       end
 
-      def asset_path(source)
-        "/assets/#{source}" # To be implemented
-      end
+      # def asset_path(source)
+      #   "/assets/#{source}" # To be implemented
+      # end
 
       # Generates a video tag for the given arguments.
       #

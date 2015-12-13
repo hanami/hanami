@@ -6,6 +6,7 @@ require 'lotus/routing/default'
 require 'lotus/action/session'
 require 'lotus/config/security'
 require 'lotus/action/routing_helpers'
+require 'lotus/helpers/asset_uri_helpers'
 require 'lotus/helpers/asset_tag_helpers'
 
 module Lotus
@@ -92,8 +93,6 @@ module Lotus
         view = Lotus::View.duplicate(namespace) do
           root   config.templates
           layout config.layout
-
-          prepare { include Lotus::Helpers::AssetTagHelpers }
 
           config.view.__apply(self)
         end

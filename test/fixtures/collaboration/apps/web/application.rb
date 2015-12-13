@@ -56,6 +56,7 @@ module Collaboration
 
       view.prepare do
         include Lotus::Helpers
+        include Lotus::Helpers::AssetTagHelpers
       end
 
       controller.prepare do
