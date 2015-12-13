@@ -105,7 +105,7 @@ module Lotus
 
         > $ lotus generate app admin
 
-        > $ lotus generate app reporting --url=/reports
+        > $ lotus generate app reporting --application_base_url=/reports
       EOS
       method_option :application_base_url, desc: 'Base URL for the new app. If missing, then it is inferred from APPLICATION_NAME'
       def app(application_name)

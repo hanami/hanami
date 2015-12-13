@@ -109,6 +109,7 @@ module Lotus
       unless application_module.const_defined?('Assets')
         assets = Lotus::Assets.duplicate(namespace) do
           root             config.root
+
           public_directory Lotus.public_directory
           prefix           Utils::PathPrefix.new('/assets').join(config.path_prefix)
           sources      <<  config.root.join(*source)

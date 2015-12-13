@@ -94,6 +94,7 @@ module Lotus
         .strip
         .gsub(/\s/, '_')
         .gsub(/_{2,}/, '_')
+        .gsub(/-/, '_')
     end
   end
 end

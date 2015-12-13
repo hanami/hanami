@@ -8,12 +8,12 @@ describe Lotus::ApplicationName do
     describe "#to_s" do
       it "renders downcased" do
         application_name = Lotus::ApplicationName.new("MY-APP")
-        application_name.to_s.must_equal "my-app"
+        application_name.to_s.must_equal "my_app"
       end
 
       it "renders trimmed" do
         application_name = Lotus::ApplicationName.new(" my-app ")
-        application_name.to_s.must_equal "my-app"
+        application_name.to_s.must_equal "my_app"
       end
 
       it "renders internal spaces as underscores" do
