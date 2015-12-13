@@ -103,20 +103,18 @@ module Lotus
     end
 
     def _configure_assets_framework!
-      source                           = Lotus.environment.container? ? 'assets' : ['app', 'assets']
-      configuration.assets_destination = Lotus.public_directory.join('assets')
-      config                           = configuration
+      source = Lotus.environment.container? ? 'assets' : ['app', 'assets']
+      config = configuration
 
       unless application_module.const_defined?('Assets')
         assets = Lotus::Assets.duplicate(namespace) do
-          root        config.root
+          root             config.root
+          public_directory Lotus.public_directory
+          prefix           Utils::PathPrefix.new('/assets').join(config.path_prefix)
+          sources      <<  config.root.join(*source)
 
-          destination config.assets_destination
-          prefix      config.path_prefix
-          sources <<  config.root.join(*source)
-
-          manifest    Lotus.public_directory.join('assets.json')
-          compile     true
+          manifest         Lotus.public_directory.join('assets.json')
+          compile          true
 
           config.assets.__apply(self)
         end

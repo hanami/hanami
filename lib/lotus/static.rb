@@ -1,11 +1,11 @@
 require 'rack/static'
+require 'lotus/assets/compiler'
 
 module Lotus
   class Static < ::Rack::Static
-    ENV_VAR     = 'SERVE_STATIC_ASSETS'.freeze
-    ENABLED     = 'true'.freeze
-    PATH_INFO   = 'PATH_INFO'.freeze
-    PATH_PREFIX = '/assets'.freeze
+    ENV_VAR   = 'SERVE_STATIC_ASSETS'.freeze
+    ENABLED   = 'true'.freeze
+    PATH_INFO = 'PATH_INFO'.freeze
 
     def self.enable?
       ENABLED == ENV[ENV_VAR]
@@ -58,25 +58,19 @@ module Lotus
     def precompile(original, config)
       return unless original && config
 
-      Lotus::Assets::Compiler.compile(config, original.to_s, _basename(original))
+      Lotus::Assets::Compiler.compile(config, original)
       true
     end
 
     def _sources_from_applications
       Lotus::Application.applications.each_with_object({}) do |application, result|
         config = _assets_configuration(application)
-        result["#{ PATH_PREFIX }#{ config.prefix }/"] = config
+        result["#{ config.prefix }/"] = config
       end
     end
 
     def _assets_configuration(application)
       application.configuration.namespace::Assets.configuration
-    end
-
-    def _basename(file)
-      ::File.basename(
-        file.to_s.sub(/\.(.*)\z/, '')
-      )
     end
   end
 end

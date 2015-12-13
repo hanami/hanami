@@ -20,7 +20,6 @@ module Lotus
     #
     # @see Lotus::Configuration#ssl?
     SSL_SCHEME = 'https'.freeze
-    attr_accessor :assets_destination
 
     # Initialize a new configuration instance
     #
