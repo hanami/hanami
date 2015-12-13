@@ -109,14 +109,13 @@ module Lotus
 
       unless application_module.const_defined?('Assets')
         assets = Lotus::Assets.duplicate(namespace) do
-          root        config.root
+          root             config.root
+          public_directory config.assets_destination
+          prefix           config.path_prefix
+          manifest         Lotus.public_directory.join('assets.json')
+          compile          true
 
-          destination config.assets_destination
-          prefix      config.path_prefix
-          sources <<  config.root.join(*source)
-
-          manifest    Lotus.public_directory.join('assets.json')
-          compile     true
+          sources << config.root.join(*source)
 
           config.assets.__apply(self)
         end
