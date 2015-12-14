@@ -39,9 +39,8 @@ describe 'Serve static assets (Application)' do
     response.headers['Content-Length'].to_i.must_equal asset.size
     response.body.must_equal                           asset.read
 
-    if !asset.exist?
-      puts Pathname.new(asset.dirname).children.inspect
-    end
+    assert !response.headers.key?('Cache-Control'),
+      "Expected response to NOT containe Cache-Control header"
 
     assert asset.exist?, "Expected #{ asset } to be precompiled in #{ root.join('public') }"
   end
@@ -110,5 +109,24 @@ JS
     end
   end
 
-  it "sends HTTP cache headers"
+  describe 'production mode' do
+    before do
+      @lotus_env       = ENV['LOTUS_ENV']
+      ENV['LOTUS_ENV'] = 'production'
+    end
+
+    after do
+      ENV['LOTUS_ENV'] = @lotus_env
+    end
+
+    it "serves static files" do
+      get '/assets/application.css'
+      asset = root.join('public', 'assets', 'application.css')
+
+      response.status.must_equal 200
+      response.headers['Content-Length'].to_i.must_equal asset.size
+      response.headers['Cache-Control'].must_equal       "public, max-age=31536000"
+      response.body.must_equal                           asset.read
+    end
+  end
 end

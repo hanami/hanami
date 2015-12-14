@@ -6,13 +6,14 @@ module Lotus
     ENV_VAR   = 'SERVE_STATIC_ASSETS'.freeze
     ENABLED   = 'true'.freeze
     PATH_INFO = 'PATH_INFO'.freeze
+    PUBLIC_DIRECTORY = Lotus.public_directory.join('**', '*').to_s.freeze
 
     def self.enable?
       ENABLED == ENV[ENV_VAR]
     end
 
     def initialize(app)
-      super(app, root: Lotus.public_directory)
+      super(app, root: Lotus.public_directory, header_rules: _header_rules)
       @sources = _sources_from_applications
     end
 
@@ -36,7 +37,7 @@ module Lotus
     private
 
     def can_serve(path, original = nil)
-      destination = Dir["#{ Lotus.public_directory }/**/*"].find do |file|
+      destination = Dir[PUBLIC_DIRECTORY].find do |file|
         file.index(path).to_i > 0
       end
 
@@ -71,6 +72,12 @@ module Lotus
 
     def _assets_configuration(application)
       application.configuration.namespace::Assets.configuration
+    end
+
+    def _header_rules
+      unless Lotus.env?(:development)
+        [[:all, {'Cache-Control' => 'public, max-age=31536000'}]]
+      end
     end
   end
 end
