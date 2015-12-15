@@ -107,6 +107,10 @@ module Lotus
         assets = Lotus::Assets.duplicate(namespace) do
           root             config.root
 
+          scheme           config.scheme
+          host             config.host
+          port             config.port
+
           public_directory Lotus.public_directory
           prefix           Utils::PathPrefix.new('/assets').join(config.path_prefix)
           sources      <<  config.root.join(*source)
@@ -115,6 +119,10 @@ module Lotus
           compile          true
 
           config.assets.__apply(self)
+        end
+
+        assets.configure do
+          cdn host != config.host
         end
 
         application_module.const_set('Assets', assets)

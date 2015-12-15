@@ -1,0 +1,5 @@
+require 'rubygems'
+require 'bundler/setup'
+require 'lotus/setup'
+require_relative '../lib/cdn_app'
+require_relative '../config/application'
