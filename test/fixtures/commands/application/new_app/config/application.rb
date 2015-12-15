@@ -231,6 +231,14 @@ module NewApp
         #
         # See: http://lotusrb.org/guides/assets/digest
         digest  true
+
+        # Content Delivery Network (CDN)
+        #
+        # See: http://lotusrb.org/guides/assets/content-delivery-network
+        #
+        # scheme 'https'
+        # host   'cdn.example.org'
+        # port   443
       end
     end
   end
