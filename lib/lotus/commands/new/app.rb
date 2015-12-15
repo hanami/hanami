@@ -51,7 +51,7 @@ module Lotus
           add_mapping('config/routes.rb.tt', 'config/routes.rb')
           add_mapping('views/application_layout.rb.tt', 'app/views/application_layout.rb')
           add_mapping('templates/application.html.erb.tt', 'app/templates/application.html.erb')
-          add_mapping('favicon.ico', 'public/assets/favicon.ico')
+          add_mapping('favicon.ico', 'app/assets/favicon.ico')
         end
 
         def add_test_templates
