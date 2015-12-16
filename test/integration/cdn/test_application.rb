@@ -4,9 +4,6 @@ describe 'CDN (Application)' do
   include Minitest::IsolationTest
 
   before do
-    @assets_directory = root.join('public', 'assets')
-    @assets_directory.rmtree if @assets_directory.exist?
-
     @current_dir = Dir.pwd
     Dir.chdir root
 
@@ -24,8 +21,6 @@ describe 'CDN (Application)' do
 
     Dir.chdir @current_dir
     @current_dir = nil
-
-    @assets_directory.rmtree if @assets_directory.exist?
   end
 
   let(:root) { FIXTURES_ROOT.join('cdn', 'cdn_app') }
