@@ -32,7 +32,7 @@ describe 'Serve static assets (Application)' do
     response.body.must_equal                           asset.read
 
     assert !response.headers.key?('Cache-Control'),
-      "Expected response to NOT containe Cache-Control header"
+      "Expected response to NOT send Cache-Control header"
 
     assert asset.exist?, "Expected #{ asset } to be precompiled in #{ root.join('public') }"
   end

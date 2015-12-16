@@ -75,7 +75,7 @@ module Lotus
     end
 
     def _header_rules
-      unless Lotus.env?(:development)
+      unless Lotus.env?(:development, :test)
         [[:all, {'Cache-Control' => 'public, max-age=31536000'}]]
       end
     end

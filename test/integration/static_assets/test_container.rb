@@ -34,7 +34,7 @@ describe 'Serve static assets (Container)' do
     response.body.must_equal                           asset.read
 
     assert !response.headers.key?('Cache-Control'),
-      "Expected response to NOT containe Cache-Control header"
+      "Expected response to NOT send Cache-Control header"
   end
 
   it "serves static files without leading slash" do
