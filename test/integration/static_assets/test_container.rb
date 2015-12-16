@@ -23,14 +23,6 @@ describe 'Serve static assets (Container)' do
 
   let(:root) { FIXTURES_ROOT.join('static_assets') }
 
-  it "serves static files that are already in public/" do
-    get '/favicon.ico'
-    asset = root.join('public', 'favicon.ico')
-
-    response.status.must_equal 200
-    response.headers['Content-Length'].to_i.must_equal asset.size
-  end
-
   it "serves static files" do
     get '/assets/application.css'
     asset = root.join('public', 'assets', 'application.css')

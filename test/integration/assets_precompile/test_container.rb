@@ -18,11 +18,6 @@ describe 'Precompile static assets (Container)' do
     ENV['LOTUS_ENV'] = @lotus_env
     Dir.chdir @current_dir
     @current_dir = nil
-
-    Dir["#{ public_directory }/**/*"].each do |f|
-      next if ::File.directory?(f) || f.match(/favicon\.ico\z/)
-      FileUtils.rm(f)
-    end
   end
 
   let(:root)             { FIXTURES_ROOT.join('static_assets') }
@@ -34,8 +29,8 @@ describe 'Precompile static assets (Container)' do
 
     public_directory.join('assets.json').must_be :exist?
 
-    public_directory.join('favicon.ico').must_be :exist?
-    public_directory.join('favicon-04115b81b60f4303104a28aba667ab16.ico').must_be :exist?
+    assets_directory.join('favicon.ico').must_be :exist?
+    assets_directory.join('favicon-04115b81b60f4303104a28aba667ab16.ico').must_be :exist?
 
     assets_directory.join('application.css').must_be :exist?
     assets_directory.join('application-1e7f8e4a4ea8bd7ca5e7e4f37ff9c898.css').must_be :exist?
