@@ -98,8 +98,38 @@ describe Lotus::Commands::Generate::Action do
       end
     end
 
-    describe 'resourceful HTTP default methods' do
-      it 'uses POST for "create" action' do
+    describe 'RESTful resource routes' do
+      it 'makes `index` route' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/index')
+          capture_io { command.start }
+
+          assert_file_includes('apps/web/config/routes.rb', "get '/books', to: 'books#index")
+        end
+      end
+
+      it 'makes `show` route' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/show')
+          capture_io { command.start }
+
+          assert_file_includes('apps/web/config/routes.rb', "get '/books/:id', to: 'books#show'")
+        end
+      end
+
+      it 'makes `new` route' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/new')
+          capture_io { command.start }
+
+          assert_file_includes('apps/web/config/routes.rb', "get '/books/new', to: 'books#new'")
+        end
+      end
+
+      it 'makes `create` route' do
         with_temp_dir do |original_wd|
           setup_container_app
           command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/create')
@@ -109,33 +139,53 @@ describe Lotus::Commands::Generate::Action do
         end
       end
 
-      it 'uses PATCH for "update" action' do
+      it 'makes `edit` route' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/edit')
+          capture_io { command.start }
+
+          assert_file_includes('apps/web/config/routes.rb', "get '/books/:id/edit', to: 'books#edit'")
+        end
+      end
+
+      it 'makes `update` route' do
         with_temp_dir do |original_wd|
           setup_container_app
           command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/update')
           capture_io { command.start }
 
-          assert_file_includes('apps/web/config/routes.rb', "patch '/books', to: 'books#update'")
+          assert_file_includes('apps/web/config/routes.rb', "patch '/books/:id', to: 'books#update'")
         end
       end
 
-      it 'uses DELETE for "destroy" action' do
+      it 'makes `destroy`' do
         with_temp_dir do |original_wd|
           setup_container_app
           command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/destroy')
           capture_io { command.start }
 
-          assert_file_includes('apps/web/config/routes.rb', "delete '/books', to: 'books#destroy'")
+          assert_file_includes('apps/web/config/routes.rb', "delete '/books/:id', to: 'books#destroy'")
         end
       end
 
       it 'does not override user specified http method' do
         with_temp_dir do |original_wd|
           setup_container_app
-          command = Lotus::Commands::Generate::Action.new({method: 'get'}, 'web', 'books/create')
+          command = Lotus::Commands::Generate::Action.new({method: 'get'}, 'web', 'books/destroy')
           capture_io { command.start }
 
-          assert_file_includes('apps/web/config/routes.rb', "get '/books', to: 'books#create'")
+          assert_file_includes('apps/web/config/routes.rb', "get '/books/:id', to: 'books#destroy'")
+        end
+      end
+
+      it 'does not override user specified URL' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+          command = Lotus::Commands::Generate::Action.new({url: '/books'}, 'web', 'books/destroy')
+          capture_io { command.start }
+
+          assert_file_includes('apps/web/config/routes.rb', "delete '/books', to: 'books#destroy'")
         end
       end
     end
