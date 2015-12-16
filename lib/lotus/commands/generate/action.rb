@@ -19,29 +19,32 @@ module Lotus
         QUOTED_NAME = /(\"|\'|\\)/
 
         # Default HTTP method used when generating an action.
+        #
         # @since x.x.x
         # @api private
         DEFAULT_HTTP_METHOD = 'GET'.freeze
 
         # HTTP methods used when generating resourceful actions.
+        #
         # @since x.x.x
         # @api private
-        RESOURCEFUL_HTTP_METHODS =  {
-          "Create" => "POST",
-          "Update" => "PATCH",
-          "Destroy" => "DELETE"
+        RESOURCEFUL_HTTP_METHODS = {
+          'Create'  => 'POST',
+          'Update'  => 'PATCH',
+          'Destroy' => 'DELETE'
         }.freeze
 
         # For resourceful actions, what to add to the end of the base URL
+        #
         # @since x.x.x
         # @api private
         RESOURCEFUL_ROUTE_URL_SUFFIXES = {
-          "Show" => "/:id",
-          "Update" => "/:id",
-          "Destroy" => "/:id",
-          "New" => "/new",
-          "Edit" => "/:id/edit",
-        }
+          'Show'    => '/:id',
+          'Update'  => '/:id',
+          'Destroy' => '/:id',
+          'New'     => '/new',
+          'Edit'    => '/:id/edit',
+        }.freeze
 
         def initialize(options, application_name, controller_and_action_name)
           super(options)
@@ -124,7 +127,7 @@ module Lotus
         # @since x.x.x
         # @api private
         def route_url
-          options.fetch(:url, "/#{ @controller_pathname }#{resourceful_route_url_suffix}")
+          options.fetch(:url, "/#{ @controller_pathname }#{ resourceful_route_url_suffix }")
         end
 
         # @since x.x.x
