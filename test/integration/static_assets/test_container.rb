@@ -23,14 +23,6 @@ describe 'Serve static assets (Container)' do
 
   let(:root) { FIXTURES_ROOT.join('static_assets') }
 
-  it "serves static files that are already in public/" do
-    get '/favicon.ico'
-    asset = root.join('public', 'favicon.ico')
-
-    response.status.must_equal 200
-    response.headers['Content-Length'].to_i.must_equal asset.size
-  end
-
   it "serves static files" do
     get '/assets/application.css'
     asset = root.join('public', 'assets', 'application.css')
@@ -40,6 +32,9 @@ describe 'Serve static assets (Container)' do
     response.status.must_equal 200
     response.headers['Content-Length'].to_i.must_equal asset.size
     response.body.must_equal                           asset.read
+
+    assert !response.headers.key?('Cache-Control'),
+      "Expected response to NOT send Cache-Control header"
   end
 
   it "serves static files without leading slash" do
@@ -117,6 +112,25 @@ JS
     end
   end
 
-  it "sends HTTP cache headers"
+  describe 'production mode' do
+    before do
+      @lotus_env       = ENV['LOTUS_ENV']
+      ENV['LOTUS_ENV'] = 'production'
+    end
+
+    after do
+      ENV['LOTUS_ENV'] = @lotus_env
+    end
+
+    it "serves static files" do
+      get '/assets/application.css'
+      asset = root.join('public', 'assets', 'application.css')
+
+      response.status.must_equal 200
+      response.headers['Content-Length'].to_i.must_equal asset.size
+      response.headers['Cache-Control'].must_equal       "public, max-age=31536000"
+      response.body.must_equal                           asset.read
+    end
+  end
 end
 

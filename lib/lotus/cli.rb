@@ -112,5 +112,8 @@ module Lotus
 
     require 'lotus/cli_sub_commands/destroy'
     register Lotus::CliSubCommands::Destroy, 'destroy', 'destroy [SUBCOMMAND]', 'destroy lotus classes'
+
+    require 'lotus/cli_sub_commands/assets'
+    register Lotus::CliSubCommands::Assets, 'assets', 'assets [SUBCOMMAND]', 'manage assets'
   end
 end

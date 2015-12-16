@@ -1,4 +1,5 @@
 require 'lotus/helpers'
+require 'lotus/assets'
 
 module <%= config[:classified_app_name] %>
   class Application < Lotus::Application
@@ -195,6 +196,7 @@ module <%= config[:classified_app_name] %>
       # See: http://www.rubydoc.info/gems/lotus-view#Configuration
       view.prepare do
         include Lotus::Helpers
+        include <%= config[:classified_app_name] %>::Assets::Helpers
       end
     end
 
@@ -221,6 +223,26 @@ module <%= config[:classified_app_name] %>
       # scheme 'https'
       # host   'example.org'
       # port   443
+
+      assets do
+        # Don't compile static assets in production mode (eg. Sass, ES6)
+        #
+        # See: http://www.rubydoc.info/gems/lotus-assets#Configuration
+        compile false
+
+        # Use digest file name for asset paths
+        #
+        # See: http://lotusrb.org/guides/assets/digest
+        digest  true
+
+        # Content Delivery Network (CDN)
+        #
+        # See: http://lotusrb.org/guides/assets/content-delivery-network
+        #
+        # scheme 'https'
+        # host   'cdn.example.org'
+        # port   443
+      end
     end
   end
 end

@@ -192,6 +192,7 @@ module StaticAssetsApp
       # See: http://www.rubydoc.info/gems/lotus-view#Configuration
       view.prepare do
         include Lotus::Helpers
+        include StaticAssetsApp::Assets::Helpers
       end
     end
 
@@ -218,6 +219,11 @@ module StaticAssetsApp
       # scheme 'https'
       # host   'example.org'
       # port   443
+
+      assets do
+        compile false
+        digest  true
+      end
     end
   end
 end

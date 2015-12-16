@@ -24,6 +24,7 @@ module Lotus
           add_mapping('config/routes.rb.tt', 'config/routes.rb')
           add_mapping('views/application_layout.rb.tt', 'views/application_layout.rb')
           add_mapping('templates/application.html.erb.tt', 'templates/application.html.erb')
+          add_mapping('favicon.ico', 'assets/favicon.ico')
 
           add_mapping('.gitkeep', 'controllers/.gitkeep')
           add_mapping('.gitkeep', 'assets/images/.gitkeep')

@@ -6,7 +6,6 @@ require 'lotus/routing/default'
 require 'lotus/action/session'
 require 'lotus/config/security'
 require 'lotus/action/routing_helpers'
-require 'lotus/helpers/asset_tag_helpers'
 
 module Lotus
   # Load an application
@@ -93,8 +92,6 @@ module Lotus
           root   config.templates
           layout config.layout
 
-          prepare { include Lotus::Helpers::AssetTagHelpers }
-
           config.view.__apply(self)
         end
 
@@ -103,21 +100,29 @@ module Lotus
     end
 
     def _configure_assets_framework!
-      source                           = Lotus.environment.container? ? 'assets' : ['app', 'assets']
-      configuration.assets_destination = Lotus.public_directory.join('assets')
-      config                           = configuration
+      source = Lotus.environment.container? ? 'assets' : ['app', 'assets']
+      config = configuration
 
       unless application_module.const_defined?('Assets')
         assets = Lotus::Assets.duplicate(namespace) do
           root             config.root
-          public_directory config.assets_destination
-          prefix           config.path_prefix
+
+          scheme           config.scheme
+          host             config.host
+          port             config.port
+
+          public_directory Lotus.public_directory
+          prefix           Utils::PathPrefix.new('/assets').join(config.path_prefix)
+          sources      <<  config.root.join(*source)
+
           manifest         Lotus.public_directory.join('assets.json')
           compile          true
 
-          sources << config.root.join(*source)
-
           config.assets.__apply(self)
+        end
+
+        assets.configure do
+          cdn host != config.host
         end
 
         application_module.const_set('Assets', assets)

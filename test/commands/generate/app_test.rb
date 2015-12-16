@@ -56,6 +56,7 @@ describe Lotus::Commands::Generate::App do
         assert_file_exists('apps/api/templates/application.html.erb')
         assert_file_exists('apps/api/config/routes.rb')
         assert_file_exists('apps/api/controllers/.gitkeep')
+        assert_file_exists('apps/api/assets/favicon.ico')
         assert_file_exists('apps/api/assets/images/.gitkeep')
         assert_file_exists('apps/api/assets/javascripts/.gitkeep')
         assert_file_exists('apps/api/assets/stylesheets/.gitkeep')

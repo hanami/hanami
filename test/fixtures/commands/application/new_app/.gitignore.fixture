@@ -1,2 +1,4 @@
 /db/new_app_development
 /db/new_app_test
+/public/assets*
+/tmp
