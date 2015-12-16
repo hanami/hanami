@@ -32,6 +32,17 @@ module Lotus
           "Destroy" => "DELETE"
         }.freeze
 
+        # For resourceful actions, what to add to the end of the base URL
+        # @since x.x.x
+        # @api private
+        RESOURCEFUL_ROUTE_URL_SUFFIXES = {
+          "Show" => "/:id",
+          "Update" => "/:id",
+          "Destroy" => "/:id",
+          "New" => "/new",
+          "Edit" => "/:id/edit",
+        }
+
         def initialize(options, application_name, controller_and_action_name)
           super(options)
           if !environment.container?
@@ -113,7 +124,13 @@ module Lotus
         # @since x.x.x
         # @api private
         def route_url
-          options.fetch(:url, "/#{ @controller_pathname }")
+          options.fetch(:url, "/#{ @controller_pathname }#{resourceful_route_url_suffix}")
+        end
+
+        # @since x.x.x
+        # @api private
+        def resourceful_route_url_suffix
+          RESOURCEFUL_ROUTE_URL_SUFFIXES.fetch(@action_name, "")
         end
 
         # @since x.x.x
