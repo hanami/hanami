@@ -1,0 +1,52 @@
+require 'rake'
+require 'rake/testtask'
+require 'lotus/rake_tasks'
+
+Rake::TestTask.new do |t|
+  t.pattern = 'spec/**/*_spec.rb'
+  t.libs    << 'spec'
+end
+
+task default: :test
+task spec: :test
+
+namespace :preloading do
+  task print_env: :preload do
+    puts ENV.inspect
+  end
+
+  task assert_defined_entity: :preload do
+    puts "defined: #{ defined?(User) }"
+  end
+
+  task assert_defined_action: :preload do
+    puts "defined: #{ defined?(Web::Controllers::Users::Show) }"
+  end
+end
+
+namespace :full do
+  task print_env: :environment do
+    puts ENV.inspect
+  end
+
+  task assert_defined_entity: :environment do
+    puts "defined: #{ defined?(User) }"
+  end
+
+  task assert_defined_action: :environment do
+    puts "defined: #{ defined?(Web::Controllers::Users::Show) }"
+  end
+end
+
+namespace :database do
+  task inspect: :environment do
+    user = User.new(name: 'L')
+    user = UserRepository.create(user)
+
+    if user.id
+      puts "OK"
+    else
+      puts "FAIL"
+    end
+  end
+end
