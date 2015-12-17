@@ -2,6 +2,7 @@ require 'integration_helper'
 
 describe 'Rake tasks (Container)' do
   before do
+    public_directory.mkpath
     assets_directory.rmtree if assets_directory.exist?
 
     manifest = public_directory.join('assets.json')

@@ -25,3 +25,7 @@ mkmf.log
 .lotusrc
 test/fixtures/static_assets/public/assets*
 test/fixtures/static_assets_app/public/assets*
+test/fixtures/rake/rake_tasks/public/assets*
+test/fixtures/rake/rake_tasks_app/public/assets*
+test/fixtures/rake/rake_tasks/db/*.sqlite
+test/fixtures/rake/rake_tasks_app/db/*.sqlite
