@@ -30,12 +30,12 @@ describe 'Rake tasks (Container)' do
     it "preloads configuration" do
       out = `bundle exec rake preloading:print_env`
 
-      out.must_include %("RAKE_TASKS_DATABASE_URL"=>"sqlite://db/rake_tasks_development.sqlite")
+      out.must_include %("RAKE_TASKS_DATABASE_URL"=>"sqlite://)
       out.must_include %("SERVE_STATIC_ASSETS"=>"true")
-      out.must_include %("WEB_SESSIONS_SECRET"=>"4be7d19c41c9787d213506b00d0ea8196003ca97bd3cfda144466eb495b86f9a")
-      out.must_include %("RACK_ENV"=>"development")
-      out.must_include %("LOTUS_ENV"=>"development")
-      out.must_include %("LOTUS_HOST"=>"localhost")
+      out.must_include %("WEB_SESSIONS_SECRET")
+      out.must_include %("RACK_ENV")
+      out.must_include %("LOTUS_ENV")
+      out.must_include %("LOTUS_HOST")
       out.must_include %("LOTUS_PORT"=>"2300")
     end
 
@@ -59,12 +59,12 @@ describe 'Rake tasks (Container)' do
     it "preloads configuration" do
       out = `bundle exec rake full:print_env`
 
-      out.must_include %("RAKE_TASKS_DATABASE_URL"=>"sqlite://db/rake_tasks_development.sqlite")
+      out.must_include %("RAKE_TASKS_DATABASE_URL"=>"sqlite://)
       out.must_include %("SERVE_STATIC_ASSETS"=>"true")
-      out.must_include %("WEB_SESSIONS_SECRET"=>"4be7d19c41c9787d213506b00d0ea8196003ca97bd3cfda144466eb495b86f9a")
-      out.must_include %("RACK_ENV"=>"development")
-      out.must_include %("LOTUS_ENV"=>"development")
-      out.must_include %("LOTUS_HOST"=>"localhost")
+      out.must_include %("WEB_SESSIONS_SECRET")
+      out.must_include %("RACK_ENV")
+      out.must_include %("LOTUS_ENV")
+      out.must_include %("LOTUS_HOST")
       out.must_include %("LOTUS_PORT"=>"2300")
     end
 
