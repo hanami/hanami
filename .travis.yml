@@ -35,5 +35,6 @@ matrix:
     - rvm: rbx-2
     - rvm: jruby-head
     - rvm: ruby-head
+    - rvm: jruby-9000
     - rvm: jruby-9.0.1.0
     - rvm: jruby-9.0.3.0
