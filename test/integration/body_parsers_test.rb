@@ -28,19 +28,19 @@ describe 'Sessions' do
     last_request
   end
 
-  it 'is successfuly parsing a JSON body' do
+  it 'is successfully parsing a JSON body' do
     post '/json_parser', %({"success": "ok"}),  { 'CONTENT_TYPE' => 'application/json' }
 
     response.body.must_equal 'ok'
   end
 
-  it 'is successfuly parsing a XML body' do
+  it 'is successfully parsing a XML body' do
     patch '/xml_parser', %(<success>ok</success>), { "CONTENT_TYPE" => "application/xml" }
 
     response.body.must_equal 'ok'
   end
 
-  it 'is successfuly parsing a XML aliased mime' do
+  it 'is successfully parsing a XML aliased mime' do
     patch '/xml_parser', %(<success>ok</success>), { 'CONTENT_TYPE' => 'text/xml' }
 
     response.body.must_equal 'ok'

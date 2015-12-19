@@ -75,7 +75,7 @@ module Lotus
       TEMPLATE_KEY     => DEFAULT_TEMPLATE
     }).symbolize!.freeze
 
-    # Initialize Lotusrc class with application's root and enviroment options.
+    # Initialize Lotusrc class with application's root and environment options.
     #
     # @param root [Pathname] Application's root
     #
