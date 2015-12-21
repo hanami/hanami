@@ -52,7 +52,7 @@ module Lotus
       @builder.call(env)
     end
 
-    # Add a middleware to the stack.
+    # Append a middleware to the stack.
     #
     # @param middleware [Object] a Rack middleware
     # @param args [Array] optional arguments to pass to the Rack middleware
@@ -61,7 +61,24 @@ module Lotus
     # @return [Array] the middleware that was added
     #
     # @since 0.2.0
+    #
+    # @see Lotus::Middleware#prepend
     def use(middleware, *args, &blk)
+      @stack.push [middleware, args, blk]
+    end
+
+    # Prepend a middleware to the stack.
+    #
+    # @param middleware [Object] a Rack middleware
+    # @param args [Array] optional arguments to pass to the Rack middleware
+    # @param blk [Proc] an optional block to pass to the Rack middleware
+    #
+    # @return [Array] the middleware that was added
+    #
+    # @since x.x.x
+    #
+    # @see Lotus::Middleware#use
+    def prepend(middleware, *args, &blk)
       @stack.unshift [middleware, args, blk]
     end
 
@@ -106,7 +123,7 @@ module Lotus
     # @since 0.2.0
     def _load_session_middleware
       if @configuration.sessions.enabled?
-        use(*@configuration.sessions.middleware)
+        prepend(*@configuration.sessions.middleware)
       end
     end
 
