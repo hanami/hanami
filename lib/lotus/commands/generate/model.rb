@@ -5,17 +5,19 @@ module Lotus
     class Generate
       class Model < Abstract
 
-        attr_reader :model_name
+        attr_reader :model_name, :model_attributes
 
         def initialize(options, model_name)
           super(options)
-          @model_name = Utils::String.new(model_name).classify
+
+          @model_attributes = options[:attributes]
+          @model_name       = Utils::String.new(model_name).classify
 
           assert_model_name!
         end
 
         def map_templates
-          add_mapping('entity.rb.tt', entity_path)
+          add_mapping(entity_mapping_file, entity_path)
           add_mapping('repository.rb.tt', repository_path)
           add_mapping("entity_spec.#{ test_framework.framework }.tt", entity_spec_path,)
           add_mapping("repository_spec.#{ test_framework.framework }.tt", repository_spec_path)
@@ -23,11 +25,16 @@ module Lotus
 
         def template_options
           {
-            model_name: model_name
+            model_name: model_name,
+            model_attributes: model_attributes
           }
         end
 
         private
+
+        def entity_mapping_file
+          model_attributes ? 'entity_with_attributes.rb.tt' : 'entity.rb.tt'
+        end
 
         # @since x.x.x
         # @api private

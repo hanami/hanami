@@ -1,0 +1,5 @@
+class <%= config[:model_name] %>
+  include Lotus::Entity
+
+  <%= config[:model_attributes].split(",").map { |a| ":#{a}"}.join(", ").prepend("attributes ") if config[:model_attributes] %>
+end
