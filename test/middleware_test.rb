@@ -6,8 +6,9 @@ describe Lotus::Middleware do
     Dir.chdir($pwd)
     config = config_blk
 
-    MockMiddleware = Object.new
-    MockApp        = Module.new
+    MockMiddlewareClass = Class.new
+    MockMiddleware      = Object.new
+    MockApp             = Module.new
 
     MockApp::Application = Class.new(Lotus::Application) do
       configure(&config)
@@ -15,7 +16,7 @@ describe Lotus::Middleware do
   end
 
   after do
-    [:MockMiddleware, :MockApp].each do |klass|
+    [:MockMiddlewareClass, :MockMiddleware, :MockApp].each do |klass|
       Object.__send__(:remove_const, klass)
     end
   end
@@ -29,10 +30,9 @@ describe Lotus::Middleware do
     end
   end
 
-  # See https://github.com/lotus/lotus/issues/283
-  it 'prepends new added middleware' do
+  it 'appends new added middleware' do
     middleware.use MockMiddleware
-    middleware.stack.first.must_equal [MockMiddleware, [], nil]
+    middleware.stack.last.must_equal [MockMiddleware, [], nil]
   end
 
   it 'contains Rack::MethodOverride by default' do
@@ -40,12 +40,12 @@ describe Lotus::Middleware do
   end
 
   describe "when it's configured with sessions" do
-      let(:config_blk) do
-        proc do
-          sessions :cookie
-          host 'localhost'
-        end
+    let(:config_blk) do
+      proc do
+        sessions :cookie
+        host 'localhost'
       end
+    end
 
     it 'domain is nil in sessions middleware' do
       middleware.stack.must_include ['Rack::Session::Cookie', [{ domain: nil, secure: false }], nil]
@@ -74,6 +74,23 @@ describe Lotus::Middleware do
 
       it 'domain is equal to the host in sessions middleware' do
         middleware.stack.must_include ['Rack::Session::Cookie', [{ domain: 'foo.com', secure: false }], nil]
+      end
+    end
+
+    describe 'with other middleware' do
+      let(:config_blk) do
+        proc do
+          middleware.use MockMiddlewareClass
+          sessions :cookie
+        end
+      end
+
+      it 'prepends sessions' do
+        sessions_position   = middleware.stack.index ["Rack::Session::Cookie", [{:domain=>nil, :secure=>false}], nil]
+        middleware_position = middleware.stack.index [MockMiddlewareClass, [], nil]
+
+        assert sessions_position < middleware_position,
+          "Expected sessions middleware to be prepended"
       end
     end
   end
