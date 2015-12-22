@@ -1,9 +1,51 @@
 # Lotus
 A complete web framework for Ruby
 
+## v0.6.0 - (unreleased)
+### Added
+- [Luca Guidi] Introduced "CDN mode" in order to serve static assets via Content Distribution Networks
+- [Luca Guidi] Introduced "Digest mode" in production in order to generate and serve assets with checksum suffix
+- [Luca Guidi] Introduced `lotus assets precompile` command to precompile, minify and append checksum suffix to static assets
+- [Luca Guidi] Send `Content-Cache` HTTP header when serving static assets in production mode
+- [Luca Guidi] Support new env var `SERVE_STATIC_ASSETS="true"` in order to serve static assets for the entire project
+- [Luca Guidi] Generate new applications by including `Web::Assets::Helpers` in `view.prepare` block
+- [Luca Guidi] Introduced new Rake tasks `:preload` and `:environment`
+- [Luca Guidi] Introduced new Rake tasks `db:migrate` and `assets:precompile` for Rails/Heroku compatibility
+- [Tadeu Valentt & Lucas Allan Amorin] Added `lotus destroy` command for apps, models, actions, migrations and mailers
+- [Lucas Allan Amorim] Custom initializers (`apps/web/config/initializers`) they are ran when the project is loaded and about to start
+- [Trung Lê] Generate mailer templates directory for new projects (eg. `lib/bookshelf/mailers/templates`)
+- [Tadeu Valentt] Alias `--database` as `-d` for `lotus new`
+- [Tadeu Valentt] Alias `--arch` as `-a` for `lotus new`
+- [Sean Collins] Let `lotus generate action` to guess HTTP method (`--method` arg) according to RESTful conventions
+- [Gonzalo Rodríguez-Baltanás Díaz] Generate new applications with default favicon
+
+### Fixed
+- [Neil Matatall] Use "secure compare" for CSRF tokens in order to prevent timing attacks
+- [Bernardo Farah] Fix support for chunked response body (via `Rack::Chunked::Body`)
+- [Lucas Allan Amorim] Add `bundler` as a runtime dependency
+- [Lucas Allan Amorim] Ensure to load properly Bundler dependencies when starting the application
+- [Luca Guidi] Ensure sessions to be always available for other middleware in Rack stack of single applications
+- [Ken Gullaksen] Ensure to specify `LOTUS_PORT` env var from `.env`
+- [Andrey Deryabin] Fix `lotus new .` and prevent to generate the project in a subdirectory of current one
+- [Jason Charnes] Validate entity name for model generator
+- [Caius Durling] Fixed generator for nested actions (eg. `lotus generate action web domains/certs#index`)
+- [Tadeu Valentt] Prevent to generate migrations with the same name
+- [Luca Guidi] Ensure RSpec examples to be generated with `RSpec.describe` instead of only `describe`
+- [Andrey Deryabin] Avoid `lotus` command to generate unnecessary `.lotusrc` files
+- [Jason Charnes] Convert camel case application name into snake case when generating actions (eg. `BeautifulBlossoms` to `beautiful_blossoms`)
+- [Alfonso Uceda Pompa] Convert dasherized names into underscored names when generating projects (eg. `awesome-project` to `awesome_project`)
+
+### Changed
+- [Sean Collins] Welcome page shows current year in copyright notes
+- [Luca Guidi] Add `/public/assets*` to `.gitignore` of new projects
+- [Luca Guidi] Removed support for `default_format` in favor of `default_request_format`
+- [Luca Guidi] Removed support for `apps/web/public` in favor of `apps/web/assets` as assets sources for applications
+- [Luca Guidi] Removed support for `serve_assets` for single applications in order to global static assets server enabled via `SERVE_STATIC_ASSETS` env var
+- [Luca Guidi] `assets` configuration in `apps/web/application.rb` now accepts a block to configure sources and other settings
+
 ## v0.5.0 - 2015-09-30
 ### Added
-- [Ines Coelho & Rosa Faria] Mailers
+- [Ines Coelho & Rosa Faria] Introduced mailers support
 - [Theo Felippe] Added configuration entries: `#default_request_format` and `default_response_format`
 - [Rodrigo Panachi] Introduced `logger` configuration for applications, to be used like this: `Web::Logger.debug`
 - [Ben Lovell] Simpler and less verbose RSpec tests
@@ -26,7 +68,7 @@ A complete web framework for Ruby
 ### Fixed
 - [Alfonso Uceda Pompa] Ensure to load correctly apps in `lotus console`
 - [Alfonso Uceda Pompa] Ensure to not duplicate prefix for Container mounted apps (eg `/admin/admin/dashboard`)
-- [Alfonso Uceda Pompa] Ensure generator for application arch to generate session secret
+- [Alfonso Uceda Pompa] Ensure generator for "application" architecture to generate session secret
 - [Alfonso Uceda Pompa & Trung Lê & Hiếu Nguyễn] Exit unsuccessfully when `lotus generate model` doesn't receive a mandatory name for model
 - [Miguel Molina] Exit unsuccessfully when `lotus new --database` receives an unknown value
 - [Luca Guidi] Ensure to prepend sessions middleware, so other Rack components can have access to HTTP session
@@ -49,7 +91,7 @@ A complete web framework for Ruby
 - [Luca Guidi] `.env`, `.env.development` and `.env.test` are generated and expected to be placed at the root of the project.
 - [Luca Guidi] Remove database mapping from generated apps.
 - [Trung Lê & Luca Guidi] Remove default generated from new apps.
-- [Luca Guidi] New application should depend on `lotus-model ~> 0.4`
+- [Luca Guidi] New projects should depend on `lotus-model ~> 0.4`
 
 ## v0.3.2 - 2015-05-22
 ### Added
@@ -79,9 +121,9 @@ A complete web framework for Ruby
 - [Luca Guidi] Introduced action generator. Eg. `bundle exec lotus generate action web dashboard#index`
 - [Alfonso Uceda Pompa] Allow to specify default coookies options in application configuration. Eg. `cookies true, { domain: 'lotusrb.org' }`
 - [Tom Kadwill] Include `Lotus::Helpers` in views.
-- [Linus Pettersson] Allow to specify `--database` CLI option when generate a new application. Eg. `lotus new bookshelf --database=postgresql`
-- [Linus Pettersson] Initialize a Git repository when generating a new application
-- [Alfonso Uceda Pompa] Produce `.lotusrc` when generating a new application
+- [Linus Pettersson] Allow to specify `--database` CLI option when generate a new project. Eg. `lotus new bookshelf --database=postgresql`
+- [Linus Pettersson] Initialize a Git repository when generating a new project
+- [Alfonso Uceda Pompa] Produce `.lotusrc` when generating a new project
 - [Alfonso Uceda Pompa] Security HTTP headers. `X-Frame-Options` and `Content-Security-Policy` are now enabled by default.
 - [Linus Pettersson] Database console. Run with `bundle exec lotus db console`
 - [Luca Guidi] Dynamic finders for relative and absolute routes. It implements method missing: `Web::Routes.home_path` will resolve to `Web::Routes.path(:home)`.
@@ -95,21 +137,21 @@ A complete web framework for Ruby
 ### Added
 - [Huy Đỗ] Introduced `Lotus::Logger`
 - [Jimmy Zhang] `lotus new` accepts a `--path` argument
-- [Jimmy Zhang] Application generator for the current directory (`lotus new .`). This is useful to provide a web deliverable for existing Ruby gems.
-- [Trung Lê] Add example mapping file for application generator: `lib/config/mapping.rb`
-- [Hiếu Nguyễn] RSpec support for application generator: `--test=rspec` or `--test=minitest` (default)
+- [Jimmy Zhang] Project generator for the current directory (`lotus new .`). This is useful to provide a web deliverable for existing Ruby gems.
+- [Trung Lê] Add example mapping file for project generator: `lib/config/mapping.rb`
+- [Hiếu Nguyễn] RSpec support for project generator: `--test=rspec` or `--test=minitest` (default)
 
 ### Fixed
 - [Luca Guidi] `lotus version` to previx `v` (eg `v0.2.1`)
-- [Rob Yurkowski] Ensure application name doesn't contain special or forbidden characters
+- [Rob Yurkowski] Ensure project name doesn't contain special or forbidden characters
 - [Luca Guidi] Ensure all the applications are loaded in console
-- [Trung Lê] Container architecture: preload only `lib/<appname>/**/*.rb`
-- [Hiếu Nguyễn] Fixed `lotus new` to print usage when application name isn't provided
+- [Trung Lê] Container architecture: preload only `lib/<projectname>/**/*.rb`
+- [Hiếu Nguyễn] Fixed `lotus new` to print usage when project name isn't provided
 
 ## v0.2.0 - 2014-06-23
 ### Added
-- [Luca Guidi] Introduced `lotus new` as a command to generate applications. It supports "container" architecture for now.
-- [Luca Guidi] Show a welcome page when the application doesn't have routes
+- [Luca Guidi] Introduced `lotus new` as a command to generate projects. It supports "container" architecture for now.
+- [Luca Guidi] Show a welcome page when one mounted Lotus application doesn't have routes
 - [Luca Guidi] Introduced `Lotus::Application.preload!` to preload all the Lotus applications in a given Ruby process. (Bulk `Lotus::Application.load!`)
 - [Trung Lê] Allow browsers to fake non `GET`/`POST` requests via `Rack::MethodOverride`
 - [Josue Abreu] Allow to define body parses for non `GET` HTTP requests (`body_parsers` configuration)
