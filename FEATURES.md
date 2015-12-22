@@ -17,6 +17,7 @@
   * `asset_url`
 - Content Delivery Network (CDN) support for static assets (CDN mode)
 - Checksum suffix for static assets in production mode (Digest mode)
+- Support for third party gems as assets distribution channel (eg. `lotus-jquery`)
 - CLI: `lotus assets` command `precompile`: preprocess, minify and append checksum suffix
 - CLI: `lotus destroy` destroy apps, models, actions, migrations and mailers
 - Custom initializers (`apps/web/config/initializers`)
