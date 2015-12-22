@@ -3,6 +3,25 @@
 
 ## Features
 
+## v0.6.0 - (unreleased)
+
+- Assets preprocessors support (eg Sass, ES6, Opal, Less, CoffeScript..)
+- Assets helpers:
+  * `javascript`
+  * `stylesheet`
+  * `favicon`
+  * `image`
+  * `video`
+  * `audio`
+  * `asset_path`
+  * `asset_url`
+- Content Delivery Network (CDN) support for static assets (CDN mode)
+- Checksum suffix for static assets in production mode (Digest mode)
+- CLI: `lotus assets` command `precompile`: preprocess, minify and append checksum suffix
+- CLI: `lotus destroy` destroy apps, models, actions, migrations and mailers
+- Custom initializers (`apps/web/config/initializers`)
+- Rake tasks `:preload` and `:environment`
+
 ## v0.5.0 - 2015-09-30
 
 - Mailers
