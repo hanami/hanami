@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module Lotus
   module Generators
     class DatabaseConfig
