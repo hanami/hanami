@@ -1,9 +1,10 @@
 require 'lotus/utils/class'
+require 'lotus/commands/db/abstract'
 
 module Lotus
   module Commands
     class DB
-      class Console
+      class Console < Abstract
         attr_reader :name, :env_options
 
         def initialize(options, name)
