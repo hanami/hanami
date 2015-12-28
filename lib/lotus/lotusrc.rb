@@ -29,6 +29,8 @@ module Lotus
     # @api private
     #
     # @see Lotus::Lotusrc::DEFAULT_OPTIONS
+    #
+    # @deprecated in 0.6.0
     ARCHITECTURE_KEY = 'architecture'.freeze
 
     # Test suite default value
@@ -45,6 +47,8 @@ module Lotus
     # @api private
     #
     # @see Lotus::Lotusrc::DEFAULT_OPTIONS
+    #
+    # @deprecated in 0.6.0
     TEST_KEY = 'test'.freeze
 
     # Template default value
@@ -61,6 +65,8 @@ module Lotus
     # @api private
     #
     # @see Lotus::Lotusrc::DEFAULT_OPTIONS
+    #
+    # @deprecated in 0.6.0
     TEMPLATE_KEY = 'template'.freeze
 
     # Default values for writing the lotusrc file
@@ -69,11 +75,11 @@ module Lotus
     # @api private
     #
     # @see Lotus::Lotusrc#options
-    DEFAULT_OPTIONS = Utils::Hash.new({
-      ARCHITECTURE_KEY => DEFAULT_ARCHITECTURE,
-      TEST_KEY         => DEFAULT_TEST_SUITE,
-      TEMPLATE_KEY     => DEFAULT_TEMPLATE
-    }).symbolize!.freeze
+    DEFAULT_OPTIONS = {
+      architecture: DEFAULT_ARCHITECTURE,
+      test: DEFAULT_TEST_SUITE,
+      template: DEFAULT_TEMPLATE
+    }.freeze
 
     # Initialize Lotusrc class with application's root and environment options.
     #
