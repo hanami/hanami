@@ -3,6 +3,7 @@ A complete web framework for Ruby
 
 ## v0.6.0 - (unreleased)
 ### Added
+- [Trung Lê] Removed the app naming prefix from generated DATABASE_URL env variable from `.env.*` files
 - [Luca Guidi] Introduced "CDN mode" in order to serve static assets via Content Distribution Networks
 - [Luca Guidi] Introduced "Digest mode" in production in order to generate and serve assets with checksum suffix
 - [Luca Guidi] Introduced `lotus assets precompile` command to precompile, minify and append checksum suffix to static assets
