@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'shellwords'
 require 'lotus/generators/database_config'
 
 describe Lotus::Generators::DatabaseConfig do
