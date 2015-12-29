@@ -1,3 +1,3 @@
-architecture=container
-test=<%= config[:test] %>
-template=erb
+<%= Lotus::Lotusrc::ARCHITECTURE_KEY %>=<%= Lotus::Lotusrc::DEFAULT_ARCHITECTURE %>
+<%= Lotus::Lotusrc::TEST_KEY %>=<%= config[:test] %>
+<%= Lotus::Lotusrc::TEMPLATE_KEY %>=<%= Lotus::Lotusrc::DEFAULT_TEMPLATE %>

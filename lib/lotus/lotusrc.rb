@@ -23,6 +23,12 @@ module Lotus
     # @see Lotus::Lotusrc#options
     DEFAULT_ARCHITECTURE = 'container'.freeze
 
+    # Application architecture value
+    #
+    # @since 0.6.0
+    # @api private
+    APP_ARCHITECTURE = 'app'.freeze
+
     # Architecture key for writing the lotusrc file
     #
     # @since 0.3.0
