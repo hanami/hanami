@@ -89,7 +89,7 @@ describe Lotus::Middleware do
         sessions_position   = middleware.stack.index ["Rack::Session::Cookie", [{:domain=>nil, :secure=>false}], nil]
         middleware_position = middleware.stack.index [MockMiddlewareClass, [], nil]
 
-        assert sessions_position < middleware_position,
+        assert (sessions_position < middleware_position),
           "Expected sessions middleware to be prepended"
       end
     end
