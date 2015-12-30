@@ -91,15 +91,54 @@ describe Lotus::Cli do
         assert_cli_calls_command(Lotus::Commands::Generate::Action, options, 'app', 'controller#action')
       end
 
-      it 'does not call the generator when app or controller name is missing' do
-        ARGV.replace(%w{generate action})
-        Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
-          capture_io { Lotus::Cli.start }
+      describe 'for container application' do
+        before { setup_container_app }
+
+        it 'does not call the generator when app and controller name is missing' do
+          ARGV.replace(%w{generate action})
+          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Lotus::Cli.start }
+            assert_match 'ERROR', err
+          end
         end
 
-        ARGV.replace(%w{generate action foo})
-        Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
-          capture_io { Lotus::Cli.start }
+        it 'does not call the generator when controller name is missing' do
+          ARGV.replace(%w{generate action foo})
+          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Lotus::Cli.start }
+            assert_match 'ERROR', err
+          end
+        end
+
+        it 'does not call the generator when app and controller name is missing' do
+          ARGV.replace(%w{generate action controller#action})
+          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Lotus::Cli.start }
+            assert_match 'ERROR', err
+          end
+        end
+      end
+
+      describe 'for app application' do
+        before do
+          setup_app_app
+          mock_without_method.expect(:start, nil)
+        end
+
+        it 'does not call the generator when app and controller name is missing' do
+          ARGV.replace(%w{generate action})
+          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Lotus::Cli.start }
+            assert_match 'ERROR', err
+          end
+        end
+
+        it 'does call the generator when app and controller name is missing' do
+          ARGV.replace(%w{generate action controller#action})
+          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Lotus::Cli.start }
+            refute_match 'ERROR', err
+          end
         end
       end
     end
@@ -150,7 +189,13 @@ describe Lotus::Cli do
     end
   end
 
+  def setup_container_app
+    File.open('.lotusrc', 'w') { |file| file << "architecture=container"}
+  end
 
+  def setup_app_app
+    File.open('.lotusrc', 'w') { |file| file << "architecture=app"}
+  end
 
   # Helper method to make sure that the Command class is called with good arguments.
   def assert_cli_calls_command(command_class, *expected_arguments)
