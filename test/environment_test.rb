@@ -92,9 +92,20 @@ describe Lotus::Environment do
       end
     end
 
-    describe "when RACK_ENV is set" do
+    describe "when RACK_ENV is set to 'production'" do
       before do
         ENV['RACK_ENV'] = 'production'
+        @env = Lotus::Environment.new
+      end
+
+      it 'returns that value' do
+        @env.environment.must_equal 'production'
+      end
+    end
+
+    describe "when RACK_ENV is set to 'deployment'" do
+      before do
+        ENV['RACK_ENV'] = 'deployment'
         @env = Lotus::Environment.new
       end
 

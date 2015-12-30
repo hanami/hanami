@@ -29,6 +29,18 @@ module Lotus
     # @api private
     DEFAULT_ENV    = 'development'.freeze
 
+    # Production environment
+    #
+    # @since x.x.x
+    # @api private
+    PRODUCTION_ENV = 'production'.freeze
+
+    # Rack production environment (aka deployment)
+    #
+    # @since x.x.x
+    # @api private
+    RACK_ENV_DEPLOYMENT = 'deployment'.freeze
+
     # Default `.env` file name
     #
     # @since 0.2.0
@@ -196,13 +208,15 @@ module Lotus
     #
     # If those are missing it falls back to the defalt one: `"development"`.
     #
+    # Rack environment `"deployment"` is translated to Lotus `"production"`.
+    #
     # @return [String] the current environment
     #
     # @since 0.1.0
     #
     # @see Lotus::Environment::DEFAULT_ENV
     def environment
-      @environment ||= ENV[LOTUS_ENV] || ENV[RACK_ENV] || DEFAULT_ENV
+      @environment ||= ENV[LOTUS_ENV] || rack_env || DEFAULT_ENV
     end
 
     # @since 0.3.1
@@ -455,6 +469,17 @@ module Lotus
     # @api private
     def default_host
       environment == DEFAULT_ENV ? DEFAULT_HOST : LISTEN_ALL_HOST
+    end
+
+    # @since x.x.x
+    # @api private
+    def rack_env
+      case ENV[RACK_ENV]
+      when RACK_ENV_DEPLOYMENT
+        PRODUCTION_ENV
+      else
+        ENV[RACK_ENV]
+      end
     end
   end
 end
