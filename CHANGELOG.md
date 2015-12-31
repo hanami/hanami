@@ -1,6 +1,14 @@
 # Lotus
 A complete web framework for Ruby
 
+## v0.7.0 - (unreleased)
+### Added
+
+### Fixed
+
+### Changed
+- [Trung Lê] Removed the app naming prefix from generated DATABASE_URL env variable from `.env.*` files
+
 ## v0.6.0 - (unreleased)
 ### Added
 - [Luca Guidi] Introduced "CDN mode" in order to serve static assets via Content Distribution Networks
