@@ -16,7 +16,7 @@ Lotus::Model.configure do
   #    adapter type: :sql, uri: 'postgres://localhost/new_container_development'
   #    adapter type: :sql, uri: 'mysql://localhost/new_container_development'
   #
-  adapter type: :file_system, uri: ENV['NEW_CONTAINER_DATABASE_URL']
+  adapter type: :file_system, uri: ENV['DATABASE_URL']
 
   ##
   # Database mapping

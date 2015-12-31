@@ -63,12 +63,12 @@ describe Lotus::Commands::New::App do
       assert_generated_file(fixture_root.join('.env'), '.env')
 
       assert_file_includes('.env.development',
-                           'NEW_APP_DATABASE_URL="file:///db/new_app_development"',
+                           'DATABASE_URL="file:///db/new_app_development"',
                            'SERVE_STATIC_ASSETS="true"',
                            %r{NEW_APP_SESSIONS_SECRET="[\w]{64}"})
 
       assert_file_includes('.env.test',
-                           'NEW_APP_DATABASE_URL="file:///db/new_app_test"',
+                           'DATABASE_URL="file:///db/new_app_test"',
                            'SERVE_STATIC_ASSETS="true"',
                            %r{NEW_APP_SESSIONS_SECRET="[\w]{64}"})
 
