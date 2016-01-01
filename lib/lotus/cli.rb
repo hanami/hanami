@@ -18,7 +18,7 @@ module Lotus
 
     desc 'server', 'starts a lotus server'
     long_desc <<-EOS
-    `lotus server` starts a server for the current lotus application.
+    `lotus server` starts a server for the current lotus project.
 
     $ > lotus server
 
@@ -61,9 +61,9 @@ module Lotus
       end
     end
 
-    desc 'new APPLICATION_NAME', 'generate a new lotus application'
+    desc 'new APPLICATION_NAME', 'generate a new lotus project'
     long_desc <<-EOS
-      `lotus new` creates a new lotus application.
+      `lotus new` creates a new lotus project.
       You can specify various options such as the database to be used as well as the path and architecture.
 
       $ > lotus new fancy_app --application_name=admin
@@ -73,10 +73,10 @@ module Lotus
       $ > lotus new fancy_app --lotus-head=true
     EOS
     method_option :database, aliases: ['-d', '--db'], desc: "application database (#{Lotus::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Lotus::Generators::DatabaseConfig::DEFAULT_ENGINE
-    method_option :architecture, aliases: ['-a', '--arch'], desc: 'application architecture (container/app)', default: Lotus::Commands::New::Abstract::DEFAULT_ARCHITECTURE
+    method_option :architecture, aliases: ['-a', '--arch'], desc: 'project architecture (container/app)', default: Lotus::Commands::New::Abstract::DEFAULT_ARCHITECTURE
     method_option :application_name, desc: 'application name, only for container', default: Lotus::Commands::New::Container::DEFAULT_APPLICATION_NAME
     method_option :application_base_url, desc: 'application base url', default: Lotus::Commands::New::Abstract::DEFAULT_APPLICATION_BASE_URL
-    method_option :test, desc: "application test framework (#{Lotus::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Lotus::Lotusrc::DEFAULT_TEST_SUITE
+    method_option :test, desc: "project test framework (#{Lotus::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Lotus::Lotusrc::DEFAULT_TEST_SUITE
     method_option :lotus_head, desc: 'use Lotus HEAD (true/false)', type: :boolean, default: false
     method_option :help, desc: 'displays the usage method'
     def new(application_name)
