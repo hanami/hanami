@@ -1227,14 +1227,12 @@ module Lotus
     #       end
     #     end
     #
-    #     module Controllers
-    #       module Dashboard
-    #         include Bookshelf::Controller
+    #     module Controllers::Dashboard
+    #       class Index
+    #         include Bookshelf::Action
     #
-    #         action 'Index' do
-    #           def call(params)
-    #             # ...
-    #           end
+    #         def call(params)
+    #           # ...
     #         end
     #       end
     #     end
@@ -1262,9 +1260,9 @@ module Lotus
     #     end
     #
     #     module DashboardController
-    #       include Bookshelf::Controller
+    #       class Index
+    #         include Bookshelf::Action
     #
-    #       action 'Index' do
     #         def call(params)
     #         end
     #       end
@@ -1295,9 +1293,9 @@ module Lotus
     #   end
     #
     #   module DashboardController
-    #     include Bookshelf::Controller
+    #     class Index
+    #       incude Bookshelf::Action
     #
-    #     action 'Index' do
     #       def call(params)
     #       end
     #     end
@@ -1480,9 +1478,9 @@ module Lotus
     #     end
     #
     #     module Controllers::Error
-    #       include Bookshelf::Controller
+    #       class Index
+    #         include Bookshelf::Action
     #
-    #       action 'Index' do
     #         def call(params)
     #           raise ArgumentError
     #         end
@@ -1509,9 +1507,9 @@ module Lotus
     #     end
     #
     #     module Controllers::Error
-    #       include Bookshelf::Controller
+    #       class Index
+    #         include Bookshelf::Action
     #
-    #       action 'Index' do
     #         def call(params)
     #           raise ArgumentError
     #         end
@@ -1681,9 +1679,9 @@ module Lotus
     #     end
     #
     #     module Controllers::Error
-    #       include Bookshelf::Controller
+    #       class Index
+    #         include Bookshelf::Action
     #
-    #       action 'Index' do
     #         def call(params)
     #           Bookshelf::Logger.info "Logging to STDOUT"
     #         end

@@ -134,9 +134,9 @@ module Lotus
     #     end
     #
     #     module Controllers::Dashboard
-    #       include OneFile::Controller
+    #       class Index
+    #         include OneFile::Action
     #
-    #       action 'Index' do
     #         def call(params)
     #           self.body = 'Hello!'
     #         end
@@ -211,10 +211,10 @@ module Lotus
     # @since 0.1.0
     #
     # @see http://rack.github.io
+    # @see Lotus::RenderingPolicy#render
     # @see Lotus::Application#middleware
     def call(env)
-      renderer.render(env,
-                      middleware.call(env))
+      renderer.render(env, middleware.call(env))
     end
 
     # Rack middleware stack
