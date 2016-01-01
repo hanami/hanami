@@ -9,7 +9,6 @@ module Lotus
     # @since 0.2.1
     RESERVED_WORDS = %w(lotus).freeze
 
-
     # Initialize and check against reserved words
     #
     # An application name needs to be translated in quite a few ways:
@@ -33,8 +32,9 @@ module Lotus
       ensure_validity!
     end
 
-
     # Returns the cleaned application name.
+    #
+    # @return [String] the santized name
     #
     # @example
     #   ApplicationName.new("my-App ").to_s # => "my-app"
@@ -44,9 +44,10 @@ module Lotus
       @name
     end
 
-
     # Returns the application name uppercased with non-alphanumeric characters
     # as underscores.
+    #
+    # @return [String] the upcased name
     #
     # @example
     #   ApplicationName.new("my-app").to_env_s => "MY_APP"
@@ -56,9 +57,11 @@ module Lotus
       @name.upcase.gsub(/\W/, '_')
     end
 
-
     # Returns true if a potential application name matches one of the reserved
     # words.
+    #
+    # @param name [String] the application name
+    # @return [TrueClass, FalseClass] the result of the check
     #
     # @example
     #   Lotus::ApplicationName.invalid?("lotus") # => true
@@ -67,7 +70,6 @@ module Lotus
     def self.invalid?(name)
       RESERVED_WORDS.include?(name)
     end
-
 
     private
 
@@ -82,7 +84,6 @@ module Lotus
           RESERVED_WORDS.join(", ")
       end
     end
-
 
     # Cleans a string to be a functioning application name.
     #
