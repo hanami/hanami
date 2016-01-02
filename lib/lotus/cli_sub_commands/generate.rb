@@ -36,7 +36,13 @@ module Lotus
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .lotusrc file.'
       method_option :skip_view, desc: 'Skip the generation of the view. Also skips template generation.', default: false, type: :boolean
       method_option :template, desc: 'Extension to be used for the generated template. Default is defined through your .lotusrc file.'
-      def actions(application_name, controller_and_action_name)
+      def actions(application_name = nil, controller_and_action_name)
+        if Lotus::Environment.new(options).container? && application_name.nil?
+          msg = "ERROR: \"lotus generate action\" was called with arguments [\"#{controller_and_action_name}\"]\n" \
+                "Usage: \"lotus action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME\""
+          fail Error, msg
+        end
+
         if options[:help]
           invoke :help, ['action']
         else
