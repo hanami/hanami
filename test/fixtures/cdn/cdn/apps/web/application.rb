@@ -119,13 +119,12 @@ module Web
       #
 
       # Specify sources for assets
-      # The directory `apps/web/assets` is added by default
       #
-      # assets do
-      #   sources << [
-      #     'vendor/assets'
-      #   ]
-      # end
+      assets do
+        sources << [
+          'assets'
+        ]
+      end
 
       ##
       # SECURITY
