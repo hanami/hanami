@@ -94,24 +94,27 @@ describe Lotus::Cli do
       describe 'for container application' do
         before { setup_container_app }
 
-        it 'does not call the generator when app and controller name is missing' do
+        it 'raises an error when app and controller name are missing' do
           ARGV.replace(%w{generate action})
+
           Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
             _, err = capture_io { Lotus::Cli.start }
             assert_match 'ERROR', err
           end
         end
 
-        it 'does not call the generator when controller name is missing' do
+        it 'raises an error when controller name is missing' do
           ARGV.replace(%w{generate action foo})
+
           Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
             _, err = capture_io { Lotus::Cli.start }
             assert_match 'ERROR', err
           end
         end
 
-        it 'does not call the generator when app and controller name is missing' do
+        it 'raises an error when app name is missing' do
           ARGV.replace(%w{generate action controller#action})
+
           Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
             _, err = capture_io { Lotus::Cli.start }
             assert_match 'ERROR', err
@@ -125,19 +128,21 @@ describe Lotus::Cli do
           mock_without_method.expect(:start, nil)
         end
 
-        it 'does not call the generator when app and controller name is missing' do
-          ARGV.replace(%w{generate action})
-          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
-            _, err = capture_io { Lotus::Cli.start }
-            assert_match 'ERROR', err
-          end
-        end
-
-        it 'does call the generator when app and controller name is missing' do
+        it 'it generates action when controller name is present' do
           ARGV.replace(%w{generate action controller#action})
+
           Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
             _, err = capture_io { Lotus::Cli.start }
             refute_match 'ERROR', err
+          end
+        end
+
+        it 'raises error when controller name is missing' do
+          ARGV.replace(%w{generate action})
+
+          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Lotus::Cli.start }
+            assert_match 'ERROR', err
           end
         end
       end
