@@ -116,13 +116,12 @@ module RakeTasksApp
       #
 
       # Specify sources for assets
-      # The directory `app/assets` is added by default
       #
-      # assets do
-      #   sources << [
-      #     'vendor/assets'
-      #   ]
-      # end
+      assets do
+        sources << [
+          'app/assets'
+        ]
+      end
 
       ##
       # SECURITY
