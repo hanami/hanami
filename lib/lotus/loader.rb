@@ -100,7 +100,6 @@ module Lotus
     end
 
     def _configure_assets_framework!
-      source = Lotus.environment.container? ? 'assets' : ['app', 'assets']
       config = configuration
 
       unless application_module.const_defined?('Assets')
@@ -113,7 +112,6 @@ module Lotus
 
           public_directory Lotus.public_directory
           prefix           Utils::PathPrefix.new('/assets').join(config.path_prefix)
-          sources      <<  config.root.join(*source)
 
           manifest         Lotus.public_directory.join('assets.json')
           compile          true

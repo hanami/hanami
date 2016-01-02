@@ -119,13 +119,12 @@ module <%= config[:classified_app_name] %>
       #
 
       # Specify sources for assets
-      # The directory `<%= config[:app_base_path] %>/assets` is added by default
       #
-      # assets do
-      #   sources << [
-      #     'vendor/assets'
-      #   ]
-      # end
+      assets do
+        sources << [
+          'assets'
+        ]
+      end
 
       ##
       # SECURITY
