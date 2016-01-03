@@ -12,6 +12,7 @@ Lotus combines small yet powerful frameworks:
 * [**Lotus::Helpers**](https://github.com/lotus/helpers) - View helpers for Ruby applications
 * [**Lotus::Mailer**](https://github.com/lotus/mailer) - Mail for Ruby applications
 * [**Lotus::Model**](https://github.com/lotus/model) - Persistence with entities, repositories and data mapper
+* [**Lotus::Assets**](https://github.com/lotus/assets) - Assets management for Ruby
 * [**Lotus::View**](https://github.com/lotus/view) - Presentation with a separation between views and templates
 * [**Lotus::Controller**](https://github.com/lotus/controller) - Full featured, fast and testable actions for Rack
 
