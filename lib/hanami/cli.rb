@@ -104,6 +104,24 @@ module Hanami
       end
     end
 
+    desc 'runner [FILE|EXPRESSION]', 'Evaluate a file or expression with the preloaded environment and application'
+    long_desc <<-EOS
+      `hanami runner` Evaluate a file or expression with the preloaded environment and application.
+
+      $ > hanami runner `puts Hanami.env` => The current environment
+
+      $ > hanami runner ./my_script.rb => Loads the file.
+    EOS
+    method_option :help, desc: 'displays the usage method'
+    def runner(expression_or_file)
+      if options[:help]
+        invoke :help, ['runner']
+      else
+        require 'hanami/commands/runner'
+        Hanami::Commands::Runner.new(options, expression_or_file).start
+      end
+    end
+
     require 'hanami/cli_sub_commands/db'
     register Hanami::CliSubCommands::DB, 'db', 'db [SUBCOMMAND]', 'manage set of DB operations'
 
