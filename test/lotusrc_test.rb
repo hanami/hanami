@@ -2,22 +2,24 @@ require 'test_helper'
 
 describe Lotus::Lotusrc do
   describe '#options' do
-    describe 'file exists' do
-      before do
-        Dir.chdir($pwd)
-        @old_pwd = Dir.pwd
-        Dir.chdir 'test/fixtures/lotusrc/exists'
-        @root = Pathname.new(Dir.pwd)
-        @lotusrc = Lotus::Lotusrc.new(@root)
-      end
+    before do
+      Dir.chdir($pwd)
+      @old_pwd = Dir.pwd
+      Dir.chdir lotusrc_path
+      @root = Pathname.new(Dir.pwd)
+      @lotusrc = Lotus::Lotusrc.new(@root)
+    end
 
-      after do
-        Dir.chdir @old_pwd
-      end
+    after do
+      Dir.chdir @old_pwd
+    end
+
+    describe 'file exists' do
+      let(:lotusrc_path) { 'test/fixtures/lotusrc/exists' }
 
       describe "#exists?" do
         it 'retuns true' do
-          Lotus::Lotusrc.new(@root).exists?.must_equal true
+          @lotusrc.exists?.must_equal true
         end
       end
 
@@ -36,33 +38,22 @@ describe Lotus::Lotusrc do
       end
 
       it 'returns only environment options' do
-
+        allowed_keys = %i[architecture test template]
+        options = @lotusrc.options
+        options.keys.must_equal allowed_keys
       end
     end
 
     describe "file doesn't exist" do
-      before do
-        Dir.chdir($pwd)
-        @old_pwd = Dir.pwd
-        Dir.chdir 'test/fixtures/lotusrc/no_exists'
-        @root = Pathname.new(Dir.pwd)
-      end
-
-      after do
-        Dir.chdir @old_pwd
-      end
+      let(:lotusrc_path) { 'test/fixtures/lotusrc/no_exists' }
 
       describe "#exists?" do
         it 'retuns false' do
-          Lotus::Lotusrc.new(@root).exists?.must_equal false
+          @lotusrc.exists?.must_equal false
         end
       end
 
       describe 'default values' do
-        before do
-          @lotusrc = Lotus::Lotusrc.new(@root)
-        end
-
         it 'reads the file' do
           options = @lotusrc.options
           options[:architecture].must_equal 'container'
