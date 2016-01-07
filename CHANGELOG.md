@@ -1,8 +1,9 @@
 # Lotus
 A complete web framework for Ruby
 
-## v0.6.0 - (unreleased)
+## v0.6.0 - 2016-01-12
 ### Added
+- [Luca Guidi] Introduced configurable assets compressors
 - [Luca Guidi] Introduced "CDN mode" in order to serve static assets via Content Distribution Networks
 - [Luca Guidi] Introduced "Digest mode" in production in order to generate and serve assets with checksum suffix
 - [Luca Guidi] Introduced `lotus assets precompile` command to precompile, minify and append checksum suffix to static assets

@@ -6,7 +6,7 @@ module Lotus
     #
     #   `bundle exec lotus db`
     #
-    # @since x.x.x
+    # @since 0.6.0
     # @api private
     class DB < Thor
       namespace :db
@@ -81,7 +81,7 @@ module Lotus
         end
       end
 
-      # @since x.x.x
+      # @since 0.6.0
       # @api private
       desc 'version', 'current database version'
       method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
@@ -96,13 +96,13 @@ module Lotus
 
       private
 
-      # @since x.x.x
+      # @since 0.6.0
       # @api private
       def environment
         Lotus::Environment.new(options)
       end
 
-      # @since x.x.x
+      # @since 0.6.0
       # @api private
       def assert_allowed_environment!
         if environment.environment?(:production)
@@ -111,7 +111,7 @@ module Lotus
         end
       end
 
-      # @since x.x.x
+      # @since 0.6.0
       # @api private
       def assert_development_environment!
         unless environment.environment?(:development)

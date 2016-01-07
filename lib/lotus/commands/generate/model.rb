@@ -29,7 +29,7 @@ module Lotus
 
         private
 
-        # @since x.x.x
+        # @since 0.6.0
         # @api private
         def assert_model_name!
           model_name_not_blank
@@ -37,7 +37,8 @@ module Lotus
         end
 
         # Validates that a model name was provided
-        # @since x.x.x
+        #
+        # @since 0.6.0
         # @api private
         def model_name_not_blank
           if model_name.nil? || model_name.strip.empty?
@@ -46,7 +47,8 @@ module Lotus
         end
 
         # Validates that the provided model name doesn't start with numbers
-        # @since x.x.x
+        #
+        # @since 0.6.0
         # @api private
         def model_name_valid
           unless model_name.match(/^[a-z]/i)
@@ -58,32 +60,32 @@ module Lotus
           Pathname.new('lib').join(::File.basename(Dir.getwd))
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def entity_path
           model_root.join('entities', "#{ model_name_underscored }.rb").to_s
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def repository_path
           model_root.join('repositories', "#{ model_name_underscored }_repository.rb").to_s
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def entity_spec_path
           target_path.join('spec', ::File.basename(Dir.getwd), 'entities', "#{ model_name_underscored }_spec.rb")
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def repository_spec_path
           target_path.join('spec', ::File.basename(Dir.getwd), 'repositories',
             "#{ model_name_underscored }_repository_spec.rb")
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def model_name_underscored
           Utils::String.new(model_name).underscore

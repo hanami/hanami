@@ -3,18 +3,18 @@ require 'rake'
 module Lotus
   # Install Rake tasks in projects
   #
-  # @since x.x.x
+  # @since 0.6.0
   # @api private
   class RakeHelper
     include Rake::DSL
 
-    # @since x.x.x
+    # @since 0.6.0
     # @api private
     def self.install_tasks
       new.install
     end
 
-    # @since x.x.x
+    # @since 0.6.0
     # @api private
     def install
       desc "Preload project configuration"

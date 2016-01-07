@@ -3,14 +3,8 @@ require 'lotus/assets/compiler'
 
 module Lotus
   class Static < ::Rack::Static
-    ENV_VAR   = 'SERVE_STATIC_ASSETS'.freeze
-    ENABLED   = 'true'.freeze
-    PATH_INFO = 'PATH_INFO'.freeze
+    PATH_INFO        = 'PATH_INFO'.freeze
     PUBLIC_DIRECTORY = Lotus.public_directory.join('**', '*').to_s.freeze
-
-    def self.enable?
-      ENABLED == ENV[ENV_VAR]
-    end
 
     def initialize(app)
       super(app, root: Lotus.public_directory, header_rules: _header_rules)

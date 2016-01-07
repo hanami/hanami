@@ -6,7 +6,7 @@ module Lotus
     #
     #   `bundle exec lotus assets`
     #
-    # @since x.x.x
+    # @since 0.6.0
     # @api private
     class Assets < Thor
       namespace :assets
@@ -19,7 +19,7 @@ module Lotus
 
       private
 
-      # @since x.x.x
+      # @since 0.6.0
       # @api private
       def environment
         Lotus::Environment.new(options)

@@ -10,14 +10,14 @@ module Lotus
     #
     #   `bundle exec lotus generate`
     #
-    # @since x.x.x
+    # @since 0.6.0
     # @api private
     class Generate < Thor
       include Thor::Actions
 
       namespace :generate
 
-      # @since x.x.x
+      # @since 0.6.0
       # @api private
       desc 'action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME', 'generate a lotus action'
       long_desc <<-EOS

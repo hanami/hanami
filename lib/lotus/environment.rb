@@ -31,13 +31,13 @@ module Lotus
 
     # Production environment
     #
-    # @since x.x.x
+    # @since 0.6.0
     # @api private
     PRODUCTION_ENV = 'production'.freeze
 
     # Rack production environment (aka deployment)
     #
-    # @since x.x.x
+    # @since 0.6.0
     # @api private
     RACK_ENV_DEPLOYMENT = 'deployment'.freeze
 
@@ -407,7 +407,7 @@ module Lotus
       architecture == CONTAINER
     end
 
-    # @since x.x.x
+    # @since 0.6.0
     # @api private
     def serve_static_assets?
       SERVE_STATIC_ASSETS_ENABLED == ENV[SERVE_STATIC_ASSETS]
@@ -471,7 +471,7 @@ module Lotus
       environment == DEFAULT_ENV ? DEFAULT_HOST : LISTEN_ALL_HOST
     end
 
-    # @since x.x.x
+    # @since 0.6.0
     # @api private
     def rack_env
       case ENV[RACK_ENV]
