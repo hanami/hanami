@@ -118,6 +118,9 @@ module CdnApp
       # Specify sources for assets
       #
       assets do
+        javascript_compressor :builtin
+        stylesheet_compressor :builtin
+
         sources << [
           'app/assets'
         ]

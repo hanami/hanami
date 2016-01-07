@@ -34,6 +34,6 @@ describe 'CDN (Container)' do
     body = get("/").body
 
     body.must_include %(<link href="https://cdn.example.org/assets/favicon-4b49a383ea9cf9a46820b3a2374de6fe.ico" rel="shortcut icon" type="image/x-icon">)
-    body.must_include %(<script src="https://cdn.example.org/assets/analytics-e6b4bf3dc57f3e5481f416f9020c1699.js" type="text/javascript"></script>)
+    body.must_include %(<script src="https://cdn.example.org/assets/analytics-9fd60e0c3af3bb376e3c17f65ac751cd.js" type="text/javascript"></script>)
   end
 end

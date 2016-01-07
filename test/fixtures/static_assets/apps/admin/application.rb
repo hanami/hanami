@@ -120,6 +120,9 @@ module Admin
       # Specify sources for assets
       #
       assets do
+        javascript_compressor :builtin
+        stylesheet_compressor :builtin
+
         sources << [
           'assets'
         ]

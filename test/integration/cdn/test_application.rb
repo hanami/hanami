@@ -29,6 +29,6 @@ describe 'CDN (Application)' do
     body = get("/").body
 
     body.must_include %(<link href="https://cdn.example.org/assets/favicon-4b49a383ea9cf9a46820b3a2374de6fe.ico" rel="shortcut icon" type="image/x-icon">)
-    body.must_include %(<link href="https://cdn.example.org/assets/charge-d0ce88a785ae8734d2d802e5a48888d0.css" type="text/css" rel="stylesheet">)
+    body.must_include %(<link href="https://cdn.example.org/assets/charge-b45434daf18d5b0deb8aeab4220f5b86.css" type="text/css" rel="stylesheet">)
   end
 end
