@@ -117,10 +117,36 @@ module Admin
       ##
       # ASSETS
       #
-
-      # Specify sources for assets
-      #
       assets do
+        # JavaScript compressor
+        #
+        # Supported engines:
+        #
+        #   * :builtin
+        #   * :uglifier
+        #   * :yui
+        #   * :closure
+        #
+        # See: http://lotusrb.org/guides/assets/compressors
+        #
+        # In order to skip JavaScript compression comment the following line
+        javascript_compressor :builtin
+
+        # Stylesheet compressor
+        #
+        # Supported engines:
+        #
+        #   * :builtin
+        #   * :yui
+        #   * :sass
+        #
+        # See: http://lotusrb.org/guides/assets/compressors
+        #
+        # In order to skip stylesheet compression comment the following line
+        stylesheet_compressor :builtin
+
+        # Specify sources for assets
+        #
         sources << [
           'assets'
         ]
