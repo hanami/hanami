@@ -7,14 +7,14 @@ module Lotus
 
         attr_reader :name, :underscored_name
 
-        # @since x.x.x
+        # @since 0.6.0
         # @api private
         #
         # @example
         #   20150612160502
         TIMESTAMP_FORMAT = '%Y%m%d%H%M%S'.freeze
 
-        # @since x.x.x
+        # @since 0.6.0
         # @api private
         #
         # @example

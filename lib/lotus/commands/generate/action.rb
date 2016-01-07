@@ -6,27 +6,27 @@ module Lotus
     class Generate
       class Action < Abstract
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         ACTION_SEPARATOR = /[\/,#]/
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         ROUTE_ENDPOINT_SEPARATOR = '#'.freeze
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         QUOTED_NAME = /(\"|\'|\\)/
 
         # Default HTTP method used when generating an action.
         #
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         DEFAULT_HTTP_METHOD = 'GET'.freeze
 
         # HTTP methods used when generating resourceful actions.
         #
-        # @since x.x.x
+        # @since 0.6.0
         # @api private
         RESOURCEFUL_HTTP_METHODS = {
           'Create'  => 'POST',
@@ -36,7 +36,7 @@ module Lotus
 
         # For resourceful actions, what to add to the end of the base URL
         #
-        # @since x.x.x
+        # @since 0.6.0
         # @api private
         RESOURCEFUL_ROUTE_URL_SUFFIXES = {
           'Show'    => '/:id',
@@ -84,7 +84,7 @@ module Lotus
           generate_route
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def template_options
           {
@@ -99,7 +99,7 @@ module Lotus
 
         private
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def generate_route
           routes_path.dirname.mkpath
@@ -112,37 +112,37 @@ module Lotus
           options.fetch(:skip_view, false)
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def http_method
           options.fetch(:method, resourceful_http_method).downcase
         end
 
-        # @since x.x.x
+        # @since 0.6.0
         # @api private
         def resourceful_http_method
           RESOURCEFUL_HTTP_METHODS.fetch(@action_name, DEFAULT_HTTP_METHOD)
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def route_url
           options.fetch(:url, "/#{ @controller_pathname }#{ resourceful_route_url_suffix }")
         end
 
-        # @since x.x.x
+        # @since 0.6.0
         # @api private
         def resourceful_route_url_suffix
           RESOURCEFUL_ROUTE_URL_SUFFIXES.fetch(@action_name, "")
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def route_endpoint
           "#{ @controller_pathname }#{ ROUTE_ENDPOINT_SEPARATOR }#{ @action_name }".downcase
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def known_application_names
           Dir.glob(applications_path.join('/*')).map do |name|
@@ -150,7 +150,7 @@ module Lotus
           end
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def assert_controller_name!
           if @controller_name.nil? || @controller_name.empty?
@@ -158,7 +158,7 @@ module Lotus
           end
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def assert_action_name!
           if @action_name.nil? || @action_name.strip == ''
@@ -166,7 +166,7 @@ module Lotus
           end
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def assert_application_name!
           return if !environment.container?
@@ -176,7 +176,7 @@ module Lotus
           end
         end
 
-        # @since x.x.x
+        # @since 0.5.0
         # @api private
         def assert_http_method!
           if !Lotus::Routing::Route::VALID_HTTP_VERBS.include?(http_method.upcase)

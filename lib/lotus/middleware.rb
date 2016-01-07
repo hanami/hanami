@@ -75,7 +75,7 @@ module Lotus
     #
     # @return [Array] the middleware that was added
     #
-    # @since x.x.x
+    # @since 0.6.0
     #
     # @see Lotus::Middleware#use
     def prepend(middleware, *args, &blk)
@@ -130,7 +130,7 @@ module Lotus
     # Use static assets middleware
     #
     # @api private
-    # @since x.x.x
+    # @since 0.6.0
     def _load_assets_middleware
       env = Lotus.environment
 

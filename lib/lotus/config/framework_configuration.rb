@@ -25,7 +25,7 @@ module Lotus
         end
       end
 
-      # @since x.x.x
+      # @since 0.6.0
       # @api private
       def __add(&blk)
         @blocks << blk
