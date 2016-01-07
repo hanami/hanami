@@ -33,9 +33,9 @@ describe 'Precompile static assets (Application)' do
     assets_directory.join('favicon-04115b81b60f4303104a28aba667ab16.ico').must_be :exist?
 
     assets_directory.join('application.css').must_be :exist?
-    assets_directory.join('application-7984a5b323a5e3a95bf8b13b87a5c8c3.css').must_be :exist?
+    assets_directory.join('application-5ebdabab46f08c2cc8d56425bb34bc38.css').must_be :exist?
 
     assets_directory.join('home.css').must_be :exist?
-    assets_directory.join('home-fc1454db4345366035149b045c3dba00.css').must_be :exist?
+    assets_directory.join('home-c229183232e6cfbf965a21ec0b06ee06.css').must_be :exist?
   end
 end

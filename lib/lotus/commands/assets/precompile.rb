@@ -18,7 +18,12 @@ module Lotus
 
         def preload_applications
           @environment.require_application_environment
-          Lotus::Application.preload!
+
+          if @environment.container?
+            Lotus::Container.new
+          else
+            Lotus::Application.preload!
+          end
         end
 
         def precompile

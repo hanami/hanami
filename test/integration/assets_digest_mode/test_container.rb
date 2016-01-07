@@ -41,7 +41,7 @@ describe 'Render assets path with digest mode (Container)' do
     get '/'
 
     body = response.body
-    body.must_include %(<link href="/assets/application-1e7f8e4a4ea8bd7ca5e7e4f37ff9c898.css" type="text/css" rel="stylesheet">)
-    body.must_include %(<link href="/assets/home-fc1454db4345366035149b045c3dba00.css" type="text/css" rel="stylesheet">)
+    body.must_include %(<link href="/assets/application-34a87596e5ba23b89a36e910c15bfb43.css" type="text/css" rel="stylesheet">)
+    body.must_include %(<link href="/assets/home-c229183232e6cfbf965a21ec0b06ee06.css" type="text/css" rel="stylesheet">)
   end
 end
