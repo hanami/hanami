@@ -43,15 +43,15 @@ describe Lotus::Commands::New::App do
         end
       end
     end
-  end
 
-  describe 'rspec' do
-    it 'creates files' do
-      with_temp_dir do |original_wd|
-        command = Lotus::Commands::New::App.new({'test' => 'rspec'}, 'new_app')
-        capture_io { command.start }
+    describe 'rspec' do
+      it 'creates files' do
+        with_temp_dir do |original_wd|
+          command = Lotus::Commands::New::App.new({'test' => 'rspec'}, 'new_app')
+          capture_io { command.start }
 
-        assert_generated_app('rspec', original_wd)
+          assert_generated_app('rspec', original_wd)
+        end
       end
     end
   end
