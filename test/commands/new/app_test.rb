@@ -54,6 +54,11 @@ describe Lotus::Commands::New::App do
         end
       end
     end
+
+    it 'returns valid classified app name' do
+      command = Lotus::Commands::New::App.new({}, 'awesome-test-app')
+      command.template_options[:classified_app_name].must_equal 'AwesomeTestApp'
+    end
   end
 
   def assert_generated_app(test_framework, original_wd)
