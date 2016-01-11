@@ -3,9 +3,10 @@
 
 ## Features
 
-## v0.6.0 - (unreleased)
+## v0.6.0 - 2016-01-12
 
-- Assets preprocessors support (eg Sass, ES6, Opal, Less, CoffeScript..)
+- Assets preprocessors support (eg. Sass, ES6, Opal, Less, CoffeScript..)
+- Assets compressors (eg. YUI, UglifyJS2, Google Closure Compiler, Sass..)
 - Assets helpers:
   * `javascript`
   * `stylesheet`
