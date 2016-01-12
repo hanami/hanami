@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'lotus/setup'
+require 'bundler'
 require 'lotus/cli'
 Lotus::Cli.start

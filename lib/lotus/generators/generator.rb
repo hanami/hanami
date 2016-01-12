@@ -1,4 +1,5 @@
 require 'thor'
+require 'forwardable'
 
 module Lotus
   module Generators
