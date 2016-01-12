@@ -1,5 +1,6 @@
 require 'pathname'
 require 'dotenv/parser'
+require 'lotus/utils/hash'
 
 module Lotus
   # Read the .lotusrc file in the root of the application
