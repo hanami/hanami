@@ -104,6 +104,24 @@ module Lotus
       end
     end
 
+    desc 'runner [FILE|EXPRESSION]', 'Evaluate a file or expression with the preloaded environment and application'
+    long_desc <<-EOS
+      `lotus runner` Evaluate a file or expression with the preloaded environment and application.
+
+      $ > lotus runner `puts Lotus.env` => The current environment
+
+      $ > lotus runner ./my_script.rb => Loads the file.
+    EOS
+    method_option :help, desc: 'displays the usage method'
+    def runner(expression_or_file)
+      if options[:help]
+        invoke :help, ['runner']
+      else
+        require 'lotus/commands/runner'
+        Lotus::Commands::Runner.new(options, expression_or_file).start
+      end
+    end
+
     require 'lotus/cli_sub_commands/db'
     register Lotus::CliSubCommands::DB, 'db', 'db [SUBCOMMAND]', 'manage set of DB operations'
 
