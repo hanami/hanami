@@ -63,6 +63,8 @@ describe Lotus::Commands::Generate::App do
         assert_file_exists('spec/api/features/.gitkeep')
         assert_file_exists('spec/api/controllers/.gitkeep')
         assert_file_exists('spec/api/views/.gitkeep')
+        assert_file_includes('config/environment.rb', /^\s*require_relative '..\/apps\/api\/application'$/)
+        assert_file_includes('config/environment.rb', /^\s*mount Api::Application, at: '\/api'$/)
       end
     end
 
@@ -102,6 +104,9 @@ describe Lotus::Commands::Generate::App do
         refute_file_exists('spec/api/features/.gitkeep')
         refute_file_exists('spec/api/controllers/.gitkeep')
         refute_file_exists('spec/api/views/.gitkeep')
+        refute_file_includes('config/environment.rb', /^\s*require_relative '..\/apps\/api\/application'$/)
+        refute_file_includes('config/environment.rb', /^\s*mount Api::Application, at: '\/api'$/)
+        assert_file_includes('config/environment.rb', /^\s*require_relative '..\/lib\/container-app'$/)
       end
     end
   end
