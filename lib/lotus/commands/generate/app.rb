@@ -59,7 +59,7 @@ module Lotus
 
         def add_require_app
           # Add "require_relative '../apps/web/application'"
-          generator.inject_into_file base_path.join('config/environment.rb'), after: /require_relative '\.\.\/lib\/(.*)'/ do
+          generator.inject_into_file base_path.join('config/environment.rb'), after: /require_relative '\.\.\/lib\/.*'/ do
             "\nrequire_relative '../apps/#{ app_name }/application'"
           end
         end
