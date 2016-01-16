@@ -45,6 +45,11 @@ describe Lotus::Commands::Generate::App do
       end
     end
 
+    it 'returns valid classified app name' do
+      command = Lotus::Commands::Generate::App.new({ architecture: 'container' }, 'awesome-test-app')
+      command.template_options[:classified_app_name].must_equal 'AwesomeTestApp'
+    end
+
     it 'create files' do
       with_temp_dir do |original_wd|
         setup_container_app(original_wd)

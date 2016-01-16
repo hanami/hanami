@@ -104,7 +104,7 @@ module Lotus
         end
 
         def classified_app_name
-          Utils::String.new(app_name).classify
+          Utils::String.new(app_name).classify.tr('::', '')
         end
 
         # def application_base_path
