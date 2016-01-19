@@ -45,6 +45,11 @@ describe Lotus::Commands::Generate::App do
       end
     end
 
+    it 'returns valid classified app name' do
+      command = Lotus::Commands::Generate::App.new({ architecture: 'container' }, 'awesome-test-app')
+      command.template_options[:classified_app_name].must_equal 'AwesomeTestApp'
+    end
+
     it 'create files' do
       with_temp_dir do |original_wd|
         setup_container_app(original_wd)
@@ -63,6 +68,8 @@ describe Lotus::Commands::Generate::App do
         assert_file_exists('spec/api/features/.gitkeep')
         assert_file_exists('spec/api/controllers/.gitkeep')
         assert_file_exists('spec/api/views/.gitkeep')
+        assert_file_includes('config/environment.rb', /^\s*require_relative '..\/apps\/api\/application'$/)
+        assert_file_includes('config/environment.rb', /^\s*mount Api::Application, at: '\/api'$/)
       end
     end
 
@@ -102,6 +109,9 @@ describe Lotus::Commands::Generate::App do
         refute_file_exists('spec/api/features/.gitkeep')
         refute_file_exists('spec/api/controllers/.gitkeep')
         refute_file_exists('spec/api/views/.gitkeep')
+        refute_file_includes('config/environment.rb', /^\s*require_relative '..\/apps\/api\/application'$/)
+        refute_file_includes('config/environment.rb', /^\s*mount Api::Application, at: '\/api'$/)
+        assert_file_includes('config/environment.rb', /^\s*require_relative '..\/lib\/container-app'$/)
       end
     end
   end

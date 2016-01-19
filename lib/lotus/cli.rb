@@ -51,7 +51,7 @@ module Lotus
     $ > lotus console --engine=pry
     EOS
     method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-    method_option :engine, desc: "choose a specific console engine: (#{Lotus::Commands::Console::ENGINES.keys.join('/')})", default: Lotus::Commands::Console::DEFAULT_ENGINE
+    method_option :engine, desc: "choose a specific console engine: (#{Lotus::Commands::Console::ENGINES.keys.join('/')})"
     method_option :help, desc: 'displays the usage method'
     def console
       if options[:help]
