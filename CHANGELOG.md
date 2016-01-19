@@ -1,6 +1,15 @@
 # Lotus
 A complete web framework for Ruby
 
+## v0.6.1 - 2016-01-19
+### Fixed
+- [Anton Davydov] Show the current app name in Welcome page (eg. `/admin` shows instructions on how to generate an action for `Admin` app)
+- [Anton Davydov] Fix project creation when name contains dashes (eg. `"awesome-project" => "AwesomeProject"`)
+- [Anton Davydov] Ensure to add assets related entries to `.gitignore` when a project is generated with the `--database` flag
+- [deepj] Avoid blank lines in generated `Gemfile`
+- [trexnix] Fix for `lotus destroy app`: it doesn't cause a syntax error in `config/application.rb` anymore
+- [Serg Ikonnikov & Trung Lê] Ensure console to use the bundled engine
+
 ## v0.6.0 - 2016-01-12
 ### Added
 - [Luca Guidi] Introduced configurable assets compressors

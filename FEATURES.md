@@ -3,6 +3,8 @@
 
 ## Features
 
+## v0.6.1 - 2016-01-19
+
 ## v0.6.0 - 2016-01-12
 
 - Assets preprocessors support (eg. Sass, ES6, Opal, Less, CoffeScript..)
