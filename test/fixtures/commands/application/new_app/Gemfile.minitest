@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'bundler'
 gem 'rake'
 
-gem 'lotusrb',       '0.6.0'
+gem 'lotusrb',       '0.6.1'
 gem 'lotus-model',   '~> 0.5'
 
 
