@@ -6,7 +6,7 @@ module Configurable
     end
   end
 
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       handle_exceptions false
 

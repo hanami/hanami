@@ -3,7 +3,7 @@ require 'rack/test'
 require 'fixtures/collaboration/apps/web/application'
 require 'fixtures/security_headers/apps/web/application'
 
-describe 'A full stack Lotus application' do
+describe 'A full stack Hanami application' do
   describe 'with default headers' do
     include Rack::Test::Methods
 

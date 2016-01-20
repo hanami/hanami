@@ -1,5 +1,5 @@
 class Book
-  include Lotus::Entity
+  include Hanami::Entity
 
   attributes :name
 end

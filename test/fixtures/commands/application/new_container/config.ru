@@ -1,3 +1,3 @@
 require './config/environment'
 
-run Lotus::Container.new
+run Hanami::Container.new

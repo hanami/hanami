@@ -4,7 +4,7 @@ require_relative './spec_helper'
 require 'capybara'
 require 'capybara/dsl'
 
-Capybara.app = Lotus::Container.new
+Capybara.app = Hanami::Container.new
 
 class MiniTest::Spec
   include Capybara::DSL

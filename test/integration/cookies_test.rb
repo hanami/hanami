@@ -34,14 +34,14 @@ describe 'Cookies' do
     request.cookies.must_equal({ 'foo' => 'bar' })
 
     response.body.must_equal('bar')
-    response.headers['Set-Cookie'].must_equal('foo=bar; domain=lotusrb.org; path=/another_controller; secure; HttpOnly')
+    response.headers['Set-Cookie'].must_equal('foo=bar; domain=hanamirb.org; path=/another_controller; secure; HttpOnly')
   end
 
   it 'succesfully sets cookies' do
     get '/set_cookies'
 
     response.body.must_equal('yummy!')
-    response.headers['Set-Cookie'].must_equal('foo=nomnomnom%21; domain=lotusrb.org; path=/another_controller; secure; HttpOnly')
+    response.headers['Set-Cookie'].must_equal('foo=nomnomnom%21; domain=hanamirb.org; path=/another_controller; secure; HttpOnly')
   end
 
   it 'sucessfully sets cookies with options' do
@@ -49,7 +49,7 @@ describe 'Cookies' do
     get '/set_cookies_with_options', { expires: next_week }
 
     response.body.must_equal('with options!')
-    response.headers['Set-Cookie'].must_equal("foo=nomnomnom%21; domain=lotusrocks.com; path=/controller; expires=#{next_week.gmtime.rfc2822}; secure; HttpOnly")
+    response.headers['Set-Cookie'].must_equal("foo=nomnomnom%21; domain=hanamirocks.com; path=/controller; expires=#{next_week.gmtime.rfc2822}; secure; HttpOnly")
   end
 
   it 'sucessfully deletes cookies' do
@@ -58,6 +58,6 @@ describe 'Cookies' do
     request.cookies.must_equal({ 'foo' => 'bar', 'delete' => 'cookie' })
 
     response.body.must_equal('deleted!')
-    response.headers['Set-Cookie'].must_equal("foo=bar; domain=lotusrb.org; path=/another_controller; secure; HttpOnly\ndelete=; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 -0000")
+    response.headers['Set-Cookie'].must_equal("foo=bar; domain=hanamirb.org; path=/another_controller; secure; HttpOnly\ndelete=; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 -0000")
   end
 end

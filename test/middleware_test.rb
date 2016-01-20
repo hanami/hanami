@@ -1,7 +1,7 @@
 require 'test_helper'
-require 'lotus/middleware'
+require 'hanami/middleware'
 
-describe Lotus::Middleware do
+describe Hanami::Middleware do
   before do
     Dir.chdir($pwd)
     config = config_blk
@@ -10,7 +10,7 @@ describe Lotus::Middleware do
     MockMiddleware      = Object.new
     MockApp             = Module.new
 
-    MockApp::Application = Class.new(Lotus::Application) do
+    MockApp::Application = Class.new(Hanami::Application) do
       configure(&config)
     end
   end

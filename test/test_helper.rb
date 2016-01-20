@@ -49,11 +49,11 @@ Minitest::Test.class_eval do
 end
 
 Minitest.after_run do
-  lotusrc = Pathname.new(__dir__ + '/../.lotusrc')
-  lotusrc.delete if lotusrc.exist?
+  hanamirc = Pathname.new(__dir__ + '/../.hanamirc')
+  hanamirc.delete if hanamirc.exist?
 end
 
-Lotus::Application.class_eval do
+Hanami::Application.class_eval do
   def self.clear_registered_applications!
     synchronize do
       applications.clear
@@ -61,7 +61,7 @@ Lotus::Application.class_eval do
   end
 end
 
-Lotus::Config::LoadPaths.class_eval do
+Hanami::Config::LoadPaths.class_eval do
   def clear
     @paths.clear
   end
@@ -75,7 +75,7 @@ Lotus::Config::LoadPaths.class_eval do
   end
 end
 
-Lotus::Middleware.class_eval { attr_reader :stack }
+Hanami::Middleware.class_eval { attr_reader :stack }
 
 Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates').mkpath
 Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates/mailers').mkpath
@@ -98,15 +98,15 @@ class FakeRackBuilder
 end
 
 class DependenciesReporter
-  LOTUS_GEMS = [
-    'lotus-utils',
-    'lotus-validations',
-    'lotus-router',
-    'lotus-model',
-    'lotus-view',
-    'lotus-controller',
-    'lotus-mailer',
-    'lotus-assets'
+  HANAMI_GEMS = [
+    'hanami-utils',
+    'hanami-validations',
+    'hanami-router',
+    'hanami-model',
+    'hanami-view',
+    'hanami-controller',
+    'hanami-mailer',
+    'hanami-assets'
   ].freeze
 
   def initialize
@@ -125,7 +125,7 @@ class DependenciesReporter
   private
   def dependencies
     Bundler.environment.dependencies.find_all do |dep|
-      LOTUS_GEMS.include?(dep.name)
+      HANAMI_GEMS.include?(dep.name)
     end
   end
 end

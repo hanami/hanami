@@ -2,15 +2,15 @@ require 'test_helper'
 require 'sequel'
 require 'fileutils'
 
-describe 'lotus db' do
-  let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby? }
+describe 'hanami db' do
+  let(:adapter_prefix) { 'jdbc:' if Hanami::Utils.jruby? }
 
   architectures = {
     container: nil,
     app: nil
   }
 
-  let(:lotus_env) { 'development' }
+  let(:hanami_env) { 'development' }
   let(:app_name) { 'delivery' }
   let(:tmp) { Pathname.new(Dir.pwd).join("tmp/integration/cli/database/#{ architecture }") }
   let(:root) { tmp.join(app_name) }
@@ -23,7 +23,7 @@ describe 'lotus db' do
   end
 
   def generate_application
-    `lotus new #{ app_name } --architecture="#{ architecture }" --database=sqlite3`
+    `hanami new #{ app_name } --architecture="#{ architecture }" --database=sqlite3`
     Dir.chdir(root)
 
     File.open(root.join('.env.development'), 'w') do |f|
@@ -50,7 +50,7 @@ describe 'lotus db' do
   def write_migrations
     File.open(root.join('db/migrations/20150613152241_create_users.rb'), 'w') do |f|
       f.write <<-MIGRATION
-Lotus::Model.migration do
+Hanami::Model.migration do
   change do
     create_table :users do
       primary_key :id
@@ -63,7 +63,7 @@ MIGRATION
 
     File.open(root.join('db/migrations/20150613152815_add_name_to_users.rb'), 'w') do |f|
       f.write <<-MIGRATION
-Lotus::Model.migration do
+Hanami::Model.migration do
   change do
     alter_table :users do
       add_column :name, String
@@ -75,27 +75,27 @@ MIGRATION
   end
 
   def db_create
-    `LOTUS_ENV="#{ lotus_env }" lotus db create`
+    `HANAMI_ENV="#{ hanami_env }" hanami db create`
   end
 
   def db_drop
-    `LOTUS_ENV="#{ lotus_env }" lotus db drop`
+    `HANAMI_ENV="#{ hanami_env }" hanami db drop`
   end
 
   def db_migrate(version = nil)
-    `LOTUS_ENV="#{ lotus_env }" lotus db migrate #{ version }`
+    `HANAMI_ENV="#{ hanami_env }" hanami db migrate #{ version }`
   end
 
   def db_apply
-    `LOTUS_ENV="#{ lotus_env }" lotus db apply`
+    `HANAMI_ENV="#{ hanami_env }" hanami db apply`
   end
 
   def db_prepare
-    `LOTUS_ENV="#{ lotus_env }" lotus db prepare`
+    `HANAMI_ENV="#{ hanami_env }" hanami db prepare`
   end
 
   def db_version
-    `LOTUS_ENV="#{ lotus_env }" lotus db version`
+    `HANAMI_ENV="#{ hanami_env }" hanami db version`
   end
 
   before do
@@ -131,7 +131,7 @@ MIGRATION
         end
 
         describe 'test environment' do
-          let(:lotus_env) { 'test' }
+          let(:hanami_env) { 'test' }
 
           it 'creates database' do
             root.join("db/#{ app_name }_test.sqlite3").must_be :exist?
@@ -139,7 +139,7 @@ MIGRATION
         end
 
         describe 'production environment' do
-          let(:lotus_env) { 'production' }
+          let(:hanami_env) { 'production' }
 
           it "doesn't create database" do
             root.join("db/#{ app_name }.sqlite3").wont_be :exist?
@@ -164,7 +164,7 @@ MIGRATION
         end
 
         describe 'test environment' do
-          let(:lotus_env) { 'test' }
+          let(:hanami_env) { 'test' }
 
           it 'drops database' do
             db_create
@@ -175,7 +175,7 @@ MIGRATION
         end
 
         describe 'production environment' do
-          let(:lotus_env) { 'production' }
+          let(:hanami_env) { 'production' }
 
           it "doesn't drop database" do
             production_database = root.join("db/#{ app_name }.sqlite3")
@@ -212,7 +212,7 @@ MIGRATION
         end
 
         describe 'test environment' do
-          let(:lotus_env) { 'test' }
+          let(:hanami_env) { 'test' }
 
           it 'migrates database' do
             database   = root.join("db/#{ app_name }_test.sqlite3")
@@ -224,7 +224,7 @@ MIGRATION
         end
 
         describe 'production environment' do
-          let(:lotus_env) { 'production' }
+          let(:hanami_env) { 'production' }
 
           it 'migrates database'
           # it 'migrates database' do
@@ -262,7 +262,7 @@ MIGRATION
         end
 
         describe 'test environment' do
-          let(:lotus_env) { 'test' }
+          let(:hanami_env) { 'test' }
 
           it 'migrates database' do
             database   = root.join("db/#{ app_name }_test.sqlite3")
@@ -274,7 +274,7 @@ MIGRATION
         end
 
         describe 'production environment' do
-          let(:lotus_env) { 'production' }
+          let(:hanami_env) { 'production' }
 
           it 'migrates database'
           # it 'migrates database' do
@@ -318,7 +318,7 @@ MIGRATION
         end
 
         describe 'test environment' do
-          let(:lotus_env) { 'test' }
+          let(:hanami_env) { 'test' }
 
           it "doesn't migrate database without generating schema neither deleting migrations" do
             database   = root.join("db/#{ app_name }_test.sqlite3")
@@ -332,7 +332,7 @@ MIGRATION
         end
 
         describe 'production environment' do
-          let(:lotus_env) { 'production' }
+          let(:hanami_env) { 'production' }
 
           it "doesn't migrate database without generating schema neither deleting migrations" do
             database   = root.join("db/#{ app_name }.sqlite3")
@@ -358,7 +358,7 @@ MIGRATION
 
       File.open(migration_file, 'w') do |f|
         f.write <<-MIGRATION
-Lotus::Model.migration do
+Hanami::Model.migration do
   change do
     create_table :deliveries do
       primary_key :id
@@ -387,7 +387,7 @@ MIGRATION
     end
 
     describe 'test environment' do
-      let(:lotus_env) { 'test' }
+      let(:hanami_env) { 'test' }
 
       it 'creates and migrates database' do
         database   = root.join("db/#{ app_name }_test.sqlite3")
@@ -399,7 +399,7 @@ MIGRATION
     end
 
     describe 'production environment' do
-      let(:lotus_env) { 'production' }
+      let(:hanami_env) { 'production' }
 
       it "doesn't create database" do
         database   = root.join("db/#{ app_name }.sqlite3")
@@ -431,7 +431,7 @@ MIGRATION
         end
 
         describe 'test environment' do
-          let(:lotus_env) { 'test' }
+          let(:hanami_env) { 'test' }
 
           it 'prints current database version' do
             out = db_version
@@ -441,7 +441,7 @@ MIGRATION
         end
 
         describe 'production environment' do
-          let(:lotus_env) { 'production' }
+          let(:hanami_env) { 'production' }
 
           it 'prints current database version'
           # it 'prints current database version' do

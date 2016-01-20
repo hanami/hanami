@@ -1,5 +1,5 @@
 module MiddlewareStack
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       # Test lazy loading with relative class name
       middleware.use 'Middlewares::Runtime'

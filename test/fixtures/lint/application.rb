@@ -1,5 +1,5 @@
 module Lint
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       routes do
         get '/',         to: 'home#index'
@@ -28,7 +28,7 @@ module Lint
     end
 
     # This is an integration test case for `Action#renderable?`.
-    # Please have a look at `Lotus::Action::Glue` and `#send_file`.
+    # Please have a look at `Hanami::Action::Glue` and `#send_file`.
     class Download
       include Lint::Action
 

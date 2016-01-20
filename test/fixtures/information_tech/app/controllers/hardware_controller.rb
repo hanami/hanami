@@ -1,13 +1,13 @@
 module HardwareController
   class Index
-    include Lotus::Action
+    include Hanami::Action
 
     def call(params)
     end
   end
 
   class Error
-    include Lotus::Action
+    include Hanami::Action
 
     def call(params)
       raise 'boom'
@@ -15,7 +15,7 @@ module HardwareController
   end
 
   class Legacy
-    include Lotus::Action
+    include Hanami::Action
 
     def call(params)
       redirect_to 'http://localhost/hardware'
@@ -23,7 +23,7 @@ module HardwareController
   end
 
   class Protected
-    include Lotus::Action
+    include Hanami::Action
 
     def call(params)
       halt 401

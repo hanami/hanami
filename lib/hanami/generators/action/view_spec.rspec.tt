@@ -1,0 +1,12 @@
+require_relative '<%= config[:relative_view_path] %>'
+
+RSpec.describe <%= config[:app] %>::Views::<%= config[:controller] %>::<%= config[:action] %> do
+  let(:exposures) { Hash[foo: 'bar'] }
+  let(:template)  { Hanami::View::Template.new('<%= config[:template_path] %>') }
+  let(:view)      { described_class.new(template, exposures) }
+  let(:rendered)  { view.render }
+
+  it 'exposes #foo' do
+    expect(view.foo).to eq exposures.fetch(:foo)
+  end
+end

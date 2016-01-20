@@ -1,26 +1,26 @@
 require 'test_helper'
-require 'lotus/commands/generate/model'
+require 'hanami/commands/generate/model'
 require 'fileutils'
 
-describe Lotus::Commands::Generate::Model do
+describe Hanami::Commands::Generate::Model do
   describe 'with invalid arguments' do
     it 'requires model name' do
       assert_exception_raised(ArgumentError, 'Model name nil or empty.') do
-        Lotus::Commands::Generate::Model.new({}, nil)
+        Hanami::Commands::Generate::Model.new({}, nil)
       end
 
       assert_exception_raised(ArgumentError, 'Model name nil or empty.') do
-        Lotus::Commands::Generate::Model.new({}, '')
+        Hanami::Commands::Generate::Model.new({}, '')
       end
 
       assert_exception_raised(ArgumentError, 'Model name nil or empty.') do
-        Lotus::Commands::Generate::Model.new({}, '   ')
+        Hanami::Commands::Generate::Model.new({}, '   ')
       end
     end
 
     it 'validates model name' do
       assert_exception_raised(ArgumentError, "Invalid model name. The model name shouldn't begin with a number.") do
-        Lotus::Commands::Generate::Model.new({}, 123)
+        Hanami::Commands::Generate::Model.new({}, 123)
       end
     end
   end
@@ -28,7 +28,7 @@ describe Lotus::Commands::Generate::Model do
   describe 'sanitizes model name' do
     it 'downcases it' do
       with_temp_dir do |original_wd|
-        command = Lotus::Commands::Generate::Model.new({}, 'CaR')
+        command = Hanami::Commands::Generate::Model.new({}, 'CaR')
         capture_io { command.start }
         assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car.rb'), 'lib/testapp/entities/car.rb')
       end
@@ -40,7 +40,7 @@ describe Lotus::Commands::Generate::Model do
     describe 'with rspec' do
       it 'creates model, repository and spec files' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::Generate::Model.new({'test' => 'rspec'}, 'car')
+          command = Hanami::Commands::Generate::Model.new({'test' => 'rspec'}, 'car')
           capture_io { command.start }
 
           assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_repository_spec.rspec.rb'), 'spec/testapp/repositories/car_repository_spec.rb')
@@ -54,7 +54,7 @@ describe Lotus::Commands::Generate::Model do
     describe 'with minitest' do
       it 'creates model, repository and spec files' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::Generate::Model.new({}, 'car')
+          command = Hanami::Commands::Generate::Model.new({}, 'car')
           capture_io { command.start }
 
           assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car_repository_spec.minitest.rb'), 'spec/testapp/repositories/car_repository_spec.rb')
@@ -70,9 +70,9 @@ describe Lotus::Commands::Generate::Model do
     it 'destroys model, repository and spec files' do
       with_temp_dir do |original_wd|
         capture_io {
-          Lotus::Commands::Generate::Model.new({}, 'car').start
+          Hanami::Commands::Generate::Model.new({}, 'car').start
 
-          Lotus::Commands::Generate::Model.new({}, 'car').destroy.start
+          Hanami::Commands::Generate::Model.new({}, 'car').destroy.start
         }
 
         refute_file_exists('spec/testapp/repositories/car_repository_spec.rb')

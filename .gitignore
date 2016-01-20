@@ -22,7 +22,7 @@ tmp
 mkmf.log
 .greenbar
 .DS_Store
-.lotusrc
+.hanamirc
 test/fixtures/static_assets/public/assets*
 test/fixtures/static_assets_app/public/assets*
 test/fixtures/rake/rake_tasks/public/assets*

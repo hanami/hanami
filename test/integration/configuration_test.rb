@@ -46,7 +46,7 @@ describe 'Configurable application' do
   describe "model configuration" do
     it 'forwards settings' do
       adapter = Configurable::Model.configuration.instance_variable_get(:@adapter)
-      adapter.must_be_kind_of(Lotus::Model::Adapters::MemoryAdapter)
+      adapter.must_be_kind_of(Hanami::Model::Adapters::MemoryAdapter)
     end
   end
 

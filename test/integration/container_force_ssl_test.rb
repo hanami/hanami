@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'rack/test'
 
-describe Lotus::Container do
+describe Hanami::Container do
   include Rack::Test::Methods
 
   def app
@@ -14,12 +14,12 @@ describe Lotus::Container do
 
   describe 'force_ssl activated' do
     before do
-      Lotus::Container.configure do
+      Hanami::Container.configure do
         mount Backend::App,                   at: '/backend'
         mount ContainerForceSsl::Application, at: '/'
       end
 
-      @container = Lotus::Container.new
+      @container = Hanami::Container.new
     end
 
     it "doesn't force SSL if app doesn't has force_ssl turned on" do
@@ -42,11 +42,11 @@ describe Lotus::Container do
 
   describe 'force_ssl desactivated' do
     before do
-      Lotus::Container.configure do
+      Hanami::Container.configure do
         mount ContainerNoForceSsl::Application, at: '/'
       end
 
-      @container = Lotus::Container.new
+      @container = Hanami::Container.new
     end
 
     it "https request doesn't return Strict-Transport-Security header" do

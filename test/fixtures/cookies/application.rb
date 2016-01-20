@@ -1,8 +1,8 @@
 module CookiesApp
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       # Activate Cookies
-      cookies domain: 'lotusrb.org', path: '/another_controller', secure: true
+      cookies domain: 'hanamirb.org', path: '/another_controller', secure: true
 
       routes do
         get '/get_cookies',              to: 'cookies#get'
@@ -42,7 +42,7 @@ module CookiesApp
 
         cookies[:foo] = {
           value: 'nomnomnom!',
-          domain: 'lotusrocks.com',
+          domain: 'hanamirocks.com',
           path: '/controller',
           expires: expire_date,
           secure: true,

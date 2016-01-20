@@ -35,23 +35,23 @@ describe 'Sessions' do
   end
 
   it 'allows to set session' do
-    post '/set_session', { name: 'Lotus', _csrf_token: 'app123' }
+    post '/set_session', { name: 'Hanami', _csrf_token: 'app123' }
 
-    response.body.must_equal 'Session created for: Lotus'
+    response.body.must_equal 'Session created for: Hanami'
   end
 
   it 'preserves session between requests' do
-    post '/set_session', { name: 'Lotus', _csrf_token: 'app123' }
+    post '/set_session', { name: 'Hanami', _csrf_token: 'app123' }
     get '/get_session', nil, { 'HTTP_COOKIE' => response.headers['Set-Cookie'] }
 
-    response.body.must_equal 'Lotus'
+    response.body.must_equal 'Hanami'
   end
 
   it 'allows to clear session' do
-    post '/set_session', { name: 'Lotus', _csrf_token: 'app123' }
+    post '/set_session', { name: 'Hanami', _csrf_token: 'app123' }
 
     delete '/clear_session', { _csrf_token: 'app123'}, { 'HTTP_COOKIE' => response.headers['Set-Cookie'] }
-    response.body.must_equal 'Session cleared for: Lotus'
+    response.body.must_equal 'Session cleared for: Hanami'
 
     get '/get_session', nil, { 'HTTP_COOKIE' => response.headers['Set-Cookie'] }
     response.body.must_equal '[empty]'

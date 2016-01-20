@@ -1,8 +1,8 @@
-require 'lotus/model'
-require 'lotus/mailer'
+require 'hanami/model'
+require 'hanami/mailer'
 Dir["#{ __dir__ }/new_container/**/*.rb"].each { |file| require_relative file }
 
-Lotus::Model.configure do
+Hanami::Model.configure do
   ##
   # Database adapter
   #
@@ -46,10 +46,10 @@ Lotus::Model.configure do
   end
 end.load!
 
-Lotus::Mailer.configure do
+Hanami::Mailer.configure do
   root "#{ __dir__ }/new_container/mailers"
 
-  # See http://lotusrb.org/guides/mailers/delivery
+  # See http://hanamirb.org/guides/mailers/delivery
   delivery do
     development :test
     test        :test

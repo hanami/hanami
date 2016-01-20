@@ -1,0 +1,3 @@
+class <%= config[:model_name] %>
+  include Hanami::Entity
+end

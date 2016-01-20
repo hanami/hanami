@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe Lotus::Loader do
+describe Hanami::Loader do
   before do
     @application = CoffeeShop::Application.new
   end
@@ -10,7 +10,7 @@ describe Lotus::Loader do
       Reviews::Application.load!
     end
 
-    # Bug: https://github.com/lotus/lotus/issues/187
+    # Bug: https://github.com/hanami/hanami/issues/187
     it 'generates per application routes' do
       assert defined?(Reviews::Routes), 'expected Reviews::Routes'
     end
@@ -58,14 +58,14 @@ describe Lotus::Loader do
       end
 
       it 'assigns layout to CoffeeShop::View' do
-        CoffeeShop::View.configuration.layout.must_equal Lotus::View::Rendering::NullLayout
+        CoffeeShop::View.configuration.layout.must_equal Hanami::View::Rendering::NullLayout
       end
     end
 
     describe 'application' do
       describe 'routing' do
         it 'assigns routes' do
-          expected = Lotus::Router.new(&@application.configuration.routes)
+          expected = Hanami::Router.new(&@application.configuration.routes)
           @application.routes.path(:root).must_equal expected.path(:root)
         end
 
@@ -76,18 +76,18 @@ describe Lotus::Loader do
 
         it 'assigns custom default app' do
           default_app = @application.routes.instance_variable_get(:@router).instance_variable_get(:@default_app)
-          default_app.must_be_kind_of(Lotus::Routing::Default)
+          default_app.must_be_kind_of(Hanami::Routing::Default)
         end
 
         it 'assigns scheme, host and port configuration' do
           routes = @application.routes
-          routes.url(:root).must_equal 'https://lotus-coffeeshop.org:2300/'
+          routes.url(:root).must_equal 'https://hanami-coffeeshop.org:2300/'
         end
       end
 
       describe 'middleware' do
         it 'preloads the middleware' do
-          @application.middleware.must_be_kind_of(Lotus::Middleware)
+          @application.middleware.must_be_kind_of(Hanami::Middleware)
         end
       end
 
@@ -97,7 +97,7 @@ describe Lotus::Loader do
           before do
             @output = stub_stdout_constant do
               module BeerShop
-                class Application < Lotus::Application; load!; end
+                class Application < Hanami::Application; load!; end
               end
             end
           end
@@ -106,7 +106,7 @@ describe Lotus::Loader do
           end
 
           it 'load a default logger' do
-            BeerShop::Logger.must_be_instance_of Lotus::Logger
+            BeerShop::Logger.must_be_instance_of Hanami::Logger
           end
           it 'has app module name along with log output' do
             BeerShop::Logger.info 'foo'
@@ -118,7 +118,7 @@ describe Lotus::Loader do
           before do
             class MyLogger < Logger; end
             module DrinkShop
-              class Application < Lotus::Application
+              class Application < Hanami::Application
                 configure { logger MyLogger.new(STDOUT) }
                 load!
               end

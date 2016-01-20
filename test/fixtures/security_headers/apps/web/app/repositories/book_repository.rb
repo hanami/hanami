@@ -1,3 +1,3 @@
 class BookRepository
-  include Lotus::Repository
+  include Hanami::Repository
 end

@@ -1,7 +1,7 @@
-require 'lotus'
+require 'hanami'
 
 module InformationTech
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       namespace Object
 

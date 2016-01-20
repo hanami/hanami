@@ -8,15 +8,15 @@ if !ENV['TRAVIS']
 end
 
 gem 'sass'
-gem 'lotus-utils',       '~> 0.6', require: false, github: 'lotus/utils',       branch: '0.6.x'
-gem 'lotus-validations', '~> 0.4', require: false, github: 'lotus/validations', branch: '0.4.x'
-gem 'lotus-router',      '~> 0.5', require: false, github: 'lotus/router',      branch: '0.5.x'
-gem 'lotus-controller',  '~> 0.5', require: false, github: 'lotus/controller',  branch: '0.5.x'
-gem 'lotus-view',        '~> 0.5', require: false, github: 'lotus/view',        branch: '0.5.x'
-gem 'lotus-model',       '~> 0.5', require: false, github: 'lotus/model',       branch: '0.5.x'
-gem 'lotus-helpers',     '~> 0.2', require: false, github: 'lotus/helpers',     branch: '0.2.x'
-gem 'lotus-mailer',      '~> 0.1', require: false, github: 'lotus/mailer',      branch: '0.1.x'
-gem 'lotus-assets',      '~> 0.1', require: false, github: 'lotus/assets',      branch: '0.1.x'
+gem 'hanami-utils',       '~> 0.7', require: false, github: 'hanami/utils',       branch: '0.7.x'
+gem 'hanami-validations', '~> 0.5', require: false, github: 'hanami/validations', branch: '0.5.x'
+gem 'hanami-router',      '~> 0.6', require: false, github: 'hanami/router',      branch: '0.6.x'
+gem 'hanami-controller',  '~> 0.6', require: false, github: 'hanami/controller',  branch: '0.6.x'
+gem 'hanami-view',        '~> 0.6', require: false, github: 'hanami/view',        branch: '0.6.x'
+gem 'hanami-model',       '~> 0.6', require: false, github: 'hanami/model',       branch: '0.6.x'
+gem 'hanami-helpers',     '~> 0.3', require: false, github: 'hanami/helpers',     branch: '0.3.x'
+gem 'hanami-mailer',      '~> 0.2', require: false, github: 'hanami/mailer',      branch: '0.2.x'
+gem 'hanami-assets',      '~> 0.2', require: false, github: 'hanami/assets',      branch: '0.2.x'
 
 platforms :ruby do
   gem 'sqlite3'

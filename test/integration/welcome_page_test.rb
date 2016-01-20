@@ -6,14 +6,14 @@ describe 'Welcome page' do
   include Rack::Test::Methods
 
   before do
-    ENV['LOTUS_ENV'] = 'development'
+    ENV['HANAMI_ENV'] = 'development'
     @current_dir = Dir.pwd
     Dir.chdir FIXTURES_ROOT.join('welcome_app')
     @app = WelcomeApp::Application.new
   end
 
   after do
-    ENV['LOTUS_ENV'] = 'test'
+    ENV['HANAMI_ENV'] = 'test'
     Dir.chdir @current_dir
     @current_dir = nil
   end
@@ -30,6 +30,6 @@ describe 'Welcome page' do
     get '/'
 
     response.status.must_equal 200
-    response.body.must_include %(Lotus)
+    response.body.must_include %(Hanami)
   end
 end

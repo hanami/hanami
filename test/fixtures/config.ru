@@ -1,12 +1,12 @@
-require 'lotus'
+require 'hanami'
 
 module ServerTest
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       routes do
         route = -> (env) {
           headers = {
-            'X-Lotus-Port' => ENV['LOTUS_PORT'].to_s
+            'X-Hanami-Port' => ENV['HANAMI_PORT'].to_s
           }
 
           [200, headers, ['OK']]

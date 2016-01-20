@@ -1,4 +1,4 @@
-# Lotus
+# Hanami
 A complete web framework for Ruby
 
 ## v0.6.1 - 2016-01-19
@@ -7,7 +7,7 @@ A complete web framework for Ruby
 - [Anton Davydov] Fix project creation when name contains dashes (eg. `"awesome-project" => "AwesomeProject"`)
 - [Anton Davydov] Ensure to add assets related entries to `.gitignore` when a project is generated with the `--database` flag
 - [deepj] Avoid blank lines in generated `Gemfile`
-- [trexnix] Fix for `lotus destroy app`: it doesn't cause a syntax error in `config/application.rb` anymore
+- [trexnix] Fix for `hanami destroy app`: it doesn't cause a syntax error in `config/application.rb` anymore
 - [Serg Ikonnikov & Trung Lê] Ensure console to use the bundled engine
 
 ## v0.6.0 - 2016-01-12
@@ -15,18 +15,18 @@ A complete web framework for Ruby
 - [Luca Guidi] Introduced configurable assets compressors
 - [Luca Guidi] Introduced "CDN mode" in order to serve static assets via Content Distribution Networks
 - [Luca Guidi] Introduced "Digest mode" in production in order to generate and serve assets with checksum suffix
-- [Luca Guidi] Introduced `lotus assets precompile` command to precompile, minify and append checksum suffix to static assets
+- [Luca Guidi] Introduced `hanami assets precompile` command to precompile, minify and append checksum suffix to static assets
 - [Luca Guidi] Send `Content-Cache` HTTP header when serving static assets in production mode
 - [Luca Guidi] Support new env var `SERVE_STATIC_ASSETS="true"` in order to serve static assets for the entire project
 - [Luca Guidi] Generate new applications by including `Web::Assets::Helpers` in `view.prepare` block
 - [Luca Guidi] Introduced new Rake tasks `:preload` and `:environment`
 - [Luca Guidi] Introduced new Rake tasks `db:migrate` and `assets:precompile` for Rails/Heroku compatibility
-- [Tadeu Valentt & Lucas Allan Amorin] Added `lotus destroy` command for apps, models, actions, migrations and mailers
+- [Tadeu Valentt & Lucas Allan Amorin] Added `hanami destroy` command for apps, models, actions, migrations and mailers
 - [Lucas Allan Amorim] Custom initializers (`apps/web/config/initializers`) they are ran when the project is loaded and about to start
 - [Trung Lê] Generate mailer templates directory for new projects (eg. `lib/bookshelf/mailers/templates`)
-- [Tadeu Valentt] Alias `--database` as `-d` for `lotus new`
-- [Tadeu Valentt] Alias `--arch` as `-a` for `lotus new`
-- [Sean Collins] Let `lotus generate action` to guess HTTP method (`--method` arg) according to RESTful conventions
+- [Tadeu Valentt] Alias `--database` as `-d` for `hanami new`
+- [Tadeu Valentt] Alias `--arch` as `-a` for `hanami new`
+- [Sean Collins] Let `hanami generate action` to guess HTTP method (`--method` arg) according to RESTful conventions
 - [Gonzalo Rodríguez-Baltanás Díaz] Generate new applications with default favicon
 
 ### Fixed
@@ -35,13 +35,13 @@ A complete web framework for Ruby
 - [Lucas Allan Amorim] Add `bundler` as a runtime dependency
 - [Lucas Allan Amorim] Ensure to load properly Bundler dependencies when starting the application
 - [Luca Guidi] Ensure sessions to be always available for other middleware in Rack stack of single applications
-- [Ken Gullaksen] Ensure to specify `LOTUS_PORT` env var from `.env`
-- [Andrey Deryabin] Fix `lotus new .` and prevent to generate the project in a subdirectory of current one
+- [Ken Gullaksen] Ensure to specify `HANAMI_PORT` env var from `.env`
+- [Andrey Deryabin] Fix `hanami new .` and prevent to generate the project in a subdirectory of current one
 - [Jason Charnes] Validate entity name for model generator
-- [Caius Durling] Fixed generator for nested actions (eg. `lotus generate action web domains/certs#index`)
+- [Caius Durling] Fixed generator for nested actions (eg. `hanami generate action web domains/certs#index`)
 - [Tadeu Valentt] Prevent to generate migrations with the same name
 - [Luca Guidi] Ensure RSpec examples to be generated with `RSpec.describe` instead of only `describe`
-- [Andrey Deryabin] Avoid `lotus` command to generate unnecessary `.lotusrc` files
+- [Andrey Deryabin] Avoid `hanami` command to generate unnecessary `.hanamirc` files
 - [Jason Charnes] Convert camel case application name into snake case when generating actions (eg. `BeautifulBlossoms` to `beautiful_blossoms`)
 - [Alfonso Uceda Pompa] Convert dasherized names into underscored names when generating projects (eg. `awesome-project` to `awesome_project`)
 
@@ -64,7 +64,7 @@ A complete web framework for Ruby
 ### Fixed
 - [Luca Guidi] Handle conflicts between directories with the same name while serving static assets
 - [Derk-Jan Karrenbeld] Include default value `font-src: self` for CSP HTTP header
-- [Cam Huynh] Make CLI arguments immutable for `Lotus::Environment`
+- [Cam Huynh] Make CLI arguments immutable for `Hanami::Environment`
 - [Andrii Ponomarov] Disable welcome page in test environment
 - [Alfonso Uceda Pompa] Print error message and exit when no name is provided to model generator
 
@@ -73,14 +73,14 @@ A complete web framework for Ruby
 
 ## v0.4.1 - 2015-07-10
 ### Added
-- [Trung Lê] Alias `--database` as `--db` for `lotus new`
+- [Trung Lê] Alias `--database` as `--db` for `hanami new`
 
 ### Fixed
-- [Alfonso Uceda Pompa] Ensure to load correctly apps in `lotus console`
+- [Alfonso Uceda Pompa] Ensure to load correctly apps in `hanami console`
 - [Alfonso Uceda Pompa] Ensure to not duplicate prefix for Container mounted apps (eg `/admin/admin/dashboard`)
 - [Alfonso Uceda Pompa] Ensure generator for "application" architecture to generate session secret
-- [Alfonso Uceda Pompa & Trung Lê & Hiếu Nguyễn] Exit unsuccessfully when `lotus generate model` doesn't receive a mandatory name for model
-- [Miguel Molina] Exit unsuccessfully when `lotus new --database` receives an unknown value
+- [Alfonso Uceda Pompa & Trung Lê & Hiếu Nguyễn] Exit unsuccessfully when `hanami generate model` doesn't receive a mandatory name for model
+- [Miguel Molina] Exit unsuccessfully when `hanami new --database` receives an unknown value
 - [Luca Guidi] Ensure to prepend sessions middleware, so other Rack components can have access to HTTP session
 
 ## v0.4.0 - 2015-06-23
@@ -94,20 +94,20 @@ A complete web framework for Ruby
 
 ### Fixed
 - [Alfonso Uceda Pompa] Fix generated routes for Container applications mounted on a path different from `/`.
-- [Luca Guidi] Reading `.lotusrc` pollutes `ENV` with unwanted variables.
+- [Luca Guidi] Reading `.hanamirc` pollutes `ENV` with unwanted variables.
 - [Alfonso Uceda Pompa] Added sqlite extension to SQLite/SQLite3 database URL.
 
 ### Changed
 - [Luca Guidi] `.env`, `.env.development` and `.env.test` are generated and expected to be placed at the root of the project.
 - [Luca Guidi] Remove database mapping from generated apps.
 - [Trung Lê & Luca Guidi] Remove default generated from new apps.
-- [Luca Guidi] New projects should depend on `lotus-model ~> 0.4`
+- [Luca Guidi] New projects should depend on `hanami-model ~> 0.4`
 
 ## v0.3.2 - 2015-05-22
 ### Added
 - [Alfonso Uceda Pompa] Automatic secure cookies if the current connection is using HTTPS.
 - [Alfonso Uceda Pompa] Routing helpers for actions (via `#routes`).
-- [My Mai] Introduced `Lotus.root`. It returns the top level directory of the project.
+- [My Mai] Introduced `Hanami.root`. It returns the top level directory of the project.
 
 ### Fixed
 - [Ngọc Nguyễn] Model generator should use new RSpec syntax.
@@ -118,9 +118,9 @@ A complete web framework for Ruby
 
 ## v0.3.1 - 2015-05-15
 ### Added
-- [Hiếu Nguyễn] Introduced application generator (eg. `bundle exec lotus generate app admin` creates `apps/admin`).
-- [Ngọc Nguyễn] Introduced model generator (eg. `bundle exec lotus generate model user` creates entity, repository and test files).
-- [Ngọc Nguyễn] Introduced `Lotus.env`, `Lotus.env?` for current environment introspection (eg. `Lotus.env?(:test)` or `Lotus.env?(:staging, :production)`)
+- [Hiếu Nguyễn] Introduced application generator (eg. `bundle exec hanami generate app admin` creates `apps/admin`).
+- [Ngọc Nguyễn] Introduced model generator (eg. `bundle exec hanami generate model user` creates entity, repository and test files).
+- [Ngọc Nguyễn] Introduced `Hanami.env`, `Hanami.env?` for current environment introspection (eg. `Hanami.env?(:test)` or `Hanami.env?(:staging, :production)`)
 - [Miguel Molina] Skip view creation when an action is generated via `--skip-view` CLI arg.
 
 ### Fixed
@@ -128,14 +128,14 @@ A complete web framework for Ruby
 
 ## v0.3.0 - 2015-03-23
 ### Added
-- [Luca Guidi] Introduced action generator. Eg. `bundle exec lotus generate action web dashboard#index`
-- [Alfonso Uceda Pompa] Allow to specify default coookies options in application configuration. Eg. `cookies true, { domain: 'lotusrb.org' }`
-- [Tom Kadwill] Include `Lotus::Helpers` in views.
-- [Linus Pettersson] Allow to specify `--database` CLI option when generate a new project. Eg. `lotus new bookshelf --database=postgresql`
+- [Luca Guidi] Introduced action generator. Eg. `bundle exec hanami generate action web dashboard#index`
+- [Alfonso Uceda Pompa] Allow to specify default coookies options in application configuration. Eg. `cookies true, { domain: 'hanamirb.org' }`
+- [Tom Kadwill] Include `Hanami::Helpers` in views.
+- [Linus Pettersson] Allow to specify `--database` CLI option when generate a new project. Eg. `hanami new bookshelf --database=postgresql`
 - [Linus Pettersson] Initialize a Git repository when generating a new project
-- [Alfonso Uceda Pompa] Produce `.lotusrc` when generating a new project
+- [Alfonso Uceda Pompa] Produce `.hanamirc` when generating a new project
 - [Alfonso Uceda Pompa] Security HTTP headers. `X-Frame-Options` and `Content-Security-Policy` are now enabled by default.
-- [Linus Pettersson] Database console. Run with `bundle exec lotus db console`
+- [Linus Pettersson] Database console. Run with `bundle exec hanami db console`
 - [Luca Guidi] Dynamic finders for relative and absolute routes. It implements method missing: `Web::Routes.home_path` will resolve to `Web::Routes.path(:home)`.
 
 ### Changed
@@ -145,35 +145,35 @@ A complete web framework for Ruby
 
 ## v0.2.1 - 2015-02-06
 ### Added
-- [Huy Đỗ] Introduced `Lotus::Logger`
-- [Jimmy Zhang] `lotus new` accepts a `--path` argument
-- [Jimmy Zhang] Project generator for the current directory (`lotus new .`). This is useful to provide a web deliverable for existing Ruby gems.
+- [Huy Đỗ] Introduced `Hanami::Logger`
+- [Jimmy Zhang] `hanami new` accepts a `--path` argument
+- [Jimmy Zhang] Project generator for the current directory (`hanami new .`). This is useful to provide a web deliverable for existing Ruby gems.
 - [Trung Lê] Add example mapping file for project generator: `lib/config/mapping.rb`
 - [Hiếu Nguyễn] RSpec support for project generator: `--test=rspec` or `--test=minitest` (default)
 
 ### Fixed
-- [Luca Guidi] `lotus version` to previx `v` (eg `v0.2.1`)
+- [Luca Guidi] `hanami version` to previx `v` (eg `v0.2.1`)
 - [Rob Yurkowski] Ensure project name doesn't contain special or forbidden characters
 - [Luca Guidi] Ensure all the applications are loaded in console
 - [Trung Lê] Container architecture: preload only `lib/<projectname>/**/*.rb`
-- [Hiếu Nguyễn] Fixed `lotus new` to print usage when project name isn't provided
+- [Hiếu Nguyễn] Fixed `hanami new` to print usage when project name isn't provided
 
 ## v0.2.0 - 2014-06-23
 ### Added
-- [Luca Guidi] Introduced `lotus new` as a command to generate projects. It supports "container" architecture for now.
-- [Luca Guidi] Show a welcome page when one mounted Lotus application doesn't have routes
-- [Luca Guidi] Introduced `Lotus::Application.preload!` to preload all the Lotus applications in a given Ruby process. (Bulk `Lotus::Application.load!`)
+- [Luca Guidi] Introduced `hanami new` as a command to generate projects. It supports "container" architecture for now.
+- [Luca Guidi] Show a welcome page when one mounted Hanami application doesn't have routes
+- [Luca Guidi] Introduced `Hanami::Application.preload!` to preload all the Hanami applications in a given Ruby process. (Bulk `Hanami::Application.load!`)
 - [Trung Lê] Allow browsers to fake non `GET`/`POST` requests via `Rack::MethodOverride`
 - [Josue Abreu] Allow to define body parses for non `GET` HTTP requests (`body_parsers` configuration)
 - [Alfonso Uceda Pompa] Allow to toggle static assets serving (`serve_assets` configuration)
 - [Alfonso Uceda Pompa] Allow to serve assets from multiple sources (`assets` configuration)
 - [Luca Guidi] Allow to configure `ENV` vars with per environment `.env` files
-- [Alfonso Uceda Pompa] Introduced `lotus routes` command
+- [Alfonso Uceda Pompa] Introduced `hanami routes` command
 - [Luca Guidi] Allow to configure low level settings for MVC frameworks (`model`, `view` and `controller` configuration)
-- [Luca Guidi] Introduced `Lotus::Container`
-- [Trung Lê] Include `Lotus::Presenter` as part of the duplicated modules
-- [Trung Lê] Include `Lotus::Entity` and `Lotus::Repository` as part of the duplicated modules
-- [Luca Guidi] Introduced code reloading for `lotus server`
+- [Luca Guidi] Introduced `Hanami::Container`
+- [Trung Lê] Include `Hanami::Presenter` as part of the duplicated modules
+- [Trung Lê] Include `Hanami::Entity` and `Hanami::Repository` as part of the duplicated modules
+- [Luca Guidi] Introduced code reloading for `hanami server`
 - [Trung Lê] Allow to configure database adapter (`adapter` configuration)
 - [Luca Guidi & Trung Lê] Allow to configure database mapping (`mapping` configuration)
 - [Piotr Kurek] Introduced custom templates for non successful responses
@@ -182,10 +182,10 @@ A complete web framework for Ruby
 - [Josue Abreu] Allow to configure cookies (`cookies` configuration)
 - [Piotr Kurek] Allow to yield multiple configurations per application, according to the current environment
 - [David Celis] Allow to configure Rack middleware stack (`middleware` configuration)
-- [David Celis] Introduced `lotus console` command. It runs the REPL configured in `Gemfile` (eg. pry or ripl). Defaults to IRb.
-- [Luca Guidi] Introduced `Lotus::Environment` which holds the informations about the current environment, and CLI arguments
-- [Luca Guidi] Introduced `Lotus::Application.load!` to load and configure an application without requiring user defined code (controllers, views, etc.)
-- [Leonard Garvey] Introduced `lotus server` command. It runs the application with the Rack server declared in `Gemfile` (eg. puma, thin, unicorn). It defaults to `WEBRick`.
+- [David Celis] Introduced `hanami console` command. It runs the REPL configured in `Gemfile` (eg. pry or ripl). Defaults to IRb.
+- [Luca Guidi] Introduced `Hanami::Environment` which holds the informations about the current environment, and CLI arguments
+- [Luca Guidi] Introduced `Hanami::Application.load!` to load and configure an application without requiring user defined code (controllers, views, etc.)
+- [Leonard Garvey] Introduced `hanami server` command. It runs the application with the Rack server declared in `Gemfile` (eg. puma, thin, unicorn). It defaults to `WEBRick`.
 - [Luca Guidi] Official support for MRI 2.1 and 2.2
 
 ### Changed
@@ -196,8 +196,8 @@ A complete web framework for Ruby
 
 ## v0.1.0 - 2014-06-23
 ### Added
-- [Luca Guidi] Allow to run multiple Lotus applications in the same Ruby process (framework duplication)
-- [Luca Guidi] Introduced `Lotus::Routes` as factory to generate application URLs
+- [Luca Guidi] Allow to run multiple Hanami applications in the same Ruby process (framework duplication)
+- [Luca Guidi] Introduced `Hanami::Routes` as factory to generate application URLs
 - [Luca Guidi] Allow to configure scheme, host and port (`scheme`, `host` and `port` configuration)
 - [Luca Guidi] Allow to configure a layout to use for all the views of an application (`layout` configuration)
 - [Luca Guidi] Allow to configure routes (`routes` configuration)
@@ -205,6 +205,6 @@ A complete web framework for Ruby
 - [Luca Guidi] Allow to serve static files (`assets` configuration)
 - [Luca Guidi] Render default pages for non successful responses (eg `404` or `500`)
 - [Luca Guidi] Allow to configure the root of an application (`root` configuration)
-- [Luca Guidi] Introduced `Lotus::Configuration`
-- [Luca Guidi] Introduced `Lotus::Application`
+- [Luca Guidi] Introduced `Hanami::Configuration`
+- [Luca Guidi] Introduced `Hanami::Application`
 - [Luca Guidi] Official support for MRI 2.0

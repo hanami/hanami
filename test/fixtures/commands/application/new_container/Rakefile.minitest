@@ -1,5 +1,5 @@
 require 'rake'
-require 'lotus/rake_tasks'
+require 'hanami/rake_tasks'
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|

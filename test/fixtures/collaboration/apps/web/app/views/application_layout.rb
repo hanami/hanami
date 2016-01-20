@@ -1,3 +1,3 @@
 class Collaboration::Views::ApplicationLayout
-  include Lotus::Layout
+  include Hanami::Layout
 end

@@ -1,15 +1,15 @@
 require 'test_helper'
-require 'lotus/commands/generate/migration'
+require 'hanami/commands/generate/migration'
 require 'fileutils'
 
-describe Lotus::Commands::Generate::Migration do
+describe Hanami::Commands::Generate::Migration do
   describe 'with invalid arguments' do
     it 'requires migration name' do
       with_temp_dir do
         setup_app
-        -> { Lotus::Commands::Generate::Migration.new({}, nil) }.must_raise ArgumentError
-        -> { Lotus::Commands::Generate::Migration.new({}, '') }.must_raise ArgumentError
-        -> { Lotus::Commands::Generate::Migration.new({}, '   ') }.must_raise ArgumentError
+        -> { Hanami::Commands::Generate::Migration.new({}, nil) }.must_raise ArgumentError
+        -> { Hanami::Commands::Generate::Migration.new({}, '') }.must_raise ArgumentError
+        -> { Hanami::Commands::Generate::Migration.new({}, '   ') }.must_raise ArgumentError
       end
     end
   end
@@ -18,7 +18,7 @@ describe Lotus::Commands::Generate::Migration do
     it 'creates the migration file' do
       with_temp_dir do |original_wd|
         setup_app
-        command = Lotus::Commands::Generate::Migration.new({}, 'something')
+        command = Hanami::Commands::Generate::Migration.new({}, 'something')
         capture_io { command.start }
 
         assert_migration_exists('something')
@@ -31,7 +31,7 @@ describe Lotus::Commands::Generate::Migration do
     it 'underscores the migration name' do
       with_temp_dir do |original_wd|
         setup_app
-        command = Lotus::Commands::Generate::Migration.new({}, 'SoMe-Thing-Strange')
+        command = Hanami::Commands::Generate::Migration.new({}, 'SoMe-Thing-Strange')
         capture_io { command.start }
 
         assert_migration_exists('so_me_thing_strange')
@@ -45,11 +45,11 @@ describe Lotus::Commands::Generate::Migration do
         setup_app
 
         capture_io {
-          Lotus::Commands::Generate::Migration.new({}, 'create_books').start
+          Hanami::Commands::Generate::Migration.new({}, 'create_books').start
 
-          Lotus::Commands::Generate::Migration.new({}, 'create_users').start
+          Hanami::Commands::Generate::Migration.new({}, 'create_users').start
 
-          Lotus::Commands::Generate::Migration.new({}, 'create_books').destroy.start
+          Hanami::Commands::Generate::Migration.new({}, 'create_books').destroy.start
         }
 
         assert_migration_exists('create_users')

@@ -1,5 +1,5 @@
 module SessionsApp
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       sessions :cookie, secret: '1234567890'
 

@@ -1,3 +1,3 @@
 class AppLayout
-  include Lotus::Layout
+  include Hanami::Layout
 end

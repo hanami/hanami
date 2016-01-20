@@ -1,15 +1,15 @@
 require 'test_helper'
 
-describe Lotus::Routes do
+describe Hanami::Routes do
   before do
     @scheme   = 'https'
-    @host     = 'lotusrb.org'
+    @host     = 'hanamirb.org'
     @port     = 443
-    @original = Lotus::Router.new(scheme: @scheme, host: @host, port: @port) do
+    @original = Hanami::Router.new(scheme: @scheme, host: @host, port: @port) do
       get '/', as: :root
     end
 
-    @routes = Lotus::Routes.new(@original)
+    @routes = Hanami::Routes.new(@original)
   end
 
   describe '#path' do
@@ -18,11 +18,11 @@ describe Lotus::Routes do
     end
 
     it 'raises an error when the path cannot be found' do
-      -> { @routes.path(:unknown) }.must_raise Lotus::Routing::InvalidRouteException
+      -> { @routes.path(:unknown) }.must_raise Hanami::Routing::InvalidRouteException
     end
 
     it 'returns safe string' do
-      @routes.path(:root).must_be_kind_of Lotus::Utils::Escape::SafeString
+      @routes.path(:root).must_be_kind_of Hanami::Utils::Escape::SafeString
     end
   end
 
@@ -32,11 +32,11 @@ describe Lotus::Routes do
     end
 
     it 'raises an error when the url cannot be found' do
-      -> { @routes.url(:unknown) }.must_raise Lotus::Routing::InvalidRouteException
+      -> { @routes.url(:unknown) }.must_raise Hanami::Routing::InvalidRouteException
     end
 
     it 'returns safe string' do
-      @routes.url(:root).must_be_kind_of Lotus::Utils::Escape::SafeString
+      @routes.url(:root).must_be_kind_of Hanami::Utils::Escape::SafeString
     end
   end
 
@@ -47,7 +47,7 @@ describe Lotus::Routes do
       end
 
       it "raises an error if an unknown path is invoked" do
-        -> { @routes.unknown_path }.must_raise Lotus::Routing::InvalidRouteException
+        -> { @routes.unknown_path }.must_raise Hanami::Routing::InvalidRouteException
       end
     end
 
@@ -57,7 +57,7 @@ describe Lotus::Routes do
       end
 
       it "raises an error if an unknown url is invoked" do
-        -> { @routes.unknown_url }.must_raise Lotus::Routing::InvalidRouteException
+        -> { @routes.unknown_url }.must_raise Hanami::Routing::InvalidRouteException
       end
     end
 

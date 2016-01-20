@@ -2,7 +2,7 @@ require 'test_helper'
 require 'rack/test'
 require 'fixtures/one_file/application'
 
-describe 'A one file Lotus application' do
+describe 'A one file Hanami application' do
   include Rack::Test::Methods
 
   before do

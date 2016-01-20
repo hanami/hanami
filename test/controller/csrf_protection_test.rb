@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'rack/mock'
 
-describe Lotus::Action::CSRFProtection do
+describe Hanami::Action::CSRFProtection do
   describe "when active" do
     before do
       @action = CSRFAction.new
@@ -38,15 +38,15 @@ describe Lotus::Action::CSRFProtection do
       end
     end
 
-    describe "when LOTUS_ENV is 'test'" do
+    describe "when HANAMI_ENV is 'test'" do
       before do
-        @lotus_env       = ENV['LOTUS_ENV']
-        ENV['LOTUS_ENV'] = 'test'
+        @hanami_env       = ENV['HANAMI_ENV']
+        ENV['HANAMI_ENV'] = 'test'
 
         @action = Class.new do
-          include Lotus::Action
-          include Lotus::Action::Session
-          include Lotus::Action::CSRFProtection
+          include Hanami::Action
+          include Hanami::Action::Session
+          include Hanami::Action::CSRFProtection
 
           configuration.handle_exceptions false
 
@@ -57,7 +57,7 @@ describe Lotus::Action::CSRFProtection do
       end
 
       after do
-        ENV['LOTUS_ENV'] = @lotus_env
+        ENV['HANAMI_ENV'] = @hanami_env
       end
 
       [ 'POST', 'PATCH', 'PUT', 'DELETE' ].each do |verb|
@@ -70,17 +70,17 @@ describe Lotus::Action::CSRFProtection do
       end
     end
 
-    describe "when LOTUS_ENV isn't 'test'" do
+    describe "when HANAMI_ENV isn't 'test'" do
       before do
-        @lotus_env       = ENV['LOTUS_ENV']
+        @hanami_env       = ENV['HANAMI_ENV']
         @rack_env        = ENV['RACK_ENV']
-        ENV['LOTUS_ENV'] = 'development'
+        ENV['HANAMI_ENV'] = 'development'
         ENV['RACK_ENV']  = 'development'
 
         @action = Class.new do
-          include Lotus::Action
-          include Lotus::Action::Session
-          include Lotus::Action::CSRFProtection
+          include Hanami::Action
+          include Hanami::Action::Session
+          include Hanami::Action::CSRFProtection
 
           configuration.handle_exceptions false
 
@@ -91,7 +91,7 @@ describe Lotus::Action::CSRFProtection do
       end
 
       after do
-        ENV['LOTUS_ENV'] = @lotus_env
+        ENV['HANAMI_ENV'] = @hanami_env
         ENV['RACK_ENV']  = @rack_env
       end
 
@@ -99,7 +99,7 @@ describe Lotus::Action::CSRFProtection do
         it "raises error if token doesn't match (#{ verb })" do
           env = Rack::MockRequest.env_for('/', method: verb, params: { '_csrf_token' => 'nope' })
 
-          -> { @action.call(env) }.must_raise Lotus::Action::InvalidCSRFTokenError
+          -> { @action.call(env) }.must_raise Hanami::Action::InvalidCSRFTokenError
           @action.__send__(:session).must_be :empty? # reset session
         end
       end

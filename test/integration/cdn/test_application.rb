@@ -7,17 +7,17 @@ describe 'CDN (Application)' do
     @current_dir = Dir.pwd
     Dir.chdir root
 
-    @lotus_env       = ENV['LOTUS_ENV']
-    ENV['LOTUS_ENV'] = 'production'
+    @hanami_env       = ENV['HANAMI_ENV']
+    ENV['HANAMI_ENV'] = 'production'
 
-    assert system("LOTUS_ENV=production bundle exec lotus assets precompile")
+    assert system("HANAMI_ENV=production bundle exec hanami assets precompile")
 
     require root.join('config', 'environment')
     @app = CdnApp::Application.new
   end
 
   after do
-    ENV['LOTUS_ENV'] = @lotus_env
+    ENV['HANAMI_ENV'] = @hanami_env
 
     Dir.chdir @current_dir
     @current_dir = nil

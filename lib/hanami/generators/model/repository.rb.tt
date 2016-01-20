@@ -1,0 +1,3 @@
+class <%= config[:model_name] %>Repository
+  include Hanami::Repository
+end

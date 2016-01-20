@@ -1,4 +1,4 @@
 class User
-  include Lotus::Entity
+  include Hanami::Entity
   attributes :name
 end

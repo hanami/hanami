@@ -1,3 +1,3 @@
 class UserRepository
-  include Lotus::Repository
+  include Hanami::Repository
 end

@@ -1,7 +1,7 @@
-require 'lotus'
+require 'hanami'
 
 module Furnitures
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       layout :application
       routes 'config/routes'

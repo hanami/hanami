@@ -1,7 +1,7 @@
-require 'lotus/helpers'
+require 'hanami/helpers'
 
 module StaticAssetsApp
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       ##
       # BASIC
@@ -22,7 +22,7 @@ module StaticAssetsApp
 
       # Handle exceptions with HTTP statuses (true) or don't catch them (false).
       # Defaults to true.
-      # See: http://www.rubydoc.info/gems/lotus-controller/
+      # See: http://www.rubydoc.info/gems/hanami-controller/
 
       # Exceptions_management
       #
@@ -33,7 +33,7 @@ module StaticAssetsApp
       #
 
       # Routes definitions for this application
-      # See: http://www.rubydoc.info/gems/lotus-router#Usage
+      # See: http://www.rubydoc.info/gems/hanami-router#Usage
       #
       routes 'config/routes'
 
@@ -182,7 +182,7 @@ module StaticAssetsApp
       # Configure the code that will yield each time StaticAssetsApp::Action is included
       # This is useful for sharing common functionality
       #
-      # See: http://www.rubydoc.info/gems/lotus-controller#Configuration
+      # See: http://www.rubydoc.info/gems/hanami-controller#Configuration
       controller.prepare do
         # include MyAuthentication # included in all the actions
         # before :authenticate!    # run an authentication before callback
@@ -191,9 +191,9 @@ module StaticAssetsApp
       # Configure the code that will yield each time StaticAssetsApp::View is included
       # This is useful for sharing common functionality
       #
-      # See: http://www.rubydoc.info/gems/lotus-view#Configuration
+      # See: http://www.rubydoc.info/gems/hanami-view#Configuration
       view.prepare do
-        include Lotus::Helpers
+        include Hanami::Helpers
         include StaticAssetsApp::Assets::Helpers
       end
     end

@@ -3,14 +3,14 @@ require 'rack/test'
 require 'fixtures/microservices/apps/frontend/application'
 require 'fixtures/microservices/apps/backend/application'
 
-describe 'Lotus microservices applications' do
+describe 'Hanami microservices applications' do
   include Rack::Test::Methods
 
   before do
     @current_dir = Dir.pwd
     Dir.chdir FIXTURES_ROOT.join('microservices')
 
-    @app = Lotus::Router.new do
+    @app = Hanami::Router.new do
       mount Backend::Application.new,  at: '/backend'
       mount Frontend::Application.new, at: '/'
     end

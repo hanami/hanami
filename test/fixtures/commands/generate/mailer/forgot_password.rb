@@ -1,5 +1,5 @@
 class Mailers::ForgotPassword
-  include Lotus::Mailer
+  include Hanami::Mailer
 
   from    '<from>'
   to      '<to>'

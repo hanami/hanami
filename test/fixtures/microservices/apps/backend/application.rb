@@ -1,5 +1,5 @@
 module Backend
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       root File.dirname(__FILE__)
       load_paths << [
