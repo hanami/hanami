@@ -19,9 +19,17 @@ rvm:
   - ruby-head
 
 matrix:
+  include:
+    - rvm: jruby-head
+      jdk: oraclejdk8
+      env: TRUFFLE=1
+
   allow_failures:
     - rvm: jruby-head
     - rvm: ruby-head
     - rvm: jruby-9000
     - rvm: jruby-9.0.1.0
     - rvm: jruby-9.0.3.0
+    - rvm: jruby-head
+      jdk: oraclejdk8
+      env: TRUFFLE=1
