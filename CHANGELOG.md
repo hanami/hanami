@@ -1,6 +1,10 @@
 # Hanami
 A complete web framework for Ruby
 
+## v0.7.0 - (unreleased)
+### Changed
+- [Luca Guidi] Drop support MRI 2.0, 2.1
+
 ## v0.6.1 - 2016-01-19
 ### Fixed
 - [Anton Davydov] Show the current app name in Welcome page (eg. `/admin` shows instructions on how to generate an action for `Admin` app)
