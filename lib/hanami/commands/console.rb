@@ -22,7 +22,7 @@ module Hanami
         'irb'  => 'IRB'
       }.freeze
 
-      DEFAULT_ENGINE = 'irb'.freeze
+      DEFAULT_ENGINE = ["irb", "IRB"].freeze
 
       # @since 0.1.0
       attr_reader :options
