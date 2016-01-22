@@ -194,6 +194,35 @@ describe Hanami::Cli do
     end
   end
 
+  describe 'version' do
+    describe 'when `version` command' do
+      it 'prints Hanami version' do
+        assert_output("v#{Hanami::VERSION}\n") do
+          ARGV.replace(%w{version})
+          Hanami::Cli.start
+        end
+      end
+    end
+
+    describe 'when passing --version to hanami command, with no subcommand' do
+      it 'prints Hanami version' do
+        assert_output("v#{Hanami::VERSION}\n") do
+          ARGV.replace(%w{--version})
+          Hanami::Cli.start
+        end
+      end
+    end
+
+    describe 'when passing -v to hanami command, with no subcommand' do
+      it 'prints Hanami version' do
+        assert_output("v#{Hanami::VERSION}\n") do
+          ARGV.replace(%w{-v})
+          Hanami::Cli.start
+        end
+      end
+    end
+  end
+
   def setup_container_app
     File.open('.hanamirc', 'w') { |file| file << "architecture=container"}
   end
