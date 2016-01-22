@@ -34,6 +34,30 @@ describe Hanami::Commands::Generate::App do
       end
     end
 
+    it 'generates template file for special engine' do
+      with_temp_dir do |original_wd|
+        setup_container_app(original_wd)
+        File.open('.hanamirc', 'w') { |file| file << "template=slim"}
+        command = Hanami::Commands::Generate::App.new({}, 'admin')
+        capture_io { command.start }
+
+        assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'layout.html.slim'), 'apps/admin/templates/application.html.slim')
+      end
+    end
+
+    describe 'when template engine not erb, haml or slim' do
+      it 'generates erb template file' do
+        with_temp_dir do |original_wd|
+          setup_container_app(original_wd)
+          File.open('.hanamirc', 'w') { |file| file << "template=wiki"}
+          command = Hanami::Commands::Generate::App.new({}, 'admin')
+          capture_io { command.start }
+
+          assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'layout.html.erb'), 'apps/admin/templates/application.html.erb')
+        end
+      end
+    end
+
     it 'generate the application with valid ruby syntax for dasherized name' do
       with_temp_dir do |original_wd|
         setup_container_app(original_wd)
