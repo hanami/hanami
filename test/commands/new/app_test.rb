@@ -1,33 +1,33 @@
 require 'test_helper'
-require 'lotus/commands/new/app'
+require 'hanami/commands/new/app'
 require 'fileutils'
 
-describe Lotus::Commands::New::App do
+describe Hanami::Commands::New::App do
   describe 'with invalid arguments' do
     it 'requires application name' do
       with_temp_dir do |original_wd|
-        -> { Lotus::Commands::New::App.new({}, nil) }.must_raise ArgumentError
-        -> { Lotus::Commands::New::App.new({}, '') }.must_raise ArgumentError
-        -> { Lotus::Commands::New::App.new({}, '  ') }.must_raise ArgumentError
-        -> { Lotus::Commands::New::App.new({}, 'foo/bar') }.must_raise ArgumentError
+        -> { Hanami::Commands::New::App.new({}, nil) }.must_raise ArgumentError
+        -> { Hanami::Commands::New::App.new({}, '') }.must_raise ArgumentError
+        -> { Hanami::Commands::New::App.new({}, '  ') }.must_raise ArgumentError
+        -> { Hanami::Commands::New::App.new({}, 'foo/bar') }.must_raise ArgumentError
       end
     end
 
     it 'validates test option' do
       with_temp_dir do |original_wd|
-        -> { Lotus::Commands::New::App.new({test: 'unknown'}, nil) }.must_raise ArgumentError
+        -> { Hanami::Commands::New::App.new({test: 'unknown'}, nil) }.must_raise ArgumentError
       end
     end
 
     it 'validates database option' do
       with_temp_dir do |original_wd|
-        -> { Lotus::Commands::New::App.new({database: 'unknown'}, nil) }.must_raise ArgumentError
+        -> { Hanami::Commands::New::App.new({database: 'unknown'}, nil) }.must_raise ArgumentError
       end
     end
 
     it 'does not support application_name' do
       with_temp_dir do |original_wd|
-        -> { Lotus::Commands::New::App.new({application_name: 'application_name'}, nil) }.must_raise ArgumentError
+        -> { Hanami::Commands::New::App.new({application_name: 'application_name'}, nil) }.must_raise ArgumentError
       end
     end
   end
@@ -36,7 +36,7 @@ describe Lotus::Commands::New::App do
     describe 'minitest' do
       it 'creates files' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::App.new({}, 'new_app')
+          command = Hanami::Commands::New::App.new({}, 'new_app')
           capture_io { command.start }
 
           assert_generated_app('minitest', original_wd)
@@ -47,7 +47,7 @@ describe Lotus::Commands::New::App do
     describe 'rspec' do
       it 'creates files' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::App.new({'test' => 'rspec'}, 'new_app')
+          command = Hanami::Commands::New::App.new({'test' => 'rspec'}, 'new_app')
           capture_io { command.start }
 
           assert_generated_app('rspec', original_wd)
@@ -56,7 +56,7 @@ describe Lotus::Commands::New::App do
     end
 
     it 'returns valid classified app name' do
-      command = Lotus::Commands::New::App.new({}, 'awesome-test-app')
+      command = Hanami::Commands::New::App.new({}, 'awesome-test-app')
       command.template_options[:classified_app_name].must_equal 'AwesomeTestApp'
     end
   end
@@ -64,7 +64,7 @@ describe Lotus::Commands::New::App do
   def assert_generated_app(test_framework, original_wd)
     fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_app')
     Dir.chdir('new_app') do
-      assert_generated_file(fixture_root.join(".lotusrc.#{ test_framework }"), '.lotusrc')
+      assert_generated_file(fixture_root.join(".hanamirc.#{ test_framework }"), '.hanamirc')
       assert_generated_file(fixture_root.join('.env'), '.env')
 
       assert_file_includes('.env.development',

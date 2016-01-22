@@ -1,7 +1,0 @@
-class Mailers::<%= config[:mailer] %>
-  include Lotus::Mailer
-
-  from    <%= config[:from] %>
-  to      <%= config[:to] %>
-  subject <%= config[:subject] %>
-end

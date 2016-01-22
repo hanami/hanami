@@ -1,8 +1,8 @@
 require 'test_helper'
-require 'lotus/generators/database_config'
+require 'hanami/generators/database_config'
 
-describe Lotus::Generators::DatabaseConfig do
-  let(:database_config) { Lotus::Generators::DatabaseConfig.new(engine, 'basecamp') }
+describe Hanami::Generators::DatabaseConfig do
+  let(:database_config) { Hanami::Generators::DatabaseConfig.new(engine, 'basecamp') }
 
   describe '#type' do
     describe 'when engine is SQL Database' do
@@ -57,14 +57,14 @@ describe Lotus::Generators::DatabaseConfig do
   end
 
   describe '#to_hash' do
-    let(:adapter_prefix) { :'jdbc:' if Lotus::Utils.jruby? }
+    let(:adapter_prefix) { :'jdbc:' if Hanami::Utils.jruby? }
 
     describe 'SQL databases' do
       let(:engine) { 'postgres' }
 
       it 'returns a hash containing gem, right connection URIs and type' do
         database_config.to_hash.must_equal(
-          gem: (Lotus::Utils.jruby? ? 'jdbc-postgres' : 'pg'),
+          gem: (Hanami::Utils.jruby? ? 'jdbc-postgres' : 'pg'),
           type: :sql,
           uri: {
             development: "#{ adapter_prefix }postgres://localhost/basecamp_development",

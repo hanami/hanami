@@ -1,5 +1,5 @@
 module Hardware
   class Index
-    include Lotus::View
+    include Hanami::View
   end
 end

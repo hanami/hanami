@@ -1,5 +1,5 @@
-require 'lotus'
-require 'lotus/model'
+require 'hanami'
+require 'hanami/model'
 
 SECURITY_HEADERS_ADAPTER_TYPE =  if RUBY_ENGINE == 'jruby'
                   require 'jdbc/sqlite3'
@@ -10,7 +10,7 @@ SECURITY_HEADERS_ADAPTER_TYPE =  if RUBY_ENGINE == 'jruby'
                   'sqlite'
                 end
 
-require 'lotus/model/adapters/sql_adapter'
+require 'hanami/model/adapters/sql_adapter'
 db = Pathname.new(File.dirname(__FILE__)).join('../tmp/test.db')
 db.dirname.mkpath      # create directory if not exist
 db.delete if db.exist? # delete file if exist
@@ -24,7 +24,7 @@ SECURITY_HEADERS_DB.create_table :books do
 end
 
 module SecurityHeaders
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       layout :application
       load_paths << 'app'

@@ -1,10 +1,10 @@
 require 'test_helper'
 
-describe Lotus::Config::Mapping do
+describe Hanami::Config::Mapping do
   describe '#to_proc' do
     describe 'when only path is given' do
       before do
-        @mapping = Lotus::Config::Mapping.new(Pathname.new(__dir__), path)
+        @mapping = Hanami::Config::Mapping.new(Pathname.new(__dir__), path)
       end
 
       describe "and it's nil" do

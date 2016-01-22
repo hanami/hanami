@@ -1,11 +1,11 @@
 require 'test_helper'
-require 'lotus/commands/routes'
-require 'lotus/container'
+require 'hanami/commands/routes'
+require 'hanami/container'
 
-describe Lotus::Commands::Routes do
+describe Hanami::Commands::Routes do
   let(:opts)   { Hash.new }
-  let(:env)    { Lotus::Environment.new(opts) }
-  let(:routes) { Lotus::Commands::Routes.new(env) }
+  let(:env)    { Hanami::Environment.new(opts) }
+  let(:routes) { Hanami::Commands::Routes.new(env) }
 
   describe 'container architecture' do
     def architecture_options
@@ -16,7 +16,7 @@ describe Lotus::Commands::Routes do
     let(:architecture) { 'container' }
 
     before do
-      Lotus::Container.configure do
+      Hanami::Container.configure do
         mount Backend::App, at: '/backend'
         mount RackApp,      at: '/rackapp'
         mount TinyApp,      at: '/'
@@ -31,7 +31,7 @@ describe Lotus::Commands::Routes do
           %(GET, HEAD  /                              TinyApp::Controllers::Home::Index)
         ]
 
-        actual = Lotus::Container.new.routes.inspector.to_s
+        actual = Hanami::Container.new.routes.inspector.to_s
         expectations.each do |expectation|
           actual.must_include(expectation)
         end
@@ -48,9 +48,9 @@ describe Lotus::Commands::Routes do
     let(:architecture) { 'app' }
 
     before do
-      Lotus::Application.applications.clear
+      Hanami::Application.applications.clear
 
-      class MySingleApplication < Lotus::Application
+      class MySingleApplication < Hanami::Application
         configure do
           routes do
             get '/',        to: 'home#index'
@@ -67,7 +67,7 @@ describe Lotus::Commands::Routes do
           %(/welcome                       MySingleApplication::Controllers::Home::Welcome)
         ]
 
-        actual = Lotus::Application.applications.first.new.routes.inspector.to_s
+        actual = Hanami::Application.applications.first.new.routes.inspector.to_s
         expectations.each do |expectation|
           actual.must_include(expectation)
         end

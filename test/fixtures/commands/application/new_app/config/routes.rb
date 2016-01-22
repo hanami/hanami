@@ -1,2 +1,2 @@
 # Configure your routes here
-# See: http://www.rubydoc.info/gems/lotus-router/#Usage
+# See: http://www.rubydoc.info/gems/hanami-router/#Usage

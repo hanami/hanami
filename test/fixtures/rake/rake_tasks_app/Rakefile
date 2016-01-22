@@ -1,6 +1,6 @@
 require 'rake'
 require 'rake/testtask'
-require 'lotus/rake_tasks'
+require 'hanami/rake_tasks'
 
 Rake::TestTask.new do |t|
   t.pattern = 'spec/**/*_spec.rb'

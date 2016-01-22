@@ -2,7 +2,7 @@ require 'test_helper'
 require 'rack/test'
 require 'fixtures/furnitures/application'
 
-describe 'A modulized Lotus application' do
+describe 'A modulized Hanami application' do
   include Rack::Test::Methods
 
   before do

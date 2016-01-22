@@ -10,23 +10,8 @@ script:
   - 'bundle install'
   - './script/ci'
 rvm:
-  - 2.0.0
-  - 2.1.0
-  - 2.1.1
-  - 2.1.2
-  - 2.1.3
-  - 2.1.4
-  - 2.1.5
-  - 2.1.6
-  - 2.1.7
-  - 2.1.8
-  - 2.2.0
-  - 2.2.1
-  - 2.2.2
-  - 2.2.3
   - 2.2.4
   - 2.3.0
-  - rbx-2
   - jruby-9000
   - jruby-9.0.1.0
   - jruby-9.0.3.0
@@ -35,7 +20,6 @@ rvm:
 
 matrix:
   allow_failures:
-    - rvm: rbx-2
     - rvm: jruby-head
     - rvm: ruby-head
     - rvm: jruby-9000

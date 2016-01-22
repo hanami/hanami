@@ -1,1 +1,1 @@
-alert('Lotus!');
+alert('Hanami!');

@@ -1,13 +1,13 @@
 require 'test_helper'
-require 'lotus/cli'
-require 'lotus/commands/generate/migration'
-require 'lotus/commands/generate/model'
-require 'lotus/commands/generate/action'
-require 'lotus/commands/generate/app'
-require 'lotus/commands/new/container'
-require 'lotus/commands/new/app'
+require 'hanami/cli'
+require 'hanami/commands/generate/migration'
+require 'hanami/commands/generate/model'
+require 'hanami/commands/generate/action'
+require 'hanami/commands/generate/app'
+require 'hanami/commands/new/container'
+require 'hanami/commands/new/app'
 
-describe Lotus::Cli do
+describe Hanami::Cli do
   let(:mock_without_method) { Minitest::Mock.new }
 
   describe 'new' do
@@ -17,18 +17,18 @@ describe Lotus::Cli do
       'application_name' => 'web',
       'application_base_url' => '/',
       'test' => 'minitest',
-      'lotus_head' => false}
+      'hanami_head' => false}
     }
     describe 'container' do
       it 'calls the generator with application name and defaults' do
         ARGV.replace(%w{new fancy-app})
-        assert_cli_calls_command(Lotus::Commands::New::Container, default_options, 'fancy-app')
+        assert_cli_calls_command(Hanami::Commands::New::Container, default_options, 'fancy-app')
       end
 
       it 'does not call the generator if application name is missing' do
         ARGV.replace(%w{new})
-        Lotus::Commands::New::Container.stub(:new, mock_without_method) do
-          capture_io { Lotus::Cli.start }
+        Hanami::Commands::New::Container.stub(:new, mock_without_method) do
+          capture_io { Hanami::Cli.start }
         end
       end
 
@@ -38,10 +38,10 @@ describe Lotus::Cli do
           'application_name' => 'admin',
           'application_base_url' => '/web-admin',
           'test' => 'rspec',
-          'lotus_head' => true
+          'hanami_head' => true
         )
-        ARGV.replace(%w{new fancy-app --database=memory --application_name=admin --application_base_url=/web-admin --test=rspec --lotus_head=true})
-        assert_cli_calls_command(Lotus::Commands::New::Container, options, 'fancy-app')
+        ARGV.replace(%w{new fancy-app --database=memory --application_name=admin --application_base_url=/web-admin --test=rspec --hanami_head=true})
+        assert_cli_calls_command(Hanami::Commands::New::Container, options, 'fancy-app')
       end
 
     end
@@ -50,13 +50,13 @@ describe Lotus::Cli do
       let(:options) { default_options.merge('architecture' => 'app')}
       it 'calls the generator with application name and defaults' do
         ARGV.replace(%w{new fancy-app --architecture=app})
-        assert_cli_calls_command(Lotus::Commands::New::App, options, 'fancy-app')
+        assert_cli_calls_command(Hanami::Commands::New::App, options, 'fancy-app')
       end
 
       it 'does not call the generator if application name is missing' do
         ARGV.replace(%w{new --architecture=app})
-        Lotus::Commands::New::Container.stub(:new, mock_without_method) do
-          capture_io { Lotus::Cli.start }
+        Hanami::Commands::New::Container.stub(:new, mock_without_method) do
+          capture_io { Hanami::Cli.start }
         end
       end
 
@@ -66,10 +66,10 @@ describe Lotus::Cli do
           'database' => 'memory',
           'application_base_url' => '/web-admin',
           'test' => 'rspec',
-          'lotus_head' => true
+          'hanami_head' => true
         )
-        ARGV.replace(%w{new fancy-app --database=memory --application_base_url=/web-admin --test=rspec --lotus_head=true --architecture=app})
-        assert_cli_calls_command(Lotus::Commands::New::App, options, 'fancy-app')
+        ARGV.replace(%w{new fancy-app --database=memory --application_base_url=/web-admin --test=rspec --hanami_head=true --architecture=app})
+        assert_cli_calls_command(Hanami::Commands::New::App, options, 'fancy-app')
       end
     end
   end
@@ -81,14 +81,14 @@ describe Lotus::Cli do
       it 'calls the generator with application and controller/action name' do
         ARGV.replace(%w{generate action app controller#action})
 
-        assert_cli_calls_command(Lotus::Commands::Generate::Action, default_options, 'app', 'controller#action')
+        assert_cli_calls_command(Hanami::Commands::Generate::Action, default_options, 'app', 'controller#action')
       end
 
       it 'passes the supported options' do
         ARGV.replace(%w{generate action app controller#action --method=put --url=/foo --test=rspec --template=haml})
         options = default_options.merge('method' => 'put', 'url' => '/foo', 'test' => 'rspec', 'template' => 'haml')
 
-        assert_cli_calls_command(Lotus::Commands::Generate::Action, options, 'app', 'controller#action')
+        assert_cli_calls_command(Hanami::Commands::Generate::Action, options, 'app', 'controller#action')
       end
 
       describe 'for container application' do
@@ -97,8 +97,8 @@ describe Lotus::Cli do
         it 'raises an error when app and controller name are missing' do
           ARGV.replace(%w{generate action})
 
-          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
-            _, err = capture_io { Lotus::Cli.start }
+          Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Hanami::Cli.start }
             assert_match 'ERROR', err
           end
         end
@@ -106,8 +106,8 @@ describe Lotus::Cli do
         it 'raises an error when controller name is missing' do
           ARGV.replace(%w{generate action foo})
 
-          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
-            _, err = capture_io { Lotus::Cli.start }
+          Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Hanami::Cli.start }
             assert_match 'ERROR', err
           end
         end
@@ -115,8 +115,8 @@ describe Lotus::Cli do
         it 'raises an error when app name is missing' do
           ARGV.replace(%w{generate action controller#action})
 
-          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
-            _, err = capture_io { Lotus::Cli.start }
+          Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Hanami::Cli.start }
             assert_match 'ERROR', err
           end
         end
@@ -131,8 +131,8 @@ describe Lotus::Cli do
         it 'it generates action when controller name is present' do
           ARGV.replace(%w{generate action controller#action})
 
-          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
-            _, err = capture_io { Lotus::Cli.start }
+          Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Hanami::Cli.start }
             refute_match 'ERROR', err
           end
         end
@@ -140,8 +140,8 @@ describe Lotus::Cli do
         it 'raises error when controller name is missing' do
           ARGV.replace(%w{generate action})
 
-          Lotus::Commands::Generate::Action.stub(:new, mock_without_method) do
-            _, err = capture_io { Lotus::Cli.start }
+          Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+            _, err = capture_io { Hanami::Cli.start }
             assert_match 'ERROR', err
           end
         end
@@ -152,13 +152,13 @@ describe Lotus::Cli do
       it 'calls the generator with migration name' do
         ARGV.replace(%w{generate migration add_thing})
 
-        assert_cli_calls_command(Lotus::Commands::Generate::Migration, {}, 'add_thing')
+        assert_cli_calls_command(Hanami::Commands::Generate::Migration, {}, 'add_thing')
       end
 
       it 'does not call the generator when name is missing' do
         ARGV.replace(%w{generate migration})
-        Lotus::Commands::Generate::Migration.stub(:new, mock_without_method) do
-          capture_io { Lotus::Cli.start }
+        Hanami::Commands::Generate::Migration.stub(:new, mock_without_method) do
+          capture_io { Hanami::Cli.start }
         end
       end
     end
@@ -167,13 +167,13 @@ describe Lotus::Cli do
       it 'calls the generator with model name' do
         ARGV.replace(%w{generate model car})
 
-        assert_cli_calls_command(Lotus::Commands::Generate::Model, {}, 'car')
+        assert_cli_calls_command(Hanami::Commands::Generate::Model, {}, 'car')
       end
 
       it 'does not call the generator when name is missing' do
         ARGV.replace(%w{generate model})
-        Lotus::Commands::Generate::Model.stub(:new, mock_without_method) do
-          capture_io { Lotus::Cli.start }
+        Hanami::Commands::Generate::Model.stub(:new, mock_without_method) do
+          capture_io { Hanami::Cli.start }
         end
       end
     end
@@ -181,7 +181,7 @@ describe Lotus::Cli do
     describe 'app' do
       it 'calls the generator with app name' do
         ARGV.replace(%w{generate app admin})
-        assert_cli_calls_command(Lotus::Commands::Generate::App, {}, 'admin')
+        assert_cli_calls_command(Hanami::Commands::Generate::App, {}, 'admin')
       end
 
 
@@ -189,17 +189,17 @@ describe Lotus::Cli do
         ARGV.replace(%w{generate app admin --application_base_url=/backend})
         options = {'application_base_url' => '/backend'}
 
-        assert_cli_calls_command(Lotus::Commands::Generate::App, options, 'admin')
+        assert_cli_calls_command(Hanami::Commands::Generate::App, options, 'admin')
       end
     end
   end
 
   def setup_container_app
-    File.open('.lotusrc', 'w') { |file| file << "architecture=container"}
+    File.open('.hanamirc', 'w') { |file| file << "architecture=container"}
   end
 
   def setup_app_app
-    File.open('.lotusrc', 'w') { |file| file << "architecture=app"}
+    File.open('.hanamirc', 'w') { |file| file << "architecture=app"}
   end
 
   # Helper method to make sure that the Command class is called with good arguments.
@@ -218,7 +218,7 @@ describe Lotus::Cli do
     end
 
     command_class.stub(:new, constructor_args_verifier) do
-      capture_io { Lotus::Cli.start }
+      capture_io { Hanami::Cli.start }
     end
 
     instance_mock.verify

@@ -1,14 +1,14 @@
 require 'test_helper'
 
-describe Lotus::Config::Sessions do
+describe Hanami::Config::Sessions do
   describe '#enabled?' do
     it 'is false unless identifier is provided' do
-      sessions = Lotus::Config::Sessions.new
+      sessions = Hanami::Config::Sessions.new
       sessions.wont_be :enabled?
     end
 
     it 'is true when identifier is provided' do
-      sessions = Lotus::Config::Sessions.new('Cookie')
+      sessions = Hanami::Config::Sessions.new('Cookie')
       sessions.must_be :enabled?
     end
   end
@@ -24,14 +24,14 @@ describe Lotus::Config::Sessions do
 
     describe 'provided with class as identifier' do
       it 'returns class' do
-        sessions = Lotus::Config::Sessions.new(SessionMiddleware)
+        sessions = Hanami::Config::Sessions.new(SessionMiddleware)
         sessions.middleware.must_equal [SessionMiddleware, {}]
       end
     end
 
     describe 'provided with string as identifier' do
       it 'returns string' do
-        sessions = Lotus::Config::Sessions.new('SessionMiddleware')
+        sessions = Hanami::Config::Sessions.new('SessionMiddleware')
         sessions.middleware.must_equal ['SessionMiddleware', {}]
       end
     end
@@ -49,7 +49,7 @@ describe Lotus::Config::Sessions do
       end
 
       it 'returns symbol as class name under Rack::Session namespace' do
-        sessions = Lotus::Config::Sessions.new(:some_storage)
+        sessions = Hanami::Config::Sessions.new(:some_storage)
         sessions.middleware.must_equal ['Rack::Session::SomeStorage', {}]
       end
     end
@@ -57,7 +57,7 @@ describe Lotus::Config::Sessions do
     describe 'with options' do
       it 'returns passed options' do
         options = { domain: 'example.com' }
-        sessions = Lotus::Config::Sessions.new('Cookie', options)
+        sessions = Hanami::Config::Sessions.new('Cookie', options)
         sessions.middleware.must_equal ['Cookie', options]
       end
     end

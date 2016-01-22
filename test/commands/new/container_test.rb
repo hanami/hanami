@@ -1,27 +1,27 @@
 require 'test_helper'
-require 'lotus/commands/new/container'
+require 'hanami/commands/new/container'
 require 'fileutils'
 
-describe Lotus::Commands::New::Container do
+describe Hanami::Commands::New::Container do
   describe 'with invalid arguments' do
     it 'requires application name' do
       with_temp_dir do |original_wd|
-        -> { Lotus::Commands::New::Container.new({}, nil) }.must_raise ArgumentError
-        -> { Lotus::Commands::New::Container.new({}, '') }.must_raise ArgumentError
-        -> { Lotus::Commands::New::Container.new({}, '  ') }.must_raise ArgumentError
-        -> { Lotus::Commands::New::Container.new({}, 'foo/bar') }.must_raise ArgumentError
+        -> { Hanami::Commands::New::Container.new({}, nil) }.must_raise ArgumentError
+        -> { Hanami::Commands::New::Container.new({}, '') }.must_raise ArgumentError
+        -> { Hanami::Commands::New::Container.new({}, '  ') }.must_raise ArgumentError
+        -> { Hanami::Commands::New::Container.new({}, 'foo/bar') }.must_raise ArgumentError
       end
     end
 
     it 'validates test option' do
       with_temp_dir do |original_wd|
-        -> { Lotus::Commands::New::Container.new({test: 'unknown'}, nil) }.must_raise ArgumentError
+        -> { Hanami::Commands::New::Container.new({test: 'unknown'}, nil) }.must_raise ArgumentError
       end
     end
 
     it 'validates database option' do
       with_temp_dir do |original_wd|
-        -> { Lotus::Commands::New::Container.new({database: 'unknown'}, nil) }.must_raise ArgumentError
+        -> { Hanami::Commands::New::Container.new({database: 'unknown'}, nil) }.must_raise ArgumentError
       end
     end
   end
@@ -29,7 +29,7 @@ describe Lotus::Commands::New::Container do
   describe 'serve static assets' do
     it 'sets env var to true for development and test' do
       with_temp_dir do |original_wd|
-        command = Lotus::Commands::New::Container.new({}, 'static_assets')
+        command = Hanami::Commands::New::Container.new({}, 'static_assets')
         capture_io { command.start }
         Dir.chdir('static_assets') do
           actual_content = File.read('.env.development')
@@ -45,7 +45,7 @@ describe Lotus::Commands::New::Container do
   describe 'with valid arguments' do
     it 'application name with dash' do
       with_temp_dir do |original_wd|
-        command = Lotus::Commands::New::Container.new({}, 'new-container')
+        command = Hanami::Commands::New::Container.new({}, 'new-container')
         capture_io { command.start }
         Dir.chdir('new-container') do
           actual_content = File.read('.env.development')
@@ -60,7 +60,7 @@ describe Lotus::Commands::New::Container do
     describe 'application name is a point' do
       it 'generates application in current folder' do
         with_temp_dir do |original_wd|
-         command = Lotus::Commands::New::Container.new({}, '.')
+         command = Hanami::Commands::New::Container.new({}, '.')
           capture_io { command.start }
           Dir.chdir('.') do
             actual_content = File.read('.env.development')
@@ -74,11 +74,11 @@ describe Lotus::Commands::New::Container do
     end
 
     describe 'databases' do
-      let(:adapter_prefix) { 'jdbc:' if Lotus::Utils.jruby? }
+      let(:adapter_prefix) { 'jdbc:' if Hanami::Utils.jruby? }
 
       it 'generates specific files for memory' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({database: 'memory'}, 'new_container')
+          command = Hanami::Commands::New::Container.new({database: 'memory'}, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
@@ -98,7 +98,7 @@ describe Lotus::Commands::New::Container do
 
       it 'generates specific files for filesystem' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({ database: 'filesystem' }, 'new_container')
+          command = Hanami::Commands::New::Container.new({ database: 'filesystem' }, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
@@ -118,7 +118,7 @@ describe Lotus::Commands::New::Container do
 
       it 'generates specific files for sqlite3' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({ database: 'sqlite3' }, 'new_container')
+          command = Hanami::Commands::New::Container.new({ database: 'sqlite3' }, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
@@ -138,7 +138,7 @@ describe Lotus::Commands::New::Container do
 
       it 'generates specific files for postgres' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({ database: 'postgres' }, 'new_container')
+          command = Hanami::Commands::New::Container.new({ database: 'postgres' }, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
@@ -158,8 +158,8 @@ describe Lotus::Commands::New::Container do
 
       it 'generates specific files for mysql2' do
         with_temp_dir do |original_wd|
-          database = Lotus::Utils.jruby? ? :mysql : :mysql2
-          command = Lotus::Commands::New::Container.new({ database: 'mysql2' }, 'new_container')
+          database = Hanami::Utils.jruby? ? :mysql : :mysql2
+          command = Hanami::Commands::New::Container.new({ database: 'mysql2' }, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
@@ -179,7 +179,7 @@ describe Lotus::Commands::New::Container do
 
       it 'generates specific files for postgres' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({ database: 'postgres' }, 'new_container')
+          command = Hanami::Commands::New::Container.new({ database: 'postgres' }, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
@@ -198,10 +198,10 @@ describe Lotus::Commands::New::Container do
       end
     end
 
-    describe 'lotus head' do
+    describe 'hanami head' do
       it 'creates files' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({lotus_head: true}, 'new_container')
+          command = Hanami::Commands::New::Container.new({hanami_head: true}, 'new_container')
           capture_io { command.start }
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
@@ -215,7 +215,7 @@ describe Lotus::Commands::New::Container do
     describe 'mounted at a specific path' do
       it 'mounts at /mypath' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({application_base_url: '/mypath'}, 'new_container')
+          command = Hanami::Commands::New::Container.new({application_base_url: '/mypath'}, 'new_container')
           capture_io { command.start }
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
@@ -228,7 +228,7 @@ describe Lotus::Commands::New::Container do
     describe 'with rspec' do
       it 'creates the app files' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({test: 'rspec'}, 'new_container')
+          command = Hanami::Commands::New::Container.new({test: 'rspec'}, 'new_container')
           capture_io { command.start }
 
           assert_generated_container('rspec', original_wd)
@@ -239,7 +239,7 @@ describe Lotus::Commands::New::Container do
     describe 'with minitest' do
       it 'creates files' do
         with_temp_dir do |original_wd|
-          command = Lotus::Commands::New::Container.new({}, 'new_container')
+          command = Hanami::Commands::New::Container.new({}, 'new_container')
           capture_io { command.start }
 
           assert_generated_container('minitest', original_wd)
@@ -251,7 +251,7 @@ describe Lotus::Commands::New::Container do
   def assert_generated_container(test_framework, original_wd)
     fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
     Dir.chdir('new_container') do
-      assert_generated_file(fixture_root.join(".lotusrc.#{ test_framework }"), '.lotusrc')
+      assert_generated_file(fixture_root.join(".hanamirc.#{ test_framework }"), '.hanamirc')
       assert_generated_file(fixture_root.join('.env'), '.env')
       actual_content = File.read('.env.development')
       actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_development"'

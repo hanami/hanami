@@ -1,11 +1,11 @@
 require 'test_helper'
 
-describe Lotus::Environment do
+describe Hanami::Environment do
   before do
-    ENV['LOTUS_ENV']  = nil
+    ENV['HANAMI_ENV']  = nil
     ENV['RACK_ENV']   = nil
-    ENV['LOTUS_HOST'] = nil
-    ENV['LOTUS_PORT'] = nil
+    ENV['HANAMI_HOST'] = nil
+    ENV['HANAMI_PORT'] = nil
 
     ENV['FOO'] = nil
     ENV['BAZ'] = nil
@@ -16,7 +16,7 @@ describe Lotus::Environment do
     describe 'env vars' do
       before do
         Dir.chdir($pwd + '/test/fixtures')
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       after do
@@ -43,7 +43,7 @@ describe Lotus::Environment do
           ENV['FOO'] = nil
           ENV['BAZ'] = nil
 
-          @env = Lotus::Environment.new
+          @env = Hanami::Environment.new
         end
 
         it "doesn't set env vars" do
@@ -54,11 +54,11 @@ describe Lotus::Environment do
 
       describe 'when the .env for the current environment is missing' do
         before do
-          ENV['LOTUS_ENV'] = 'test'
+          ENV['HANAMI_ENV'] = 'test'
           ENV['BAZ'] = nil
           ENV['WAT'] = nil
 
-          @env = Lotus::Environment.new
+          @env = Hanami::Environment.new
         end
 
         it "doesn't set env vars" do
@@ -70,7 +70,7 @@ describe Lotus::Environment do
       describe 'when arguments are passed in' do
         before do
           @options = {'a' => 'b'}
-          @env = Lotus::Environment.new(@options)
+          @env = Hanami::Environment.new(@options)
         end
 
         it 'does not modify the origin arguments' do
@@ -81,10 +81,10 @@ describe Lotus::Environment do
   end
 
   describe '#environment' do
-    describe "when LOTUS_ENV is set" do
+    describe "when HANAMI_ENV is set" do
       before do
-        ENV['LOTUS_ENV'] = 'test'
-        @env = Lotus::Environment.new
+        ENV['HANAMI_ENV'] = 'test'
+        @env = Hanami::Environment.new
       end
 
       it 'returns that value' do
@@ -95,7 +95,7 @@ describe Lotus::Environment do
     describe "when RACK_ENV is set to 'production'" do
       before do
         ENV['RACK_ENV'] = 'production'
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       it 'returns that value' do
@@ -106,7 +106,7 @@ describe Lotus::Environment do
     describe "when RACK_ENV is set to 'deployment'" do
       before do
         ENV['RACK_ENV'] = 'deployment'
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       it 'returns that value' do
@@ -116,7 +116,7 @@ describe Lotus::Environment do
 
     describe "when none is set" do
       before do
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       it 'defaults to "development"' do
@@ -126,25 +126,25 @@ describe Lotus::Environment do
 
     describe "when all are set" do
       before do
-        ENV['LOTUS_ENV'] = 'test'
+        ENV['HANAMI_ENV'] = 'test'
         ENV['RACK_ENV']  = 'production'
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
-      it 'gives the precedence to LOTUS_ENV' do
+      it 'gives the precedence to HANAMI_ENV' do
         @env.environment.must_equal 'test'
       end
     end
 
     describe "when the env vars change after the initialization" do
       before do
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       it 'always returns the same value' do
         @env.environment.must_equal 'development'
 
-        ENV['LOTUS_ENV'] = 'test'
+        ENV['HANAMI_ENV'] = 'test'
         @env.environment.must_equal 'development'
       end
     end
@@ -154,8 +154,8 @@ describe Lotus::Environment do
   describe '#environment?' do
     describe 'when environment is matched' do
       before do
-        ENV['LOTUS_ENV'] = 'test'
-        @env = Lotus::Environment.new
+        ENV['HANAMI_ENV'] = 'test'
+        @env = Hanami::Environment.new
       end
 
       describe 'when single name' do
@@ -193,8 +193,8 @@ describe Lotus::Environment do
 
     describe 'when environment is not matched' do
       before do
-        ENV['LOTUS_ENV'] = 'development'
-        @env = Lotus::Environment.new
+        ENV['HANAMI_ENV'] = 'development'
+        @env = Hanami::Environment.new
       end
 
       describe 'when single name' do
@@ -233,7 +233,7 @@ describe Lotus::Environment do
 
   describe '#bundler_groups' do
     before do
-      @env = Lotus::Environment.new
+      @env = Hanami::Environment.new
     end
 
     it 'returns a set of groups for Bundler' do
@@ -245,7 +245,7 @@ describe Lotus::Environment do
   describe '#config' do
     describe 'when not specified' do
       before do
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       it 'equals to "config/"' do
@@ -256,7 +256,7 @@ describe Lotus::Environment do
     describe 'when specified' do
       describe 'and it is relative path' do
         before do
-          @env = Lotus::Environment.new(config: 'test')
+          @env = Hanami::Environment.new(config: 'test')
         end
 
         it 'equals to it' do
@@ -267,7 +267,7 @@ describe Lotus::Environment do
       describe 'and it is absolute path' do
         before do
           @path = File.expand_path(__dir__) + '/tmp/config'
-          @env  = Lotus::Environment.new(config: @path)
+          @env  = Hanami::Environment.new(config: @path)
         end
 
         it 'equals to it' do
@@ -280,7 +280,7 @@ describe Lotus::Environment do
   describe '#env_config' do
     describe 'when not specified' do
       before do
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       it 'equals to "config/environment"' do
@@ -291,7 +291,7 @@ describe Lotus::Environment do
     describe 'when specified' do
       describe 'and it is relative path' do
         before do
-          @env = Lotus::Environment.new(environment: 'env.rb')
+          @env = Hanami::Environment.new(environment: 'env.rb')
         end
 
         it 'assumes it is located under root' do
@@ -302,7 +302,7 @@ describe Lotus::Environment do
       describe 'and it is absolute path' do
         before do
           @path = File.expand_path(__dir__) + '/c/env.rb'
-          @env  = Lotus::Environment.new(environment: @path)
+          @env  = Hanami::Environment.new(environment: @path)
         end
 
         it 'assumes it is located under root' do
@@ -315,7 +315,7 @@ describe Lotus::Environment do
   describe '#rackup' do
     describe 'when not specified' do
       before do
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       it 'equals to "config.ru"' do
@@ -326,7 +326,7 @@ describe Lotus::Environment do
     describe 'when specified' do
       describe 'and it is relative path' do
         before do
-          @env = Lotus::Environment.new(rackup: 'test.ru')
+          @env = Hanami::Environment.new(rackup: 'test.ru')
         end
 
         it 'assumes it is located under root' do
@@ -337,7 +337,7 @@ describe Lotus::Environment do
       describe 'and it is absolute path' do
         before do
           @path = File.expand_path(__dir__) + '/absolute.ru'
-          @env  = Lotus::Environment.new(rackup: @path)
+          @env  = Hanami::Environment.new(rackup: @path)
         end
 
         it 'assumes it is located under root' do
@@ -350,29 +350,29 @@ describe Lotus::Environment do
   describe '#host' do
     describe "when the correspoding option is set" do
       before do
-        @env = Lotus::Environment.new(host: 'lotusrb.test')
+        @env = Hanami::Environment.new(host: 'hanamirb.test')
       end
 
       it 'returns that value' do
-        @env.host.must_equal 'lotusrb.test'
+        @env.host.must_equal 'hanamirb.test'
       end
     end
 
     describe "when the corresponding option isn't set" do
-      describe "and LOTUS_HOST is set" do
+      describe "and HANAMI_HOST is set" do
         before do
-          ENV['LOTUS_HOST'] = 'lotus.host'
-          @env = Lotus::Environment.new
+          ENV['HANAMI_HOST'] = 'hanami.host'
+          @env = Hanami::Environment.new
         end
 
         it 'returns that value' do
-          @env.host.must_equal 'lotus.host'
+          @env.host.must_equal 'hanami.host'
         end
       end
 
       describe "and the current environment is the default one" do
         before do
-          @env = Lotus::Environment.new
+          @env = Hanami::Environment.new
         end
 
         it 'returns localhost' do
@@ -382,8 +382,8 @@ describe Lotus::Environment do
 
       describe "and the current environment isn't the default" do
         before do
-          ENV['LOTUS_ENV'] = 'staging'
-          @env = Lotus::Environment.new
+          ENV['HANAMI_ENV'] = 'staging'
+          @env = Hanami::Environment.new
         end
 
         it 'returns 0.0.0.0' do
@@ -393,38 +393,38 @@ describe Lotus::Environment do
 
       describe "and all the other env vars are set" do
         before do
-          ENV['LOTUS_HOST'] = 'lotushost.test'
-          ENV['LOTUS_ENV']  = 'test'
-          @env = Lotus::Environment.new
+          ENV['HANAMI_HOST'] = 'hanamihost.test'
+          ENV['HANAMI_ENV']  = 'test'
+          @env = Hanami::Environment.new
         end
 
-        it 'gives the precedence to LOTUS_HOST' do
-          @env.host.must_equal 'lotushost.test'
+        it 'gives the precedence to HANAMI_HOST' do
+          @env.host.must_equal 'hanamihost.test'
         end
       end
     end
 
     describe "when the corresponding option and all the other env vars are set" do
       before do
-        ENV['LOTUS_HOST'] = 'lotushost.test'
-        ENV['LOTUS_ENV']  = 'test'
-        @env = Lotus::Environment.new(host: 'lotusrb.org')
+        ENV['HANAMI_HOST'] = 'hanamihost.test'
+        ENV['HANAMI_ENV']  = 'test'
+        @env = Hanami::Environment.new(host: 'hanamirb.org')
       end
 
       it 'gives the precedence to the option' do
-        @env.host.must_equal 'lotusrb.org'
+        @env.host.must_equal 'hanamirb.org'
       end
     end
 
     describe "when the env vars change after the initialization" do
       before do
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       it 'always return the same value' do
         @env.host.must_equal 'localhost'
 
-        ENV['LOTUS_HOST'] = 'changedlotushost.org'
+        ENV['HANAMI_HOST'] = 'changedhanamihost.org'
         @env.host.must_equal 'localhost'
       end
     end
@@ -433,7 +433,7 @@ describe Lotus::Environment do
   describe '#port' do
     describe "when the correspoding option is set" do
       before do
-        @env = Lotus::Environment.new(port: 1234)
+        @env = Hanami::Environment.new(port: 1234)
       end
 
       it 'returns that value' do
@@ -442,10 +442,10 @@ describe Lotus::Environment do
     end
 
     describe "when the corresponding option isn't set" do
-      describe "and LOTUS_PORT is set" do
+      describe "and HANAMI_PORT is set" do
         before do
-          ENV['LOTUS_PORT'] = '3244'
-          @env = Lotus::Environment.new
+          ENV['HANAMI_PORT'] = '3244'
+          @env = Hanami::Environment.new
         end
 
         it 'returns that value' do
@@ -455,7 +455,7 @@ describe Lotus::Environment do
 
       describe "and no env vars are set" do
         before do
-          @env = Lotus::Environment.new
+          @env = Hanami::Environment.new
         end
 
         it 'defaults to 2300' do
@@ -466,8 +466,8 @@ describe Lotus::Environment do
 
     describe "when the corresponding option and all the other env vars are set" do
       before do
-        ENV['LOTUS_PORT'] = '8206'
-        @env = Lotus::Environment.new(port: 2323)
+        ENV['HANAMI_PORT'] = '8206'
+        @env = Hanami::Environment.new(port: 2323)
       end
 
       it 'gives the precedence to the option' do
@@ -477,13 +477,13 @@ describe Lotus::Environment do
 
     describe "when the env vars change after the initialization" do
       before do
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       it 'always return the same value' do
         @env.port.must_equal 2300
 
-        ENV['LOTUS_PORT'] = '1223'
+        ENV['HANAMI_PORT'] = '1223'
         @env.port.must_equal 2300
       end
     end
@@ -493,7 +493,7 @@ describe Lotus::Environment do
     describe 'when not specified' do
       describe 'in the default env' do
         before do
-          @env = Lotus::Environment.new
+          @env = Hanami::Environment.new
         end
 
         it 'returns true' do
@@ -503,8 +503,8 @@ describe Lotus::Environment do
 
       describe 'with a specified env (development)' do
         before do
-          ENV['LOTUS_ENV'] = 'development'
-          @env = Lotus::Environment.new
+          ENV['HANAMI_ENV'] = 'development'
+          @env = Hanami::Environment.new
         end
 
         it 'returns true' do
@@ -515,8 +515,8 @@ describe Lotus::Environment do
 
       describe 'with a specified env (test)' do
         before do
-          ENV['LOTUS_ENV'] = 'test'
-          @env = Lotus::Environment.new
+          ENV['HANAMI_ENV'] = 'test'
+          @env = Hanami::Environment.new
         end
 
         it 'returns true' do
@@ -529,7 +529,7 @@ describe Lotus::Environment do
     describe 'when specified' do
       describe 'with false' do
         before do
-          @env = Lotus::Environment.new(code_reloading: false)
+          @env = Hanami::Environment.new(code_reloading: false)
         end
 
         it 'returns false' do
@@ -539,7 +539,7 @@ describe Lotus::Environment do
 
       describe 'with true' do
         before do
-          @env = Lotus::Environment.new(code_reloading: true)
+          @env = Hanami::Environment.new(code_reloading: true)
         end
 
         it 'returns true' do
@@ -549,13 +549,13 @@ describe Lotus::Environment do
     end
   end
 
-  describe 'lotusrc' do
+  describe 'hanamirc' do
     describe 'with existing file' do
       before do
         @old_pwd = Dir.pwd
 
-        # This .lotusrc has test=minitest
-        path = Pathname.new('test/fixtures/lotusrc/exists')
+        # This .hanamirc has test=minitest
+        path = Pathname.new('test/fixtures/hanamirc/exists')
         path.mkpath
         Dir.chdir(path)
       end
@@ -565,13 +565,13 @@ describe Lotus::Environment do
       end
 
       it 'uses defaults if no inline args' do
-        env = Lotus::Environment.new
+        env = Hanami::Environment.new
         env.to_options.fetch(:test).must_equal 'minitest'
       end
 
       it 'gives priority to inline args' do
-        # Simulate lotus new bookshelf --test=rspec
-        env = Lotus::Environment.new(test: 'rspec')
+        # Simulate hanami new bookshelf --test=rspec
+        env = Hanami::Environment.new(test: 'rspec')
         env.to_options.fetch(:test).must_equal 'rspec'
       end
     end
@@ -580,12 +580,12 @@ describe Lotus::Environment do
       before do
         @old_pwd = Dir.pwd
 
-        path = Pathname.new('test/fixtures/lotusrc/no_exists')
+        path = Pathname.new('test/fixtures/hanamirc/no_exists')
         path.mkpath
 
         Dir.chdir(path)
 
-        @env = Lotus::Environment.new
+        @env = Hanami::Environment.new
       end
 
       after do
@@ -593,13 +593,13 @@ describe Lotus::Environment do
       end
 
       it 'uses defaults if no inline args' do
-        env = Lotus::Environment.new
+        env = Hanami::Environment.new
         env.to_options.fetch(:test).must_equal 'minitest'
       end
 
       it 'gives priority to inline args' do
-        # Simulate lotus new bookshelf --test=rspec
-        env = Lotus::Environment.new(test: 'rspec')
+        # Simulate hanami new bookshelf --test=rspec
+        env = Hanami::Environment.new(test: 'rspec')
         env.to_options.fetch(:test).must_equal 'rspec'
       end
     end
@@ -608,17 +608,17 @@ describe Lotus::Environment do
   describe '#to_options' do
     before do
       @old_pwd = Dir.pwd
-      path = Pathname.new('test/fixtures/lotusrc/exists')
+      path = Pathname.new('test/fixtures/hanamirc/exists')
       path.mkpath
       Dir.chdir(path)
-      @env = Lotus::Environment.new
+      @env = Hanami::Environment.new
     end
 
     after do
       Dir.chdir @old_pwd
     end
 
-    it 'lotusrc merge options in environemnt options' do
+    it 'hanamirc merge options in environemnt options' do
       options = @env.to_options
       options[:architecture].must_equal 'container'
       options[:test].must_equal 'minitest'

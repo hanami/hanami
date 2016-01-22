@@ -1,7 +1,7 @@
 require 'rack/chunked'
 
 module StreamingApp
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       # Activate Streaming
       middleware.use ::Rack::Chunked

@@ -10,12 +10,12 @@ describe 'Precompile static assets (Container)' do
     @current_dir = Dir.pwd
     Dir.chdir root
 
-    @lotus_env = ENV['LOTUS_ENV']
-    ENV['LOTUS_ENV'] = 'production'
+    @hanami_env = ENV['HANAMI_ENV']
+    ENV['HANAMI_ENV'] = 'production'
   end
 
   after do
-    ENV['LOTUS_ENV'] = @lotus_env
+    ENV['HANAMI_ENV'] = @hanami_env
     Dir.chdir @current_dir
     @current_dir = nil
   end
@@ -25,7 +25,7 @@ describe 'Precompile static assets (Container)' do
   let(:assets_directory) { public_directory.join('assets') }
 
   it 'precompiles assets' do
-    `bundle exec lotus assets precompile`
+    `bundle exec hanami assets precompile`
 
     public_directory.join('assets.json').must_be :exist?
 

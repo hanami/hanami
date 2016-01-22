@@ -16,7 +16,7 @@ module Minitest
           @port = FreeTCPPort.new
           # options = {}
           options = {out: '/dev/null', err: '/dev/null'}
-          Process.spawn("cd #{ root } && bundle exec lotus server --port=#{ @port } --pid=tmp/server.pid", options)
+          Process.spawn("cd #{ root } && bundle exec hanami server --port=#{ @port } --pid=tmp/server.pid", options)
           @pid = server_pid
           Process.detach(@pid)
         end

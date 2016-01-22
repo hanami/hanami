@@ -1,13 +1,13 @@
 require 'test_helper'
-require 'lotus/commands/generate/app'
+require 'hanami/commands/generate/app'
 require 'fileutils'
 
-describe Lotus::Commands::Generate::App do
+describe Hanami::Commands::Generate::App do
   describe 'with invalid arguments' do
     it 'requires application name' do
-      -> { Lotus::Commands::Generate::App.new({}, nil) }.must_raise ArgumentError
-      -> { Lotus::Commands::Generate::App.new({}, '') }.must_raise ArgumentError
-      -> { Lotus::Commands::Generate::App.new({}, '   ') }.must_raise ArgumentError
+      -> { Hanami::Commands::Generate::App.new({}, nil) }.must_raise ArgumentError
+      -> { Hanami::Commands::Generate::App.new({}, '') }.must_raise ArgumentError
+      -> { Hanami::Commands::Generate::App.new({}, '   ') }.must_raise ArgumentError
     end
   end
 
@@ -15,7 +15,7 @@ describe Lotus::Commands::Generate::App do
     it 'generates configuration and template files' do
       with_temp_dir do |original_wd|
         setup_container_app(original_wd)
-        command = Lotus::Commands::Generate::App.new({}, 'admin')
+        command = Hanami::Commands::Generate::App.new({}, 'admin')
         capture_io { command.start }
 
         # check 'require' and 'mount'
@@ -37,7 +37,7 @@ describe Lotus::Commands::Generate::App do
     it 'generate the application with valid ruby syntax for dasherized name' do
       with_temp_dir do |original_wd|
         setup_container_app(original_wd)
-        command = Lotus::Commands::Generate::App.new({}, 'test-app')
+        command = Hanami::Commands::Generate::App.new({}, 'test-app')
         capture_io { command.start }
 
         content = File.read("config/environment.rb")
@@ -46,14 +46,14 @@ describe Lotus::Commands::Generate::App do
     end
 
     it 'returns valid classified app name' do
-      command = Lotus::Commands::Generate::App.new({ architecture: 'container' }, 'awesome-test-app')
+      command = Hanami::Commands::Generate::App.new({ architecture: 'container' }, 'awesome-test-app')
       command.template_options[:classified_app_name].must_equal 'AwesomeTestApp'
     end
 
     it 'create files' do
       with_temp_dir do |original_wd|
         setup_container_app(original_wd)
-        command = Lotus::Commands::Generate::App.new({}, 'api')
+        command = Hanami::Commands::Generate::App.new({}, 'api')
         capture_io { command.start }
 
         assert_file_exists('apps/api/application.rb')
@@ -76,7 +76,7 @@ describe Lotus::Commands::Generate::App do
     it 'allows to specify the url' do
       with_temp_dir do |original_wd|
         setup_container_app(original_wd)
-        command = Lotus::Commands::Generate::App.new({application_base_url: '/backend'}, 'admin')
+        command = Hanami::Commands::Generate::App.new({application_base_url: '/backend'}, 'admin')
         capture_io { command.start }
 
         assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'environment_with_app_added_url.rb'), 'config/environment.rb')
@@ -86,8 +86,8 @@ describe Lotus::Commands::Generate::App do
 
   it 'can not run for app architecture' do
     with_temp_dir do |original_wd|
-      File.open('.lotusrc', 'w') { |file| file << "architecture=app"}
-      -> { Lotus::Commands::Generate::App.new({}, 'admin') }.must_raise ArgumentError
+      File.open('.hanamirc', 'w') { |file| file << "architecture=app"}
+      -> { Hanami::Commands::Generate::App.new({}, 'admin') }.must_raise ArgumentError
     end
   end
 
@@ -96,8 +96,8 @@ describe Lotus::Commands::Generate::App do
       with_temp_dir do |original_wd|
         setup_container_app(original_wd)
         capture_io {
-          Lotus::Commands::Generate::App.new({}, 'api').start
-          Lotus::Commands::Generate::App.new({}, 'api').destroy.start
+          Hanami::Commands::Generate::App.new({}, 'api').start
+          Hanami::Commands::Generate::App.new({}, 'api').destroy.start
         }
         refute_file_exists('apps/api/application.rb')
         refute_file_exists('apps/api/views/application_layout.rb')

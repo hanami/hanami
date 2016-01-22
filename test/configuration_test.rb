@@ -1,18 +1,18 @@
 require 'test_helper'
-require 'lotus/router'
+require 'hanami/router'
 
-describe Lotus::Configuration do
+describe Hanami::Configuration do
   before do
     module MockApp
     end
 
     ENV['RACK_ENV']   = nil
-    ENV['LOTUS_ENV']  = nil
-    ENV['LOTUS_HOST'] = nil
-    ENV['LOTUS_PORT'] = nil
+    ENV['HANAMI_ENV']  = nil
+    ENV['HANAMI_HOST'] = nil
+    ENV['HANAMI_PORT'] = nil
 
     @namespace     = MockApp
-    @configuration = Lotus::Configuration.new
+    @configuration = Hanami::Configuration.new
     Dir.chdir($pwd)
   end
 
@@ -36,12 +36,12 @@ describe Lotus::Configuration do
 
       describe 'when ENV is set' do
         before do
-          ENV['LOTUS_ENV'] = 'environment'
-          @configuration   = Lotus::Configuration.new
+          ENV['HANAMI_ENV'] = 'environment'
+          @configuration   = Hanami::Configuration.new
         end
 
         after do
-          ENV['LOTUS_ENV'] = nil
+          ENV['HANAMI_ENV'] = nil
         end
 
         it 'sets config based on env' do
@@ -239,7 +239,7 @@ describe Lotus::Configuration do
       it 'sets the routes' do
         @configuration.routes(&routes)
 
-        router = Lotus::Router.new(&@configuration.routes)
+        router = Hanami::Router.new(&@configuration.routes)
         router.path(:root).must_equal '/'
       end
     end
@@ -251,7 +251,7 @@ describe Lotus::Configuration do
         it 'sets the routes' do
           @configuration.routes(path)
 
-          router = Lotus::Router.new(&@configuration.routes)
+          router = Hanami::Router.new(&@configuration.routes)
           router.path(:root).must_equal '/'
         end
       end
@@ -263,7 +263,7 @@ describe Lotus::Configuration do
           @configuration.routes(path)
 
           -> {
-            Lotus::Router.new(&@configuration.routes)
+            Hanami::Router.new(&@configuration.routes)
           }.must_raise ArgumentError
         end
       end
@@ -307,8 +307,8 @@ describe Lotus::Configuration do
 
 
   describe '#middleware' do
-    it 'returns a new instance of Lotus::Middleware' do
-      @configuration.middleware.must_be_instance_of Lotus::Middleware
+    it 'returns a new instance of Hanami::Middleware' do
+      @configuration.middleware.must_be_instance_of Hanami::Middleware
     end
   end
 
@@ -319,8 +319,8 @@ describe Lotus::Configuration do
   #     it 'sets the database mapping' do
   #       @configuration.mapping(&mapping)
 
-  #       mapper = Lotus::Model::Mapper.new(&@configuration.mapping)
-  #       mapper.collection(:customers).must_be_kind_of Lotus::Model::Mapping::Collection
+  #       mapper = Hanami::Model::Mapper.new(&@configuration.mapping)
+  #       mapper.collection(:customers).must_be_kind_of Hanami::Model::Mapping::Collection
   #     end
   #   end
 
@@ -331,8 +331,8 @@ describe Lotus::Configuration do
   #       it 'sets the routes' do
   #         @configuration.mapping(path)
 
-  #         mapper = Lotus::Model::Mapper.new(&@configuration.mapping)
-  #         mapper.collection(:customers).must_be_kind_of Lotus::Model::Mapping::Collection
+  #         mapper = Hanami::Model::Mapper.new(&@configuration.mapping)
+  #         mapper.collection(:customers).must_be_kind_of Hanami::Model::Mapping::Collection
   #       end
   #     end
 
@@ -343,7 +343,7 @@ describe Lotus::Configuration do
   #         @configuration.mapping(path)
 
   #         -> {
-  #           Lotus::Model::Mapper.new(&@configuration.mapping)
+  #           Hanami::Model::Mapper.new(&@configuration.mapping)
   #         }.must_raise ArgumentError
   #       end
   #     end
@@ -504,7 +504,7 @@ describe Lotus::Configuration do
     end
   end
 
-  require 'lotus/utils/io'
+  require 'hanami/utils/io'
   describe '#default_format' do
 
     describe "deprecation" do
@@ -518,7 +518,7 @@ describe Lotus::Configuration do
 
     describe "when not previously set" do
       it 'returns :html' do
-        Lotus::Utils::IO.silence_warnings do
+        Hanami::Utils::IO.silence_warnings do
           @configuration.default_format.must_equal :html
         end
       end
@@ -526,20 +526,20 @@ describe Lotus::Configuration do
 
     describe "when set" do
       before do
-        Lotus::Utils::IO.silence_warnings do
+        Hanami::Utils::IO.silence_warnings do
           @configuration.default_format :json
         end
       end
 
       it 'returns the value' do
-        Lotus::Utils::IO.silence_warnings do
+        Hanami::Utils::IO.silence_warnings do
           @configuration.default_format.must_equal :json
         end
       end
     end
 
     it 'raises an error if the given format cannot be coerced into symbol' do
-      Lotus::Utils::IO.silence_warnings do
+      Hanami::Utils::IO.silence_warnings do
         -> { @configuration.default_format(23) }.must_raise TypeError
       end
     end
@@ -607,13 +607,13 @@ describe Lotus::Configuration do
 
   describe '#host' do
     before do
-      ENV['LOTUS_HOST'] = nil
-      ENV['LOTUS_ENV']  = nil
+      ENV['HANAMI_HOST'] = nil
+      ENV['HANAMI_ENV']  = nil
     end
 
     describe "when not previously set" do
       before do
-        @configuration = Lotus::Configuration.new
+        @configuration = Hanami::Configuration.new
       end
 
       it 'defaults to a specific value' do
@@ -623,18 +623,18 @@ describe Lotus::Configuration do
 
     describe "when the env var is set" do
       before do
-        ENV['LOTUS_HOST'] = 'lotustest.org'
-        @configuration = Lotus::Configuration.new
+        ENV['HANAMI_HOST'] = 'hanamitest.org'
+        @configuration = Hanami::Configuration.new
       end
 
       it 'returns that value' do
-        @configuration.host.must_equal 'lotustest.org'
+        @configuration.host.must_equal 'hanamitest.org'
       end
     end
 
     describe "when called with an argument" do
       it 'sets the value' do
-        @configuration.host(host = 'lotusrb.org')
+        @configuration.host(host = 'hanamirb.org')
         @configuration.host.must_equal host
       end
     end
@@ -649,12 +649,12 @@ describe Lotus::Configuration do
 
     describe "when the env var is set" do
       before do
-        ENV['LOTUS_PORT'] = '2306'
-        @configuration = Lotus::Configuration.new
+        ENV['HANAMI_PORT'] = '2306'
+        @configuration = Hanami::Configuration.new
       end
 
       after do
-        ENV['LOTUS_PORT'] = nil
+        ENV['HANAMI_PORT'] = nil
       end
 
       it 'returns that value' do
@@ -796,7 +796,7 @@ describe Lotus::Configuration do
   describe '#logger' do
     describe "when not previously set" do
       before do
-        @configuration = Lotus::Configuration.new
+        @configuration = Hanami::Configuration.new
       end
 
       it 'defaults to nil' do
@@ -807,7 +807,7 @@ describe Lotus::Configuration do
     describe "when the logger is set" do
       before do
         @logger = Logger.new(STDOUT)
-        @configuration = Lotus::Configuration.new
+        @configuration = Hanami::Configuration.new
         @configuration.logger @logger
       end
 

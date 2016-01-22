@@ -1,31 +1,31 @@
 require 'test_helper'
-require 'lotus/commands/generate/action'
+require 'hanami/commands/generate/action'
 require 'fileutils'
 
-describe Lotus::Commands::Generate::Action do
+describe Hanami::Commands::Generate::Action do
   describe 'with invalid arguments' do
     it 'requires application name' do
       with_temp_dir do |original_wd|
         setup_container_app
-        -> { Lotus::Commands::Generate::Action.new({}, nil, 'books#index') }.must_raise ArgumentError
-        -> { Lotus::Commands::Generate::Action.new({}, '', 'books#index') }.must_raise ArgumentError
-        -> { Lotus::Commands::Generate::Action.new({}, '  ', 'books#index') }.must_raise ArgumentError
+        -> { Hanami::Commands::Generate::Action.new({}, nil, 'books#index') }.must_raise ArgumentError
+        -> { Hanami::Commands::Generate::Action.new({}, '', 'books#index') }.must_raise ArgumentError
+        -> { Hanami::Commands::Generate::Action.new({}, '  ', 'books#index') }.must_raise ArgumentError
       end
     end
 
     it 'requires controller and action name' do
       with_temp_dir do |previus_wd|
         setup_container_app
-        -> { Lotus::Commands::Generate::Action.new({}, 'web', 'books') }.must_raise ArgumentError
-        -> { Lotus::Commands::Generate::Action.new({}, 'web', '') }.must_raise ArgumentError
-        -> { Lotus::Commands::Generate::Action.new({}, 'web', ' ') }.must_raise ArgumentError
+        -> { Hanami::Commands::Generate::Action.new({}, 'web', 'books') }.must_raise ArgumentError
+        -> { Hanami::Commands::Generate::Action.new({}, 'web', '') }.must_raise ArgumentError
+        -> { Hanami::Commands::Generate::Action.new({}, 'web', ' ') }.must_raise ArgumentError
       end
     end
 
     it 'verifies the method option' do
       with_temp_dir do |previus_wd|
         setup_container_app
-        -> { Lotus::Commands::Generate::Action.new({method: 'UnKnOwN'}, 'web', 'books#action') }.must_raise ArgumentError
+        -> { Hanami::Commands::Generate::Action.new({method: 'UnKnOwN'}, 'web', 'books#action') }.must_raise ArgumentError
       end
     end
   end
@@ -34,7 +34,7 @@ describe Lotus::Commands::Generate::Action do
     it 'allows user to pass / instead of # between controller and action' do
       with_temp_dir do |original_wd|
         setup_container_app
-        command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/index')
+        command = Hanami::Commands::Generate::Action.new({}, 'web', 'books/index')
         capture_io { command.start }
 
         assert_file_exists 'apps/web/templates/books/index.html.erb'
@@ -45,7 +45,7 @@ describe Lotus::Commands::Generate::Action do
     it 'uses --template option as extension for the template' do
       with_temp_dir do |original_wd|
         setup_container_app
-        command = Lotus::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index')
+        command = Hanami::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index')
 
         capture_io { command.start }
 
@@ -56,7 +56,7 @@ describe Lotus::Commands::Generate::Action do
     it "handles nested routes correctly" do
       with_temp_dir do |original_wd|
         setup_container_app
-        command = Lotus::Commands::Generate::Action.new({}, 'web', 'admin/books#index')
+        command = Hanami::Commands::Generate::Action.new({}, 'web', 'admin/books#index')
         capture_io { command.start }
 
         assert_file_exists 'apps/web/templates/admin/books/index.html.erb'
@@ -65,7 +65,7 @@ describe Lotus::Commands::Generate::Action do
 
       with_temp_dir do |original_wd|
         setup_container_app
-        command = Lotus::Commands::Generate::Action.new({}, 'web', 'admin/books/index')
+        command = Hanami::Commands::Generate::Action.new({}, 'web', 'admin/books/index')
         capture_io { command.start }
 
         assert_file_exists 'apps/web/templates/admin/books/index.html.erb'
@@ -77,8 +77,8 @@ describe Lotus::Commands::Generate::Action do
       it 'uses the --method option to specify HTTP method in the route' do
         with_temp_dir do |original_wd|
           setup_container_app
-          Lotus::Routing::Route::VALID_HTTP_VERBS.each do |m|
-            command = Lotus::Commands::Generate::Action.new({method: m}, 'web', 'books#index')
+          Hanami::Routing::Route::VALID_HTTP_VERBS.each do |m|
+            command = Hanami::Commands::Generate::Action.new({method: m}, 'web', 'books#index')
             capture_io { command.start }
 
             assert_file_includes('apps/web/config/routes.rb', "#{m.downcase} '/books', to: 'books#index'")
@@ -90,7 +90,7 @@ describe Lotus::Commands::Generate::Action do
         with_temp_dir do |original_wd|
           setup_container_app
 
-          command = Lotus::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index')
+          command = Hanami::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index')
           capture_io { command.start }
 
           assert_file_includes('apps/web/config/routes.rb', "get '/mybooks', to: 'books#index'")
@@ -102,7 +102,7 @@ describe Lotus::Commands::Generate::Action do
       it 'makes `index` route' do
         with_temp_dir do |original_wd|
           setup_container_app
-          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/index')
+          command = Hanami::Commands::Generate::Action.new({}, 'web', 'books/index')
           capture_io { command.start }
 
           assert_file_includes('apps/web/config/routes.rb', "get '/books', to: 'books#index")
@@ -112,7 +112,7 @@ describe Lotus::Commands::Generate::Action do
       it 'makes `show` route' do
         with_temp_dir do |original_wd|
           setup_container_app
-          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/show')
+          command = Hanami::Commands::Generate::Action.new({}, 'web', 'books/show')
           capture_io { command.start }
 
           assert_file_includes('apps/web/config/routes.rb', "get '/books/:id', to: 'books#show'")
@@ -122,7 +122,7 @@ describe Lotus::Commands::Generate::Action do
       it 'makes `new` route' do
         with_temp_dir do |original_wd|
           setup_container_app
-          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/new')
+          command = Hanami::Commands::Generate::Action.new({}, 'web', 'books/new')
           capture_io { command.start }
 
           assert_file_includes('apps/web/config/routes.rb', "get '/books/new', to: 'books#new'")
@@ -132,7 +132,7 @@ describe Lotus::Commands::Generate::Action do
       it 'makes `create` route' do
         with_temp_dir do |original_wd|
           setup_container_app
-          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/create')
+          command = Hanami::Commands::Generate::Action.new({}, 'web', 'books/create')
           capture_io { command.start }
 
           assert_file_includes('apps/web/config/routes.rb', "post '/books', to: 'books#create'")
@@ -142,7 +142,7 @@ describe Lotus::Commands::Generate::Action do
       it 'makes `edit` route' do
         with_temp_dir do |original_wd|
           setup_container_app
-          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/edit')
+          command = Hanami::Commands::Generate::Action.new({}, 'web', 'books/edit')
           capture_io { command.start }
 
           assert_file_includes('apps/web/config/routes.rb', "get '/books/:id/edit', to: 'books#edit'")
@@ -152,7 +152,7 @@ describe Lotus::Commands::Generate::Action do
       it 'makes `update` route' do
         with_temp_dir do |original_wd|
           setup_container_app
-          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/update')
+          command = Hanami::Commands::Generate::Action.new({}, 'web', 'books/update')
           capture_io { command.start }
 
           assert_file_includes('apps/web/config/routes.rb', "patch '/books/:id', to: 'books#update'")
@@ -162,7 +162,7 @@ describe Lotus::Commands::Generate::Action do
       it 'makes `destroy`' do
         with_temp_dir do |original_wd|
           setup_container_app
-          command = Lotus::Commands::Generate::Action.new({}, 'web', 'books/destroy')
+          command = Hanami::Commands::Generate::Action.new({}, 'web', 'books/destroy')
           capture_io { command.start }
 
           assert_file_includes('apps/web/config/routes.rb', "delete '/books/:id', to: 'books#destroy'")
@@ -172,7 +172,7 @@ describe Lotus::Commands::Generate::Action do
       it 'does not override user specified http method' do
         with_temp_dir do |original_wd|
           setup_container_app
-          command = Lotus::Commands::Generate::Action.new({method: 'get'}, 'web', 'books/destroy')
+          command = Hanami::Commands::Generate::Action.new({method: 'get'}, 'web', 'books/destroy')
           capture_io { command.start }
 
           assert_file_includes('apps/web/config/routes.rb', "get '/books/:id', to: 'books#destroy'")
@@ -182,7 +182,7 @@ describe Lotus::Commands::Generate::Action do
       it 'does not override user specified URL' do
         with_temp_dir do |original_wd|
           setup_container_app
-          command = Lotus::Commands::Generate::Action.new({url: '/books'}, 'web', 'books/destroy')
+          command = Hanami::Commands::Generate::Action.new({url: '/books'}, 'web', 'books/destroy')
           capture_io { command.start }
 
           assert_file_includes('apps/web/config/routes.rb', "delete '/books', to: 'books#destroy'")
@@ -196,7 +196,7 @@ describe Lotus::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_container_app
 
-            command = Lotus::Commands::Generate::Action.new({}, 'web', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({}, 'web', 'books#index')
             capture_io { command.start }
 
             assert_generated_container_action('minitest', original_wd)
@@ -207,7 +207,7 @@ describe Lotus::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_underscored_container_app
 
-            command = Lotus::Commands::Generate::Action.new({}, 'app_v1', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({}, 'app_v1', 'books#index')
             capture_io { command.start }
 
             assert_file_exists('spec/app_v1/controllers/books/index_spec.rb')
@@ -223,7 +223,7 @@ describe Lotus::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_container_app
 
-            command = Lotus::Commands::Generate::Action.new({skip_view: true}, 'web', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({skip_view: true}, 'web', 'books#index')
             capture_io { command.start }
 
             assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'apps/web/config/routes.rb')
@@ -242,7 +242,7 @@ describe Lotus::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_container_app
 
-            command = Lotus::Commands::Generate::Action.new({test: 'rspec'}, 'web', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({test: 'rspec'}, 'web', 'books#index')
             capture_io { command.start }
 
             assert_generated_container_action('rspec', original_wd)
@@ -257,7 +257,7 @@ describe Lotus::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_app_app
 
-            command = Lotus::Commands::Generate::Action.new({}, 'testapp', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({}, 'testapp', 'books#index')
             capture_io { command.start }
 
             assert_generated_app_action('minitest', original_wd)
@@ -268,7 +268,7 @@ describe Lotus::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_app_app
 
-            command = Lotus::Commands::Generate::Action.new({skip_view: true}, 'testapp', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({skip_view: true}, 'testapp', 'books#index')
             capture_io { command.start }
 
             assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'config/routes.rb')
@@ -287,7 +287,7 @@ describe Lotus::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_app_app
 
-            command = Lotus::Commands::Generate::Action.new({test: 'rspec'}, 'testapp', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({test: 'rspec'}, 'testapp', 'books#index')
             capture_io { command.start }
 
             assert_generated_app_action('rspec', original_wd)
@@ -298,11 +298,11 @@ describe Lotus::Commands::Generate::Action do
   end
 
   describe 'with quoted arguments' do
-    # See https://github.com/lotus/lotus/issues/282
+    # See https://github.com/hanami/hanami/issues/282
     it 'accepts single quoted arguments' do
       with_temp_dir do |original_wd|
         setup_container_app
-        command = Lotus::Commands::Generate::Action.new({}, 'web', "'books#index'")
+        command = Hanami::Commands::Generate::Action.new({}, 'web', "'books#index'")
         capture_io { command.start }
 
         assert_generated_container_action('minitest', original_wd)
@@ -312,7 +312,7 @@ describe Lotus::Commands::Generate::Action do
     it 'accepts double quoted arguments' do
       with_temp_dir do |original_wd|
         setup_container_app
-        command = Lotus::Commands::Generate::Action.new({}, 'web', '"books#index"')
+        command = Hanami::Commands::Generate::Action.new({}, 'web', '"books#index"')
         capture_io { command.start }
 
         assert_generated_container_action('minitest', original_wd)
@@ -322,7 +322,7 @@ describe Lotus::Commands::Generate::Action do
     it 'accepts escaped arguments' do
       with_temp_dir do |original_wd|
         setup_container_app
-        command = Lotus::Commands::Generate::Action.new({}, 'web', 'books\#index')
+        command = Hanami::Commands::Generate::Action.new({}, 'web', 'books\#index')
         capture_io { command.start }
 
         assert_generated_container_action('minitest', original_wd)
@@ -337,9 +337,9 @@ describe Lotus::Commands::Generate::Action do
           setup_container_app
 
           capture_io {
-            Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').start
+            Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').start
 
-            Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').destroy.start
+            Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').destroy.start
           }
 
           refute_file_exists('spec/web/controllers/books/index_spec.rb')
@@ -357,9 +357,9 @@ describe Lotus::Commands::Generate::Action do
           setup_app_app
 
           capture_io {
-            Lotus::Commands::Generate::Action.new({}, 'testapp', 'books#index').start
+            Hanami::Commands::Generate::Action.new({}, 'testapp', 'books#index').start
 
-            Lotus::Commands::Generate::Action.new({}, 'testapp', 'books#index').destroy.start
+            Hanami::Commands::Generate::Action.new({}, 'testapp', 'books#index').destroy.start
           }
 
           refute_file_exists('spec/controllers/books/index_spec.rb')
@@ -376,9 +376,9 @@ describe Lotus::Commands::Generate::Action do
         setup_container_app
 
         capture_io {
-          Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').start
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').start
 
-          Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').destroy.start
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').destroy.start
         }
 
         refute_file_includes('apps/web/config/routes.rb', "get '/books', to: 'books#index'")
@@ -391,9 +391,9 @@ describe Lotus::Commands::Generate::Action do
           setup_container_app
 
           capture_io {
-            Lotus::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').start
+            Hanami::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').start
 
-            Lotus::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').destroy.start
+            Hanami::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').destroy.start
           }
 
           refute_file_includes('apps/web/config/routes.rb', "get '/mybooks', to: 'books#index'")
@@ -407,9 +407,9 @@ describe Lotus::Commands::Generate::Action do
           setup_container_app
 
           capture_io {
-            Lotus::Commands::Generate::Action.new({method: 'post'}, 'web', 'books#index').start
+            Hanami::Commands::Generate::Action.new({method: 'post'}, 'web', 'books#index').start
 
-            Lotus::Commands::Generate::Action.new({method: 'post'}, 'web', 'books#index').destroy.start
+            Hanami::Commands::Generate::Action.new({method: 'post'}, 'web', 'books#index').destroy.start
           }
 
           refute_file_includes('apps/web/config/routes.rb', "post '/books', to: 'books#index'")
@@ -423,9 +423,9 @@ describe Lotus::Commands::Generate::Action do
           setup_container_app
 
           capture_io {
-            Lotus::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index').start
+            Hanami::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index').start
 
-            Lotus::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index').destroy.start
+            Hanami::Commands::Generate::Action.new({template: 'haml'}, 'web', 'books#index').destroy.start
           }
 
           refute_file_exists('apps/web/templates/books/index.html.haml')
@@ -434,26 +434,26 @@ describe Lotus::Commands::Generate::Action do
     end
   end
 
-  describe 'respect lotusrc' do
+  describe 'respect hanamirc' do
     it 'creates rspec templates' do
       with_temp_dir do |original_wd|
         setup_container_app
-        FileUtils.cp original_wd.join('test', 'fixtures', 'lotusrc', 'with_rspec'), '.lotusrc'
+        FileUtils.cp original_wd.join('test', 'fixtures', 'hanamirc', 'with_rspec'), '.hanamirc'
 
         capture_io {
-          Lotus::Commands::Generate::Action.new({}, 'web', 'books#index').start
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').start
         }
         assert_generated_container_action('rspec', original_wd)
       end
     end
 
-    it 'accepts command arguments to override lotusrc' do
+    it 'accepts command arguments to override hanamirc' do
       with_temp_dir do |original_wd|
         setup_container_app
-        FileUtils.cp original_wd.join('test', 'fixtures', 'lotusrc', 'with_rspec'), '.lotusrc'
+        FileUtils.cp original_wd.join('test', 'fixtures', 'hanamirc', 'with_rspec'), '.hanamirc'
 
         capture_io {
-          Lotus::Commands::Generate::Action.new({test: 'minitest'}, 'web', 'books#index').start
+          Hanami::Commands::Generate::Action.new({test: 'minitest'}, 'web', 'books#index').start
         }
         assert_generated_container_action('minitest', original_wd)
       end
@@ -480,21 +480,21 @@ describe Lotus::Commands::Generate::Action do
   end
 
   def setup_container_app
-    File.open('.lotusrc', 'w') { |file| file << "architecture=container"}
+    File.open('.hanamirc', 'w') { |file| file << "architecture=container"}
     FileUtils.mkdir_p('apps/web') # simulate existing app
     FileUtils.mkdir_p('apps/web/config') # simulate existing routes file to see if route is prepended
     File.open('apps/web/config/routes.rb', 'w') { |file| file << "get '/cars', to: 'cars#index'"}
   end
 
   def setup_underscored_container_app
-    File.open('.lotusrc', 'w') { |file| file << "architecture=container"}
+    File.open('.hanamirc', 'w') { |file| file << "architecture=container"}
     FileUtils.mkdir_p('apps/app_v1') # simulate existing app
     FileUtils.mkdir_p('apps/app_v1/config') # simulate existing routes file to see if route is prepended
     File.open('apps/app_v1/config/routes.rb', 'w') { |file| file << "get '/cars', to: 'cars#index'"}
   end
 
   def setup_app_app
-    File.open('.lotusrc', 'w') { |file| file << "architecture=app"}
+    File.open('.hanamirc', 'w') { |file| file << "architecture=app"}
     FileUtils.mkdir_p('app') # simulate existing app
     FileUtils.mkdir_p('config') # simulate existing routes file to see if route is prepended
     File.open('config/routes.rb', 'w') { |file| file << "get '/cars', to: 'cars#index'"}

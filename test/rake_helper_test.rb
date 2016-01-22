@@ -1,10 +1,10 @@
 require 'test_helper'
-require 'lotus/rake_helper'
+require 'hanami/rake_helper'
 
-describe Lotus::RakeHelper do
+describe Hanami::RakeHelper do
   describe '.install_tasks' do
     before do
-      Lotus::RakeHelper.install_tasks
+      Hanami::RakeHelper.install_tasks
     end
 
     let(:app) { Rake.application }

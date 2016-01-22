@@ -11,6 +11,6 @@ require 'minitest/autorun'
 require 'support/assertions'
 
 $:.unshift 'lib'
-require 'lotus'
+require 'hanami'
 
 $pwd = Dir.pwd

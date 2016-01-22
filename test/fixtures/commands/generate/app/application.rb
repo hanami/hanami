@@ -1,8 +1,8 @@
-require 'lotus/helpers'
-require 'lotus/assets'
+require 'hanami/helpers'
+require 'hanami/assets'
 
 module Admin
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       ##
       # BASIC
@@ -23,7 +23,7 @@ module Admin
 
       # Handle exceptions with HTTP statuses (true) or don't catch them (false).
       # Defaults to true.
-      # See: http://www.rubydoc.info/gems/lotus-controller/#Exceptions_management
+      # See: http://www.rubydoc.info/gems/hanami-controller/#Exceptions_management
       #
       # handle_exceptions true
 
@@ -32,7 +32,7 @@ module Admin
       #
 
       # Routes definitions for this application
-      # See: http://www.rubydoc.info/gems/lotus-router#Usage
+      # See: http://www.rubydoc.info/gems/hanami-router#Usage
       #
       routes 'config/routes'
 
@@ -127,7 +127,7 @@ module Admin
         #   * :yui
         #   * :closure
         #
-        # See: http://lotusrb.org/guides/assets/compressors
+        # See: http://hanamirb.org/guides/assets/compressors
         #
         # In order to skip JavaScript compression comment the following line
         javascript_compressor :builtin
@@ -140,7 +140,7 @@ module Admin
         #   * :yui
         #   * :sass
         #
-        # See: http://lotusrb.org/guides/assets/compressors
+        # See: http://hanamirb.org/guides/assets/compressors
         #
         # In order to skip stylesheet compression comment the following line
         stylesheet_compressor :builtin
@@ -209,7 +209,7 @@ module Admin
       # Configure the code that will yield each time Admin::Action is included
       # This is useful for sharing common functionality
       #
-      # See: http://www.rubydoc.info/gems/lotus-controller#Configuration
+      # See: http://www.rubydoc.info/gems/hanami-controller#Configuration
       controller.prepare do
         # include MyAuthentication # included in all the actions
         # before :authenticate!    # run an authentication before callback
@@ -218,9 +218,9 @@ module Admin
       # Configure the code that will yield each time Admin::View is included
       # This is useful for sharing common functionality
       #
-      # See: http://www.rubydoc.info/gems/lotus-view#Configuration
+      # See: http://www.rubydoc.info/gems/hanami-view#Configuration
       view.prepare do
-        include Lotus::Helpers
+        include Hanami::Helpers
         include Admin::Assets::Helpers
       end
     end
@@ -252,17 +252,17 @@ module Admin
       assets do
         # Don't compile static assets in production mode (eg. Sass, ES6)
         #
-        # See: http://www.rubydoc.info/gems/lotus-assets#Configuration
+        # See: http://www.rubydoc.info/gems/hanami-assets#Configuration
         compile false
 
         # Use digest file name for asset paths
         #
-        # See: http://lotusrb.org/guides/assets/digest
+        # See: http://hanamirb.org/guides/assets/digest
         digest  true
 
         # Content Delivery Network (CDN)
         #
-        # See: http://lotusrb.org/guides/assets/content-delivery-network
+        # See: http://hanamirb.org/guides/assets/content-delivery-network
         #
         # scheme 'https'
         # host   'cdn.example.org'

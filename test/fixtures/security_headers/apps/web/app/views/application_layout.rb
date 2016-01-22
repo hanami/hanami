@@ -1,3 +1,3 @@
 class SecurityHeaders::Views::ApplicationLayout
-  include Lotus::Layout
+  include Hanami::Layout
 end

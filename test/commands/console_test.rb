@@ -1,13 +1,13 @@
 require 'test_helper'
-require 'lotus/commands/console'
+require 'hanami/commands/console'
 
-describe Lotus::Commands::Console do
+describe Hanami::Commands::Console do
   let(:opts) { Hash.new }
-  let(:console) { Lotus::Commands::Console.new(opts) }
+  let(:console) { Hanami::Commands::Console.new(opts) }
 
   before do
     Dir.chdir($pwd)
-    Lotus::Application.clear_registered_applications!
+    Hanami::Application.clear_registered_applications!
   end
 
   def stub_engine(engine)
@@ -17,13 +17,13 @@ describe Lotus::Commands::Console do
       @remove_const = true
     end
 
-    Lotus::Utils::IO.silence_warnings do
+    Hanami::Utils::IO.silence_warnings do
       Object.const_set(engine, Module.new { def self.start; end })
     end
   end
 
   def remove_engine(engine)
-    Lotus::Utils::IO.silence_warnings do
+    Hanami::Utils::IO.silence_warnings do
       Object.const_set(engine, @engine)
     end if @engine
 
@@ -168,12 +168,12 @@ describe Lotus::Commands::Console do
       before do
         @old_pwd = Dir.pwd
         Dir.chdir 'test/fixtures/microservices'
-        Lotus::Container.class_variable_set(:@@configuration, Proc.new{})
+        Hanami::Container.class_variable_set(:@@configuration, Proc.new{})
       end
 
       after do
         Dir.chdir @old_pwd
-        Lotus::Container.remove_class_variable(:@@configuration)
+        Hanami::Container.remove_class_variable(:@@configuration)
       end
 
       it 'requires that file and starts a console session' do
@@ -204,11 +204,11 @@ describe Lotus::Commands::Console do
       }
 
       before do
-        Lotus::Container.class_variable_set(:@@configuration, Proc.new{})
+        Hanami::Container.class_variable_set(:@@configuration, Proc.new{})
       end
 
       after do
-        Lotus::Container.remove_class_variable(:@@configuration)
+        Hanami::Container.remove_class_variable(:@@configuration)
       end
 
       it 'requires that file and starts a console session' do
@@ -234,21 +234,21 @@ describe Lotus::Commands::Console do
     before do
       @old_main = TOPLEVEL_BINDING
       @main     = Minitest::Mock.new
-      Lotus::Utils::IO.silence_warnings { TOPLEVEL_BINDING = @main }
+      Hanami::Utils::IO.silence_warnings { TOPLEVEL_BINDING = @main }
       @main.expect(:eval, TOPLEVEL_BINDING, ['self'])
 
       @engine = Minitest::Mock.new
       @engine.expect(:start, nil)
-      Lotus::Container.class_variable_set(:@@configuration, Proc.new{})
+      Hanami::Container.class_variable_set(:@@configuration, Proc.new{})
     end
 
     after do
-      Lotus::Utils::IO.silence_warnings { TOPLEVEL_BINDING = @old_main }
-      Lotus::Container.remove_class_variable(:@@configuration)
+      Hanami::Utils::IO.silence_warnings { TOPLEVEL_BINDING = @old_main }
+      Hanami::Container.remove_class_variable(:@@configuration)
     end
 
     it 'mixes convenience methods into the TOPLEVEL_BINDING' do
-      @main.expect(:include, true, [Lotus::Commands::Console::Methods])
+      @main.expect(:include, true, [Hanami::Commands::Console::Methods])
 
       opts[:environment] = 'test/fixtures/microservices/config/environment'
       console.stub(:engine, @engine) { console.start }
@@ -259,19 +259,19 @@ describe Lotus::Commands::Console do
   end
 end
 
-describe Lotus::Commands::Console::Methods do
+describe Hanami::Commands::Console::Methods do
   describe '#reload!' do
     before do
       @binding = Class.new
-      @binding.send(:include, Lotus::Commands::Console::Methods)
+      @binding.send(:include, Hanami::Commands::Console::Methods)
 
       @old_kernel = Kernel
-      Lotus::Utils::IO.silence_warnings { Kernel = Minitest::Mock.new }
+      Hanami::Utils::IO.silence_warnings { Kernel = Minitest::Mock.new }
       Kernel.expect(:exec, true, ["#{$0} console"])
     end
 
     after do
-      Lotus::Utils::IO.silence_warnings { Kernel = @old_kernel }
+      Hanami::Utils::IO.silence_warnings { Kernel = @old_kernel }
     end
 
     it 're-executes the running process' do

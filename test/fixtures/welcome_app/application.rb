@@ -1,5 +1,5 @@
 module WelcomeApp
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
     end
   end

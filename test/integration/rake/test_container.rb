@@ -34,9 +34,9 @@ describe 'Rake tasks (Container)' do
       out.must_include %("SERVE_STATIC_ASSETS"=>"true")
       out.must_include %("WEB_SESSIONS_SECRET")
       out.must_include %("RACK_ENV")
-      out.must_include %("LOTUS_ENV")
-      out.must_include %("LOTUS_HOST")
-      out.must_include %("LOTUS_PORT"=>"2300")
+      out.must_include %("HANAMI_ENV")
+      out.must_include %("HANAMI_HOST")
+      out.must_include %("HANAMI_PORT"=>"2300")
     end
 
     it "doesn't load application code from lib/" do
@@ -63,9 +63,9 @@ describe 'Rake tasks (Container)' do
       out.must_include %("SERVE_STATIC_ASSETS"=>"true")
       out.must_include %("WEB_SESSIONS_SECRET")
       out.must_include %("RACK_ENV")
-      out.must_include %("LOTUS_ENV")
-      out.must_include %("LOTUS_HOST")
-      out.must_include %("LOTUS_PORT"=>"2300")
+      out.must_include %("HANAMI_ENV")
+      out.must_include %("HANAMI_HOST")
+      out.must_include %("HANAMI_PORT"=>"2300")
     end
 
     it "loads application code from lib/" do

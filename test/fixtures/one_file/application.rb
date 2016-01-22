@@ -1,5 +1,5 @@
 module OneFile
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       routes do
         get '/', to: 'dashboard#index'

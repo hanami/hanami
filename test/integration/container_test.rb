@@ -1,16 +1,16 @@
 require 'test_helper'
 require 'rack/test'
 
-describe Lotus::Container do
+describe Hanami::Container do
   include Rack::Test::Methods
 
   before do
-    Lotus::Container.configure do
+    Hanami::Container.configure do
       mount Front::Application, at: '/front'
       mount Back::Application,  at: '/back'
     end
 
-    @container = Lotus::Container.new
+    @container = Hanami::Container.new
     Front::Application.load!
     Back::Application.load!
   end

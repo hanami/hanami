@@ -1,0 +1,7 @@
+class Mailers::<%= config[:mailer] %>
+  include Hanami::Mailer
+
+  from    <%= config[:from] %>
+  to      <%= config[:to] %>
+  subject <%= config[:subject] %>
+end

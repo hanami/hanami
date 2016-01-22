@@ -12,18 +12,18 @@ describe 'Render assets path with digest mode (Container)' do
     @current_dir = Dir.pwd
     Dir.chdir root
 
-    @lotus_env = ENV['LOTUS_ENV']
-    ENV['LOTUS_ENV'] = 'production'
+    @hanami_env = ENV['HANAMI_ENV']
+    ENV['HANAMI_ENV'] = 'production'
 
-    `bundle exec lotus assets precompile`
+    `bundle exec hanami assets precompile`
     public_directory.join('assets.json').must_be :exist?
 
     require root.join('config', 'environment')
-    @app = Lotus::Container.new
+    @app = Hanami::Container.new
   end
 
   after do
-    ENV['LOTUS_ENV'] = @lotus_env
+    ENV['HANAMI_ENV'] = @hanami_env
     Dir.chdir @current_dir
     @current_dir = nil
 

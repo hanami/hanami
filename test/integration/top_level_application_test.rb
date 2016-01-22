@@ -2,7 +2,7 @@ require 'test_helper'
 require 'rack/test'
 require 'fixtures/information_tech/application'
 
-describe 'A top level Lotus application' do
+describe 'A top level Hanami application' do
   include Rack::Test::Methods
 
   before do

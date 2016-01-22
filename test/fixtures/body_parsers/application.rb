@@ -1,7 +1,7 @@
 require 'rexml/document'
-require 'lotus/routing/parsing/parser'
+require 'hanami/routing/parsing/parser'
 
-class XmlParser < Lotus::Routing::Parsing::Parser
+class XmlParser < Hanami::Routing::Parsing::Parser
   def mime_types
     ['application/xml', 'text/xml']
   end
@@ -17,7 +17,7 @@ class XmlParser < Lotus::Routing::Parsing::Parser
 end
 
 module BodyParsersApp
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       body_parsers :json, XmlParser.new
 

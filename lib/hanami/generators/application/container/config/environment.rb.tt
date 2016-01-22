@@ -1,0 +1,7 @@
+require 'rubygems'
+require 'bundler/setup'
+require 'hanami/setup'
+require_relative '../lib/<%= config[:app_name] %>'
+
+Hanami::Container.configure do
+end

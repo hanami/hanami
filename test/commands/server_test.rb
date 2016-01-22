@@ -1,17 +1,17 @@
 require 'test_helper'
-require 'lotus/environment'
-require 'lotus/commands/server'
+require 'hanami/environment'
+require 'hanami/commands/server'
 
-describe Lotus::Commands::Server do
+describe Hanami::Commands::Server do
   let(:opts) { Hash.new }
 
   before do
-    ENV['LOTUS_HOST'] = nil
-    ENV['LOTUS_PORT'] = nil
-    ENV['LOTUS_ENV']  = nil
+    ENV['HANAMI_HOST'] = nil
+    ENV['HANAMI_PORT'] = nil
+    ENV['HANAMI_ENV']  = nil
     ENV['RACK_ENV']   = nil
 
-    @server = Lotus::Commands::Server.new(opts)
+    @server = Hanami::Commands::Server.new(opts)
   end
 
   describe '#middleware' do
@@ -47,19 +47,19 @@ describe Lotus::Commands::Server do
       end
 
       it 'sets an env var for that value' do
-        ENV['LOTUS_HOST'].must_equal 'localhost'
+        ENV['HANAMI_HOST'].must_equal 'localhost'
       end
     end
 
     describe 'when an option is specified' do
-      let(:opts) { Hash[host: 'lotusrb.dev'] }
+      let(:opts) { Hash[host: 'hanamirb.dev'] }
 
       it 'sets that value' do
-        @server.options.fetch(:Host).must_equal 'lotusrb.dev'
+        @server.options.fetch(:Host).must_equal 'hanamirb.dev'
       end
 
       it 'sets an env var for that value' do
-        ENV['LOTUS_HOST'].must_equal 'lotusrb.dev'
+        ENV['HANAMI_HOST'].must_equal 'hanamirb.dev'
       end
     end
   end
@@ -71,7 +71,7 @@ describe Lotus::Commands::Server do
       end
 
       it 'sets an env var for that value' do
-        ENV['LOTUS_PORT'].must_equal '2300'
+        ENV['HANAMI_PORT'].must_equal '2300'
       end
     end
 
@@ -83,7 +83,7 @@ describe Lotus::Commands::Server do
       end
 
       it 'sets an env var for that value' do
-        ENV['LOTUS_PORT'].must_equal '4000'
+        ENV['HANAMI_PORT'].must_equal '4000'
       end
     end
   end
@@ -111,21 +111,21 @@ describe Lotus::Commands::Server do
       end
 
       it 'sets env vars with the same value' do
-        ENV['LOTUS_ENV'].must_equal 'development'
+        ENV['HANAMI_ENV'].must_equal 'development'
         ENV['RACK_ENV'].must_equal  'development'
       end
     end
 
     describe 'when an option is specified via RACK_ENV' do
       before do
-        ENV['LOTUS_ENV'] = nil
+        ENV['HANAMI_ENV'] = nil
         ENV['RACK_ENV']  = 'test'
-        @server = Lotus::Commands::Server.new(opts)
+        @server = Hanami::Commands::Server.new(opts)
       end
 
       after do
         ENV['RACK_ENV']  = nil
-        ENV['LOTUS_ENV'] = nil
+        ENV['HANAMI_ENV'] = nil
       end
 
       it 'returns that value' do
@@ -133,21 +133,21 @@ describe Lotus::Commands::Server do
       end
 
       it 'sets env vars with the same value' do
-        ENV['LOTUS_ENV'].must_equal 'test'
+        ENV['HANAMI_ENV'].must_equal 'test'
         ENV['RACK_ENV'].must_equal  'test'
       end
     end
 
-    describe 'when an option is specified via LOTUS_ENV' do
+    describe 'when an option is specified via HANAMI_ENV' do
       before do
         ENV['RACK_ENV']  = nil
-        ENV['LOTUS_ENV'] = 'staging'
-        @server = Lotus::Commands::Server.new(opts)
+        ENV['HANAMI_ENV'] = 'staging'
+        @server = Hanami::Commands::Server.new(opts)
       end
 
       after do
         ENV['RACK_ENV']  = nil
-        ENV['LOTUS_ENV'] = nil
+        ENV['HANAMI_ENV'] = nil
       end
 
       it 'returns that value' do
@@ -155,7 +155,7 @@ describe Lotus::Commands::Server do
       end
 
       it 'sets env vars with the same value' do
-        ENV['LOTUS_ENV'].must_equal 'staging'
+        ENV['HANAMI_ENV'].must_equal 'staging'
         ENV['RACK_ENV'].must_equal  'staging'
       end
     end
@@ -163,16 +163,16 @@ describe Lotus::Commands::Server do
     describe 'when both the options are specified' do
       before do
         ENV['RACK_ENV']  = 'staging'
-        ENV['LOTUS_ENV'] = 'test'
-        @server = Lotus::Commands::Server.new(opts)
+        ENV['HANAMI_ENV'] = 'test'
+        @server = Hanami::Commands::Server.new(opts)
       end
 
-      it 'gives the precendence to LOTUS_ENV' do
+      it 'gives the precendence to HANAMI_ENV' do
         @server.options.fetch(:environment).must_equal 'test'
       end
 
       it 'sets env vars with the same value' do
-        ENV['LOTUS_ENV'].must_equal 'test'
+        ENV['HANAMI_ENV'].must_equal 'test'
         ENV['RACK_ENV'].must_equal  'test'
       end
     end

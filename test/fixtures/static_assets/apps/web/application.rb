@@ -1,8 +1,8 @@
-require 'lotus/helpers'
-require 'lotus/assets'
+require 'hanami/helpers'
+require 'hanami/assets'
 
 module Web
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       ##
       # BASIC
@@ -23,7 +23,7 @@ module Web
 
       # Handle exceptions with HTTP statuses (true) or don't catch them (false).
       # Defaults to true.
-      # See: http://www.rubydoc.info/gems/lotus-controller/#Exceptions_management
+      # See: http://www.rubydoc.info/gems/hanami-controller/#Exceptions_management
       #
       # handle_exceptions true
 
@@ -32,7 +32,7 @@ module Web
       #
 
       # Routes definitions for this application
-      # See: http://www.rubydoc.info/gems/lotus-router#Usage
+      # See: http://www.rubydoc.info/gems/hanami-router#Usage
       #
       routes 'config/routes'
 
@@ -186,7 +186,7 @@ module Web
       # Configure the code that will yield each time Web::Action is included
       # This is useful for sharing common functionality
       #
-      # See: http://www.rubydoc.info/gems/lotus-controller#Configuration
+      # See: http://www.rubydoc.info/gems/hanami-controller#Configuration
       controller.prepare do
         # include MyAuthentication # included in all the actions
         # before :authenticate!    # run an authentication before callback
@@ -195,9 +195,9 @@ module Web
       # Configure the code that will yield each time Web::View is included
       # This is useful for sharing common functionality
       #
-      # See: http://www.rubydoc.info/gems/lotus-view#Configuration
+      # See: http://www.rubydoc.info/gems/hanami-view#Configuration
       view.prepare do
-        include Lotus::Helpers
+        include Hanami::Helpers
         include Web::Assets::Helpers
       end
     end

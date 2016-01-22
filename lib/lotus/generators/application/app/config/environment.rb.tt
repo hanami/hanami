@@ -1,5 +1,0 @@
-require 'rubygems'
-require 'bundler/setup'
-require 'lotus/setup'
-require_relative '../lib/<%= config[:app_name] %>'
-require_relative '../config/application'

@@ -1,3 +1,3 @@
 class Car
-  include Lotus::Entity
+  include Hanami::Entity
 end

@@ -1,3 +1,0 @@
-class <%= config[:model_name] %>
-  include Lotus::Entity
-end

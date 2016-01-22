@@ -1,4 +1,4 @@
-Lotus is an open source project and we would love you to help us make it better.
+Hanami is an open source project and we would love you to help us make it better.
 
 ## Reporting Issues
 
@@ -21,7 +21,7 @@ but we just don't know.
 
 ## Pull requests
 
-We accept pull requests to Lotus for:
+We accept pull requests to Hanami for:
 
 * Adding documentation
 * Fixing bugs
@@ -47,6 +47,6 @@ request; Questions, clarifications, and so on.
 
 Some things that will increase the chance that your pull request is accepted:
 
-* Use Lotus idioms
+* Use Hanami idioms
 * Include tests that fail without your code, and pass with it
 * Update the documentation, guides, etc.

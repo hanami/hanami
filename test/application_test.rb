@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe Lotus::Application do
+describe Hanami::Application do
   before do
     @application = CoffeeShop::Application.new
   end
@@ -16,17 +16,17 @@ describe Lotus::Application do
     it 'yields the given block and returns a configuration' do
       configuration = CoffeeShop::Application.configuration
 
-      configuration.must_be_kind_of Lotus::Configuration
+      configuration.must_be_kind_of Hanami::Configuration
       configuration.root.must_equal Pathname.new(__dir__).join('../tmp/coffee_shop')
     end
   end
 
   describe 'subclasses' do
     before do
-      Lotus::Application.applications.clear
+      Hanami::Application.applications.clear
 
       module Foo
-        class Application < Lotus::Application
+        class Application < Hanami::Application
           def self.load!(application = self)
             @@loaded = true
           end
@@ -45,11 +45,11 @@ describe Lotus::Application do
     end
 
     it 'register subclasses' do
-      Lotus::Application.applications.must_include(Foo::Application)
+      Hanami::Application.applications.must_include(Foo::Application)
     end
 
     it 'preloads registered subclasses' do
-      Lotus::Application.preload!
+      Hanami::Application.preload!
       Foo::Application.must_be :loaded?
     end
   end
@@ -62,7 +62,7 @@ describe Lotus::Application do
 
   describe '#initialize' do
     it 'loads the frameworks and the application' do
-      @application.routes.must_be_kind_of(Lotus::Router)
+      @application.routes.must_be_kind_of(Hanami::Router)
     end
   end
 

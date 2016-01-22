@@ -2,7 +2,7 @@ require 'test_helper'
 require 'rack/test'
 require 'fixtures/collaboration/apps/web/application'
 
-describe 'A full stack Lotus application' do
+describe 'A full stack Hanami application' do
   include Rack::Test::Methods
 
   attr_reader :app

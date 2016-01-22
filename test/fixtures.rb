@@ -1,5 +1,5 @@
-require 'lotus/model'
-require 'lotus/mailer'
+require 'hanami/model'
+require 'hanami/mailer'
 
 class FakeFrameworkConfiguration
   def prefix(value = nil)
@@ -20,17 +20,17 @@ class FakeFrameworkConfiguration
 end
 
 class Order
-  include Lotus::Entity
+  include Hanami::Entity
 
   attributes :size, :coffee, :qty
 end
 
 class OrderRepository
-  include Lotus::Repository
+  include Hanami::Repository
 end
 
 module CoffeeShop
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       root   Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop')
       layout nil
@@ -41,7 +41,7 @@ module CoffeeShop
       default_response_format :html
 
       scheme 'https'
-      host   'lotus-coffeeshop.org'
+      host   'hanami-coffeeshop.org'
 
       routes do
         get '/', to: ->{}, as: :root
@@ -63,7 +63,7 @@ module CoffeeShop
 end
 
 module Reviews
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       routes do
         get '/', to: ->{}, as: :root
@@ -86,7 +86,7 @@ module Backend
   end
 end
 
-class TinyApp < Lotus::Application
+class TinyApp < Hanami::Application
   configure do
     routes do
       get '/', to: 'home#index'
@@ -95,9 +95,9 @@ class TinyApp < Lotus::Application
 end
 
 class CSRFAction
-  include Lotus::Action
-  include Lotus::Action::Session
-  include Lotus::Action::CSRFProtection
+  include Hanami::Action
+  include Hanami::Action::Session
+  include Hanami::Action::CSRFProtection
 
   configuration.handle_exceptions false
 
@@ -127,14 +127,14 @@ class CSRFAction
   end
 end
 
-class FilteredParams < Lotus::Action::Params
+class FilteredParams < Hanami::Action::Params
   param :name
 end
 
 class FilteredCSRFAction
-  include Lotus::Action
-  include Lotus::Action::Session
-  include Lotus::Action::CSRFProtection
+  include Hanami::Action
+  include Hanami::Action::Session
+  include Hanami::Action::CSRFProtection
 
   expose :csrf_token
 
@@ -161,9 +161,9 @@ class FilteredCSRFAction
 end
 
 class DisabledCSRFAction
-  include Lotus::Action
-  include Lotus::Action::Session
-  include Lotus::Action::CSRFProtection
+  include Hanami::Action
+  include Hanami::Action::Session
+  include Hanami::Action::CSRFProtection
 
   def call(env)
     # ...
@@ -177,7 +177,7 @@ class DisabledCSRFAction
 end
 
 module ForceSslApp
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       force_ssl true
 
@@ -206,7 +206,7 @@ module ForceSslApp
 end
 
 module ContainerForceSsl
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       routes do
         get '/', to: 'home#show'
@@ -234,7 +234,7 @@ module ContainerForceSsl
 end
 
 module ContainerNoForceSsl
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       routes do
         get '/', to: 'home#show'
@@ -258,7 +258,7 @@ module ContainerNoForceSsl
 end
 
 module Back
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       routes do
         get '/home',  to: 'home#show', as: :home
@@ -271,7 +271,7 @@ module Back
   module Controllers
     module Home
       class Show
-        include Lotus::Action
+        include Hanami::Action
 
         def call(params)
           self.body = 'hello Back'
@@ -280,7 +280,7 @@ module Back
     end
     module Users
       class Index
-        include Lotus::Action
+        include Hanami::Action
 
         def call(params)
           self.body = 'hello from Back users endpoint'
@@ -289,7 +289,7 @@ module Back
     end
     module Articles
       class Index
-        include Lotus::Action
+        include Hanami::Action
 
         def call(params)
           self.body = request.url
@@ -300,7 +300,7 @@ module Back
 end
 
 module Front
-  class Application < Lotus::Application
+  class Application < Hanami::Application
     configure do
       routes do
         get '/home', to: 'home#show', as: :home
@@ -311,7 +311,7 @@ module Front
   module Controllers
     module Home
       class Show
-        include Lotus::Action
+        include Hanami::Action
 
         def call(params)
           self.body = 'hello Front'

@@ -12,7 +12,7 @@ describe 'Serve static assets (Container)' do
     ENV['SERVE_STATIC_ASSETS'] = 'true'
 
     require root.join('config', 'environment')
-    @app = Lotus::Container.new
+    @app = Hanami::Container.new
   end
 
   after do
@@ -114,12 +114,12 @@ JS
 
   describe 'production mode' do
     before do
-      @lotus_env       = ENV['LOTUS_ENV']
-      ENV['LOTUS_ENV'] = 'production'
+      @hanami_env       = ENV['HANAMI_ENV']
+      ENV['HANAMI_ENV'] = 'production'
     end
 
     after do
-      ENV['LOTUS_ENV'] = @lotus_env
+      ENV['HANAMI_ENV'] = @hanami_env
     end
 
     it "serves static files" do
