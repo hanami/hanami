@@ -5,15 +5,14 @@ require 'fileutils'
 describe Hanami::Commands::Generate::Model do
   describe 'with invalid arguments' do
     it 'requires model name' do
-      assert_exception_raised(ArgumentError, 'Model name nil or empty.') do
+      message = 'Model name is missing'
+      assert_exception_raised(ArgumentError, message) do
         Hanami::Commands::Generate::Model.new({}, nil)
       end
-
-      assert_exception_raised(ArgumentError, 'Model name nil or empty.') do
+      assert_exception_raised(ArgumentError, message) do
         Hanami::Commands::Generate::Model.new({}, '')
       end
-
-      assert_exception_raised(ArgumentError, 'Model name nil or empty.') do
+      assert_exception_raised(ArgumentError, message) do
         Hanami::Commands::Generate::Model.new({}, '   ')
       end
     end

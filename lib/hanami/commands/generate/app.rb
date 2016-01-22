@@ -104,8 +104,8 @@ module Hanami
         end
 
         def assert_application_name!(value)
-          if value.nil? || value.strip.empty?
-            raise ArgumentError.new('Application name is nil or empty')
+          if argument_blank?(value)
+            raise ArgumentError.new('Application name is missing')
           end
         end
 

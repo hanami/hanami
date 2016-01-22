@@ -7,18 +7,28 @@ describe Hanami::Commands::Generate::Action do
     it 'requires application name' do
       with_temp_dir do |original_wd|
         setup_container_app
-        -> { Hanami::Commands::Generate::Action.new({}, nil, 'books#index') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, '', 'books#index') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, '  ', 'books#index') }.must_raise ArgumentError
+        err = -> { Hanami::Commands::Generate::Action.new({}, nil, 'books#index') }.must_raise ArgumentError
+        err.message.must_match /Unknown app/
+        err = -> { Hanami::Commands::Generate::Action.new({}, '', 'books#index') }.must_raise ArgumentError
+        err.message.must_match /Unknown app/
+        err = -> { Hanami::Commands::Generate::Action.new({}, '  ', 'books#index') }.must_raise ArgumentError
+        err.message.must_match /Unknown app/
       end
     end
 
     it 'requires controller and action name' do
       with_temp_dir do |previus_wd|
         setup_container_app
-        -> { Hanami::Commands::Generate::Action.new({}, 'web', 'books') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, 'web', '') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, 'web', ' ') }.must_raise ArgumentError
+        message = 'Unknown controller, please add controllers name with this syntax controller_name#action_name'
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books')
+        end
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Action.new({}, 'web', '')
+        end
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Action.new({}, 'web', ' ')
+        end
       end
     end
 
