@@ -82,8 +82,20 @@ describe Hanami::Commands::Console do
     end
 
     describe 'when nothing is loaded' do
+      module ConsoleLoadEngineStub
+        private
+
+        def load_engine(engine)
+          Object.const_set(
+            Hanami::Commands::Console::ENGINES[engine],
+            Module.new { def self.start; end }
+          )
+        end
+      end
+
       before do
-        stub_engine 'IRB'
+        console.extend ConsoleLoadEngineStub
+        @remove_const = true
       end
 
       after do
