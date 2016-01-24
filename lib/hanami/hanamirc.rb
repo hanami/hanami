@@ -38,6 +38,14 @@ module Hanami
     # @see Hanami::Hanamirc::DEFAULT_OPTIONS
     ARCHITECTURE_KEY = 'architecture'.freeze
 
+    # Console key for writing the hanamirc file
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    CONSOLE_KEY = 'console'.freeze
+
     # Test suite default value
     #
     # @since 0.3.0
@@ -45,6 +53,14 @@ module Hanami
     #
     # @see Hanami::Hanamirc::DEFAULT_OPTIONS
     DEFAULT_TEST_SUITE = 'minitest'.freeze
+
+    # Console engine default value
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    DEFAULT_CONSOLE = 'irb'.freeze
 
     # Test suite key for writing the hanamirc file
     #
@@ -79,7 +95,8 @@ module Hanami
     DEFAULT_OPTIONS = Utils::Hash.new({
       ARCHITECTURE_KEY => DEFAULT_ARCHITECTURE,
       TEST_KEY         => DEFAULT_TEST_SUITE,
-      TEMPLATE_KEY     => DEFAULT_TEMPLATE
+      TEMPLATE_KEY     => DEFAULT_TEMPLATE,
+      CONSOLE_KEY      => DEFAULT_CONSOLE
     }).symbolize!.freeze
 
     # Initialize Hanamirc class with application's root and environment options.
