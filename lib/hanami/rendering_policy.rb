@@ -48,7 +48,7 @@ module Hanami
     end
 
     def _render_status_page(action, response)
-      if render_status_page?(action, response)
+      if render_status_page?(action)
         Hanami::Views::Default.render(@templates, response[STATUS], response: response, format: :html)
       end
     end
@@ -61,7 +61,7 @@ module Hanami
       SUCCESSFUL_STATUSES.include?(response[STATUS])
     end
 
-    def render_status_page?(action, response)
+    def render_status_page?(action)
       RENDERABLE_FORMATS.include?(action.format)
     end
 
