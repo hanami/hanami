@@ -1,4 +1,4 @@
 architecture=app
-test=rspec
+test=minitest
 template=erb
-console=irb
+console=ripl

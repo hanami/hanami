@@ -5,6 +5,8 @@ module Hanami
     class ConsoleEngine
       SUPPORTED_ENGINES = ['pry', 'irb', 'ripl'].freeze
 
+      DEFAULT_ENGINE = 'irb'.freeze
+
       attr_reader :engine
 
       def initialize(hanamirc, engine)
