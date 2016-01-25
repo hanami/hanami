@@ -9,7 +9,7 @@ module Hanami
         @body = body
       end
 
-      def render(context)
+      def render(_context)
         @body
       end
     end

@@ -14,9 +14,9 @@ module Hanami
     def call(env)
       path           = env[PATH_INFO]
 
-      prefix, config = @sources.find {|p, _| path.start_with?(p) }
-      original       = if prefix && config
-        config.sources.find(path.sub(prefix, ''))
+      prefix, config = @sources.find { |p, _| path.start_with?(p) }
+      if prefix && config
+        original = config.sources.find(path.sub(prefix, ''))
       end
 
       if can_serve(path, original)
