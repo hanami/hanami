@@ -15,7 +15,7 @@ module Hanami
         DEFAULT_ARCHITECTURE = 'container'.freeze
         DEFAULT_APPLICATION_BASE_URL = '/'.freeze
 
-        attr_reader :options, :target_path, :database_config
+        attr_reader :options, :target_path, :database_config, :test_framework
 
         def initialize(options, name)
           @options = Hanami::Utils::Hash.new(options).symbolize!
@@ -28,6 +28,7 @@ module Hanami
 
           @hanami_model_version = '~> 0.5'
           @database_config = Hanami::Generators::DatabaseConfig.new(options[:database], app_name)
+          @test_framework = Hanami::Generators::TestFramework.new(hanamirc, @options[:test])
         end
 
         def start
@@ -40,10 +41,6 @@ module Hanami
         end
 
         private
-
-        def test_framework
-          @test_framework ||= Hanami::Generators::TestFramework.new(hanamirc, options[:test])
-        end
 
         def hanamirc
           @hanamirc ||= Hanamirc.new(Pathname.new('.'))
@@ -103,7 +100,7 @@ module Hanami
 
         def assert_name!
           if @name.nil? || @name.strip == '' || @name.include?(File::SEPARATOR)
-            raise ArgumentError.new("APPLICATION_NAME is requried and must not contain #{File::SEPARATOR}.")
+            raise ArgumentError.new("APPLICATION_NAME is required and must not contain #{File::SEPARATOR}.")
           end
         end
 
