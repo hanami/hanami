@@ -23,6 +23,12 @@ gem 'hanami-model', '<%= config[:hanami_model_version] %>'
 gem '<%= config[:database_config][:gem] %>'
 <%- end -%>
 
+<%- if config[:console] == 'pry' -%>
+gem 'pry'
+<% elsif config[:console] == 'ripl' -%>
+gem 'ripl'
+<%- end -%>
+
 group :test do
 <%- if config[:test] == 'rspec' -%>
   gem 'rspec'

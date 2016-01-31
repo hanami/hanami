@@ -3,6 +3,7 @@ require 'hanami/application_name'
 require 'hanami/generators/database_config'
 require 'hanami/generators/generatable'
 require 'hanami/generators/test_framework'
+require 'hanami/generators/console_engine'
 require 'hanami/utils/hash'
 
 module Hanami
@@ -15,20 +16,23 @@ module Hanami
         DEFAULT_ARCHITECTURE = 'container'.freeze
         DEFAULT_APPLICATION_BASE_URL = '/'.freeze
 
-        attr_reader :options, :target_path, :database_config, :test_framework
+        attr_reader :options, :target_path, :database_config, :test_framework, :console_engine
 
         def initialize(options, name)
           @options = Hanami::Utils::Hash.new(options).symbolize!
           @name = name
+
           @options[:database] ||= Hanami::Generators::DatabaseConfig::DEFAULT_ENGINE
+          @options[:console] ||= Hanami::Generators::ConsoleEngine::DEFAULT_ENGINE
 
           assert_options!
           assert_name!
           assert_architecture!
 
           @hanami_model_version = '~> 0.5'
-          @database_config = Hanami::Generators::DatabaseConfig.new(options[:database], app_name)
           @test_framework = Hanami::Generators::TestFramework.new(hanamirc, @options[:test])
+          @database_config = Hanami::Generators::DatabaseConfig.new(@options[:database], app_name)
+          @console_engine = Hanami::Generators::ConsoleEngine.new(hanamirc, @options[:console])
         end
 
         def start

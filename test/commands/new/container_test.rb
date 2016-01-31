@@ -33,6 +33,13 @@ describe Hanami::Commands::New::Container do
         exception.message.must_equal '"unknown" is not a valid database type'
       end
     end
+
+    it 'validates console option' do
+      with_temp_dir do |original_wd|
+        exception = -> { Hanami::Commands::New::Container.new({console: 'unknown'}, 'app_name') }.must_raise ArgumentError
+        exception.message.must_equal "Unknown console engine 'unknown'. Please use one of 'pry', 'irb', 'ripl'"
+      end
+    end
   end
 
   describe 'serve static assets' do
@@ -77,6 +84,66 @@ describe Hanami::Commands::New::Container do
 
             actual_content = File.read('.env.test')
             actual_content.must_include 'TESTAPP_DATABASE_URL="file:///db/testapp_test"'
+          end
+        end
+      end
+    end
+
+    describe 'consoles' do
+      describe 'irb' do
+        describe 'when no console engine is specified' do
+          it 'creates files that fallback to irb engine' do
+            with_temp_dir do |original_wd|
+              command = Hanami::Commands::New::Container.new({}, 'new_container')
+              capture_io { command.start }
+
+              fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
+              Dir.chdir('new_container') do
+                assert_generated_file(fixture_root.join('.hanamirc.irb'), '.hanamirc')
+              end
+            end
+          end
+        end
+
+        it 'creates files' do
+          with_temp_dir do |original_wd|
+            command = Hanami::Commands::New::Container.new({console: 'irb'}, 'new_container')
+            capture_io { command.start }
+
+            fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
+            Dir.chdir('new_container') do
+              assert_generated_file(fixture_root.join('.hanamirc.irb'), '.hanamirc')
+            end
+          end
+        end
+      end
+
+      describe 'pry' do
+        it 'creates files' do
+          with_temp_dir do |original_wd|
+            command = Hanami::Commands::New::Container.new({console: 'pry'}, 'new_container')
+            capture_io { command.start }
+
+            fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
+            Dir.chdir('new_container') do
+              assert_generated_file(fixture_root.join('.hanamirc.pry'), '.hanamirc')
+              assert_generated_file(fixture_root.join('Gemfile.pry'), 'Gemfile')
+            end
+          end
+        end
+      end
+
+      describe 'ripl' do
+        it 'creates files' do
+          with_temp_dir do |original_wd|
+            command = Hanami::Commands::New::Container.new({console: 'ripl'}, 'new_container')
+            capture_io { command.start }
+
+            fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
+            Dir.chdir('new_container') do
+              assert_generated_file(fixture_root.join('.hanamirc.ripl'), '.hanamirc')
+              assert_generated_file(fixture_root.join('Gemfile.ripl'), 'Gemfile')
+            end
           end
         end
       end

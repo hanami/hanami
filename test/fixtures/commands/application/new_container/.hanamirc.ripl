@@ -1,4 +1,4 @@
 architecture=container
-test=rspec
+test=minitest
 template=erb
-console=irb
+console=ripl

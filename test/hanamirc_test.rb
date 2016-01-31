@@ -18,16 +18,17 @@ describe Hanami::Hanamirc do
       let(:hanamirc_path) { 'test/fixtures/hanamirc/exists' }
 
       describe "#exists?" do
-        it 'retuns true' do
+        it 'returns true' do
           @hanamirc.exists?.must_equal true
         end
       end
 
-      it 'get values in the file' do
+      it 'gets values in the file' do
         options = @hanamirc.options
         options[:architecture].must_equal 'container'
         options[:test].must_equal 'minitest'
         options[:template].must_equal 'erb'
+        options[:console].must_equal 'irb'
       end
 
       # Bug: https://github.com/hanami/hanami/issues/243
@@ -35,10 +36,11 @@ describe Hanami::Hanamirc do
         ENV.key?('architecture').must_equal false
         ENV.key?('test').must_equal false
         ENV.key?('template').must_equal false
+        ENV.key?('console').must_equal false
       end
 
       it 'returns only environment options' do
-        allowed_keys = %i[architecture test template]
+        allowed_keys = %i[architecture test template console]
         options = @hanamirc.options
         options.keys.must_equal allowed_keys
       end
@@ -47,8 +49,8 @@ describe Hanami::Hanamirc do
     describe "file doesn't exist" do
       let(:hanamirc_path) { 'test/fixtures/hanamirc/no_exists' }
 
-      describe "#exists?" do
-        it 'retuns false' do
+      describe '#exists?' do
+        it 'returns false' do
           @hanamirc.exists?.must_equal false
         end
       end
@@ -59,6 +61,7 @@ describe Hanami::Hanamirc do
           options[:architecture].must_equal 'container'
           options[:test].must_equal 'minitest'
           options[:template].must_equal 'erb'
+          options[:console].must_equal 'irb'
         end
       end
     end
