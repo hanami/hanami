@@ -32,7 +32,7 @@ module Hanami
 
     def can_serve(path, original = nil)
       destination = Dir[PUBLIC_DIRECTORY].find do |file|
-        file.index(path).to_i > 0
+        file.index("public#{path}").to_i > 0
       end
 
       (super(path) || !!destination) && _fresh?(original, destination)
