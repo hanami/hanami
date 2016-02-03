@@ -67,6 +67,22 @@ describe 'Serve static assets (Application)' do
     response.status.must_equal 404
   end
 
+  it "does not block application path" do
+    asset = root.join('public', 'assets', 'dashboard.js')
+    @assets_directory.mkpath
+
+    File.open(asset, File::WRONLY|File::CREAT) do |f|
+      f.write <<-JS
+  console.log('stale');
+      JS
+    end
+
+    get 'dashboard'
+    response.status.must_equal 200
+    response.body.must_include 'dashboard'
+    asset.delete if asset.exist?
+  end
+
   it "replaces fresh version of assets by copying it" do
     begin
       fixture  = root.join('app', 'assets', 'javascripts', 'dashboard.js')
