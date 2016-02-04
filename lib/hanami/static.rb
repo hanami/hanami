@@ -37,7 +37,7 @@ module Hanami
     def can_serve(path, original = nil)
       file_path = path.gsub(URL_SEPARATOR, ::File::SEPARATOR)
       destination = Dir[PUBLIC_DIRECTORY].find do |file|
-        file.index("public#{file_path}").to_i > 0
+        file.end_with?(file_path)
       end
 
       (super(path) || !!destination) && _fresh?(original, destination)
