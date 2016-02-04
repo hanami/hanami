@@ -97,7 +97,7 @@ describe 'Serve static assets (Application)' do
 JS
       end
 
-      get '/assets/dashboard.js'
+      get 'assets/dashboard.js'
       response.body.must_include 'stale'
 
       sleep 1
