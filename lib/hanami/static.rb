@@ -6,6 +6,10 @@ module Hanami
     PATH_INFO        = 'PATH_INFO'.freeze
     PUBLIC_DIRECTORY = Hanami.public_directory.join('**', '*').to_s.freeze
 
+    # @since x.x.x
+    # @api private
+    URL_SEPARATOR       = '/'.freeze
+
     def initialize(app)
       super(app, root: Hanami.public_directory, header_rules: _header_rules)
       @sources = _sources_from_applications
@@ -31,8 +35,9 @@ module Hanami
     private
 
     def can_serve(path, original = nil)
+      file_path = path.gsub(URL_SEPARATOR, ::File::SEPARATOR)
       destination = Dir[PUBLIC_DIRECTORY].find do |file|
-        file.index(path).to_i > 0
+        file.end_with?(file_path)
       end
 
       (super(path) || !!destination) && _fresh?(original, destination)
