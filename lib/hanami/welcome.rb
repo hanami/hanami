@@ -5,7 +5,7 @@ require 'hanami/utils/string'
 
 module Hanami
   class Welcome
-    def initialize(app)
+    def initialize(_app)
       @root = Pathname.new(__dir__).join('templates').realpath
     end
 

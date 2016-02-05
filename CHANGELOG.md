@@ -1,6 +1,11 @@
 # Hanami
 The web, with simplicity.
 
+## v0.7.1 - 2016-02-05
+### Fixed
+- [Anton Davydov] Fixed routing issue when static assets server tried to hijiack requests belonging to dynamic endpoints
+- [Anatolii Didukh] Ensure to fallback to default engine for `hanami console`
+
 ## v0.7.0 - 2016-01-22
 ### Changed
 - [Luca Guidi] Renamed the project
