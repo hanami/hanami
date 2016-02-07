@@ -1,2 +1,5 @@
 # Configure your routes here
-# See: http://www.rubydoc.info/gems/hanami-router/#Usage
+# See: http://hanamirb.org/guides/routing/overview/
+#
+# Example:
+# get '/hello', to: ->(env) { [200, {}, ['Hello from Hanami!']] }
