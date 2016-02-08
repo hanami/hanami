@@ -18,7 +18,7 @@ Hanami::Model.configure do
   #    adapter type: :sql, uri: 'postgres://localhost/new_app_development'
   #    adapter type: :sql, uri: 'mysql://localhost/new_app_development'
   #
-  adapter type: :file_system, uri: ENV['NEW_APP_DATABASE_URL']
+  adapter type: :file_system, uri: ENV['DATABASE_URL']
 
   ##
   # Database mapping

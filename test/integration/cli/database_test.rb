@@ -28,19 +28,19 @@ describe 'hanami db' do
 
     File.open(root.join('.env.development'), 'w') do |f|
       f.write <<-DOTENV
-#{ app_name.upcase }_DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }_development.sqlite3") }"
+DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }_development.sqlite3") }"
       DOTENV
     end
 
     File.open(root.join('.env.test'), 'w') do |f|
       f.write <<-DOTENV
-#{ app_name.upcase }_DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }_test.sqlite3") }"
+DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }_test.sqlite3") }"
       DOTENV
     end
 
     File.open(root.join('.env'), 'w') do |f|
       f.write <<-DOTENV
-#{ app_name.upcase }_DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }.sqlite3") }"
+DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }.sqlite3") }"
       DOTENV
     end
 
