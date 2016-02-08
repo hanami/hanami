@@ -18,7 +18,7 @@ Hanami::Model.configure do
   #    adapter type: :sql, uri: 'postgres://localhost/<%= config[:app_name] %>_development'
   #    adapter type: :sql, uri: 'mysql://localhost/<%= config[:app_name] %>_development'
   #
-  adapter type: :<%= config[:database_config][:type] %>, uri: ENV['<%= config[:app_name].to_env_s %>_DATABASE_URL']
+  adapter type: :<%= config[:database_config][:type] %>, uri: ENV['DATABASE_URL']
 
   <%- if config[:database_config][:type] == :sql -%>
   ##
