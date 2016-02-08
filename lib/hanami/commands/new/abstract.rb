@@ -26,7 +26,7 @@ module Hanami
           assert_name!
           assert_architecture!
 
-          @hanami_model_version = '~> 0.5'
+          @hanami_model_version = '~> 0.7'
           @database_config = Hanami::Generators::DatabaseConfig.new(options[:database], app_name)
           @test_framework = Hanami::Generators::TestFramework.new(hanamirc, @options[:test])
         end

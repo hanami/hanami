@@ -3,8 +3,8 @@ source 'https://rubygems.org'
 gem 'bundler'
 gem 'rake'
 
-gem 'hanami',       '0.7.1'
-gem 'hanami-model', '~> 0.5'
+gem 'hanami',       '0.8.0'
+gem 'hanami-model', '~> 0.7'
 
 
 gem 'pg'

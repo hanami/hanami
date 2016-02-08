@@ -1,6 +1,10 @@
 # Hanami
 The web, with simplicity.
 
+## v0.8.0 - (unreleased)
+### Changed
+– [Luca Guidi] Drop support for Ruby 2.0 and 2.1
+
 ## v0.7.1 - 2016-02-05
 ### Fixed
 - [Anton Davydov] Fixed routing issue when static assets server tried to hijiack requests belonging to dynamic endpoints
