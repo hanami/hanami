@@ -7,11 +7,14 @@ module Hanami
     class Generate
       class App < Abstract
 
+        DEFAULT_TEMPLATE_FORMATS = 'erb'.freeze
+
+        APPLICATION_TEMPLATE_FORMATS = %w[erb slim haml].freeze
+
         attr_reader :base_path
 
         def initialize(options, application_name)
           super(options)
-
           assert_application_name!(application_name)
           assert_architecture!
 
@@ -23,7 +26,7 @@ module Hanami
           add_mapping('application.rb.tt', 'application.rb')
           add_mapping('config/routes.rb.tt', 'config/routes.rb')
           add_mapping('views/application_layout.rb.tt', 'views/application_layout.rb')
-          add_mapping('templates/application.html.erb.tt', 'templates/application.html.erb')
+          add_mapping("templates/application.html.#{ template_engine }.tt", "templates/application.html.#{ template_engine }")
           add_mapping('favicon.ico', 'assets/favicon.ico')
 
           add_mapping('.gitkeep', 'controllers/.gitkeep')
@@ -53,6 +56,11 @@ module Hanami
 
         private
 
+        def template_engine
+          engine = super
+          APPLICATION_TEMPLATE_FORMATS.find { |t| t == engine } || DEFAULT_TEMPLATE_FORMATS
+        end
+
         def application_base_url
           options.fetch(:application_base_url, "/#{app_name}")
         end
@@ -77,6 +85,10 @@ module Hanami
               %(#{ upcase_app_name }_SESSIONS_SECRET="#{ SecureRandom.hex(32) }"\n)
             end
           end
+        end
+
+        def hanamirc
+          @hanamirc ||= Hanamirc.new(base_path)
         end
 
         def target_path
