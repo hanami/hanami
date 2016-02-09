@@ -36,11 +36,17 @@ module Hanami
 
     def can_serve(path, original = nil)
       file_path = path.gsub(URL_SEPARATOR, ::File::SEPARATOR)
-      destination = Dir[PUBLIC_DIRECTORY].find do |file|
-        file.end_with?(file_path)
+      destination = find_asset do |asset|
+        asset.end_with?(file_path)
       end
 
       (super(path) || !!destination) && _fresh?(original, destination)
+    end
+
+    def find_asset
+      Dir[PUBLIC_DIRECTORY].find do |asset|
+        yield asset unless ::File.directory?(asset)
+      end
     end
 
     def _fresh?(original, destination)
