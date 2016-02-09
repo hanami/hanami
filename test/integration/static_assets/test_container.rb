@@ -78,6 +78,34 @@ describe 'Serve static assets (Container)' do
     response.status.must_equal 404
   end
 
+  describe "does not block application path" do
+    it "when a file name is equal to a route path" do
+      asset = root.join('public', 'assets', 'dashboard.js')
+      @assets_directory.mkpath
+
+      File.open(asset, File::WRONLY|File::CREAT) do |f|
+        f.write <<-JS
+    console.log('stale');
+        JS
+      end
+
+      get '/dashboard'
+      response.status.must_equal 200
+      response.body.must_include 'dashboard'
+      asset.delete if asset.exist?
+    end
+
+    it "when a route path is equal to the name of an application" do
+      get '/assets/admin/application.css'
+      asset = root.join('public', 'assets', 'admin', 'application.css')
+      assert asset.exist?, "Expected #{ asset } to be precompiled in #{ root.join('public') }"
+
+      get '/admin'
+      response.status.must_equal 200
+      response.body.must_include 'home'
+    end
+  end
+
   it "replaces fresh version of assets by copying it" do
     begin
       fixture = root.join('apps', 'web', 'assets', 'javascripts', 'dashboard.js')
