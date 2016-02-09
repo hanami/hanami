@@ -45,6 +45,14 @@ describe Hanami::Loader do
         CoffeeShop::Controller.configuration.default_response_format.must_equal(:html)
       end
 
+      it 'configures controller to use default headers' do
+        CoffeeShop::Controller.configuration.default_headers.
+          must_equal({
+            "X-Frame-Options" => "DENY",
+            "Content-Security-Policy" => "form-action 'self'; referrer origin-when-cross-origin; reflected-xss block; frame-ancestors 'self'; base-uri 'self'; default-src 'none'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self'; object-src 'self'; plugin-types application/pdf; child-src 'self'; frame-src 'self'; media-src 'self'",
+          })
+      end
+
       it 'generates controllers namespace' do
         assert defined?(CoffeeShop::Controllers), 'expected CoffeeShop::Controllers'
       end
