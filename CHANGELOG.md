@@ -4,6 +4,7 @@ The web, with simplicity.
 ## v0.8.0 - (unreleased)
 ### Changed
 – [Luca Guidi] Drop support for Ruby 2.0 and 2.1
+- [Sean Collins] Add `--version` and `-v` for `hanami version` CLI
 
 ## v0.7.2 - 2016-02-09
 ### Fixed
