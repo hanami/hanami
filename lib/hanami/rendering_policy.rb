@@ -12,7 +12,8 @@ module Hanami
     HEADERS = 1
     BODY    = 2
 
-    HANAMI_ACTION = 'hanami.action'.freeze
+    HANAMI_ACTION  = 'hanami.action'.freeze
+    RACK_EXCEPTION = 'rack.exception'.freeze
 
     SUCCESSFUL_STATUSES = (200..201).freeze
     RENDERABLE_FORMATS  = [:all, :html].freeze
@@ -34,16 +35,21 @@ module Hanami
     private
     def _render(env, response)
       if action = renderable?(env)
-        _render_action(action, response) ||
+        _render_action(action, env, response) ||
           _render_status_page(action, response)
       end
     end
 
-    def _render_action(action, response)
+    def _render_action(action, env, response)
       if successful?(response)
-        view_for(action, response).render(
-          action.exposures
-        )
+        begin
+          view_for(action, response).render(
+            action.exposures
+          )
+        rescue => e
+          env[RACK_EXCEPTION] = e
+          raise e
+        end
       end
     end
 
