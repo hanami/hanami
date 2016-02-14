@@ -15,7 +15,8 @@ module Hanami
         DEFAULT_ARCHITECTURE = 'container'.freeze
         DEFAULT_APPLICATION_BASE_URL = '/'.freeze
 
-        attr_reader :options, :target_path, :database_config, :test_framework
+        attr_reader :options, :target_path, :database_config,
+          :test_framework, :hanami_model_version
 
         def initialize(options, name)
           @options = Hanami::Utils::Hash.new(options).symbolize!
@@ -86,8 +87,8 @@ module Hanami
           File.directory?(target.join('.git'))
         end
 
-        def hanami_model_version
-          @hanami_model_version
+        def hanami_version
+          "~> #{Hanami::VERSION.scan(/\A\d{1,2}\.\d{1,2}/).first}"
         end
 
         def hanami_head?

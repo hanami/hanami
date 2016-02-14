@@ -18,12 +18,13 @@ module Hanami
 
         def template_options
           {
-            app_name:              app_name,
-            hanami_head:            hanami_head?,
-            test:                  test_framework.framework,
-            database:              database_config.type,
-            database_config:       database_config.to_hash,
-            hanami_model_version:   hanami_model_version,
+            app_name:             app_name,
+            hanami_head:          hanami_head?,
+            test:                 test_framework.framework,
+            database:             database_config.type,
+            database_config:      database_config.to_hash,
+            hanami_model_version: hanami_model_version,
+            hanami_version:       hanami_version,
           }
         end
 
