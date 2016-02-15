@@ -15,7 +15,7 @@ gem 'hanami-mailer',      require: false, github: 'hanami/mailer'
 gem 'hanami-assets',      require: false, github: 'hanami/assets'
 gem 'hanami',                             github: 'hanami/hanami'
 <%- else -%>
-gem 'hanami',       '<%= Hanami::VERSION %>'
+gem 'hanami',       '<%= config[:hanami_version] %>'
 gem 'hanami-model', '<%= config[:hanami_model_version] %>'
 <%- end -%>
 
