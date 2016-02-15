@@ -23,6 +23,13 @@ gem 'hanami-model', '<%= config[:hanami_model_version] %>'
 gem '<%= config[:database_config][:gem] %>'
 <%- end -%>
 
+<%- case config[:template] -%>
+<%- when 'slim' -%>
+gem 'slim'
+<%- when 'haml' -%>
+gem 'haml'
+<%- end -%>
+
 group :test do
 <%- if config[:test] == 'rspec' -%>
   gem 'rspec'

@@ -1,6 +1,7 @@
 require 'hanami/environment'
 require 'hanami/generators/generatable'
 require 'hanami/generators/test_framework'
+require 'hanami/generators/template_engine'
 require 'hanami/version'
 require 'hanami/utils/string'
 
@@ -43,12 +44,9 @@ module Hanami
           @environment ||= Hanami::Environment.new(options)
         end
 
-        def template_engine
-          options.fetch(:template, default_template_engine)
-        end
 
-        def default_template_engine
-          hanamirc_options.fetch(:template)
+        def template_engine
+          @template_engine ||= Hanami::Generators::TemplateEngine.new(hanamirc, options[:template])
         end
 
         def assert_options!

@@ -218,7 +218,7 @@ module Hanami
         end
 
         def template_path
-          application_path.join('templates', @controller_pathname, "#{@action_name.downcase}.html.#{template_engine}")
+          application_path.join('templates', @controller_pathname, "#{@action_name.downcase}.html.#{template_engine.name}")
         end
 
         def action_path

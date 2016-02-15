@@ -3,6 +3,7 @@ require 'hanami/application_name'
 require 'hanami/generators/database_config'
 require 'hanami/generators/generatable'
 require 'hanami/generators/test_framework'
+require 'hanami/generators/template_engine'
 require 'hanami/utils/hash'
 
 module Hanami
@@ -16,7 +17,7 @@ module Hanami
         DEFAULT_APPLICATION_BASE_URL = '/'.freeze
 
         attr_reader :options, :target_path, :database_config,
-          :test_framework, :hanami_model_version
+          :test_framework, :hanami_model_version, :template_engine
 
         def initialize(options, name)
           @options = Hanami::Utils::Hash.new(options).symbolize!
@@ -30,6 +31,7 @@ module Hanami
           @hanami_model_version = '~> 0.7'
           @database_config = Hanami::Generators::DatabaseConfig.new(options[:database], app_name)
           @test_framework = Hanami::Generators::TestFramework.new(hanamirc, @options[:test])
+          @template_engine = Hanami::Generators::TemplateEngine.new(hanamirc, @options[:template])
         end
 
         def start

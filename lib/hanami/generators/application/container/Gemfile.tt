@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'bundler'
 gem 'rake'
+
 <%- if config[:hanami_head] -%>
 gem 'hanami-utils',       require: false, github: 'hanami/utils'
 gem 'hanami-router',      require: false, github: 'hanami/router'
@@ -16,6 +17,13 @@ gem 'hanami',                             github: 'hanami/hanami'
 <%- else -%>
 gem 'hanami',       '<%= config[:hanami_version] %>'
 gem 'hanami-model', '<%= config[:hanami_model_version] %>'
+<%- end -%>
+
+<%- case config[:template] -%>
+<%- when 'slim' -%>
+gem 'slim'
+<%- when 'haml' -%>
+gem 'haml'
 <%- end -%>
 
 <%- if config[:database_config][:gem] %>

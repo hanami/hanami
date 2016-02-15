@@ -25,6 +25,7 @@ module Hanami
             database_config:      database_config.to_hash,
             hanami_model_version: hanami_model_version,
             hanami_version:       hanami_version,
+            template:             template_engine.name
           }
         end
 
