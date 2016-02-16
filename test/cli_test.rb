@@ -16,6 +16,7 @@ describe Hanami::Cli do
       'architecture' => 'container',
       'application_name' => 'web',
       'application_base_url' => '/',
+      'template' => 'erb',
       'test' => 'minitest',
       'hanami_head' => false}
     }
@@ -38,9 +39,10 @@ describe Hanami::Cli do
           'application_name' => 'admin',
           'application_base_url' => '/web-admin',
           'test' => 'rspec',
-          'hanami_head' => true
+          'hanami_head' => true,
+          'template' => 'slim'
         )
-        ARGV.replace(%w{new fancy-app --database=memory --application_name=admin --application_base_url=/web-admin --test=rspec --hanami_head=true})
+        ARGV.replace(%w{new fancy-app --database=memory --application_name=admin --application_base_url=/web-admin --test=rspec --hanami_head=true --template=slim})
         assert_cli_calls_command(Hanami::Commands::New::Container, options, 'fancy-app')
       end
 

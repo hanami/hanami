@@ -221,6 +221,21 @@ describe Hanami::Commands::New::Container do
       end
     end
 
+    describe 'template engine' do
+      it 'creates files' do
+        with_temp_dir do |original_wd|
+          command = Hanami::Commands::New::Container.new({template: 'slim'}, 'new_container')
+          capture_io { command.start }
+
+          fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
+          Dir.chdir('new_container') do
+            assert_generated_file(fixture_root.join('Gemfile.slim'), 'Gemfile')
+            assert_generated_file(fixture_root.join('.hanamirc.slim'), '.hanamirc')
+          end
+        end
+      end
+    end
+
     describe 'mounted at a specific path' do
       it 'mounts at /mypath' do
         with_temp_dir do |original_wd|

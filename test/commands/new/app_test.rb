@@ -58,6 +58,21 @@ describe Hanami::Commands::New::App do
       end
     end
 
+    describe 'template engine' do
+      it 'creates files' do
+        with_temp_dir do |original_wd|
+          command = Hanami::Commands::New::App.new({template: 'slim'}, 'new_app')
+          capture_io { command.start }
+
+          fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_app')
+          Dir.chdir('new_app') do
+            assert_generated_file(fixture_root.join('Gemfile.slim'), 'Gemfile')
+            assert_generated_file(fixture_root.join('.hanamirc.slim'), '.hanamirc')
+          end
+        end
+      end
+    end
+
     it 'returns valid classified app name' do
       command = Hanami::Commands::New::App.new({}, 'awesome-test-app')
       command.template_options[:classified_app_name].must_equal 'AwesomeTestApp'

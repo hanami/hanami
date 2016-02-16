@@ -7,10 +7,6 @@ module Hanami
     class Generate
       class App < Abstract
 
-        DEFAULT_TEMPLATE_FORMATS = 'erb'.freeze
-
-        APPLICATION_TEMPLATE_FORMATS = %w[erb slim haml].freeze
-
         attr_reader :base_path
 
         def initialize(options, application_name)
@@ -26,7 +22,7 @@ module Hanami
           add_mapping('application.rb.tt', 'application.rb')
           add_mapping('config/routes.rb.tt', 'config/routes.rb')
           add_mapping('views/application_layout.rb.tt', 'views/application_layout.rb')
-          add_mapping("templates/application.html.#{ template_engine }.tt", "templates/application.html.#{ template_engine }")
+          add_mapping("templates/application.html.#{ template_engine.name }.tt", "templates/application.html.#{ template_engine.name }")
           add_mapping('favicon.ico', 'assets/favicon.ico')
 
           add_mapping('.gitkeep', 'controllers/.gitkeep')
@@ -45,6 +41,7 @@ module Hanami
             classified_app_name: classified_app_name,
             app_base_url:        application_base_url,
             app_base_path:       application_base_path,
+            template:            template_engine.name
           }
         end
 
@@ -55,11 +52,6 @@ module Hanami
         end
 
         private
-
-        def template_engine
-          engine = super
-          APPLICATION_TEMPLATE_FORMATS.find { |t| t == engine } || DEFAULT_TEMPLATE_FORMATS
-        end
 
         def application_base_url
           options.fetch(:application_base_url, "/#{app_name}")

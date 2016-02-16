@@ -29,6 +29,7 @@ module Hanami
             database_config:      database_config.to_hash,
             hanami_model_version: hanami_model_version,
             hanami_version:       hanami_version,
+            template:             template_engine.name
           }
         end
 
@@ -51,7 +52,7 @@ module Hanami
           add_mapping('config/application.rb.tt', 'config/application.rb')
           add_mapping('config/routes.rb.tt', 'config/routes.rb')
           add_mapping('views/application_layout.rb.tt', 'app/views/application_layout.rb')
-          add_mapping('templates/application.html.erb.tt', 'app/templates/application.html.erb')
+          add_mapping("templates/application.html.#{ template_engine.name }.tt", "app/templates/application.html.#{ template_engine.name }")
           add_mapping('favicon.ico', 'app/assets/favicon.ico')
         end
 

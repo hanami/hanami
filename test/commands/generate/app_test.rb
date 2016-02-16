@@ -46,14 +46,15 @@ describe Hanami::Commands::Generate::App do
     end
 
     describe 'when template engine not erb, haml or slim' do
-      it 'generates erb template file' do
+      it 'raises error' do
         with_temp_dir do |original_wd|
           setup_container_app(original_wd)
           File.open('.hanamirc', 'w') { |file| file << "template=wiki"}
-          command = Hanami::Commands::Generate::App.new({}, 'admin')
-          capture_io { command.start }
-
-          assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'layout.html.erb'), 'apps/admin/templates/application.html.erb')
+          exception = -> {
+            command = Hanami::Commands::Generate::App.new({}, 'admin')
+            capture_io { command.start }
+          }.must_raise Hanami::Generators::TemplateEngine::UnsupportedTemplateEngine
+          exception.message.must_equal "\"wiki\" is not a valid template engine"
         end
       end
     end

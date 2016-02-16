@@ -77,6 +77,7 @@ module Hanami
     method_option :architecture, aliases: ['-a', '--arch'], desc: 'project architecture (container/app)', default: Hanami::Commands::New::Abstract::DEFAULT_ARCHITECTURE
     method_option :application_name, desc: 'application name, only for container', default: Hanami::Commands::New::Container::DEFAULT_APPLICATION_NAME
     method_option :application_base_url, desc: 'application base url', default: Hanami::Commands::New::Abstract::DEFAULT_APPLICATION_BASE_URL
+    method_option :template, desc: "template engine (#{Hanami::Generators::TemplateEngine::SUPPORTED_ENGINES.join('/')})", default: Hanami::Generators::TemplateEngine::DEFAULT_ENGINE
     method_option :test, desc: "project test framework (#{Hanami::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Hanami::Hanamirc::DEFAULT_TEST_SUITE
     method_option :hanami_head, desc: 'use Hanami HEAD (true/false)', type: :boolean, default: false
     method_option :help, desc: 'displays the usage method'
