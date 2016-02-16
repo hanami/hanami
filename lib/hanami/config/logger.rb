@@ -9,7 +9,7 @@ module Hanami
       attr_reader :application_module
 
       def initialize
-        @log_device = STDOUT
+        @device = STDOUT
       end
 
       # Log device option value. STDOUT by default
@@ -26,9 +26,9 @@ module Hanami
       # @api private
       def stream(value = nil)
         if value.nil?
-          @log_device
+          @device
         else
-          @log_device = value
+          @device = value
         end
       end
 
@@ -39,7 +39,7 @@ module Hanami
       # @since x.x.x
       # @api private
       def build
-        ::Hanami::Logger.new(log_device: @log_device)
+        ::Hanami::Logger.new(device: @device)
       end
     end
   end
