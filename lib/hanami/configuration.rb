@@ -1,14 +1,15 @@
 require 'hanami/utils/kernel'
 require 'hanami/utils/deprecation'
 require 'hanami/environment'
+require 'hanami/config/configure'
+require 'hanami/config/cookies'
 require 'hanami/config/framework_configuration'
 require 'hanami/config/load_paths'
-require 'hanami/config/routes'
+require 'hanami/config/logger'
 require 'hanami/config/mapping'
-require 'hanami/config/sessions'
-require 'hanami/config/configure'
+require 'hanami/config/routes'
 require 'hanami/config/security'
-require 'hanami/config/cookies'
+require 'hanami/config/sessions'
 
 module Hanami
   # Configuration for a Hanami application
