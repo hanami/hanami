@@ -38,7 +38,6 @@ module Hanami
 
         def add_application_templates
           add_mapping('hanamirc.tt', '.hanamirc')
-          add_mapping('.env.tt', '.env')
           add_mapping('.env.development.tt', '.env.development')
           add_mapping('.env.test.tt', '.env.test')
           add_mapping('Gemfile.tt', 'Gemfile')

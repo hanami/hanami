@@ -9,6 +9,10 @@ gem 'hanami-model', '~> 0.7'
 
 gem 'sqlite3'
 
+group :test, :development do
+  gem 'dotenv', '~> 2.0'
+end
+
 group :test do
   gem 'minitest'
   gem 'capybara'

@@ -276,7 +276,6 @@ describe Hanami::Commands::New::Container do
     fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
     Dir.chdir('new_container') do
       assert_generated_file(fixture_root.join(".hanamirc.#{ test_framework }"), '.hanamirc')
-      assert_generated_file(fixture_root.join('.env'), '.env')
       actual_content = File.read('.env.development')
       actual_content.must_include 'DATABASE_URL="file:///db/new_container_development"'
       actual_content.must_match(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
