@@ -3,7 +3,7 @@ require 'test_helper'
 describe Hanami::Environment do
   before do
     ENV['HANAMI_ENV']  = nil
-    ENV['RACK_ENV']   = nil
+    ENV['RACK_ENV']    = nil
     ENV['HANAMI_HOST'] = nil
     ENV['HANAMI_PORT'] = nil
 

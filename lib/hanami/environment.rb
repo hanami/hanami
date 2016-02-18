@@ -458,8 +458,8 @@ module Hanami
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      return unless defined?(Dotenv)
-      Dotenv.overload root.join(DEFAULT_DOTENV_ENV % environment)
+      return unless defined?(Dotenv) && (dotenv = root.join(DEFAULT_DOTENV_ENV % environment)).exist?
+      Dotenv.overload dotenv
     end
 
     # @since 0.1.0
