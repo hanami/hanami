@@ -254,7 +254,7 @@ module RakeTasksApp
 
         # Use digest file name for asset paths
         #
-        # See: http://hanamirb.org/guides/assets/digest
+        # See: http://hanamirb.org/guides/assets/overview
         digest  true
 
         # Content Delivery Network (CDN)
