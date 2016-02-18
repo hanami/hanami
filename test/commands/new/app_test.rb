@@ -83,7 +83,6 @@ describe Hanami::Commands::New::App do
     fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_app')
     Dir.chdir('new_app') do
       assert_generated_file(fixture_root.join(".hanamirc.#{ test_framework }"), '.hanamirc')
-      assert_generated_file(fixture_root.join('.env'), '.env')
 
       assert_file_includes('.env.development',
                            'DATABASE_URL="file:///db/new_app_development"',

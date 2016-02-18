@@ -30,6 +30,10 @@ gem 'slim'
 gem 'haml'
 <%- end -%>
 
+group :test, :development do
+  gem 'dotenv', '~> 2.0'
+end
+
 group :test do
 <%- if config[:test] == 'rspec' -%>
   gem 'rspec'

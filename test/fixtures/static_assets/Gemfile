@@ -15,6 +15,10 @@ gem 'hanami-mailer',      '~> 0.1', github: 'hanami/mailer',      branch: '0.1.x
 gem 'hanami-assets',      '~> 0.1', github: 'hanami/assets',      branch: 'master'
 gem 'hanami',                       path:   '../../..'
 
+group :test, :development do
+  gem 'dotenv', '~> 2.0'
+end
+
 group :test do
   gem 'minitest'
   gem 'capybara'

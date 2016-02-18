@@ -19,6 +19,10 @@ gem 'hanami',       '<%= config[:hanami_version] %>'
 gem 'hanami-model', '<%= config[:hanami_model_version] %>'
 <%- end -%>
 
+<%- if config[:database_config][:gem] %>
+gem '<%= config[:database_config][:gem] %>'
+<%- end -%>
+
 <%- case config[:template] -%>
 <%- when 'slim' -%>
 gem 'slim'
@@ -26,9 +30,9 @@ gem 'slim'
 gem 'haml'
 <%- end -%>
 
-<%- if config[:database_config][:gem] %>
-gem '<%= config[:database_config][:gem] %>'
-<%- end -%>
+group :test, :development do
+  gem 'dotenv', '~> 2.0'
+end
 
 group :test do
 <%- if config[:test] == 'rspec' -%>
