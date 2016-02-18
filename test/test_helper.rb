@@ -1,5 +1,8 @@
 require_relative './support/helper'
 
+require 'minitest/reporters'
+Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
+
 if ENV['COVERAGE'] == 'true'
   require 'simplecov'
   require 'coveralls'

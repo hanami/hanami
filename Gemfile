@@ -26,5 +26,6 @@ platforms :jruby do
   gem 'jdbc-sqlite3'
 end
 
+gem 'minitest-reporters'
 gem 'simplecov', '~> 0.11', require: false
 gem 'coveralls',            require: false
