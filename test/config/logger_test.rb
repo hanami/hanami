@@ -15,18 +15,27 @@ describe Hanami::Config::Logger do
     end
   end
 
+  describe '#name' do
+    it 'contains name' do
+      logger.app_name('test_app')
+      logger.app_name.must_equal 'test_app'
+    end
+  end
+
   describe '#build' do
     it 'returns new Utils::Logger instance' do
       logger.build.must_be_instance_of Hanami::Logger
     end
 
     describe 'when stream value is set' do
+      let(:io) { StringIO.new }
+
       it 'returns new Utils::Logger instance with changed log_device' do
-        logger.stream(path)
+        logger.stream(io)
         builded_logger = logger.build
 
         builded_logger.must_be_instance_of Hanami::Logger
-        builded_logger.instance_variable_get("@log_device").must_equal path
+        builded_logger.instance_variable_get("@device").must_equal io
       end
     end
   end

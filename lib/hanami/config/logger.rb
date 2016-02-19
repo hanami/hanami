@@ -32,6 +32,14 @@ module Hanami
         end
       end
 
+      def app_name(value = nil)
+        if value.nil?
+          @app_name
+        else
+          @app_name = value
+        end
+      end
+
       # Returns new Hanami::Logger instance with all options
       #
       # @return [Hanami::Logger] the new logger instance
@@ -39,7 +47,7 @@ module Hanami
       # @since x.x.x
       # @api private
       def build
-        ::Hanami::Logger.new(device: @device)
+        ::Hanami::Logger.new(@app_name, device: @device)
       end
     end
   end
