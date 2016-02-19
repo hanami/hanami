@@ -371,7 +371,7 @@ module Hanami
     # If those are missing it falls back to the following defaults:
     #
     #   * true for development
-    #   * false for all the other environments
+    #   * false for all the other environments or if Ruby interpreter is JRuby
     #
     # @return [TrueClass,FalseClass] the result of the check
     #
