@@ -1658,13 +1658,11 @@ module Hanami
       @view ||= Config::FrameworkConfiguration.new
     end
 
-    # Defines a logger instance to the configuration
+    # Defines a Config::Logger instance to the logger configuration.
     #
-    # This logger instance will be used to set the logger available on application module
+    # This instance will be used to generate the hanami logger available on application module.
     #
-    # If no logger instance is defined, a Hanami::Logger will be set by default
-    #
-    # @return [Logger, NilClass] logger instance
+    # @return [Config::Logger] Configure logger instance
     #
     # @since 0.5.0
     #
@@ -1674,7 +1672,7 @@ module Hanami
     #   module Bookshelf
     #     class Application < Hanami::Application
     #       configure do
-    #         logger Logger.new(STDOUT)
+    #         logger.stream 'path/to/log/file'
     #       end
     #       load!
     #     end
@@ -1690,12 +1688,8 @@ module Hanami
     #     end
     #   end
     #
-    def logger(value = nil)
-      if value.nil?
-        @logger
-      else
-        @logger = value
-      end
+    def logger
+      @logger ||= Config::Logger.new
     end
 
     # This options is used as a bridge between container and router application.
