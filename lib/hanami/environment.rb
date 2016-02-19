@@ -382,8 +382,8 @@ module Hanami
     def code_reloading?
       if code_reloading = @options.fetch(:code_reloading) { !!CODE_RELOADING[environment] }
         # JRuby doesn't implement fork that's why shotgun cannot be used.
-        if Utils.jruby?
-          puts "JRuby doesn't support code reloading."
+        unless Kernel.respond_to?(:fork)
+          puts "Your platform doesn't support code reloading."
           return false
         end
       end
