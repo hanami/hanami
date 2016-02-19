@@ -12,16 +12,12 @@ script:
 rvm:
   - 2.2.4
   - 2.3.0
-  - jruby-9000
-  - jruby-9.0.1.0
-  - jruby-9.0.3.0
+  - jruby-9.0.5.0
   - jruby-head
   - ruby-head
 
 matrix:
   allow_failures:
-    - rvm: jruby-head
     - rvm: ruby-head
-    - rvm: jruby-9000
-    - rvm: jruby-9.0.1.0
-    - rvm: jruby-9.0.3.0
+    - rvm: jruby-head
+    - rvm: jruby-9.0.5.0
