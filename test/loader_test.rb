@@ -108,29 +108,28 @@ describe Hanami::Loader do
           it 'load a default logger' do
             BeerShop::Logger.must_be_instance_of Hanami::Logger
           end
+
           it 'has app module name along with log output' do
             BeerShop::Logger.info 'foo'
-            @output.must_match(/BeerShop/)
+            @output.must_match(/foo/)
           end
         end
 
         describe 'when explicitly configured' do
           before do
-            class MyLogger < Logger; end
             module DrinkShop
               class Application < Hanami::Application
-                configure { logger MyLogger.new(STDOUT) }
+                configure { logger }
                 load!
               end
             end
           end
           after do
-            Object.__send__(:remove_const, :MyLogger)
             Object.__send__(:remove_const, :DrinkShop)
           end
 
           it 'load the configured logger' do
-            DrinkShop::Logger.must_be_instance_of MyLogger
+            DrinkShop::Logger.must_be_instance_of Hanami::Logger
           end
         end
       end
