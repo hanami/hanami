@@ -10,6 +10,7 @@ end
 namespace :test do
   task :coverage do
     ENV['COVERAGE'] = 'true'
+    ENV['TESTOPTS'] = '--seed=26843'
     Rake::Task['test'].invoke
   end
 end
