@@ -1,3 +1,5 @@
+require 'hanami/utils/string'
+
 module Hanami
   # An application name.
   #
@@ -28,7 +30,7 @@ module Hanami
     #
     # @since 0.2.1
     def initialize(name)
-      @name = sanitize(name)
+      @name = sanitize(Hanami::Utils::String.new(name).underscore)
       ensure_validity!
     end
 
@@ -96,6 +98,7 @@ module Hanami
         .gsub(/\s/, '_')
         .gsub(/_{2,}/, '_')
         .gsub(/-/, '_')
+        .gsub(/\A_|_\z/, '')
     end
   end
 end

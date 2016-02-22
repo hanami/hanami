@@ -23,6 +23,16 @@ describe Hanami::ApplicationName do
         application_name = Hanami::ApplicationName.new('my _app')
         application_name.to_s.must_equal 'my_app'
       end
+
+      it 'renders uppercase letters' do
+        application_name = Hanami::ApplicationName.new('MyApp')
+        application_name.to_s.must_equal 'my_app'
+      end
+
+      it 'renders uppercase letters with underscores' do
+        application_name = Hanami::ApplicationName.new('My_app')
+        application_name.to_s.must_equal 'my_app'
+      end
     end
 
     describe '#to_env_s' do
