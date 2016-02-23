@@ -6,8 +6,11 @@ gem 'rake'
 gem 'hanami',       '~> 0.8'
 gem 'hanami-model', '~> 0.7'
 
+gem 'slim'
 
-gem 'jdbc-postgres'
+group :test, :development do
+  gem 'dotenv', '~> 2.0'
+end
 
 group :test do
   gem 'minitest'

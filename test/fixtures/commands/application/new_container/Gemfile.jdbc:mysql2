@@ -3,11 +3,15 @@ source 'https://rubygems.org'
 gem 'bundler'
 gem 'rake'
 
-gem 'hanami',       '0.8.0'
+gem 'hanami',       '~> 0.8'
 gem 'hanami-model', '~> 0.7'
 
 
 gem 'jdbc-mysql'
+
+group :test, :development do
+  gem 'dotenv', '~> 2.0'
+end
 
 group :test do
   gem 'minitest'

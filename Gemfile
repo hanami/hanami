@@ -28,3 +28,5 @@ end
 
 gem 'simplecov', '~> 0.11', require: false
 gem 'coveralls',            require: false
+
+gem 'dotenv', '~> 2.0'

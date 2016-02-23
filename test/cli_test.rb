@@ -16,6 +16,7 @@ describe Hanami::Cli do
       'architecture' => 'container',
       'application_name' => 'web',
       'application_base_url' => '/',
+      'template' => 'erb',
       'test' => 'minitest',
       'hanami_head' => false}
     }
@@ -38,9 +39,10 @@ describe Hanami::Cli do
           'application_name' => 'admin',
           'application_base_url' => '/web-admin',
           'test' => 'rspec',
-          'hanami_head' => true
+          'hanami_head' => true,
+          'template' => 'slim'
         )
-        ARGV.replace(%w{new fancy-app --database=memory --application_name=admin --application_base_url=/web-admin --test=rspec --hanami_head=true})
+        ARGV.replace(%w{new fancy-app --database=memory --application_name=admin --application_base_url=/web-admin --test=rspec --hanami_head=true --template=slim})
         assert_cli_calls_command(Hanami::Commands::New::Container, options, 'fancy-app')
       end
 
@@ -190,6 +192,35 @@ describe Hanami::Cli do
         options = {'application_base_url' => '/backend'}
 
         assert_cli_calls_command(Hanami::Commands::Generate::App, options, 'admin')
+      end
+    end
+  end
+
+  describe 'version' do
+    describe 'when `version` command' do
+      it 'prints Hanami version' do
+        assert_output("v#{Hanami::VERSION}\n") do
+          ARGV.replace(%w{version})
+          Hanami::Cli.start
+        end
+      end
+    end
+
+    describe 'when passing --version to hanami command, with no subcommand' do
+      it 'prints Hanami version' do
+        assert_output("v#{Hanami::VERSION}\n") do
+          ARGV.replace(%w{--version})
+          Hanami::Cli.start
+        end
+      end
+    end
+
+    describe 'when passing -v to hanami command, with no subcommand' do
+      it 'prints Hanami version' do
+        assert_output("v#{Hanami::VERSION}\n") do
+          ARGV.replace(%w{-v})
+          Hanami::Cli.start
+        end
       end
     end
   end

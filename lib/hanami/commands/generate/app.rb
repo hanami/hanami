@@ -11,7 +11,6 @@ module Hanami
 
         def initialize(options, application_name)
           super(options)
-
           assert_application_name!(application_name)
           assert_architecture!
 
@@ -23,7 +22,7 @@ module Hanami
           add_mapping('application.rb.tt', 'application.rb')
           add_mapping('config/routes.rb.tt', 'config/routes.rb')
           add_mapping('views/application_layout.rb.tt', 'views/application_layout.rb')
-          add_mapping('templates/application.html.erb.tt', 'templates/application.html.erb')
+          add_mapping("templates/application.html.#{ template_engine.name }.tt", "templates/application.html.#{ template_engine.name }")
           add_mapping('favicon.ico', 'assets/favicon.ico')
 
           add_mapping('.gitkeep', 'controllers/.gitkeep')
@@ -42,6 +41,7 @@ module Hanami
             classified_app_name: classified_app_name,
             app_base_url:        application_base_url,
             app_base_path:       application_base_path,
+            template:            template_engine.name
           }
         end
 
@@ -77,6 +77,10 @@ module Hanami
               %(#{ upcase_app_name }_SESSIONS_SECRET="#{ SecureRandom.hex(32) }"\n)
             end
           end
+        end
+
+        def hanamirc
+          @hanamirc ||= Hanamirc.new(base_path)
         end
 
         def target_path

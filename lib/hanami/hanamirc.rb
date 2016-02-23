@@ -1,5 +1,4 @@
 require 'pathname'
-require 'dotenv/parser'
 require 'hanami/utils/hash'
 
 module Hanami
@@ -82,6 +81,12 @@ module Hanami
       TEMPLATE_KEY     => DEFAULT_TEMPLATE
     }).symbolize!.freeze
 
+    # Key/value separator in hanamirc file
+    #
+    # @since 0.8.0
+    # @api private
+    SEPARATOR = '='.freeze
+
     # Initialize Hanamirc class with application's root and environment options.
     #
     # @param root [Pathname] Application's root
@@ -124,7 +129,22 @@ module Hanami
     end
 
     def file_options
-      symbolize(exists? ? Dotenv::Parser.call(content) : {})
+      symbolize(exists? ? parse_file(path_file) : {})
+    end
+
+    # Read hanamirc file and parse it's values
+    #
+    # @since 0.8.0
+    # @api private
+    #
+    # @return [Hash] hanamirc parsed values
+    def parse_file(path)
+      {}.tap do |hash|
+        File.readlines(path).each do |line|
+          key, value = line.split(SEPARATOR)
+          hash[key] = value.strip
+        end
+      end
     end
 
     # Return the hanamirc file's path
@@ -137,16 +157,6 @@ module Hanami
     # @see Hanami::Hanamirc::FILE_NAME
     def path_file
       @root.join FILE_NAME
-    end
-
-    # Return the content of hanamirc file
-    #
-    # @since 0.3.0
-    # @api private
-    #
-    # @return [String] content of hanamirc file
-    def content
-      path_file.read
     end
   end
 end

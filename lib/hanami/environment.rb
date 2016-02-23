@@ -1,9 +1,12 @@
 require 'thread'
 require 'pathname'
-require 'dotenv'
 require 'hanami/utils'
 require 'hanami/utils/hash'
 require 'hanami/hanamirc'
+begin
+  require 'dotenv'
+rescue LoadError
+end
 
 module Hanami
   # Define and expose information about the Hanami environment.
@@ -40,12 +43,6 @@ module Hanami
     # @since 0.6.0
     # @api private
     RACK_ENV_DEPLOYMENT = 'deployment'.freeze
-
-    # Default `.env` file name
-    #
-    # @since 0.2.0
-    # @api private
-    DEFAULT_DOTENV = '.env'.freeze
 
     # Default `.env` per environment file name
     #
@@ -374,7 +371,7 @@ module Hanami
     # If those are missing it falls back to the following defaults:
     #
     #   * true for development
-    #   * false for all the other environments
+    #   * false for all the other environments or if Ruby interpreter is JRuby
     #
     # @return [TrueClass,FalseClass] the result of the check
     #
@@ -461,8 +458,8 @@ module Hanami
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      Dotenv.load     root.join(DEFAULT_DOTENV)
-      Dotenv.overload root.join(DEFAULT_DOTENV_ENV % environment)
+      return unless defined?(Dotenv) && (dotenv = root.join(DEFAULT_DOTENV_ENV % environment)).exist?
+      Dotenv.overload dotenv
     end
 
     # @since 0.1.0

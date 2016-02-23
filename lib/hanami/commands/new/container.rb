@@ -18,12 +18,14 @@ module Hanami
 
         def template_options
           {
-            app_name:              app_name,
-            hanami_head:            hanami_head?,
-            test:                  test_framework.framework,
-            database:              database_config.type,
-            database_config:       database_config.to_hash,
-            hanami_model_version:   hanami_model_version,
+            app_name:             app_name,
+            hanami_head:          hanami_head?,
+            test:                 test_framework.framework,
+            database:             database_config.type,
+            database_config:      database_config.to_hash,
+            hanami_model_version: hanami_model_version,
+            hanami_version:       hanami_version,
+            template:             template_engine.name
           }
         end
 
@@ -36,7 +38,6 @@ module Hanami
 
         def add_application_templates
           add_mapping('hanamirc.tt', '.hanamirc')
-          add_mapping('.env.tt', '.env')
           add_mapping('.env.development.tt', '.env.development')
           add_mapping('.env.test.tt', '.env.test')
           add_mapping('Gemfile.tt', 'Gemfile')

@@ -221,6 +221,21 @@ describe Hanami::Commands::New::Container do
       end
     end
 
+    describe 'template engine' do
+      it 'creates files' do
+        with_temp_dir do |original_wd|
+          command = Hanami::Commands::New::Container.new({template: 'slim'}, 'new_container')
+          capture_io { command.start }
+
+          fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
+          Dir.chdir('new_container') do
+            assert_generated_file(fixture_root.join('Gemfile.slim'), 'Gemfile')
+            assert_generated_file(fixture_root.join('.hanamirc.slim'), '.hanamirc')
+          end
+        end
+      end
+    end
+
     describe 'mounted at a specific path' do
       it 'mounts at /mypath' do
         with_temp_dir do |original_wd|
@@ -261,7 +276,6 @@ describe Hanami::Commands::New::Container do
     fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
     Dir.chdir('new_container') do
       assert_generated_file(fixture_root.join(".hanamirc.#{ test_framework }"), '.hanamirc')
-      assert_generated_file(fixture_root.join('.env'), '.env')
       actual_content = File.read('.env.development')
       actual_content.must_include 'DATABASE_URL="file:///db/new_container_development"'
       actual_content.must_match(%r{WEB_SESSIONS_SECRET="[\w]{64}"})

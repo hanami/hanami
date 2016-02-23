@@ -6,22 +6,18 @@ env:
   global:
     - JRUBY_OPTS=--dev
 script:
-  - 'if [[ "$TRAVIS_RUBY_VERSION" =~ "jruby" ]]; then rvm get head && rvm reload && rvm use --install $TRAVIS_RUBY_VERSION; fi'
+  - 'if [[ "$TRAVIS_RUBY_VERSION" =~ "jruby" ]]; then rvm get head && rvm reload && rvm use --install $TRAVIS_RUBY_VERSION && gem install bundler; fi'
   - 'bundle install'
   - './script/ci'
 rvm:
   - 2.2.4
   - 2.3.0
-  - jruby-9000
-  - jruby-9.0.1.0
-  - jruby-9.0.3.0
+  - jruby-9.0.5.0
   - jruby-head
   - ruby-head
 
 matrix:
   allow_failures:
-    - rvm: jruby-head
     - rvm: ruby-head
-    - rvm: jruby-9000
-    - rvm: jruby-9.0.1.0
-    - rvm: jruby-9.0.3.0
+    - rvm: jruby-head
+    - rvm: jruby-9.0.5.0

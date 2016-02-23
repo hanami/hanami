@@ -38,7 +38,7 @@ DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }_test.sq
       DOTENV
     end
 
-    File.open(root.join('.env'), 'w') do |f|
+    File.open(root.join('.env.production'), 'w') do |f|
       f.write <<-DOTENV
 DATABASE_URL="#{ adapter_prefix }sqlite://#{ root.join("db/#{ app_name }.sqlite3") }"
       DOTENV
