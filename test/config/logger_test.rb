@@ -22,28 +22,28 @@ describe Hanami::Config::Logger do
     end
   end
 
-  describe '#custom logger' do
-    let(:custom_logger) { ::Logger.new(STDOUT) }
+  describe '#engine' do
+    let(:engine) { ::Logger.new(STDOUT) }
 
     it 'contains name' do
-      logger.custom_logger(custom_logger)
-      logger.custom_logger.must_equal custom_logger
+      logger.engine(engine)
+      logger.engine.must_equal engine
     end
 
     it 'contains nil by default' do
-      logger.custom_logger.must_equal nil
+      logger.engine.must_equal nil
     end
   end
 
   describe '#build' do
-    it 'returns new Utils::Logger instance' do
+    it 'returns new Hanami::Logger instance' do
       logger.build.must_be_instance_of Hanami::Logger
     end
 
     describe 'when stream value is set' do
       let(:io) { StringIO.new }
 
-      it 'returns new Utils::Logger instance with changed log_device' do
+      it 'returns new Hanami::Logger instance with changed device' do
         logger.stream(io)
         builded_logger = logger.build
 
@@ -52,9 +52,9 @@ describe Hanami::Config::Logger do
       end
     end
 
-    describe 'when user set custom logger instance' do
-      it 'returns new Utils::Logger instance with changed log_device' do
-        logger.custom_logger(::Logger.new(STDOUT))
+    describe 'when user set engine' do
+      it 'returns it' do
+        logger.engine(::Logger.new(STDOUT))
         builded_logger = logger.build
 
         builded_logger.must_be_instance_of ::Logger

@@ -117,19 +117,24 @@ describe Hanami::Loader do
 
         describe 'when explicitly configured' do
           before do
+            class CustomLogger
+            end
+
             module DrinkShop
               class Application < Hanami::Application
-                configure { logger }
+                configure { logger.engine CustomLogger.new }
                 load!
               end
             end
           end
+
           after do
             Object.__send__(:remove_const, :DrinkShop)
+            Object.__send__(:remove_const, :CustomLogger)
           end
 
           it 'load the configured logger' do
-            DrinkShop::Logger.must_be_instance_of Hanami::Logger
+            DrinkShop::Logger.must_be_instance_of CustomLogger
           end
         end
       end

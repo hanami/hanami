@@ -232,8 +232,10 @@ module <%= config[:classified_app_name] %>
       # Don't handle exceptions, render the stack trace
       handle_exceptions false
 
-      # Select path for logger
-      # logger.stream "#{Hanami.root}logs/development.log"
+      # Logger stream. It defaults to STDOUT.
+      # http://hanamirb.org/guides/applications/logging
+      #
+      # logger.stream "log/development.log"
     end
 
     ##
@@ -252,8 +254,10 @@ module <%= config[:classified_app_name] %>
       # host   'example.org'
       # port   443
 
-      # Select path for logger
-      # logger.stream "#{Hanami.root}logs/production.log"
+      # Logger stream. It defaults to STDOUT.
+      # http://hanamirb.org/guides/applications/logging
+      #
+      # logger.stream "log/production.log"
 
       assets do
         # Don't compile static assets in production mode (eg. Sass, ES6)
