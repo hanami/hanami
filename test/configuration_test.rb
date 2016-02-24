@@ -794,27 +794,15 @@ describe Hanami::Configuration do
   end
 
   describe '#logger' do
-    describe "when not previously set" do
+    describe "when custom logger not previously set" do
       before do
         @configuration = Hanami::Configuration.new
-      end
-
-      it 'defaults to nil' do
-        @configuration.logger.must_be_nil
-      end
-    end
-
-    describe "when the logger is set" do
-      before do
-        @logger = Logger.new(STDOUT)
-        @configuration = Hanami::Configuration.new
-        @configuration.logger @logger
+        @configuration.logger
       end
 
       it 'returns logger instance' do
-        @configuration.logger.must_equal @logger
+        @configuration.logger.must_be_instance_of Hanami::Config::Logger
       end
     end
   end
-
 end
