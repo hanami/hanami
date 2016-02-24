@@ -8,8 +8,20 @@ module Hanami
     class Logger
       attr_reader :application_module
 
+      # @since x.x.x
+      # @api private
+      LEVEL_HASH = {
+        warn:    Hanami::Logger::WARN,
+        info:    Hanami::Logger::INFO,
+        fatal:   Hanami::Logger::FATAL,
+        error:   Hanami::Logger::ERROR,
+        debug:   Hanami::Logger::DEBUG,
+        unknown: Hanami::Logger::UNKNOWN
+      }
+
       def initialize
         @device = STDOUT
+        @level  = Hanami::Logger::DEBUG
       end
 
       # Log device.
@@ -59,6 +71,25 @@ module Hanami
         end
       end
 
+      # Logger level
+      #
+      # @overload level(value)
+      #   Sets the given value
+      #   @param value [Object] a level
+      #
+      # @overload level
+      #   Gets the value
+      #   @return [Object] returns the level
+      #
+      # @since x.x.x
+      def level(value = nil)
+        if value.nil?
+          @level
+        else
+          @level = detect_level(value)
+        end
+      end
+
       # Application name value.
       #
       # @overload stream(value)
@@ -91,6 +122,12 @@ module Hanami
       def build
         @engine ||
           ::Hanami::Logger.new(@app_name, device: @device)
+      end
+
+    private
+
+      def detect_level(level)
+        level.is_a?(Integer) ? level : LEVEL_HASH[level.to_sym.downcase]
       end
     end
   end

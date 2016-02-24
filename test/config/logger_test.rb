@@ -35,6 +35,32 @@ describe Hanami::Config::Logger do
     end
   end
 
+  describe '#level' do
+    it 'takes logger level as a symbol' do
+      logger.level(:debug)
+      logger.level.must_equal Hanami::Logger::DEBUG
+    end
+
+    it 'takes logger level as a string' do
+      logger.level('debug')
+      logger.level.must_equal Hanami::Logger::DEBUG
+    end
+
+    it 'takes logger level as a uppercased string' do
+      logger.level('DEBUG')
+      logger.level.must_equal Hanami::Logger::DEBUG
+    end
+
+    it 'takes logger level as a constant' do
+      logger.level(Hanami::Logger::DEBUG)
+      logger.level.must_equal Hanami::Logger::DEBUG
+    end
+
+    it 'contains debug level by default' do
+      logger.level.must_equal ::Logger::DEBUG
+    end
+  end
+
   describe '#build' do
     it 'returns new Hanami::Logger instance' do
       logger.build.must_be_instance_of Hanami::Logger
