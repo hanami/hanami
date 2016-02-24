@@ -236,6 +236,10 @@ module Admin
       # http://hanamirb.org/guides/applications/logging
       #
       # logger.stream "log/development.log"
+
+      # Logger level. It defaults to Hanami::Logger::DEBUG.
+      # http://hanamirb.org/guides/applications/logging
+      # logger.level :debug
     end
 
     ##
@@ -244,6 +248,10 @@ module Admin
     configure :test do
       # Don't handle exceptions, render the stack trace
       handle_exceptions false
+
+      # Logger level. It defaults to Hanami::Logger::DEBUG.
+      # http://hanamirb.org/guides/applications/logging
+      logger.level :error
     end
 
     ##
@@ -258,6 +266,10 @@ module Admin
       # http://hanamirb.org/guides/applications/logging
       #
       # logger.stream "log/production.log"
+
+      # Logger level. It defaults to Hanami::Logger::DEBUG.
+      # http://hanamirb.org/guides/applications/logging
+      logger.level :info
 
       assets do
         # Don't compile static assets in production mode (eg. Sass, ES6)
