@@ -35,8 +35,8 @@ module Hanami
         end
 
         def start
-          FileUtils.mkdir_p(@name)
-          Dir.chdir(@name) do
+          FileUtils.mkdir_p(app_name)
+          Dir.chdir(app_name) do
             @target_path = Pathname.pwd
 
             super
