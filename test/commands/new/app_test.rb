@@ -36,6 +36,17 @@ describe Hanami::Commands::New::App do
   end
 
   describe 'with valid arguments' do
+    describe 'CamelCase name' do
+      it 'creates files' do
+        with_temp_dir('camel_case_project_name') do |original_wd|
+          command = Hanami::Commands::New::App.new({}, 'NewApp')
+          capture_io { command.start }
+
+          assert_generated_app('minitest', original_wd)
+        end
+      end
+    end
+
     describe 'minitest' do
       it 'creates files' do
         with_temp_dir do |original_wd|

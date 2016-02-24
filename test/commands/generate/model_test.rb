@@ -25,12 +25,12 @@ describe Hanami::Commands::Generate::Model do
     end
   end
 
-  describe 'sanitizes model name' do
-    it 'downcases it' do
+  describe 'with CamelCase model name' do
+    it 'underscores it' do
       with_temp_dir do |original_wd|
-        command = Hanami::Commands::Generate::Model.new({}, 'CaR')
+        command = Hanami::Commands::Generate::Model.new({}, 'BrokenCar')
         capture_io { command.start }
-        assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car.rb'), 'lib/test_app/entities/car.rb')
+        assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/broken_car.rb'), 'lib/test_app/entities/broken_car.rb')
       end
     end
   end
