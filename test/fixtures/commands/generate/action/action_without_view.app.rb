@@ -1,6 +1,6 @@
-module Testapp::Controllers::Books
+module TestApp::Controllers::Books
   class Index
-    include Testapp::Action
+    include TestApp::Action
 
     def call(params)
       self.body = 'OK'

@@ -1,6 +1,6 @@
 require_relative '../../../app/controllers/books/index'
 
-RSpec.describe Testapp::Controllers::Books::Index do
+RSpec.describe TestApp::Controllers::Books::Index do
   let(:action) { described_class.new }
   let(:params) { Hash[] }
 

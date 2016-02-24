@@ -73,10 +73,10 @@ describe Hanami::Commands::New::Container do
           capture_io { command.start }
           Dir.chdir('.') do
             actual_content = File.read('.env.development')
-            actual_content.must_include 'DATABASE_URL="file:///db/testapp_development"'
+            actual_content.must_include 'DATABASE_URL="file:///db/test_app_development"'
 
             actual_content = File.read('.env.test')
-            actual_content.must_include 'DATABASE_URL="file:///db/testapp_test"'
+            actual_content.must_include 'DATABASE_URL="file:///db/test_app_test"'
           end
         end
       end

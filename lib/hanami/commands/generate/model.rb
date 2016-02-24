@@ -94,7 +94,7 @@ module Hanami
         # @since x.x.x
         # @api private
         def app_name
-          Utils::String.new(::File.basename(Dir.getwd)).downcase
+          Utils::String.new(::File.basename(Dir.getwd)).underscore
         end
       end
     end

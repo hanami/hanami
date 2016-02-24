@@ -1,5 +1,5 @@
-module Testapp::Views::Books
+module TestApp::Views::Books
   class Index
-    include Testapp::View
+    include TestApp::View
   end
 end

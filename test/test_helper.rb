@@ -20,7 +20,7 @@ require 'minispec-metadata'
 MinispecMetadata.add_tag_string('~engine:mri') if RUBY_ENGINE != 'ruby'
 
 Minitest::Test.class_eval do
-  def with_temp_dir(name = 'testapp', &block)
+  def with_temp_dir(name = 'test_app', &block)
     current_dir = Dir.pwd
     temp_dir = Dir.mktmpdir
     app_dir = File.join(temp_dir, name)

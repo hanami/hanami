@@ -257,7 +257,7 @@ describe Hanami::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_app_app
 
-            command = Hanami::Commands::Generate::Action.new({}, 'testapp', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({}, 'test_app', 'books#index')
             capture_io { command.start }
 
             assert_generated_app_action('minitest', original_wd)
@@ -268,7 +268,7 @@ describe Hanami::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_app_app
 
-            command = Hanami::Commands::Generate::Action.new({skip_view: true}, 'testapp', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({skip_view: true}, 'test_app', 'books#index')
             capture_io { command.start }
 
             assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'config/routes.rb')
@@ -287,7 +287,7 @@ describe Hanami::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_app_app
 
-            command = Hanami::Commands::Generate::Action.new({test: 'rspec'}, 'testapp', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({test: 'rspec'}, 'test_app', 'books#index')
             capture_io { command.start }
 
             assert_generated_app_action('rspec', original_wd)
@@ -357,9 +357,9 @@ describe Hanami::Commands::Generate::Action do
           setup_app_app
 
           capture_io {
-            Hanami::Commands::Generate::Action.new({}, 'testapp', 'books#index').start
+            Hanami::Commands::Generate::Action.new({}, 'test_app', 'books#index').start
 
-            Hanami::Commands::Generate::Action.new({}, 'testapp', 'books#index').destroy.start
+            Hanami::Commands::Generate::Action.new({}, 'test_app', 'books#index').destroy.start
           }
 
           refute_file_exists('spec/controllers/books/index_spec.rb')
