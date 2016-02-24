@@ -33,7 +33,16 @@ describe Hanami::Commands::Generate::Model do
         assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car.rb'), 'lib/testapp/entities/car.rb')
       end
     end
+  end
 
+  describe 'sanitizes application name' do
+    it 'downcases it' do
+      with_temp_dir('TestApp') do |original_wd|
+        command = Hanami::Commands::Generate::Model.new({}, 'car')
+        capture_io { command.start }
+        assert_generated_file(original_wd.join('test/fixtures/commands/generate/model/car.rb'), 'lib/testapp/entities/car.rb')
+      end
+    end
   end
 
   describe 'with valid arguments' do
@@ -82,5 +91,4 @@ describe Hanami::Commands::Generate::Model do
       end
     end
   end
-
 end
