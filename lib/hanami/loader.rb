@@ -143,10 +143,8 @@ module Hanami
 
     def _configure_logger!
       unless application_module.const_defined?('Logger', false)
-        if configuration.logger.nil?
-          configuration.logger Hanami::Logger.new(application_module.to_s)
-        end
-        application_module.const_set('Logger', configuration.logger)
+        configuration.logger.app_name(application_module.to_s)
+        application_module.const_set('Logger', configuration.logger.build)
       end
     end
 
