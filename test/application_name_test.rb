@@ -18,11 +18,6 @@ describe Hanami::ApplicationName do
         application_name = Hanami::ApplicationName.new('my app')
         application_name.to_s.must_equal 'my_app'
       end
-
-      it 'renders with underscores de-duplicated' do
-        application_name = Hanami::ApplicationName.new('my _app')
-        application_name.to_s.must_equal 'my_app'
-      end
     end
 
     describe '#to_env_s' do

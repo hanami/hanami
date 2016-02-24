@@ -52,11 +52,11 @@ describe Hanami::Commands::New::Container do
   end
 
   describe 'with valid arguments' do
-    it 'application name with dash' do
+    it 'project name with dash' do
       with_temp_dir do |original_wd|
         command = Hanami::Commands::New::Container.new({}, 'new-container')
         capture_io { command.start }
-        Dir.chdir('new-container') do
+        Dir.chdir('new_container') do
           actual_content = File.read('.env.development')
           actual_content.must_include 'DATABASE_URL="file:///db/new_container_development"'
 
@@ -66,12 +66,12 @@ describe Hanami::Commands::New::Container do
       end
     end
 
-    describe 'application name is a point' do
+    describe 'project name is a point' do
       it 'generates application in current folder' do
         with_temp_dir do |original_wd|
-         command = Hanami::Commands::New::Container.new({}, '.')
+          command = Hanami::Commands::New::Container.new({}, '.')
           capture_io { command.start }
-          Dir.chdir('.') do
+          Dir.chdir('test_app') do
             actual_content = File.read('.env.development')
             actual_content.must_include 'DATABASE_URL="file:///db/test_app_development"'
 
