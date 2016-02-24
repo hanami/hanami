@@ -1,4 +1,3 @@
-require 'shellwords'
 require 'hanami/utils/string'
 
 module Hanami
@@ -98,7 +97,7 @@ module Hanami
     # @since 0.2.1
     def sanitize(name)
       Utils::String.new(
-        Shellwords.shellescape(name.strip)
+        name.strip
       ).underscore.to_s
     end
   end
