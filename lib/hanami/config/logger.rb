@@ -120,8 +120,10 @@ module Hanami
       # @see Hanami::Config::Logger#stream
       # @see Hanami::Config::Logger#engine
       def build
-        @engine ||
-          ::Hanami::Logger.new(@app_name, device: @device)
+        logger = ::Hanami::Logger.new(@app_name, device: @device)
+        logger.level = @level
+
+        @engine || logger
       end
 
     private

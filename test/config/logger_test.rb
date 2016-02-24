@@ -86,5 +86,14 @@ describe Hanami::Config::Logger do
         builded_logger.must_be_instance_of ::Logger
       end
     end
+
+    describe 'when user set level' do
+      it 'returns it' do
+        logger.level(:error)
+        builded_logger = logger.build
+
+        builded_logger.level.must_equal Hanami::Logger::ERROR
+      end
+    end
   end
 end
