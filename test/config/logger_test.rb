@@ -36,6 +36,11 @@ describe Hanami::Config::Logger do
   end
 
   describe '#level' do
+    it 'takes logger level as a integer' do
+      logger.level(0)
+      logger.level.must_equal Hanami::Logger::DEBUG
+    end
+
     it 'takes logger level as a symbol' do
       logger.level(:debug)
       logger.level.must_equal Hanami::Logger::DEBUG
@@ -87,7 +92,7 @@ describe Hanami::Config::Logger do
       end
     end
 
-    describe 'when user set level' do
+    describe 'when user sets level' do
       it 'returns it' do
         logger.level(:error)
         builded_logger = logger.build

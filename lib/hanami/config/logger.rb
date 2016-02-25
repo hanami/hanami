@@ -17,7 +17,7 @@ module Hanami
         error:   Hanami::Logger::ERROR,
         debug:   Hanami::Logger::DEBUG,
         unknown: Hanami::Logger::UNKNOWN
-      }
+      }.freeze
 
       def initialize
         @device = STDOUT
