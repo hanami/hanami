@@ -9,10 +9,10 @@ module Hanami
       attr_reader :application_module
 
       def initialize
-        @device = STDOUT
+        @stream = STDOUT
       end
 
-      # Log device.
+      # Log stream.
       #
       # <tt>STDOUT</tt> by default.
       #
@@ -23,18 +23,18 @@ module Hanami
       #
       # @overload stream(value)
       #   Sets the given value
-      #   @param value [String,Pathname,IO,StringIO] for log device option.
+      #   @param value [String,Pathname,IO,StringIO] for log stream option.
       #
       # @overload stream
       #   Gets the value
-      #   @return [String,Pathname,IO,StringIO] log device option's value
+      #   @return [String,Pathname,IO,StringIO] log stream option's value
       #
       # @since x.x.x
       def stream(value = nil)
         if value.nil?
-          @device
+          @stream
         else
-          @device = value
+          @stream = value
         end
       end
 
@@ -61,15 +61,57 @@ module Hanami
 
       # Logger level
       #
+      # Available values are:
+      #
+      #   * DEBUG
+      #   * INFO
+      #   * WARN
+      #   * ERROR
+      #   * FATAL
+      #   * UNKNOWN
+      #
       # @overload level(value)
       #   Sets the given value
-      #   @param value [Object] a level
+      #   @param value [Integer,String,Symbol] the logger level
       #
       # @overload level
       #   Gets the value
-      #   @return [Object] returns the level
+      #   @return [Integer,String,Symbol] returns the level
       #
       # @since x.x.x
+      #
+      # @example Constant (Integer)
+      #   require 'hanami/application'
+      #
+      #   module Bookshelf
+      #     class Application < Hanami::Application
+      #       configure do
+      #         logger.level Hanami::Logger::DEBUG
+      #       end
+      #     end
+      #   end
+      #
+      # @example String
+      #   require 'hanami/application'
+      #
+      #   module Bookshelf
+      #     class Application < Hanami::Application
+      #       configure do
+      #         logger.level 'debug'
+      #       end
+      #     end
+      #   end
+      #
+      # @example Symbol
+      #   require 'hanami/application'
+      #
+      #   module Bookshelf
+      #     class Application < Hanami::Application
+      #       configure do
+      #         logger.level :debug
+      #       end
+      #     end
+      #   end
       def level(value = nil)
         if value.nil?
           @level
@@ -109,7 +151,7 @@ module Hanami
       # @see Hanami::Config::Logger#engine
       def build
         @engine ||
-          ::Hanami::Logger.new(@app_name, device: @device, level: @level)
+          ::Hanami::Logger.new(@app_name, stream: @stream, level: @level)
       end
     end
   end

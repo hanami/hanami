@@ -36,33 +36,33 @@ describe Hanami::Config::Logger do
   end
 
   describe '#level' do
-    it 'takes logger level as a integer' do
+    it 'delegates to Hanami::Logger when level is integer' do
       logger.level(0)
-      logger.level.must_equal Hanami::Logger::DEBUG
+      logger.build.level.must_equal Hanami::Logger::DEBUG
     end
 
-    it 'takes logger level as a symbol' do
+    it 'delegates to Hanami::Logger when level is symbol' do
       logger.level(:debug)
-      logger.level.must_equal Hanami::Logger::DEBUG
+      logger.build.level.must_equal Hanami::Logger::DEBUG
     end
 
-    it 'takes logger level as a string' do
+    it 'delegates to Hanami::Logger when level is string' do
       logger.level('debug')
-      logger.level.must_equal Hanami::Logger::DEBUG
+      logger.build.level.must_equal Hanami::Logger::DEBUG
     end
 
-    it 'takes logger level as a uppercased string' do
+    it 'delegates to Hanami::Logger when level is upcased string' do
       logger.level('DEBUG')
-      logger.level.must_equal Hanami::Logger::DEBUG
+      logger.build.level.must_equal Hanami::Logger::DEBUG
     end
 
-    it 'takes logger level as a constant' do
+    it 'delegates to Hanami::Logger when level is a constant' do
       logger.level(Hanami::Logger::DEBUG)
-      logger.level.must_equal Hanami::Logger::DEBUG
+      logger.build.level.must_equal Hanami::Logger::DEBUG
     end
 
-    it 'contains debug level by default' do
-      logger.level.must_equal ::Logger::DEBUG
+    it 'uses default Hanami::Logger level' do
+      logger.build.level.must_equal ::Logger::DEBUG
     end
   end
 
@@ -74,12 +74,12 @@ describe Hanami::Config::Logger do
     describe 'when stream value is set' do
       let(:io) { StringIO.new }
 
-      it 'returns new Hanami::Logger instance with changed device' do
+      it 'returns new Hanami::Logger instance with changed stream' do
         logger.stream(io)
         builded_logger = logger.build
 
         builded_logger.must_be_instance_of Hanami::Logger
-        builded_logger.instance_variable_get("@device").must_equal io
+        builded_logger.instance_variable_get("@stream").must_equal io
       end
     end
 
