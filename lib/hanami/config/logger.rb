@@ -59,6 +59,25 @@ module Hanami
         end
       end
 
+      # Logger level
+      #
+      # @overload level(value)
+      #   Sets the given value
+      #   @param value [Object] a level
+      #
+      # @overload level
+      #   Gets the value
+      #   @return [Object] returns the level
+      #
+      # @since x.x.x
+      def level(value = nil)
+        if value.nil?
+          @level
+        else
+          @level = value
+        end
+      end
+
       # Application name value.
       #
       # @overload stream(value)
@@ -90,7 +109,7 @@ module Hanami
       # @see Hanami::Config::Logger#engine
       def build
         @engine ||
-          ::Hanami::Logger.new(@app_name, device: @device)
+          ::Hanami::Logger.new(@app_name, device: @device, level: @level)
       end
     end
   end
