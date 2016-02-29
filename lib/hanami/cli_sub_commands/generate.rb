@@ -19,7 +19,7 @@ module Hanami
 
       # @since 0.6.0
       # @api private
-      desc 'action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME', 'generate a hanami action'
+      desc 'action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME', 'Generate a hanami action'
       long_desc <<-EOS
         `hanami generate action` generates an an action, view and template along with specs and a route.
 
@@ -50,7 +50,7 @@ module Hanami
         end
       end
 
-      desc 'migration NAME', 'generate a migration'
+      desc 'migration NAME', 'Generate a migration'
       long_desc <<-EOS
       `hanami generate migration` will generate an empty migration file.
 
@@ -65,7 +65,7 @@ module Hanami
         end
       end
 
-      desc 'model NAME', 'generate an entity'
+      desc 'model NAME', 'Generate an entity'
       long_desc <<-EOS
         `hanami generate model` will generate an entity along with repository
         and corresponding tests. The name of the model can contain slashes to
@@ -85,16 +85,16 @@ module Hanami
         end
       end
 
-      desc 'mailer NAME', 'generate a mailer'
+      desc 'mailer NAME', 'Generate a mailer'
       long_desc <<-EOS
       `hanami generate mailer` will generate an empty mailer, along with templates and specs.
 
       > $ hanami generate mailer forgot_password
       > $ hanami generate mailer forgot_password --to "'log@bookshelf.com'" --from "'support@bookshelf.com'" --subject "'New Password'"
       EOS
-      method_option :to, desc: 'sender email', default: Hanami::Commands::Generate::Mailer::DEFAULT_TO
-      method_option :from, desc: 'sendee email', default: Hanami::Commands::Generate::Mailer::DEFAULT_FROM
-      method_option :subject, desc: 'email subject', default: Hanami::Commands::Generate::Mailer::DEFAULT_SUBJECT
+      method_option :to, desc: 'Sender email', default: Hanami::Commands::Generate::Mailer::DEFAULT_TO
+      method_option :from, desc: 'Sendee email', default: Hanami::Commands::Generate::Mailer::DEFAULT_FROM
+      method_option :subject, desc: 'Email subject', default: Hanami::Commands::Generate::Mailer::DEFAULT_SUBJECT
       def mailer(name)
         if options[:help]
           invoke :help, ['mailer']
@@ -103,7 +103,7 @@ module Hanami
         end
       end
 
-      desc 'app APPLICATION_NAME', 'generate an app'
+      desc 'app APPLICATION_NAME', 'Generate an app'
       long_desc <<-EOS
         `hanami generate app` creates a new app inside the 'apps' directory.
 
