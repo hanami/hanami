@@ -25,8 +25,8 @@ module Hanami
 
     $ > hanami server -p 4500
     EOS
-    method_option :port, aliases: '-p', desc: 'The port to run the server on, '
-    method_option :server, desc: 'Choose a specific Rack::Handler, e.g. webrick, thin etc'
+    method_option :port, aliases: '-p', desc: 'The port to run the server on'
+    method_option :server, desc: 'Choose a specific Rack::Handler (webrick, thin, etc)'
     method_option :rackup, desc: 'A rackup configuration file path to load (config.ru)'
     method_option :host, desc: 'The host address to bind to'
     method_option :debug, desc: 'Turn on debug output'
