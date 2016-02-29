@@ -7,7 +7,7 @@ module Hanami
   class Cli < Thor
     # include Thor::Actions
 
-    desc 'version', 'Prints Hanami version'
+    desc 'version', 'Prints hanami version'
     long_desc <<-EOS
     `hanami version` prints the version of the bundled hanami gem.
     EOS
@@ -79,7 +79,7 @@ module Hanami
     method_option :application_base_url, desc: 'Application base url', default: Hanami::Commands::New::Abstract::DEFAULT_APPLICATION_BASE_URL
     method_option :template, desc: "Template engine (#{Hanami::Generators::TemplateEngine::SUPPORTED_ENGINES.join('/')})", default: Hanami::Generators::TemplateEngine::DEFAULT_ENGINE
     method_option :test, desc: "Project test framework (#{Hanami::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Hanami::Hanamirc::DEFAULT_TEST_SUITE
-    method_option :hanami_head, desc: 'Use Hanami HEAD (true/false)', type: :boolean, default: false
+    method_option :hanami_head, desc: 'Use hanami HEAD (true/false)', type: :boolean, default: false
     method_option :help, desc: 'Displays the usage method'
     def new(application_name)
       if options[:help]
