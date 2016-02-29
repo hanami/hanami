@@ -7,7 +7,7 @@ module Hanami
       include Thor::Actions
       namespace :destroy
 
-      desc 'action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME', 'destroy a hanami action'
+      desc 'action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME', 'Destroy a hanami action'
       long_desc <<-EOS
         `hanami destroy action` will destroy an an action, view and template along with specs and a route.
 
@@ -32,7 +32,7 @@ module Hanami
         end
       end
 
-      desc 'migration NAME', 'destroy a migration'
+      desc 'migration NAME', 'Destroy a migration'
       long_desc <<-EOS
       `hanami destroy migration` will destroy a migration file.
 
@@ -48,7 +48,7 @@ module Hanami
         end
       end
 
-      desc 'model NAME', 'destroy an entity'
+      desc 'model NAME', 'Destroy an entity'
       long_desc <<-EOS
         `hanami destroy model` will destroy an entity along with repository
         and corresponding tests
@@ -65,7 +65,7 @@ module Hanami
         end
       end
 
-      desc 'application NAME', 'destroy an application'
+      desc 'application NAME', 'Destroy an application'
       long_desc <<-EOS
       `hanami destroy application` will destroy an application, along with templates and specs.
 
@@ -80,7 +80,7 @@ module Hanami
         end
       end
 
-      desc 'mailer NAME', 'destroy a mailer'
+      desc 'mailer NAME', 'Destroy a mailer'
       long_desc <<-EOS
       `hanami destroy mailer` will destroy a mailer, along with templates and specs.
 

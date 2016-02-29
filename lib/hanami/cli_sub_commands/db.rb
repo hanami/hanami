@@ -11,8 +11,8 @@ module Hanami
     class DB < Thor
       namespace :db
 
-      desc 'console', 'start DB console'
-      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+      desc 'console', 'Start DB console'
+      method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
       def console(name = nil)
         if options[:help]
           invoke :help, ['console']
@@ -22,8 +22,8 @@ module Hanami
         end
       end
 
-      desc 'create', 'create database for current environment'
-      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+      desc 'create', 'Create database for current environment'
+      method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
       def create
         if options[:help]
           invoke :help, ['create']
@@ -34,8 +34,8 @@ module Hanami
         end
       end
 
-      desc 'drop', 'drop database for current environment'
-      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+      desc 'drop', 'Drop database for current environment'
+      method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
       def drop
         if options[:help]
           invoke :help, ['drop']
@@ -46,8 +46,8 @@ module Hanami
         end
       end
 
-      desc 'migrate', 'migrate database for current environment'
-      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+      desc 'migrate', 'Migrate database for current environment'
+      method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
       def migrate(version = nil)
         if options[:help]
           invoke :help, ['migrate']
@@ -57,8 +57,8 @@ module Hanami
         end
       end
 
-      desc 'apply', 'migrate, dump schema, delete migrations (experimental)'
-      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+      desc 'apply', 'Migrate, dump schema, delete migrations (experimental)'
+      method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
       def apply
         if options[:help]
           invoke :help, ['apply']
@@ -69,8 +69,8 @@ module Hanami
         end
       end
 
-      desc 'prepare', 'create and migrate database'
-      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+      desc 'prepare', 'Create and migrate database'
+      method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
       def prepare
         if options[:help]
           invoke :help, ['prepare']
@@ -83,8 +83,8 @@ module Hanami
 
       # @since 0.6.0
       # @api private
-      desc 'version', 'current database version'
-      method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+      desc 'version', 'Current database version'
+      method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
       def version
         if options[:help]
           invoke :help, ['version']
