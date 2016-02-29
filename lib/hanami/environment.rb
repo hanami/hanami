@@ -371,7 +371,7 @@ module Hanami
     # If those are missing it falls back to the following defaults:
     #
     #   * true for development
-    #   * false for all the other environments or if Ruby interpreter is JRuby
+    #   * false for all the other environments
     #
     # @return [TrueClass,FalseClass] the result of the check
     #
@@ -380,13 +380,7 @@ module Hanami
     # @see Hanami::Commands::Server
     # @see Hanami::Environment::CODE_RELOADING
     def code_reloading?
-      # JRuby doesn't implement fork that's why shotgun cannot be used.
-      if Utils.jruby?
-        puts "JRuby doesn't support code reloading."
-        false
-      else
-        @options.fetch(:code_reloading) { !!CODE_RELOADING[environment] }
-      end
+      @options.fetch(:code_reloading) { !!CODE_RELOADING[environment] }
     end
 
     # @since 0.4.0

@@ -30,6 +30,14 @@ gem 'slim'
 gem 'haml'
 <%- end -%>
 
+group :development do
+  # Shotgun provides code reloading support for `hanami server`.
+  # If you are on a POSIX system, please use `entr`.
+  # If not possible, please use Shotgun.
+  # Read more at: [LINK TO HANAMI GUIDES]
+  # gem 'shotgun'
+end
+
 group :test, :development do
   gem 'dotenv', '~> 2.0'
 end
