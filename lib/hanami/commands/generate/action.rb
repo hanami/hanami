@@ -105,7 +105,7 @@ module Hanami
           routes_path.dirname.mkpath
           FileUtils.touch(routes_path)
 
-          generator.prepend_to_file(routes_path, "#{ http_method } '#{ route_url }', to: '#{ route_endpoint }'\n")
+          generator.prepend_after_leading_comments(routes_path, "#{ http_method } '#{ route_url }', to: '#{ route_endpoint }'\n")
         end
 
         def skip_view?

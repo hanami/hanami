@@ -30,6 +30,15 @@ module Hanami
           @processor.template(@template_source_path.join(src), @target_path.join(dst), options)
         end
       end
+
+      # Modelled after Thor's `inject_into_class`
+      def prepend_after_leading_comments(path, *args, &block)
+        config = args.last.is_a?(Hash) ? args.pop : {}
+        # Either prepend after the last comment line,
+        # or the first line in the file, if there are no comments
+        config.merge!(after: /\A(?:^#.*$\s)*/)
+        @processor.insert_into_file(path, *(args << config), &block)
+      end
     end
   end
 end

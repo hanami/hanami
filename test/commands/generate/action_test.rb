@@ -461,6 +461,54 @@ describe Hanami::Commands::Generate::Action do
 
   end
 
+  describe 'inserting routes after comments' do
+    it 'puts routes after leading comments' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+
+        File.open('apps/web/config/routes.rb', File::WRONLY|File::CREAT) do |f|
+          f.puts("# Configure your routes here")
+          f.puts("# See: http://hanamirb.org/guides/routing/overview/")
+          f.puts("get '/books/new', to: 'books#new'")
+        end
+
+        capture_io {
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').start
+        }
+
+        assert_equal(
+          "# Configure your routes here\n"\
+          "# See: http://hanamirb.org/guides/routing/overview/\n"\
+          "get '/books', to: 'books#index'\n"\
+          "get '/books/new', to: 'books#new'\n",
+          File.read('apps/web/config/routes.rb')
+        )
+      end
+    end
+
+    it 'puts routes at beginning when comments are not leading' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+
+        File.open('apps/web/config/routes.rb', File::WRONLY|File::CREAT) do |f|
+          f.puts("get '/books/new', to: 'books#new'")
+          f.puts("# Some comment further down the file")
+        end
+
+        capture_io {
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').start
+        }
+
+        assert_equal(
+          "get '/books', to: 'books#index'\n"\
+          "get '/books/new', to: 'books#new'\n"\
+          "# Some comment further down the file\n",
+          File.read('apps/web/config/routes.rb'),
+        )
+      end
+    end
+  end
+
   def assert_generated_app_action(test_framework, original_wd)
     assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'config/routes.rb')
     assert_generated_file(original_wd.join("test/fixtures/commands/generate/action/action_spec.app.#{test_framework}.rb"), 'spec/controllers/books/index_spec.rb')
