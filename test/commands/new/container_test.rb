@@ -289,7 +289,6 @@ describe Hanami::Commands::New::Container do
 
       assert_generated_file(fixture_root.join('config', 'environment.rb'), 'config/environment.rb')
       assert_generated_file(fixture_root.join('lib', 'new_container.rb'), 'lib/new_container.rb')
-      assert_generated_file(fixture_root.join('lib', 'config', 'mapping.rb'), 'lib/config/mapping.rb')
       assert_file_exists('config/initializers/.gitkeep')
       assert_file_exists('lib/new_container/entities/.gitkeep')
       assert_file_exists('lib/new_container/repositories/.gitkeep')

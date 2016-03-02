@@ -110,7 +110,6 @@ describe Hanami::Commands::New::App do
 
       assert_generated_file(fixture_root.join('config', 'environment.rb'), 'config/environment.rb')
       assert_generated_file(fixture_root.join('lib', 'new_app.rb'), 'lib/new_app.rb')
-      assert_generated_file(fixture_root.join('lib', 'config', 'mapping.rb'), 'lib/config/mapping.rb')
       assert_generated_file(fixture_root.join('config', 'application.rb'), 'config/application.rb')
       assert_generated_file(fixture_root.join('config', 'routes.rb'), 'config/routes.rb')
       assert_generated_file(fixture_root.join('app', 'views', 'application_layout.rb'), 'app/views/application_layout.rb')
