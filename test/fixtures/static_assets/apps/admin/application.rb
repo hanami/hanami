@@ -143,7 +143,7 @@ module Admin
       #   * https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
       #   * https://www.owasp.org/index.php/Clickjacking
       #
-      security.x_frame_options "DENY"
+      security.x_frame_options 'DENY'
 
       # Content-Security-Policy (CSP) is a HTTP header supported by modern browsers.
       # It determines trusted sources of execution for dynamic contents
