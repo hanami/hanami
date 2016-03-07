@@ -5,9 +5,16 @@ require 'fileutils'
 describe Hanami::Commands::Generate::App do
   describe 'with invalid arguments' do
     it 'requires application name' do
-      -> { Hanami::Commands::Generate::App.new({}, nil) }.must_raise ArgumentError
-      -> { Hanami::Commands::Generate::App.new({}, '') }.must_raise ArgumentError
-      -> { Hanami::Commands::Generate::App.new({}, '   ') }.must_raise ArgumentError
+      message = 'Application name is missing'
+      assert_exception_raised(ArgumentError, message) do
+        Hanami::Commands::Generate::App.new({}, nil)
+      end
+      assert_exception_raised(ArgumentError, message) do
+        Hanami::Commands::Generate::App.new({}, '')
+      end
+      assert_exception_raised(ArgumentError, message) do
+        Hanami::Commands::Generate::App.new({}, '   ')
+      end
     end
   end
 
