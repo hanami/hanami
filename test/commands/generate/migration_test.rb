@@ -7,9 +7,16 @@ describe Hanami::Commands::Generate::Migration do
     it 'requires migration name' do
       with_temp_dir do
         setup_app
-        -> { Hanami::Commands::Generate::Migration.new({}, nil) }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Migration.new({}, '') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Migration.new({}, '   ') }.must_raise ArgumentError
+        message = 'Migration name is missing'
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Migration.new({}, nil)
+        end
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Migration.new({}, '')
+        end
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Migration.new({}, '   ')
+        end
       end
     end
   end

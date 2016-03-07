@@ -41,8 +41,8 @@ module Hanami
         # @since 0.6.0
         # @api private
         def model_name_not_blank
-          if model_name.nil? || model_name.strip.empty?
-            raise ArgumentError.new('Model name nil or empty.')
+          if argument_blank?(model_name)
+            raise ArgumentError.new('Model name is missing')
           end
         end
 

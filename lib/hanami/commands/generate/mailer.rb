@@ -70,8 +70,8 @@ module Hanami
         # @since 0.5.0
         # @api private
         def assert_name!
-          if name.nil? || name.strip.empty?
-            raise ArgumentError.new("Missing mailer name")
+          if argument_blank?(name)
+            raise ArgumentError.new('Mailer name is missing')
           end
         end
 

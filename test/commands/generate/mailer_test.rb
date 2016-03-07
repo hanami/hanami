@@ -5,9 +5,16 @@ require 'fileutils'
 describe Hanami::Commands::Generate::Mailer do
   describe 'with invalid arguments' do
     it 'requires mailer name' do
-      -> { Hanami::Commands::Generate::Mailer.new({}, nil) }.must_raise ArgumentError
-      -> { Hanami::Commands::Generate::Mailer.new({}, '') }.must_raise ArgumentError
-      -> { Hanami::Commands::Generate::Mailer.new({}, '   ') }.must_raise ArgumentError
+      message = 'Mailer name is missing'
+      assert_exception_raised(ArgumentError, message) do
+        Hanami::Commands::Generate::Mailer.new({}, nil)
+      end
+      assert_exception_raised(ArgumentError, message) do
+        Hanami::Commands::Generate::Mailer.new({}, '')
+      end
+      assert_exception_raised(ArgumentError, message) do
+        Hanami::Commands::Generate::Mailer.new({}, '   ')
+      end
     end
   end
 
