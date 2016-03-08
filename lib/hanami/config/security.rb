@@ -16,6 +16,14 @@ module Hanami
       # @see Hanami::Loader#_configure_controller_framework!
       CONTENT_SECURITY_POLICY_HEADER = 'Content-Security-Policy'.freeze
 
+      # @since x.x.x
+      # @api private
+      SEPARATOR = ';'.freeze
+
+      # @since x.x.x
+      # @api private
+      SPACED_SEPARATOR = "#{ SEPARATOR } ".freeze
+
       # X-Frame-Options headers' value
       #
       # @overload x_frame_options(value)
@@ -50,7 +58,7 @@ module Hanami
         if value.nil?
           @content_security_policy
         else
-          @content_security_policy = value.split(';').map(&:strip).join('; ')
+          @content_security_policy = value.split(SEPARATOR).map(&:strip).join(SPACED_SEPARATOR)
         end
       end
     end
