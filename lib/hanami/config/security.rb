@@ -50,7 +50,7 @@ module Hanami
         if value.nil?
           @content_security_policy
         else
-          @content_security_policy = value
+          @content_security_policy = value.split(';').map(&:strip).join('; ')
         end
       end
     end

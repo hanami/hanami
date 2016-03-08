@@ -197,7 +197,28 @@ module <%= config[:classified_app_name] %>
       #  * http://content-security-policy.com/
       #  * https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_Content_Security_Policy
       #
-      security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self';"
+      # Content Security Policy references:
+      #
+      #  * https://developer.mozilla.org/en-US/docs/Web/Security/CSP/CSP_policy_directives
+      #
+      security.content_security_policy %{
+        form-action 'self';
+        referrer origin-when-cross-origin;
+        reflected-xss block;
+        frame-ancestors 'self';
+        base-uri 'self';
+        default-src 'none';
+        script-src 'self';
+        connect-src 'self';
+        img-src 'self';
+        style-src 'self';
+        font-src 'self';
+        object-src 'self';
+        plugin-types application/pdf;
+        child-src 'self';
+        frame-src 'self';
+        media-src 'self'
+      }
 
       ##
       # FRAMEWORKS

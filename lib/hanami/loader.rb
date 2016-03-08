@@ -58,8 +58,8 @@ module Hanami
           default_request_format config.default_request_format
           default_response_format config.default_response_format
           default_headers({
-            Hanami::Config::Security::X_FRAME_OPTIONS_HEADER         => config.security.x_frame_options,
-            Hanami::Config::Security::CONTENT_SECURITY_POLICY_HEADER => config.security.content_security_policy
+            Hanami::Config::Security::X_FRAME_OPTIONS_HEADER                     => config.security.x_frame_options,
+            Hanami::Config::Security::CONTENT_SECURITY_POLICY_HEADER             => config.security.content_security_policy,
           })
           default_headers.merge!(STRICT_TRANSPORT_SECURITY_HEADER => STRICT_TRANSPORT_SECURITY_DEFAULT_VALUE) if config.force_ssl
 
