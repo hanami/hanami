@@ -7,18 +7,28 @@ describe Hanami::Commands::Generate::Action do
     it 'requires application name' do
       with_temp_dir do |original_wd|
         setup_container_app
-        -> { Hanami::Commands::Generate::Action.new({}, nil, 'books#index') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, '', 'books#index') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, '  ', 'books#index') }.must_raise ArgumentError
+        err = -> { Hanami::Commands::Generate::Action.new({}, nil, 'books#index') }.must_raise ArgumentError
+        err.message.must_match /Unknown app/
+        err = -> { Hanami::Commands::Generate::Action.new({}, '', 'books#index') }.must_raise ArgumentError
+        err.message.must_match /Unknown app/
+        err = -> { Hanami::Commands::Generate::Action.new({}, '  ', 'books#index') }.must_raise ArgumentError
+        err.message.must_match /Unknown app/
       end
     end
 
     it 'requires controller and action name' do
       with_temp_dir do |previus_wd|
         setup_container_app
-        -> { Hanami::Commands::Generate::Action.new({}, 'web', 'books') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, 'web', '') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, 'web', ' ') }.must_raise ArgumentError
+        message = 'Unknown controller, please add controllers name with this syntax controller_name#action_name'
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books')
+        end
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Action.new({}, 'web', '')
+        end
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Action.new({}, 'web', ' ')
+        end
       end
     end
 
@@ -459,6 +469,54 @@ describe Hanami::Commands::Generate::Action do
       end
     end
 
+  end
+
+  describe 'inserting routes after comments' do
+    it 'puts routes after leading comments' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+
+        File.open('apps/web/config/routes.rb', File::WRONLY|File::CREAT) do |f|
+          f.puts("# Configure your routes here")
+          f.puts("# See: http://hanamirb.org/guides/routing/overview/")
+          f.puts("get '/books/new', to: 'books#new'")
+        end
+
+        capture_io {
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').start
+        }
+
+        assert_equal(
+          "# Configure your routes here\n"\
+          "# See: http://hanamirb.org/guides/routing/overview/\n"\
+          "get '/books', to: 'books#index'\n"\
+          "get '/books/new', to: 'books#new'\n",
+          File.read('apps/web/config/routes.rb')
+        )
+      end
+    end
+
+    it 'puts routes at beginning when comments are not leading' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+
+        File.open('apps/web/config/routes.rb', File::WRONLY|File::CREAT) do |f|
+          f.puts("get '/books/new', to: 'books#new'")
+          f.puts("# Some comment further down the file")
+        end
+
+        capture_io {
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').start
+        }
+
+        assert_equal(
+          "get '/books', to: 'books#index'\n"\
+          "get '/books/new', to: 'books#new'\n"\
+          "# Some comment further down the file\n",
+          File.read('apps/web/config/routes.rb'),
+        )
+      end
+    end
   end
 
   def assert_generated_app_action(test_framework, original_wd)

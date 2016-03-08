@@ -105,7 +105,7 @@ module Hanami
           routes_path.dirname.mkpath
           FileUtils.touch(routes_path)
 
-          generator.prepend_to_file(routes_path, "#{ http_method } '#{ route_url }', to: '#{ route_endpoint }'\n")
+          generator.prepend_after_leading_comments(routes_path, "#{ http_method } '#{ route_url }', to: '#{ route_endpoint }'\n")
         end
 
         def skip_view?
@@ -153,7 +153,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def assert_controller_name!
-          if @controller_name.nil? || @controller_name.empty?
+          if argument_blank?(@controller_name)
             raise ArgumentError.new("Unknown controller, please add controllers name with this syntax controller_name#action_name")
           end
         end
@@ -161,7 +161,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def assert_action_name!
-          if @action_name.nil? || @action_name.strip == ''
+          if argument_blank?(@action_name)
             raise ArgumentError.new("Unknown action, please add actions name with this syntax controller_name#action_name")
           end
         end
@@ -169,8 +169,8 @@ module Hanami
         # @since 0.5.0
         # @api private
         def assert_application_name!
-          return if !environment.container?
-          if @application_name.nil? || @application_name.strip == '' || !application_path.exist?
+          return unless environment.container?
+          if argument_blank?(@application_name) || !application_path.exist?
             existing_apps = known_application_names.join('/')
             raise ArgumentError.new("Unknown app: `#{ @application_name.downcase }'. Please specify one of (#{ existing_apps }) as application name")
           end

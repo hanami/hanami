@@ -50,7 +50,7 @@ module Collaboration
 
       # SIMULATE DISABLED SECURITY HEADERS
       #
-      # security.x_frame_options         "DENY"
+      # security.x_frame_options         'DENY'
       # security.content_security_policy "connect-src 'self'"
 
       view.prepare do

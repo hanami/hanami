@@ -44,7 +44,6 @@ module Hanami
           add_mapping('config.ru.tt', 'config.ru')
           add_mapping('config/environment.rb.tt', 'config/environment.rb')
           add_mapping('lib/app_name.rb.tt', "lib/#{ app_name }.rb")
-          add_mapping('lib/config/mapping.rb.tt', 'lib/config/mapping.rb')
         end
 
         def add_test_templates
