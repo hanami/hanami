@@ -1,6 +1,5 @@
 require 'test_helper'
-
-CoffeeShop::Application.bootstrap
+require_relative './fixtures/coffee_shop/config/environment'
 
 describe Hanami::Application do
   before do
@@ -19,7 +18,7 @@ describe Hanami::Application do
       configuration = CoffeeShop::Application.configuration
 
       configuration.must_be_kind_of Hanami::Configuration
-      configuration.root.must_equal Pathname.new(__dir__).join('../tmp/coffee_shop')
+      configuration.root.must_equal Pathname.new(__dir__).join('../test/fixtures/coffee_shop')
     end
   end
 

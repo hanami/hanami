@@ -1,0 +1,1 @@
+class CollaborationInitializer1; end
