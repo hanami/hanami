@@ -31,6 +31,15 @@ end
 
 module CoffeeShop
   class Application < Hanami::Application
+    def self.bootstrap
+      Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates').mkpath
+      Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/app/templates/mailers').mkpath
+      Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop/config/initializers/').mkpath
+
+      File.open("#{File.dirname(__FILE__)}/../tmp/coffee_shop/config/initializers/init1.rb", 'w') { |f| f.write('class CollaborationInitializer1; end;') }
+      File.open("#{File.dirname(__FILE__)}/../tmp/coffee_shop/config/initializers/init2.rb", 'w') { |f| f.write('class CollaborationInitializer2; end;') }
+    end
+
     configure do
       root   Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop')
       layout nil

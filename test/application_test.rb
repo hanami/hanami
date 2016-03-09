@@ -1,5 +1,7 @@
 require 'test_helper'
 
+CoffeeShop::Application.bootstrap
+
 describe Hanami::Application do
   before do
     @application = CoffeeShop::Application.new
