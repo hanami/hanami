@@ -6,19 +6,38 @@ describe Hanami::Application do
     @application = CoffeeShop::Application.new
   end
 
-  it 'instantiate new configuration object when inherited' do
-    coffee_shop_app  = CoffeeShop::Application.new
-    reviews_app = Reviews::Application.new
-
-    coffee_shop_app.configuration.wont_equal reviews_app.configuration
-  end
-
-  describe '.configure' do
+  describe '.configuration' do
     it 'yields the given block and returns a configuration' do
       configuration = CoffeeShop::Application.configuration
 
       configuration.must_be_kind_of Hanami::Configuration
       configuration.root.must_equal Pathname.new(__dir__).join('../test/fixtures/coffee_shop')
+    end
+  end
+
+  describe '#configuration' do
+    it 'returns class configuration' do
+      @application.configuration.must_equal @application.class.configuration
+    end
+
+    describe 'given 2 instances of same application' do
+      before do
+        @other_application = CoffeeShop::Application.new
+      end
+
+      it 'shares configuration instance' do
+        @application.configuration.object_id.must_equal @other_application.configuration.object_id
+      end
+    end
+
+    describe 'given 2 instances of different application' do
+      before do
+        @other_application = Reviews::Application.new
+      end
+
+      it 'does not share configuration instance' do
+        @application.configuration.object_id.wont_equal @other_application.configuration.object_id
+      end
     end
   end
 
@@ -52,12 +71,6 @@ describe Hanami::Application do
     it 'preloads registered subclasses' do
       Hanami::Application.preload!
       Foo::Application.must_be :loaded?
-    end
-  end
-
-  describe '#configuration' do
-    it 'returns class configuration' do
-      @application.configuration.must_equal @application.class.configuration
     end
   end
 
