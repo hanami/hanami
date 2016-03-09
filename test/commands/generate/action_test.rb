@@ -71,6 +71,11 @@ describe Hanami::Commands::Generate::Action do
 
         assert_file_exists 'apps/web/templates/admin/books/index.html.erb'
         assert_file_includes('apps/web/config/routes.rb', "get '/admin/books', to: 'admin/books#index'")
+
+        relative_action_path = command.template_options[:relative_action_path]
+        relative_view_path = command.template_options[:relative_view_path]
+        assert_file_exists(File.expand_path("#{relative_action_path}.rb", 'spec/web/controllers/admin/book'))
+        assert_file_exists(File.expand_path("#{relative_view_path}.rb", 'spec/web/controllers/admin/book'))
       end
 
       with_temp_dir do |original_wd|
@@ -80,6 +85,11 @@ describe Hanami::Commands::Generate::Action do
 
         assert_file_exists 'apps/web/templates/admin/books/index.html.erb'
         assert_file_includes('apps/web/config/routes.rb', "get '/admin/books', to: 'admin/books#index'")
+
+        relative_action_path = command.template_options[:relative_action_path]
+        relative_view_path = command.template_options[:relative_view_path]
+        assert_file_exists(File.expand_path("#{relative_action_path}.rb", 'spec/web/controllers/admin/book'))
+        assert_file_exists(File.expand_path("#{relative_view_path}.rb", 'spec/web/controllers/admin/book'))
       end
     end
 
