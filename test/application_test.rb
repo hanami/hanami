@@ -35,6 +35,10 @@ describe Hanami::Application do
         @other_application = Reviews::Application.new
       end
 
+      after do
+        Object.__send__(:remove_const, :Reviews)
+      end
+
       it 'does not share configuration instance' do
         @application.configuration.object_id.wont_equal @other_application.configuration.object_id
       end
@@ -83,6 +87,18 @@ describe Hanami::Application do
   describe '#name' do
     it 'returns the class name' do
       @application.name.must_equal @application.class.name
+    end
+  end
+
+  describe 'initializers' do
+    describe 'when the project is application architecture' do
+      describe 'given app/config/initializers exists' do
+        it 'loads all the initializers in HANAMI_ROOT/config/initializers only' do
+          assert_equal defined?(LongBlackRecipe), 'constant'
+          assert_equal defined?(ShortBlackRecipe), 'constant'
+          refute_equal defined?(MochaRecipe), 'constant'
+        end
+      end
     end
   end
 end
