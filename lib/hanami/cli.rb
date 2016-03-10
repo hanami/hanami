@@ -45,6 +45,17 @@ module Hanami
       end
     end
 
+    desc 'rackserver', '[private]'
+    def rackserver
+      if options[:help]
+        invoke :help, ['rackserver']
+      else
+        require 'hanami/server'
+        Hanami::Server.new(options).start
+      end
+    end
+
+
     desc 'console', 'Starts a hanami console'
     long_desc <<-EOS
     `hanami console` starts the interactive hanami console.
