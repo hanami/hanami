@@ -31,7 +31,7 @@ module Hanami
 
         > $ hanami generate action web cars#create --method=post
       EOS
-      method_option :method, desc: "The HTTP method to be used for the generated route. Must be one of (#{Hanami::Routing::Route::VALID_HTTP_VERBS.join('/')})", default: Hanami::Commands::Generate::Action::DEFAULT_HTTP_METHOD
+      method_option :method, desc: "The HTTP method to be used for the generated route. Default is #{Hanami::Commands::Generate::Action::DEFAULT_HTTP_METHOD}. Must be one of (#{Hanami::Routing::Route::VALID_HTTP_VERBS.join('/')})"
       method_option :url, desc: 'Relative URL for action, will be used for the route', default: nil
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .hanamirc file.'
       method_option :skip_view, desc: 'Skip the generation of the view. Also skips template generation.', default: false, type: :boolean

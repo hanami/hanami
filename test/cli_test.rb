@@ -78,7 +78,7 @@ describe Hanami::Cli do
 
   describe 'generate' do
     describe 'action' do
-      let(:default_options) { {'method' => 'GET', 'skip_view' => false} }
+      let(:default_options) { {'skip_view' => false} }
 
       it 'calls the generator with application and controller/action name' do
         ARGV.replace(%w{generate action app controller#action})
