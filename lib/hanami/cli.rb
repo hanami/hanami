@@ -46,6 +46,16 @@ module Hanami
     end
 
     desc 'rackserver', '[private]'
+    method_option :port, aliases: '-p', desc: 'The port to run the server on, '
+    method_option :server, desc: 'choose a specific Rack::Handler, e.g. webrick, thin etc'
+    method_option :rackup, desc: 'a rackup configuration file path to load (config.ru)'
+    method_option :host, desc: 'the host address to bind to'
+    method_option :debug, desc: 'turn on debug output'
+    method_option :warn, desc: 'turn on warnings'
+    method_option :daemonize, desc: 'if true, the server will daemonize itself (fork, detach, etc)'
+    method_option :pid, desc: 'path to write a pid file after daemonize'
+    method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
+    method_option :help, desc: 'displays the usage message'
     def rackserver
       if options[:help]
         invoke :help, ['rackserver']

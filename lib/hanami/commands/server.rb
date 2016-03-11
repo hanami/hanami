@@ -11,7 +11,7 @@ module Hanami
       # @api private
       WARNING_MESSAGE = 'Your platform doesn\'t support code reloading.'.freeze
 
-      ENTR_EXECUTE_COMMAND = 'find ./**/*.rb | entr -r bundle exec hanami rackserver %s'.freeze
+      ENTR_EXECUTE_COMMAND = "find %{paths} -type f | entr -r bundle exec hanami rackserver %{args}".freeze
 
       attr_reader :server
 
@@ -24,7 +24,7 @@ module Hanami
       def start
         case @strategy
         when :entr
-          exec ENTR_EXECUTE_COMMAND % server_options
+          exec ENTR_EXECUTE_COMMAND % {paths: project_paths, args: server_options}
         when :shotgun
           Shotgun.enable_copy_on_write
           Shotgun.preload
@@ -42,6 +42,10 @@ module Hanami
         _options.inject([]) {|res, (k, v)| res << "--#{k}=#{v}" ; res}.join(" ")
       end
 
+      def project_paths
+        applications = Hanami::Environment.new.container? ? 'apps' : 'app'
+        "#{ applications } config db lib vendor"
+      end
 
       def prepare_server!
         case @strategy
