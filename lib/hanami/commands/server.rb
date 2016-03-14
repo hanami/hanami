@@ -44,7 +44,7 @@ module Hanami
 
       def project_paths
         applications = Hanami::Environment.new.container? ? 'apps' : 'app'
-        "#{ applications } config db lib vendor"
+        "#{ applications } config db lib"
       end
 
       def prepare_server!
