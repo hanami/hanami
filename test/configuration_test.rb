@@ -800,8 +800,9 @@ describe Hanami::Configuration do
         @configuration.logger
       end
 
-      it 'returns logger instance' do
+      it 'returns a STDOUT logger config instance' do
         @configuration.logger.must_be_instance_of Hanami::Config::Logger
+        @configuration.logger.stream.must_equal STDOUT
       end
     end
   end
