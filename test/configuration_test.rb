@@ -799,24 +799,24 @@ describe Hanami::Configuration do
         @configuration = Hanami::Configuration.new
       end
 
-      it 'returns a STDOUT logger config instance' do
+      it 'returns a default logger config instance' do
         @configuration.logger.must_be_instance_of Hanami::Config::Logger
-        @configuration.logger.stream.must_equal STDOUT
       end
     end
 
-    #describe "when a logger is config a stream to a file" do
-      #before do
-        #@configuration = Hanami::Configuration.new do
-          #logger.stream "log.test.log"
-        #end
-        #@configuration.logger
-      #end
+    describe "when a logger is config a stream to a file" do
+      before do
+        @configuration = Hanami::Configuration.new.configure do
+          logger.stream "log.test.log"
+        end
 
-      #it 'returns a STDOUT logger config instance' do
-        #@configuration.logger.must_be_instance_of Hanami::Config::Logger
-        #@configuration.logger.stream.wont_equal STDOUT
-      #end
-    #end
+        @configuration.load!
+      end
+
+      it 'returns a file stream logger config instance' do
+        @configuration.logger.must_be_instance_of Hanami::Config::Logger
+        @configuration.logger.stream.must_equal "log.test.log"
+      end
+    end
   end
 end
