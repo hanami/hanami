@@ -60,6 +60,7 @@ module Hanami
           @controller_name = Utils::String.new(controller_name.join("/")).classify
           @action_name = Utils::String.new(action_name).classify
           @controller_pathname = Utils::String.new(@controller_name).underscore
+          @controller_patharray = @controller_pathname.split("/")
 
           assert_application_name!
           assert_controller_name!
@@ -210,23 +211,23 @@ module Hanami
         end
 
         def view_path
-          application_path.join('views', @controller_pathname, "#{@action_name.downcase}.rb")
+          application_path.join('views', *@controller_patharray, "#{@action_name.downcase}.rb")
         end
 
         def view_spec_path
-          spec_root.join('views', @controller_pathname, "#{@action_name.downcase}_spec.rb")
+          spec_root.join('views', *@controller_patharray, "#{@action_name.downcase}_spec.rb")
         end
 
         def template_path
-          application_path.join('templates', @controller_pathname, "#{@action_name.downcase}.html.#{template_engine.name}")
+          application_path.join('templates', *@controller_patharray, "#{@action_name.downcase}.html.#{template_engine.name}")
         end
 
         def action_path
-          application_path.join('controllers', @controller_pathname, "#{@action_name.downcase}.rb")
+          application_path.join('controllers', *@controller_patharray, "#{@action_name.downcase}.rb")
         end
 
         def action_spec_path
-          spec_root.join('controllers', @controller_pathname, "#{ @action_name.downcase}_spec.rb")
+          spec_root.join('controllers', *@controller_patharray, "#{ @action_name.downcase}_spec.rb")
         end
 
         def spec_root
@@ -234,15 +235,17 @@ module Hanami
         end
 
         def relative_action_path
-          path = Pathname.new('.').join('..', '..', '..')
-          path = path.join('..') if environment.container?
-          path.join(application_path, 'controllers', @controller_pathname, @action_name.downcase)
+          relative_base_path.join(application_path, 'controllers', *@controller_patharray, @action_name.downcase)
         end
 
         def relative_view_path
-          path = Pathname.new('.').join('..', '..', '..')
-          path = path.join('..') if environment.container?
-          path.join(application_path, 'views', @controller_pathname, @action_name.downcase)
+          relative_base_path.join(application_path, 'views', *@controller_patharray, @action_name.downcase)
+        end
+
+        def relative_base_path
+          nestings = ['..'] * @controller_pathname.count(Utils::String::UNDERSCORE_SEPARATOR)
+          nestings << '..' if environment.container?
+          path = Pathname.new('.').join('..', '..', '..', *nestings)
         end
 
         def app_base_dir
