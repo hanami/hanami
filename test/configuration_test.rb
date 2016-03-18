@@ -797,7 +797,6 @@ describe Hanami::Configuration do
     describe "when custom logger not previously set" do
       before do
         @configuration = Hanami::Configuration.new
-        @configuration.logger
       end
 
       it 'returns a STDOUT logger config instance' do
@@ -805,5 +804,19 @@ describe Hanami::Configuration do
         @configuration.logger.stream.must_equal STDOUT
       end
     end
+
+    #describe "when a logger is config a stream to a file" do
+      #before do
+        #@configuration = Hanami::Configuration.new do
+          #logger.stream "log.test.log"
+        #end
+        #@configuration.logger
+      #end
+
+      #it 'returns a STDOUT logger config instance' do
+        #@configuration.logger.must_be_instance_of Hanami::Config::Logger
+        #@configuration.logger.stream.wont_equal STDOUT
+      #end
+    #end
   end
 end
