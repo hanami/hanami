@@ -5,7 +5,7 @@ describe Hanami::Config::Logger do
   let(:path) { 'path/to/log/file' }
 
   describe '#stream' do
-    it 'contains steam object' do
+    it 'contains a stream object' do
       logger.stream(path)
       logger.stream.must_equal path
     end

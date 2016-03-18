@@ -122,11 +122,11 @@ module Hanami
 
       # Application name value.
       #
-      # @overload stream(value)
+      # @overload app_name(value)
       #   Sets the given value
       #   @param value [String] for app name option
       #
-      # @overload stream
+      # @overload app_name
       #   Gets the value
       #   @return [String] app name option's value
       #

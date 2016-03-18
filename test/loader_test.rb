@@ -68,6 +68,10 @@ describe Hanami::Loader do
       it 'assigns layout to CoffeeShop::View' do
         CoffeeShop::View.configuration.layout.must_equal Hanami::View::Rendering::NullLayout
       end
+
+      it 'generates logger namespace' do
+        assert defined?(CoffeeShop::Logger), 'expected CoffeeShop::Logger'
+      end
     end
 
     describe 'application' do
