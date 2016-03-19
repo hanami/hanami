@@ -63,4 +63,12 @@ describe 'Configurable application' do
       Configurable::View.configuration.root.must_equal Pathname.new(@current_dir)
     end
   end
+
+  describe "logger configuration" do
+    it 'instantiates an instance of Hanami::Logger' do
+      Configurable::Logger.must_be_instance_of Hanami::Logger
+      Configurable::Logger.application_name.must_equal "Configurable"
+      Configurable::Logger.instance_variable_get("@stream").must_equal STDOUT
+    end
+  end
 end

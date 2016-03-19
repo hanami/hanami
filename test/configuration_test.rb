@@ -797,11 +797,25 @@ describe Hanami::Configuration do
     describe "when custom logger not previously set" do
       before do
         @configuration = Hanami::Configuration.new
-        @configuration.logger
       end
 
-      it 'returns logger instance' do
+      it 'returns a default logger config instance' do
         @configuration.logger.must_be_instance_of Hanami::Config::Logger
+      end
+    end
+
+    describe "when a logger is config a stream to a file" do
+      before do
+        @configuration = Hanami::Configuration.new.configure do
+          logger.stream "log.test.log"
+        end
+
+        @configuration.load!
+      end
+
+      it 'returns a file stream logger config instance' do
+        @configuration.logger.must_be_instance_of Hanami::Config::Logger
+        @configuration.logger.stream.must_equal "log.test.log"
       end
     end
   end
