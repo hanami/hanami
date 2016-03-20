@@ -40,4 +40,11 @@ describe 'Middleware stack' do
 
     response.status.must_equal 404
   end
+
+  it 'applies the MethodOverride middleware to map POST to PATCH given correct header' do
+    post '/', {}, { 'X-HTTP-Method-Override' => 'PATCH' }
+
+    response.status.must_equal 200
+    response.body.must_equal %(Update successful)
+  end
 end
