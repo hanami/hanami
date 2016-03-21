@@ -54,13 +54,13 @@ module Hanami
       # Please use them when you're in control of your deployment environment.
       namespace :db do
         task :migrate do
-          system "bundle exec hanami db migrate"
+          system("bundle exec hanami db migrate") || exit($?.exitstatus)
         end
       end
 
       namespace :assets do
         task :precompile do
-          system "bundle exec hanami assets precompile"
+          system("bundle exec hanami assets precompile") || exit($?.exitstatus)
         end
       end
     end
