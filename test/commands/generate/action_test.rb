@@ -405,8 +405,8 @@ describe Hanami::Commands::Generate::Action do
       end
     end
 
-    describe 'with --url' do
-      it 'erases route configuration' do
+    describe 'generated with --url' do
+      it 'erases route configuration with --url' do
         with_temp_dir do |original_wd|
           setup_container_app
 
@@ -414,6 +414,20 @@ describe Hanami::Commands::Generate::Action do
             Hanami::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').start
 
             Hanami::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').destroy.start
+          }
+
+          refute_file_includes('apps/web/config/routes.rb', "get '/mybooks', to: 'books#index'")
+        end
+      end
+
+      it 'erases route configuration without --url' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+
+          capture_io {
+            Hanami::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').start
+
+            Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').destroy.start
           }
 
           refute_file_includes('apps/web/config/routes.rb', "get '/mybooks', to: 'books#index'")

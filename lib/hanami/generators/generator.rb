@@ -7,7 +7,7 @@ module Hanami
 
       extend Forwardable
 
-      def_delegators :@processor, :run, :behavior=, :inject_into_file, :append_to_file, :prepend_to_file
+      def_delegators :@processor, :run, :behavior=, :inject_into_file, :append_to_file, :prepend_to_file, :gsub_file
 
       class Processor < Thor
         include Thor::Actions

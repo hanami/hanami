@@ -64,9 +64,9 @@ module Hanami
             application_name = File.basename(Dir.pwd)
           end
 
-          controller_and_action_name = Utils::String.new(controller_and_action_name).underscore.gsub(QUOTED_NAME, '')
+          @controller_and_action_name = Utils::String.new(controller_and_action_name).underscore.gsub(QUOTED_NAME, '')
 
-          *controller_name, @action_name = controller_and_action_name.split(ACTION_SEPARATOR_MATCHER)
+          *controller_name, @action_name = @controller_and_action_name.split(ACTION_SEPARATOR_MATCHER)
 
           @application_name = Utils::String.new(application_name).classify
 
@@ -112,6 +112,11 @@ module Hanami
             relative_view_path:   relative_view_path,
             template_path:        template_path,
           }
+        end
+
+        def destroy
+          generator.gsub_file(routes_path, /^.*#{@controller_and_action_name}.*\n/, '')
+          super
         end
 
         private
