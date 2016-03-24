@@ -531,7 +531,7 @@ describe Hanami::Environment do
           @env = Hanami::Environment.new
         end
 
-        it 'returns true' do
+        it 'returns false' do
           @env.environment.must_equal 'test'
           @env.code_reloading?.must_equal false
         end
