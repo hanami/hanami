@@ -35,29 +35,32 @@ describe Hanami::Middleware do
     middleware.stack.last.must_equal [MockMiddleware, [], nil]
   end
 
-  it 'does not contain Rack::MethodOverride by default' do
-    middleware.stack.wont_include [Rack::MethodOverride, [], nil]
+  describe "with container architecture" do
+    before do
+      setup_container_app
+    end
+
+    it 'does not contain Rack::MethodOverride by default' do
+      middleware.stack.wont_include [Rack::MethodOverride, [], nil]
+    end
   end
 
-  describe "with a non-container application" do
+  describe "with app architecture" do
     before do
-      @old_pwd = Dir.pwd
-      Dir.chdir('test/fixtures/one_file')
-    end
-
-    after do
-      Dir.chdir @old_pwd
-    end
-
-    let(:config_blk) do
-      proc do
-        root '.'
-      end
+      setup_app_app
     end
 
     it 'contains Rack::MethodOverride for non-container applications' do
       middleware.stack.must_include [Rack::MethodOverride, [], nil]
     end
+  end
+
+  def setup_container_app
+    File.open('.hanamirc', 'w') { |file| file << "architecture=container"}
+  end
+
+  def setup_app_app
+    File.open('.hanamirc', 'w') { |file| file << "architecture=app"}
   end
 
   describe "when it's configured with sessions" do
