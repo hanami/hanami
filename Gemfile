@@ -26,8 +26,7 @@ platforms :jruby do
   gem 'jdbc-sqlite3'
 end
 
-gem 'simplecov', '~> 0.11', require: false
-gem 'coveralls',            require: false
+gem 'coveralls', require: false
 
 gem 'dotenv', '~> 2.0'
 gem 'shotgun', '~> 0.9'
