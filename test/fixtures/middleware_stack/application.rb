@@ -12,6 +12,7 @@ module MiddlewareStack
 
       routes do
         get '/', to: 'home#index'
+        patch '/', to: 'home#update'
       end
     end
 
@@ -53,6 +54,14 @@ module MiddlewareStack
 
       def call(params)
         self.body = 'Hello'
+      end
+    end
+
+    class Update
+      include MiddlewareStack::Action
+
+      def call(params)
+        self.body = 'Update successful'
       end
     end
   end
