@@ -1,3 +1,3 @@
 require './config/environment'
 
-run CoffeeShop::Application.new
+run CoffeeShop::Container.new
