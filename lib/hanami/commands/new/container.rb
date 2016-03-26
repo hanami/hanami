@@ -18,14 +18,15 @@ module Hanami
 
         def template_options
           {
-            app_name:             app_name,
-            hanami_head:          hanami_head?,
-            test:                 test_framework.framework,
-            database:             database_config.type,
-            database_config:      database_config.to_hash,
-            hanami_model_version: hanami_model_version,
-            hanami_version:       hanami_version,
-            template:             template_engine.name
+            app_name:                   app_name,
+            classified_container_name:  classified_container_name,
+            hanami_head:                hanami_head?,
+            test:                       test_framework.framework,
+            database:                   database_config.type,
+            database_config:            database_config.to_hash,
+            hanami_model_version:       hanami_model_version,
+            hanami_version:             hanami_version,
+            template:                   template_engine.name
           }
         end
 
@@ -91,6 +92,10 @@ module Hanami
 
         def app_slice_name
           options.fetch(:application_name, DEFAULT_APPLICATION_NAME)
+        end
+
+        def classified_container_name
+          Utils::String.new(app_name).classify.tr('::', '')
         end
 
         def template_source_path
