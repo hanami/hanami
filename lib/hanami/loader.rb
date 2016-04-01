@@ -248,7 +248,7 @@ module Hanami
     end
 
     def load_initializers!
-      Dir["#{configuration.root}/config/initializers/**/*.rb"].each do |file|
+      Dir["#{configuration.root}/config/initializers/**/*.rb"].sort.each do |file|
         require file
       end
     end
