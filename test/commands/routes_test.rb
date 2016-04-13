@@ -16,10 +16,14 @@ describe Hanami::Commands::Routes do
     let(:architecture) { 'container' }
 
     before do
-      Hanami::Container.configure do
-        mount Backend::App, at: '/backend'
-        mount RackApp,      at: '/rackapp'
-        mount TinyApp,      at: '/'
+      module Dummy
+        class Container < Hanami::Container
+          configure do
+            mount Backend::App, at: '/backend'
+            mount RackApp,      at: '/rackapp'
+            mount TinyApp,      at: '/'
+          end
+        end
       end
     end
 
@@ -31,7 +35,7 @@ describe Hanami::Commands::Routes do
           %(GET, HEAD  /                              TinyApp::Controllers::Home::Index)
         ]
 
-        actual = Hanami::Container.new.routes.inspector.to_s
+        actual = Dummy::Container.new.routes.inspector.to_s
         expectations.each do |expectation|
           actual.must_include(expectation)
         end
