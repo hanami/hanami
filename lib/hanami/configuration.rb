@@ -117,6 +117,8 @@ module Hanami
     #
     # @see Hanami::Routing::ForceSsl
     def force_ssl(value = nil)
+      @force_ssl = nil
+
       if value
         @force_ssl = value
       else
@@ -171,6 +173,8 @@ module Hanami
     #     end
     #   end
     def root(value = nil)
+      @root ||= nil
+
       if value
         @root = value
       else
@@ -313,6 +317,8 @@ module Hanami
     #   Bookshelf::Views::Dashboard::JsonIndex.layout
     #     # => Hanami::View::Rendering::NullLayout
     def layout(value = nil)
+      @layout ||= nil
+
       if value
         @layout = value
       else
@@ -369,6 +375,8 @@ module Hanami
     #   Bookshelf::Application.configuration.templates
     #     # => #<Pathname:/root/path/app/templates>
     def templates(value = nil)
+      @templates ||= nil
+
       if value
         @templates = value
       else
@@ -1177,6 +1185,8 @@ module Hanami
     #
     #   Bookshelf::Application.configuration.port # => 8080
     def port(value = nil)
+      @port ||= nil
+
       if value
         @port = Integer(value)
       else
@@ -1699,6 +1709,8 @@ module Hanami
     # @since 0.4.0
     # @api private
     def path_prefix(value = nil)
+      @path_prefix ||= nil
+
       if value.nil?
         @path_prefix
       else

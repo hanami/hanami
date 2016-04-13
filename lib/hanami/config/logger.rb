@@ -31,6 +31,8 @@ module Hanami
       #
       # @since x.x.x
       def stream(value = nil)
+        @stream ||= nil
+
         if value.nil?
           @stream
         else
@@ -52,6 +54,8 @@ module Hanami
       #
       # @since x.x.x
       def engine(value = nil)
+        @engine ||= nil
+
         if value.nil?
           @engine
         else
@@ -113,6 +117,8 @@ module Hanami
       #     end
       #   end
       def level(value = nil)
+        @level ||= nil
+
         if value.nil?
           @level
         else
@@ -133,6 +139,8 @@ module Hanami
       # @since x.x.x
       # @api private
       def app_name(value = nil)
+        @app_name ||= nil
+
         if value.nil?
           @app_name
         else
