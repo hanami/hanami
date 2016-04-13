@@ -9,14 +9,14 @@ describe Hanami::Container do
     end
 
     it 'allows to define mounted applications with a block' do
-      assert Hanami::Container.class_variable_get(:@@configuration) == @blk, "Expected Hanami::Container configuration to equal @blk"
+      assert Hanami::Container.instance_variable_get(:@configuration) == @blk, "Expected Hanami::Container configuration to equal @blk"
     end
 
     it 'allows to redefine the configuration' do
       blk = -> { mount RackApp, at: '/rack2' }
       Hanami::Container.configure(&blk)
 
-      assert Hanami::Container.class_variable_get(:@@configuration) == blk, "Expected Hanami::Container configuration to equal blk"
+      assert Hanami::Container.instance_variable_get(:@configuration) == blk, "Expected Hanami::Container configuration to equal blk"
     end
   end
 
@@ -36,7 +36,7 @@ describe Hanami::Container do
 
     describe 'without configuration' do
       before do
-        Hanami::Container.remove_class_variable(:@@configuration) rescue nil
+        Hanami::Container.remove_instance_variable(:@configuration) rescue nil
       end
 
       it 'raises error when initialized' do
