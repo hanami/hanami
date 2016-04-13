@@ -100,7 +100,7 @@ module Hanami
         _load_assets_middleware
         _load_session_middleware
         _load_default_welcome_page_for(application)
-        use Rack::MethodOverride
+        _load_method_override_middleware
 
         true
       end
@@ -137,6 +137,18 @@ module Hanami
       if !env.container? && env.serve_static_assets?
         require 'hanami/static'
         use Hanami::Static
+      end
+    end
+
+    # Use MethodOverride middleware
+    #
+    # @api private
+    # @since x.x.x
+    def _load_method_override_middleware
+      env = Hanami.environment
+
+      if !env.container?
+        use Rack::MethodOverride
       end
     end
   end

@@ -52,6 +52,7 @@ module Hanami
         require 'hanami/static'
         @builder.use Hanami::Static
       end
+      @builder.use Rack::MethodOverride
 
       @builder.run @routes
     end
