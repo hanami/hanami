@@ -21,7 +21,6 @@ module Hanami
 
     def self.configure(options = {}, &blk)
       Mutex.new.synchronize do
-        @options       = options
         @configuration = blk
       end
     end
