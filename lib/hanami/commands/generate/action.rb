@@ -115,7 +115,7 @@ module Hanami
         end
 
         def destroy
-          generator.gsub_file(routes_path, /^.*#{@controller_and_action_name}.*\n/, '')
+          generator.gsub_file(routes_path, /^.*#{@controller_and_action_name}.*\n/, '', verbose: false)
           super
         end
 
