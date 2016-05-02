@@ -10,8 +10,8 @@ script:
   - 'bundle install'
   - './script/ci'
 rvm:
-  - 2.2.4
-  - 2.3.0
+  - 2.2.5
+  - 2.3.1
   - jruby-9.0.5.0
   - jruby-head
   - ruby-head
