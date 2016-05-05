@@ -19,6 +19,10 @@ Hanami combines small yet powerful frameworks:
 These components are designed to be used independently or together in a Hanami application.
 If you aren't familiar with them, please take time to go through their READMEs.
 
+## Donations
+
+You can give back to Open Source, by supporting Hanami development via a [donation](https://salt.bountysource.com/teams/hanami). :green_heart:
+
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](http://badge.fury.io/rb/hanami)
