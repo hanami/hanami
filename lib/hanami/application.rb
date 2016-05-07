@@ -122,6 +122,13 @@ module Hanami
     end
 
     class << self
+      # @since 0.8.0
+      # @api private
+      @@mutex = Mutex.new
+
+      # @since 0.2.0
+      # @api private
+      @@applications = Set.new
 
       # Registry of Hanami applications in the current Ruby process
       #
@@ -130,9 +137,7 @@ module Hanami
       # @since 0.2.0
       # @api private
       def applications
-        synchronize do
-          @@applications ||= Set.new
-        end
+        @@applications
       end
 
       # Configure the application.
@@ -238,7 +243,7 @@ module Hanami
       # @since 0.2.0
       # @api private
       def synchronize
-        Mutex.new.synchronize do
+        @@mutex.synchronize do
           yield
         end
       end
