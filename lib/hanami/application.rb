@@ -40,6 +40,10 @@ module Hanami
       end
     end
 
+    # @since 0.8.0
+    # @api private
+    LOCK = Mutex.new
+
     # Return the routes for this application
     #
     # @return [Hanami::Router] a route set
@@ -122,10 +126,6 @@ module Hanami
     end
 
     class << self
-      # @since 0.8.0
-      # @api private
-      @@mutex = Mutex.new
-
       # @since 0.2.0
       # @api private
       @@applications = Set.new
@@ -243,7 +243,7 @@ module Hanami
       # @since 0.2.0
       # @api private
       def synchronize
-        @@mutex.synchronize do
+        LOCK.synchronize do
           yield
         end
       end

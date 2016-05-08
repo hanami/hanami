@@ -13,7 +13,7 @@ module Hanami
   # @since 0.1.0
   # @api private
   class Loader
-    @@mutex = Mutex.new
+    LOCK = Mutex.new
 
     STRICT_TRANSPORT_SECURITY_HEADER = 'Strict-Transport-Security'.freeze
     STRICT_TRANSPORT_SECURITY_DEFAULT_VALUE = 'max-age=31536000'.freeze
@@ -24,7 +24,7 @@ module Hanami
     end
 
     def load!
-      @@mutex.synchronize do
+      LOCK.synchronize do
         load_configuration!
         configure_frameworks!
         load_configuration_load_paths!

@@ -18,7 +18,7 @@ module Hanami
     #
     # @since 0.8.0
     # @api private
-    @@mutex = Mutex.new
+    LOCK = Mutex.new
 
     # Standard Rack ENV key
     #
@@ -198,7 +198,7 @@ module Hanami
     def initialize(options = {})
       @options = Hanami::Hanamirc.new(root).options
       @options.merge! Utils::Hash.new(options.clone).symbolize!
-      @@mutex.synchronize { set_env_vars! }
+      LOCK.synchronize { set_env_vars! }
     end
 
     # The current environment
