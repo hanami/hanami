@@ -381,7 +381,7 @@ module Hanami
     # By default it's equal to the `public/` directory under the application
     # `root`.
     #
-    # Otherwise, you can add different relatives paths under `root`.
+    # Otherwise, you can add different relative paths under `root`.
     #
     # @overload assets
     #   Gets the value
