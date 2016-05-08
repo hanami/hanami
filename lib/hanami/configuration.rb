@@ -531,7 +531,7 @@ module Hanami
     #   Bookshelf::Application.configuration.sessions
     #     # => #<Hanami::Config::Sessions:0x00000001589458 @enabled=true, @adapter=:cookie, @options={:domain=>"localhost", :secure=>false}>
     #
-    # @example Disabling previusly enabled sessions
+    # @example Disabling previously enabled sessions
     #   require 'hanami'
     #
     #   module Bookshelf
