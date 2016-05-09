@@ -1295,7 +1295,7 @@ module Hanami
     #
     #   module DashboardController
     #     class Index
-    #       incude Bookshelf::Action
+    #       include Bookshelf::Action
     #
     #       def call(params)
     #       end
