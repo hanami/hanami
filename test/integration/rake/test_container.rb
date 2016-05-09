@@ -114,10 +114,25 @@ describe 'Rake tasks (Container)' do
     end
 
     it "precompile assets" do
-      success = system "bundle exec rake assets:precompile"
-      success.must_equal true
+      capture_subprocess_io {
+        success = system "bundle exec rake assets:precompile"
+        success.must_equal true
+      }
+
 
       root.join('public', 'assets.json').must_be :exist?
+    end
+
+    it "outputs note about setting SERVE_STATIC_ASSETS to true" do
+      output, _ = capture_subprocess_io { system "bundle exec rake assets:precompile" }
+      assert_equal(
+        output,
+          "==============================================================\n"\
+          "NOTE: In order to serve static assets on Heroku (and others), \n"\
+          "the environment variable SERVE_STATIC_ASSETS must equal 'true'\n"\
+          "To do this, run `heroku config:set SERVE_STATIC_ASSETS=true`  \n"\
+          "==============================================================\n"
+      )
     end
   end
 end
