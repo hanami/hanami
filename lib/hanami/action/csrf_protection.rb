@@ -107,7 +107,7 @@ module Hanami
         session[CSRF_TOKEN] ||= generate_csrf_token
       end
 
-      # Verify if CSRF token from params, matches the one stored in session.
+      # Verify if CSRF token from params matches the one stored in session.
       # If not, it raises an error.
       #
       # Don't override this method.
