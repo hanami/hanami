@@ -17,7 +17,7 @@ module Hanami
     # <tt>_csrf_token</tt>.
     #
     # If the param matches with the challenge token, the flow can continue.
-    # Otherwise the application detects an attack attempt, it reset the session
+    # Otherwise the application detects an attack attempt, it resets the session
     # and <tt>Hanami::Action::InvalidCSRFTokenError</tt> is raised.
     #
     # We can specify a custom handling strategy, by overriding <tt>#handle_invalid_csrf_token</tt>.
