@@ -1,10 +1,10 @@
-require 'thor'
+require 'hanami/cli_base'
 require 'hanami/commands/console'
 require 'hanami/commands/new/app'
 require 'hanami/commands/new/container'
 
 module Hanami
-  class Cli < Thor
+  class Cli < CliBase
     # include Thor::Actions
 
     desc 'version', 'Prints hanami version'
