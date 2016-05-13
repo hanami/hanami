@@ -225,8 +225,8 @@ describe Hanami::Cli do
     end
   end
 
-  describe '::custom_commands' do
-    Hanami::Cli.custom_commands do
+  describe '::define_commands' do
+    Hanami::Cli.define_commands do
       desc 'custom', 'Empty command'
       def custom
         puts 'custom command'

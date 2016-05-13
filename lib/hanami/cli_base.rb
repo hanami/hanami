@@ -1,7 +1,5 @@
-require 'thor'
-
 module Hanami
-  class CliBase < Thor
+  module CliBase
     # Add new custom CLI command to special CLI class
     #
     # @since x.x.x
@@ -10,7 +8,7 @@ module Hanami
     #   require 'hanami'
     #   require 'hanami/cli'
     #
-    #   Hanami::Cli.custom_commands do
+    #   Hanami::Cli.define_commands do
     #     desc 'custom', 'Generate a something'
     #     long_desc <<-EOS
     #       long description for your custom command
@@ -23,7 +21,7 @@ module Hanami
     #       end
     #     end
     #   end
-    def self.custom_commands(&blk)
+    def define_commands(&blk)
       class_eval(&blk) if block_given?
     end
   end

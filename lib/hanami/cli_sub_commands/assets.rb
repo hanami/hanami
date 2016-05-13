@@ -8,7 +8,8 @@ module Hanami
     #
     # @since 0.6.0
     # @api private
-    class Assets < CliBase
+    class Assets < Thor
+      extend CliBase
       namespace :assets
 
       desc 'precompile', 'Precompile assets for deployment'

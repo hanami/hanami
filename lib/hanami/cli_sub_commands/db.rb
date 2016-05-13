@@ -8,7 +8,8 @@ module Hanami
     #
     # @since 0.6.0
     # @api private
-    class DB < CliBase
+    class DB < Thor
+      extend CliBase
       namespace :db
 
       desc 'console', 'Start DB console'

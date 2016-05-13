@@ -1,11 +1,13 @@
+require 'thor'
 require 'hanami/cli_base'
 require 'hanami/commands/console'
 require 'hanami/commands/new/app'
 require 'hanami/commands/new/container'
 
 module Hanami
-  class Cli < CliBase
+  class Cli < Thor
     # include Thor::Actions
+    extend CliBase
 
     desc 'version', 'Prints hanami version'
     long_desc <<-EOS
