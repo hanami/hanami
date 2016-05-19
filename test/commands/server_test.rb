@@ -26,7 +26,7 @@ describe Hanami::Commands::Server do
       expected = {
         'deployment'  => [::Rack::ContentLength, ::Rack::CommonLogger],
         'development' => [::Rack::ContentLength, ::Rack::CommonLogger,
-                          ::Rack::ShowExceptions, Rack::Lint]
+                          ::Rack::ShowExceptions, Rack::Lint, Shotgun::Static]
       }
 
       @server.middleware.must_equal(expected)

@@ -49,10 +49,34 @@ module Hanami
       mw = Hash.new { |e, m| e[m] = [] }
       mw["deployment"].concat([::Rack::ContentLength, ::Rack::CommonLogger])
       mw["development"].concat(mw["deployment"] + [::Rack::ShowExceptions, ::Rack::Lint])
+      mw["development"].push(::Shotgun::Static) if enable_shotgun_static?
       mw
     end
 
     private
+
+    # @since x.x.x
+    # @api private
+    def enable_shotgun_static?
+      code_reloading? && shotgun_available?
+    end
+
+    # @since x.x.x
+    # @api private
+    def shotgun_available?
+      begin
+        require 'shotgun'
+        true
+      rescue LoadError
+        false
+      end
+    end
+
+    # @since x.x.x
+    # @api private
+    def code_reloading?
+      @_env.code_reloading?
+    end
 
     # @since 0.8.0
     # @api private
