@@ -64,12 +64,10 @@ module Hanami
     # @since x.x.x
     # @api private
     def shotgun_available?
-      begin
-        require 'shotgun'
-        true
-      rescue LoadError
-        false
-      end
+      require 'shotgun'
+      true
+    rescue LoadError
+      false
     end
 
     # @since x.x.x
