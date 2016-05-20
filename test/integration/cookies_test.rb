@@ -34,7 +34,7 @@ describe 'Cookies' do
     request.cookies.must_equal({ 'foo' => 'bar' })
 
     response.body.must_equal('bar')
-    response.headers['Set-Cookie'].must_equal('foo=bar; domain=hanamirb.org; path=/another_controller; secure; HttpOnly')
+    response.headers.fetch('Set-Cookie', :missing).must_equal(:missing)
   end
 
   it 'succesfully sets cookies' do
@@ -58,6 +58,6 @@ describe 'Cookies' do
     request.cookies.must_equal({ 'foo' => 'bar', 'delete' => 'cookie' })
 
     response.body.must_equal('deleted!')
-    response.headers['Set-Cookie'].must_equal("foo=bar; domain=hanamirb.org; path=/another_controller; secure; HttpOnly\ndelete=; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 -0000")
+    response.headers['Set-Cookie'].must_equal("delete=; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 -0000")
   end
 end

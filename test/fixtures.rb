@@ -147,7 +147,9 @@ class CSRFAction
 end
 
 class FilteredParams < Hanami::Action::Params
-  param :name
+  params do
+    required(:name).filled
+  end
 end
 
 class FilteredCSRFAction
