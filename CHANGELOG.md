@@ -6,6 +6,10 @@ The web, with simplicity.
 – [Luca Guidi] Drop support for Ruby 2.0 and 2.1
 - [Sean Collins] Add `--version` and `-v` for `hanami version` CLI
 
+## v0.7.3 - 2016-05-23
+### Fixed
+- [Pascal Betz] Use `Shotgun::Static` to serve static files in development mode and avoid to reload the env
+
 ## v0.7.2 - 2016-02-09
 ### Fixed
 - [Alfonso Uceda Pompa] Fixed routing issue when static assets server tried to hijiack paths that are matching directories in public directory
