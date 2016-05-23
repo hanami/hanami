@@ -19,10 +19,34 @@ describe Hanami::Commands::Server do
       expected = {
         'deployment'  => [::Rack::ContentLength, ::Rack::CommonLogger],
         'development' => [::Rack::ContentLength, ::Rack::CommonLogger,
-                          ::Rack::ShowExceptions, Rack::Lint]
+                          ::Rack::ShowExceptions, Rack::Lint, Shotgun::Static]
       }
 
       @server.middleware.must_equal(expected)
+    end
+  end
+
+  describe 'Shotgun::Static' do
+    it 'is added when code_reloading is enabled' do
+      server = Hanami::Commands::Server.new(code_reloading: true)
+      expected = {
+        'deployment'  => [::Rack::ContentLength, ::Rack::CommonLogger],
+        'development' => [::Rack::ContentLength, ::Rack::CommonLogger,
+                          ::Rack::ShowExceptions, Rack::Lint, Shotgun::Static]
+      }
+
+      server.middleware.must_equal(expected)
+    end
+
+    it 'is not added when code_reloading is disabled' do
+      server = Hanami::Commands::Server.new(code_reloading: false)
+      expected = {
+        'deployment'  => [::Rack::ContentLength, ::Rack::CommonLogger],
+        'development' => [::Rack::ContentLength, ::Rack::CommonLogger,
+                          ::Rack::ShowExceptions, Rack::Lint]
+      }
+
+      server.middleware.must_equal(expected)
     end
   end
 

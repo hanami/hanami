@@ -41,6 +41,7 @@ module Hanami
         mw = Hash.new { |e, m| e[m] = [] }
         mw["deployment"].concat([::Rack::ContentLength, ::Rack::CommonLogger])
         mw["development"].concat(mw["deployment"] + [::Rack::ShowExceptions, ::Rack::Lint])
+        mw["development"].push(::Shotgun::Static) if code_reloading?
         mw
       end
 
