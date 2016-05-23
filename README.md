@@ -23,6 +23,10 @@ If you aren't familiar with them, please take time to go through their READMEs.
 
 You can give back to Open Source, by supporting Hanami development via a [donation](https://salt.bountysource.com/teams/hanami). :green_heart:
 
+### Supporters
+
+  * [James Carlson](https://github.com/jxxcarlson)
+
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](http://badge.fury.io/rb/hanami)
