@@ -1,4 +1,5 @@
 require 'test_helper'
+require_relative './fixtures/coffee_shop/config/environment'
 
 describe Hanami::Loader do
   before do
@@ -49,7 +50,7 @@ describe Hanami::Loader do
         CoffeeShop::Controller.configuration.default_headers.
           must_equal({
             "X-Frame-Options" => "DENY",
-            "Content-Security-Policy" => "form-action 'self'; referrer origin-when-cross-origin; reflected-xss block; frame-ancestors 'self'; base-uri 'self'; default-src 'none'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self'; object-src 'self'; plugin-types application/pdf; child-src 'self'; frame-src 'self'; media-src 'self'",
+            "Content-Security-Policy" => "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self'",
           })
       end
 
@@ -150,15 +151,6 @@ describe Hanami::Loader do
           end
         end
       end
-    end
-
-    describe 'initializers' do
-
-      it 'loads all the initializers' do
-        assert_equal defined?(CollaborationInitializer1), 'constant'
-        assert_equal defined?(CollaborationInitializer2), 'constant'
-      end
-
     end
 
     # describe 'finalization' do

@@ -19,68 +19,6 @@ class FakeFrameworkConfiguration
   end
 end
 
-class Order
-  include Hanami::Entity
-
-  attributes :size, :coffee, :qty
-end
-
-class OrderRepository
-  include Hanami::Repository
-end
-
-module CoffeeShop
-  class Application < Hanami::Application
-    configure do
-      root   Pathname.new(File.dirname(__FILE__)).join('../tmp/coffee_shop')
-      layout nil
-
-      load_paths.clear
-      templates 'app/templates'
-
-      default_response_format :html
-
-      security.x_frame_options "DENY"
-      security.content_security_policy %{
-        form-action 'self';
-        referrer origin-when-cross-origin;
-        reflected-xss block;
-        frame-ancestors 'self';
-        base-uri 'self';
-        default-src 'none';
-        connect-src 'self';
-        img-src 'self';
-        style-src 'self';
-        font-src 'self';
-        object-src 'self';
-        plugin-types application/pdf;
-        child-src 'self';
-        frame-src 'self';
-        media-src 'self'
-      }
-
-      scheme 'https'
-      host   'hanami-coffeeshop.org'
-
-      routes do
-        get '/', to: ->{}, as: :root
-      end
-
-      adapter type: :memory, uri: 'memory://localhost'
-      mapping do
-        collection :orders do
-          entity Order
-
-          attribute :id,     Integer
-          attribute :size,   String
-          attribute :coffee, String
-          attribute :qty,    Integer
-        end
-      end
-    end
-  end
-end
-
 module Reviews
   class Application < Hanami::Application
     configure do
