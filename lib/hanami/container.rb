@@ -21,8 +21,7 @@ module Hanami
 
     def self.configure(options = {}, &blk)
       Mutex.new.synchronize do
-        @@options       = options
-        @@configuration = blk
+        @configuration = blk
       end
     end
 
@@ -38,15 +37,16 @@ module Hanami
     end
 
     private
+
     def assert_configuration_presence!
-      unless self.class.class_variable_defined?(:@@configuration)
+      unless self.class.instance_variable_defined?(:@configuration)
         raise ArgumentError.new("#{ self.class } doesn't have any application mounted.")
       end
     end
 
     def prepare_middleware_stack!
       @builder = ::Rack::Builder.new
-      @routes  = Router.new(&@@configuration)
+      @routes  = Router.new(&self.class.instance_variable_get(:@configuration))
 
       if Hanami.environment.serve_static_assets?
         require 'hanami/static'
