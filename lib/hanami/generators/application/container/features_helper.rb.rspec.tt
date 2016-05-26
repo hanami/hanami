@@ -4,6 +4,8 @@ require_relative './spec_helper'
 require 'capybara'
 require 'capybara/rspec'
 
+Capybara.app = $container
+
 RSpec.configure do |config|
   config.include RSpec::FeatureExampleGroup
 

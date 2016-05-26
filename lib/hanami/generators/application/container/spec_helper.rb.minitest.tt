@@ -4,4 +4,6 @@ ENV['HANAMI_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'minitest/autorun'
 
+$container = Hanami::Container.new
+
 Hanami::Application.preload!
