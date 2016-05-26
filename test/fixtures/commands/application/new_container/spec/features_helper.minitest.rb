@@ -4,7 +4,7 @@ require_relative './spec_helper'
 require 'capybara'
 require 'capybara/dsl'
 
-Capybara.app = Hanami::Container.new
+Capybara.app = $container
 
 class MiniTest::Spec
   include Capybara::DSL
