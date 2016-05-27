@@ -36,7 +36,7 @@ module Hanami
 
     # Returns the cleaned application name.
     #
-    # @return [String] the santized name
+    # @return [String] the sanitized name
     #
     # @example
     #   ApplicationName.new("my-App ").to_s # => "my_app"
