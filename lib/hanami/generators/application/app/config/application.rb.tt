@@ -62,7 +62,7 @@ module <%= config[:classified_app_name] %>
       #          :path     - Restrict cookies to a relative URI (String - nil by default)
       #          :max_age  - Cookies expiration expressed in seconds (Integer - nil by default)
       #          :secure   - Restrict cookies to secure connections
-      #                      (Boolean - Automatically set on true if currenlty using a secure connection)
+      #                      (Boolean - Automatically set on true if currently using a secure connection)
       #                      See #scheme and #ssl?
       #          :httponly - Prevent JavaScript access (Boolean - true by default)
       #
