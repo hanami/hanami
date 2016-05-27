@@ -17,17 +17,19 @@ module Hanami
       end
     end
 
+    LOCK = Mutex.new
+
     attr_reader :routes
 
     def self.configure(options = {}, &blk)
-      Mutex.new.synchronize do
+      LOCK.synchronize do
         @@options       = options
         @@configuration = blk
       end
     end
 
     def initialize
-      Mutex.new.synchronize do
+      LOCK.synchronize do
         assert_configuration_presence!
         prepare_middleware_stack!
       end
