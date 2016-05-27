@@ -150,8 +150,19 @@ module Hanami
       # @see Hanami::Config::Logger#stream
       # @see Hanami::Config::Logger#engine
       def build
-        @engine ||
+        @engine || _logger_instance
+      end
+
+      private
+
+      # @since x.x.x
+      # @api private
+      def _logger_instance
+        if Hanami.env?(:production)
+          ::Hanami::Logger.new(@app_name, stream: @stream, level: @level, formatter: ::Hanami::Logger::JSONFormatter.new)
+        else
           ::Hanami::Logger.new(@app_name, stream: @stream, level: @level)
+        end
       end
     end
   end
