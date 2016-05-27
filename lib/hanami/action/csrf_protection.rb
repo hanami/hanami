@@ -118,7 +118,7 @@ module Hanami
       # @since 0.4.0
       # @api private
       def verify_csrf_token
-        handle_invalid_csrf_token if invalid_csrf_token?
+        handle_invalid_csrf_token if verify_csrf_token? && invalid_csrf_token?
       end
 
       # Verify if CSRF token from params, matches the one stored in session.
@@ -128,8 +128,15 @@ module Hanami
       # @since 0.4.0
       # @api private
       def invalid_csrf_token?
-        verify_csrf_token? &&
+        missing_csrf_token? ||
           ! ::Rack::Utils.secure_compare(session[CSRF_TOKEN], params[CSRF_TOKEN])
+      end
+
+      # Verify the CSRF token was passed in params.
+      #
+      # @api private
+      def missing_csrf_token?
+        Hanami::Utils::Blank.blank?(params[CSRF_TOKEN])
       end
 
       # Generates a random CSRF Token
