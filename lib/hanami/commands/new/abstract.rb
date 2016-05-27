@@ -36,11 +36,11 @@ module Hanami
 
         def start
           path = options[:path] || '.'
-          application_name = "#{path}/#{app_name}"
+          application_name = File.join(path, app_name)
           FileUtils.mkdir_p(application_name)
           Dir.chdir(application_name) do
             @target_path = Pathname.pwd
-
+            
             super
           end
         end
