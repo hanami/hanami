@@ -40,7 +40,7 @@ module Hanami
           FileUtils.mkdir_p(application_name)
           Dir.chdir(application_name) do
             @target_path = Pathname.pwd
-            
+
             super
           end
         end
