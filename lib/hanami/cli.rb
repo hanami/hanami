@@ -94,6 +94,7 @@ module Hanami
 
       $ > hanami new fancy_app --hanami-head=true
     EOS
+    method_option :path, desc: 'Target path'
     method_option :database, aliases: ['-d', '--db'], desc: "Application database (#{Hanami::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Hanami::Generators::DatabaseConfig::DEFAULT_ENGINE
     method_option :architecture, aliases: ['-a', '--arch'], desc: 'Project architecture (container/app)', default: Hanami::Commands::New::Abstract::DEFAULT_ARCHITECTURE
     method_option :application_name, desc: 'Application name, only for container', default: Hanami::Commands::New::Container::DEFAULT_APPLICATION_NAME
