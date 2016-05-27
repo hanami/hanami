@@ -139,10 +139,18 @@ module Hanami
     # @since 0.3.0
     # @api private
     def method_missing(m, *args)
-      named_route, type = m.to_s.split(/\_(path|url)\z/)
+      name, type = m.to_s.split(/\_(path|url)\z/)
 
-      if type
-        public_send(type, named_route.to_sym, *args)
+      if %w(path url).include? type
+        result = public_send(type.to_sym, name.to_sym, *args)
+
+        instance_eval <<-CODE
+          def #{m}(*args)
+            #{type}(:#{name.inspect}, *args)
+          end
+        CODE
+
+        result
       else
         super
       end
