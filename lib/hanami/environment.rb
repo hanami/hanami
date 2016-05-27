@@ -203,7 +203,7 @@ module Hanami
     #   * HANAMI_ENV
     #   * RACK_ENV
     #
-    # If those are missing it falls back to the defalt one: `"development"`.
+    # If those are missing it falls back to the default one: `"development"`.
     #
     # Rack environment `"deployment"` is translated to Hanami `"production"`.
     #
