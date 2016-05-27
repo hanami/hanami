@@ -117,7 +117,7 @@ module Hanami
         end
       end
 
-      # Check if ruby ineterpreter supports `fork`
+      # Check if ruby interpreter supports `fork`
       #
       # @return [Boolean]
       #
