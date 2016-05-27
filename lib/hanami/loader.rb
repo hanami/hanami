@@ -215,10 +215,9 @@ module Hanami
     end
 
     def _assign_routes_to_application_module!
-      unless application_module.const_defined?('Routes')
-        routes = Hanami::Routes.new(application_routes)
-        application_module.const_set('Routes', routes)
-      end
+      application_module.send(:remove_const, 'Routes') if application_module.const_defined?('Routes')
+      routes = Hanami::Routes.new(application_routes)
+      application_module.const_set('Routes', routes)
     end
 
     def application_module
