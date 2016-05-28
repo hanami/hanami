@@ -25,7 +25,13 @@ module Hanami
       method_option :url, desc: 'Relative URL for action, will be used for the route', default: nil
       method_option :template, desc: 'Extension used when the template was generated. Default is defined through your .hanamirc file.'
 
-      def actions(application_name, controller_and_action_name)
+      def actions(application_name = nil, controller_and_action_name)
+        if Hanami::Environment.new(options).container? && application_name.nil?
+          msg = "ERROR: \"hanami destroy action\" was called with arguments [\"#{controller_and_action_name}\"]\n" \
+                "Usage: \"hanami action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME\""
+          fail Error, msg
+        end
+
         if options[:help]
           invoke :help, ['action']
         else
