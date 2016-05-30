@@ -10,9 +10,10 @@ describe Hanami::Container do
       mount Back::Application,  at: '/back'
     end
 
-    @container = Hanami::Container.new
     Front::Application.load!
     Back::Application.load!
+
+    @container = Hanami::Container.new
   end
 
   def app
