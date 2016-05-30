@@ -1,10 +1,5 @@
 require_relative './support/helper'
 
-if ENV['COVERALL']
-  require 'coveralls'
-  Coveralls.wear!
-end
-
 # Skip MRI specifc specs
 require 'minispec-metadata'
 MinispecMetadata.add_tag_string('~engine:mri') if RUBY_ENGINE != 'ruby'
