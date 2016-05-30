@@ -10,6 +10,7 @@ module Hanami
 
       def initialize
         @stream = STDOUT
+        @format = ::Hanami::Logger::Formatter.new
       end
 
       # Log stream.
@@ -140,6 +141,48 @@ module Hanami
         end
       end
 
+      # Logger format value.
+      #
+      # @overload format(value)
+      #   Sets the given value
+      #   @param value [String] for format option
+      #
+      # @overload format
+      #   Gets the value
+      #   @return [String] format option's value
+      #
+      # @since x.x.x
+      # @api private
+      #
+      # @example JSON format
+      #   require 'hanami/application'
+      #
+      #   module Bookshelf
+      #     class Application < Hanami::Application
+      #       configure do
+      #         logger.format :json
+      #       end
+      #     end
+      #   end
+      #
+      # @example custom format class
+      #   require 'hanami/application'
+      #
+      #   module Bookshelf
+      #     class Application < Hanami::Application
+      #       configure do
+      #         logger.format MyCustomFormatter
+      #       end
+      #     end
+      #   end
+      def format(value = nil)
+        if value.nil?
+          @format
+        else
+          @format = _check_logger_format(value)
+        end
+      end
+
       # Returns new Hanami::Logger instance with all options
       #
       # @return [Hanami::Logger,Object] a logger
@@ -150,18 +193,22 @@ module Hanami
       # @see Hanami::Config::Logger#stream
       # @see Hanami::Config::Logger#engine
       def build
-        @engine || _logger_instance
+        @engine ||
+          ::Hanami::Logger.new(@app_name, stream: @stream,
+                               level: @level, formatter: format)
       end
 
       private
 
       # @since x.x.x
       # @api private
-      def _logger_instance
-        if Hanami.env?(:production)
-          ::Hanami::Logger.new(@app_name, stream: @stream, level: @level, formatter: ::Hanami::Logger::JSONFormatter.new)
+      def _check_logger_format(value)
+        if value == :json
+          ::Hanami::Logger::JSONFormatter.new
+        elsif value.is_a? Class
+          value.new
         else
-          ::Hanami::Logger.new(@app_name, stream: @stream, level: @level)
+          ::Hanami::Logger::Formatter.new
         end
       end
     end
