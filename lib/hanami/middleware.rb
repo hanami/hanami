@@ -1,3 +1,5 @@
+require 'hanami/common_logger'
+
 module Hanami
   # Rack middleware stack for an application
   #
@@ -101,6 +103,7 @@ module Hanami
         _load_session_middleware
         _load_default_welcome_page_for(application)
         _load_method_override_middleware
+        _load_common_logger(application)
 
         true
       end
@@ -149,6 +152,20 @@ module Hanami
       if !env.container?
         use Rack::MethodOverride
       end
+    end
+
+    # Use CommonLogger middleware
+    #
+    # @api private
+    # @since x.x.x
+    def _load_common_logger(application)
+      # application_module ||= Utils::Class.load!(
+      #   Utils::String.new(application.name).namespace
+      # )
+      #
+      # use Hanami::CommonLogger, application_module.const_get('Logger')
+
+      use Hanami::CommonLogger, @configuration.logger.build
     end
   end
 end
