@@ -13,6 +13,7 @@ module Hanami
     # @since 0.6.0
     # @api private
     class Generate < Thor
+      extend CliBase
       include Thor::Actions
 
       namespace :generate

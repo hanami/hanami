@@ -4,6 +4,7 @@ require 'hanami/commands/generate/action'
 module Hanami
   class CliSubCommands
     class Destroy < Thor
+      extend CliBase
       include Thor::Actions
       namespace :destroy
 

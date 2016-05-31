@@ -225,6 +225,36 @@ describe Hanami::Cli do
     end
   end
 
+  describe '::define_commands' do
+    Hanami::Cli.define_commands do
+      desc 'custom', 'Empty command'
+      def custom
+        puts 'custom command'
+      end
+    end
+
+    Hanami::CliSubCommands::Generate.define_commands do
+      desc 'custom', 'Empty command'
+      def custom
+        puts 'custom command'
+      end
+    end
+
+    it 'adds new custom command' do
+      assert_output("custom command\n") do
+        ARGV.replace(%w{generate custom})
+        Hanami::Cli.start
+      end
+    end
+
+    it 'adds new custom subcommand' do
+      assert_output("custom command\n") do
+        ARGV.replace(%w{custom})
+        Hanami::Cli.start
+      end
+    end
+  end
+
   def setup_container_app
     File.open('.hanamirc', 'w') { |file| file << "architecture=container"}
   end
