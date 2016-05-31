@@ -1,8 +1,11 @@
 module Hanami
   module CliBase
-    # Add new custom CLI command to special CLI class
+    # Add new custom CLI command to special CLI class.
+    # Please be careful. This is a private method that
+    # can be deleted soon.
     #
     # @since x.x.x
+    # @api private
     #
     # @example Usage with Cli class
     #   require 'hanami'
