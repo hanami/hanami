@@ -8,6 +8,12 @@ module Coverage
     configure_simplecov!
   end
 
+  module_function def cover_as!(suite_name)
+    return unless enabled?
+
+    SimpleCov.command_name(suite_name)
+  end
+
   private
 
   module_function def travis?

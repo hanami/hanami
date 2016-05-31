@@ -1,5 +1,7 @@
 require_relative './support/helper'
 
+Coverage.cover_as!('tests:unit')
+
 # Skip MRI specifc specs
 require 'minispec-metadata'
 MinispecMetadata.add_tag_string('~engine:mri') if RUBY_ENGINE != 'ruby'
