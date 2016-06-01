@@ -1,9 +1,6 @@
 require_relative './support/helper'
 
-if ENV['COVERALL']
-  require 'coveralls'
-  Coveralls.wear!
-end
+Coverage.cover_as!('tests:unit')
 
 # Skip MRI specifc specs
 require 'minispec-metadata'

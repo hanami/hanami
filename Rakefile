@@ -9,7 +9,7 @@ end
 
 namespace :test do
   task :coverage do
-    ENV['COVERALL'] = 'true'
+    ENV['COVERAGE'] = 'true'
     Rake::Task['test'].invoke
   end
 end
