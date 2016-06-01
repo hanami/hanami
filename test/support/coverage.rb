@@ -1,5 +1,5 @@
 module Coverage
-  module_function def configure!
+  def self.configure!
     return unless enabled?
 
     require 'simplecov'
@@ -8,27 +8,25 @@ module Coverage
     configure_simplecov!
   end
 
-  module_function def cover_as!(suite_name)
+  def self.cover_as!(suite_name)
     return unless enabled?
 
     SimpleCov.command_name(suite_name)
   end
 
-  private
+  private_class_method
 
-  module_function def travis?
-    !!ENV['TRAVIS']
+  def self.ci?
+    !ENV['TRAVIS'].nil?
   end
 
-  module_function def enabled?
-    !!ENV['COVERAGE']
+  def self.enabled?
+    !ENV['COVERAGE'].nil?
   end
 
-
-  module_function def configure_simplecov!
-    if travis?
-      SimpleCov.formatter = Coveralls::SimpleCov::Formatter
-    end
+  # rubocop:disable Metrics/MethodLength
+  def self.configure_simplecov!
+    SimpleCov.formatter = Coveralls::SimpleCov::Formatter if ci?
 
     SimpleCov.start do
       add_filter 'test/'
@@ -46,4 +44,5 @@ module Coverage
       add_group 'Views',        'lib/hanami/views'
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

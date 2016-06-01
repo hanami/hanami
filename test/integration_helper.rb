@@ -26,7 +26,7 @@ module Minitest
     end
 
     def ci?
-      !!ENV['TRAVIS']
+      !ENV['TRAVIS'].nil?
     end
   end
 end
