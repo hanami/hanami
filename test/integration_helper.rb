@@ -1,6 +1,8 @@
 require_relative './support/helper'
 require 'rack/test'
 
+Coverage.cover_as!('tests:integration')
+
 module Minitest
   module IsolationTest
     def self.included(context)
