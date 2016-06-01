@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'bundler/setup'
 require 'hanami/setup'
 require_relative '../lib/cdn'
