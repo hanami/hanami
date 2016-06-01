@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'bundler/setup'
 
 # Autoloading 'tilt/erb' in a non thread-safe way
