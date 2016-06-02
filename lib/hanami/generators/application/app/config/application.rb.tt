@@ -258,6 +258,9 @@ module <%= config[:classified_app_name] %>
       #
       # Logger level. It defaults to DEBUG
       # logger.level :debug
+      #
+      # Logger format. It defaults to DEFAULT
+      # logger.format :default
     end
 
     ##
@@ -290,6 +293,9 @@ module <%= config[:classified_app_name] %>
       #
       # Logger level. It defaults to INFO
       logger.level :info
+
+      # Logger format.
+      logger.format :json
 
       assets do
         # Don't compile static assets in production mode (eg. Sass, ES6)
