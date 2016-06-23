@@ -4,16 +4,22 @@ require 'hanami/router'
 
 module Hanami
   class Container
-    class Router < ::Hanami::Router
+    class Mounting
+      def self.load!(&blk)
+        new.instance_exec(&blk)
+      end
+
       def mount(app, options)
-        app = app.new(path_prefix: options.fetch(:at)) if hanami_app?(app)
-        super(app, options)
+        app.configuration.path_prefix options.fetch(:at) if hanami_app?(app)
       end
 
       private
 
       def hanami_app?(app)
         app.ancestors.include? Hanami::Application
+      end
+
+      def method_missing(m, *args)
       end
     end
 
@@ -25,6 +31,8 @@ module Hanami
       LOCK.synchronize do
         @@options       = options
         @@configuration = blk
+
+        Mounting.load!(&blk)
       end
     end
 
