@@ -124,7 +124,7 @@ class CSRFAction
 
   # Ensure _csrf_token param won't be filtered
   params do
-    param :name
+    required(:name, :string)
   end
 
   def initialize
