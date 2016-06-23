@@ -10,9 +10,10 @@ describe Hanami::Container do
       mount Back::Application,  at: '/back'
     end
 
-    @container = Hanami::Container.new
     Front::Application.load!
     Back::Application.load!
+
+    @container = Hanami::Container.new
   end
 
   def app
@@ -44,7 +45,7 @@ describe Hanami::Container do
       'GET, HEAD  /back/users                    Back::Controllers::Users::Index'
     ]
     matches.each do |match|
-      @container.routes.inspector.to_s.must_match match
+      app.routes.inspector.to_s.must_match match
     end
   end
 
