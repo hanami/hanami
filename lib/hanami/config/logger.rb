@@ -10,7 +10,6 @@ module Hanami
 
       def initialize
         @stream = STDOUT
-        @format = ::Hanami::Logger::Formatter.new
       end
 
       # Log stream.
@@ -171,7 +170,7 @@ module Hanami
       #   module Bookshelf
       #     class Application < Hanami::Application
       #       configure do
-      #         logger.format MyCustomFormatter
+      #         logger.format MyCustomFormatter.new
       #       end
       #     end
       #   end
@@ -179,7 +178,7 @@ module Hanami
         if value.nil?
           @format
         else
-          @format = _check_logger_format(value)
+          @format = value
         end
       end
 
@@ -194,22 +193,7 @@ module Hanami
       # @see Hanami::Config::Logger#engine
       def build
         @engine ||
-          ::Hanami::Logger.new(@app_name, stream: @stream,
-                               level: @level, formatter: format)
-      end
-
-      private
-
-      # @since x.x.x
-      # @api private
-      def _check_logger_format(value)
-        if value == :json
-          ::Hanami::Logger::JSONFormatter.new
-        elsif value.is_a? Class
-          value.new
-        else
-          ::Hanami::Logger::Formatter.new
-        end
+          ::Hanami::Logger.new(@app_name, stream: @stream, level: @level, formatter: format)
       end
     end
   end
