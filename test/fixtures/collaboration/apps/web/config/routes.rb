@@ -12,3 +12,4 @@ redirect '/legacy',   to: '/'
 
 resources :books
 resources :authors, only: [:create, :update, :destroy]
+resources :reviews, only: [:create, :update, :show]
