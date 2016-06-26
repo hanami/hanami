@@ -41,16 +41,12 @@ module Hanami
     end
 
     def _render_action(action, env, response)
-      if successful?(response)
-        begin
-          view_for(action, response).render(
-            action.exposures
-          )
-        rescue => e
-          env[RACK_EXCEPTION] = e
-          raise e
-        end
-      end
+      view_for(action, response).render(
+        action.exposures
+      )
+    rescue => e
+      env[RACK_EXCEPTION] = e
+      raise e
     end
 
     def _render_status_page(action, response)
