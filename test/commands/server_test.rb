@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'hanami/environment'
+require 'hanami/static'
 require 'hanami/commands/server'
 
 describe Hanami::Commands::Server do
@@ -9,8 +10,9 @@ describe Hanami::Commands::Server do
     ENV['HANAMI_HOST'] = nil
     ENV['HANAMI_PORT'] = nil
     ENV['HANAMI_ENV']  = nil
-    ENV['RACK_ENV']   = nil
+    ENV['RACK_ENV']    = nil
 
+    Hanami::Application.applications.clear
 
     class Hanami::Commands::Server
       def entr_enabled?
@@ -26,7 +28,7 @@ describe Hanami::Commands::Server do
       expected = {
         'deployment'  => [::Rack::ContentLength, ::Rack::CommonLogger],
         'development' => [::Rack::ContentLength, ::Rack::CommonLogger,
-                          ::Rack::ShowExceptions, Rack::Lint, Shotgun::Static]
+                          ::Rack::ShowExceptions, Rack::Lint, Hanami::Static]
       }
 
       @server.middleware.must_equal(expected)

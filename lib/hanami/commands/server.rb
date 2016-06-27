@@ -22,6 +22,8 @@ module Hanami
       end
 
       def start
+        preload_applications!
+
         case @strategy
         when :entr
           exec ENTR_EXECUTE_COMMAND % {paths: project_paths, args: server_options}
@@ -89,6 +91,11 @@ module Hanami
         end
 
         @strategy
+      end
+
+      def preload_applications!
+        Hanami::Environment.new(@options).require_application_environment
+        Hanami::Application.preload!
       end
 
       # Check if entr(1) is installed

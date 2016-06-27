@@ -363,7 +363,7 @@ module Hanami
     # @since 0.4.0
     # @api private
     def require_application_environment
-      require env_config.to_s
+      require env_config.to_s #if env_config.exist?
     end
 
     # Determine if activate code reloading for the current environment while
