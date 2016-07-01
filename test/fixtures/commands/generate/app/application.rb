@@ -211,8 +211,8 @@ module Admin
         default-src 'none';
         script-src 'self';
         connect-src 'self';
-        img-src 'self https: data:';
-        style-src 'self 'unsafe-inline' https:;
+        img-src 'self' https: data:;
+        style-src 'self' 'unsafe-inline' https:;
         font-src 'self';
         object-src 'none';
         plugin-types application/pdf;
