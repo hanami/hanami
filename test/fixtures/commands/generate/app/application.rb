@@ -206,17 +206,15 @@ module Admin
       #
       security.content_security_policy %{
         form-action 'self';
-        referrer origin-when-cross-origin;
-        reflected-xss block;
         frame-ancestors 'self';
         base-uri 'self';
         default-src 'none';
         script-src 'self';
         connect-src 'self';
-        img-src 'self';
-        style-src 'self';
+        img-src 'self https: data:';
+        style-src 'self 'unsafe-inline' https:;
         font-src 'self';
-        object-src 'self';
+        object-src 'none';
         plugin-types application/pdf;
         child-src 'self';
         frame-src 'self';
