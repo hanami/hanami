@@ -34,15 +34,23 @@ module Hanami
     # @since 0.3.0
     # @api private
     #
-    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    # @see Hanami::Hanamirc#default_options
     ARCHITECTURE_KEY = 'architecture'.freeze
+
+    # Application name for writing the hanamirc file
+    #
+    # @since 0.8.0
+    # @api private
+    #
+    # @see Hanami::Hanamirc#default_options
+    APPLICATION_NAME = 'application_name'.freeze
 
     # Test suite default value
     #
     # @since 0.3.0
     # @api private
     #
-    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    # @see Hanami::Hanamirc#default_options
     DEFAULT_TEST_SUITE = 'minitest'.freeze
 
     # Test suite key for writing the hanamirc file
@@ -50,7 +58,7 @@ module Hanami
     # @since 0.3.0
     # @api private
     #
-    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    # @see Hanami::Hanamirc#default_options
     TEST_KEY = 'test'.freeze
 
     # Template default value
@@ -58,7 +66,7 @@ module Hanami
     # @since 0.3.0
     # @api private
     #
-    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    # @see Hanami::Hanamirc#default_options
     DEFAULT_TEMPLATE = 'erb'.freeze
 
     # Template key for writing the hanamirc file
@@ -66,20 +74,8 @@ module Hanami
     # @since 0.3.0
     # @api private
     #
-    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    # @see Hanami::Hanamirc#default_options
     TEMPLATE_KEY = 'template'.freeze
-
-    # Default values for writing the hanamirc file
-    #
-    # @since 0.5.1
-    # @api private
-    #
-    # @see Hanami::Hanamirc#options
-    DEFAULT_OPTIONS = Utils::Hash.new({
-      ARCHITECTURE_KEY => DEFAULT_ARCHITECTURE,
-      TEST_KEY         => DEFAULT_TEST_SUITE,
-      TEMPLATE_KEY     => DEFAULT_TEMPLATE
-    }).symbolize!.freeze
 
     # Key/value separator in hanamirc file
     #
@@ -109,7 +105,22 @@ module Hanami
     #   Hanami::Hanamirc.new(Pathname.new(Dir.pwd), options).options
     #    # => { architecture: 'application', test: 'rspec', template: 'slim' }
     def options
-      @options ||= symbolize(DEFAULT_OPTIONS.merge(file_options))
+      @options ||= symbolize(default_options.merge(file_options))
+    end
+
+    # Default values for writing the hanamirc file
+    #
+    # @since 0.5.1
+    # @api private
+    #
+    # @see Hanami::Hanamirc#options
+    def default_options
+      @default_options ||= Utils::Hash.new({
+                                           ARCHITECTURE_KEY => DEFAULT_ARCHITECTURE,
+                                           TEST_KEY         => DEFAULT_TEST_SUITE,
+                                           APPLICATION_NAME => default_application_name,
+                                           TEMPLATE_KEY     => DEFAULT_TEMPLATE
+                                         }).symbolize!.freeze
     end
 
     # Check if hanamirc file exists
@@ -157,6 +168,18 @@ module Hanami
     # @see Hanami::Hanamirc::FILE_NAME
     def path_file
       @root.join FILE_NAME
+    end
+
+    # Generates a default application name based on the application directory
+    #
+    # @since 0.8.0
+    # @api private
+    #
+    # @return [String] application_name
+    #
+    # @see Hanami::Hanamirc::APPLICATION_NAME
+    def default_application_name
+      @app_name || ::File.basename(@root)
     end
   end
 end
