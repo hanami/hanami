@@ -150,6 +150,30 @@ describe Hanami::Cli do
       end
     end
 
+    describe 'destroy' do
+      describe 'action' do
+        let(:default_options) { {'skip_view' => false} }
+        describe 'for app application' do
+          before do
+            setup_app_app
+            mock_without_method.expect(:destroy, mock_without_method.expect(:start, nil))
+          end
+
+          it 'destroys action when controller name is present' do
+            ARGV.replace(%w{destroy action controller#action})
+            Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+              _, err = capture_io { Hanami::Cli.start }
+              refute_match 'ERROR', err
+            end
+          end
+
+          it 'raises error when controller name is missing' do
+            skip()
+          end
+        end
+      end
+    end
+
     describe 'migration' do
       it 'calls the generator with migration name' do
         ARGV.replace(%w{generate migration add_thing})
