@@ -152,7 +152,37 @@ describe Hanami::Cli do
 
     describe 'destroy' do
       describe 'action' do
-        let(:default_options) { {'skip_view' => false} }
+        describe 'for container application' do
+          before { setup_container_app }
+
+          it 'raises an error when app and controller name are missing' do
+            ARGV.replace(%w{destroy action})
+
+            Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+              _, err = capture_io { Hanami::Cli.start }
+              assert_match 'ERROR', err
+            end
+          end
+
+          it 'raises an error when controller name is missing' do
+            ARGV.replace(%w{destroy action foo})
+
+            Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+              _, err = capture_io { Hanami::Cli.start }
+              assert_match 'ERROR', err
+            end
+          end
+
+          it 'raises an error when app name is missing' do
+            ARGV.replace(%w{destroy action controller#action})
+
+            Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+              _, err = capture_io { Hanami::Cli.start }
+              assert_match 'ERROR', err
+            end
+          end
+        end
+
         describe 'for app application' do
           before do
             setup_app_app
@@ -168,7 +198,11 @@ describe Hanami::Cli do
           end
 
           it 'raises error when controller name is missing' do
-            skip()
+            ARGV.replace(%w{destroy action})
+            Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+              _, err = capture_io { Hanami::Cli.start }
+              assert_match 'ERROR', err
+            end
           end
         end
       end
