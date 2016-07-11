@@ -1,3 +1,4 @@
+require 'hanami/validations'
 require 'hanami/model'
 require 'hanami/mailer'
 
