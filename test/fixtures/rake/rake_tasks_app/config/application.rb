@@ -166,6 +166,17 @@ module RakeTasksApp
       #
       security.x_frame_options 'DENY'
 
+      # X-Content-Type-Options prevents browsers from interpreting files as
+      # something else than declared by the content type in the HTTP headers.
+      #
+      # Read more at:
+      #
+      #   * https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#X-Content-Type-Options
+      #   * https://msdn.microsoft.com/en-us/library/gg622941%28v=vs.85%29.aspx
+      #   * https://blogs.msdn.microsoft.com/ie/2008/09/02/ie8-security-part-vi-beta-2-update
+      #
+      security.x_content_type_options 'nosniff'
+
       # Content-Security-Policy (CSP) is a HTTP header supported by modern browsers.
       # It determines trusted sources of execution for dynamic contents
       # (JavaScript) or other web related assets: stylesheets, images, fonts,

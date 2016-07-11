@@ -31,6 +31,7 @@ module SecurityHeaders
       routes  'config/routes'
 
       security.x_frame_options 'ALLOW ALL'
+      security.x_content_type_options ''
       security.content_security_policy "script-src 'self' https://apis.google.com"
 
       adapter type: :sql, uri: SECURITY_HEADERS_SQLITE_CONNECTION_STRING

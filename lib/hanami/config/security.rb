@@ -10,6 +10,12 @@ module Hanami
       # @see Hanami::Loader#_configure_controller_framework!
       X_FRAME_OPTIONS_HEADER = 'X-Frame-Options'.freeze
 
+      # @since x.x.x
+      # @api private
+      #
+      # @see Hanami::Loader#_configure_controller_framework!
+      X_CONTENT_TYPE_OPTIONS_HEADER = 'X-Content-Type-Options'.freeze
+
       # @since 0.3.0
       # @api private
       #
@@ -40,6 +46,25 @@ module Hanami
           @x_frame_options
         else
           @x_frame_options = value
+        end
+      end
+
+      # X-Content-Type-Options headers' value
+      #
+      # @overload x_content_type_options(value)
+      #   Sets the given value
+      #   @param value [String] for X-Content-Type-Options header.
+      #
+      # @overload x_content_type_options
+      #   Gets the value
+      #   @return [String] X-Content-Type-Options header's value
+      #
+      # @since x.x.x
+      def x_content_type_options(value = nil)
+        if value.nil?
+          @x_content_type_options
+        else
+          @x_content_type_options = value
         end
       end
 

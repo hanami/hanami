@@ -1,3 +1,4 @@
+require 'hanami/validations'
 require 'hanami/model'
 require 'hanami/mailer'
 
@@ -41,6 +42,7 @@ module CoffeeShop
       default_response_format :html
 
       security.x_frame_options "DENY"
+      security.x_content_type_options "nosniff"
       security.content_security_policy %{
         form-action 'self';
         referrer origin-when-cross-origin;
