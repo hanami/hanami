@@ -37,13 +37,13 @@ module Hanami
     # @see Hanami::Hanamirc#default_options
     ARCHITECTURE_KEY = 'architecture'.freeze
 
-    # Application name for writing the hanamirc file
+    # Project name for writing the hanamirc file
     #
     # @since 0.8.0
     # @api private
     #
     # @see Hanami::Hanamirc#default_options
-    APPLICATION_NAME = 'application_name'.freeze
+    PROJECT_NAME = 'project_name'.freeze
 
     # Test suite default value
     #
@@ -118,7 +118,7 @@ module Hanami
       @default_options ||= Utils::Hash.new({
                                            ARCHITECTURE_KEY => DEFAULT_ARCHITECTURE,
                                            TEST_KEY         => DEFAULT_TEST_SUITE,
-                                           APPLICATION_NAME => default_application_name,
+                                           PROJECT_NAME     => default_project_name,
                                            TEMPLATE_KEY     => DEFAULT_TEMPLATE
                                          }).symbolize!.freeze
     end
@@ -170,16 +170,16 @@ module Hanami
       @root.join FILE_NAME
     end
 
-    # Generates a default application name based on the application directory
+    # Generates a default project name based on the application directory
     #
     # @since 0.8.0
     # @api private
     #
     # @return [String] application_name
     #
-    # @see Hanami::Hanamirc::APPLICATION_NAME
-    def default_application_name
-      @app_name || ::File.basename(@root)
+    # @see Hanami::Hanamirc::PROJECT_NAME
+    def default_project_name
+      ::File.basename(@root)
     end
   end
 end

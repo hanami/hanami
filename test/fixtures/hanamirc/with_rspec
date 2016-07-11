@@ -1,4 +1,4 @@
 architecture=container
 test=rspec
 template=erb
-application_name=new_app
+project_name=new_app

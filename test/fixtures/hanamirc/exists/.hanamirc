@@ -1,4 +1,4 @@
 architecture=container
 test=minitest
 template=erb
-application_name=exists
+project_name=exists

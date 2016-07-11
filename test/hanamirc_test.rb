@@ -38,7 +38,7 @@ describe Hanami::Hanamirc do
       end
 
       it 'returns only environment options' do
-        allowed_keys = %i[architecture test application_name template]
+        allowed_keys = %i[architecture test project_name template]
         options = @hanamirc.options
         options.keys.must_equal allowed_keys
       end
@@ -57,7 +57,7 @@ describe Hanami::Hanamirc do
         it 'reads the file' do
           options = @hanamirc.options
           options[:architecture].must_equal 'container'
-          options[:application_name].must_equal 'no_exists'
+          options[:project_name].must_equal 'no_exists'
           options[:test].must_equal 'minitest'
           options[:template].must_equal 'erb'
         end
