@@ -117,6 +117,54 @@ JS
     end
   end
 
+  it "replaces fresh version of asset if a dependency has changed" do
+    begin
+      dependency = root.join('app', 'assets', 'stylesheets', '_background.sass')
+      fixture    = root.join('app', 'assets', 'stylesheets', 'dashboard.css.sass')
+      asset      = root.join('public', 'assets', 'dashboard.css')
+
+      asset.delete if asset.exist?
+      @assets_directory.mkpath
+
+      File.open(dependency, File::WRONLY|File::CREAT) do |f|
+        f.write <<-CSS
+$background-color: #fff
+CSS
+      end
+
+      sleep 1
+
+      File.open(fixture, File::WRONLY|File::CREAT) do |f|
+        f.write <<-CSS
+@import "background"
+
+body
+  background-color: $background-color
+CSS
+      end
+
+      get 'assets/dashboard.css'
+      response.body.must_include '#fff'
+
+      sleep 1
+
+      File.open(dependency, File::WRONLY|File::CREAT) do |f|
+        f.write <<-CSS
+$background-color: #000
+CSS
+      end
+
+      sleep 1
+
+      get '/assets/dashboard.css'
+      response.body.must_include '#000'
+    ensure
+      dependency.delete if dependency.exist?
+      fixture.delete    if fixture.exist?
+      asset.delete      if asset.exist?
+    end
+  end
+
   describe 'production mode' do
     before do
       @hanami_env       = ENV['HANAMI_ENV']

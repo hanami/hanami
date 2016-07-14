@@ -3,69 +3,89 @@ require 'hanami/assets/compiler'
 
 module Hanami
   class Static < ::Rack::Static
-    PATH_INFO        = 'PATH_INFO'.freeze
-    PUBLIC_DIRECTORY = Hanami.public_directory.join('**', '*').to_s.freeze
-
-    # @since x.x.x
-    # @api private
-    URL_SEPARATOR       = '/'.freeze
+    PATH_INFO = 'PATH_INFO'.freeze
 
     def initialize(app)
       super(app, root: Hanami.public_directory, header_rules: _header_rules)
       @sources = _sources_from_applications
     end
 
-    def call(env)
-      path           = env[PATH_INFO]
+    class Asset
+      PUBLIC_DIRECTORY = Hanami.public_directory.join('**', '*').to_s.freeze
 
-      prefix, config = @sources.find { |p, _| path.start_with?(p) }
-      if prefix && config
-        original = config.sources.find(path.sub(prefix, ''))
+      # @since x.x.x
+      # @api private
+      URL_SEPARATOR = '/'.freeze
+
+      attr_reader :path, :config, :original
+
+      def initialize(sources, path)
+        @path            = path
+        @prefix, @config = sources.find { |p, _| path.start_with?(p) }
+
+        if @prefix && @config
+          @original = @config.sources.find(@path.sub(@prefix, ''))
+        end
       end
 
-      if can_serve(path, original)
-        super
+      def precompile?
+        original && config
+      end
+
+      def exist?
+        return true unless original.nil?
+
+        file_path = path.gsub(URL_SEPARATOR, ::File::SEPARATOR)
+        destination = find_asset do |a|
+          a.end_with?(file_path)
+        end
+
+        !destination.nil?
+      end
+
+      private
+
+      def find_asset
+        Dir[PUBLIC_DIRECTORY].find do |asset|
+          yield asset unless ::File.directory?(asset)
+        end
+      end
+    end
+
+    def call(env)
+      asset = Asset.new(@sources, env[PATH_INFO])
+
+      if serve?(asset)
+        precompile(asset)
+        serve(env, asset)
       else
-        precompile(original, config) ?
-          call(env) :
-          @app.call(env)
+        @app.call(env)
       end
     end
 
     private
 
-    def can_serve(path, original = nil)
-      file_path = path.gsub(URL_SEPARATOR, ::File::SEPARATOR)
-      destination = find_asset do |asset|
-        asset.end_with?(file_path)
+    def serve?(asset)
+      can_serve(asset.path) || asset.exist? || asset.precompile?
+    end
+
+    def precompile(asset)
+      Hanami::Assets::Compiler.compile(asset.config, asset.original) if asset.precompile?
+    end
+
+    # Code from Rack::Static
+    def serve(env, asset)
+      path = asset.path
+      env[PATH_INFO] = (path =~ /\/$/ ? path + @index : @urls[path]) if overwrite_file_path(path)
+      path = env[PATH_INFO]
+      response = @file_server.call(env)
+
+      headers = response[1]
+      applicable_rules(path).each do |_, new_headers|
+        new_headers.each { |field, content| headers[field] = content }
       end
 
-      (super(path) || !!destination) && _fresh?(original, destination)
-    end
-
-    def find_asset
-      Dir[PUBLIC_DIRECTORY].find do |asset|
-        yield asset unless ::File.directory?(asset)
-      end
-    end
-
-    def _fresh?(original, destination)
-      # At this point we're sure that destination exist.
-      #
-      # If original is missing, it could be a file that a developer manually
-      # created into public directory without having the corresponding original.
-      # In this case we return true, so the destination file can be served.
-      return true if original.nil? || !::File.exist?(original.to_s)
-
-      ::File.mtime(destination) >
-        ::File.mtime(original)
-    end
-
-    def precompile(original, config)
-      return unless original && config
-
-      Hanami::Assets::Compiler.compile(config, original)
-      true
+      response
     end
 
     def _sources_from_applications
