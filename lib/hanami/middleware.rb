@@ -134,9 +134,8 @@ module Hanami
     def _load_assets_middleware
       env = Hanami.environment
 
-      if !env.container? && env.serve_static_assets?
-        require 'hanami/static'
-        use Hanami::Static
+      if !env.container? && (middleware = env.static_assets_middleware)
+        use middleware
       end
     end
 

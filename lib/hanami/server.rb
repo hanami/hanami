@@ -49,8 +49,8 @@ module Hanami
       mw = Hash.new { |e, m| e[m] = [] }
       mw["deployment"].concat([::Rack::ContentLength, ::Rack::CommonLogger])
       mw["development"].concat(mw["deployment"] + [::Rack::ShowExceptions, ::Rack::Lint])
-      require 'hanami/static'
-      mw["development"].push(::Hanami::Static)
+      require 'hanami/assets/static'
+      mw["development"].push(::Hanami::Assets::Static)
       mw
     end
 

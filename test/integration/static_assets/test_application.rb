@@ -1,6 +1,6 @@
 require 'integration_helper'
 
-describe 'Serve static assets (Application)' do
+describe 'Serve static assets (Application - development)' do
   include Minitest::IsolationTest
 
   before do
@@ -162,27 +162,6 @@ CSS
       dependency.delete if dependency.exist?
       fixture.delete    if fixture.exist?
       asset.delete      if asset.exist?
-    end
-  end
-
-  describe 'production mode' do
-    before do
-      @hanami_env       = ENV['HANAMI_ENV']
-      ENV['HANAMI_ENV'] = 'production'
-    end
-
-    after do
-      ENV['HANAMI_ENV'] = @hanami_env
-    end
-
-    it "serves static files" do
-      get '/assets/application.css'
-      asset = root.join('public', 'assets', 'application.css')
-
-      response.status.must_equal 200
-      response.headers['Content-Length'].to_i.must_equal asset.size
-      response.headers['Cache-Control'].must_equal       "public, max-age=31536000"
-      response.body.must_equal                           asset.read
     end
   end
 end

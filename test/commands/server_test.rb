@@ -1,6 +1,6 @@
 require 'test_helper'
 require 'hanami/environment'
-require 'hanami/static'
+require 'hanami/assets/static'
 require 'hanami/commands/server'
 
 describe Hanami::Commands::Server do
@@ -28,7 +28,7 @@ describe Hanami::Commands::Server do
       expected = {
         'deployment'  => [::Rack::ContentLength, ::Rack::CommonLogger],
         'development' => [::Rack::ContentLength, ::Rack::CommonLogger,
-                          ::Rack::ShowExceptions, Rack::Lint, Hanami::Static]
+                          ::Rack::ShowExceptions, Rack::Lint, Hanami::Assets::Static]
       }
 
       @server.middleware.must_equal(expected)
