@@ -47,7 +47,7 @@ module Hanami
       def exist?
         return true unless original.nil?
 
-        file_path = path.gsub(URL_SEPARATOR, ::File::SEPARATOR)
+        file_path = path.tr(URL_SEPARATOR, ::File::SEPARATOR)
         destination = find_asset do |a|
           a.end_with?(file_path)
         end
