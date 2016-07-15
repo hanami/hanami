@@ -48,6 +48,7 @@ module Hanami
     end
 
     private
+
     def assert_configuration_presence!
       unless self.class.class_variable_defined?(:@@configuration)
         raise ArgumentError.new("#{ self.class } doesn't have any application mounted.")

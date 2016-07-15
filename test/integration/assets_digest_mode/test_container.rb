@@ -28,7 +28,7 @@ describe 'Render assets path with digest mode (Container)' do
     @current_dir = nil
 
     Dir["#{ public_directory }/**/*"].each do |f|
-      next if ::File.directory?(f) || f.match(/favicon\.ico\z/)
+      next if ::File.directory?(f) || f.match(/(favicon\.ico|robots.txt)\z/)
       FileUtils.rm(f)
     end
   end

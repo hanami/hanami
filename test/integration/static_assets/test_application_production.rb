@@ -15,6 +15,9 @@ describe 'Serve static assets (Application - production)' do
 
     require root.join('config', 'environment')
     @app = StaticAssetsApp::Application.new
+
+    Hanami::Assets.configuration.public_directory Hanami.public_directory
+    Hanami::Assets.deploy
   end
 
   after do
@@ -27,14 +30,26 @@ describe 'Serve static assets (Application - production)' do
   let(:root) { FIXTURES_ROOT.join('static_assets_app') }
 
   describe 'production mode' do
-    before do
-      Hanami::Assets.configuration.public_directory Hanami.public_directory
-      Hanami::Assets.deploy
+    it "responds from application route" do
+      get '/'
+
+      response.status.must_equal 200
+      response.body.must_match   'Hello'
     end
 
     it "serves static files" do
       get '/assets/application.css'
       asset = root.join('public', 'assets', 'application.css')
+
+      response.status.must_equal 200
+      response.headers['Content-Length'].to_i.must_equal asset.size
+      response.headers['Cache-Control'].must_equal       "public, max-age=31536000"
+      response.body.must_equal                           asset.read
+    end
+
+    it "serves static files that is in public directory" do
+      get '/robots.txt'
+      asset = root.join('public', 'robots.txt')
 
       response.status.must_equal 200
       response.headers['Content-Length'].to_i.must_equal asset.size

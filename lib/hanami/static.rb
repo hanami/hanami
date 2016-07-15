@@ -32,10 +32,31 @@ module Hanami
     # @api private
     HEADER_RULES = [[:all, { 'Cache-Control' => "public, max-age=#{MAX_AGE}" }]].freeze
 
+    # @since x.x.x
+    # @api private
+    EXCLUDED_ENTRIES = %w(. ..).freeze
+
+    # @since x.x.x
+    # @api private
+    URL_PREFIX = '/'.freeze
+
     # @since 0.6.0
     # @api private
     def initialize(app, root: Hanami.public_directory, header_rules: HEADER_RULES)
-      super(app, urls: ['/assets'], root: root, header_rules: header_rules)
+      super(app, urls: _urls(root), root: root, header_rules: header_rules)
+    end
+
+    private
+
+    # @since x.x.x
+    # @api private
+    def _urls(root)
+      return [] unless root.exist?
+
+      Dir.entries(root).map do |entry|
+        next if EXCLUDED_ENTRIES.include?(entry)
+        "#{URL_PREFIX}#{entry}"
+      end.compact
     end
   end
 end

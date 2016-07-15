@@ -23,6 +23,16 @@ describe 'Serve static assets (Container - development)' do
 
   let(:root) { FIXTURES_ROOT.join('static_assets') }
 
+  it "responds from application route" do
+    get '/'
+
+    response.status.must_equal 200
+    response.body.must_match   'Hello'
+
+    assert !response.headers.key?('Cache-Control'),
+      "Expected response to NOT send Cache-Control header"
+  end
+
   it "serves static files" do
     get '/assets/application.css'
     asset = root.join('public', 'assets', 'application.css')
@@ -46,6 +56,20 @@ describe 'Serve static assets (Container - development)' do
     response.status.must_equal 200
     response.headers['Content-Length'].to_i.must_equal asset.size
     response.body.must_equal                           asset.read
+  end
+
+  it "serves static files that is in public directory" do
+    get '/robots.txt'
+    asset = root.join('public', 'robots.txt')
+
+    response.status.must_equal 200
+    response.headers['Content-Length'].to_i.must_equal asset.size
+    response.body.must_equal                           asset.read
+
+    assert !response.headers.key?('Cache-Control'),
+      "Expected response to NOT send Cache-Control header"
+
+    assert asset.exist?, "Expected #{ asset } to be served from #{ root.join('public') }"
   end
 
   it "serves static files from nested app" do
