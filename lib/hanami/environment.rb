@@ -409,6 +409,20 @@ module Hanami
       SERVE_STATIC_ASSETS_ENABLED == ENV[SERVE_STATIC_ASSETS]
     end
 
+    # @since 0.6.0
+    # @api private
+    def static_assets_middleware
+      return unless serve_static_assets?
+
+      if environment?(:development, :test)
+        require 'hanami/assets/static'
+        Hanami::Assets::Static
+      else
+        require 'hanami/static'
+        Hanami::Static
+      end
+    end
+
     # @since 0.4.0
     # @api private
     def apps_path

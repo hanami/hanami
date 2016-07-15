@@ -48,6 +48,7 @@ module Hanami
     end
 
     private
+
     def assert_configuration_presence!
       unless self.class.class_variable_defined?(:@@configuration)
         raise ArgumentError.new("#{ self.class } doesn't have any application mounted.")
@@ -58,10 +59,10 @@ module Hanami
       @builder = ::Rack::Builder.new
       @routes  = Router.new(&@@configuration)
 
-      if Hanami.environment.serve_static_assets?
-        require 'hanami/static'
-        @builder.use Hanami::Static
+      if middleware = Hanami.environment.static_assets_middleware
+        @builder.use middleware
       end
+
       @builder.use Rack::MethodOverride
 
       @builder.run @routes

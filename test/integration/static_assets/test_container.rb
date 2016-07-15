@@ -1,6 +1,6 @@
 require 'integration_helper'
 
-describe 'Serve static assets (Container)' do
+describe 'Serve static assets (Container - development)' do
   include Minitest::IsolationTest
 
   before do
@@ -22,6 +22,16 @@ describe 'Serve static assets (Container)' do
   end
 
   let(:root) { FIXTURES_ROOT.join('static_assets') }
+
+  it "responds from application route" do
+    get '/'
+
+    response.status.must_equal 200
+    response.body.must_match   'Hello'
+
+    assert !response.headers.key?('Cache-Control'),
+      "Expected response to NOT send Cache-Control header"
+  end
 
   it "serves static files" do
     get '/assets/application.css'
@@ -46,6 +56,20 @@ describe 'Serve static assets (Container)' do
     response.status.must_equal 200
     response.headers['Content-Length'].to_i.must_equal asset.size
     response.body.must_equal                           asset.read
+  end
+
+  it "serves static files that is in public directory" do
+    get '/robots.txt'
+    asset = root.join('public', 'robots.txt')
+
+    response.status.must_equal 200
+    response.headers['Content-Length'].to_i.must_equal asset.size
+    response.body.must_equal                           asset.read
+
+    assert !response.headers.key?('Cache-Control'),
+      "Expected response to NOT send Cache-Control header"
+
+    assert asset.exist?, "Expected #{ asset } to be served from #{ root.join('public') }"
   end
 
   it "serves static files from nested app" do
@@ -140,25 +164,51 @@ JS
     end
   end
 
-  describe 'production mode' do
-    before do
-      @hanami_env       = ENV['HANAMI_ENV']
-      ENV['HANAMI_ENV'] = 'production'
-    end
+  it "replaces fresh version of asset if a dependency has changed" do
+    begin
+      dependency = root.join('apps', 'web', 'assets', 'stylesheets', '_background.sass')
+      fixture    = root.join('apps', 'web', 'assets', 'stylesheets', 'dashboard.css.sass')
+      asset      = root.join('public', 'assets', 'dashboard.css')
 
-    after do
-      ENV['HANAMI_ENV'] = @hanami_env
-    end
+      asset.delete if asset.exist?
+      @assets_directory.mkpath
 
-    it "serves static files" do
-      get '/assets/application.css'
-      asset = root.join('public', 'assets', 'application.css')
+      File.open(dependency, File::WRONLY|File::CREAT) do |f|
+        f.write <<-CSS
+$background-color: #fff
+CSS
+      end
 
-      response.status.must_equal 200
-      response.headers['Content-Length'].to_i.must_equal asset.size
-      response.headers['Cache-Control'].must_equal       "public, max-age=31536000"
-      response.body.must_equal                           asset.read
+      sleep 1
+
+      File.open(fixture, File::WRONLY|File::CREAT) do |f|
+        f.write <<-CSS
+@import "background"
+
+body
+  background-color: $background-color
+CSS
+      end
+
+      get 'assets/dashboard.css'
+      response.body.must_include '#fff'
+
+      sleep 1
+
+      File.open(dependency, File::WRONLY|File::CREAT) do |f|
+        f.write <<-CSS
+$background-color: #000
+CSS
+      end
+
+      sleep 1
+
+      get '/assets/dashboard.css'
+      response.body.must_include '#000'
+    ensure
+      dependency.delete if dependency.exist?
+      fixture.delete    if fixture.exist?
+      asset.delete      if asset.exist?
     end
   end
 end
-
