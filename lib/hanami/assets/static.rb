@@ -2,16 +2,43 @@ require 'hanami/static'
 require 'hanami/assets/compiler'
 require 'hanami/assets/asset'
 
+# Copyright notice
+#
+# This file contains a method copied from Rack::Static (rack gem).
+#
+# Rack - Copyright (C) 2007 Christian Neukirchen
+# Released under the MIT License
+
 module Hanami
   module Assets
+    # Serve static assets in development enviroments (development, test).
+    #
+    # While serving static assets is a role delegated in production to web
+    # servers (like Nginx), in development it's rare to use a web server.
+    # For this purpose Hanami enables this Rack middleware to serve static
+    # assets in development (and test) phase.
+    #
+    # The other important role of `Hanami::Assets::Static` is to lazily compile
+    # (or copy) the assets into the public directory.
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Hanami::Static
     class Static < Hanami::Static
+      # @since x.x.x
+      # @api private
       PATH_INFO = 'PATH_INFO'.freeze
 
+      # @since x.x.x
+      # @api private
       def initialize(app)
         super(app, header_rules: [])
         @sources = _sources_from_applications
       end
 
+      # @since x.x.x
+      # @api private
       def call(env)
         asset = Assets::Asset.new(@sources, env[PATH_INFO])
 
@@ -25,15 +52,29 @@ module Hanami
 
       private
 
+      # @since x.x.x
+      # @api private
       def serve?(asset)
         can_serve(asset.path) || asset.exist? || asset.precompile?
       end
 
+      # @since x.x.x
+      # @api private
       def precompile(asset)
         Hanami::Assets::Compiler.compile(asset.config, asset.original) if asset.precompile?
       end
 
-      # Code from Rack::Static
+      # Copyright notice
+      #
+      # This method is copied from Rack::Static#call
+      #
+      # Rack - Copyright (C) 2007 Christian Neukirchen
+      # Released under the MIT License
+      #
+      # @since x.x.x
+      # @api private
+      #
+      # @see http://www.rubydoc.info/gems/rack/Rack%2FStatic%3Acall
       def serve(env, asset)
         path = asset.path
         env[PATH_INFO] = (path =~ /\/$/ ? path + @index : @urls[path]) if overwrite_file_path(path)
@@ -48,13 +89,17 @@ module Hanami
         response
       end
 
+      # @since x.x.x
+      # @api private
       def _sources_from_applications
         Hanami::Application.applications.each_with_object({}) do |application, result|
           config = _assets_configuration(application)
-          result["#{ config.prefix }/"] = config
+          result["#{config.prefix}/"] = config
         end
       end
 
+      # @since x.x.x
+      # @api private
       def _assets_configuration(application)
         application.configuration.namespace::Assets.configuration
       end
