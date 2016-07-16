@@ -259,6 +259,11 @@ module Web
         scheme 'https'
         host   'cdn.example.org'
         port   443
+
+        # Subresource Integrity
+        #
+        # See: http://hanamirb.org/guides/assets/subresource-integrity
+        subresource_integrity :sha256
       end
     end
   end

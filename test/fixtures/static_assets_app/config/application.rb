@@ -238,8 +238,9 @@ module StaticAssetsApp
       # port   443
 
       assets do
-        compile false
-        digest  true
+        compile               false
+        digest                true
+        subresource_integrity :sha256
       end
     end
   end
