@@ -50,6 +50,7 @@ describe Hanami::Loader do
           must_equal({
             "X-Frame-Options" => "DENY",
             "X-Content-Type-Options" => "nosniff",
+            "X-XSS-Protection" => "1; mode=block",
             "Content-Security-Policy" => "form-action 'self'; referrer origin-when-cross-origin; reflected-xss block; frame-ancestors 'self'; base-uri 'self'; default-src 'none'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self'; object-src 'self'; plugin-types application/pdf; child-src 'self'; frame-src 'self'; media-src 'self'",
           })
       end
