@@ -32,13 +32,14 @@ describe Hanami::Hanamirc do
 
       # Bug: https://github.com/hanami/hanami/issues/243
       it "doesn't pollute ENV" do
+        ENV.key?('project').must_equal false
         ENV.key?('architecture').must_equal false
         ENV.key?('test').must_equal false
         ENV.key?('template').must_equal false
       end
 
       it 'returns only environment options' do
-        allowed_keys = %i[architecture test project_name template]
+        allowed_keys = [:architecture, :project, :test, :template]
         options = @hanamirc.options
         options.keys.must_equal allowed_keys
       end
@@ -57,7 +58,7 @@ describe Hanami::Hanamirc do
         it 'reads the file' do
           options = @hanamirc.options
           options[:architecture].must_equal 'container'
-          options[:project_name].must_equal 'no_exists'
+          options[:project].must_equal 'no_exists'
           options[:test].must_equal 'minitest'
           options[:template].must_equal 'erb'
         end

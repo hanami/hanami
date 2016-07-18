@@ -57,7 +57,7 @@ module Hanami
         end
 
         def model_root
-          Pathname.new('lib').join(app_name)
+          Pathname.new('lib').join(project_name)
         end
 
         # @since 0.5.0
@@ -75,13 +75,13 @@ module Hanami
         # @since 0.5.0
         # @api private
         def entity_spec_path
-          target_path.join('spec', app_name, 'entities', "#{ model_name_underscored }_spec.rb")
+          target_path.join('spec', project_name, 'entities', "#{ model_name_underscored }_spec.rb")
         end
 
         # @since 0.5.0
         # @api private
         def repository_spec_path
-          target_path.join('spec', app_name, 'repositories',
+          target_path.join('spec', project_name, 'repositories',
             "#{ model_name_underscored }_repository_spec.rb")
         end
 
@@ -93,8 +93,8 @@ module Hanami
 
         # @since x.x.x
         # @api private
-        def app_name
-          Utils::String.new(::File.basename(Dir.getwd)).underscore
+        def project_name
+          Utils::String.new(Hanami::Environment.new.project_name).underscore
         end
       end
     end

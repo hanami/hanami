@@ -18,7 +18,7 @@ module Hanami
 
         def template_options
           {
-            app_name:             app_name,
+            project_name:         project_name,
             hanami_head:          hanami_head?,
             test:                 test_framework.framework,
             database:             database_config.type,
@@ -43,7 +43,7 @@ module Hanami
           add_mapping('Gemfile.tt', 'Gemfile')
           add_mapping('config.ru.tt', 'config.ru')
           add_mapping('config/environment.rb.tt', 'config/environment.rb')
-          add_mapping('lib/app_name.rb.tt', "lib/#{ app_name }.rb")
+          add_mapping('lib/project.rb.tt', "lib/#{ project_name }.rb")
         end
 
         def add_test_templates
@@ -63,13 +63,13 @@ module Hanami
         def add_empty_directories
           add_mapping('.gitkeep', 'public/.gitkeep')
           add_mapping('.gitkeep', 'config/initializers/.gitkeep')
-          add_mapping('.gitkeep', "lib/#{ app_name }/entities/.gitkeep")
-          add_mapping('.gitkeep', "lib/#{ app_name }/repositories/.gitkeep")
-          add_mapping('.gitkeep', "lib/#{ app_name }/mailers/.gitkeep")
-          add_mapping('.gitkeep', "lib/#{ app_name }/mailers/templates/.gitkeep")
-          add_mapping('.gitkeep', "spec/#{ app_name }/entities/.gitkeep")
-          add_mapping('.gitkeep', "spec/#{ app_name }/repositories/.gitkeep")
-          add_mapping('.gitkeep', "spec/#{ app_name }/mailers/.gitkeep")
+          add_mapping('.gitkeep', "lib/#{ project_name }/entities/.gitkeep")
+          add_mapping('.gitkeep', "lib/#{ project_name }/repositories/.gitkeep")
+          add_mapping('.gitkeep', "lib/#{ project_name }/mailers/.gitkeep")
+          add_mapping('.gitkeep', "lib/#{ project_name }/mailers/templates/.gitkeep")
+          add_mapping('.gitkeep', "spec/#{ project_name }/entities/.gitkeep")
+          add_mapping('.gitkeep', "spec/#{ project_name }/repositories/.gitkeep")
+          add_mapping('.gitkeep', "spec/#{ project_name }/mailers/.gitkeep")
           add_mapping('.gitkeep', 'spec/support/.gitkeep')
 
           if database_config.sql?

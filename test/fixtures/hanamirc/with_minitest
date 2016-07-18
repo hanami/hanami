@@ -1,4 +1,4 @@
 architecture=container
 test=minitest
 template=erb
-project_name=new_app
+project=new_app

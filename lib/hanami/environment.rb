@@ -240,6 +240,16 @@ module Hanami
       [:default, environment]
     end
 
+    # Project name
+    #
+    # @return [String] Project name
+    #
+    # @since x.x.x
+    # @api private
+    def project_name
+      @options.fetch(:project)
+    end
+
     # Application's root
     #
     # It defaults to the current working directory.

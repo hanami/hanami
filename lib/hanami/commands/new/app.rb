@@ -107,9 +107,7 @@ module Hanami
           Utils::String.new(app_name).classify.tr('::', '')
         end
 
-        # def application_base_path
-        #   [ 'apps', app_name ].join(::File::SEPARATOR)
-        # end
+        alias app_name project_name
       end
     end
   end

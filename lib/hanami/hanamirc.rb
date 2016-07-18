@@ -43,7 +43,7 @@ module Hanami
     # @api private
     #
     # @see Hanami::Hanamirc#default_options
-    PROJECT_NAME = 'project_name'.freeze
+    PROJECT_NAME = 'project'.freeze
 
     # Test suite default value
     #
@@ -117,8 +117,8 @@ module Hanami
     def default_options
       @default_options ||= Utils::Hash.new({
                                            ARCHITECTURE_KEY => DEFAULT_ARCHITECTURE,
+                                           PROJECT_NAME     => project_name,
                                            TEST_KEY         => DEFAULT_TEST_SUITE,
-                                           PROJECT_NAME     => default_project_name,
                                            TEMPLATE_KEY     => DEFAULT_TEMPLATE
                                          }).symbolize!.freeze
     end
@@ -178,7 +178,7 @@ module Hanami
     # @return [String] application_name
     #
     # @see Hanami::Hanamirc::PROJECT_NAME
-    def default_project_name
+    def project_name
       ::File.basename(@root)
     end
   end

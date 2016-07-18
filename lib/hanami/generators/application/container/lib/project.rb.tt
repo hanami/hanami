@@ -1,6 +1,6 @@
 require 'hanami/model'
 require 'hanami/mailer'
-Dir["#{ __dir__ }/<%= config[:app_name] %>/**/*.rb"].each { |file| require_relative file }
+Dir["#{ __dir__ }/<%= config[:project_name] %>/**/*.rb"].each { |file| require_relative file }
 
 Hanami::Model.configure do
   ##
@@ -12,12 +12,12 @@ Hanami::Model.configure do
   #    adapter type: :file_system, uri: 'file:///db/bookshelf_development'
   #
   #  * Memory adapter
-  #    adapter type: :memory, uri: 'memory://localhost/<%= config[:app_name] %>_development'
+  #    adapter type: :memory, uri: 'memory://localhost/<%= config[:project_name] %>_development'
   #
   #  * SQL adapter
-  #    adapter type: :sql, uri: 'sqlite://db/<%= config[:app_name] %>_development.sqlite3'
-  #    adapter type: :sql, uri: 'postgres://localhost/<%= config[:app_name] %>_development'
-  #    adapter type: :sql, uri: 'mysql://localhost/<%= config[:app_name] %>_development'
+  #    adapter type: :sql, uri: 'sqlite://db/<%= config[:project_name] %>_development.sqlite3'
+  #    adapter type: :sql, uri: 'postgres://localhost/<%= config[:project_name] %>_development'
+  #    adapter type: :sql, uri: 'mysql://localhost/<%= config[:project_name] %>_development'
   #
   adapter type: :<%= config[:database_config][:type] %>, uri: ENV['DATABASE_URL']
 
@@ -46,7 +46,7 @@ Hanami::Model.configure do
 end.load!
 
 Hanami::Mailer.configure do
-  root "#{ __dir__ }/<%= config[:app_name] %>/mailers"
+  root "#{ __dir__ }/<%= config[:project_name] %>/mailers"
 
   # See http://hanamirb.org/guides/mailers/delivery
   delivery do

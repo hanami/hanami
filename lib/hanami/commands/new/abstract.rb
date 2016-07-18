@@ -29,14 +29,14 @@ module Hanami
           assert_architecture!
 
           @hanami_model_version = '~> 0.7'
-          @database_config = Hanami::Generators::DatabaseConfig.new(options[:database], app_name)
+          @database_config = Hanami::Generators::DatabaseConfig.new(options[:database], project_name)
           @test_framework = Hanami::Generators::TestFramework.new(hanamirc, @options[:test])
           @template_engine = Hanami::Generators::TemplateEngine.new(hanamirc, @options[:template])
         end
 
         def start
-          FileUtils.mkdir_p(app_name)
-          Dir.chdir(app_name) do
+          FileUtils.mkdir_p(project_name)
+          Dir.chdir(project_name) do
             @target_path = Pathname.pwd
 
             super
@@ -67,12 +67,12 @@ module Hanami
           add_mapping(source, target)
         end
 
-        def real_app_name
+        def real_project_name
           @name == '.' ? ::File.basename(Dir.getwd) : @name
         end
 
-        def app_name
-          ApplicationName.new(real_app_name)
+        def project_name
+          ApplicationName.new(real_project_name)
         end
 
         def target
