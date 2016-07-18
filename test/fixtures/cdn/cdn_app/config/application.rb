@@ -154,6 +154,16 @@ module CdnApp
       #
       security.x_content_type_options 'nosniff'
 
+      # X-XSS-Protection is a HTTP header to determine the behavior of the browser
+      # in case an XSS attack is detected.
+      #
+      # Read more at:
+      #
+      #   * https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)
+      #   * https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#X-XSS-Protection
+      #
+      security.x_xss_protection '1; mode=block'
+
       # Content-Security-Policy (CSP) is a HTTP header supported by modern browsers.
       # It determines trusted sources of execution for dynamic contents
       # (JavaScript) or other web related assets: stylesheets, images, fonts,

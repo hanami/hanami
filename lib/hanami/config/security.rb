@@ -16,6 +16,12 @@ module Hanami
       # @see Hanami::Loader#_configure_controller_framework!
       X_CONTENT_TYPE_OPTIONS_HEADER = 'X-Content-Type-Options'.freeze
 
+      # @since x.x.x
+      # @api private
+      #
+      # @see Hanami::Loader#_configure_controller_framework!
+      X_XSS_PROTECTION_HEADER = 'X-XSS-Protection'.freeze
+
       # @since 0.3.0
       # @api private
       #
@@ -65,6 +71,25 @@ module Hanami
           @x_content_type_options
         else
           @x_content_type_options = value
+        end
+      end
+
+      # X-XSS-Protection headers' value
+      #
+      # @overload x_xss_protection(value)
+      #   Sets the given value
+      #   @param value [String] for X-XSS-Protection header.
+      #
+      # @overload x_xss_protection
+      #   Gets the value
+      #   @return [String] X-XSS-Protection header's value
+      #
+      # @since x.x.x
+      def x_xss_protection(value = nil)
+        if value.nil?
+          @x_xss_protection
+        else
+          @x_xss_protection = value
         end
       end
 

@@ -43,6 +43,7 @@ module CoffeeShop
 
       security.x_frame_options "DENY"
       security.x_content_type_options "nosniff"
+      security.x_xss_protection "1; mode=block"
       security.content_security_policy %{
         form-action 'self';
         referrer origin-when-cross-origin;
