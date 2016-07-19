@@ -1,3 +1,5 @@
+require 'hanami/utils/string'
+
 module Hanami
   # An application name.
   #
@@ -34,15 +36,19 @@ module Hanami
 
     # Returns the cleaned application name.
     #
-    # @return [String] the santized name
+    # @return [String] the sanitized name
     #
     # @example
-    #   ApplicationName.new("my-App ").to_s # => "my-app"
+    #   ApplicationName.new("my-App ").to_s # => "my_app"
     #
     # @since 0.2.1
     def to_s
       @name
     end
+
+    # @api private
+    # @since x.x.x
+    alias_method :to_str, :to_s
 
     # Returns the application name uppercased with non-alphanumeric characters
     # as underscores.
@@ -90,12 +96,9 @@ module Hanami
     # @api private
     # @since 0.2.1
     def sanitize(name)
-      name
-        .downcase
-        .strip
-        .gsub(/\s/, '_')
-        .gsub(/_{2,}/, '_')
-        .gsub(/-/, '_')
+      Utils::String.new(
+        name.strip
+      ).underscore.to_s
     end
   end
 end

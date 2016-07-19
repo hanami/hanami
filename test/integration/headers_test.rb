@@ -30,6 +30,8 @@ describe 'A full stack Hanami application' do
       get '/'
 
       response.headers.key?('X-Frame-Options').must_equal         false
+      response.headers.key?('X-Content-Type-Options').must_equal  false
+      response.headers.key?('X-XSS-Protection').must_equal        false
       response.headers.key?('Content-Security-Policy').must_equal false
     end
   end
@@ -60,6 +62,8 @@ describe 'A full stack Hanami application' do
       get '/'
 
       response.headers['X-Frame-Options'].must_equal 'ALLOW ALL'
+      response.headers['X-Content-Type-Options'].must_equal ''
+      response.headers['X-XSS-Protection'].must_equal ''
       response.headers['Content-Security-Policy'].must_equal "script-src 'self' https://apis.google.com"
     end
   end

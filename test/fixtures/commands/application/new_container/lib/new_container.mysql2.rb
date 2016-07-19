@@ -19,7 +19,7 @@ Hanami::Model.configure do
   #    adapter type: :sql, uri: 'postgres://localhost/new_container_development'
   #    adapter type: :sql, uri: 'mysql://localhost/new_container_development'
   #
-  adapter type: :sql, uri: ENV['NEW_CONTAINER_DATABASE_URL']
+  adapter type: :sql, uri: ENV['DATABASE_URL']
 
   ##
   # Migrations
@@ -31,12 +31,6 @@ Hanami::Model.configure do
   # Database mapping
   #
   # Intended for specifying application wide mappings.
-  #
-  # You can specify mapping file to load with:
-  #
-  # mapping "#{__dir__}/config/mapping"
-  #
-  # Alternatively, you can use a block syntax like the following:
   #
   mapping do
     # collection :users do
@@ -56,6 +50,6 @@ Hanami::Mailer.configure do
   delivery do
     development :test
     test        :test
-    # production :stmp, address: ENV['SMTP_PORT'], port: 1025
+    # production :smtp, address: ENV['SMTP_PORT'], port: 1025
   end
 end.load!

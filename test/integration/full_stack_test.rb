@@ -29,6 +29,32 @@ describe 'A full stack Hanami application' do
     response.body.must_match %(<h1>Welcome</h1>)
   end
 
+  it 'returns a successful response for created resource' do
+    post '/reviews', text: 'blah'
+
+    response.status.must_equal 201
+    response.body.must_match %(<title>Collaboration</title>)
+    response.body.must_match %(<h1>New Review</h1>)
+  end
+
+  it 'renders view for not found entity' do
+    get '/reviews/1'
+
+    response.status.must_equal 404
+    response.body.must_match %(<title>Collaboration</title>)
+    response.body.must_match %(<h1>Missing Review</h1>)
+    response.body.must_match %(<div>Hey, I can't find the review!</div>)
+  end
+
+  it 'renders view for unprocessable entity' do
+    patch '/reviews/1', text: 'blah'
+
+    response.status.must_equal 422
+    response.body.must_match %(<title>Collaboration</title>)
+    response.body.must_match %(<h1>A Review</h1>)
+    response.body.must_match %(<div>Invalid data</div>)
+  end
+
   it "when user provided a custom template, it renders a custom page" do
     request '/custom_error', 'HTTP_ACCEPT' => 'text/html'
 
@@ -36,6 +62,7 @@ describe 'A full stack Hanami application' do
 
     response.body.must_match %(<title>I&apos;m a teapot</title>)
     response.body.must_match %(<h1>I&apos;m a teapot (418)</h1>)
+    response.body.must_match %(<h2>Additional informations</h2>)
   end
 
   it "when html, it renders a custom page for not found resources" do
@@ -228,4 +255,3 @@ describe 'A full stack Hanami application' do
     response.headers['Location'].must_equal '/action_legacy'
   end
 end
-

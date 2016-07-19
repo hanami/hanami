@@ -102,6 +102,12 @@ describe Hanami::Action::CSRFProtection do
           -> { @action.call(env) }.must_raise Hanami::Action::InvalidCSRFTokenError
           @action.__send__(:session).must_be :empty? # reset session
         end
+
+        it "raises error if token isn't sent (#{ verb })" do
+          env = Rack::MockRequest.env_for('/', method: verb)
+
+          -> { @action.call(env) }.must_raise Hanami::Action::InvalidCSRFTokenError
+        end
       end
     end
   end

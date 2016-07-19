@@ -1,5 +1,4 @@
 require 'pathname'
-require 'dotenv/parser'
 require 'hanami/utils/hash'
 
 module Hanami
@@ -35,15 +34,23 @@ module Hanami
     # @since 0.3.0
     # @api private
     #
-    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    # @see Hanami::Hanamirc#default_options
     ARCHITECTURE_KEY = 'architecture'.freeze
+
+    # Project name for writing the hanamirc file
+    #
+    # @since 0.8.0
+    # @api private
+    #
+    # @see Hanami::Hanamirc#default_options
+    PROJECT_NAME = 'project'.freeze
 
     # Test suite default value
     #
     # @since 0.3.0
     # @api private
     #
-    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    # @see Hanami::Hanamirc#default_options
     DEFAULT_TEST_SUITE = 'minitest'.freeze
 
     # Test suite key for writing the hanamirc file
@@ -51,7 +58,7 @@ module Hanami
     # @since 0.3.0
     # @api private
     #
-    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    # @see Hanami::Hanamirc#default_options
     TEST_KEY = 'test'.freeze
 
     # Template default value
@@ -59,7 +66,7 @@ module Hanami
     # @since 0.3.0
     # @api private
     #
-    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    # @see Hanami::Hanamirc#default_options
     DEFAULT_TEMPLATE = 'erb'.freeze
 
     # Template key for writing the hanamirc file
@@ -67,20 +74,14 @@ module Hanami
     # @since 0.3.0
     # @api private
     #
-    # @see Hanami::Hanamirc::DEFAULT_OPTIONS
+    # @see Hanami::Hanamirc#default_options
     TEMPLATE_KEY = 'template'.freeze
 
-    # Default values for writing the hanamirc file
+    # Key/value separator in hanamirc file
     #
-    # @since 0.5.1
+    # @since 0.8.0
     # @api private
-    #
-    # @see Hanami::Hanamirc#options
-    DEFAULT_OPTIONS = Utils::Hash.new({
-      ARCHITECTURE_KEY => DEFAULT_ARCHITECTURE,
-      TEST_KEY         => DEFAULT_TEST_SUITE,
-      TEMPLATE_KEY     => DEFAULT_TEMPLATE
-    }).symbolize!.freeze
+    SEPARATOR = '='.freeze
 
     # Initialize Hanamirc class with application's root and environment options.
     #
@@ -104,7 +105,22 @@ module Hanami
     #   Hanami::Hanamirc.new(Pathname.new(Dir.pwd), options).options
     #    # => { architecture: 'application', test: 'rspec', template: 'slim' }
     def options
-      @options ||= symbolize(DEFAULT_OPTIONS.merge(file_options))
+      @options ||= symbolize(default_options.merge(file_options))
+    end
+
+    # Default values for writing the hanamirc file
+    #
+    # @since 0.5.1
+    # @api private
+    #
+    # @see Hanami::Hanamirc#options
+    def default_options
+      @default_options ||= Utils::Hash.new({
+                                           ARCHITECTURE_KEY => DEFAULT_ARCHITECTURE,
+                                           PROJECT_NAME     => project_name,
+                                           TEST_KEY         => DEFAULT_TEST_SUITE,
+                                           TEMPLATE_KEY     => DEFAULT_TEMPLATE
+                                         }).symbolize!.freeze
     end
 
     # Check if hanamirc file exists
@@ -124,7 +140,22 @@ module Hanami
     end
 
     def file_options
-      symbolize(exists? ? Dotenv::Parser.call(content) : {})
+      symbolize(exists? ? parse_file(path_file) : {})
+    end
+
+    # Read hanamirc file and parse it's values
+    #
+    # @since 0.8.0
+    # @api private
+    #
+    # @return [Hash] hanamirc parsed values
+    def parse_file(path)
+      {}.tap do |hash|
+        File.readlines(path).each do |line|
+          key, value = line.split(SEPARATOR)
+          hash[key] = value.strip
+        end
+      end
     end
 
     # Return the hanamirc file's path
@@ -139,14 +170,16 @@ module Hanami
       @root.join FILE_NAME
     end
 
-    # Return the content of hanamirc file
+    # Generates a default project name based on the application directory
     #
-    # @since 0.3.0
+    # @since 0.8.0
     # @api private
     #
-    # @return [String] content of hanamirc file
-    def content
-      path_file.read
+    # @return [String] application_name
+    #
+    # @see Hanami::Hanamirc::PROJECT_NAME
+    def project_name
+      ::File.basename(@root)
     end
   end
 end

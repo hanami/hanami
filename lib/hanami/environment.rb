@@ -1,9 +1,12 @@
 require 'thread'
 require 'pathname'
-require 'dotenv'
 require 'hanami/utils'
 require 'hanami/utils/hash'
 require 'hanami/hanamirc'
+begin
+  require 'dotenv'
+rescue LoadError
+end
 
 module Hanami
   # Define and expose information about the Hanami environment.
@@ -11,6 +14,12 @@ module Hanami
   # @since 0.1.0
   # @api private
   class Environment
+    # Global lock (used to serialize process of environment configuration)
+    #
+    # @since 0.8.0
+    # @api private
+    LOCK = Mutex.new
+
     # Standard Rack ENV key
     #
     # @since 0.1.0
@@ -40,12 +49,6 @@ module Hanami
     # @since 0.6.0
     # @api private
     RACK_ENV_DEPLOYMENT = 'deployment'.freeze
-
-    # Default `.env` file name
-    #
-    # @since 0.2.0
-    # @api private
-    DEFAULT_DOTENV = '.env'.freeze
 
     # Default `.env` per environment file name
     #
@@ -195,8 +198,7 @@ module Hanami
     def initialize(options = {})
       @options = Hanami::Hanamirc.new(root).options
       @options.merge! Utils::Hash.new(options.clone).symbolize!
-      @mutex   = Mutex.new
-      @mutex.synchronize { set_env_vars! }
+      LOCK.synchronize { set_env_vars! }
     end
 
     # The current environment
@@ -206,7 +208,7 @@ module Hanami
     #   * HANAMI_ENV
     #   * RACK_ENV
     #
-    # If those are missing it falls back to the defalt one: `"development"`.
+    # If those are missing it falls back to the default one: `"development"`.
     #
     # Rack environment `"deployment"` is translated to Hanami `"production"`.
     #
@@ -236,6 +238,16 @@ module Hanami
     # @see http://bundler.io/v1.7/groups.html
     def bundler_groups
       [:default, environment]
+    end
+
+    # Project name
+    #
+    # @return [String] Project name
+    #
+    # @since x.x.x
+    # @api private
+    def project_name
+      @options.fetch(:project)
     end
 
     # Application's root
@@ -361,7 +373,7 @@ module Hanami
     # @since 0.4.0
     # @api private
     def require_application_environment
-      require env_config.to_s
+      require env_config.to_s #if env_config.exist?
     end
 
     # Determine if activate code reloading for the current environment while
@@ -383,13 +395,7 @@ module Hanami
     # @see Hanami::Commands::Server
     # @see Hanami::Environment::CODE_RELOADING
     def code_reloading?
-      # JRuby doesn't implement fork that's why shotgun cannot be used.
-      if Utils.jruby?
-        puts "JRuby doesn't support code reloading."
-        false
-      else
-        @options.fetch(:code_reloading) { !!CODE_RELOADING[environment] }
-      end
+      @options.fetch(:code_reloading) { !!CODE_RELOADING[environment] }
     end
 
     # @since 0.4.0
@@ -411,6 +417,20 @@ module Hanami
     # @api private
     def serve_static_assets?
       SERVE_STATIC_ASSETS_ENABLED == ENV[SERVE_STATIC_ASSETS]
+    end
+
+    # @since 0.6.0
+    # @api private
+    def static_assets_middleware
+      return unless serve_static_assets?
+
+      if environment?(:development, :test)
+        require 'hanami/assets/static'
+        Hanami::Assets::Static
+      else
+        require 'hanami/static'
+        Hanami::Static
+      end
     end
 
     # @since 0.4.0
@@ -461,8 +481,8 @@ module Hanami
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      Dotenv.load     root.join(DEFAULT_DOTENV)
-      Dotenv.overload root.join(DEFAULT_DOTENV_ENV % environment)
+      return unless defined?(Dotenv) && (dotenv = root.join(DEFAULT_DOTENV_ENV % environment)).exist?
+      Dotenv.overload dotenv
     end
 
     # @since 0.1.0

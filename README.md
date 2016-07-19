@@ -19,6 +19,14 @@ Hanami combines small yet powerful frameworks:
 These components are designed to be used independently or together in a Hanami application.
 If you aren't familiar with them, please take time to go through their READMEs.
 
+## Donations
+
+You can give back to Open Source, by supporting Hanami development via a [donation](https://salt.bountysource.com/teams/hanami). :green_heart:
+
+### Supporters
+
+  * [James Carlson](https://github.com/jxxcarlson)
+
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](http://badge.fury.io/rb/hanami)
@@ -90,6 +98,19 @@ This Code of Conduct is adapted from the Contributor Covenant, version 1.1.0, av
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+### How To Use Hanami HEAD
+
+If you want to test Hanami HEAD to try a new feature or to test a bug fix here how to do:
+
+```
+git clone https://github.com/hanami/hanami.git
+cd hanami && bundle
+bundle exec hanami new --hanami-head=true bookshelf
+cd bookshelf
+vim Gemfile # edit with: gem 'hanami', path: '..'
+bundle
+```
 
 ## Versioning
 

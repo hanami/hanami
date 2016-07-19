@@ -8,6 +8,7 @@ if !ENV['TRAVIS']
 end
 
 gem 'sass'
+gem 'i18n'
 gem 'hanami-utils',       '~> 0.8', require: false, github: 'hanami/utils',       branch: '0.8.x'
 gem 'hanami-validations', '~> 0.6', require: false, github: 'hanami/validations', branch: '0.6.x'
 gem 'hanami-router',      '~> 0.7', require: false, github: 'hanami/router',      branch: '0.7.x'
@@ -26,5 +27,7 @@ platforms :jruby do
   gem 'jdbc-sqlite3'
 end
 
-gem 'simplecov', '~> 0.11', require: false
-gem 'coveralls',            require: false
+gem 'coveralls', require: false
+
+gem 'dotenv', '~> 2.0'
+gem 'shotgun', '~> 0.9'

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-
 require 'bundler'
 require 'hanami/cli'
+require 'hanami/setup'
+
 Hanami::Cli.start

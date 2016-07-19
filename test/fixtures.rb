@@ -1,3 +1,4 @@
+require 'hanami/validations'
 require 'hanami/model'
 require 'hanami/mailer'
 
@@ -39,6 +40,27 @@ module CoffeeShop
       templates 'app/templates'
 
       default_response_format :html
+
+      security.x_frame_options "DENY"
+      security.x_content_type_options "nosniff"
+      security.x_xss_protection "1; mode=block"
+      security.content_security_policy %{
+        form-action 'self';
+        referrer origin-when-cross-origin;
+        reflected-xss block;
+        frame-ancestors 'self';
+        base-uri 'self';
+        default-src 'none';
+        connect-src 'self';
+        img-src 'self';
+        style-src 'self';
+        font-src 'self';
+        object-src 'self';
+        plugin-types application/pdf;
+        child-src 'self';
+        frame-src 'self';
+        media-src 'self'
+      }
 
       scheme 'https'
       host   'hanami-coffeeshop.org'
@@ -105,7 +127,7 @@ class CSRFAction
 
   # Ensure _csrf_token param won't be filtered
   params do
-    param :name
+    required(:name, :string)
   end
 
   def initialize
@@ -128,7 +150,9 @@ class CSRFAction
 end
 
 class FilteredParams < Hanami::Action::Params
-  param :name
+  params do
+    required(:name).filled
+  end
 end
 
 class FilteredCSRFAction

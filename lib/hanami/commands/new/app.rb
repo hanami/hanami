@@ -19,15 +19,17 @@ module Hanami
 
         def template_options
           {
-            app_name:              app_name,
-            upcase_app_name:       upcase_app_name,
-            classified_app_name:   classified_app_name,
-            application_base_url:  application_base_url,
-            hanami_head:            hanami_head?,
-            test:                  test_framework.framework,
-            database:              database_config.type,
-            database_config:       database_config.to_hash,
-            hanami_model_version:   hanami_model_version,
+            app_name:             app_name,
+            upcase_app_name:      upcase_app_name,
+            classified_app_name:  classified_app_name,
+            application_base_url: application_base_url,
+            hanami_head:          hanami_head?,
+            test:                 test_framework.framework,
+            database:             database_config.type,
+            database_config:      database_config.to_hash,
+            hanami_model_version: hanami_model_version,
+            hanami_version:       hanami_version,
+            template:             template_engine.name
           }
         end
 
@@ -39,18 +41,16 @@ module Hanami
 
         def add_application_templates
           add_mapping('hanamirc.tt', '.hanamirc')
-          add_mapping('.env.tt', '.env')
           add_mapping('.env.development.tt', '.env.development')
           add_mapping('.env.test.tt', '.env.test')
           add_mapping('Gemfile.tt', 'Gemfile')
           add_mapping('config.ru.tt', 'config.ru')
           add_mapping('config/environment.rb.tt', 'config/environment.rb')
           add_mapping('lib/app_name.rb.tt', "lib/#{ app_name }.rb")
-          add_mapping('lib/config/mapping.rb.tt', 'lib/config/mapping.rb')
           add_mapping('config/application.rb.tt', 'config/application.rb')
           add_mapping('config/routes.rb.tt', 'config/routes.rb')
           add_mapping('views/application_layout.rb.tt', 'app/views/application_layout.rb')
-          add_mapping('templates/application.html.erb.tt', 'app/templates/application.html.erb')
+          add_mapping("templates/application.html.#{ template_engine.name }.tt", "app/templates/application.html.#{ template_engine.name }")
           add_mapping('favicon.ico', 'app/assets/favicon.ico')
         end
 
@@ -107,9 +107,7 @@ module Hanami
           Utils::String.new(app_name).classify.tr('::', '')
         end
 
-        # def application_base_path
-        #   [ 'apps', app_name ].join(::File::SEPARATOR)
-        # end
+        alias app_name project_name
       end
     end
   end

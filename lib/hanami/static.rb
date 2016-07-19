@@ -1,82 +1,62 @@
 require 'rack/static'
-require 'hanami/assets/compiler'
 
 module Hanami
+  # Serve static assets in deployment enviroments (production, staging) where
+  # the architecture doesn't include a web server.
+  #
+  # Web servers like Nginx are the ideal candidate to serve static assets.
+  # They are faster than Ruby application servers (eg. Puma) and they should be
+  # always preferred for this specific task.
+  #
+  # But there are some PaaS that don't allow to use web servers in front of Ruby
+  # web applications. A classical example is Heroku, which requires the web
+  # application to serve static assets.
+  #
+  # Hanami::Static is designed for this specific scenario.
+  #
+  # To enable it set the env variable `SERVE_STATIC_ASSETS` on `true`.
+  #
+  # NOTE: Please remember to precompile the assets at the deploy time with
+  # `bundle exec hanami assets precompile`.
+  #
+  # @since 0.6.0
+  # @api private
+  #
+  # @see http://www.rubydoc.info/gems/rack/Rack/Static
   class Static < ::Rack::Static
-    PATH_INFO        = 'PATH_INFO'.freeze
-    PUBLIC_DIRECTORY = Hanami.public_directory.join('**', '*').to_s.freeze
+    # @since x.x.x
+    # @api private
+    MAX_AGE      = 60 * 60 * 24 * 365 # One year
 
     # @since x.x.x
     # @api private
-    URL_SEPARATOR       = '/'.freeze
+    HEADER_RULES = [[:all, { 'Cache-Control' => "public, max-age=#{MAX_AGE}" }]].freeze
 
-    def initialize(app)
-      super(app, root: Hanami.public_directory, header_rules: _header_rules)
-      @sources = _sources_from_applications
-    end
+    # @since x.x.x
+    # @api private
+    EXCLUDED_ENTRIES = %w(. ..).freeze
 
-    def call(env)
-      path           = env[PATH_INFO]
+    # @since x.x.x
+    # @api private
+    URL_PREFIX = '/'.freeze
 
-      prefix, config = @sources.find { |p, _| path.start_with?(p) }
-      if prefix && config
-        original = config.sources.find(path.sub(prefix, ''))
-      end
-
-      if can_serve(path, original)
-        super
-      else
-        precompile(original, config) ?
-          call(env) :
-          @app.call(env)
-      end
+    # @since 0.6.0
+    # @api private
+    def initialize(app, root: Hanami.public_directory, header_rules: HEADER_RULES)
+      super(app, urls: _urls(root), root: root, header_rules: header_rules)
     end
 
     private
 
-    def can_serve(path, original = nil)
-      file_path = path.gsub(URL_SEPARATOR, ::File::SEPARATOR)
-      destination = Dir[PUBLIC_DIRECTORY].find do |file|
-        file.end_with?(file_path)
-      end
+    # @since x.x.x
+    # @api private
+    def _urls(root)
+      return [] unless root.exist?
 
-      (super(path) || !!destination) && _fresh?(original, destination)
-    end
-
-    def _fresh?(original, destination)
-      # At this point we're sure that destination exist.
-      #
-      # If original is missing, it could be a file that a developer manually
-      # created into public directory without having the corresponding original.
-      # In this case we return true, so the destination file can be served.
-      return true if original.nil? || !::File.exist?(original.to_s)
-
-      ::File.mtime(destination) >
-        ::File.mtime(original)
-    end
-
-    def precompile(original, config)
-      return unless original && config
-
-      Hanami::Assets::Compiler.compile(config, original)
-      true
-    end
-
-    def _sources_from_applications
-      Hanami::Application.applications.each_with_object({}) do |application, result|
-        config = _assets_configuration(application)
-        result["#{ config.prefix }/"] = config
-      end
-    end
-
-    def _assets_configuration(application)
-      application.configuration.namespace::Assets.configuration
-    end
-
-    def _header_rules
-      unless Hanami.env?(:development, :test)
-        [[:all, {'Cache-Control' => 'public, max-age=31536000'}]]
-      end
+      Dir.entries(root).map do |entry|
+        next if EXCLUDED_ENTRIES.include?(entry)
+        "#{URL_PREFIX}#{entry}"
+      end.compact
     end
   end
 end

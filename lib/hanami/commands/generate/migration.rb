@@ -53,8 +53,8 @@ module Hanami
         end
 
         def assert_migration_name!
-          if name.nil? || name.strip.empty?
-            raise ArgumentError.new('Migration name nil or empty')
+          if argument_blank?(name)
+            raise ArgumentError.new('Migration name is missing')
           end
         end
       end

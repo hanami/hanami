@@ -9,9 +9,10 @@ module Hanami
     # @since 0.6.0
     # @api private
     class Assets < Thor
+      extend CliBase
       namespace :assets
 
-      desc 'precompile', 'precompile assets for deployment'
+      desc 'precompile', 'Precompile assets for deployment'
       def precompile
         require 'hanami/commands/assets/precompile'
         Hanami::Commands::Assets::Precompile.new(options, environment).start

@@ -5,9 +5,16 @@ require 'fileutils'
 describe Hanami::Commands::Generate::App do
   describe 'with invalid arguments' do
     it 'requires application name' do
-      -> { Hanami::Commands::Generate::App.new({}, nil) }.must_raise ArgumentError
-      -> { Hanami::Commands::Generate::App.new({}, '') }.must_raise ArgumentError
-      -> { Hanami::Commands::Generate::App.new({}, '   ') }.must_raise ArgumentError
+      message = 'Application name is missing'
+      assert_exception_raised(ArgumentError, message) do
+        Hanami::Commands::Generate::App.new({}, nil)
+      end
+      assert_exception_raised(ArgumentError, message) do
+        Hanami::Commands::Generate::App.new({}, '')
+      end
+      assert_exception_raised(ArgumentError, message) do
+        Hanami::Commands::Generate::App.new({}, '   ')
+      end
     end
   end
 
@@ -31,6 +38,31 @@ describe Hanami::Commands::Generate::App do
         assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'layout.rb'), 'apps/admin/views/application_layout.rb')
         assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'layout.html.erb'), 'apps/admin/templates/application.html.erb')
         assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'routes.rb'), 'apps/admin/config/routes.rb')
+      end
+    end
+
+    it 'generates template file for special engine' do
+      with_temp_dir do |original_wd|
+        setup_container_app(original_wd)
+        File.open('.hanamirc', 'w') { |file| file << "template=slim"}
+        command = Hanami::Commands::Generate::App.new({}, 'admin')
+        capture_io { command.start }
+
+        assert_generated_file(original_wd.join('test', 'fixtures', 'commands', 'generate', 'app', 'layout.html.slim'), 'apps/admin/templates/application.html.slim')
+      end
+    end
+
+    describe 'when template engine not erb, haml or slim' do
+      it 'raises error' do
+        with_temp_dir do |original_wd|
+          setup_container_app(original_wd)
+          File.open('.hanamirc', 'w') { |file| file << "template=wiki"}
+          exception = -> {
+            command = Hanami::Commands::Generate::App.new({}, 'admin')
+            capture_io { command.start }
+          }.must_raise Hanami::Generators::TemplateEngine::UnsupportedTemplateEngine
+          exception.message.must_equal "\"wiki\" is not a valid template engine"
+        end
       end
     end
 

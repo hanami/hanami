@@ -16,6 +16,7 @@ describe Hanami::Cli do
       'architecture' => 'container',
       'application_name' => 'web',
       'application_base_url' => '/',
+      'template' => 'erb',
       'test' => 'minitest',
       'hanami_head' => false}
     }
@@ -38,9 +39,10 @@ describe Hanami::Cli do
           'application_name' => 'admin',
           'application_base_url' => '/web-admin',
           'test' => 'rspec',
-          'hanami_head' => true
+          'hanami_head' => true,
+          'template' => 'slim'
         )
-        ARGV.replace(%w{new fancy-app --database=memory --application_name=admin --application_base_url=/web-admin --test=rspec --hanami_head=true})
+        ARGV.replace(%w{new fancy-app --database=memory --application_name=admin --application_base_url=/web-admin --test=rspec --hanami_head=true --template=slim})
         assert_cli_calls_command(Hanami::Commands::New::Container, options, 'fancy-app')
       end
 
@@ -76,7 +78,7 @@ describe Hanami::Cli do
 
   describe 'generate' do
     describe 'action' do
-      let(:default_options) { {'method' => 'GET', 'skip_view' => false} }
+      let(:default_options) { {'skip_view' => false} }
 
       it 'calls the generator with application and controller/action name' do
         ARGV.replace(%w{generate action app controller#action})
@@ -148,6 +150,64 @@ describe Hanami::Cli do
       end
     end
 
+    describe 'destroy' do
+      describe 'action' do
+        describe 'for container application' do
+          before { setup_container_app }
+
+          it 'raises an error when app and controller name are missing' do
+            ARGV.replace(%w{destroy action})
+
+            Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+              _, err = capture_io { Hanami::Cli.start }
+              assert_match 'ERROR', err
+            end
+          end
+
+          it 'raises an error when controller name is missing' do
+            ARGV.replace(%w{destroy action foo})
+
+            Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+              _, err = capture_io { Hanami::Cli.start }
+              assert_match 'ERROR', err
+            end
+          end
+
+          it 'raises an error when app name is missing' do
+            ARGV.replace(%w{destroy action controller#action})
+
+            Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+              _, err = capture_io { Hanami::Cli.start }
+              assert_match 'ERROR', err
+            end
+          end
+        end
+
+        describe 'for app application' do
+          before do
+            setup_app_app
+            mock_without_method.expect(:destroy, mock_without_method.expect(:start, nil))
+          end
+
+          it 'destroys action when controller name is present' do
+            ARGV.replace(%w{destroy action controller#action})
+            Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+              _, err = capture_io { Hanami::Cli.start }
+              refute_match 'ERROR', err
+            end
+          end
+
+          it 'raises error when controller name is missing' do
+            ARGV.replace(%w{destroy action})
+            Hanami::Commands::Generate::Action.stub(:new, mock_without_method) do
+              _, err = capture_io { Hanami::Cli.start }
+              assert_match 'ERROR', err
+            end
+          end
+        end
+      end
+    end
+
     describe 'migration' do
       it 'calls the generator with migration name' do
         ARGV.replace(%w{generate migration add_thing})
@@ -190,6 +250,65 @@ describe Hanami::Cli do
         options = {'application_base_url' => '/backend'}
 
         assert_cli_calls_command(Hanami::Commands::Generate::App, options, 'admin')
+      end
+    end
+  end
+
+  describe 'version' do
+    describe 'when `version` command' do
+      it 'prints Hanami version' do
+        assert_output("v#{Hanami::VERSION}\n") do
+          ARGV.replace(%w{version})
+          Hanami::Cli.start
+        end
+      end
+    end
+
+    describe 'when passing --version to hanami command, with no subcommand' do
+      it 'prints Hanami version' do
+        assert_output("v#{Hanami::VERSION}\n") do
+          ARGV.replace(%w{--version})
+          Hanami::Cli.start
+        end
+      end
+    end
+
+    describe 'when passing -v to hanami command, with no subcommand' do
+      it 'prints Hanami version' do
+        assert_output("v#{Hanami::VERSION}\n") do
+          ARGV.replace(%w{-v})
+          Hanami::Cli.start
+        end
+      end
+    end
+  end
+
+  describe '::define_commands' do
+    Hanami::Cli.define_commands do
+      desc 'custom', 'Empty command'
+      def custom
+        puts 'custom command'
+      end
+    end
+
+    Hanami::CliSubCommands::Generate.define_commands do
+      desc 'custom', 'Empty command'
+      def custom
+        puts 'custom command'
+      end
+    end
+
+    it 'adds new custom command' do
+      assert_output("custom command\n") do
+        ARGV.replace(%w{generate custom})
+        Hanami::Cli.start
+      end
+    end
+
+    it 'adds new custom subcommand' do
+      assert_output("custom command\n") do
+        ARGV.replace(%w{custom})
+        Hanami::Cli.start
       end
     end
   end

@@ -1,26 +1,13 @@
 require_relative './support/helper'
 
-if ENV['COVERAGE'] == 'true'
-  require 'simplecov'
-  require 'coveralls'
-
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-    SimpleCov::Formatter::HTMLFormatter,
-    Coveralls::SimpleCov::Formatter
-  ])
-
-  SimpleCov.start do
-    command_name 'test'
-    add_filter   'test'
-  end
-end
+Coverage.cover_as!('tests:unit')
 
 # Skip MRI specifc specs
 require 'minispec-metadata'
 MinispecMetadata.add_tag_string('~engine:mri') if RUBY_ENGINE != 'ruby'
 
 Minitest::Test.class_eval do
-  def with_temp_dir(name = 'testapp', &block)
+  def with_temp_dir(name = 'test_app', &block)
     current_dir = Dir.pwd
     temp_dir = Dir.mktmpdir
     app_dir = File.join(temp_dir, name)

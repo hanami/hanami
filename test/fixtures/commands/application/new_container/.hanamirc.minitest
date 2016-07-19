@@ -1,3 +1,4 @@
+project=new_container
 architecture=container
 test=minitest
 template=erb

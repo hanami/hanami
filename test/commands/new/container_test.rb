@@ -52,31 +52,31 @@ describe Hanami::Commands::New::Container do
   end
 
   describe 'with valid arguments' do
-    it 'application name with dash' do
+    it 'project name with dash' do
       with_temp_dir do |original_wd|
         command = Hanami::Commands::New::Container.new({}, 'new-container')
         capture_io { command.start }
-        Dir.chdir('new-container') do
+        Dir.chdir('new_container') do
           actual_content = File.read('.env.development')
-          actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_development"'
+          actual_content.must_include 'DATABASE_URL="file:///db/new_container_development"'
 
           actual_content = File.read('.env.test')
-          actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_test"'
+          actual_content.must_include 'DATABASE_URL="file:///db/new_container_test"'
         end
       end
     end
 
-    describe 'application name is a point' do
+    describe 'project name is a point' do
       it 'generates application in current folder' do
         with_temp_dir do |original_wd|
-         command = Hanami::Commands::New::Container.new({}, '.')
+          command = Hanami::Commands::New::Container.new({}, '.')
           capture_io { command.start }
-          Dir.chdir('.') do
+          Dir.chdir('test_app') do
             actual_content = File.read('.env.development')
-            actual_content.must_include 'TESTAPP_DATABASE_URL="file:///db/testapp_development"'
+            actual_content.must_include 'DATABASE_URL="file:///db/test_app_development"'
 
             actual_content = File.read('.env.test')
-            actual_content.must_include 'TESTAPP_DATABASE_URL="file:///db/testapp_test"'
+            actual_content.must_include 'DATABASE_URL="file:///db/test_app_test"'
           end
         end
       end
@@ -93,10 +93,10 @@ describe Hanami::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="memory://localhost/new_container_development"'
+            actual_content.must_include 'DATABASE_URL="memory://localhost/new_container_development"'
 
             actual_content = File.read('.env.test')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="memory://localhost/new_container_test"'
+            actual_content.must_include 'DATABASE_URL="memory://localhost/new_container_test"'
 
             assert_generated_file(fixture_root.join('Gemfile.memory'), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.memory.rb'), 'lib/new_container.rb')
@@ -113,10 +113,10 @@ describe Hanami::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_development"'
+            actual_content.must_include 'DATABASE_URL="file:///db/new_container_development"'
 
             actual_content = File.read('.env.test')
-            actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_test"'
+            actual_content.must_include 'DATABASE_URL="file:///db/new_container_test"'
 
             assert_generated_file(fixture_root.join('Gemfile.filesystem'), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.filesystem.rb'), 'lib/new_container.rb')
@@ -133,10 +133,10 @@ describe Hanami::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }sqlite://db/new_container_development.sqlite\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }sqlite://db/new_container_development.sqlite\"")
 
             actual_content = File.read('.env.test')
-            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }sqlite://db/new_container_test.sqlite\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }sqlite://db/new_container_test.sqlite\"")
 
             assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }sqlite3"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.sqlite3.rb'), 'lib/new_container.rb')
@@ -153,10 +153,10 @@ describe Hanami::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_development\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_development\"")
 
             actual_content = File.read('.env.test')
-            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_test\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_test\"")
 
             assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }postgres"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.postgres.rb'), 'lib/new_container.rb')
@@ -174,10 +174,10 @@ describe Hanami::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }#{ database }://localhost/new_container_development\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }#{ database }://localhost/new_container_development\"")
 
             actual_content = File.read('.env.test')
-            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }#{ database }://localhost/new_container_test\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }#{ database }://localhost/new_container_test\"")
 
             assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }mysql2"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.mysql2.rb'), 'lib/new_container.rb')
@@ -194,10 +194,10 @@ describe Hanami::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_development\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_development\"")
 
             actual_content = File.read('.env.test')
-            actual_content.must_include("NEW_CONTAINER_DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_test\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_test\"")
 
             assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }postgres"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.postgres.rb'), 'lib/new_container.rb')
@@ -216,6 +216,21 @@ describe Hanami::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             assert_generated_file(fixture_root.join('Gemfile.head'), 'Gemfile')
+          end
+        end
+      end
+    end
+
+    describe 'template engine' do
+      it 'creates files' do
+        with_temp_dir do |original_wd|
+          command = Hanami::Commands::New::Container.new({template: 'slim'}, 'new_container')
+          capture_io { command.start }
+
+          fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
+          Dir.chdir('new_container') do
+            assert_generated_file(fixture_root.join('Gemfile.slim'), 'Gemfile')
+            assert_generated_file(fixture_root.join('.hanamirc.slim'), '.hanamirc')
           end
         end
       end
@@ -261,13 +276,12 @@ describe Hanami::Commands::New::Container do
     fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
     Dir.chdir('new_container') do
       assert_generated_file(fixture_root.join(".hanamirc.#{ test_framework }"), '.hanamirc')
-      assert_generated_file(fixture_root.join('.env'), '.env')
       actual_content = File.read('.env.development')
-      actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_development"'
+      actual_content.must_include 'DATABASE_URL="file:///db/new_container_development"'
       actual_content.must_match(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
 
       actual_content = File.read('.env.test')
-      actual_content.must_include 'NEW_CONTAINER_DATABASE_URL="file:///db/new_container_test"'
+      actual_content.must_include 'DATABASE_URL="file:///db/new_container_test"'
       actual_content.must_match %r{WEB_SESSIONS_SECRET="[\w]{64}"}
 
       assert_generated_file(fixture_root.join("Gemfile.#{ test_framework }"), 'Gemfile')
@@ -275,7 +289,6 @@ describe Hanami::Commands::New::Container do
 
       assert_generated_file(fixture_root.join('config', 'environment.rb'), 'config/environment.rb')
       assert_generated_file(fixture_root.join('lib', 'new_container.rb'), 'lib/new_container.rb')
-      assert_generated_file(fixture_root.join('lib', 'config', 'mapping.rb'), 'lib/config/mapping.rb')
       assert_file_exists('config/initializers/.gitkeep')
       assert_file_exists('lib/new_container/entities/.gitkeep')
       assert_file_exists('lib/new_container/repositories/.gitkeep')

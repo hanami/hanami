@@ -46,6 +46,11 @@ module Hanami
       def target_path
         raise NotImplementedError, "must implement the target_path method"
       end
+
+      def argument_blank?(value)
+        Hanami::Utils::Blank.blank?(value)
+      end
+
     end
   end
 end

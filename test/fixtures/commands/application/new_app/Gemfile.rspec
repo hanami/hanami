@@ -3,9 +3,18 @@ source 'https://rubygems.org'
 gem 'bundler'
 gem 'rake'
 
-gem 'hanami',       '0.8.0'
+gem 'hanami',       '~> 0.8'
 gem 'hanami-model', '~> 0.7'
 
+group :development do
+  # Code reloading
+  # See: [LINK TO HANAMI GUIDES]
+  gem 'shotgun'
+end
+
+group :test, :development do
+  gem 'dotenv', '~> 2.0'
+end
 
 group :test do
   gem 'rspec'

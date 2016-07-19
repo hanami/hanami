@@ -3,6 +3,7 @@ require 'hanami/application_name'
 require 'hanami/generators/database_config'
 require 'hanami/generators/generatable'
 require 'hanami/generators/test_framework'
+require 'hanami/generators/template_engine'
 require 'hanami/utils/hash'
 
 module Hanami
@@ -15,7 +16,8 @@ module Hanami
         DEFAULT_ARCHITECTURE = 'container'.freeze
         DEFAULT_APPLICATION_BASE_URL = '/'.freeze
 
-        attr_reader :options, :target_path, :database_config, :test_framework
+        attr_reader :options, :target_path, :database_config,
+          :test_framework, :hanami_model_version, :template_engine
 
         def initialize(options, name)
           @options = Hanami::Utils::Hash.new(options).symbolize!
@@ -27,13 +29,14 @@ module Hanami
           assert_architecture!
 
           @hanami_model_version = '~> 0.7'
-          @database_config = Hanami::Generators::DatabaseConfig.new(options[:database], app_name)
+          @database_config = Hanami::Generators::DatabaseConfig.new(options[:database], project_name)
           @test_framework = Hanami::Generators::TestFramework.new(hanamirc, @options[:test])
+          @template_engine = Hanami::Generators::TemplateEngine.new(hanamirc, @options[:template])
         end
 
         def start
-          FileUtils.mkdir_p(@name)
-          Dir.chdir(@name) do
+          FileUtils.mkdir_p(project_name)
+          Dir.chdir(project_name) do
             @target_path = Pathname.pwd
 
             super
@@ -64,12 +67,12 @@ module Hanami
           add_mapping(source, target)
         end
 
-        def real_app_name
+        def real_project_name
           @name == '.' ? ::File.basename(Dir.getwd) : @name
         end
 
-        def app_name
-          ApplicationName.new(real_app_name)
+        def project_name
+          ApplicationName.new(real_project_name)
         end
 
         def target
@@ -86,8 +89,8 @@ module Hanami
           File.directory?(target.join('.git'))
         end
 
-        def hanami_model_version
-          @hanami_model_version
+        def hanami_version
+          "~> #{Hanami::VERSION.scan(/\A\d{1,2}\.\d{1,2}/).first}"
         end
 
         def hanami_head?
@@ -99,7 +102,7 @@ module Hanami
         end
 
         def assert_name!
-          if @name.nil? || @name.strip == '' || @name.include?(File::SEPARATOR)
+          if argument_blank?(@name) || @name.include?(File::SEPARATOR)
             raise ArgumentError.new("APPLICATION_NAME is required and must not contain #{File::SEPARATOR}.")
           end
         end

@@ -1,4 +1,4 @@
-/db/<%= config[:app_name] %>_development
-/db/<%= config[:app_name] %>_test
+/db/<%= config[:project_name] %>_development
+/db/<%= config[:project_name] %>_test
 /public/assets*
 /tmp

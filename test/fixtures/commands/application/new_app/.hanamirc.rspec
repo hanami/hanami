@@ -1,3 +1,4 @@
+project=new_app
 architecture=app
 test=rspec
 template=erb

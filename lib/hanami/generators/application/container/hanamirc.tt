@@ -1,3 +1,4 @@
+<%= Hanami::Hanamirc::PROJECT_NAME %>=<%= config[:project_name] %>
 <%= Hanami::Hanamirc::ARCHITECTURE_KEY %>=<%= Hanami::Hanamirc::DEFAULT_ARCHITECTURE %>
 <%= Hanami::Hanamirc::TEST_KEY %>=<%= config[:test] %>
-<%= Hanami::Hanamirc::TEMPLATE_KEY %>=<%= Hanami::Hanamirc::DEFAULT_TEMPLATE %>
+<%= Hanami::Hanamirc::TEMPLATE_KEY %>=<%= config[:template] %>

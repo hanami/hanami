@@ -4,10 +4,13 @@ require 'hanami/router'
 
 module Hanami
   class Container
-    class Router < ::Hanami::Router
+    class Mounting
+      def self.load!(&blk)
+        new.instance_exec(&blk)
+      end
+
       def mount(app, options)
-        app = app.new(path_prefix: options.fetch(:at)) if hanami_app?(app)
-        super(app, options)
+        app.configuration.path_prefix options.fetch(:at) if hanami_app?(app)
       end
 
       private
@@ -15,19 +18,26 @@ module Hanami
       def hanami_app?(app)
         app.ancestors.include? Hanami::Application
       end
+
+      def method_missing(m, *args)
+      end
     end
+
+    LOCK = Mutex.new
 
     attr_reader :routes
 
     def self.configure(options = {}, &blk)
-      Mutex.new.synchronize do
+      LOCK.synchronize do
         @@options       = options
         @@configuration = blk
+
+        Mounting.load!(&blk)
       end
     end
 
     def initialize
-      Mutex.new.synchronize do
+      LOCK.synchronize do
         assert_configuration_presence!
         prepare_middleware_stack!
       end
@@ -38,6 +48,7 @@ module Hanami
     end
 
     private
+
     def assert_configuration_presence!
       unless self.class.class_variable_defined?(:@@configuration)
         raise ArgumentError.new("#{ self.class } doesn't have any application mounted.")
@@ -48,10 +59,11 @@ module Hanami
       @builder = ::Rack::Builder.new
       @routes  = Router.new(&@@configuration)
 
-      if Hanami.environment.serve_static_assets?
-        require 'hanami/static'
-        @builder.use Hanami::Static
+      if middleware = Hanami.environment.static_assets_middleware
+        @builder.use middleware
       end
+
+      @builder.use Rack::MethodOverride
 
       @builder.run @routes
     end

@@ -2,8 +2,57 @@
 The web, with simplicity.
 
 ## v0.8.0 - (unreleased)
+### Added
+- [Luca Guidi] Generate new projects with Subresurce Integrity enabled in production (security).
+- [Luca Guidi] Include `X-XSS-Protection: 1; mode=block` in default response headers (security).
+- [Luca Guidi] Include `X-Content-Type-Options: nosniff` in default response headers (security).
+- [Trung Lê & Neil Matatall] Added support for Content Security Policy 1.1 and 2.0
+- [Andrey Deryabin] Experimental code reloading with `entr(1)`
+- [Anton Davydov] Introduced JSON logging formatter for production environment
+- [Anton Davydov] Allow to set logging formatters per app and per environment
+- [Anton Davydov] Allow to set logging levels per app and per environment
+- [Anton Davydov] Application logging now can log to any stream: standard out, file, `IO` and `StringIO` objects.
+- [Andrey Deryabin] Allow new projects to be generated with `--template` CLI argument (eg. `hanami new bookshelf --template=haml`)
+- [Sean Collins] Add `--version` and `-v` for `hanami version` CLI
+
+### Fixed
+- [Josh Bodah] Ensure consistent CLI messages
+- [Andrey Morskov] Ensure consistent user experience and messages for generators
+- [Luca Guidi] Fixed generators for camel case project names
+- [Anton Davydov] Fixed model generator for camel case project names
+- [Leonardo Saraiva] Fix `Rakefile` generation to safely ignore missing RSpec in production
+- [Sean Collins] When generate an action, append routes to route file (instead of prepend)
+- [Sean Collins] When an action is destroyed via CLI, ensure to remove the corresponding route
+- [Bernardo Farah] Fix `require_relative` paths for nested generated actions and views unit tests
+- [Anton Davydov] If database and assets Rake tasks fails, ensure to exit the process with a non-successful code
+- [Luca Guidi] remove `Shotgun::Static` in favor of `Hanami::Assets::Static` for development/test and `Hanami::Static` for production
+- [Alexandr Subbotin] Load initializers in alphabetical order
+- [Matt McFarland] Fix server side error when CSRF token is not sent
+- [Erol Fornoles] Fix route generations for mounted apps
+- [Mahesh] Fix destroy action for application architecture
+- [Karim Tarek & akhramov] Reference rendering errors in Rack env's `rack.exception` variable. This enables compatibility with exception reporting SaaS.
+- [Luca Guidi] Detect assets dependencies changes in development (Sass/SCSS)
+- [Luca Guidi & Lucas Amorim] Make model generator not dependendent on the current directory name, but to the project name stored in `.hanamirc`
+
 ### Changed
 – [Luca Guidi] Drop support for Ruby 2.0 and 2.1
+- [Trung Lê] Database env var is now `DATABASE_URL` (without the project name prefix like `BOOKSHELF_DATABASE_URL`
+- [Trung Lê] `lib/config/mapping.rb` is no longer generated for new projects and no longer loaded.
+- [Anton Davydov] New generated projects will depend (in their `Gemfile`) on `hanami` tiny version (`~> 0.8'`) instead of patch version (`0.8.0`)
+- [Andrey Deryabin] `dotenv` is now a soft dependency that will be added to the `Gemfile` `:development` and `:test` groups for new generated projects.
+- [Andrey Deryabin] `shotgun` is now a soft dependency that will be added to the `Gemfile` `:development` group for new generated projects.
+- [Anton Davydov] New logo in welcome page
+- [Ozawa Sakuro] Remove `require 'rubygems'` from generated code (projects, apps, routes, etc..)
+- [Eric Freese] Disable Ruby warnings in generated `Rakefile` for Minitest/RSpec tasks
+- [Luca Guidi] Allow views to render any HTTP status code. In actions use `halt(422)` for default status page or `self.status = 422` for view rendering.
+
+## v0.7.3 - 2016-05-23
+### Fixed
+- [Pascal Betz] Use `Shotgun::Static` to serve static files in development mode and avoid to reload the env
+
+## v0.7.2 - 2016-02-09
+### Fixed
+- [Alfonso Uceda Pompa] Fixed routing issue when static assets server tried to hijiack paths that are matching directories in public directory
 
 ## v0.7.1 - 2016-02-05
 ### Fixed

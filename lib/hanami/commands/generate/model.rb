@@ -41,8 +41,8 @@ module Hanami
         # @since 0.6.0
         # @api private
         def model_name_not_blank
-          if model_name.nil? || model_name.strip.empty?
-            raise ArgumentError.new('Model name nil or empty.')
+          if argument_blank?(model_name)
+            raise ArgumentError.new('Model name is missing')
           end
         end
 
@@ -57,7 +57,7 @@ module Hanami
         end
 
         def model_root
-          Pathname.new('lib').join(::File.basename(Dir.getwd))
+          Pathname.new('lib').join(project_name)
         end
 
         # @since 0.5.0
@@ -75,13 +75,13 @@ module Hanami
         # @since 0.5.0
         # @api private
         def entity_spec_path
-          target_path.join('spec', ::File.basename(Dir.getwd), 'entities', "#{ model_name_underscored }_spec.rb")
+          target_path.join('spec', project_name, 'entities', "#{ model_name_underscored }_spec.rb")
         end
 
         # @since 0.5.0
         # @api private
         def repository_spec_path
-          target_path.join('spec', ::File.basename(Dir.getwd), 'repositories',
+          target_path.join('spec', project_name, 'repositories',
             "#{ model_name_underscored }_repository_spec.rb")
         end
 
@@ -89,6 +89,12 @@ module Hanami
         # @api private
         def model_name_underscored
           Utils::String.new(model_name).underscore
+        end
+
+        # @since x.x.x
+        # @api private
+        def project_name
+          Utils::String.new(Hanami::Environment.new.project_name).underscore
         end
       end
     end

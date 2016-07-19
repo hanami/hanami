@@ -15,6 +15,16 @@ gem 'hanami-mailer',      require: false, github: 'hanami/mailer'
 gem 'hanami-assets',      require: false, github: 'hanami/assets'
 gem 'hanami',                             path: '../../../..'
 
+group :development do
+  # Code reloading
+  # See: [LINK TO HANAMI GUIDES]
+  gem 'shotgun'
+end
+
+group :test, :development do
+  gem 'dotenv', '~> 2.0'
+end
+
 group :test do
   gem 'minitest'
   gem 'capybara'

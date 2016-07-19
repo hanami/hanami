@@ -2,6 +2,7 @@ require 'hanami/version'
 require 'hanami/application'
 require 'hanami/container'
 require 'hanami/environment'
+require 'hanami/server'
 
 # A complete web framework for Ruby
 #

@@ -1,8 +1,8 @@
 require 'spec_helper'
 require_relative '../../../app/controllers/books/index'
 
-describe Testapp::Controllers::Books::Index do
-  let(:action) { Testapp::Controllers::Books::Index.new }
+describe TestApp::Controllers::Books::Index do
+  let(:action) { TestApp::Controllers::Books::Index.new }
   let(:params) { Hash[] }
 
   it 'is successful' do

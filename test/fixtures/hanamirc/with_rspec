@@ -1,3 +1,4 @@
 architecture=container
 test=rspec
 template=erb
+project=new_app

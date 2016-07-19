@@ -13,6 +13,7 @@ module Hanami
   # @since 0.1.0
   # @api private
   class Loader
+    LOCK = Mutex.new
 
     STRICT_TRANSPORT_SECURITY_HEADER = 'Strict-Transport-Security'.freeze
     STRICT_TRANSPORT_SECURITY_DEFAULT_VALUE = 'max-age=31536000'.freeze
@@ -20,12 +21,10 @@ module Hanami
     def initialize(application)
       @application   = application
       @configuration = @application.configuration
-
-      @mutex = Mutex.new
     end
 
     def load!
-      @mutex.synchronize do
+      LOCK.synchronize do
         load_configuration!
         configure_frameworks!
         load_configuration_load_paths!
@@ -59,7 +58,9 @@ module Hanami
           default_response_format config.default_response_format
           default_headers({
             Hanami::Config::Security::X_FRAME_OPTIONS_HEADER         => config.security.x_frame_options,
-            Hanami::Config::Security::CONTENT_SECURITY_POLICY_HEADER => config.security.content_security_policy
+            Hanami::Config::Security::X_CONTENT_TYPE_OPTIONS_HEADER  => config.security.x_content_type_options,
+            Hanami::Config::Security::X_XSS_PROTECTION_HEADER        => config.security.x_xss_protection,
+            Hanami::Config::Security::CONTENT_SECURITY_POLICY_HEADER => config.security.content_security_policy,
           })
           default_headers.merge!(STRICT_TRANSPORT_SECURITY_HEADER => STRICT_TRANSPORT_SECURITY_DEFAULT_VALUE) if config.force_ssl
 
@@ -143,10 +144,8 @@ module Hanami
 
     def _configure_logger!
       unless application_module.const_defined?('Logger', false)
-        if configuration.logger.nil?
-          configuration.logger Hanami::Logger.new(application_module.to_s)
-        end
-        application_module.const_set('Logger', configuration.logger)
+        configuration.logger.app_name(application_module.to_s)
+        application_module.const_set('Logger', configuration.logger.build)
       end
     end
 
@@ -250,7 +249,7 @@ module Hanami
     end
 
     def load_initializers!
-      Dir["#{configuration.root}/config/initializers/**/*.rb"].each do |file|
+      Dir["#{configuration.root}/config/initializers/**/*.rb"].sort.each do |file|
         require file
       end
     end

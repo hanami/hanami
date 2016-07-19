@@ -7,18 +7,28 @@ describe Hanami::Commands::Generate::Action do
     it 'requires application name' do
       with_temp_dir do |original_wd|
         setup_container_app
-        -> { Hanami::Commands::Generate::Action.new({}, nil, 'books#index') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, '', 'books#index') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, '  ', 'books#index') }.must_raise ArgumentError
+        err = -> { Hanami::Commands::Generate::Action.new({}, nil, 'books#index') }.must_raise ArgumentError
+        err.message.must_match /Unknown app/
+        err = -> { Hanami::Commands::Generate::Action.new({}, '', 'books#index') }.must_raise ArgumentError
+        err.message.must_match /Unknown app/
+        err = -> { Hanami::Commands::Generate::Action.new({}, '  ', 'books#index') }.must_raise ArgumentError
+        err.message.must_match /Unknown app/
       end
     end
 
     it 'requires controller and action name' do
       with_temp_dir do |previus_wd|
         setup_container_app
-        -> { Hanami::Commands::Generate::Action.new({}, 'web', 'books') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, 'web', '') }.must_raise ArgumentError
-        -> { Hanami::Commands::Generate::Action.new({}, 'web', ' ') }.must_raise ArgumentError
+        message = 'Unknown controller, please add controllers name with this syntax controller_name#action_name'
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books')
+        end
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Action.new({}, 'web', '')
+        end
+        assert_exception_raised(ArgumentError, message) do
+          Hanami::Commands::Generate::Action.new({}, 'web', ' ')
+        end
       end
     end
 
@@ -61,6 +71,11 @@ describe Hanami::Commands::Generate::Action do
 
         assert_file_exists 'apps/web/templates/admin/books/index.html.erb'
         assert_file_includes('apps/web/config/routes.rb', "get '/admin/books', to: 'admin/books#index'")
+
+        relative_action_path = command.template_options[:relative_action_path]
+        relative_view_path = command.template_options[:relative_view_path]
+        assert_file_exists(File.expand_path("#{relative_action_path}.rb", 'spec/web/controllers/admin/book'))
+        assert_file_exists(File.expand_path("#{relative_view_path}.rb", 'spec/web/controllers/admin/book'))
       end
 
       with_temp_dir do |original_wd|
@@ -70,6 +85,11 @@ describe Hanami::Commands::Generate::Action do
 
         assert_file_exists 'apps/web/templates/admin/books/index.html.erb'
         assert_file_includes('apps/web/config/routes.rb', "get '/admin/books', to: 'admin/books#index'")
+
+        relative_action_path = command.template_options[:relative_action_path]
+        relative_view_path = command.template_options[:relative_view_path]
+        assert_file_exists(File.expand_path("#{relative_action_path}.rb", 'spec/web/controllers/admin/book'))
+        assert_file_exists(File.expand_path("#{relative_view_path}.rb", 'spec/web/controllers/admin/book'))
       end
     end
 
@@ -257,7 +277,7 @@ describe Hanami::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_app_app
 
-            command = Hanami::Commands::Generate::Action.new({}, 'testapp', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({}, 'test_app', 'books#index')
             capture_io { command.start }
 
             assert_generated_app_action('minitest', original_wd)
@@ -268,7 +288,7 @@ describe Hanami::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_app_app
 
-            command = Hanami::Commands::Generate::Action.new({skip_view: true}, 'testapp', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({skip_view: true}, 'test_app', 'books#index')
             capture_io { command.start }
 
             assert_generated_file(original_wd.join('test/fixtures/commands/generate/action/routes.get.rb'), 'config/routes.rb')
@@ -287,7 +307,7 @@ describe Hanami::Commands::Generate::Action do
           with_temp_dir do |original_wd|
             setup_app_app
 
-            command = Hanami::Commands::Generate::Action.new({test: 'rspec'}, 'testapp', 'books#index')
+            command = Hanami::Commands::Generate::Action.new({test: 'rspec'}, 'test_app', 'books#index')
             capture_io { command.start }
 
             assert_generated_app_action('rspec', original_wd)
@@ -357,9 +377,9 @@ describe Hanami::Commands::Generate::Action do
           setup_app_app
 
           capture_io {
-            Hanami::Commands::Generate::Action.new({}, 'testapp', 'books#index').start
+            Hanami::Commands::Generate::Action.new({}, 'test_app', 'books#index').start
 
-            Hanami::Commands::Generate::Action.new({}, 'testapp', 'books#index').destroy.start
+            Hanami::Commands::Generate::Action.new({}, 'test_app', 'books#index').destroy.start
           }
 
           refute_file_exists('spec/controllers/books/index_spec.rb')
@@ -385,8 +405,8 @@ describe Hanami::Commands::Generate::Action do
       end
     end
 
-    describe 'with --url' do
-      it 'erases route configuration' do
+    describe 'generated with --url' do
+      it 'erases route configuration with --url' do
         with_temp_dir do |original_wd|
           setup_container_app
 
@@ -394,6 +414,20 @@ describe Hanami::Commands::Generate::Action do
             Hanami::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').start
 
             Hanami::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').destroy.start
+          }
+
+          refute_file_includes('apps/web/config/routes.rb', "get '/mybooks', to: 'books#index'")
+        end
+      end
+
+      it 'erases route configuration without --url' do
+        with_temp_dir do |original_wd|
+          setup_container_app
+
+          capture_io {
+            Hanami::Commands::Generate::Action.new({url: '/mybooks'}, 'web', 'books#index').start
+
+            Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').destroy.start
           }
 
           refute_file_includes('apps/web/config/routes.rb', "get '/mybooks', to: 'books#index'")
@@ -459,6 +493,54 @@ describe Hanami::Commands::Generate::Action do
       end
     end
 
+  end
+
+  describe 'inserting routes after comments' do
+    it 'puts routes after leading comments' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+
+        File.open('apps/web/config/routes.rb', File::WRONLY|File::CREAT) do |f|
+          f.puts("# Configure your routes here")
+          f.puts("# See: http://hanamirb.org/guides/routing/overview/")
+          f.puts("get '/books/new', to: 'books#new'")
+        end
+
+        capture_io {
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').start
+        }
+
+        assert_equal(
+          "# Configure your routes here\n"\
+          "# See: http://hanamirb.org/guides/routing/overview/\n"\
+          "get '/books', to: 'books#index'\n"\
+          "get '/books/new', to: 'books#new'\n",
+          File.read('apps/web/config/routes.rb')
+        )
+      end
+    end
+
+    it 'puts routes at beginning when comments are not leading' do
+      with_temp_dir do |original_wd|
+        setup_container_app
+
+        File.open('apps/web/config/routes.rb', File::WRONLY|File::CREAT) do |f|
+          f.puts("get '/books/new', to: 'books#new'")
+          f.puts("# Some comment further down the file")
+        end
+
+        capture_io {
+          Hanami::Commands::Generate::Action.new({}, 'web', 'books#index').start
+        }
+
+        assert_equal(
+          "get '/books', to: 'books#index'\n"\
+          "get '/books/new', to: 'books#new'\n"\
+          "# Some comment further down the file\n",
+          File.read('apps/web/config/routes.rb'),
+        )
+      end
+    end
   end
 
   def assert_generated_app_action(test_framework, original_wd)

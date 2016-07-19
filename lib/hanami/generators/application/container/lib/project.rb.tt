@@ -1,6 +1,6 @@
 require 'hanami/model'
 require 'hanami/mailer'
-Dir["#{ __dir__ }/<%= config[:app_name] %>/**/*.rb"].each { |file| require_relative file }
+Dir["#{ __dir__ }/<%= config[:project_name] %>/**/*.rb"].each { |file| require_relative file }
 
 Hanami::Model.configure do
   ##
@@ -12,14 +12,14 @@ Hanami::Model.configure do
   #    adapter type: :file_system, uri: 'file:///db/bookshelf_development'
   #
   #  * Memory adapter
-  #    adapter type: :memory, uri: 'memory://localhost/<%= config[:app_name] %>_development'
+  #    adapter type: :memory, uri: 'memory://localhost/<%= config[:project_name] %>_development'
   #
   #  * SQL adapter
-  #    adapter type: :sql, uri: 'sqlite://db/<%= config[:app_name] %>_development.sqlite3'
-  #    adapter type: :sql, uri: 'postgres://localhost/<%= config[:app_name] %>_development'
-  #    adapter type: :sql, uri: 'mysql://localhost/<%= config[:app_name] %>_development'
+  #    adapter type: :sql, uri: 'sqlite://db/<%= config[:project_name] %>_development.sqlite3'
+  #    adapter type: :sql, uri: 'postgres://localhost/<%= config[:project_name] %>_development'
+  #    adapter type: :sql, uri: 'mysql://localhost/<%= config[:project_name] %>_development'
   #
-  adapter type: :<%= config[:database_config][:type] %>, uri: ENV['<%= config[:app_name].to_env_s %>_DATABASE_URL']
+  adapter type: :<%= config[:database_config][:type] %>, uri: ENV['DATABASE_URL']
 
   <%- if config[:database_config][:type] == :sql -%>
   ##
@@ -34,12 +34,6 @@ Hanami::Model.configure do
   #
   # Intended for specifying application wide mappings.
   #
-  # You can specify mapping file to load with:
-  #
-  # mapping "#{__dir__}/config/mapping"
-  #
-  # Alternatively, you can use a block syntax like the following:
-  #
   mapping do
     # collection :users do
     #   entity     User
@@ -52,12 +46,12 @@ Hanami::Model.configure do
 end.load!
 
 Hanami::Mailer.configure do
-  root "#{ __dir__ }/<%= config[:app_name] %>/mailers"
+  root "#{ __dir__ }/<%= config[:project_name] %>/mailers"
 
   # See http://hanamirb.org/guides/mailers/delivery
   delivery do
     development :test
     test        :test
-    # production :stmp, address: ENV['SMTP_PORT'], port: 1025
+    # production :smtp, address: ENV['SMTP_PORT'], port: 1025
   end
 end.load!

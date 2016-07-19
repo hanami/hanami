@@ -4,10 +4,11 @@ require 'hanami/commands/generate/action'
 module Hanami
   class CliSubCommands
     class Destroy < Thor
+      extend CliBase
       include Thor::Actions
       namespace :destroy
 
-      desc 'action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME', 'destroy a hanami action'
+      desc 'action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME', 'Destroy a hanami action'
       long_desc <<-EOS
         `hanami destroy action` will destroy an an action, view and template along with specs and a route.
 
@@ -24,7 +25,13 @@ module Hanami
       method_option :url, desc: 'Relative URL for action, will be used for the route', default: nil
       method_option :template, desc: 'Extension used when the template was generated. Default is defined through your .hanamirc file.'
 
-      def actions(application_name, controller_and_action_name)
+      def actions(application_name = nil, controller_and_action_name)
+        if Hanami::Environment.new(options).container? && application_name.nil?
+          msg = "ERROR: \"hanami destroy action\" was called with arguments [\"#{controller_and_action_name}\"]\n" \
+                "Usage: \"hanami action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME\""
+          fail Error, msg
+        end
+
         if options[:help]
           invoke :help, ['action']
         else
@@ -32,7 +39,7 @@ module Hanami
         end
       end
 
-      desc 'migration NAME', 'destroy a migration'
+      desc 'migration NAME', 'Destroy a migration'
       long_desc <<-EOS
       `hanami destroy migration` will destroy a migration file.
 
@@ -48,7 +55,7 @@ module Hanami
         end
       end
 
-      desc 'model NAME', 'destroy an entity'
+      desc 'model NAME', 'Destroy an entity'
       long_desc <<-EOS
         `hanami destroy model` will destroy an entity along with repository
         and corresponding tests
@@ -65,7 +72,7 @@ module Hanami
         end
       end
 
-      desc 'application NAME', 'destroy an application'
+      desc 'application NAME', 'Destroy an application'
       long_desc <<-EOS
       `hanami destroy application` will destroy an application, along with templates and specs.
 
@@ -80,7 +87,7 @@ module Hanami
         end
       end
 
-      desc 'mailer NAME', 'destroy a mailer'
+      desc 'mailer NAME', 'Destroy a mailer'
       long_desc <<-EOS
       `hanami destroy mailer` will destroy a mailer, along with templates and specs.
 

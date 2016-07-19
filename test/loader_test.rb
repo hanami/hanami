@@ -45,6 +45,16 @@ describe Hanami::Loader do
         CoffeeShop::Controller.configuration.default_response_format.must_equal(:html)
       end
 
+      it 'configures controller to use default headers' do
+        CoffeeShop::Controller.configuration.default_headers.
+          must_equal({
+            "X-Frame-Options" => "DENY",
+            "X-Content-Type-Options" => "nosniff",
+            "X-XSS-Protection" => "1; mode=block",
+            "Content-Security-Policy" => "form-action 'self'; referrer origin-when-cross-origin; reflected-xss block; frame-ancestors 'self'; base-uri 'self'; default-src 'none'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self'; object-src 'self'; plugin-types application/pdf; child-src 'self'; frame-src 'self'; media-src 'self'",
+          })
+      end
+
       it 'generates controllers namespace' do
         assert defined?(CoffeeShop::Controllers), 'expected CoffeeShop::Controllers'
       end
@@ -59,6 +69,10 @@ describe Hanami::Loader do
 
       it 'assigns layout to CoffeeShop::View' do
         CoffeeShop::View.configuration.layout.must_equal Hanami::View::Rendering::NullLayout
+      end
+
+      it 'generates logger namespace' do
+        assert defined?(CoffeeShop::Logger), 'expected CoffeeShop::Logger'
       end
     end
 
@@ -108,29 +122,33 @@ describe Hanami::Loader do
           it 'load a default logger' do
             BeerShop::Logger.must_be_instance_of Hanami::Logger
           end
+
           it 'has app module name along with log output' do
             BeerShop::Logger.info 'foo'
-            @output.must_match(/BeerShop/)
+            @output.must_match(/foo/)
           end
         end
 
         describe 'when explicitly configured' do
           before do
-            class MyLogger < Logger; end
+            class CustomLogger
+            end
+
             module DrinkShop
               class Application < Hanami::Application
-                configure { logger MyLogger.new(STDOUT) }
+                configure { logger.engine CustomLogger.new }
                 load!
               end
             end
           end
+
           after do
-            Object.__send__(:remove_const, :MyLogger)
             Object.__send__(:remove_const, :DrinkShop)
+            Object.__send__(:remove_const, :CustomLogger)
           end
 
           it 'load the configured logger' do
-            DrinkShop::Logger.must_be_instance_of MyLogger
+            DrinkShop::Logger.must_be_instance_of CustomLogger
           end
         end
       end

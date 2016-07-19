@@ -1,3 +1,4 @@
+project=exists
 architecture=container
 test=minitest
 template=erb

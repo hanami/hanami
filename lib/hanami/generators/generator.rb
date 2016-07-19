@@ -7,7 +7,7 @@ module Hanami
 
       extend Forwardable
 
-      def_delegators :@processor, :run, :behavior=, :inject_into_file, :append_to_file, :prepend_to_file
+      def_delegators :@processor, :run, :behavior=, :inject_into_file, :append_to_file, :prepend_to_file, :gsub_file
 
       class Processor < Thor
         include Thor::Actions
@@ -29,6 +29,15 @@ module Hanami
         @template_mappings.each do |src, dst|
           @processor.template(@template_source_path.join(src), @target_path.join(dst), options)
         end
+      end
+
+      # Modelled after Thor's `inject_into_class`
+      def prepend_after_leading_comments(path, *args, &block)
+        config = args.last.is_a?(Hash) ? args.pop : {}
+        # Either prepend after the last comment line,
+        # or the first line in the file, if there are no comments
+        config.merge!(after: /\A(?:^#.*$\s)*/)
+        @processor.insert_into_file(path, *(args << config), &block)
       end
     end
   end

@@ -36,6 +36,17 @@ describe Hanami::Commands::New::App do
   end
 
   describe 'with valid arguments' do
+    describe 'CamelCase name' do
+      it 'creates files' do
+        with_temp_dir('camel_case_project_name') do |original_wd|
+          command = Hanami::Commands::New::App.new({}, 'NewApp')
+          capture_io { command.start }
+
+          assert_generated_app('minitest', original_wd)
+        end
+      end
+    end
+
     describe 'minitest' do
       it 'creates files' do
         with_temp_dir do |original_wd|
@@ -58,6 +69,21 @@ describe Hanami::Commands::New::App do
       end
     end
 
+    describe 'template engine' do
+      it 'creates files' do
+        with_temp_dir do |original_wd|
+          command = Hanami::Commands::New::App.new({template: 'slim'}, 'new_app')
+          capture_io { command.start }
+
+          fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_app')
+          Dir.chdir('new_app') do
+            assert_generated_file(fixture_root.join('Gemfile.slim'), 'Gemfile')
+            assert_generated_file(fixture_root.join('.hanamirc.slim'), '.hanamirc')
+          end
+        end
+      end
+    end
+
     it 'returns valid classified app name' do
       command = Hanami::Commands::New::App.new({}, 'awesome-test-app')
       command.template_options[:classified_app_name].must_equal 'AwesomeTestApp'
@@ -68,15 +94,14 @@ describe Hanami::Commands::New::App do
     fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_app')
     Dir.chdir('new_app') do
       assert_generated_file(fixture_root.join(".hanamirc.#{ test_framework }"), '.hanamirc')
-      assert_generated_file(fixture_root.join('.env'), '.env')
 
       assert_file_includes('.env.development',
-                           'NEW_APP_DATABASE_URL="file:///db/new_app_development"',
+                           'DATABASE_URL="file:///db/new_app_development"',
                            'SERVE_STATIC_ASSETS="true"',
                            %r{NEW_APP_SESSIONS_SECRET="[\w]{64}"})
 
       assert_file_includes('.env.test',
-                           'NEW_APP_DATABASE_URL="file:///db/new_app_test"',
+                           'DATABASE_URL="file:///db/new_app_test"',
                            'SERVE_STATIC_ASSETS="true"',
                            %r{NEW_APP_SESSIONS_SECRET="[\w]{64}"})
 
@@ -85,7 +110,6 @@ describe Hanami::Commands::New::App do
 
       assert_generated_file(fixture_root.join('config', 'environment.rb'), 'config/environment.rb')
       assert_generated_file(fixture_root.join('lib', 'new_app.rb'), 'lib/new_app.rb')
-      assert_generated_file(fixture_root.join('lib', 'config', 'mapping.rb'), 'lib/config/mapping.rb')
       assert_generated_file(fixture_root.join('config', 'application.rb'), 'config/application.rb')
       assert_generated_file(fixture_root.join('config', 'routes.rb'), 'config/routes.rb')
       assert_generated_file(fixture_root.join('app', 'views', 'application_layout.rb'), 'app/views/application_layout.rb')

@@ -10,11 +10,31 @@ module Hanami
       # @see Hanami::Loader#_configure_controller_framework!
       X_FRAME_OPTIONS_HEADER = 'X-Frame-Options'.freeze
 
+      # @since x.x.x
+      # @api private
+      #
+      # @see Hanami::Loader#_configure_controller_framework!
+      X_CONTENT_TYPE_OPTIONS_HEADER = 'X-Content-Type-Options'.freeze
+
+      # @since x.x.x
+      # @api private
+      #
+      # @see Hanami::Loader#_configure_controller_framework!
+      X_XSS_PROTECTION_HEADER = 'X-XSS-Protection'.freeze
+
       # @since 0.3.0
       # @api private
       #
       # @see Hanami::Loader#_configure_controller_framework!
       CONTENT_SECURITY_POLICY_HEADER = 'Content-Security-Policy'.freeze
+
+      # @since x.x.x
+      # @api private
+      SEPARATOR = ';'.freeze
+
+      # @since x.x.x
+      # @api private
+      SPACED_SEPARATOR = "#{ SEPARATOR } ".freeze
 
       # X-Frame-Options headers' value
       #
@@ -35,6 +55,44 @@ module Hanami
         end
       end
 
+      # X-Content-Type-Options headers' value
+      #
+      # @overload x_content_type_options(value)
+      #   Sets the given value
+      #   @param value [String] for X-Content-Type-Options header.
+      #
+      # @overload x_content_type_options
+      #   Gets the value
+      #   @return [String] X-Content-Type-Options header's value
+      #
+      # @since x.x.x
+      def x_content_type_options(value = nil)
+        if value.nil?
+          @x_content_type_options
+        else
+          @x_content_type_options = value
+        end
+      end
+
+      # X-XSS-Protection headers' value
+      #
+      # @overload x_xss_protection(value)
+      #   Sets the given value
+      #   @param value [String] for X-XSS-Protection header.
+      #
+      # @overload x_xss_protection
+      #   Gets the value
+      #   @return [String] X-XSS-Protection header's value
+      #
+      # @since x.x.x
+      def x_xss_protection(value = nil)
+        if value.nil?
+          @x_xss_protection
+        else
+          @x_xss_protection = value
+        end
+      end
+
       # Content-Policy-Security headers' value
       #
       # @overload content_security_policy(value)
@@ -50,7 +108,7 @@ module Hanami
         if value.nil?
           @content_security_policy
         else
-          @content_security_policy = value
+          @content_security_policy = value.split(SEPARATOR).map(&:strip).join(SPACED_SEPARATOR)
         end
       end
     end

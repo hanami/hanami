@@ -60,7 +60,7 @@ module Web
       #          :path     - Restrict cookies to a relative URI (String - nil by default)
       #          :max_age  - Cookies expiration expressed in seconds (Integer - nil by default)
       #          :secure   - Restrict cookies to secure connections
-      #                      (Boolean - Automatically set on true if currenlty using a secure connection)
+      #                      (Boolean - Automatically set on true if currently using a secure connection)
       #                      See #scheme and #ssl?
       #          :httponly - Prevent JavaScript access (Boolean - true by default)
       #
@@ -144,7 +144,28 @@ module Web
       #   * https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
       #   * https://www.owasp.org/index.php/Clickjacking
       #
-      security.x_frame_options "DENY"
+      security.x_frame_options 'DENY'
+
+      # X-Content-Type-Options prevents browsers from interpreting files as
+      # something else than declared by the content type in the HTTP headers.
+      #
+      # Read more at:
+      #
+      #   * https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#X-Content-Type-Options
+      #   * https://msdn.microsoft.com/en-us/library/gg622941%28v=vs.85%29.aspx
+      #   * https://blogs.msdn.microsoft.com/ie/2008/09/02/ie8-security-part-vi-beta-2-update
+      #
+      security.x_content_type_options 'nosniff'
+
+      # X-XSS-Protection is a HTTP header to determine the behavior of the browser
+      # in case an XSS attack is detected.
+      #
+      # Read more at:
+      #
+      #   * https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)
+      #   * https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#X-XSS-Protection
+      #
+      security.x_xss_protection '1; mode=block'
 
       # Content-Security-Policy (CSP) is a HTTP header supported by modern browsers.
       # It determines trusted sources of execution for dynamic contents
@@ -177,7 +198,11 @@ module Web
       #  * http://content-security-policy.com/
       #  * https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_Content_Security_Policy
       #
-      security.content_security_policy "default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self';"
+      # Content Security Policy references:
+      #
+      #  * https://developer.mozilla.org/en-US/docs/Web/Security/CSP/CSP_policy_directives
+      #
+      security.content_security_policy "form-action 'self'; referrer origin-when-cross-origin; reflected-xss block; frame-ancestors 'self'; base-uri 'self'; default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; font-src 'self'; object-src 'self'; plugin-types application/pdf; child-src 'self'; frame-src 'self'; media-src 'self'"
 
       ##
       # FRAMEWORKS
@@ -227,8 +252,9 @@ module Web
       # port   443
 
       assets do
-        compile false
-        digest  true
+        compile               false
+        digest                true
+        subresource_integrity :sha256
       end
     end
   end

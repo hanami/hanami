@@ -3,7 +3,7 @@ require 'test_helper'
 describe Hanami::Environment do
   before do
     ENV['HANAMI_ENV']  = nil
-    ENV['RACK_ENV']   = nil
+    ENV['RACK_ENV']    = nil
     ENV['HANAMI_HOST'] = nil
     ENV['HANAMI_PORT'] = nil
 
@@ -23,17 +23,30 @@ describe Hanami::Environment do
         Dir.chdir($pwd)
       end
 
-      it 'sets env vars from .env' do
-        ENV['FOO'].must_equal 'bar'
+      describe 'ignores .env' do
+        it 'does not sets env vars' do
+          ENV['FOO'].must_be_nil
+        end
+
+        it 'does not sets port' do
+          @env.port.must_equal 2300
+        end
       end
 
-      it 'sets port from .env' do
-        @env.port.must_equal 42
-      end
+      describe 'environment .env' do
+        before do
+          Dir.chdir($pwd + '/test/fixtures/dotenv')
+          @env = Hanami::Environment.new
+        end
 
-      it 'sets env vars from the environment .env' do
-        ENV['BAZ'].must_equal 'yes' # override
-        ENV['WAT'].must_equal 'true'
+        it 'sets port' do
+          @env.port.must_equal 42
+        end
+
+        it 'sets env vars' do
+          ENV['BAZ'].must_equal 'yes'
+          ENV['WAT'].must_equal 'true'
+        end
       end
 
       describe 'when the .env is missing' do
@@ -62,7 +75,6 @@ describe Hanami::Environment do
         end
 
         it "doesn't set env vars" do
-          ENV['BAZ'].must_equal 'no' # from .env
           ENV['WAT'].must_be_nil
         end
       end
@@ -519,7 +531,7 @@ describe Hanami::Environment do
           @env = Hanami::Environment.new
         end
 
-        it 'returns true' do
+        it 'returns false' do
           @env.environment.must_equal 'test'
           @env.code_reloading?.must_equal false
         end

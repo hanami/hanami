@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'hanami/environment'
+require 'hanami/assets/static'
 require 'hanami/commands/server'
 
 describe Hanami::Commands::Server do
@@ -9,9 +10,17 @@ describe Hanami::Commands::Server do
     ENV['HANAMI_HOST'] = nil
     ENV['HANAMI_PORT'] = nil
     ENV['HANAMI_ENV']  = nil
-    ENV['RACK_ENV']   = nil
+    ENV['RACK_ENV']    = nil
 
-    @server = Hanami::Commands::Server.new(opts)
+    Hanami::Application.applications.clear
+
+    class Hanami::Commands::Server
+      def entr_enabled?
+        false
+      end
+    end
+
+    @server = Hanami::Commands::Server.new(opts).server
   end
 
   describe '#middleware' do
@@ -19,7 +28,7 @@ describe Hanami::Commands::Server do
       expected = {
         'deployment'  => [::Rack::ContentLength, ::Rack::CommonLogger],
         'development' => [::Rack::ContentLength, ::Rack::CommonLogger,
-                          ::Rack::ShowExceptions, Rack::Lint]
+                          ::Rack::ShowExceptions, Rack::Lint, Hanami::Assets::Static]
       }
 
       @server.middleware.must_equal(expected)
@@ -120,7 +129,7 @@ describe Hanami::Commands::Server do
       before do
         ENV['HANAMI_ENV'] = nil
         ENV['RACK_ENV']  = 'test'
-        @server = Hanami::Commands::Server.new(opts)
+        @server = Hanami::Commands::Server.new(opts).server
       end
 
       after do
@@ -142,7 +151,7 @@ describe Hanami::Commands::Server do
       before do
         ENV['RACK_ENV']  = nil
         ENV['HANAMI_ENV'] = 'staging'
-        @server = Hanami::Commands::Server.new(opts)
+        @server = Hanami::Commands::Server.new(opts).server
       end
 
       after do
@@ -164,7 +173,7 @@ describe Hanami::Commands::Server do
       before do
         ENV['RACK_ENV']  = 'staging'
         ENV['HANAMI_ENV'] = 'test'
-        @server = Hanami::Commands::Server.new(opts)
+        @server = Hanami::Commands::Server.new(opts).server
       end
 
       it 'gives the precendence to HANAMI_ENV' do
@@ -265,11 +274,51 @@ describe Hanami::Commands::Server do
   end
 
   describe 'code reloading', engine: :mri do
-    describe 'when enabled' do
-      let(:opts) { Hash[code_reloading: true] }
+    describe 'when reloading enabled' do
 
-      it 'uses Shotgun to wrap the application' do
-        @server.instance_variable_get(:@app).must_be_kind_of(Shotgun::Loader)
+      describe 'shotgun disabled' do
+        before do
+          @server_klass = Class.new(Hanami::Commands::Server) do
+            def shotgun_enabled?
+              false
+            end
+          end
+
+          @server = @server_klass.new(opts).server
+        end
+
+        let(:opts) { Hash[code_reloading: true] }
+
+        it "doesn't use Shotgun" do
+          @server.instance_variable_get(:@app).must_be_nil
+        end
+      end
+
+      describe 'shotgun enabled' do
+        let(:opts) { Hash[code_reloading: true] }
+
+        it 'uses Shotgun to wrap the application' do
+          @server.instance_variable_get(:@app).must_be_kind_of(Shotgun::Loader)
+        end
+      end
+
+      describe 'fork not support' do
+        before do
+
+          @server_klass = Class.new(Hanami::Commands::Server) do
+            def fork_supported?
+              false
+            end
+          end
+
+          @server = @server_klass.new(opts).server
+        end
+
+        let(:opts) { Hash[code_reloading: true] }
+
+        it "doesn't use Shotgun" do
+          @server.instance_variable_get(:@app).must_be_nil
+        end
       end
     end
 

@@ -29,12 +29,6 @@ Hanami::Model.configure do
   #
   # Intended for specifying application wide mappings.
   #
-  # You can specify mapping file to load with:
-  #
-  # mapping "#{__dir__}/config/mapping"
-  #
-  # Alternatively, you can use a block syntax like the following:
-  #
   mapping do
      collection :users do
        entity     User
@@ -53,6 +47,6 @@ Hanami::Mailer.configure do
   delivery do
     development :test
     test        :test
-    # production :stmp, address: ENV['SMTP_PORT'], port: 1025
+    # production :smtp, address: ENV['SMTP_PORT'], port: 1025
   end
 end.load!
