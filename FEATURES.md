@@ -3,7 +3,34 @@
 
 ## Features
 
+## v0.8.0 - (unreleased)
+
+- New validation syntax based on predicates
+- Custom and shared predicates for validations
+- High level rules for validations
+- Validations error messages with I18n support (via optional `i18n` gem)
+- Mount applications in subdomains
+- Added support for Content Security Policy 1.1 and 2.0
+- Subresurce Integrity
+- Include `X-Content-Type-Options` and `X-XSS-Protection` in default response headers
+- Support for several JSON engines (via optional `multi_json` gem)
+- JSON Logging for production
+- Per environment logging levels, stream (file, stdout), formatters
+- Introduced `#local` for views, layouts and templates to safely access locals by avoiding `nil` values
+- Added `datalist` form helper
+- CC and BCC support for mailers
+- Experimental code reloading via `entr(1)`
+- CLI: `hanami new` can be used with `--template` argument to generate a new project with (`erb`/`haml`/`slim`) templates
+
+## v0.7.3 - 2016-05-23
+
+## v0.7.2 - 2016-02-09
+
+## v0.7.1 - 2016-02-05
+
 ## v0.7.0 - 2016-01-22
+
+- Renamed from Lotus to Hanami
 
 ## v0.6.1 - 2016-01-19
 
