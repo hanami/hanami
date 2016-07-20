@@ -60,8 +60,8 @@ describe 'A full stack Hanami application' do
 
     response.status.must_equal 418
 
-    response.body.must_match %(<title>I&apos;m a teapot</title>)
-    response.body.must_match %(<h1>I&apos;m a teapot (418)</h1>)
+    response.body.must_match %(<title>418 - I&apos;m a teapot</title>)
+    response.body.must_match %(<h1>418 - I&apos;m a teapot (418)</h1>)
     response.body.must_match %(<h2>Additional informations</h2>)
   end
 
@@ -70,8 +70,8 @@ describe 'A full stack Hanami application' do
 
     response.status.must_equal 404
 
-    response.body.must_match %(<title>Not Found</title>)
-    response.body.must_match %(<h1>Not Found</h1>)
+    response.body.must_match %(<title>404 - Not Found</title>)
+    response.body.must_match %(<h2>404 - Not Found</h2>)
   end
 
   it "when non html, it only returns the status code and message" do
@@ -85,8 +85,8 @@ describe 'A full stack Hanami application' do
     get '/error'
 
     response.status.must_equal 500
-    response.body.must_match %(<title>Internal Server Error</title>)
-    response.body.must_match %(<h1>Internal Server Error</h1>)
+    response.body.must_match %(<title>500 - Internal Server Error</title>)
+    response.body.must_match %(<h2>500 - Internal Server Error</h2>)
   end
 
   it "when non html, it only returns the error status code and message" do
@@ -136,8 +136,8 @@ describe 'A full stack Hanami application' do
     get '/protected'
 
     response.status.must_equal 401
-    response.body.must_match %(<title>Unauthorized</title>)
-    response.body.must_match %(<h1>Unauthorized</h1>)
+    response.body.must_match %(<title>401 - Unauthorized</title>)
+    response.body.must_match %(<h2>401 - Unauthorized</h2>)
   end
 
   describe 'RESTful CRUD' do

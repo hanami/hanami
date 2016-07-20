@@ -50,8 +50,8 @@ describe 'Hanami microservices applications' do
 
     response.status.must_equal 404
 
-    response.body.must_match %(<title>Not Found</title>)
-    response.body.must_match %(<h1>Not Found</h1>)
+    response.body.must_match %(<title>404 - Not Found</title>)
+    response.body.must_match %(<h2>404 - Not Found</h2>)
   end
 
   it "renders a custom page for backend not found resources" do
@@ -59,7 +59,7 @@ describe 'Hanami microservices applications' do
 
     response.status.must_equal 404
 
-    response.body.must_match %(<title>Not Found</title>)
-    response.body.must_match %(<h1>Not Found</h1>)
+    response.body.must_match %(<title>404 - Not Found</title>)
+    response.body.must_match %(<h2>404 - Not Found</h2>)
   end
 end
