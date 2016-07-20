@@ -40,6 +40,26 @@ describe Hanami::Routes do
     end
   end
 
+  describe '#recognize' do
+    it 'recognizes a route from a Rack env' do
+      env   = Rack::MockRequest.env_for('/')
+      route = @routes.recognize(env)
+
+      route.must_be :routable?
+
+      route.path.must_equal '/'
+      route.verb.must_equal 'GET'
+      route.params.must_equal({})
+    end
+
+    it 'does not recognizes a route from wrong Rack env' do
+      env   = Rack::MockRequest.env_for('/foo')
+      route = @routes.recognize(env)
+
+      route.wont_be :routable?
+    end
+  end
+
   describe 'dynamic finders' do
     describe 'for relative URLs' do
       it 'recognizes named route' do
