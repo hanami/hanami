@@ -52,16 +52,16 @@ describe 'A top level Hanami application' do
 
     response.status.must_equal 404
 
-    response.body.must_match %(<title>Not Found</title>)
-    response.body.must_match %(<h1>Not Found</h1>)
+    response.body.must_match %(<title>404 - Not Found</title>)
+    response.body.must_match %(<h2>404 - Not Found</h2>)
   end
 
   it "renders a custom page for server side errors" do
     get '/error'
 
     response.status.must_equal 500
-    response.body.must_match %(<title>Internal Server Error</title>)
-    response.body.must_match %(<h1>Internal Server Error</h1>)
+    response.body.must_match %(<title>500 - Internal Server Error</title>)
+    response.body.must_match %(<h2>500 - Internal Server Error</h2>)
   end
 
   it "handles redirects from routes"
@@ -88,7 +88,7 @@ describe 'A top level Hanami application' do
     get '/protected'
 
     response.status.must_equal 401
-    response.body.must_match %(<title>Unauthorized</title>)
-    response.body.must_match %(<h1>Unauthorized</h1>)
+    response.body.must_match %(<title>401 - Unauthorized</title>)
+    response.body.must_match %(<h2>401 - Unauthorized</h2>)
   end
 end
