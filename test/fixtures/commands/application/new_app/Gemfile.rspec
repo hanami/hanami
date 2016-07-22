@@ -4,7 +4,7 @@ gem 'bundler'
 gem 'rake'
 
 gem 'hanami',       '~> 0.8'
-gem 'hanami-model', '~> 0.7'
+gem 'hanami-model', '~> 0.6'
 
 group :development do
   # Code reloading
