@@ -6,11 +6,11 @@ module Hanami
     class Generate
       class Action < Abstract
 
-        # @since x.x.x
+        # @since 0.8.0
         # @api private
         ACTION_SEPARATOR_MATCHER = /[\/,#]/
 
-        # @since x.x.x
+        # @since 0.8.0
         # @api private
         CONTROLLER_SEPARATOR = Utils::String::UNDERSCORE_SEPARATOR
 
@@ -22,11 +22,11 @@ module Hanami
         # @api private
         QUOTED_NAME = /(\"|\'|\\)/
 
-        # @since x.x.x
+        # @since 0.8.0
         # @api private
         UP_DIRECTORY = '..'.freeze
 
-        # @since x.x.x
+        # @since 0.8.0
         # @api private
         DIRECTORY_TEST_NESTING_LEVELS = 3
 

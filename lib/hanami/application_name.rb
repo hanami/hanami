@@ -47,7 +47,7 @@ module Hanami
     end
 
     # @api private
-    # @since x.x.x
+    # @since 0.8.0
     alias_method :to_str, :to_s
 
     # Returns the application name uppercased with non-alphanumeric characters

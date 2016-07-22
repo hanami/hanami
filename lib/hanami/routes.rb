@@ -143,7 +143,7 @@ module Hanami
     #
     # @return [Hanami::Routing::RecognizedRoute] the recognized route
     #
-    # @since x.x.x
+    # @since 0.8.0
     #
     # @see http://hanamirb.org/guides/routing/testing
     #

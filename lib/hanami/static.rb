@@ -24,19 +24,19 @@ module Hanami
   #
   # @see http://www.rubydoc.info/gems/rack/Rack/Static
   class Static < ::Rack::Static
-    # @since x.x.x
+    # @since 0.8.0
     # @api private
     MAX_AGE      = 60 * 60 * 24 * 365 # One year
 
-    # @since x.x.x
+    # @since 0.8.0
     # @api private
     HEADER_RULES = [[:all, { 'Cache-Control' => "public, max-age=#{MAX_AGE}" }]].freeze
 
-    # @since x.x.x
+    # @since 0.8.0
     # @api private
     EXCLUDED_ENTRIES = %w(. ..).freeze
 
-    # @since x.x.x
+    # @since 0.8.0
     # @api private
     URL_PREFIX = '/'.freeze
 
@@ -48,7 +48,7 @@ module Hanami
 
     private
 
-    # @since x.x.x
+    # @since 0.8.0
     # @api private
     def _urls(root)
       return [] unless root.exist?

@@ -142,7 +142,7 @@ module Hanami
     # Use MethodOverride middleware
     #
     # @api private
-    # @since x.x.x
+    # @since 0.8.0
     def _load_method_override_middleware
       env = Hanami.environment
 
