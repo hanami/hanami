@@ -3,7 +3,7 @@
 
 ## Features
 
-## v0.8.0 - (unreleased)
+## v0.8.0 - 2016-07-22
 
 - New validation syntax based on predicates
 - Custom and shared predicates for validations

@@ -244,7 +244,7 @@ module Hanami
     #
     # @return [String] Project name
     #
-    # @since x.x.x
+    # @since 0.8.0
     # @api private
     def project_name
       @options.fetch(:project)

@@ -10,13 +10,13 @@ module Hanami
       # @see Hanami::Loader#_configure_controller_framework!
       X_FRAME_OPTIONS_HEADER = 'X-Frame-Options'.freeze
 
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       #
       # @see Hanami::Loader#_configure_controller_framework!
       X_CONTENT_TYPE_OPTIONS_HEADER = 'X-Content-Type-Options'.freeze
 
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       #
       # @see Hanami::Loader#_configure_controller_framework!
@@ -28,11 +28,11 @@ module Hanami
       # @see Hanami::Loader#_configure_controller_framework!
       CONTENT_SECURITY_POLICY_HEADER = 'Content-Security-Policy'.freeze
 
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       SEPARATOR = ';'.freeze
 
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       SPACED_SEPARATOR = "#{ SEPARATOR } ".freeze
 
@@ -65,7 +65,7 @@ module Hanami
       #   Gets the value
       #   @return [String] X-Content-Type-Options header's value
       #
-      # @since x.x.x
+      # @since 0.8.0
       def x_content_type_options(value = nil)
         if value.nil?
           @x_content_type_options
@@ -84,7 +84,7 @@ module Hanami
       #   Gets the value
       #   @return [String] X-XSS-Protection header's value
       #
-      # @since x.x.x
+      # @since 0.8.0
       def x_xss_protection(value = nil)
         if value.nil?
           @x_xss_protection

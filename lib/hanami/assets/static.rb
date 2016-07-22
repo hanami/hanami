@@ -21,23 +21,23 @@ module Hanami
     # The other important role of `Hanami::Assets::Static` is to lazily compile
     # (or copy) the assets into the public directory.
     #
-    # @since x.x.x
+    # @since 0.8.0
     # @api private
     #
     # @see Hanami::Static
     class Static < Hanami::Static
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       PATH_INFO = 'PATH_INFO'.freeze
 
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       def initialize(app)
         super(app, header_rules: [])
         @sources = _sources_from_applications
       end
 
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       def call(env)
         asset = Assets::Asset.new(@sources, env[PATH_INFO])
@@ -52,13 +52,13 @@ module Hanami
 
       private
 
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       def serve?(asset)
         can_serve(asset.path) || asset.exist? || asset.precompile?
       end
 
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       def precompile(asset)
         Hanami::Assets::Compiler.compile(asset.config, asset.original) if asset.precompile?
@@ -71,7 +71,7 @@ module Hanami
       # Rack - Copyright (C) 2007 Christian Neukirchen
       # Released under the MIT License
       #
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       #
       # @see http://www.rubydoc.info/gems/rack/Rack%2FStatic%3Acall
@@ -89,7 +89,7 @@ module Hanami
         response
       end
 
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       def _sources_from_applications
         Hanami::Application.applications.each_with_object({}) do |application, result|
@@ -98,7 +98,7 @@ module Hanami
         end
       end
 
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       def _assets_configuration(application)
         application.configuration.namespace::Assets.configuration

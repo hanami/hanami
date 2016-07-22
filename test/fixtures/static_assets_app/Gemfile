@@ -17,7 +17,7 @@ gem 'hanami',                       path:   '../../..'
 
 group :development do
   # Code reloading
-  # See: [LINK TO HANAMI GUIDES]
+  # See: http://hanamirb.org/guides/applications/code-reloading
   gem 'shotgun'
 end
 

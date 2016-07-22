@@ -4,12 +4,12 @@ gem 'bundler'
 gem 'rake'
 
 gem 'hanami',       '~> 0.8'
-gem 'hanami-model', '~> 0.7'
+gem 'hanami-model', '~> 0.6'
 
 
 group :development do
   # Code reloading
-  # See: [LINK TO HANAMI GUIDES]
+  # See: http://hanamirb.org/guides/applications/code-reloading
   gem 'shotgun'
 end
 

@@ -4,7 +4,7 @@ module Hanami
     # Please be careful. This is a private method that
     # can be deleted soon.
     #
-    # @since x.x.x
+    # @since 0.8.0
     # @api private
     #
     # @example Usage with Cli class

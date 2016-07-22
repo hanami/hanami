@@ -91,7 +91,7 @@ module Hanami
           Utils::String.new(model_name).underscore
         end
 
-        # @since x.x.x
+        # @since 0.8.0
         # @api private
         def project_name
           Utils::String.new(Hanami::Environment.new.project_name).underscore

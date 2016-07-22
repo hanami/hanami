@@ -16,7 +16,7 @@ module Hanami
       template 'default'
 
       def title
-        response[2].first || Http::Status.message_for(response[0])
+        "#{response[0]} - #{response[2].first || Http::Status.message_for(response[0])}"
       end
 
       def self.render(root, template_name, context)

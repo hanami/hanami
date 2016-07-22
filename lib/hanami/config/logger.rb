@@ -4,7 +4,7 @@ module Hanami
   module Config
     # Logger configuration
     #
-    # @since x.x.x
+    # @since 0.8.0
     class Logger
       attr_reader :application_module
 
@@ -29,7 +29,7 @@ module Hanami
       #   Gets the value
       #   @return [String,Pathname,IO,StringIO] log stream option's value
       #
-      # @since x.x.x
+      # @since 0.8.0
       def stream(value = nil)
         if value.nil?
           @stream
@@ -50,7 +50,7 @@ module Hanami
       #   Gets the value
       #   @return [Object] returns the logger
       #
-      # @since x.x.x
+      # @since 0.8.0
       def engine(value = nil)
         if value.nil?
           @engine
@@ -78,7 +78,7 @@ module Hanami
       #   Gets the value
       #   @return [Integer,String,Symbol] returns the level
       #
-      # @since x.x.x
+      # @since 0.8.0
       #
       # @example Constant (Integer)
       #   require 'hanami/application'
@@ -130,7 +130,7 @@ module Hanami
       #   Gets the value
       #   @return [String] app name option's value
       #
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       def app_name(value = nil)
         if value.nil?
@@ -150,7 +150,7 @@ module Hanami
       #   Gets the value
       #   @return [String] format option's value
       #
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       #
       # @example JSON format
@@ -186,7 +186,7 @@ module Hanami
       #
       # @return [Hanami::Logger,Object] a logger
       #
-      # @since x.x.x
+      # @since 0.8.0
       # @api private
       #
       # @see Hanami::Config::Logger#stream

@@ -56,7 +56,7 @@ module Hanami
 
     private
 
-    # @since x.x.x
+    # @since 0.8.0
     # @api private
     def shotgun_available?
       require 'shotgun'
@@ -65,7 +65,7 @@ module Hanami
       false
     end
 
-    # @since x.x.x
+    # @since 0.8.0
     # @api private
     def code_reloading?
       @_env.code_reloading?

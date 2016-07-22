@@ -1,7 +1,7 @@
 # Hanami
 The web, with simplicity.
 
-## v0.8.0 - (unreleased)
+## v0.8.0 - 2016-07-22
 ### Added
 - [Luca Guidi] Generate new projects with Subresurce Integrity enabled in production (security).
 - [Luca Guidi] Include `X-XSS-Protection: 1; mode=block` in default response headers (security).
