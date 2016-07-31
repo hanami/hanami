@@ -104,8 +104,10 @@ module Hanami
     method_option :test, desc: "Project test framework (#{Hanami::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Hanami::Hanamirc::DEFAULT_TEST_SUITE
     method_option :hanami_head, desc: 'Use hanami HEAD (true/false)', type: :boolean, default: false
     method_option :help, desc: 'Displays the usage method'
-    def new(application_name)
-      if options[:help]
+    def new(application_name=nil)
+      if application_name.nil? && !options[:help]
+        raise InvocationError.new("\"hanami new\" was called with no arguments\nUsage: \"hanami new APPLICATION_NAME\"")
+      elsif options[:help]
         invoke :help, ['new']
       elsif options[:architecture] == 'app'
         Hanami::Commands::New::App.new(options, application_name).start
