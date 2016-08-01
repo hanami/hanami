@@ -33,6 +33,14 @@ describe Hanami::Cli do
         end
       end
 
+      it 'prints help if asked for' do
+        ARGV.replace(%w{new --help})
+        Hanami::Commands::New::Container.stub(:new, mock_without_method) do
+          out, err = capture_io { Hanami::Cli.start }
+          assert_match 'Options:', out
+        end
+      end
+
       it 'passes the supported options to the generator' do
         options = default_options.merge(
           'database' => 'memory',
