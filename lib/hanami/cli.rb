@@ -105,10 +105,10 @@ module Hanami
     method_option :hanami_head, desc: 'Use hanami HEAD (true/false)', type: :boolean, default: false
     method_option :help, desc: 'Displays the usage method'
     def new(application_name=nil)
-      if application_name.nil? && !options[:help]
-        raise InvocationError.new("\"hanami new\" was called with no arguments\nUsage: \"hanami new APPLICATION_NAME\"")
-      elsif options[:help]
+      if options[:help]
         invoke :help, ['new']
+      elsif application_name.nil?
+        raise InvocationError.new("\"hanami new\" was called with no arguments\nUsage: \"hanami new APPLICATION_NAME\"")
       elsif options[:architecture] == 'app'
         Hanami::Commands::New::App.new(options, application_name).start
       else
