@@ -1,7 +1,16 @@
 require 'hanami/model'
 require 'hanami/mailer'
 Dir["#{ __dir__ }/rake_tasks/**/*.rb"].each { |file| require_relative file }
+ADAPTER_TYPE = if Hanami::Utils.jruby?
+                 require 'jdbc/sqlite3'
+                 Jdbc::SQLite3.load_driver
 
+                 'jdbc:sqlite'
+               else
+                 require 'sqlite3'
+
+                 'sqlite'
+               end
 Hanami::Model.configure do
   ##
   # Database adapter
@@ -16,7 +25,7 @@ Hanami::Model.configure do
   #    adapter type: :sql, uri: 'postgres://localhost/rake_tasks_development'
   #    adapter type: :sql, uri: 'mysql://localhost/rake_tasks_development'
   #
-  adapter type: :sql, uri: ENV['RAKE_TASKS_DATABASE_URL']
+  adapter type: :sql, uri: "#{ADAPTER_TYPE}://#{Dir.pwd}/db/rake_tasks_test.sqlite"
 
   ##
   # Migrations

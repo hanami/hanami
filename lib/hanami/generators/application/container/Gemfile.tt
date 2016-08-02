@@ -31,11 +31,13 @@ gem 'slim'
 gem 'haml'
 <%- end -%>
 
+<%- unless Hanami::Utils.jruby? -%>
 group :development do
   # Code reloading
   # See: http://hanamirb.org/guides/applications/code-reloading
   gem 'shotgun'
 end
+<%- end -%>
 
 group :test, :development do
   gem 'dotenv', '~> 2.0'

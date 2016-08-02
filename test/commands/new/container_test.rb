@@ -3,6 +3,8 @@ require 'hanami/commands/new/container'
 require 'fileutils'
 
 describe Hanami::Commands::New::Container do
+  let(:runtime_prefix) { 'jruby:' if Hanami::Utils.jruby? }
+
   describe 'with invalid arguments' do
     it 'requires application name' do
       with_temp_dir do |original_wd|
@@ -98,7 +100,7 @@ describe Hanami::Commands::New::Container do
             actual_content = File.read('.env.test')
             actual_content.must_include 'DATABASE_URL="memory://localhost/new_container_test"'
 
-            assert_generated_file(fixture_root.join('Gemfile.memory'), 'Gemfile')
+            assert_generated_file(fixture_root.join("Gemfile.#{runtime_prefix}memory"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.memory.rb'), 'lib/new_container.rb')
             assert_file_exists('db/.gitkeep')
           end
@@ -118,7 +120,7 @@ describe Hanami::Commands::New::Container do
             actual_content = File.read('.env.test')
             actual_content.must_include 'DATABASE_URL="file:///db/new_container_test"'
 
-            assert_generated_file(fixture_root.join('Gemfile.filesystem'), 'Gemfile')
+            assert_generated_file(fixture_root.join("Gemfile.#{runtime_prefix}filesystem"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.filesystem.rb'), 'lib/new_container.rb')
             assert_file_exists('db/.gitkeep')
           end
@@ -215,7 +217,7 @@ describe Hanami::Commands::New::Container do
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
-            assert_generated_file(fixture_root.join('Gemfile.head'), 'Gemfile')
+            assert_generated_file(fixture_root.join("Gemfile.#{runtime_prefix}head"), 'Gemfile')
           end
         end
       end
@@ -229,7 +231,7 @@ describe Hanami::Commands::New::Container do
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
-            assert_generated_file(fixture_root.join('Gemfile.slim'), 'Gemfile')
+            assert_generated_file(fixture_root.join("Gemfile.#{runtime_prefix}slim"), 'Gemfile')
             assert_generated_file(fixture_root.join('.hanamirc.slim'), '.hanamirc')
           end
         end
@@ -284,7 +286,7 @@ describe Hanami::Commands::New::Container do
       actual_content.must_include 'DATABASE_URL="file:///db/new_container_test"'
       actual_content.must_match %r{WEB_SESSIONS_SECRET="[\w]{64}"}
 
-      assert_generated_file(fixture_root.join("Gemfile.#{ test_framework }"), 'Gemfile')
+      assert_generated_file(fixture_root.join("Gemfile.#{runtime_prefix}#{ test_framework }"), 'Gemfile')
       assert_generated_file(fixture_root.join('config.ru'), 'config.ru')
 
       assert_generated_file(fixture_root.join('config', 'environment.rb'), 'config/environment.rb')
