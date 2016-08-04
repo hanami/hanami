@@ -4,6 +4,7 @@ require 'hanami/commands/generate/migration'
 require 'hanami/commands/generate/model'
 require 'hanami/commands/generate/action'
 require 'hanami/commands/generate/app'
+require 'hanami/commands/generate/secret_token'
 require 'hanami/commands/new/container'
 require 'hanami/commands/new/app'
 
@@ -250,6 +251,18 @@ describe Hanami::Cli do
         options = {'application_base_url' => '/backend'}
 
         assert_cli_calls_command(Hanami::Commands::Generate::App, options, 'admin')
+      end
+    end
+
+    describe 'secret' do
+      it 'calls the generator with app name' do
+        ARGV.replace(%w(generate secret admin))
+        assert_cli_calls_command(Hanami::Commands::Generate::SecretToken, 'admin')
+      end
+
+      it 'calls the generator with nothing' do
+        ARGV.replace(%w(generate secret))
+        assert_cli_calls_command(Hanami::Commands::Generate::SecretToken, nil)
       end
     end
   end
