@@ -32,6 +32,8 @@ module Hanami
           add_mapping('.gitkeep', "../../spec/#{ app_name }/features/.gitkeep")
           add_mapping('.gitkeep', "../../spec/#{ app_name }/controllers/.gitkeep")
           add_mapping('.gitkeep', "../../spec/#{ app_name }/views/.gitkeep")
+          add_mapping('config/locales/en.yml', "config/locales/en.yml")
+          add_mapping('config/initializers/i18n.rb.tt', 'config/initializers/i18n.rb')
         end
 
         def template_options

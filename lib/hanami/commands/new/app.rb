@@ -52,6 +52,7 @@ module Hanami
           add_mapping('views/application_layout.rb.tt', 'app/views/application_layout.rb')
           add_mapping("templates/application.html.#{ template_engine.name }.tt", "app/templates/application.html.#{ template_engine.name }")
           add_mapping('favicon.ico', 'app/assets/favicon.ico')
+          add_mapping('config/locales/en.yml', 'config/locales/en.yml')
         end
 
         def add_test_templates

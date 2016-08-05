@@ -44,6 +44,8 @@ module Hanami
           add_mapping('config.ru.tt', 'config.ru')
           add_mapping('config/environment.rb.tt', 'config/environment.rb')
           add_mapping('lib/project.rb.tt', "lib/#{ project_name }.rb")
+          add_mapping('config/locales/en.yml', 'config/locales/en.yml')
+          add_mapping('config/initializers/i18n.rb', 'config/initializers/i18n.rb')
         end
 
         def add_test_templates

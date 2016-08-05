@@ -1,0 +1,8 @@
+require 'i18n'
+
+I18n.available_locales = [:en]
+I18n.default_locale = :en
+
+Dir.glob('config/locales/*.yml') do |filename|
+  I18n.load_path << filename
+end
