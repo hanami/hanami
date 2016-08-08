@@ -71,7 +71,7 @@ describe Hanami::Commands::New::Container do
         with_temp_dir do |original_wd|
           command = Hanami::Commands::New::Container.new({}, '.')
           capture_io { command.start }
-          Dir.chdir('test_app') do
+          Dir.chdir('.') do
             actual_content = File.read('.env.development')
             actual_content.must_include 'DATABASE_URL="file:///db/test_app_development"'
 

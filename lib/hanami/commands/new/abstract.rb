@@ -35,8 +35,8 @@ module Hanami
         end
 
         def start
-          FileUtils.mkdir_p(project_name)
-          Dir.chdir(project_name) do
+          FileUtils.mkdir_p(project_directory)
+          Dir.chdir(project_directory) do
             @target_path = Pathname.pwd
 
             super
@@ -73,6 +73,10 @@ module Hanami
 
         def project_name
           ApplicationName.new(real_project_name)
+        end
+
+        def project_directory
+          @name == '.' ? '.' : project_name
         end
 
         def target
