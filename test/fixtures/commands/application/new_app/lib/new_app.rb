@@ -8,7 +8,7 @@ Hanami::Model.configure do
   # Available options:
   #
   #  * File System adapter
-  #    adapter type: :file_system, uri: 'file:///db/bookshelf_development'
+  #    adapter type: :file_system, uri: 'file:///db/new_app_development'
   #
   #  * Memory adapter
   #    adapter type: :memory, uri: 'memory://localhost/new_app_development'
