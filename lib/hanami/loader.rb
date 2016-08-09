@@ -196,6 +196,7 @@ module Hanami
 
     def load_rack!
       _assign_routes_to_application_module!
+      _assign_i18n_to_application_module!
 
       return if application.is_a?(Class)
       _assign_rendering_policy!
@@ -219,6 +220,14 @@ module Hanami
       unless application_module.const_defined?('Routes')
         routes = Hanami::Routes.new(application_routes)
         application_module.const_set('Routes', routes)
+      end
+    end
+
+    def _assign_i18n_to_application_module!
+      unless application_module.const_defined?('I18n', false)
+        scope = Hanami::Utils::String.new(application.name).namespace.underscore
+        i18n = Hanami::I18n::I18nWithApplicationScope.new(scope)
+        application_module.const_set('I18n', i18n)
       end
     end
 

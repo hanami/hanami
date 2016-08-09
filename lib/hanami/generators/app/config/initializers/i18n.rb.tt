@@ -1,0 +1,3 @@
+Dir.glob('apps/<%= config[:app_name] %>/config/locales/*.yml') do |filename|
+  I18n.load_path << filename
+end

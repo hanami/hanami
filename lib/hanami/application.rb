@@ -5,6 +5,7 @@ require 'hanami/loader'
 require 'hanami/logger'
 require 'hanami/rendering_policy'
 require 'hanami/middleware'
+require 'hanami/i18n/i18n_with_application_scope'
 
 module Hanami
   # A full stack Hanami application
