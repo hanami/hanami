@@ -51,7 +51,7 @@ module Hanami
 
     def _configure_controller_framework!
       config = configuration
-      unless namespace.const_defined?('Controller')
+      unless namespace.const_defined?('Controller', false)
         controller = Hanami::Controller.duplicate(namespace) do
           handle_exceptions config.handle_exceptions
           default_request_format config.default_request_format
@@ -88,7 +88,7 @@ module Hanami
 
     def _configure_view_framework!
       config = configuration
-      unless namespace.const_defined?('View')
+      unless namespace.const_defined?('View', false)
         view = Hanami::View.duplicate(namespace) do
           root   config.templates
           layout config.layout
@@ -103,7 +103,7 @@ module Hanami
     def _configure_assets_framework!
       config = configuration
 
-      unless application_module.const_defined?('Assets')
+      unless application_module.const_defined?('Assets', false)
         assets = Hanami::Assets.duplicate(namespace) do
           root             config.root
 
@@ -130,7 +130,7 @@ module Hanami
 
     def _configure_model_framework!
       config = configuration
-      if _hanami_model_loaded? && !application_module.const_defined?('Model')
+      if _hanami_model_loaded? && !application_module.const_defined?('Model', false)
         model = Hanami::Model.duplicate(application_module) do
           adapter(config.adapter)  if config.adapter
           mapping(&config.mapping) if config.mapping
@@ -176,8 +176,8 @@ module Hanami
     end
 
     def _load_model_framework?
-      if _hanami_model_loaded? && application_module.const_defined?('Model')
-        model = application_module.const_get('Model')
+      if _hanami_model_loaded? && application_module.const_defined?('Model', false)
+        model = application_module.const_get('Model', false)
         model.configuration.adapter
       end
     end
@@ -216,7 +216,7 @@ module Hanami
     end
 
     def _assign_routes_to_application_module!
-      unless application_module.const_defined?('Routes')
+      unless application_module.const_defined?('Routes', false)
         routes = Hanami::Routes.new(application_routes)
         application_module.const_set('Routes', routes)
       end
