@@ -78,7 +78,7 @@ module Hanami
       # @see Hanami::Environment::CODE_RELOADING
       def detect_strategy!
         @strategy = :rackup
-        if Hanami::Environment.new(@options).code_reloading?
+        if code_reloading?
           if shotgun_enabled?
             if fork_supported?
               @strategy = :shotgun
@@ -95,7 +95,17 @@ module Hanami
 
       def preload_applications!
         Hanami::Environment.new(@options).require_application_environment
-        Hanami::Application.preload!
+        Hanami::Application.preload! unless code_reloading?
+      end
+
+      # Check if code reloading is enabled
+      #
+      # @return [Boolean]
+      #
+      # @since 0.?.?
+      # @api private
+      def code_reloading?
+        Hanami::Environment.new(@options).code_reloading?
       end
 
       # Check if entr(1) is installed
