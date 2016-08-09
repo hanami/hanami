@@ -1,0 +1,3 @@
+en:
+  <%= config[:app_name]%>:
+    hello: Welcome to Hanami. This is your app specific translation file for <%= config[:app_name] %>.
