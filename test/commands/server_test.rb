@@ -311,12 +311,14 @@ describe Hanami::Commands::Server do
             end
           end
 
-          @server = @server_klass.new(opts).server
+          @stdout, _ = capture_io { @server = @server_klass.new(opts).server }
         end
 
         let(:opts) { Hash[code_reloading: true] }
 
         it "doesn't use Shotgun" do
+          @stdout.must_equal "Your platform doesn't support code reloading.\n"
+          @server.must_be_kind_of(Hanami::Server)
           @server.instance_variable_get(:@app).must_be_nil
         end
       end
