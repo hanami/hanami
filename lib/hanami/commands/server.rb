@@ -83,7 +83,7 @@ module Hanami
             if fork_supported?
               @strategy = :shotgun
             else
-              puts WARNING_MESSAGE
+              warn WARNING_MESSAGE
             end
           elsif entr_enabled?
             @strategy = :entr
