@@ -3,11 +3,19 @@ require 'rack/test'
 require 'fixtures/collaboration/apps/web/application'
 
 describe 'A full stack Hanami application' do
+
+  CLASHING_CLASSES = %w{View Model Controller Assets Routes}
+
   include Rack::Test::Methods
 
   attr_reader :app
 
   before do
+    # Existence of class named 'Routes' should not prevent creation of <ApplicationModule>::Routes.
+    # Same for Model, Controller, View, Assets.
+    # See https://github.com/hanami/hanami/issues/631
+    CLASHING_CLASSES.each { |name| Object.const_set(name, Object) }
+
     Dir.chdir FIXTURES_ROOT.join('collaboration/apps/web')
 
     @app = Collaboration::Application.new
@@ -15,6 +23,7 @@ describe 'A full stack Hanami application' do
 
   after do
     Dir.chdir($pwd)
+    CLASHING_CLASSES.each { |name| Object.send(:remove_const, name) }
   end
 
   def response
