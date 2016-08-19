@@ -21,7 +21,7 @@ module Hanami
         request_method: env['REQUEST_METHOD'],
         path: env['PATH_INFO'] + query_string(env),
         http_version: env['HTTP_VERSION'],
-        length: extract_content_length(headers),
+        length: extract_content_length(header),
         status: status.to_s[0..3],
         time: now - began_at
       }
@@ -35,8 +35,8 @@ module Hanami
       env['QUERY_STRING'].empty? ? EMPTY_STRING : "?#{env['QUERY_STRING']}"
     end
 
-    def extract_content_length(headers)
-      value = headers['Content-Length'] or return
+    def extract_content_length(header)
+      value = header['Content-Length'] or return
       value.to_s == '0' ? nil : value
     end
   end
