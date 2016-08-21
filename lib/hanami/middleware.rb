@@ -15,7 +15,7 @@ module Hanami
     #
     # @see Hanami::Configuration
     def initialize(configuration)
-      @stack = []
+      @stack = Set.new
       @configuration = configuration
     end
 
@@ -64,7 +64,7 @@ module Hanami
     #
     # @see Hanami::Middleware#prepend
     def use(middleware, *args, &blk)
-      @stack.push [middleware, args, blk]
+      @stack.add [middleware, args, blk]
     end
 
     # Prepend a middleware to the stack.
@@ -79,7 +79,7 @@ module Hanami
     #
     # @see Hanami::Middleware#use
     def prepend(middleware, *args, &blk)
-      @stack.unshift [middleware, args, blk]
+      @stack = Set[[middleware, args, blk]] | @stack
     end
 
     # @api private
