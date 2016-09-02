@@ -1,7 +1,7 @@
 require 'rack/static'
 
 module Hanami
-  # Serve static assets in deployment enviroments (production, staging) where
+  # Serve static assets in deployment environments (production, staging) where
   # the architecture doesn't include a web server.
   #
   # Web servers like Nginx are the ideal candidate to serve static assets.

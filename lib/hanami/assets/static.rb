@@ -11,7 +11,7 @@ require 'hanami/assets/asset'
 
 module Hanami
   module Assets
-    # Serve static assets in development enviroments (development, test).
+    # Serve static assets in development environments (development, test).
     #
     # While serving static assets is a role delegated in production to web
     # servers (like Nginx), in development it's rare to use a web server.
