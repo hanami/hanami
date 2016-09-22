@@ -3,14 +3,14 @@ set -euo pipefail
 IFS=$'\n\t'
 
 run_unit_tests() {
-  bundle exec rake test:coverage
+  bundle exec rake spec:coverage
 }
 
 run_integration_tests() {
   local pwd=$PWD
-  local root="$pwd/test/integration"
+  local root="$pwd/spec/integration"
 
-  for test in $(find $root -name 'test_*.rb')
+  for test in $(find $root -name '*_spec.rb')
   do
     run_test $test
 
@@ -26,7 +26,7 @@ run_test() {
   local test=$1
 
   printf "\n\n\nRunning: $test\n"
-  COVERAGE=true ruby -Itest $test
+  COVERAGE=true bundle exec rspec $test
 }
 
 main() {

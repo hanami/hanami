@@ -58,7 +58,9 @@ module Hanami
       contents = ::File.open(path, "rb:bom|utf-8", &:read)
       parsed   = Dotenv::Parser.call(contents)
 
-      @env.merge!(parsed)
+      parsed.each do |k, v|
+        @env[k] = v
+      end
       nil
     end
   end

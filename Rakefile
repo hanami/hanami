@@ -2,13 +2,18 @@ require 'rake'
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 
-RSpec::Core::RakeTask.new(:spec)
+namespace :spec do
+  RSpec::Core::RakeTask.new(:unit) do |task|
+    file_list = FileList['spec/**/*_spec.rb']
+    file_list = file_list.exclude("spec/integration/**/*_spec.rb")
 
-namespace :test do
+    task.pattern = file_list
+  end
+
   task :coverage do
     ENV['COVERAGE'] = 'true'
-    Rake::Task['spec'].invoke
+    Rake::Task['spec:unit'].invoke
   end
 end
 
-task default: :spec
+task default: 'spec:unit'

@@ -34,5 +34,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'rspec',     '~>  3.5'
   spec.add_development_dependency 'rack-test', '~>  0.6'
+  spec.add_development_dependency 'aruba',     '~>  0.14'
   spec.add_development_dependency 'rake',      '~> 11.3'
 end
