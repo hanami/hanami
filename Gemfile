@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 gemspec
 
-if !ENV['TRAVIS']
+unless ENV['TRAVIS']
   gem 'byebug', require: false, platforms: :mri
   gem 'pry',    require: false, platforms: :jruby
   gem 'yard',   require: false
@@ -31,7 +31,7 @@ platforms :jruby do
   gem 'jdbc-sqlite3'
 end
 
-gem 'coveralls', require: false
-
-gem 'dotenv', '~> 2.0'
-gem 'shotgun', '~> 0.9'
+gem 'dotenv',    '~> 2.0',    require: false
+gem 'shotgun',   '~> 0.9',    require: false
+gem 'rubocop',   '~> 0.43.0', require: false
+gem 'coveralls',              require: false
