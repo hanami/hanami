@@ -19,5 +19,6 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 end
 
-Dir[__dir__ + '/support/**/*.rb'].each { |f| require_relative f }
+Dir["./spec/support/**/*.rb"].sort.each { |f| require f }
+
 require 'hanami'

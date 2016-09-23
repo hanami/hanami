@@ -6,3 +6,5 @@ Style/StringLiterals:
   Enabled: false
 Metrics/LineLength:
   Enabled: false
+Style/RegexpLiteral:
+  Enabled: false

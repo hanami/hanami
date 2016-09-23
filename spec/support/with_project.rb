@@ -1,4 +1,4 @@
-require 'pathname'
+require_relative 'with_tmp_directory'
 
 module RSpec
   module Support
@@ -6,15 +6,11 @@ module RSpec
       private
 
       def with_project
-        dir = Dir.mktmpdir
-
-        with_directory(dir) do
+        with_tmp_directory do
           _create_project
           _bundle
           yield
         end
-      ensure
-        FileUtils.rm_rf(dir)
       end
 
       def _create_project
@@ -29,5 +25,5 @@ module RSpec
 end
 
 RSpec.configure do |config|
-  config.include RSpec::Support::WithProject
+  config.include RSpec::Support::WithProject, type: :cli
 end
