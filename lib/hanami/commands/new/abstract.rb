@@ -63,6 +63,7 @@ module Hanami
           return if git_dir_present?
 
           source = database_config.filesystem? ? 'gitignore_with_db.tt' : 'gitignore.tt'
+          source = database_config.sqlite?     ? 'gitignore_with_sqlite.tt' : source
           target = '.gitignore'
           add_mapping(source, target)
         end
