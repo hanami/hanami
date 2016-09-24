@@ -3,15 +3,12 @@ RSpec.describe "hanami new", type: :cli do
     context "postgres" do
       it "generates project" do
         project = 'bookshelf_postgresql'
-
-        run_command "hanami new #{project} --database=postgres"
-
-        [
+        output  = [
           "create  db/migrations/.gitkeep",
           "create  db/schema.sql"
-        ].each do |output|
-          expect(all_output).to match(/#{output}/)
-        end
+        ]
+
+        run_command "hanami new #{project} --database=postgres", output
 
         within_project_directory(project) do
           #
@@ -75,15 +72,12 @@ RSpec.describe "hanami new", type: :cli do
     describe "sqlite" do
       it "generates project" do
         project = 'bookshelf_sqlite'
-
-        run_command "hanami new #{project} --database=sqlite"
-
-        [
+        output  = [
           "create  db/migrations/.gitkeep",
           "create  db/schema.sql"
-        ].each do |output|
-          expect(all_output).to match(/#{output}/)
-        end
+        ]
+
+        run_command "hanami new #{project} --database=sqlite", output
 
         within_project_directory(project) do
           #
@@ -148,15 +142,12 @@ RSpec.describe "hanami new", type: :cli do
     context "mysql" do
       it "generates project" do
         project = 'bookshelf_mysql'
-
-        run_command "hanami new #{project} --database=mysql"
-
-        [
+        output  = [
           "create  db/migrations/.gitkeep",
           "create  db/schema.sql"
-        ].each do |output|
-          expect(all_output).to match(/#{output}/)
-        end
+        ]
+
+        run_command "hanami new #{project} --database=mysql", output
 
         within_project_directory(project) do
           #

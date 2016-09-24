@@ -3,15 +3,12 @@ RSpec.describe "hanami new", type: :cli do
     context "minitest" do
       it "generates project" do
         project = 'bookshelf_minitest'
-
-        run_command "hanami new #{project} --test=minitest"
-
-        [
+        output  = [
           "create  spec/spec_helper.rb",
           "create  spec/features_helper.rb"
-        ].each do |output|
-          expect(all_output).to match(/#{output}/)
-        end
+        ]
+
+        run_command "hanami new #{project} --test=minitest", output
 
         within_project_directory(project) do
           #
@@ -55,16 +52,13 @@ end
     describe "rspec" do
       it "generates project" do
         project = 'bookshelf_rspec'
-
-        run_command "hanami new #{project} --test=rspec"
-
-        [
+        output  = [
           "create  spec/spec_helper.rb",
           "create  spec/features_helper.rb",
           "create  spec/support/capybara.rb"
-        ].each do |output|
-          expect(all_output).to match(/#{output}/)
-        end
+        ]
+
+        run_command "hanami new #{project} --test=rspec", output
 
         within_project_directory(project) do
           #

@@ -19,14 +19,19 @@ module RSpec
       def run_command(cmd, output = nil, exit_status: 0)
         run_simple "bundle exec #{cmd}", fail_on_error: false
 
+        match_output(output)
+        expect(last_command_started).to have_exit_status(exit_status)
+      end
+
+      def match_output(output)
         case output
         when String
           expect(all_output).to include(output)
         when Regexp
           expect(all_output).to match(output)
+        when Array
+          output.each { |o| match_output(o) }
         end
-
-        expect(last_command_started).to have_exit_status(exit_status)
       end
 
       def all_output

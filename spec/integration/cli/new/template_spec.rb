@@ -3,14 +3,11 @@ RSpec.describe "hanami new", type: :cli do
     context "erb" do
       it "generates project" do
         project = 'bookshelf_erb'
-
-        run_command "hanami new #{project} --template=erb"
-
-        [
+        output  = [
           "create  apps/web/templates/application.html.erb"
-        ].each do |output|
-          expect(all_output).to match(/#{output}/)
-        end
+        ]
+
+        run_command "hanami new #{project} --template=erb", output
 
         within_project_directory(project) do
           #
@@ -40,14 +37,11 @@ END
     context "haml" do
       it "generates project" do
         project = 'bookshelf_erb'
-
-        run_command "hanami new #{project} --template=haml"
-
-        [
+        output  = [
           "create  apps/web/templates/application.html.haml"
-        ].each do |output|
-          expect(all_output).to match(/#{output}/)
-        end
+        ]
+
+        run_command "hanami new #{project} --template=haml", output
 
         within_project_directory(project) do
           #
@@ -74,14 +68,11 @@ END
     context "slim" do
       it "generates project" do
         project = 'bookshelf_erb'
-
-        run_command "hanami new #{project} --template=slim"
-
-        [
+        output  = [
           "create  apps/web/templates/application.html.slim"
-        ].each do |output|
-          expect(all_output).to match(/#{output}/)
-        end
+        ]
+
+        run_command "hanami new #{project} --template=slim", output
 
         within_project_directory(project) do
           #
