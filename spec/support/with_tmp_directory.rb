@@ -7,7 +7,7 @@ module RSpec
       private
 
       def with_tmp_directory
-        dir = Dir.mktmpdir
+        dir = Pathname.new('tmp').join('aruba')
 
         with_directory(dir) do
           yield

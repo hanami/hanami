@@ -7,7 +7,7 @@ module RSpec
       private
 
       def within_project_directory(project)
-        cd(project) do
+        cd(project.to_s) do
           yield
         end
       end
