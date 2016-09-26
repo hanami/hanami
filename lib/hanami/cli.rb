@@ -133,12 +133,13 @@ module Hanami
 
     desc 'secret', 'Prints a secure hash'
     long_desc <<-EOS
-    `hanami secret` will generate a secure key to be used by the developer as he wants, e.g. cookie sessions.
-     The secret will have the desired length * 2.
+    `hanami secret` will generate a secure key to be used by the developer as they want, e.g. cookie sessions.
     EOS
     def secret(length = '64')
       require 'securerandom'
-      puts "#{ SecureRandom.hex(length.to_i) }"
+      # must divide by 2 because SecureRandom.hex multiplies it by 2
+      divided_length = length.to_i / 2
+      puts SecureRandom.hex(divided_length)
     end
 
     require 'hanami/cli_sub_commands/db'
