@@ -5,11 +5,12 @@ module Hanami
     class Generate
       class Model < Abstract
 
-        attr_reader :model_name
+        attr_reader :input, :model_name
 
         def initialize(options, model_name)
           super(options)
-          @model_name = Utils::String.new(model_name).classify
+          @input      = Utils::String.new(model_name).underscore
+          @model_name = Utils::String.new(@input).classify
 
           assert_model_name!
         end
@@ -88,7 +89,7 @@ module Hanami
         # @since 0.5.0
         # @api private
         def model_name_underscored
-          Utils::String.new(model_name).underscore
+          input
         end
 
         # @since 0.8.0

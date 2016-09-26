@@ -1,5 +1,3 @@
-require 'hanami/utils/string'
-
 RSpec.describe "hanami generate", type: :cli do
   describe "migration" do
     context "with migration name" do
