@@ -707,11 +707,6 @@ END
       expect("apps/web/assets/javascripts/.gitkeep").to be_an_existing_file
 
       #
-      # apps/web/assets/javascripts/.gitkeep
-      #
-      expect("apps/web/assets/javascripts/.gitkeep").to be_an_existing_file
-
-      #
       # apps/web/assets/stylesheets/.gitkeep
       #
       expect("apps/web/assets/stylesheets/.gitkeep").to be_an_existing_file

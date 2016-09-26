@@ -1,5 +1,6 @@
 require 'hanami/commands/generate/abstract'
 require 'hanami/application_name'
+require 'hanami/utils/blank'
 require 'securerandom'
 
 module Hanami
@@ -13,6 +14,7 @@ module Hanami
           super(options)
           assert_application_name!(application_name)
           assert_architecture!
+          assert_application_base_url!
 
           @application_name = ApplicationName.new(application_name)
           @base_path = Pathname.pwd
@@ -112,6 +114,13 @@ module Hanami
         def assert_architecture!
           if !environment.container?
             raise ArgumentError.new('App generator is only available for container architecture.')
+          end
+        end
+
+        def assert_application_base_url!
+          if options.key?(:application_base_url) && Utils::Blank.blank?(options[:application_base_url])
+            warn "`' is not a valid URL"
+            exit(1)
           end
         end
       end
