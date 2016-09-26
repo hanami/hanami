@@ -137,9 +137,10 @@ module Hanami
     EOS
     def secret(length = '64')
       require 'securerandom'
-      # must divide by 2 because SecureRandom.hex multiplies it by 2
-      divided_length = length.to_i / 2
-      puts SecureRandom.hex(divided_length)
+      # secure random generates a string as length * 2.
+      # We want to return the required length by the developer
+      secret = SecureRandom.hex(length.to_i)
+      puts secret[0..(length.to_i - 1)]
     end
 
     require 'hanami/cli_sub_commands/db'
