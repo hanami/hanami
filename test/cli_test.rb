@@ -306,6 +306,13 @@ describe Hanami::Cli do
           Hanami::Cli.start
         end
       end
+
+      it 'prints Hanami secret using 45 length' do
+        assert_output(/^[a-zA-Z0-9]{45}$/) do
+          ARGV.replace(%w{secret 45})
+          Hanami::Cli.start
+        end
+      end
     end
   end
 

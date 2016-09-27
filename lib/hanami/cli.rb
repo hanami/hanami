@@ -140,7 +140,7 @@ module Hanami
       # secure random generates a string as length * 2.
       # We want to return the required length by the developer
       secret = SecureRandom.hex(length.to_i)
-      puts secret[0..(length.to_i - 1)]
+      puts secret[0...length.to_i]
     end
 
     require 'hanami/cli_sub_commands/db'
