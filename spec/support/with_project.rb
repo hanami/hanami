@@ -1,3 +1,5 @@
+require_relative 'silently'
+require_relative 'bundler'
 require_relative 'with_tmp_directory'
 require_relative 'within_project_directory'
 
@@ -6,29 +8,42 @@ module RSpec
     module WithProject
       private
 
+      KNOWN_ARGUMENTS = [:database, :template, :test].freeze
+
       def with_project(project = "bookshelf", args = {})
         with_tmp_directory do
-          _create_project(project, args)
+          create_project(project, args)
 
           within_project_directory(project) do
-            _bundle
+            setup_gemfile(gems: gem_dependencies(args))
+            bundle_install
             yield
           end
         end
       end
 
-      def _create_project(project, args)
-        system "hanami new #{project}#{_create_project_args(args)}", out: ::File::NULL
+      def create_project(project, args)
+        silently "hanami new #{project}#{_create_project_args(args)}"
       end
 
-      def _bundle
-        system "bundle install", out: ::File::NULL
+      def gem_dependencies(args)
+        result = []
+
+        case args.fetch(:console, nil)
+        when :pry
+          result << 'pry'
+        when :ripl
+          result << 'ripl'
+        end
+
+        result
       end
 
       def _create_project_args(args)
         return if args.empty?
+        flags = args.dup.keep_if { |k, _| KNOWN_ARGUMENTS.include?(k) }
 
-        result = args.map do |arg, value|
+        result = flags.map do |arg, value|
           "--#{arg}=#{value}"
         end.join(" ")
 

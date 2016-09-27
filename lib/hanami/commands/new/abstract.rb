@@ -95,7 +95,7 @@ module Hanami
         end
 
         def hanami_version
-          "~> #{Hanami::VERSION.scan(/\A\d{1,2}\.\d{1,2}/).first}"
+          Hanami::Version.gem_requirement
         end
 
         def hanami_head?

@@ -83,7 +83,7 @@ source 'https://rubygems.org'
 
 gem 'bundler'
 gem 'rake'
-gem 'hanami',       '~> 1.0'
+gem 'hanami',       '#{Hanami::Version.gem_requirement}'
 gem 'hanami-model', '~> 0.6'
 
 group :development do

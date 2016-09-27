@@ -8,3 +8,5 @@ Metrics/LineLength:
   Enabled: false
 Style/RegexpLiteral:
   Enabled: false
+Style/RaiseArgs:
+  Enabled: false

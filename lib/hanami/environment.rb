@@ -193,9 +193,10 @@ module Hanami
     #   # the one defined in the parent (eg `FOO` is overwritten). All the
     #   # other settings (eg `XYZ`) will be left untouched.
     def initialize(options = {})
-      @env     = Hanami::Env.new(env: options.delete(:env) || ENV)
+      opts     = options.to_h.dup
+      @env     = Hanami::Env.new(env: opts.delete(:env) || ENV)
       @options = Hanami::Hanamirc.new(root).options
-      @options.merge! Utils::Hash.new(options.clone).symbolize!
+      @options.merge! Utils::Hash.new(opts.clone).symbolize!
       LOCK.synchronize { set_env_vars! }
     end
 

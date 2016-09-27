@@ -3,7 +3,6 @@ gemspec
 
 unless ENV['TRAVIS']
   gem 'byebug', require: false, platforms: :mri
-  gem 'pry',    require: false, platforms: :jruby
   gem 'yard',   require: false
 end
 
@@ -30,6 +29,9 @@ end
 platforms :jruby do
   gem 'jdbc-sqlite3'
 end
+
+gem 'pry',  require: false
+gem 'ripl', require: false
 
 gem 'dotenv',    '~> 2.0',    require: false
 gem 'shotgun',   '~> 0.9',    require: false
