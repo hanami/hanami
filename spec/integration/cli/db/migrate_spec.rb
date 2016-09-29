@@ -77,36 +77,5 @@ RSpec.describe "hanami db", type: :cli do
         expect(version).to eq("")
       end
     end
-
-    private
-
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Style/ClosingParenthesisIndentation
-    def generate_migrations
-      versions = []
-      versions << generate_migration("create_users", <<-EOF
-Hanami::Model.migration do
-  change do
-    create_table :users do
-      primary_key :id
-      column :name, String
-    end
-  end
-end
-EOF
-)
-
-      versions << generate_migration("add_age_to_users", <<-EOF
-Hanami::Model.migration do
-  change do
-    add_column :users, :age, Integer
-  end
-end
-EOF
-)
-      versions
-    end
-    # rubocop:enable Style/ClosingParenthesisIndentation
-    # rubocop:enable Metrics/MethodLength
   end
 end

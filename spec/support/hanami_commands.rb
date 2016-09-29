@@ -50,6 +50,35 @@ module RSpec
         last_migration.basename.to_s.to_i
       end
 
+      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Style/ClosingParenthesisIndentation
+      def generate_migrations
+        versions = []
+        versions << generate_migration("create_users", <<-EOF
+Hanami::Model.migration do
+  change do
+    create_table :users do
+      primary_key :id
+      column :name, String
+    end
+  end
+end
+EOF
+)
+
+        versions << generate_migration("add_age_to_users", <<-EOF
+Hanami::Model.migration do
+  change do
+    add_column :users, :age, Integer
+  end
+end
+EOF
+)
+        versions
+      end
+      # rubocop:enable Style/ClosingParenthesisIndentation
+      # rubocop:enable Metrics/MethodLength
+
       # FIXME: remove when we will integrate hanami-model 0.7
       def entity(name, project, *attributes)
         path = Pathname.new("lib").join(project, "entities", "#{name}.rb")
