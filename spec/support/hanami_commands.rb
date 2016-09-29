@@ -4,7 +4,7 @@ require 'hanami/utils/string'
 
 module RSpec
   module Support
-    module HanamiCommands
+    module HanamiCommands # rubocop:disable Metrics/ModuleLength
       private
 
       def hanami(cmd, &blk)
@@ -27,6 +27,10 @@ module RSpec
 
       def console(&blk)
         hanami "console", &blk
+      end
+
+      def db_console(&blk)
+        hanami "db console", &blk
       end
 
       def generate(target)
