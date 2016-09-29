@@ -10,3 +10,5 @@ Style/RegexpLiteral:
   Enabled: false
 Style/RaiseArgs:
   Enabled: false
+Style/AndOr:
+  Enabled: false
