@@ -27,7 +27,7 @@ module RSpec
       end
 
       def gem_dependencies(args) # rubocop:disable Metrics/MethodLength
-        result = []
+        result = args.fetch(:gems, [])
 
         case args.fetch(:console, nil)
         when :pry

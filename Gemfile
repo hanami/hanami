@@ -10,7 +10,6 @@ gem 'dry-struct',     require: false, github: 'dry-rb/dry-struct'     # FIXME: t
 gem 'dry-types',      require: false, github: 'dry-rb/dry-types'      # FIXME: this is needed until they will release 0.9
 gem 'dry-validation', require: false, github: 'dry-rb/dry-validation' # FIXME: this is needed until they will release 0.10
 
-gem 'sass'
 gem 'i18n'
 gem 'hanami-utils',       '~> 0.8', require: false, github: 'hanami/utils',       branch: '0.8.x'
 gem 'hanami-validations', '~> 0.6', require: false, github: 'hanami/validations', branch: 'master'
@@ -41,6 +40,10 @@ gem 'unicorn', require: false
 # `hanami server` integration tests (web pages)
 gem 'capybara',        require: false
 gem 'capybara-webkit', require: false
+
+# `hanami assets` integration tests
+gem 'sass',          require: false
+gem 'coffee-script', require: false
 
 gem 'dotenv',    '~> 2.0',    require: false
 gem 'shotgun',   '~> 0.9',    require: false
