@@ -30,8 +30,17 @@ platforms :jruby do
   gem 'jdbc-sqlite3'
 end
 
+# `hanami console` integration tests
 gem 'pry',  require: false
 gem 'ripl', require: false
+
+# `hanami server` integration tests
+gem 'puma',    require: false
+gem 'unicorn', require: false
+
+# `hanami server` integration tests (web pages)
+gem 'capybara',        require: false
+gem 'capybara-webkit', require: false
 
 gem 'dotenv',    '~> 2.0',    require: false
 gem 'shotgun',   '~> 0.9',    require: false

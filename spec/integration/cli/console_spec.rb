@@ -34,14 +34,14 @@ Hanami::Model.migration do
   change do
     create_table :books do
       primary_key :id
-      column :name, String
+      column :title, String
     end
   end
 end
 EOF
 
     # FIXME: remove when we will integrate hanami-model 0.7
-    entity("book", project, :name)
+    entity("book", project, :title)
 
     # FIXME: remove when we will integrate hanami-model 0.7
     mapping project, <<-END

@@ -3,8 +3,16 @@ module RSpec
     module Files
       private
 
+      def write(path, *content)
+        open(path, ::File::CREAT | ::File::WRONLY, *content)
+      end
+
       def rewrite(path, *content)
-        ::File.open(path, ::File::TRUNC | ::File::WRONLY) do |file|
+        open(path, ::File::TRUNC | ::File::WRONLY, *content)
+      end
+
+      def open(path, mode, *content)
+        ::File.open(path, mode) do |file|
           file.write(Array(content).flatten.join)
         end
       end

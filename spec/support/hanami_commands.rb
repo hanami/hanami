@@ -11,6 +11,20 @@ module RSpec
         bundle_exec "hanami #{cmd}", &blk
       end
 
+      def server(args = {}, &blk)
+        hanami "server#{_hanami_server_args(args)}" do |_, _, wait_thr|
+          begin
+            if block_given?
+              setup_capybara(args)
+              retry_exec(&blk)
+            end
+          ensure
+            # Simulate Ctrl+C to stop the server
+            Process.kill 'INT', wait_thr[:pid]
+          end
+        end
+      end
+
       def console(&blk)
         hanami "console", &blk
       end
@@ -42,7 +56,7 @@ module RSpec
         content    = <<-EOF
 class #{class_name}
   include Hanami::Entity
-  attributes #{attributes.join(', ')}
+  attributes #{attributes.map { |a| ":#{a}" }.join(', ')}
 end
 EOF
 
@@ -58,6 +72,42 @@ EOF
 
         lines.insert(index, content)
         rewrite(path, lines.flatten)
+      end
+
+      def setup_capybara(args)
+        host = args.fetch(:host, Hanami::Environment::LISTEN_ALL_HOST)
+        port = args.fetch(:port, Hanami::Environment::DEFAULT_PORT)
+
+        Capybara.configure do |config|
+          config.app_host = "http://#{host}:#{port}"
+        end
+      end
+
+      def retry_exec(&blk)
+        attempts = 1
+
+        begin
+          sleep 1
+          blk.call # rubocop:disable Performance/RedundantBlockCall
+        rescue Capybara::Webkit::InvalidResponseError
+          raise if attempts > 3
+          attempts += 1
+          retry
+        end
+      end
+
+      def _hanami_server_args(args)
+        return if args.empty?
+
+        result = args.map do |arg, value|
+          if value.nil?
+            "--#{arg}"
+          else
+            "--#{arg}=#{value}"
+          end
+        end.join(" ")
+
+        " #{result}"
       end
     end
   end

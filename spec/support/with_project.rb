@@ -26,7 +26,7 @@ module RSpec
         silently "hanami new #{project}#{_create_project_args(args)}"
       end
 
-      def gem_dependencies(args)
+      def gem_dependencies(args) # rubocop:disable Metrics/MethodLength
         result = []
 
         case args.fetch(:console, nil)
@@ -34,6 +34,15 @@ module RSpec
           result << 'pry'
         when :ripl
           result << 'ripl'
+        end
+
+        case args.fetch(:server, nil)
+        when :puma
+          result << 'puma'
+        when :unicorn
+          result << 'unicorn'
+        when :thin
+          result << 'thin'
         end
 
         result
