@@ -46,6 +46,8 @@ module RSpec
 
         last_migration = Pathname.new("db").join("migrations").children.last
         rewrite(last_migration, content)
+
+        last_migration.basename.to_s.to_i
       end
 
       # FIXME: remove when we will integrate hanami-model 0.7
