@@ -45,6 +45,9 @@ gem 'capybara-webkit', require: false
 gem 'sass',          require: false
 gem 'coffee-script', require: false
 
+# HTTP tests
+gem 'excon', require: false
+
 gem 'dotenv',    '~> 2.0',    require: false
 gem 'shotgun',   '~> 0.9',    require: false
 gem 'rubocop',   '~> 0.43.0', require: false

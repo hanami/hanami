@@ -1,10 +1,11 @@
 require_relative 'bundler'
 require_relative 'files'
+require_relative 'retry'
 require 'hanami/utils/string'
 
 module RSpec
   module Support
-    module HanamiCommands # rubocop:disable Metrics/ModuleLength
+    module HanamiCommands
       private
 
       def hanami(cmd, &blk)
@@ -16,7 +17,7 @@ module RSpec
           begin
             if block_given?
               setup_capybara(args)
-              retry_exec(&blk)
+              retry_exec(Capybara::Webkit::InvalidResponseError, &blk)
             end
           ensure
             # Simulate Ctrl+C to stop the server
@@ -115,19 +116,6 @@ EOF
 
         Capybara.configure do |config|
           config.app_host = "http://#{host}:#{port}"
-        end
-      end
-
-      def retry_exec(&blk)
-        attempts = 1
-
-        begin
-          sleep 1
-          blk.call # rubocop:disable Performance/RedundantBlockCall
-        rescue Capybara::Webkit::InvalidResponseError
-          raise if attempts > 3
-          attempts += 1
-          retry
         end
       end
 
