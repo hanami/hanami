@@ -64,6 +64,11 @@ module RSpec
   end
 end
 
+Excon.defaults[:ssl_verify_peer] = false
+Excon.defaults[:ssl_verify_peer_host] = false
+# Excon.defaults[:ssl_version] = :SSLv3
+Excon.defaults[:middlewares].push(Excon::Middleware::RedirectFollower)
+
 RSpec.configure do |config|
   config.include Rack::Test::Methods,      type: :cli
   config.include RSpec::Support::RackTest, type: :cli
