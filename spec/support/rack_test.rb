@@ -1,3 +1,4 @@
+require 'rack'
 require 'rack/test'
 require 'excon'
 require_relative 'retry'
@@ -8,7 +9,10 @@ module RSpec
       private
 
       def app
-        RSpec::Support::RackApp.new
+        Rack::Builder.new do
+          use Rack::Lint
+          run RSpec::Support::RackApp.new
+        end
       end
     end
 
