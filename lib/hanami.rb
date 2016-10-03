@@ -1,3 +1,4 @@
+require 'thread'
 require 'hanami/version'
 require 'hanami/application'
 require 'hanami/container'
@@ -10,7 +11,24 @@ require 'hanami/server'
 #
 # @see http://hanamirb.org
 module Hanami
+  require 'hanami/configuration'
+
   DEFAULT_PUBLIC_DIRECTORY = 'public'.freeze
+
+  @_mutex = Mutex.new
+
+  def self.configure(&blk)
+    @_mutex.synchronize do
+      @_configuration = Hanami::Configuration.new(&blk)
+    end
+  end
+
+  def self.configuration
+    @_mutex.synchronize do
+      raise "not configured" unless defined?(@_configuration)
+      @_configuration
+    end
+  end
 
   # Return root of the project (top level directory).
   #

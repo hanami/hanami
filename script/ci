@@ -6,9 +6,22 @@ run_unit_tests() {
   bundle exec rake spec:coverage
 }
 
+run_isolation_tests() {
+  local pwd=$PWD
+  local root="$pwd/spec/isolation"
+
+  run_tests $root
+}
+
 run_integration_tests() {
   local pwd=$PWD
   local root="$pwd/spec/integration"
+
+  run_tests $root
+}
+
+run_tests() {
+  local root=$1
 
   for test in $(find $root -name '*_spec.rb')
   do
@@ -31,6 +44,7 @@ run_test() {
 
 main() {
   run_unit_tests &&
+    run_isolation_tests &&
     run_integration_tests
 }
 

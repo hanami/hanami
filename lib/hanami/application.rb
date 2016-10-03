@@ -1,6 +1,6 @@
 require 'hanami/utils/class_attribute'
 require 'hanami/frameworks'
-require 'hanami/configuration'
+require 'hanami/application_configuration'
 require 'hanami/loader'
 require 'hanami/logger'
 require 'hanami/rendering_policy'
@@ -32,7 +32,7 @@ module Hanami
         include Hanami::Utils::ClassAttribute
 
         class_attribute :configuration
-        self.configuration = Configuration.new
+        self.configuration = ApplicationConfiguration.new
       end
 
       synchronize do
