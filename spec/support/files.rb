@@ -4,6 +4,7 @@ module RSpec
       private
 
       def write(path, *content)
+        Pathname.new(path).dirname.mkpath
         open(path, ::File::CREAT | ::File::WRONLY, *content)
       end
 
@@ -21,6 +22,13 @@ module RSpec
       def replace_last(path, target, replacement)
         content = ::File.readlines(path)
         content[-index(content.reverse, path, target) - 1] = "#{replacement}\n"
+
+        rewrite(path, content)
+      end
+
+      def unshift(path, line)
+        content = ::File.readlines(path)
+        content.unshift("#{line}\n")
 
         rewrite(path, content)
       end
