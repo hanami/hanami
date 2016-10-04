@@ -13,7 +13,7 @@ gem 'dry-validation', require: false, github: 'dry-rb/dry-validation' # FIXME: t
 gem 'i18n'
 gem 'hanami-utils',       '~> 0.8', require: false, github: 'hanami/utils',       branch: '0.8.x'
 gem 'hanami-validations', '~> 0.6', require: false, github: 'hanami/validations', branch: 'master'
-gem 'hanami-router',      '~> 0.7', require: false, github: 'hanami/router',      branch: '0.7.x'
+gem 'hanami-router',      '~> 0.7', require: false, github: 'hanami/router',      branch: 'master'
 gem 'hanami-controller',  '~> 0.7', require: false, github: 'hanami/controller',  branch: '0.7.x'
 gem 'hanami-view',        '~> 0.7', require: false, github: 'hanami/view',        branch: '0.7.x'
 gem 'hanami-model',       '~> 0.7', require: false, github: 'hanami/model',       branch: '0.7.x'

@@ -1,4 +1,5 @@
 require 'hanami/utils/class_attribute'
+require 'hanami/application_name'
 require 'hanami/frameworks'
 require 'hanami/application_configuration'
 require 'hanami/loader'
@@ -38,6 +39,11 @@ module Hanami
       synchronize do
         applications.add(base)
       end
+    end
+
+    # @since x.x.x
+    def self.app_name
+      ApplicationName.new(name)
     end
 
     # @since 0.8.0

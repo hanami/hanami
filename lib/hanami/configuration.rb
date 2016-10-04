@@ -1,4 +1,5 @@
 require 'concurrent'
+require 'hanami/application'
 
 module Hanami
   class Configuration
@@ -8,7 +9,7 @@ module Hanami
     end
 
     def mount(app, options)
-      apps[app] = options.fetch(:at)
+      mounted[app] = options.fetch(:at)
     end
 
     def model(&blk)
@@ -19,8 +20,14 @@ module Hanami
       settings.put_if_absent(:mailer, blk)
     end
 
+    def mounted
+      settings.fetch_or_store(:mounted, {})
+    end
+
     def apps
-      settings.fetch_or_store(:apps, {})
+      mounted.each_pair do |app, path_prefix|
+        yield(app, path_prefix) if app.ancestors.include?(Hanami::Application)
+      end
     end
 
     private

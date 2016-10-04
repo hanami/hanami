@@ -4,6 +4,7 @@ require 'hanami/utils'
 require 'hanami/utils/hash'
 require 'hanami/env'
 require 'hanami/hanamirc'
+require 'hanami/components'
 
 module Hanami
   # Define and expose information about the Hanami environment.
@@ -367,6 +368,8 @@ module Hanami
       root.join(@options.fetch(:environment) { config.join(DEFAULT_ENVIRONMENT_CONFIG) })
     end
 
+    alias project_environment_configuration env_config
+
     # Require application environment
     #
     # Eg <tt>require "config/environment"</tt>.
@@ -374,8 +377,10 @@ module Hanami
     # @since 0.4.0
     # @api private
     def require_application_environment
-      require env_config.to_s #if env_config.exist?
+      require project_environment_configuration.to_s # if project_environment_configuration.exist?
     end
+
+    alias require_project_environment require_application_environment
 
     # Determine if activate code reloading for the current environment while
     # running the server.

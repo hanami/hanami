@@ -98,7 +98,7 @@ module Hanami
     def sanitize(name)
       Utils::String.new(
         name.strip
-      ).underscore.to_s
+      ).namespace.underscore.to_s
     end
   end
 end
