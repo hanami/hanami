@@ -8,8 +8,6 @@ module Hanami
         requires 'apps.assets.configurations'
 
         def start
-      require 'byebug'
-      byebug
           Hanami::Assets.precompile(configurations)
         end
 

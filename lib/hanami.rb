@@ -30,6 +30,38 @@ module Hanami
     end
   end
 
+  def self.boot
+    Hanami::Application.applications.each(&:new)
+  end
+
+  require 'rack/builder'
+  class App
+    def initialize(configuration)
+      @builder = ::Rack::Builder.new
+      @routes = Router.new
+
+      configuration.apps do |app, path_prefix|
+        @routes.mount(app, at: path_prefix)
+      end
+
+      if middleware = Hanami.environment.static_assets_middleware
+        @builder.use middleware
+      end
+
+      @builder.use Rack::MethodOverride
+
+      @builder.run @routes
+    end
+
+    def call(env)
+      @builder.call(env)
+    end
+  end
+
+  def self.app
+    App.new(configuration)
+  end
+
   # Return root of the project (top level directory).
   #
   # @return [Pathname] root path

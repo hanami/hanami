@@ -12,7 +12,7 @@ end
 EOF
 
       unshift "config/environment.rb", "require_relative '../lib/ping'"
-      replace "config/environment.rb", "Hanami::Container.configure do", "Hanami.configure do\nmount Ping, at: '/ping'"
+      replace "config/environment.rb", "Hanami.configure do", "Hanami.configure do\nmount Ping, at: '/ping'"
 
       generate "action web home#index --url=/"
       generate "action web books#create --url=/books --method=POST"

@@ -12,8 +12,6 @@ module Hanami
       def resolve
         result = []
 
-        require 'byebug'
-        byebug
         configuration.apps do |app, _|
           config = configuration_for(app)
 

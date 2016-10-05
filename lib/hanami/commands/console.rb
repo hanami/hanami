@@ -80,7 +80,7 @@ module Hanami
       # @api private
       def load_application
         if @environment.container?
-          Hanami::Container.new
+          Hanami.boot
         else
           Hanami::Application.preload_applications!
         end

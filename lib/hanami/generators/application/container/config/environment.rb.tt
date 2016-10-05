@@ -2,5 +2,5 @@ require 'bundler/setup'
 require 'hanami/setup'
 require_relative '../lib/<%= config[:project_name] %>'
 
-Hanami::Container.configure do
+Hanami.configure do
 end

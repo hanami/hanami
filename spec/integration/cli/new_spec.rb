@@ -112,7 +112,7 @@ END
       expect('config.ru').to have_file_content <<-END
 require './config/environment'
 
-run Hanami::Container.new
+run Hanami.app
 END
 
       #
@@ -124,7 +124,7 @@ require 'hanami/setup'
 require_relative '../lib/#{project}'
 require_relative '../apps/web/application'
 
-Hanami::Container.configure do
+Hanami.configure do
   mount Web::Application, at: '/'
 end
 END
@@ -275,7 +275,7 @@ require_relative './spec_helper'
 require 'capybara'
 require 'capybara/dsl'
 
-Capybara.app = Hanami::Container.new
+Capybara.app = Hanami.app
 
 class MiniTest::Spec
   include Capybara::DSL

@@ -30,9 +30,6 @@ class Dashboard
   constructor: (@data) ->
 EOF
 
-        # FIXME: remove before release
-        replace "config/environment.rb", "Hanami::Container.configure do", "Hanami.configure do"
-
         #
         # Precompile
         #

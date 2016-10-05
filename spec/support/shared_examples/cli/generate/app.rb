@@ -458,7 +458,7 @@ require_relative '../lib/#{project}'
 require_relative '../apps/#{app}/application'
 require_relative '../apps/web/application'
 
-Hanami::Container.configure do
+Hanami.configure do
   mount #{app_name}::Application, at: '/#{app}'
   mount Web::Application, at: '/'
 end

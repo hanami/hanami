@@ -39,7 +39,7 @@ require_relative './spec_helper'
 require 'capybara'
 require 'capybara/dsl'
 
-Capybara.app = Hanami::Container.new
+Capybara.app = Hanami.app
 
 class MiniTest::Spec
   include Capybara::DSL
@@ -202,7 +202,7 @@ module RSpec
   module FeatureExampleGroup
     def self.included(group)
       group.metadata[:type] = :feature
-      Capybara.app = Hanami::Container.new
+      Capybara.app = Hanami.app
     end
   end
 end
