@@ -1,33 +1,22 @@
 require 'hanami/assets'
+require 'hanami/commands/command'
 
 module Hanami
   module Commands
     class Assets
-      class Precompile
-        def initialize(options, environment)
-          @options     = options
-          @environment = environment
-        end
+      class Precompile < Command
+        requires 'apps.assets.configurations'
 
         def start
-          preload_applications
-          precompile
+      require 'byebug'
+      byebug
+          Hanami::Assets.precompile(configurations)
         end
 
         private
 
-        def preload_applications
-          @environment.require_application_environment
-
-          if @environment.container?
-            Hanami::Container.new
-          else
-            Hanami::Application.preload!
-          end
-        end
-
-        def precompile
-          Hanami::Assets.deploy
+        def configurations
+          requirements['apps.assets.configurations']
         end
       end
     end

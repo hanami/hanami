@@ -25,11 +25,16 @@ module Hanami
           component.new(Hanami.configuration).resolve
         end
       end
+    end
 
-      @_resolved.dup
+    def self.[](name)
+      @_resolved.fetch(name) do
+        raise ArgumentError.new("Component not found: `#{name}'.\nAvailable components are: #{@_resolved.keys.join(', ')}")
+      end
     end
 
     require 'hanami/components/routes'
     require 'hanami/components/apps_configurations'
+    require 'hanami/components/apps_assets_configurations'
   end
 end

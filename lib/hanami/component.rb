@@ -1,5 +1,4 @@
 require 'concurrent'
-require 'hanami/requirements'
 
 module Hanami
   # Base component
@@ -37,7 +36,7 @@ module Hanami
     # @since x.x.x
     def initialize(configuration)
       @configuration = configuration
-      @requirements  = Hanami::Requirements.new(self.class.requirements)
+      requirements.resolve(self.class.requirements)
     end
 
     # @since x.x.x
@@ -51,6 +50,8 @@ module Hanami
     attr_reader :configuration
 
     # @since x.x.x
-    attr_reader :requirements
+    def requirements
+      Hanami::Components
+    end
   end
 end

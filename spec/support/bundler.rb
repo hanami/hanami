@@ -6,6 +6,9 @@ require_relative 'files'
 module RSpec
   module Support
     module Bundler
+      HANAMI_GEMS_PREFIX = "hanami-".freeze
+      HANAMI_GEMS = %w(utils validations router model view controller mailer assets).freeze
+
       def self.root
         Pathname.new(__dir__).join("..", "..")
       end
@@ -13,6 +16,44 @@ module RSpec
       def self.cache
         root.join("vendor", "cache")
       end
+
+      def self.install_hanami
+        HANAMI_GEMS.each do |hanami_gem|
+          install_hanami_gem(hanami_gem)
+        end
+
+        pkg = root.join("pkg", "hanami-#{Hanami::VERSION}.gem")
+
+        RSpec::Support.silently "bundle exec rake build"
+        RSpec::Support.silently "gem install #{pkg}"
+
+        FileUtils.mv(pkg, cache)
+      end
+
+      def self.uninstall_hanami
+        HANAMI_GEMS.reverse.each do |hanami_gem|
+          RSpec::Support.silently "gem uninstall #{hanami_gem} -ax --force"
+        end
+
+        RSpec::Support.silently "gem uninstall hanami --version '#{Hanami::VERSION}' -ax --force"
+      end
+
+      def self.install_hanami_gem(hanami_gem) # rubocop:disable Metrics/AbcSize
+        dir = cache.children.find do |child|
+          child.basename.to_s.start_with?(hanami_gem)
+        end
+
+        Dir.chdir(cache.join(dir)) do
+          gemspec = "#{HANAMI_GEMS_PREFIX}#{hanami_gem}.gemspec"
+          RSpec::Support.silently "gem build #{gemspec}"
+
+          pkg = Dir["*.gem"].first
+          RSpec::Support.silently "gem install #{pkg}"
+          FileUtils.mv(pkg, cache)
+        end
+      end
+
+      private_class_method :install_hanami_gem
 
       private
 
@@ -31,7 +72,7 @@ module RSpec
       end
 
       def bundle_install
-        bundle "install --local --retry 0 --no-color"
+        bundle "install --local --no-cache --retry 0 --no-color"
       end
 
       def bundle_exec(cmd, &blk)
@@ -96,15 +137,10 @@ RSpec.configure do |config|
   config.include RSpec::Support::Bundler, type: :cli
 
   config.before(:all, type: :cli) do
-    root  = RSpec::Support::Bundler.root
     cache = RSpec::Support::Bundler.cache
-    pkg   = root.join("pkg", "hanami-#{Hanami::VERSION}.gem")
 
     RSpec::Support.silently "bundle package --all"
-    RSpec::Support.silently "bundle exec rake build"
-    RSpec::Support.silently "gem install #{pkg}"
-
-    FileUtils.mv(pkg, cache)
+    RSpec::Support::Bundler.install_hanami
 
     Dir.chdir(cache) do
       RSpec::Support.silently "gem generate_index"
@@ -116,7 +152,7 @@ RSpec.configure do |config|
 
     FileUtils.rm_rf(cache)
 
-    RSpec::Support.silently "gem uninstall hanami --version '#{Hanami::VERSION}' -ax --force"
+    RSpec::Support::Bundler.uninstall_hanami
     RSpec::Support.silently "bundle install"
   end
 end

@@ -15,15 +15,7 @@ module Hanami
       desc 'precompile', 'Precompile assets for deployment'
       def precompile
         require 'hanami/commands/assets/precompile'
-        Hanami::Commands::Assets::Precompile.new(options, environment).start
-      end
-
-      private
-
-      # @since 0.6.0
-      # @api private
-      def environment
-        Hanami::Environment.new(options)
+        Hanami::Commands::Assets::Precompile.new(options).start
       end
     end
   end
