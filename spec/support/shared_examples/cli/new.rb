@@ -44,55 +44,7 @@ RSpec.shared_examples "a new project" do
       # lib/<project>.rb
       #
       expect("lib/#{project}.rb").to have_file_content <<-END
-require 'hanami/model'
-require 'hanami/mailer'
-Dir["\#{ __dir__ }/#{project}/**/*.rb"].each { |file| require_relative file }
-
-Hanami::Model.configure do
-  ##
-  # Database adapter
-  #
-  # Available options:
-  #
-  #  * File System adapter
-  #    adapter type: :file_system, uri: 'file:///db/#{project}_development'
-  #
-  #  * Memory adapter
-  #    adapter type: :memory, uri: 'memory://localhost/#{project}_development'
-  #
-  #  * SQL adapter
-  #    adapter type: :sql, uri: 'sqlite://db/#{project}_development.sqlite3'
-  #    adapter type: :sql, uri: 'postgres://localhost/#{project}_development'
-  #    adapter type: :sql, uri: 'mysql://localhost/#{project}_development'
-  #
-  adapter type: :file_system, uri: ENV['DATABASE_URL']
-
-  ##
-  # Database mapping
-  #
-  # Intended for specifying application wide mappings.
-  #
-  mapping do
-    # collection :users do
-    #   entity     User
-    #   repository UserRepository
-    #
-    #   attribute :id,   Integer
-    #   attribute :name, String
-    # end
-  end
-end.load!
-
-Hanami::Mailer.configure do
-  root "\#{ __dir__ }/#{project}/mailers"
-
-  # See http://hanamirb.org/guides/mailers/delivery
-  delivery do
-    development :test
-    test        :test
-    # production :smtp, address: ENV['SMTP_PORT'], port: 1025
-  end
-end.load!
+Dir["\#{__dir__}/#{project}/**/*.rb"].each { |file| require_relative file }
 END
 
       #

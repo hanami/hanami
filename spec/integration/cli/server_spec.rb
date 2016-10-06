@@ -320,7 +320,7 @@ EOF
     entity("book", project, :title)
 
     # FIXME: remove when we will integrate hanami-model 0.7
-    mapping project, <<-END
+    mapping <<-END
     collection :books do
       entity     Book
       repository BookRepository

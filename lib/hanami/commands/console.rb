@@ -81,15 +81,21 @@ module Hanami
 
       # @since 0.1.0
       # @api private
+      #
+      # rubocop:disable Lint/HandleExceptions
+      # rubocop:disable Lint/EnsureReturn
       def load_engine(engine)
         require engine
       rescue LoadError
+      ensure
         return Object.const_get(
           ENGINES.fetch(engine) do
             raise ArgumentError.new("Unknown console engine: `#{engine}'")
           end
         )
       end
+      # rubocop:enable Lint/EnsureReturn
+      # rubocop:enable Lint/HandleExceptions
     end
   end
 end

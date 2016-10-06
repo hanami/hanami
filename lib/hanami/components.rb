@@ -35,6 +35,8 @@ module Hanami
 
     require 'hanami/components/all'
     require 'hanami/components/routes'
+    require 'hanami/components/model'
+    require 'hanami/components/model_configuration'
     require 'hanami/components/apps_configurations'
     require 'hanami/components/apps_assets_configurations'
   end

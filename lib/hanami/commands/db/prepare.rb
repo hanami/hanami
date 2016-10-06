@@ -1,9 +1,11 @@
-require 'hanami/commands/db/abstract'
+require 'hanami/commands/command'
 
 module Hanami
   module Commands
     class DB
-      class Prepare < Abstract
+      class Prepare < Command
+        requires 'model.configuration'
+
         def start
           require 'hanami/model/migrator'
           Hanami::Model::Migrator.prepare

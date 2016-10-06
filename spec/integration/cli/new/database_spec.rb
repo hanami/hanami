@@ -42,11 +42,11 @@ RSpec.describe "hanami new", type: :cli do
           expect('Gemfile').to have_file_content(%r{gem '#{gem_name}'})
 
           #
-          # lib/<project>.rb
+          # config/environment.rb
           #
-          expect("lib/#{project}.rb").to have_file_content(%r{  adapter type: :sql, uri: ENV\['DATABASE_URL'\]})
-          expect("lib/#{project}.rb").to have_file_content(%r{  migrations 'db/migrations'})
-          expect("lib/#{project}.rb").to have_file_content(%r{  schema     'db/schema.sql'})
+          expect("config/environment.rb").to have_file_content(%r{  adapter type: :sql, uri: ENV\['DATABASE_URL'\]})
+          expect("config/environment.rb").to have_file_content(%r{  migrations 'db/migrations'})
+          expect("config/environment.rb").to have_file_content(%r{  schema     'db/schema.sql'})
 
           #
           # db/migrations/.gitkeep
@@ -111,11 +111,11 @@ RSpec.describe "hanami new", type: :cli do
           expect('Gemfile').to have_file_content(%r{gem '#{gem_name}'})
 
           #
-          # lib/<project>.rb
+          # config/environment.rb
           #
-          expect("lib/#{project}.rb").to have_file_content(%r{  adapter type: :sql, uri: ENV\['DATABASE_URL'\]})
-          expect("lib/#{project}.rb").to have_file_content(%r{  migrations 'db/migrations'})
-          expect("lib/#{project}.rb").to have_file_content(%r{  schema     'db/schema.sql'})
+          expect("config/environment.rb").to have_file_content(%r{  adapter type: :sql, uri: ENV\['DATABASE_URL'\]})
+          expect("config/environment.rb").to have_file_content(%r{  migrations 'db/migrations'})
+          expect("config/environment.rb").to have_file_content(%r{  schema     'db/schema.sql'})
 
           #
           # db/migrations/.gitkeep
@@ -181,11 +181,11 @@ RSpec.describe "hanami new", type: :cli do
           expect('Gemfile').to have_file_content(%r{gem '#{gem_name}'})
 
           #
-          # lib/<project>.rb
+          # config/environment.rb
           #
-          expect("lib/#{project}.rb").to have_file_content(%r{  adapter type: :sql, uri: ENV\['DATABASE_URL'\]})
-          expect("lib/#{project}.rb").to have_file_content(%r{  migrations 'db/migrations'})
-          expect("lib/#{project}.rb").to have_file_content(%r{  schema     'db/schema.sql'})
+          expect("config/environment.rb").to have_file_content(%r{  adapter type: :sql, uri: ENV\['DATABASE_URL'\]})
+          expect("config/environment.rb").to have_file_content(%r{  migrations 'db/migrations'})
+          expect("config/environment.rb").to have_file_content(%r{  schema     'db/schema.sql'})
 
           #
           # db/migrations/.gitkeep

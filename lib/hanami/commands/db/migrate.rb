@@ -1,18 +1,24 @@
-require 'hanami/commands/db/abstract'
+require 'hanami/commands/command'
 
 module Hanami
   module Commands
     class DB
-      class Migrate < Abstract
-        def initialize(environment, version)
-          super(environment)
+      class Migrate < Command
+        requires 'model.configuration'
+
+        def initialize(options, version)
+          super(options)
           @version = version
         end
 
         def start
           require 'hanami/model/migrator'
-          Hanami::Model::Migrator.migrate(version: @version)
+          Hanami::Model::Migrator.migrate(version: version)
         end
+
+        private
+
+        attr_reader :version
       end
     end
   end

@@ -13,7 +13,11 @@ module Hanami
     end
 
     def model(&blk)
-      settings.put_if_absent(:model, blk)
+      if block_given?
+        settings.put_if_absent(:model, blk)
+      else
+        settings.fetch(:model)
+      end
     end
 
     def mailer(&blk)

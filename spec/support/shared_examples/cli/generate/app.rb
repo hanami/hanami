@@ -454,6 +454,7 @@ END
       expect("config/environment.rb").to have_file_content <<-END
 require 'bundler/setup'
 require 'hanami/setup'
+require 'hanami/model'
 require_relative '../lib/#{project}'
 require_relative '../apps/#{app}/application'
 require_relative '../apps/web/application'
@@ -461,6 +462,52 @@ require_relative '../apps/web/application'
 Hanami.configure do
   mount #{app_name}::Application, at: '/#{app}'
   mount Web::Application, at: '/'
+
+  model do
+    ##
+    # Database adapter
+    #
+    # Available options:
+    #
+    #  * File System adapter
+    #    adapter type: :file_system, uri: 'file:///db/#{project}_development'
+    #
+    #  * Memory adapter
+    #    adapter type: :memory, uri: 'memory://localhost/#{project}_development'
+    #
+    #  * SQL adapter
+    #    adapter type: :sql, uri: 'sqlite://db/#{project}_development.sqlite3'
+    #    adapter type: :sql, uri: 'postgres://localhost/#{project}_development'
+    #    adapter type: :sql, uri: 'mysql://localhost/#{project}_development'
+    #
+    adapter type: :file_system, uri: ENV['DATABASE_URL']
+
+    ##
+    # Database mapping
+    #
+    # Intended for specifying application wide mappings.
+    #
+    mapping do
+      # collection :users do
+      #   entity     User
+      #   repository UserRepository
+      #
+      #   attribute :id,   Integer
+      #   attribute :name, String
+      # end
+    end
+  end
+
+  mailer do
+    root 'lib/#{project}/mailers'
+
+    # See http://hanamirb.org/guides/mailers/delivery
+    delivery do
+      development :test
+      test        :test
+      # production :smtp, address: ENV['SMTP_PORT'], port: 1025
+    end
+  end
 end
 END
 

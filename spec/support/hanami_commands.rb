@@ -100,8 +100,8 @@ EOF
       end
 
       # FIXME: remove when we will integrate hanami-model 0.7
-      def mapping(project, content)
-        path  = Pathname.new("lib").join("#{project}.rb") # lib/bookshelf.rb
+      def mapping(content)
+        path  = Pathname.new("config").join("environment.rb")
 
         lines = ::File.readlines(path)
         index = lines.index { |l| l =~ %r{mapping do} } + 1

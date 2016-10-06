@@ -1,9 +1,11 @@
-require 'hanami/commands/db/abstract'
+require 'hanami/commands/command'
 
 module Hanami
   module Commands
     class DB
-      class Drop < Abstract
+      class Drop < Command
+        requires 'model.configuration'
+
         def start
           require 'hanami/model/migrator'
           Hanami::Model::Migrator.drop

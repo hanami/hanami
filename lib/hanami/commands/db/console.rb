@@ -1,16 +1,15 @@
 require 'hanami/utils/class'
-require 'hanami/commands/db/abstract'
+require 'hanami/commands/command'
 
 module Hanami
   module Commands
     class DB
-      class Console < Abstract
-        attr_reader :name, :env_options
+      class Console < Command
+        requires 'model.configuration'
 
         def initialize(options, name)
           super(options)
-          @name        = name
-          @env_options = environment.to_options
+          @name = name
         end
 
         def start
@@ -18,6 +17,8 @@ module Hanami
         end
 
         private
+
+        attr_reader :name
 
         def config
           if name
