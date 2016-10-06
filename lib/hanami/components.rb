@@ -33,6 +33,7 @@ module Hanami
       end
     end
 
+    require 'hanami/components/all'
     require 'hanami/components/routes'
     require 'hanami/components/apps_configurations'
     require 'hanami/components/apps_assets_configurations'
