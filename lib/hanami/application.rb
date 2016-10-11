@@ -32,6 +32,7 @@ module Hanami
       base.class_eval do
         include Hanami::Utils::ClassAttribute
 
+        # FIXME: put namespace here in the constructor
         class_attribute :configuration
         self.configuration = ApplicationConfiguration.new
       end

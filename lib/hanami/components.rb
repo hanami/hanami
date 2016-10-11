@@ -1,17 +1,78 @@
 require 'concurrent'
-require 'hanami/component'
 
 module Hanami
   # Components
   #
   # @since x.x.x
   module Components
+    class Component
+      attr_reader :name
+      attr_reader :requirements
+      attr_accessor :_prepare, :_resolve, :_run
+
+      def initialize(name, &blk)
+        @name         = name
+        @requirements = []
+        @_prepare     = ->(*) {}
+        @_resolve     = -> {}
+        instance_eval(&blk)
+      end
+
+      def requires(components)
+        self.requirements = components
+      end
+
+      def prepare(&blk)
+        self._prepare = blk
+      end
+
+      def resolve(&blk)
+        self._resolve = blk
+      end
+
+      def run(&blk)
+        self._run = blk
+      end
+
+      def call(configuration)
+        resolve_requirements
+        _prepare.call(configuration)
+
+        unless _run.nil?
+          _run.call(configuration)
+          return
+        end
+
+        resolved(name, _resolve.call(configuration))
+      end
+
+      def resolve_requirements
+        Components.resolve(requirements)
+      end
+
+      def requirements=(names)
+        @requirements = Array(names).flatten
+      end
+
+      def component(name)
+        Components.component(name)
+      end
+
+      def resolved(name, value)
+        Components.resolved(name, value)
+      end
+    end
+
     # FIXME: review if this is the right data structure for @_components
     @_components = Concurrent::Hash.new
     @_resolved   = Concurrent::Map.new
 
-    def self.register(name, component)
-      @_components[name] = component
+    def self.register(name, &blk)
+      @_components[name] = Component.new(name, &blk)
+    end
+
+    def self.component(name)
+      @_components.fetch(name)
     end
 
     def self.resolved(name, value)
@@ -19,10 +80,10 @@ module Hanami
     end
 
     def self.resolve(names)
-      names.each do |name|
+      Array(names).flatten.each do |name|
         @_resolved.fetch_or_store(name) do
           component = @_components.fetch(name)
-          component.new(Hanami.configuration).resolve
+          component.call(Hanami.configuration)
         end
       end
     end
@@ -33,163 +94,69 @@ module Hanami
       end
     end
 
-    # Catch all for components
-    #
-    # @since x.x.x
-    class All < Component
-      register_as 'all'
+    register 'all' do
       requires 'model'
 
-      def resolve
-        Hanami.boot
-        true
+      run do
+        Hanami.boot # FIXME: This should require components instead of using Hanami.boot
       end
     end
 
-    # Configurations for all the apps
-    #
-    # @since x.x.x
-    class Apps < Component
-      requires 'apps.configurations', 'apps.frameworks.configuration', 'apps.code'
-
-      def resolve
-        configuration.apps do |app, path_prefix|
-          # load_rack
-          # load frameworks
-        end
-
-        true
-      end
-    end
-
-    # Project routes
-    #
-    # @since x.x.x
-    class Routes < Component
-      register_as 'routes'
-      requires    'apps.configurations'
-
-      class RoutesSet
-        def initialize(routes)
-          @routes = routes
-        end
-
-        def inspect
-          @routes.map do |r|
-            r.inspector.to_s
-          end.join("\n")
-        end
-      end
-
-      def resolve
-        RoutesSet.new(routes)
-      end
-
-      private
-
-      def routes
-        configuration.mounted.each_with_object([]) do |(app, path_prefix), result|
-          result << if hanami_app?(app)
-                      resolve_hanami_app_router(app, path_prefix)
-                    else
-                      resolve_rack_app_router(app, path_prefix)
-                    end
-        end
-      end
-
-      def hanami_app?(app)
-        app.ancestors.include?(Hanami::Application)
-      end
-
-      def resolve_hanami_app_router(app, path_prefix)
-        config = requirements["#{app.app_name}.configuration"]
-
-        resolver    = Hanami::Routing::EndpointResolver.new(pattern: config.controller_pattern, namespace: config.namespace)
-        default_app = Hanami::Routing::Default.new
-
-        Hanami::Router.new(
-          prefix:      path_prefix,
-          resolver:    resolver,
-          default_app: default_app,
-          parsers:     config.body_parsers,
-          scheme:      config.scheme,
-          host:        config.host,
-          port:        config.port,
-          force_ssl:   config.force_ssl,
-          &config.routes
-        )
-      end
-
-      def resolve_rack_app_router(app, path_prefix)
-        Hanami::Router.new do
-          mount app.name, at: path_prefix
-        end
-      end
-    end
-
-    # Model
-    #
-    # @since x.x.x
-    class Model < Component
-      register_as 'model'
+    register 'model' do
       requires 'model.configuration'
 
-      def resolve
-        if defined?(Hanami::Model)
-          Hanami::Model.load!
-          true
-        else
-          false
-        end
+      run do
+        Hanami::Model.load! if defined?(Hanami::Model)
       end
     end
 
-    # Model configuration
-    #
-    # @since x.x.x
-    class ModelConfiguration < Component
-      register_as 'model.configuration'
-
-      def resolve
+    register 'model.configuration' do
+      prepare do
         require 'hanami/model'
+      end
 
+      resolve do |configuration|
         Hanami::Model.configure(&configuration.model)
         Hanami::Model.configuration
-      rescue LoadError # rubocop:disable Lint/HandleExceptions
       end
     end
 
-    # Configurations for all the apps
-    #
-    # @since x.x.x
-    class AppsConfigurations < Component
-      register_as 'apps.configurations'
+    register 'routes.inspector' do
+      requires 'apps.configurations'
 
-      def resolve
-        configuration.apps do |app, path_prefix|
-          config = app.configuration
-          config.path_prefix path_prefix
-          config.load!(app.app_name) # FIXME: remove app_name as argument
+      prepare do
+        require 'hanami/components/routes_inspector'
+      end
 
-          Components.resolved("#{app.app_name}.configuration", config)
+      resolve do |configuration|
+        RoutesInspector.new(configuration)
+      end
+    end
+
+    register 'apps' do
+      run do |configuration|
+        configuration.apps do |app|
+          component('app').call(app)
         end
-
-        true
       end
     end
 
-    # Configurations for all the apps
-    #
-    # @since x.x.x
-    class AppsAssetsConfigurations < Component
-      register_as 'apps.assets.configurations'
-      requires    'apps.configurations'
+    register 'apps.configurations' do
+      run do |configuration|
+        configuration.apps do |app|
+          component('app.configuration').call(app)
+        end
+      end
+    end
 
-      def resolve
+    register 'apps.assets.configurations' do
+      requires 'apps.configurations'
+
+      resolve do |configuration|
         result = []
-
-        configuration.apps do |app, _|
-          config = configuration_for(app)
+        configuration.apps do |app|
+          # FIXME: this has to be unified with app.assets
+          config = app.configuration
 
           assets = Hanami::Assets::Configuration.new do
             root             config.root
@@ -205,22 +172,139 @@ module Hanami
             compile          true
 
             config.assets.__apply(self)
-            cdn host != config.host
           end
 
-          Components.resolved("#{app.app_name}.assets.configuration", assets)
-          assets.load!
+          assets.cdn assets.host != config.host
 
           result << assets
         end
 
         result
       end
+    end
 
-      private
+    register 'app' do
+      run do |app|
+        ['app.configuration', 'app.frameworks', 'app.code', 'app.routes', 'app.finalizer'].each do |c|
+          component(c).call(app)
+        end
+      end
+    end
 
-      def configuration_for(app)
-        requirements["#{app.app_name}.configuration"]
+    register 'app.configuration' do
+      run do |app|
+        config = app.configuration
+        config.path_prefix app.path_prefix
+        config.load!(app.app_name) # FIXME: remove app_name as argument
+
+        resolved("#{app.app_name}.configuration", config)
+      end
+    end
+
+    register 'app.frameworks' do
+      run do |app|
+        ['app.controller', 'app.view', 'app.assets', 'app.logger'].each do |c|
+          component(c).call(app)
+        end
+      end
+    end
+
+    register 'app.controller' do
+      prepare do
+        require 'hanami/components/app/controller'
+      end
+
+      # FIXME: Once we'll get configurations to work, use:
+      #
+      # resolve do
+      #   Controller.new(app)
+      # end
+
+      run do |app|
+        Components::App::Controller.resolve(app)
+      end
+    end
+
+    register 'app.view' do
+      prepare do
+        require 'hanami/components/app/view'
+      end
+
+      # FIXME: Once we'll get configurations to work, use:
+      #
+      # resolve do
+      #   View.new(app)
+      # end
+
+      run do |app|
+        Components::App::View.resolve(app)
+      end
+    end
+
+    register 'app.assets' do
+      prepare do
+        require 'hanami/components/app/assets'
+      end
+
+      # FIXME: Once we'll get configurations to work, use:
+      #
+      # resolve do
+      #   Assets.new(app)
+      # end
+
+      run do |app|
+        Components::App::Assets.resolve(app)
+      end
+    end
+
+    register 'app.logger' do
+      prepare do
+        require 'hanami/components/app/logger'
+      end
+
+      # FIXME: Once we'll get configurations to work, use:
+      #
+      # resolve do
+      #   Logger.new(app)
+      # end
+
+      run do |app|
+        Components::App::Logger.resolve(app)
+      end
+    end
+
+    register 'app.code' do
+      run do |app|
+        config = app.configuration
+        config.load_paths.load!(config.root) # TODO: check why config.root has to be passed
+      end
+    end
+
+    register 'app.routes' do
+      prepare do
+        require 'hanami/components/app/routes'
+      end
+
+      # FIXME: Once we'll get configurations to work, use:
+      #
+      # resolve do
+      #   Routes.new(app)
+      # end
+
+      run do |app|
+        Components::App::Routes.resolve(app)
+      end
+    end
+
+    register 'app.finalizer' do
+      run do |app|
+        # _assign_rendering_policy!
+        # _assign_rack_routes!
+        # _load_rack_middleware!
+        namespace = app.namespace
+        namespace.module_eval %(#{namespace}::Controller.load!)
+        namespace.module_eval %(#{namespace}::View.load!)
+        namespace.module_eval %(#{namespace}::Assets.load!)
       end
     end
   end

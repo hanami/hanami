@@ -11,13 +11,13 @@ module Hanami
     # @since 0.1.0
     # @api private
     class Routes < Command
-      requires 'routes'
+      requires 'routes.inspector'
 
       # Display to STDOUT application routes
       #
       # @since 0.1.0
       def start
-        puts requirements['routes'].inspect
+        puts requirements['routes.inspector'].inspect
       end
     end
   end

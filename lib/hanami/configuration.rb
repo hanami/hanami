@@ -1,15 +1,34 @@
 require 'concurrent'
+require 'delegate'
 require 'hanami/application'
+require 'hanami/utils/class'
+require 'hanami/utils/string'
 
 module Hanami
   class Configuration
+    class App < SimpleDelegator
+      attr_reader :path_prefix
+
+      def initialize(app, path_prefix)
+        super(app)
+        @path_prefix = path_prefix
+      end
+
+      # TODO: review performance of this
+      def namespace
+        Utils::Class.load!(
+          Utils::String.new(name).namespace
+        )
+      end
+    end
+
     def initialize(&blk)
       @settings = Concurrent::Map.new
       instance_eval(&blk)
     end
 
     def mount(app, options)
-      mounted[app] = options.fetch(:at)
+      mounted[app] = App.new(app, options.fetch(:at))
     end
 
     def model(&blk)
@@ -29,8 +48,8 @@ module Hanami
     end
 
     def apps
-      mounted.each_pair do |app, path_prefix|
-        yield(app, path_prefix) if app.ancestors.include?(Hanami::Application)
+      mounted.each_pair do |klass, app|
+        yield(app) if klass.ancestors.include?(Hanami::Application)
       end
     end
 

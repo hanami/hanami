@@ -40,8 +40,8 @@ module Hanami
       @builder = ::Rack::Builder.new
       @routes = Router.new
 
-      configuration.apps do |app, path_prefix|
-        @routes.mount(app, at: path_prefix)
+      configuration.mounted.each do |klass, app|
+        @routes.mount(klass, at: app.path_prefix)
       end
 
       if middleware = Hanami.environment.static_assets_middleware

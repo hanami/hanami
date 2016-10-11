@@ -1,7 +1,7 @@
 RSpec.describe 'hanami assets', type: :cli do
   describe 'precompile' do
     it "precompiles assets" do
-      with_project("bookshelf_assets_precompile", gems: ['sass', 'coffee-script']) do
+      with_project("bookshelf_assets_precompile", gems: ['sass', 'coffee-script', 'byebug']) do
         #
         # Web assets
         #

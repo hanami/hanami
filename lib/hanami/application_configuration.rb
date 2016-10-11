@@ -29,9 +29,10 @@ module Hanami
     # @since 0.1.0
     # @api private
     def initialize
-      @blk = Proc.new{}
+      @blk = proc {}
       @env = Environment.new
       @configurations = Hash.new { |k, v| k[v] = [] }
+      evaluate_configurations!
     end
 
     # Set a block yield when the configuration will be loaded or
@@ -1717,7 +1718,7 @@ module Hanami
     # @since 0.2.0
     # @api private
     def configurations
-      [ @blk ] + @configurations[@env.environment]
+      [@blk] + @configurations[@env.environment]
     end
   end
 end

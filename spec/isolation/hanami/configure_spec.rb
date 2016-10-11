@@ -33,7 +33,7 @@ RSpec.describe "Hanami.configure" do
 
   it "setups apps" do
     mounted = Hanami.configuration.mounted
-    expect(mounted[app]).to eq('/')
+    expect(mounted[app]).to eq(Hanami::Configuration::App.new(app, '/'))
   end
 
   it "holds model configuration" do

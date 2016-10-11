@@ -24,6 +24,7 @@ module Web::Controllers::Home
   end
 end
 EOF
+
       server do
         get '/'
 
