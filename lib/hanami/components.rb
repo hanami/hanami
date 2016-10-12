@@ -193,9 +193,8 @@ module Hanami
 
     register 'app.configuration' do
       run do |app|
-        config = app.configuration
-        config.path_prefix app.path_prefix
-        config.load!(app.app_name) # FIXME: remove app_name as argument
+        config = ApplicationConfiguration.new(app.namespace, app.configurations, app.path_prefix)
+        app.configuration = config
 
         resolved("#{app.app_name}.configuration", config)
       end

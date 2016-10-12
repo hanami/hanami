@@ -92,16 +92,10 @@ module Hanami
       # @since 0.8.0
       # @api private
       def _sources_from_applications
-        Hanami::Application.applications.each_with_object({}) do |application, result|
-          config = _assets_configuration(application)
+        Hanami::Components.resolve('apps.assets.configurations')
+        Hanami::Components['apps.assets.configurations'].each_with_object({}) do |config, result|
           result["#{config.prefix}/"] = config
         end
-      end
-
-      # @since 0.8.0
-      # @api private
-      def _assets_configuration(application)
-        application.configuration.namespace::Assets.configuration
       end
     end
   end

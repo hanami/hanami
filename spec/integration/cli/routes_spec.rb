@@ -21,7 +21,7 @@ EOF
 
       hanami "routes"
 
-      expect(out).to eq "Name Method     Path                           Action                        \n\n                                /ping                          Ping                          \n\n                Name Method     Path                           Action                        \n\n                     GET, HEAD  /                              admin::Controllers::Home::Index\n\n                Name Method     Path                           Action                        \n\n                     POST       /books                         web::Controllers::Books::Create\n                     GET, HEAD  /                              web::Controllers::Home::Index"
+      expect(out).to eq "Name Method     Path                           Action                        \n\n                                /ping                          Ping                          \n\n                Name Method     Path                           Action                        \n\n                     GET, HEAD  /admin                         Admin::Controllers::Home::Index\n\n                Name Method     Path                           Action                        \n\n                     POST       /books                         Web::Controllers::Books::Create\n                     GET, HEAD  /                              Web::Controllers::Home::Index"
     end
   end
 end

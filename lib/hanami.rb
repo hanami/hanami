@@ -31,12 +31,14 @@ module Hanami
   end
 
   def self.boot
+    Components.resolve('apps.configurations')
     Hanami::Application.applications.each(&:new)
   end
 
   require 'rack/builder'
   class App
     def initialize(configuration)
+      Components.resolve('apps.configurations')
       @builder = ::Rack::Builder.new
       @routes = Router.new
 

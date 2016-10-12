@@ -1,7 +1,6 @@
 require 'hanami/utils/kernel'
 require 'hanami/utils/deprecation'
 require 'hanami/environment'
-require 'hanami/config/configure'
 require 'hanami/config/cookies'
 require 'hanami/config/framework_configuration'
 require 'hanami/config/load_paths'
@@ -22,54 +21,29 @@ module Hanami
     # @see Hanami::Configuration#ssl?
     SSL_SCHEME = 'https'.freeze
 
+    # @since 0.1.0
+    # @api private
+    attr_reader :namespace
+
+    # @since 0.4.0
+    # @api private
+    attr_reader :path_prefix
+
     # Initialize a new configuration instance
     #
+    # @param namespace [Module]
+    # @param configurations [Hanami::EnvironmentApplicationConfigurations]
     # @return [Hanami::Configuration]
     #
     # @since 0.1.0
     # @api private
-    def initialize
-      @blk = proc {}
-      @env = Environment.new
-      @configurations = Hash.new { |k, v| k[v] = [] }
+    def initialize(namespace, configurations, path_prefix)
+      @namespace      = namespace
+      @configurations = configurations
+      @path_prefix    = path_prefix
+      @env            = Environment.new
+
       evaluate_configurations!
-    end
-
-    # Set a block yield when the configuration will be loaded or
-    # set a path for the specific environment.
-    #
-    # @param environment [Symbol,nil] the configuration environment name
-    # @param blk [Proc] the configuration block
-    #
-    # @return [self]
-    #
-    # @since 0.1.0
-    # @api private
-    def configure(environment = nil, path = nil, &blk)
-      if environment && path
-        @configurations[environment.to_s] << Config::Configure.new(root, path, &blk)
-      elsif environment
-        @configurations[environment.to_s] << blk
-      else
-        @blk = blk
-      end
-
-      self
-    end
-
-    # Load the configuration
-    #
-    # @param namespace [String,nil] the application namespace
-    #
-    # @return [self]
-    #
-    # @since 0.1.0
-    # @api private
-    def load!(namespace = nil)
-      @namespace = namespace
-      evaluate_configurations!
-
-      self
     end
 
     # Returns the security policy
@@ -176,69 +150,6 @@ module Hanami
         @root = value
       else
         Utils::Kernel.Pathname(@root || Dir.pwd).realpath
-      end
-    end
-
-    # The application namespace
-    #
-    # By default it returns the Ruby namespace of the application. For instance
-    # for an application `Bookshelf::Application`, it returns `Bookshelf`.
-    #
-    # This value isn't set at the init time, but when the configuration is
-    # loaded with `#load!`.
-    #
-    # Hanami applications are namespaced: all the controllers and views live
-    # under the application module, without polluting the global namespace.
-    # However, if for some reason, you want top level classes, set this value
-    # to `Object` (which is the top level namespace for Ruby).
-    #
-    # This is part of a DSL, for this reason when this method is called with
-    # an argument, it will set the corresponding instance variable. When
-    # called without, it will return the already set value, or the default.
-    #
-    # @overload namespace(value)
-    #   Sets the given value
-    #   @param value [Class,Module] A valid Ruby namespace
-    #
-    # @overload namespace
-    #   Gets the value
-    #   @return [Class,Module] a Ruby namespace
-    #
-    # @since 0.1.0
-    #
-    # @example Getting the value
-    #   require 'hanami'
-    #
-    #   module Bookshelf
-    #     class Application < Hanami::Application
-    #     end
-    #   end
-    #
-    #   Bookshelf::Application.configuration.namespace # => Bookshelf
-    #
-    #   # It will lookup namespaced controllers under Bookshelf
-    #   # eg. Bookshelf::Controllers::Dashboard
-    #
-    # @example Setting the value
-    #   require 'hanami'
-    #
-    #   module Bookshelf
-    #     class Application < Hanami::Application
-    #       configure do
-    #         namespace Object
-    #       end
-    #     end
-    #   end
-    #
-    #   Bookshelf::Application.configuration.namespace # => Object
-    #
-    #   # It will lookup top level controllers under Object
-    #   # eg. DashboardController
-    def namespace(value = nil)
-      if value
-        @namespace = value
-      else
-        @namespace
       end
     end
 
@@ -1284,7 +1195,6 @@ module Hanami
     #   module Bookshelf
     #     class Application < Hanami::Application
     #       configure do
-    #         namespace Object
     #         controller_pattern "%{controller}Controller::%{action}"
     #
     #         routes do
@@ -1411,7 +1321,6 @@ module Hanami
     #   module Bookshelf
     #     class Application < Hanami::Application
     #       configure do
-    #         namespace Object
     #         view_pattern "%{controller}::%{action}"
     #
     #         routes do
@@ -1693,32 +1602,14 @@ module Hanami
       @logger ||= Config::Logger.new
     end
 
-    # This options is used as a bridge between container and router application.
-    #
-    # @return [String, NilClass] path prefix for routes
-    #
-    # @since 0.4.0
-    # @api private
-    def path_prefix(value = nil)
-      if value.nil?
-        @path_prefix
-      else
-        @path_prefix = value
-      end
-    end
-
     private
+
+    attr_reader :configurations
 
     # @since 0.2.0
     # @api private
     def evaluate_configurations!
-      configurations.each { |c| instance_eval(&c) }
-    end
-
-    # @since 0.2.0
-    # @api private
-    def configurations
-      [@blk] + @configurations[@env.environment]
+      configurations.each(@env.environment) { |c| instance_eval(&c) }
     end
   end
 end

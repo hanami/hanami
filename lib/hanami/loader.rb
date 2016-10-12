@@ -13,8 +13,6 @@ module Hanami
   # @since 0.1.0
   # @api private
   class Loader
-    LOCK = Mutex.new
-
     STRICT_TRANSPORT_SECURITY_HEADER = 'Strict-Transport-Security'.freeze
     STRICT_TRANSPORT_SECURITY_DEFAULT_VALUE = 'max-age=31536000'.freeze
 
@@ -24,25 +22,17 @@ module Hanami
     end
 
     def load!
-      LOCK.synchronize do
-        load_configuration!
-        configure_frameworks!
-        load_configuration_load_paths!
-        load_rack!
-        load_frameworks!
-        load_initializers!
-      end
+      configure_frameworks!
+      load_configuration_load_paths!
+      load_rack!
+      load_frameworks!
+      load_initializers!
     end
 
     private
     attr_reader :application, :configuration
 
-    def load_configuration!
-      configuration.load!(application_module)
-    end
-
     def configure_frameworks!
-      _configure_model_framework! if defined?(Hanami::Model)
       _configure_controller_framework!
       _configure_view_framework!
       _configure_assets_framework!
@@ -128,20 +118,6 @@ module Hanami
       end
     end
 
-    def _configure_model_framework!
-      config = configuration
-      if _hanami_model_loaded? && !application_module.const_defined?('Model', false)
-        model = Hanami::Model.duplicate(application_module) do
-          adapter(config.adapter)  if config.adapter
-          mapping(&config.mapping) if config.mapping
-
-          config.model.__apply(self)
-        end
-
-        application_module.const_set('Model', model)
-      end
-    end
-
     def _configure_logger!
       unless application_module.const_defined?('Logger', false)
         configuration.logger.app_name(application_module.to_s)
@@ -152,7 +128,6 @@ module Hanami
     def load_frameworks!
       _load_view_framework!
       _load_assets_framework!
-      _load_model_framework!
     end
 
     def _load_view_framework!
@@ -165,25 +140,6 @@ module Hanami
       application_module.module_eval %{
         #{ application_module }::Assets.load!
       }
-    end
-
-    def _load_model_framework!
-      return unless _load_model_framework?
-
-      application_module.module_eval %{
-        #{ application_module }::Model.load!
-      }
-    end
-
-    def _load_model_framework?
-      if _hanami_model_loaded? && application_module.const_defined?('Model', false)
-        model = application_module.const_get('Model', false)
-        model.configuration.adapter
-      end
-    end
-
-    def _hanami_model_loaded?
-      defined?(Hanami::Model)
     end
 
     def _hanami_mailer_loaded?

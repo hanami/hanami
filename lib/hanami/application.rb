@@ -1,7 +1,9 @@
-require 'hanami/utils/class_attribute'
+require 'thread'
+require 'concurrent'
 require 'hanami/application_name'
 require 'hanami/frameworks'
 require 'hanami/application_configuration'
+require 'hanami/environment_application_configurations'
 require 'hanami/loader'
 require 'hanami/logger'
 require 'hanami/rendering_policy'
@@ -20,6 +22,8 @@ module Hanami
   #     end
   #   end
   class Application
+    @@__lock = Mutex.new
+
     # Override Ruby's Class#inherited
     #
     # @since 0.2.0
@@ -30,15 +34,26 @@ module Hanami
       super
 
       base.class_eval do
-        include Hanami::Utils::ClassAttribute
+        @configurations = EnvironmentApplicationConfigurations.new
 
-        # FIXME: put namespace here in the constructor
-        class_attribute :configuration
-        self.configuration = ApplicationConfiguration.new
+        class << self
+          attr_reader :configurations
+          attr_reader :configuration
+        end
       end
 
       synchronize do
         applications.add(base)
+      end
+    end
+
+    # Yields the given block in a critical section
+    #
+    # @since 0.2.0
+    # @api private
+    def self.synchronize
+      @@__lock.synchronize do
+        yield
       end
     end
 
@@ -47,9 +62,36 @@ module Hanami
       ApplicationName.new(name)
     end
 
-    # @since 0.8.0
-    # @api private
-    LOCK = Mutex.new
+    def self.configuration=(configuration)
+      @@__lock.synchronize do
+        raise "can't assign configuration twice" unless @configuration.nil?
+        @configuration = configuration
+      end
+    end
+
+    # Configure the application.
+    # It yields the given block in the context of the configuration
+    #
+    # @param environment [Symbol,nil] the configuration environment name
+    # @param blk [Proc] the configuration block
+    #
+    # @since 0.1.0
+    #
+    # @see Hanami::Configuration
+    #
+    # @example
+    #   require 'hanami'
+    #
+    #   module Bookshelf
+    #     Application < Hanami::Application
+    #       configure do
+    #         # ...
+    #       end
+    #     end
+    #   end
+    def self.configure(environment = nil, &blk)
+      configurations.add(environment, &blk)
+    end
 
     # Return the routes for this application
     #
@@ -62,7 +104,7 @@ module Hanami
 
     # Set the routes for this application
     #
-    # @param [Hanami::Router]
+    # @param [Hanami::Router]
     #
     # @since 0.1.0
     # @api private
@@ -82,7 +124,6 @@ module Hanami
     #
     # @since 0.1.0
     def initialize(options = {})
-      self.class.configuration.path_prefix options[:path_prefix]
       self.class.load!(self)
     end
 
@@ -147,30 +188,6 @@ module Hanami
         @@applications
       end
 
-      # Configure the application.
-      # It yields the given block in the context of the configuration
-      #
-      # @param environment [Symbol,nil] the configuration environment name
-      # @param blk [Proc] the configuration block
-      #
-      # @since 0.1.0
-      #
-      # @see Hanami::Configuration
-      #
-      # @example
-      #   require 'hanami'
-      #
-      #   module Bookshelf
-      #     Application < Hanami::Application
-      #       configure do
-      #         # ...
-      #       end
-      #     end
-      #   end
-      def configure(environment = nil, &blk)
-        configuration.configure(environment, &blk)
-      end
-
       # Eager load the application configuration, by activating the framework
       # duplication mechanisms.
       #
@@ -220,6 +237,7 @@ module Hanami
       #
       # @since 0.2.0
       def preload!
+        Components.resolve('apps.configurations')
         synchronize do
           applications.each(&:load!)
         end
@@ -244,16 +262,6 @@ module Hanami
       end
 
       private
-
-      # Yields the given block in a critical section
-      #
-      # @since 0.2.0
-      # @api private
-      def synchronize
-        LOCK.synchronize do
-          yield
-        end
-      end
     end
   end
 end
