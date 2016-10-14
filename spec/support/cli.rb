@@ -7,8 +7,8 @@ module RSpec
     module Cli
       def self.included(spec)
         spec.before do
-          tmp = Pathname.new(Dir.pwd).join('tmp')
-          tmp.rmtree if tmp.exist?
+          aruba = Pathname.new(Dir.pwd).join('tmp', 'aruba')
+          aruba.rmtree if aruba.exist?
 
           setup_aruba
         end

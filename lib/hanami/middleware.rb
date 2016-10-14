@@ -34,7 +34,7 @@ module Hanami
       @builder = ::Rack::Builder.new
       load_default_stack(application)
       @stack.each { |m, args, block| @builder.use load_middleware(m), *args, &block }
-      @builder.run application.routes
+      @builder.run Components["#{application.app_name}.routes"]
 
       self
     end
@@ -111,7 +111,7 @@ module Hanami
     # @api private
     # @since 0.2.0
     def _load_default_welcome_page_for(application)
-      unless Hanami.env?(:test) || application.routes.defined?
+      unless Hanami.env?(:test) || Components["#{application.app_name}.routes"].defined?
         require 'hanami/welcome'
         use Hanami::Welcome
       end

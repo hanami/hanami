@@ -18,8 +18,8 @@ module Hanami
         instance_eval(&blk)
       end
 
-      def requires(components)
-        self.requirements = components
+      def requires(*components)
+        self.requirements = Array(components).flatten
       end
 
       def prepare(&blk)
@@ -58,8 +58,8 @@ module Hanami
         Components.component(name)
       end
 
-      def resolved(name, value)
-        Components.resolved(name, value)
+      def resolved(name, value = nil, &blk)
+        Components.resolved(name, value, &blk)
       end
     end
 
@@ -75,8 +75,12 @@ module Hanami
       @_components.fetch(name)
     end
 
-    def self.resolved(name, value)
-      @_resolved.merge_pair(name, value)
+    def self.resolved(name, value = nil, &blk)
+      if block_given?
+        @_resolved.fetch_or_store(name, &blk)
+      else
+        @_resolved.merge_pair(name, value)
+      end
     end
 
     def self.resolve(names)
@@ -95,7 +99,7 @@ module Hanami
     end
 
     register 'all' do
-      requires 'model'
+      requires 'model', 'apps'
 
       run do
         Hanami.boot # FIXME: This should require components instead of using Hanami.boot
@@ -142,7 +146,7 @@ module Hanami
     end
 
     register 'apps.configurations' do
-      run do |configuration|
+      resolve do |configuration|
         configuration.apps do |app|
           component('app.configuration').call(app)
         end
@@ -193,10 +197,11 @@ module Hanami
 
     register 'app.configuration' do
       run do |app|
-        config = ApplicationConfiguration.new(app.namespace, app.configurations, app.path_prefix)
-        app.configuration = config
-
-        resolved("#{app.app_name}.configuration", config)
+        resolved("#{app.app_name}.configuration") do
+          ApplicationConfiguration.new(app.namespace, app.configurations, app.path_prefix).tap do |config|
+            app.configuration = config
+          end
+        end
       end
     end
 
@@ -297,10 +302,11 @@ module Hanami
 
     register 'app.finalizer' do
       run do |app|
-        # _assign_rendering_policy!
-        # _assign_rack_routes!
-        # _load_rack_middleware!
+        config    = app.configuration
         namespace = app.namespace
+
+        config.middleware.load!(app, namespace)
+
         namespace.module_eval %(#{namespace}::Controller.load!)
         namespace.module_eval %(#{namespace}::View.load!)
         namespace.module_eval %(#{namespace}::Assets.load!)

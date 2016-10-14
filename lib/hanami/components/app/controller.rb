@@ -1,7 +1,13 @@
+require 'hanami/action/session'
+require 'hanami/action/routing_helpers'
+
 module Hanami
   module Components
     module App
       class Controller
+        STRICT_TRANSPORT_SECURITY_HEADER = 'Strict-Transport-Security'.freeze
+        STRICT_TRANSPORT_SECURITY_DEFAULT_VALUE = 'max-age=31536000'.freeze
+
         def self.resolve(app)
           config    = app.configuration
           namespace = app.namespace

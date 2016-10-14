@@ -1,3 +1,5 @@
+require 'hanami/routing/default'
+
 module Hanami
   module Components
     class RoutesInspector

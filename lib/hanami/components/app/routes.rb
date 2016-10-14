@@ -1,3 +1,6 @@
+require 'hanami/routes'
+require 'hanami/routing/default'
+
 module Hanami
   module Components
     module App
@@ -5,11 +8,13 @@ module Hanami
         def self.resolve(app)
           config    = app.configuration
           namespace = app.namespace
+          routes    = application_routes(config, namespace)
 
           unless namespace.const_defined?('Routes', false)
-            routes = Hanami::Routes.new(application_routes(config, namespace))
-            namespace.const_set('Routes', routes)
+            namespace.const_set('Routes', Hanami::Routes.new(routes))
           end
+
+          Components.resolved("#{app.app_name}.routes", routes)
         end
 
         def self.application_routes(config, namespace)

@@ -38,7 +38,7 @@ module Hanami
   require 'rack/builder'
   class App
     def initialize(configuration)
-      Components.resolve('apps.configurations')
+      Components.resolve('apps')
       @builder = ::Rack::Builder.new
       @routes = Router.new
 

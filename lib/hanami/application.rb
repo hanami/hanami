@@ -4,7 +4,6 @@ require 'hanami/application_name'
 require 'hanami/frameworks'
 require 'hanami/application_configuration'
 require 'hanami/environment_application_configurations'
-require 'hanami/loader'
 require 'hanami/logger'
 require 'hanami/rendering_policy'
 require 'hanami/middleware'
@@ -102,21 +101,13 @@ module Hanami
     # @see Hanami::Configuration#routes
     attr_reader :routes
 
-    # Set the routes for this application
-    #
-    # @param [Hanami::Router]
-    #
-    # @since 0.1.0
-    # @api private
-    attr_writer :routes
-
     # Rendering policy
     #
-    # @param [Hanami::RenderingPolicy]
+    # @param [Hanami::RenderingPolicy]
     #
     # @since 0.2.0
     # @api private
-    attr_accessor :renderer
+    attr_reader :renderer
 
     # Initialize and load a new instance of the application
     #
@@ -125,6 +116,9 @@ module Hanami
     # @since 0.1.0
     def initialize(options = {})
       self.class.load!(self)
+
+      @renderer = RenderingPolicy.new(configuration)
+      @routes   = Components["#{self.class.app_name}.routes"]
     end
 
     # Return the configuration for this application
@@ -221,7 +215,6 @@ module Hanami
       #     end
       #   end
       def load!(application = self)
-        Hanami::Loader.new(application).load!
       end
 
       # Preload all the registered applications, by yielding their configurations
