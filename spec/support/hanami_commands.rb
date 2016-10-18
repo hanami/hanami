@@ -47,6 +47,7 @@ module RSpec
       end
 
       def generate_migration(name, content)
+        sleep 1 # prevent two migrations to have the same timestamp
         generate "migration #{name}"
 
         last_migration = Pathname.new("db").join("migrations").children.last

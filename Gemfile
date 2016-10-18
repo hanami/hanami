@@ -35,11 +35,11 @@ gem 'ripl', require: false
 
 # `hanami server` integration tests
 gem 'puma',    require: false
-gem 'unicorn', require: false
+gem 'unicorn', require: false, platforms: :ruby
 
 # `hanami server` integration tests (web pages)
 gem 'capybara',        require: false
-gem 'capybara-webkit', require: false
+gem 'capybara-webkit', require: false, platforms: :ruby
 
 # `hanami assets` integration tests
 gem 'sass',          require: false

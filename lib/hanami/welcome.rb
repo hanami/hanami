@@ -27,14 +27,13 @@ module Hanami
     end
 
     def application_class
-      applications = Hanami::Application.applications.to_a
-      applications.select do |app|
-        @request_path.include? app.configuration.path_prefix.to_s
-      end.first
+      Hanami.configuration.apps do |app|
+        return app if @request_path.include?(app.path_prefix)
+      end
     end
 
     def app
-      Utils::String.new(application_class).namespace.downcase
+      application_class.app_name
     end
   end
 end

@@ -261,7 +261,7 @@ ENV['HANAMI_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'minitest/autorun'
 
-Hanami::Application.preload!
+Hanami.boot
 END
 
       #

@@ -26,7 +26,7 @@ module Hanami
       desc "Load the full project"
       task environment: :preload do
         require Hanami::Environment.new.env_config
-        Hanami::Application.preload_applications!
+        Components.resolve('apps')
       end
 
       # Ruby ecosystem compatibility

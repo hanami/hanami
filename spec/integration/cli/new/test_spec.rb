@@ -26,8 +26,8 @@ ENV['HANAMI_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'minitest/autorun'
 
-Hanami::Application.preload!
-          END
+Hanami.boot
+END
 
           #
           # spec/features_helper.rb
@@ -44,7 +44,7 @@ Capybara.app = Hanami.app
 class MiniTest::Spec
   include Capybara::DSL
 end
-          END
+END
         end
       end
     end # minitest
@@ -74,7 +74,7 @@ end
 ENV['HANAMI_ENV'] ||= 'test'
 
 require_relative '../config/environment'
-Hanami::Application.preload!
+Hanami.boot
 
 Dir[__dir__ + '/support/**/*.rb'].each { |f| require f }
 

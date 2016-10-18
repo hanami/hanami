@@ -1,5 +1,8 @@
 require 'thread'
 require 'hanami/version'
+require 'hanami/frameworks'
+require 'hanami/logger'
+require 'hanami/middleware'
 require 'hanami/application'
 require 'hanami/container'
 require 'hanami/environment'
@@ -32,7 +35,6 @@ module Hanami
 
   def self.boot
     Components.resolve('apps.configurations')
-    Hanami::Application.applications.each(&:new)
   end
 
   require 'rack/builder'

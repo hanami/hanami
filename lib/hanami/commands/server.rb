@@ -25,7 +25,7 @@ module Hanami
       end
 
       def start
-        preload_applications!
+        preload_project!
 
         case @strategy
         when :entr
@@ -96,9 +96,8 @@ module Hanami
         @strategy
       end
 
-      def preload_applications!
-        environment.require_project_environment
-        Hanami::Application.preload! unless code_reloading?
+      def preload_project!
+        Hanami.boot unless code_reloading?
       end
 
       # Check if code reloading is enabled
