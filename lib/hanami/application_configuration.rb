@@ -1,6 +1,7 @@
 require 'hanami/utils/kernel'
 require 'hanami/utils/deprecation'
 require 'hanami/environment'
+require 'hanami/middleware'
 require 'hanami/config/cookies'
 require 'hanami/config/framework_configuration'
 require 'hanami/config/load_paths'

@@ -31,14 +31,14 @@ RSpec.describe Hanami::Application do
         end
       end
 
-      let(:setting) { [__dir__, "..", "..", "tmp"].join(File::SEPARATOR) }
+      let(:setting) { [__dir__, "..", "..", "..", "tmp"].join(File::SEPARATOR) }
 
       it "setups per env settings" do
         expect(configuration.root.to_s).to eq(File.expand_path(setting))
       end
 
       it "allows to setup multiple times per env settings" do
-        r = [__dir__, "..", "support"].join(File::SEPARATOR)
+        r = [__dir__, "..", "..", "support"].join(File::SEPARATOR)
         subject.configure(environment) do
           root r
         end

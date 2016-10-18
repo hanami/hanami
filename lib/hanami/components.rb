@@ -150,6 +150,8 @@ module Hanami
         configuration.apps do |app|
           component('app.configuration').call(app)
         end
+
+        true
       end
     end
 

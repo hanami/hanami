@@ -1,3 +1,5 @@
+require 'hanami/logger'
+
 module Hanami
   module Components
     module App
