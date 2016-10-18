@@ -52,15 +52,20 @@ module Hanami
       #
       # This is the preferred way to run Hanami command line tasks.
       # Please use them when you're in control of your deployment environment.
-      namespace :db do
-        task :migrate do
-          system("bundle exec hanami db migrate") || exit($?.exitstatus)
+
+      if defined?(Hanami::Model)
+        namespace :db do
+          task :migrate do
+            system("bundle exec hanami db migrate") || exit($?.exitstatus)
+          end
         end
       end
 
-      namespace :assets do
-        task :precompile do
-          system("bundle exec hanami assets precompile") || exit($?.exitstatus)
+      if Hanami::Environment.disable_assets_piplene?
+        namespace :assets do
+          task :precompile do
+            system("bundle exec hanami assets precompile") || exit($?.exitstatus)
+          end
         end
       end
     end

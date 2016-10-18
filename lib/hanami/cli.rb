@@ -131,8 +131,10 @@ module Hanami
       end
     end
 
-    require 'hanami/cli_sub_commands/db'
-    register Hanami::CliSubCommands::DB, 'db', 'db [SUBCOMMAND]', 'Manage set of DB operations'
+    if defined?(Hanami::Model)
+      require 'hanami/cli_sub_commands/db'
+      register Hanami::CliSubCommands::DB, 'db', 'db [SUBCOMMAND]', 'Manage set of DB operations'
+    end
 
     require 'hanami/cli_sub_commands/generate'
     register Hanami::CliSubCommands::Generate, 'generate', 'generate [SUBCOMMAND]', 'Generate hanami classes'
@@ -140,7 +142,9 @@ module Hanami
     require 'hanami/cli_sub_commands/destroy'
     register Hanami::CliSubCommands::Destroy, 'destroy', 'destroy [SUBCOMMAND]', 'Destroy hanami classes'
 
-    require 'hanami/cli_sub_commands/assets'
-    register Hanami::CliSubCommands::Assets, 'assets', 'assets [SUBCOMMAND]', 'Manage assets'
+    if Hanami::Environment.disable_assets_piplene?
+      require 'hanami/cli_sub_commands/assets'
+      register Hanami::CliSubCommands::Assets, 'assets', 'assets [SUBCOMMAND]', 'Manage assets'
+    end
   end
 end
