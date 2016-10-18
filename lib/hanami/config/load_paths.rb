@@ -13,7 +13,7 @@ module Hanami
         @root = root
 
         each do |path|
-          Dir.glob(path.join(PATTERN)).each { |file| require file }
+          Dir.glob(path.join(PATTERN)).sort.each { |file| require file }
         end
       end
 
