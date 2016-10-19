@@ -50,10 +50,10 @@ module RSpec
         sleep 1 # prevent two migrations to have the same timestamp
         generate "migration #{name}"
 
-        last_migration = Pathname.new("db").join("migrations").children.last
+        last_migration = Dir.glob(Pathname.new("db").join("migrations", "**", "*.rb")).sort.last
         rewrite(last_migration, content)
 
-        last_migration.basename.to_s.to_i
+        Integer(last_migration.scan(/[0-9]+/).first)
       end
 
       # rubocop:disable Metrics/MethodLength

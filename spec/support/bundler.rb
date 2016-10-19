@@ -7,7 +7,7 @@ module RSpec
   module Support
     module Bundler
       HANAMI_GEMS_PREFIX = "hanami-".freeze
-      HANAMI_GEMS = %w(utils validations router model view controller mailer assets).freeze
+      HANAMI_GEMS = %w(utils validations router helpers model view controller mailer assets).freeze
 
       def self.root
         Pathname.new(__dir__).join("..", "..")

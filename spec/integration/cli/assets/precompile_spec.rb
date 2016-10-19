@@ -1,7 +1,12 @@
+require 'json'
+
 RSpec.describe 'hanami assets', type: :cli do
   describe 'precompile' do
     it "precompiles assets" do
-      with_project("bookshelf_assets_precompile", gems: ['sass', 'coffee-script']) do
+      gems = ['sass', 'coffee-script']
+      gems.push('therubyracer') if Platform.match?(os: :linux)
+
+      with_project("bookshelf_assets_precompile", gems: gems) do
         #
         # Web assets
         #
@@ -45,9 +50,14 @@ EOF
         #
         # Verify manifest
         #
-        expect("public/assets.json").to have_file_content <<-EOF
-{"/assets/admin/dashboard.js":{"target":"/assets/admin/dashboard-39744f9626a70683b6c2d46305798883.js","sri":["sha256-1myPVWoqrq+uAVP2DSkmAown+5dm0x61+E3AjlGOKEc="]},"/assets/admin/favicon.ico":{"target":"/assets/admin/favicon-2d931609a81d94071c81890f77209101.ico","sri":["sha256-QxGPbQhTL64Lp6vYed7gabWjwB7Uhxkiztdj7LCU23A="]},"/assets/application.css":{"target":"/assets/application-adb4104884aadde9abfef0bd98ac461e.css","sri":["sha256-S6V565W2In9pWE0uzMASpp58xCg32TN3at3Fv4g9aRA="]},"/assets/application.js":{"target":"/assets/application-bb8f10498d83d401db238549409dc4c5.js","sri":["sha256-9m4OTbWigbDPp4oCe1LZz9isqidvW1c3jNL6mXMj2xs="]},"/assets/favicon.ico":{"target":"/assets/favicon-2d931609a81d94071c81890f77209101.ico","sri":["sha256-QxGPbQhTL64Lp6vYed7gabWjwB7Uhxkiztdj7LCU23A="]}}
-EOF
+        manifest = File.read("public/assets.json")
+        expect(JSON.parse(manifest)).to be_kind_of(Hash) # assert it's a well-formed JSON
+
+        expect(manifest).to include(%("/assets/admin/dashboard.js":{"target":"/assets/admin/dashboard-39744f9626a70683b6c2d46305798883.js","sri":["sha256-1myPVWoqrq+uAVP2DSkmAown+5dm0x61+E3AjlGOKEc="]}))
+        expect(manifest).to include(%("/assets/admin/favicon.ico":{"target":"/assets/admin/favicon-2d931609a81d94071c81890f77209101.ico","sri":["sha256-QxGPbQhTL64Lp6vYed7gabWjwB7Uhxkiztdj7LCU23A="]}))
+        expect(manifest).to include(%("/assets/application.css":{"target":"/assets/application-adb4104884aadde9abfef0bd98ac461e.css","sri":["sha256-S6V565W2In9pWE0uzMASpp58xCg32TN3at3Fv4g9aRA="]}))
+        expect(manifest).to include(%("/assets/application.js":{"target":"/assets/application-bb8f10498d83d401db238549409dc4c5.js","sri":["sha256-9m4OTbWigbDPp4oCe1LZz9isqidvW1c3jNL6mXMj2xs="]}))
+        expect(manifest).to include(%("/assets/favicon.ico":{"target":"/assets/favicon-2d931609a81d94071c81890f77209101.ico","sri":["sha256-QxGPbQhTL64Lp6vYed7gabWjwB7Uhxkiztdj7LCU23A="]}))
 
         #
         # Verify web assets (w/ checksum)

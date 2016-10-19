@@ -6,10 +6,6 @@ unless ENV['TRAVIS']
   gem 'yard',   require: false
 end
 
-gem 'dry-struct',     require: false, github: 'dry-rb/dry-struct'     # FIXME: this is needed until they will release 0.1
-gem 'dry-types',      require: false, github: 'dry-rb/dry-types'      # FIXME: this is needed until they will release 0.9
-gem 'dry-validation', require: false, github: 'dry-rb/dry-validation' # FIXME: this is needed until they will release 0.10
-
 gem 'i18n'
 gem 'hanami-utils',       '~> 0.8', require: false, github: 'hanami/utils',       branch: '0.8.x'
 gem 'hanami-validations', '~> 0.6', require: false, github: 'hanami/validations', branch: 'master'
