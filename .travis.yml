@@ -16,9 +16,8 @@ script:
   - 'bundle install'
   - './script/ci'
 rvm:
-  - 2.2.5
   - 2.3.1
-  - jruby-9.0.5.0
+  - jruby-9.1.5.0
   - jruby-head
   - ruby-head
 
@@ -26,4 +25,4 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: jruby-9.0.5.0
+    - rvm: jruby-9.1.5.0
