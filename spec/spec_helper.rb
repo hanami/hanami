@@ -7,6 +7,10 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  config.before :suite do
+    Pathname.new(Dir.pwd).join("tmp").mkpath
+  end
+
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
   config.filter_run_when_matching :focus
