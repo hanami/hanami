@@ -10,7 +10,7 @@ module RSpec
           sleep 1
           blk.call # rubocop:disable Performance/RedundantBlockCall
         rescue exception
-          raise if attempts > 3
+          raise if attempts > 10
           attempts += 1
           retry
         end

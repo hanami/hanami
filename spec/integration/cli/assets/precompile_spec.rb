@@ -50,7 +50,10 @@ EOF
         #
         # Verify manifest
         #
-        manifest = File.read("public/assets.json")
+        manifest = retry_exec(Errno::ENOENT) do
+          File.read("public/assets.json")
+        end
+
         expect(JSON.parse(manifest)).to be_kind_of(Hash) # assert it's a well-formed JSON
 
         expect(manifest).to include(%("/assets/admin/dashboard.js":{"target":"/assets/admin/dashboard-39744f9626a70683b6c2d46305798883.js","sri":["sha256-1myPVWoqrq+uAVP2DSkmAown+5dm0x61+E3AjlGOKEc="]}))
