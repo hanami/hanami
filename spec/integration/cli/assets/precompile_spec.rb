@@ -6,6 +6,7 @@ RSpec.describe 'hanami assets', type: :cli do
       gems = ['sass', 'coffee-script']
       gems.push('therubyracer') if Platform.match?(os: :linux)
 
+      puts "GEMS: #{gems.inspect}"
       with_project("bookshelf_assets_precompile", gems: gems) do
         #
         # Web assets
@@ -43,6 +44,8 @@ EOF
         RSpec::Support::Env['DATABASE_URL'] = "file://#{Pathname.new('db').join('bookshelf')}"
 
         hanami "assets precompile"
+
+        puts "assets precompile:\n#{exitstatus}\n\n\n#{out}\n\n\n#{err}\n\n\n---\n#{@all_output}"
 
         # rubocop:disable Lint/ImplicitStringConcatenation
         # rubocop:disable Style/FirstParameterIndentation
