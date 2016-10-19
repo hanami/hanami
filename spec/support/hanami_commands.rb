@@ -17,7 +17,7 @@ module RSpec
           begin
             if block_given?
               setup_capybara(args)
-              retry_exec(Capybara::Webkit::InvalidResponseError, &blk)
+              retry_exec(StandardError, &blk)
             end
           ensure
             # Simulate Ctrl+C to stop the server

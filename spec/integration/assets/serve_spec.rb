@@ -31,7 +31,7 @@ EOF
           expect(page.body).to include(%(<link href="/assets/application.css" type="text/css" rel="stylesheet">))
 
           visit '/assets/application.css'
-          expect(page.body).to eq(%(body {\n  font: 100% Helvetica, sans-serif; }\n))
+          expect(page.body).to include(%(body {\n  font: 100% Helvetica, sans-serif; }\n))
         end
       end
     end

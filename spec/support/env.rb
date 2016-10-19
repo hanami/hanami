@@ -26,6 +26,10 @@ module RSpec
         instance[key] = value
       end
 
+      def self.fetch_from_original(key)
+        instance.__send__(:original).fetch(key)
+      end
+
       def initialize
         @original = ENV.to_hash
         @mutex    = Mutex.new

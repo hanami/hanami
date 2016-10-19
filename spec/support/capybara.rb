@@ -1,7 +1,7 @@
 require 'capybara'
 require 'capybara/rspec'
 require 'capybara/dsl'
-require 'hanami/utils'
+require_relative 'platform'
 
 RSpec.configure do |config|
   config.include Capybara::DSL, type: :cli
@@ -10,8 +10,15 @@ end
 Capybara.configure do |config|
   config.run_server = false
 
-  unless Hanami::Utils.jruby?
-    require 'capybara/webkit'
-    config.default_driver = :webkit
+  Platform.match do
+    os(:linux) do
+      require 'capybara/poltergeist'
+      config.default_driver = :poltergeist
+    end
+
+    os(:macos) do
+      require 'capybara/webkit'
+      config.default_driver = :webkit
+    end
   end
 end

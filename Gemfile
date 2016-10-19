@@ -34,8 +34,13 @@ gem 'puma',    require: false
 gem 'unicorn', require: false, platforms: :ruby
 
 # `hanami server` integration tests (web pages)
-gem 'capybara',        require: false
-gem 'capybara-webkit', require: false, platforms: :ruby
+gem 'capybara', require: false
+
+if RUBY_PLATFORM =~ /linux/
+  gem 'poltergeist', require: false
+else
+  gem 'capybara-webkit', require: false
+end
 
 # `hanami assets` integration tests
 gem 'sass',          require: false
