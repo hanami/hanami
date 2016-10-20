@@ -36,9 +36,10 @@ gem 'unicorn', require: false, platforms: :ruby
 # `hanami server` integration tests (web pages)
 gem 'capybara', require: false
 
-if RUBY_PLATFORM =~ /linux|jruby/
+if RUBY_DESCRIPTION =~ /linux/
   gem 'poltergeist',  require: false
-  gem 'therubyracer', require: false
+  gem 'therubyracer', require: false, platforms: :ruby
+  gem 'therubyrhino', require: false, platforms: :jruby
 else
   gem 'capybara-webkit', require: false
 end

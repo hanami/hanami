@@ -4,7 +4,11 @@ RSpec.describe 'hanami assets', type: :cli do
   describe 'precompile' do
     it "precompiles assets" do
       gems = ['sass', 'coffee-script']
-      gems.push('therubyracer') if Platform.match?(os: :linux)
+
+      Platform.match do
+        os(:linux).engine(:ruby)  { gems.push('therubyracer') }
+        os(:linux).engine(:jruby) { gems.push('therubyrhino') }
+      end
 
       with_project("bookshelf_assets_precompile", gems: gems) do
         #
