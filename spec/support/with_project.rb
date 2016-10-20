@@ -15,7 +15,7 @@ module RSpec
           create_project(project, args)
 
           within_project_directory(project) do
-            setup_gemfile(gems: gem_dependencies(args))
+            setup_gemfile(gems: gem_dependencies(args), exclude_gems: args.fetch(:exclude_gems, []))
             bundle_install
             yield
           end

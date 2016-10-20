@@ -14,7 +14,7 @@ uninstall_hanami_gems() {
 
   for framework in "${frameworks[@]}"
   do
-    gem uninstall $framework -ax --force > /dev/null
+    gem uninstall -ax --force $framework > /dev/null
   done
 }
 

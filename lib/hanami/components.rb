@@ -109,19 +109,27 @@ module Hanami
     register 'model' do
       requires 'model.configuration'
 
-      run do
-        Hanami::Model.load! if defined?(Hanami::Model)
+      resolve do
+        if defined?(Hanami::Model)
+          Hanami::Model.load!
+          true
+        end
       end
     end
 
     register 'model.configuration' do
       prepare do
-        require 'hanami/model'
+        begin
+          require 'hanami/model'
+        rescue LoadError # rubocop:disable Lint/HandleExceptions
+        end
       end
 
       resolve do |configuration|
-        Hanami::Model.configure(&configuration.model)
-        Hanami::Model.configuration
+        if defined?(Hanami::Model)
+          Hanami::Model.configure(&configuration.model)
+          Hanami::Model.configuration
+        end
       end
     end
 
