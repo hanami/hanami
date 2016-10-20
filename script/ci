@@ -2,6 +2,14 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+setup() {
+  ./script/setup
+}
+
+teardown() {
+  ./script/teardown
+}
+
 run_unit_tests() {
   bundle exec rake spec:coverage
 }
@@ -43,9 +51,12 @@ run_test() {
 }
 
 main() {
-  run_unit_tests &&
+  setup &&
+    run_unit_tests &&
     run_isolation_tests &&
     run_integration_tests
 }
+
+trap teardown EXIT
 
 main
