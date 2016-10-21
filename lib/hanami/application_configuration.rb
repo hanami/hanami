@@ -1603,6 +1603,12 @@ module Hanami
       @logger ||= Config::Logger.new
     end
 
+    # @since x.x.x
+    # @api private
+    def app_name
+      ApplicationName.new(namespace)
+    end
+
     private
 
     attr_reader :configurations

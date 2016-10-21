@@ -1,3 +1,6 @@
+require 'rack/builder'
+require 'hanami/utils/class'
+
 module Hanami
   # Rack middleware stack for an application
   #
@@ -6,17 +9,18 @@ module Hanami
   class Middleware
     # Instantiate a middleware stack
     #
-    # @param configuration [Hanami::Configuration] the application's configuration
+    # @param configuration [Hanami::ApplicationConfiguration] the application's configuration
     #
     # @return [Hanami::Middleware] the new stack
     #
     # @since 0.1.0
     # @api private
     #
-    # @see Hanami::Configuration
+    # @see Hanami::ApplicationConfiguration
     def initialize(configuration)
-      @stack = []
+      @stack         = []
       @configuration = configuration
+      @builder       = Rack::Builder.new
     end
 
     # Load the middleware stack
@@ -29,12 +33,10 @@ module Hanami
     # @api private
     #
     # @see http://rdoc.info/gems/rack/Rack/Builder
-    def load!(application, namespace)
-      @namespace = namespace
-      @builder = ::Rack::Builder.new
-      load_default_stack(application)
-      @stack.each { |m, args, block| @builder.use load_middleware(m), *args, &block }
-      @builder.run Components["#{application.app_name}.routes"]
+    def load!
+      load_default_stack
+      stack.each { |m, args, block| builder.use(load_middleware(m), *args, &block) }
+      builder.run routes
 
       self
     end
@@ -49,7 +51,7 @@ module Hanami
     # @since 0.1.0
     # @api private
     def call(env)
-      @builder.call(env)
+      builder.call(env)
     end
 
     # Append a middleware to the stack.
@@ -64,7 +66,7 @@ module Hanami
     #
     # @see Hanami::Middleware#prepend
     def use(middleware, *args, &blk)
-      @stack.push [middleware, args, blk]
+      stack.push [middleware, args, blk]
     end
 
     # Prepend a middleware to the stack.
@@ -79,27 +81,45 @@ module Hanami
     #
     # @see Hanami::Middleware#use
     def prepend(middleware, *args, &blk)
-      @stack.unshift [middleware, args, blk]
+      stack.unshift [middleware, args, blk]
     end
+
+    private
+
+    # @api private
+    # @since x.x.x
+    attr_reader :stack
+
+    # @api private
+    # @since x.x.x
+    attr_reader :builder
+
+    # @api private
+    # @since x.x.x
+    attr_reader :configuration
 
     # @api private
     # @since 0.2.0
     def load_middleware(middleware)
       case middleware
       when String
-        @namespace.const_get(middleware)
+        Utils::Class.load!(middleware)
       else
         middleware
       end
     end
 
+    def routes
+      Components["#{configuration.app_name}.routes"]
+    end
+
     # @api private
     # @since 0.2.0
-    def load_default_stack(application)
+    def load_default_stack
       @default_stack_loaded ||= begin
         _load_assets_middleware
         _load_session_middleware
-        _load_default_welcome_page_for(application)
+        _load_default_welcome_page
         _load_method_override_middleware
 
         true
@@ -110,8 +130,8 @@ module Hanami
     #
     # @api private
     # @since 0.2.0
-    def _load_default_welcome_page_for(application)
-      unless Hanami.env?(:test) || Components["#{application.app_name}.routes"].defined?
+    def _load_default_welcome_page
+      unless Hanami.env?(:test) || routes.defined?
         require 'hanami/welcome'
         use Hanami::Welcome
       end
@@ -122,8 +142,8 @@ module Hanami
     # @api private
     # @since 0.2.0
     def _load_session_middleware
-      if @configuration.sessions.enabled?
-        prepend(*@configuration.sessions.middleware)
+      if configuration.sessions.enabled?
+        prepend(*configuration.sessions.middleware)
       end
     end
 

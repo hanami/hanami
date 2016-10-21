@@ -263,7 +263,7 @@ module Hanami
         config    = app.configuration
         namespace = app.namespace
 
-        config.middleware.load!(app, namespace) # FIXME: check if these arguments are needed
+        config.middleware.load!
 
         namespace.module_eval %(#{namespace}::Controller.load!)
         namespace.module_eval %(#{namespace}::View.load!)
