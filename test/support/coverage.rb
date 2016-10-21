@@ -24,7 +24,6 @@ module Coverage
     !ENV['COVERAGE'].nil?
   end
 
-  # rubocop:disable Metrics/MethodLength
   def self.configure_simplecov!
     SimpleCov.formatter = Coveralls::SimpleCov::Formatter if ci?
 
@@ -44,5 +43,4 @@ module Coverage
       add_group 'Views',        'lib/hanami/views'
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end

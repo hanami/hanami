@@ -2,6 +2,10 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+run_linter() {
+  bundle exec rubocop
+}
+
 run_unit_tests() {
   bundle exec rake test:coverage
 }
@@ -30,8 +34,9 @@ run_test() {
 }
 
 main() {
+  run_linter &&
   run_unit_tests &&
-    run_integration_tests
+  run_integration_tests
 }
 
 main

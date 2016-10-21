@@ -32,6 +32,7 @@ platforms :jruby do
 end
 
 gem 'coveralls', require: false
+gem 'rubocop',   require: false
 
 gem 'dotenv', '~> 2.0'
 gem 'shotgun', '~> 0.9'
