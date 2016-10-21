@@ -236,7 +236,7 @@ module Hanami
     register 'app.code' do
       run do |app|
         config = app.configuration
-        config.load_paths.load!(config.root) # FIXME: check why config.root has to be passed
+        config.load_paths.load!
       end
     end
 

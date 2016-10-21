@@ -9,19 +9,22 @@ module Hanami
     class LoadPaths < Utils::LoadPaths
       PATTERN = '**/*.rb'.freeze
 
-      def load!(root)
+      def initialize(root)
+        super()
         @root = root
+      end
 
+      def load!
         each do |path|
           Dir.glob(path.join(PATTERN)).each { |file| require file }
         end
       end
 
       protected
+
       def realpath(path)
         @root.join(path).realpath
       end
     end
   end
 end
-

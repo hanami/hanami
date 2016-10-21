@@ -507,7 +507,7 @@ module Hanami
     #   Bookshelf::Application.configuration.assets
     #     # => #<Hanami::Config::LoadPaths:0x007fe3a20b18e0 @paths=[["app/controllers", "app/views"]]>
     def load_paths
-      @load_paths ||= Config::LoadPaths.new
+      @load_paths ||= Config::LoadPaths.new(root)
     end
 
     # Application routes.
