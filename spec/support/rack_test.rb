@@ -20,7 +20,7 @@ module RSpec
       include RSpec::Support::Retry
 
       def initialize
-        @connection = Excon.new('http://localhost:2300', persistent: true)
+        @connection = Excon.new(Capybara.app_host, persistent: true, read_timeout: 5)
       end
 
       def call(env)

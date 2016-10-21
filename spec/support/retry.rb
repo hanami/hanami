@@ -3,14 +3,18 @@ module RSpec
     module Retry
       private
 
-      def retry_exec(exception, &blk)
-        attempts = 1
+      def retry_exec(exception) # rubocop:disable Metrics/MethodLength
+        attempts           = 1
+        max_retry_attempts = Platform.match do
+          engine(:ruby)  { 10 }
+          engine(:jruby) { 20 }
+        end
 
         begin
           sleep 1
-          blk.call # rubocop:disable Performance/RedundantBlockCall
+          yield
         rescue exception
-          raise if attempts > 10
+          raise if attempts > max_retry_attempts
           attempts += 1
           retry
         end
