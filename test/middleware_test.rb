@@ -32,7 +32,7 @@ describe Hanami::Middleware do
 
   it 'appends new added middleware' do
     middleware.use MockMiddleware
-    middleware.stack.last.must_equal [MockMiddleware, [], nil]
+    middleware.stack.to_a.last.must_equal [MockMiddleware, [], nil]
   end
 
   describe "with container architecture" do
@@ -110,8 +110,9 @@ describe Hanami::Middleware do
       end
 
       it 'prepends sessions' do
-        sessions_position   = middleware.stack.index(["Rack::Session::Cookie", [{:domain=>nil, :secure=>false}], nil]).to_i
-        middleware_position = middleware.stack.index([MockMiddlewareClass, [], nil])
+        middleware_stack    = middleware.stack.to_a
+        sessions_position   = middleware_stack.index(["Rack::Session::Cookie", [{:domain=>nil, :secure=>false}], nil]).to_i
+        middleware_position = middleware_stack.index([MockMiddlewareClass, [], nil])
 
         assert sessions_position < middleware_position,
           "Expected sessions middleware to be prepended"
