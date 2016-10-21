@@ -1,7 +1,20 @@
 module Hanami
   module Components
     module App
+      # hanami-assets configuration for a sigle Hanami application in the project.
+      #
+      # @since x.x.x
+      # @api private
       class Assets
+        # Configure hanami-assets for a single Hanami application in the project.
+        #
+        # @param app [Hanami::Configuration::App] a Hanami application
+        #
+        # @since x.x.x
+        # @api private
+        #
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def self.resolve(app)
           config    = app.configuration
           namespace = app.namespace
@@ -29,8 +42,14 @@ module Hanami
 
             namespace.const_set('Assets', assets)
           end
+
+          name = "#{app.app_name}.assets"
+          Components.resolved(name, namespace.const_get('Assets').configuration)
+          Components[name]
         end
       end
+      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize
     end
   end
 end

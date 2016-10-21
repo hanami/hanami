@@ -4,20 +4,32 @@ require 'hanami/routing/default'
 module Hanami
   module Components
     module App
+      # hanami-router configuration for a sigle Hanami application in the project.
+      #
+      # @since x.x.x
+      # @api private
       class Routes
+        # Configure hanami-router for a single Hanami application in the project.
+        #
+        # @param app [Hanami::Configuration::App] a Hanami application
+        #
+        # @since x.x.x
+        # @api private
         def self.resolve(app)
-          config    = app.configuration
           namespace = app.namespace
-          routes    = application_routes(config, namespace)
+          routes    = application_routes(app)
 
-          unless namespace.const_defined?('Routes', false)
-            namespace.const_set('Routes', Hanami::Routes.new(routes))
+          if namespace.routes.nil? # rubocop:disable Style/IfUnlessModifier
+            namespace.routes = Hanami::Routes.new(routes)
           end
 
           Components.resolved("#{app.app_name}.routes", routes)
         end
 
-        def self.application_routes(config, namespace)
+        def self.application_routes(app) # rubocop:disable Metrics/MethodLength
+          config      = app.configuration
+          namespace   = app.namespace
+
           resolver    = Hanami::Routing::EndpointResolver.new(pattern: config.controller_pattern, namespace: namespace)
           default_app = Hanami::Routing::Default.new
 

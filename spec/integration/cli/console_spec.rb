@@ -9,7 +9,7 @@ RSpec.describe "hanami console", type: :cli do
         console do |input, _, _|
           input.puts("Hanami::VERSION")
           input.puts("Web::Application")
-          input.puts("Web::Routes")
+          input.puts("Web.routes")
           input.puts("BookRepository.all")
           input.puts("exit")
         end

@@ -7,6 +7,12 @@ RSpec.describe Hanami::Application do
     end
   end
 
+  describe ".namespace" do
+    it "returns top level module" do
+      expect(subject.namespace).to be(UnitTesting)
+    end
+  end
+
   describe ".configuration=" do
     before do
       subject.instance_variable_set(:@configuration, nil)

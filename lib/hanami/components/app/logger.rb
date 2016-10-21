@@ -3,15 +3,26 @@ require 'hanami/logger'
 module Hanami
   module Components
     module App
+      # hanami/logger configuration for a sigle Hanami application in the project.
+      #
+      # @since x.x.x
+      # @api private
       class Logger
+        # Configure hanami/logger for a single Hanami application in the project.
+        #
+        # @param app [Hanami::Configuration::App] a Hanami application
+        #
+        # @since x.x.x
+        # @api private
         def self.resolve(app)
-          config    = app.configuration
           namespace = app.namespace
+          return unless namespace.logger.nil?
 
-          unless namespace.const_defined?('Logger', false)
-            config.logger.app_name(namespace.to_s)
-            namespace.const_set('Logger', config.logger.build)
-          end
+          config = app.configuration
+
+          # TODO: review this logic
+          config.logger.app_name(namespace.to_s)
+          namespace.logger = config.logger.build
         end
       end
     end

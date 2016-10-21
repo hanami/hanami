@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'hanami-router',      '~> 0.7'
   spec.add_dependency 'hanami-controller',  '~> 0.7'
   spec.add_dependency 'hanami-view',        '~> 0.7'
-  spec.add_dependency 'hanami-helpers',     '~> 0.4'
+  spec.add_dependency 'hanami-helpers',     '~> 0.5'
   spec.add_dependency 'hanami-mailer',      '~> 0.3'
   spec.add_dependency 'hanami-assets',      '~> 0.4'
   spec.add_dependency 'concurrent-ruby',    '~> 1.0'

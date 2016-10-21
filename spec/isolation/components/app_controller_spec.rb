@@ -1,15 +1,11 @@
 RSpec.describe "Components: app.controller", type: :cli do
-  it "resolves controller configuration for app" do
+  it "loads a single Hanami application's hanami-controller configuration" do
     with_project do
-      generate "app admin"
-
       require Pathname.new(Dir.pwd).join("config", "environment")
-      Hanami::Components.resolve('apps')
+      Hanami::Components.resolve('apps') # the component under test can't be resolved directly
 
-      expect(Hanami::Components['web.controller']).to   be_kind_of(Hanami::Controller::Configuration)
-      expect(Hanami::Components['admin.controller']).to be_kind_of(Hanami::Controller::Configuration)
-
-      expect(Hanami::Components['web.controller']).to_not eq(Hanami::Components['admin.controller'])
+      expect(Hanami::Components['web.controller']).to be_kind_of(Hanami::Controller::Configuration)
+      expect(defined?(Web::Action)).to                eq("constant")
     end
   end
 end

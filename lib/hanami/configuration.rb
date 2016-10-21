@@ -13,13 +13,6 @@ module Hanami
         super(app)
         @path_prefix = path_prefix
       end
-
-      # TODO: review performance of this
-      def namespace
-        Utils::Class.load!(
-          Utils::String.new(name).namespace
-        )
-      end
     end
 
     def initialize(&blk)

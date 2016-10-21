@@ -1,6 +1,7 @@
 require 'thread'
 require 'concurrent'
 require 'hanami/application_name'
+require 'hanami/application_namespace'
 require 'hanami/application_configuration'
 require 'hanami/environment_application_configurations'
 require 'hanami/rendering_policy'
@@ -26,7 +27,37 @@ module Hanami
     # @see http://www.ruby-doc.org/core/Class.html#method-i-inherited
     def self.inherited(base)
       super
+
       base.extend(ClassMethods)
+      base.namespace.module_eval do
+        class << self
+          # Logger for this application
+          #
+          # @return [Hanami::Logger] the logger for this Hanami application
+          #
+          # @since x.x.x
+          # @api public
+          #
+          # @example
+          #
+          #   Web.logger
+          #   Admin.logger
+          attr_accessor :logger
+
+          # Routes for this application
+          #
+          # @return [Hanami::Routes] the routes for this Hanami application
+          #
+          # @since x.x.x
+          # @api public
+          #
+          # @example
+          #
+          #   Web.routes
+          #   Admin.routes
+          attr_accessor :routes
+        end
+      end
     end
 
     # Class interface for Hanami applications
@@ -39,15 +70,25 @@ module Hanami
       # @api private
       #
       # @see http://www.ruby-doc.org/core/Class.html#method-i-extended
-      def self.extended(base)
+      def self.extended(base) # rubocop:disable Metrics/MethodLength
         super
 
         base.class_eval do
+          @namespace      = ApplicationNamespace.resolve(name)
           @configurations = EnvironmentApplicationConfigurations.new
           @_lock          = Mutex.new
 
           class << self
+            # @since x.x.x
+            # @api private
+            attr_reader :namespace
+
+            # @since x.x.x
+            # @api private
             attr_reader :configurations
+
+            # @since x.x.x
+            # @api private
             attr_reader :configuration
           end
         end
