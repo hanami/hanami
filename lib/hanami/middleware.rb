@@ -67,6 +67,7 @@ module Hanami
     # @see Hanami::Middleware#prepend
     def use(middleware, *args, &blk)
       stack.push [middleware, args, blk]
+      stack.uniq!
     end
 
     # Prepend a middleware to the stack.
@@ -82,6 +83,7 @@ module Hanami
     # @see Hanami::Middleware#use
     def prepend(middleware, *args, &blk)
       stack.unshift [middleware, args, blk]
+      stack.uniq!
     end
 
     private
