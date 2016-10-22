@@ -124,7 +124,7 @@ module Hanami
     #
     # @since 0.1.0
     #
-    # @see http://www.ruby-doc.org/core-2.1.2/Dir.html#method-c-pwd
+    # @see http://www.ruby-doc.org/core/Dir.html#method-c-pwd
     #
     # @example Getting the value
     #   require 'hanami'

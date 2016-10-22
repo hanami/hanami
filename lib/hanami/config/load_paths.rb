@@ -1,4 +1,4 @@
-require 'hanami/utils/load_paths'
+require 'hanami/utils'
 
 module Hanami
   module Config
@@ -7,8 +7,6 @@ module Hanami
     # @since 0.1.0
     # @api private
     class LoadPaths < Utils::LoadPaths
-      PATTERN = '**/*.rb'.freeze
-
       def initialize(root)
         super()
         @root = root
@@ -16,7 +14,7 @@ module Hanami
 
       def load!
         each do |path|
-          Dir.glob(path.join(PATTERN)).each { |file| require file }
+          Utils.require!(path)
         end
       end
 

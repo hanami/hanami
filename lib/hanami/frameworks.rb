@@ -1,3 +1,4 @@
+require 'hanami/utils'
 require 'hanami/validations'
 require 'hanami/router'
 require 'hanami/view'

@@ -1,1 +1,1 @@
-Dir["#{__dir__}/<%= config[:project_name] %>/**/*.rb"].each { |file| require_relative file }
+Hanami::Utils.require!("#{__dir__}/<%= config[:project_name] %>")

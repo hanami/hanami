@@ -1,3 +1,5 @@
+require 'hanami/utils/file_list'
+
 module Hanami
   module Assets
     # Requested asset
@@ -60,7 +62,7 @@ module Hanami
       # @since 0.8.0
       # @api private
       def find_asset
-        Dir[PUBLIC_DIRECTORY].find do |asset|
+        Utils::FileList[PUBLIC_DIRECTORY].find do |asset|
           yield asset unless ::File.directory?(asset)
         end
       end
