@@ -13,7 +13,7 @@ module Hanami
     register 'all' do
       requires 'model', 'apps'
 
-      run {}
+      resolve { true }
     end
 
     # Tries to load hanami-model, if available for the project
