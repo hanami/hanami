@@ -101,6 +101,7 @@ module Hanami
       # @since 0.8.0
       # @api private
       def _assets_configuration(application)
+        Hanami::Loader.new(application).load_assets!
         application.configuration.namespace::Assets.configuration
       end
     end

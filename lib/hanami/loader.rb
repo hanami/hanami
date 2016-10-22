@@ -34,6 +34,13 @@ module Hanami
       end
     end
 
+    def load_assets!
+      LOCK.synchronize do
+        load_configuration!
+        _configure_assets_framework!
+      end
+    end
+
     private
     attr_reader :application, :configuration
 
