@@ -22,18 +22,18 @@ RSpec.describe Hanami::Environment do
   describe "#initialize" do
     context "global .env" do
       it "doesn't set env vars from .env" do
-        with_directory('spec/fixtures') do
+        with_directory('spec/support/fixtures') do
           described_class.new(env: env)
 
-          expect(env['FOO']).to be_nil # see spec/fixtures/.env
+          expect(env['FOO']).to be_nil # see spec/support/fixtures/.env
         end
       end
 
       it "doesn't sets port" do
-        with_directory('spec/fixtures') do
+        with_directory('spec/support/fixtures') do
           subject = described_class.new(env: env)
 
-          # returns default instead the value from spec/fixtures/.env
+          # returns default instead the value from spec/support/fixtures/.env
           expect(subject.port).to eq(2300)
         end
       end
@@ -41,7 +41,7 @@ RSpec.describe Hanami::Environment do
 
     context "per environment .env" do
       it "sets env vars from .env.development" do
-        with_directory('spec/fixtures/dotenv') do
+        with_directory('spec/support/fixtures/dotenv') do
           described_class.new(env: env)
 
           expect(env['HANAMI_PORT']).to eq('42')
@@ -52,7 +52,7 @@ RSpec.describe Hanami::Environment do
       end
 
       it "sets port from .env.development" do
-        with_directory('spec/fixtures/dotenv') do
+        with_directory('spec/support/fixtures/dotenv') do
           subject = described_class.new(env: env)
 
           expect(subject.port).to eq(42)
@@ -62,7 +62,7 @@ RSpec.describe Hanami::Environment do
 
     context "missing per environment .env" do
       it "doesn't alter env" do
-        with_directory('spec/fixtures/nodotenv') do
+        with_directory('spec/support/fixtures/nodotenv') do
           described_class.new(env: env)
 
           expect(env).to eq(default_development_env)
@@ -74,7 +74,7 @@ RSpec.describe Hanami::Environment do
       let(:env) { Hash['HANAMI_ENV' => 'test'] }
 
       it "doesn't set env vars" do
-        with_directory('spec/fixtures/dotenv') do
+        with_directory('spec/support/fixtures/dotenv') do
           described_class.new(env: env)
 
           expect(env).to eq(default_test_env)

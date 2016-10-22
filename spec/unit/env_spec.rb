@@ -23,7 +23,7 @@ RSpec.describe Hanami::Env do
       env     = {}
       subject = described_class.new(env: env)
 
-      subject.load!('spec/fixtures/dotenv/.env.development')
+      subject.load!('spec/support/fixtures/dotenv/.env.development')
       expect(subject['BAZ']).to eq('yes')
     end
   end
