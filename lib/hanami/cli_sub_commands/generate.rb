@@ -123,6 +123,22 @@ module Hanami
           Hanami::Commands::Generate::App.new(options, application_name).start
         end
       end
+
+      desc 'secret APPLICATION_NAME', 'Print a fresh secret token for production'
+      long_desc <<-EOS
+        `hanami generate secret` prints a new secret for a given app
+
+        > $ hanami generate secret admin
+
+      EOS
+      def secret(application_name = nil)
+        if options[:help]
+          invoke :help, ['secret']
+        else
+          require 'hanami/commands/generate/secret_token'
+          Hanami::Commands::Generate::SecretToken.new(application_name).start
+        end
+      end
     end
   end
 end
