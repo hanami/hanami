@@ -78,7 +78,8 @@ END
       #
       # Gemfile
       #
-      expect('Gemfile').to have_file_content <<-END
+      if Platform.match?(engine: :ruby)
+        expect('Gemfile').to have_file_content <<-END
 source 'https://rubygems.org'
 
 gem 'bundler'
@@ -105,6 +106,31 @@ group :production do
   # gem 'puma'
 end
 END
+      end
+
+      if Platform.match?(engine: :jruby)
+        expect('Gemfile').to have_file_content <<-END
+source 'https://rubygems.org'
+
+gem 'bundler'
+gem 'rake'
+gem 'hanami',       '#{Hanami::Version.gem_requirement}'
+gem 'hanami-model', '~> 0.6'
+
+group :test, :development do
+  gem 'dotenv', '~> 2.0'
+end
+
+group :test do
+  gem 'minitest'
+  gem 'capybara'
+end
+
+group :production do
+  # gem 'puma'
+end
+END
+      end
 
       #
       # config.ru

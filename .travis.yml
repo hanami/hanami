@@ -8,7 +8,7 @@ before_install:
   - phantomjs --version
 env:
   global:
-    - JRUBY_OPTS="-Xcli.debug=true --debug --dev"
+    - JRUBY_OPTS="--debug --dev"
 script:
   - 'if [[ "$TRAVIS_RUBY_VERSION" =~ "jruby" ]]; then rvm get head && rvm reload && rvm use --install $TRAVIS_RUBY_VERSION && gem install bundler; fi'
   - 'bundle install'

@@ -4,6 +4,7 @@ require 'hanami/generators/database_config'
 require 'hanami/generators/generatable'
 require 'hanami/generators/test_framework'
 require 'hanami/generators/template_engine'
+require 'hanami/utils'
 require 'hanami/utils/hash'
 
 module Hanami
@@ -100,6 +101,10 @@ module Hanami
 
         def hanami_head?
           options.fetch(:hanami_head, false)
+        end
+
+        def code_reloading?
+          !Hanami::Utils.jruby?
         end
 
         def architecture

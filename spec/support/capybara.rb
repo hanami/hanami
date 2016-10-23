@@ -16,6 +16,11 @@ Capybara.configure do |config|
       config.default_driver = :poltergeist
     end
 
+    engine(:jruby) do
+      require 'capybara/poltergeist'
+      config.default_driver = :poltergeist
+    end
+
     os(:macos) do
       require 'capybara/webkit'
       config.default_driver = :webkit

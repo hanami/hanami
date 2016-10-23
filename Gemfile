@@ -37,9 +37,12 @@ gem 'unicorn', require: false, platforms: :ruby
 gem 'capybara', require: false
 
 if RUBY_DESCRIPTION =~ /linux/
-  gem 'poltergeist',  require: false
   gem 'therubyracer', require: false, platforms: :ruby
   gem 'therubyrhino', require: false, platforms: :jruby
+end
+
+if RUBY_DESCRIPTION =~ /linux|jruby/
+  gem 'poltergeist', require: false
 else
   gem 'capybara-webkit', require: false
 end
