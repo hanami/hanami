@@ -128,7 +128,7 @@ module Hanami
       long_desc <<-EOS
         `hanami generate secret` prints a new secret for a given app
 
-        > $ hanami generate secret admin
+        > $ hanami generate secret web
 
       EOS
       def secret(application_name = nil)
