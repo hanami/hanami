@@ -9,12 +9,6 @@ gem 'hanami-model', '~> 0.6'
 
 gem 'jdbc-mysql'
 
-group :development do
-  # Code reloading
-  # See: http://hanamirb.org/guides/applications/code-reloading
-  gem 'shotgun'
-end
-
 group :test, :development do
   gem 'dotenv', '~> 2.0'
 end

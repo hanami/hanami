@@ -6,8 +6,7 @@ gem 'rake'
 gem 'hanami',       '~> 0.8'
 gem 'hanami-model', '~> 0.6'
 
-
-gem 'jdbc-sqlite3'
+gem 'slim'
 
 group :test, :development do
   gem 'dotenv', '~> 2.0'

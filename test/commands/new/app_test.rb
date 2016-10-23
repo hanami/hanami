@@ -3,6 +3,8 @@ require 'hanami/commands/new/app'
 require 'fileutils'
 
 describe Hanami::Commands::New::App do
+  let(:runtime_prefix) { 'jruby:' if Hanami::Utils.jruby? }
+
   describe 'with invalid arguments' do
     it 'requires application name' do
       with_temp_dir do |original_wd|
@@ -77,7 +79,7 @@ describe Hanami::Commands::New::App do
 
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_app')
           Dir.chdir('new_app') do
-            assert_generated_file(fixture_root.join('Gemfile.slim'), 'Gemfile')
+            assert_generated_file(fixture_root.join("Gemfile.#{runtime_prefix}slim"), 'Gemfile')
             assert_generated_file(fixture_root.join('.hanamirc.slim'), '.hanamirc')
           end
         end
@@ -105,7 +107,7 @@ describe Hanami::Commands::New::App do
                            'SERVE_STATIC_ASSETS="true"',
                            %r{NEW_APP_SESSIONS_SECRET="[\w]{64}"})
 
-      assert_generated_file(fixture_root.join("Gemfile.#{ test_framework }"), 'Gemfile')
+      assert_generated_file(fixture_root.join("Gemfile.#{runtime_prefix}#{ test_framework }"), 'Gemfile')
       assert_generated_file(fixture_root.join('config.ru'), 'config.ru')
 
       assert_generated_file(fixture_root.join('config', 'environment.rb'), 'config/environment.rb')
