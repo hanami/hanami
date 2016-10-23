@@ -131,6 +131,18 @@ module Hanami
       end
     end
 
+    desc 'secret', 'Prints a secure hash'
+    long_desc <<-EOS
+    `hanami secret` will generate a secure key to be used by the developer as they want, e.g. cookie sessions.
+    EOS
+    def secret(length = '64')
+      require 'securerandom'
+      # secure random generates a string as length * 2.
+      # We want to return the required length by the developer
+      secret = SecureRandom.hex(length.to_i)
+      puts secret[0...length.to_i]
+    end
+
     require 'hanami/cli_sub_commands/db'
     register Hanami::CliSubCommands::DB, 'db', 'db [SUBCOMMAND]', 'Manage set of DB operations'
 

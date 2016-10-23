@@ -304,6 +304,29 @@ describe Hanami::Cli do
     end
   end
 
+  describe 'secret' do
+    it 'prints Hanami secret using default 64 length' do
+      assert_output(/^[a-zA-Z0-9]{64}$/) do
+        ARGV.replace(%w{secret})
+        Hanami::Cli.start
+      end
+    end
+
+    it 'prints Hanami secret using 32 length' do
+      assert_output(/^[a-zA-Z0-9]{32}$/) do
+        ARGV.replace(%w{secret 32})
+        Hanami::Cli.start
+      end
+    end
+
+    it 'prints Hanami secret using 45 length' do
+      assert_output(/^[a-zA-Z0-9]{45}$/) do
+        ARGV.replace(%w{secret 45})
+        Hanami::Cli.start
+      end
+    end
+  end
+
   describe '::define_commands' do
     Hanami::Cli.define_commands do
       desc 'custom', 'Empty command'
