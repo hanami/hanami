@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'bundler'
 gem 'rake'
-<%- if config[:hanami_head] -%>
 
 gem 'hanami-utils',       require: false, github: 'hanami/utils'
 gem 'hanami-router',      require: false, github: 'hanami/router'
@@ -14,41 +13,13 @@ gem 'hanami-model',       require: false, github: 'hanami/model'
 gem 'hanami-mailer',      require: false, github: 'hanami/mailer'
 gem 'hanami-assets',      require: false, github: 'hanami/assets'
 gem 'hanami',                             github: 'hanami/hanami'
-<%- else -%>
-gem 'hanami',       '<%= config[:hanami_version] %>'
-gem 'hanami-model', '<%= config[:hanami_model_version] %>'
-<%- end -%>
-<%- if config[:database_config][:gem] -%>
 
-gem '<%= config[:database_config][:gem] %>'
-<%- end -%>
-<%- case config[:template] -%>
-<%- when 'slim' -%>
-
-gem 'slim'
-<%- when 'haml' -%>
-
-gem 'haml'
-<%- end -%>
-
-<%- unless Hanami::Utils.jruby? -%>
-group :development do
-  # Code reloading
-  # See: http://hanamirb.org/guides/applications/code-reloading
-  gem 'shotgun'
-end
-
-<%- end -%>
 group :test, :development do
   gem 'dotenv', '~> 2.0'
 end
 
 group :test do
-<%- if config[:test] == 'rspec' -%>
-  gem 'rspec'
-<%- else -%>
   gem 'minitest'
-<%- end -%>
   gem 'capybara'
 end
 

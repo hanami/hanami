@@ -4,7 +4,7 @@ cache: bundler
 install: true
 env:
   global:
-    - JRUBY_OPTS="-Xcli.debug=true --debug --dev"
+    - JRUBY_OPTS="--debug --dev"
 script:
   - 'if [[ "$TRAVIS_RUBY_VERSION" =~ "jruby" ]]; then rvm get head && rvm reload && rvm use --install $TRAVIS_RUBY_VERSION && gem install bundler; fi'
   - 'bundle install'
@@ -12,7 +12,7 @@ script:
 rvm:
   - 2.2.5
   - 2.3.1
-  - jruby-9.0.5.0
+  - jruby-9.1.2.0
   - jruby-head
   - ruby-head
 
@@ -20,4 +20,4 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: jruby-9.0.5.0
+    - rvm: jruby-9.1.2.0
