@@ -6,15 +6,12 @@ gem 'rake'
 gem 'hanami',       '~> 0.8'
 gem 'hanami-model', '~> 0.6'
 
-
-gem 'jdbc-sqlite3'
-
 group :test, :development do
   gem 'dotenv', '~> 2.0'
 end
 
 group :test do
-  gem 'minitest'
+  gem 'rspec'
   gem 'capybara'
 end
 

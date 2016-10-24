@@ -2,7 +2,8 @@ source 'https://rubygems.org'
 
 gem 'bundler'
 gem 'rake'
-gem 'sqlite3'
+gem 'sqlite3',      platforms: :ruby
+gem 'jdbc-sqlite3', platforms: :jruby
 
 gem 'hanami-utils',       require: false, github: 'hanami/utils'
 gem 'hanami-router',      require: false, github: 'hanami/router'

@@ -13,7 +13,7 @@ describe 'CDN (Container)' do
     @hanami_env       = ENV['HANAMI_ENV']
     ENV['HANAMI_ENV'] = 'production'
 
-    assert system("HANAMI_ENV=production bundle exec hanami assets precompile")
+    assert system("bundle exec hanami assets precompile")
 
     require root.join('config', 'environment')
     @app = Hanami::Container.new
