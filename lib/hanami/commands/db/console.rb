@@ -21,13 +21,7 @@ module Hanami
         attr_reader :name
 
         def config
-          if name
-            app_constant = Hanami::Utils::Class.load_from_pattern!(Hanami::Utils::String.new(name).classify)
-            Hanami::Utils::Class.load_from_pattern!("#{app_constant}::Application").load!
-            Hanami::Utils::Class.load_from_pattern!("#{app_constant}::Model").configuration
-          else
-            Hanami::Model.configuration
-          end
+          Hanami::Model.configuration
         end
 
         def adapter_config
@@ -39,6 +33,8 @@ module Hanami
         end
 
         def adapter_class
+          # FIXME: this has to be reviewed once hanami-model will be merged
+          require 'hanami/model/adapters/sql_adapter'
           Hanami::Utils::Class.load_from_pattern!(adapter_config.class_name, Hanami::Model::Adapters)
         end
 

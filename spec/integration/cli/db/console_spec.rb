@@ -1,6 +1,6 @@
 RSpec.describe "hanami db", type: :cli do
   describe "console" do
-    xit "starts database console" do
+    it "starts database console" do
       project = "bookshelf_db_console"
 
       with_project(project, database: :sqlite) do
