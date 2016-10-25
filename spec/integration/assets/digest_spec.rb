@@ -24,7 +24,7 @@ EOF
         # Precompile
         #
         RSpec::Support::Env['HANAMI_ENV']   = 'production'
-        RSpec::Support::Env['DATABASE_URL'] = "file://#{Pathname.new('db').join('bookshelf')}"
+        RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
         hanami "assets precompile"
 
         server do

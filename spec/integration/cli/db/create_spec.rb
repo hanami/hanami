@@ -3,7 +3,7 @@ RSpec.describe "hanami db", type: :cli do
     it "creates database" do
       project = "bookshelf_db_create"
 
-      with_project(project, database: :sqlite) do
+      with_project(project) do
         hanami "db create"
 
         db = Pathname.new("db").join("#{project}_development.sqlite").to_s
@@ -14,7 +14,7 @@ RSpec.describe "hanami db", type: :cli do
     it "doesn't create in production" do
       project = "bookshelf_db_create_production"
 
-      with_project(project, database: :sqlite) do
+      with_project(project) do
         RSpec::Support::Env['HANAMI_ENV'] = 'production'
         hanami "db create"
 

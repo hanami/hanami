@@ -54,7 +54,7 @@ EOF
     it "serves contents from database" do
       project = "bookshelf_server_database"
 
-      with_project(project, database: :sqlite) do
+      with_project(project) do
         setup_model(project)
         console do |input, _, _|
           input.puts("BookRepository.create(Book.new(title: 'Learn Hanami'))")
@@ -144,7 +144,7 @@ end
 EOF
 
         RSpec::Support::Env['HANAMI_ENV']   = env = 'production'
-        RSpec::Support::Env['DATABASE_URL'] = "file://#{Pathname.new('db').join('bookshelf')}"
+        RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
 
         server do
           visit "/"

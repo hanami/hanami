@@ -10,12 +10,10 @@ module Hanami
         'postgresql' => { type: :sql,         mri: 'pg',      jruby: 'jdbc-postgres' },
         'postgres'   => { type: :sql,         mri: 'pg',      jruby: 'jdbc-postgres' },
         'sqlite'     => { type: :sql,         mri: 'sqlite3', jruby: 'jdbc-sqlite3'  },
-        'sqlite3'    => { type: :sql,         mri: 'sqlite3', jruby: 'jdbc-sqlite3'  },
-        'filesystem' => { type: :file_system, mri: nil,       jruby: nil             },
-        'memory'     => { type: :memory,      mri: nil,       jruby: nil             }
+        'sqlite3'    => { type: :sql,         mri: 'sqlite3', jruby: 'jdbc-sqlite3'  }
       }.freeze
 
-      DEFAULT_ENGINE = 'filesystem'.freeze
+      DEFAULT_ENGINE = 'sqlite'.freeze
 
       attr_reader :engine, :name
 
@@ -43,10 +41,6 @@ module Hanami
 
       def sql?
         type == :sql
-      end
-
-      def filesystem?
-        type == :file_system
       end
 
       def sqlite?
@@ -86,10 +80,6 @@ module Hanami
           "postgres://localhost/#{ name }"
         when 'sqlite', 'sqlite3'
           "sqlite://db/#{ Shellwords.escape(name) }"
-        when 'memory'
-          "memory://localhost/#{ name }"
-        when 'filesystem'
-          "file:///db/#{ Shellwords.escape(name) }"
         end
       end
 

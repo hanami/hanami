@@ -63,8 +63,7 @@ module Hanami
         def add_git_templates
           return if git_dir_present?
 
-          source = database_config.filesystem? ? 'gitignore_with_db.tt' : 'gitignore.tt'
-          source = database_config.sqlite?     ? 'gitignore_with_sqlite.tt' : source
+          source = database_config.sqlite? ? 'gitignore_with_sqlite.tt' : 'gitignore.tt'
           target = '.gitignore'
           add_mapping(source, target)
         end

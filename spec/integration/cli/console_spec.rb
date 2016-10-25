@@ -3,7 +3,7 @@ RSpec.describe "hanami console", type: :cli do
     let(:project) { "bookshelf_console_irb" }
 
     it "starts console" do
-      with_project(project, database: :sqlite, console: :irb) do
+      with_project(project, console: :irb) do
         setup_model(project)
 
         console do |input, _, _|

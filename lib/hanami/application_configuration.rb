@@ -1460,7 +1460,7 @@ module Hanami
     #   module Bookshelf
     #     class Application < Hanami::Application
     #       configure do
-    #         model.adapter type: :memory, uri: 'memory://localhost/database'
+    #         model.adapter type: :sql, uri: 'sqlite://db/bookshelf_development'
     #       end
     #     end
     #   end
@@ -1472,13 +1472,13 @@ module Hanami
     #   module Bookshelf
     #     class Application < Hanami::Application
     #       configure do
-    #         adapter       type: :sql,    uri: 'postgres://localhost/database'
-    #         model.adapter type: :memory, uri: 'memory://localhost/database'
+    #         adapter       type: :sql, uri: 'postgres://localhost/database'
+    #         model.adapter type: :sql, uri: 'sqlite://db/bookshelf_development'
     #       end
     #     end
     #   end
     #
-    #   # The memory adapter will override the SQL one
+    #   # The sqlite adapter will override the SQL one
     def model
       @model ||= Config::FrameworkConfiguration.new
     end

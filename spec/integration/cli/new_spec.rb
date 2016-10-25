@@ -19,10 +19,11 @@ RSpec.describe 'hanami new', type: :cli do
       create  spec/#{project}/repositories/.gitkeep
       create  spec/#{project}/mailers/.gitkeep
       create  spec/support/.gitkeep
-      create  db/.gitkeep
+      create  db/migrations/.gitkeep
       create  Rakefile
       create  spec/spec_helper.rb
       create  spec/features_helper.rb
+      create  db/schema.sql
       create  .gitignore
          run  git init . from "."
       create  apps/web/application.rb
@@ -63,7 +64,7 @@ END
       # .env.development
       #
       expect('.env.development').to have_file_content(%r{# Define ENV variables for development environment})
-      expect('.env.development').to have_file_content(%r{DATABASE_URL="file:///db/#{project}_development"})
+      expect('.env.development').to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_development.sqlite"})
       expect('.env.development').to have_file_content(%r{SERVE_STATIC_ASSETS="true"})
       expect('.env.development').to have_file_content(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
 
@@ -71,7 +72,7 @@ END
       # .env.test
       #
       expect('.env.test').to have_file_content(%r{# Define ENV variables for test environment})
-      expect('.env.test').to have_file_content(%r{DATABASE_URL="file:///db/#{project}_test"})
+      expect('.env.test').to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_test.sqlite"})
       expect('.env.test').to have_file_content(%r{SERVE_STATIC_ASSETS="true"})
       expect('.env.test').to have_file_content(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
 
@@ -86,6 +87,8 @@ gem 'bundler'
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
 gem 'hanami-model', '~> 0.6'
+
+gem 'sqlite3'
 
 group :development do
   # Code reloading
@@ -116,6 +119,8 @@ gem 'bundler'
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
 gem 'hanami-model', '~> 0.6'
+
+gem 'jdbc-sqlite3'
 
 group :test, :development do
   gem 'dotenv', '~> 2.0'
@@ -160,18 +165,18 @@ Hanami.configure do
     #
     # Available options:
     #
-    #  * File System adapter
-    #    adapter type: :file_system, uri: 'file:///db/#{project}_development'
-    #
-    #  * Memory adapter
-    #    adapter type: :memory, uri: 'memory://localhost/#{project}_development'
-    #
     #  * SQL adapter
     #    adapter type: :sql, uri: 'sqlite://db/#{project}_development.sqlite3'
     #    adapter type: :sql, uri: 'postgres://localhost/#{project}_development'
     #    adapter type: :sql, uri: 'mysql://localhost/#{project}_development'
     #
-    adapter type: :file_system, uri: ENV['DATABASE_URL']
+    adapter type: :sql, uri: ENV['DATABASE_URL']
+
+    ##
+    # Migrations
+    #
+    migrations 'db/migrations'
+    schema     'db/schema.sql'
 
     ##
     # Database mapping
@@ -255,11 +260,6 @@ END
       expect("spec/support/.gitkeep").to be_an_existing_file
 
       #
-      # db/.gitkeep
-      #
-      expect("db/.gitkeep").to be_an_existing_file
-
-      #
       # Rakefile
       #
       expect('Rakefile').to have_file_content <<-END
@@ -311,8 +311,7 @@ END
       # .gitignore
       #
       expect(".gitignore").to have_file_content <<-END
-/db/#{project}_development
-/db/#{project}_test
+/db/*.sqlite
 /public/assets*
 /tmp
 END

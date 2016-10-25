@@ -1,9 +1,7 @@
 RSpec.describe "hanami db", type: :cli do
   describe "version" do
     it "prints database version" do
-      project = "bookshelf_db_version"
-
-      with_project(project, database: :sqlite) do
+      with_project do
         versions = generate_migrations
 
         hanami "db create"

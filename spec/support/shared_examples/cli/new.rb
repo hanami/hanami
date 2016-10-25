@@ -28,12 +28,12 @@ RSpec.shared_examples "a new project" do
       #
       # .env.development
       #
-      expect('.env.development').to have_file_content(%r{DATABASE_URL="file:///db/#{project}_development"})
+      expect('.env.development').to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_development.sqlite"})
 
       #
       # .env.test
       #
-      expect('.env.test').to have_file_content(%r{DATABASE_URL="file:///db/#{project}_test"})
+      expect('.env.test').to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_test.sqlite"})
 
       #
       # config/environment.rb
@@ -81,8 +81,7 @@ END
       # .gitignore
       #
       expect(".gitignore").to have_file_content <<-END
-/db/#{project}_development
-/db/#{project}_test
+/db/*.sqlite
 /public/assets*
 /tmp
 END

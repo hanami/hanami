@@ -8,7 +8,7 @@ RSpec.describe "force SSL", type: :cli do
       replace "apps/web/application.rb", "# force_ssl true", "force_ssl true"
 
       RSpec::Support::Env['HANAMI_ENV']   = 'production'
-      RSpec::Support::Env['DATABASE_URL'] = "file://#{Pathname.new('db').join('bookshelf')}"
+      RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
 
       # key  = Pathname.new(__dir__).join("..", "fixtures", "openssl", "server.key").realpath
       # cert = Pathname.new(__dir__).join("..", "fixtures", "openssl", "server.crt").realpath
