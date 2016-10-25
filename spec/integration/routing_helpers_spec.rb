@@ -1,4 +1,31 @@
 RSpec.describe 'Routing helpers', type: :cli do
+  it "uses routing helpers within action" do
+    with_project do
+      generate "action web home#index --url=/"
+      generate "action web books#index --url=/books"
+
+      # Add `as:` option, so it can be used by the routing helper
+      replace "apps/web/config/routes.rb", "/books", "get '/books', to: 'books#index', as: :books"
+      rewrite "apps/web/controllers/home/index.rb", <<-EOF
+module Web::Controllers::Home
+  class Index
+    include Web::Action
+
+    def call(params)
+      redirect_to routes.books_url
+    end
+  end
+end
+EOF
+
+      server do
+        visit "/"
+
+        expect(current_path).to eq("/books")
+      end
+    end
+  end
+
   it "uses routing helpers within view" do
     with_project do
       generate "action web books#index --url=/books"

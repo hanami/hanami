@@ -25,13 +25,13 @@ module Hanami
     #   end
     module RoutingHelpers
       def self.included(base)
-        factory = "#{ Utils::String.new(base).namespace }::Routes"
+        factory = "#{Utils::String.new(base).namespace}.routes"
 
         base.class_eval <<-END_EVAL, __FILE__, __LINE__
           private
 
           def routes
-            #{ factory }
+            #{factory}
           end
         END_EVAL
       end
