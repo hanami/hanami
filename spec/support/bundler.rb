@@ -19,7 +19,14 @@ module RSpec
 
       def self.setup
         return if cache.exist?
-        RSpec::Support.silently "./script/setup"
+
+        with_clean_env do
+          RSpec::Support.silently "./script/setup"
+        end
+      end
+
+      def self.with_clean_env(&blk)
+        ::Bundler.with_clean_env(&blk)
       end
 
       private

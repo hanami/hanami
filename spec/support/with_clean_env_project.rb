@@ -1,4 +1,5 @@
 require_relative 'with_project'
+require_relative 'bundler'
 
 module RSpec
   module Support
@@ -6,7 +7,7 @@ module RSpec
       private
 
       def with_clean_env_project(project = "bookshelf", args = {})
-        ::Bundler.with_clean_env do
+        RSpec::Support::Bundler.with_clean_env do
           with_project(project, args) do
             yield
           end
