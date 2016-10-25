@@ -1,4 +1,5 @@
 require 'hanami/commands/generate/abstract'
+require 'hanami/utils/file_list'
 
 module Hanami
   module Commands
@@ -42,7 +43,7 @@ module Hanami
         end
 
         def existing_migration_path
-          Dir.glob("#{Hanami::Model.configuration.migrations}/[0-9]*_#{underscored_name}.rb").first
+          Utils::FileList["#{Hanami::Model.configuration.migrations}/[0-9]*_#{underscored_name}.rb"].first
         end
 
         def new_migration_path

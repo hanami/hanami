@@ -1,16 +1,15 @@
 require 'hanami/utils/class'
-require 'hanami/commands/db/abstract'
+require 'hanami/commands/command'
 
 module Hanami
   module Commands
     class DB
-      class Console < Abstract
-        attr_reader :name, :env_options
+      class Console < Command
+        requires 'model.configuration'
 
         def initialize(options, name)
           super(options)
-          @name        = name
-          @env_options = environment.to_options
+          @name = name
         end
 
         def start
@@ -19,14 +18,10 @@ module Hanami
 
         private
 
+        attr_reader :name
+
         def config
-          if name
-            app_constant = Hanami::Utils::Class.load_from_pattern!(Hanami::Utils::String.new(name).classify)
-            Hanami::Utils::Class.load_from_pattern!("#{app_constant}::Application").load!
-            Hanami::Utils::Class.load_from_pattern!("#{app_constant}::Model").configuration
-          else
-            Hanami::Model.configuration
-          end
+          Hanami::Model.configuration
         end
 
         def adapter_config
@@ -38,6 +33,8 @@ module Hanami
         end
 
         def adapter_class
+          # FIXME: this has to be reviewed once hanami-model will be merged
+          require 'hanami/model/adapters/sql_adapter'
           Hanami::Utils::Class.load_from_pattern!(adapter_config.class_name, Hanami::Model::Adapters)
         end
 

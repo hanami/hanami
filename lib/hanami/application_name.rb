@@ -30,7 +30,7 @@ module Hanami
     #
     # @since 0.2.1
     def initialize(name)
-      @name = sanitize(name)
+      @name = sanitize(name.to_s)
       ensure_validity!
     end
 
@@ -98,7 +98,7 @@ module Hanami
     def sanitize(name)
       Utils::String.new(
         name.strip
-      ).underscore.to_s
+      ).namespace.underscore.to_s
     end
   end
 end

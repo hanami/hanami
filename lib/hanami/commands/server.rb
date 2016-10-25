@@ -1,9 +1,11 @@
 require 'rack'
 require 'hanami/server'
+require 'hanami/commands/command'
 
 module Hanami
   module Commands
-    class Server
+    class Server < Command
+      requires 'model'
 
       # Message text when Shotgun enabled but interpreter does not support `fork`
       #
@@ -16,13 +18,14 @@ module Hanami
       attr_reader :server
 
       def initialize(options)
+        super(options)
         @options = options
         detect_strategy!
         prepare_server!
       end
 
       def start
-        preload_applications!
+        preload_project!
 
         case @strategy
         when :entr
@@ -93,9 +96,8 @@ module Hanami
         @strategy
       end
 
-      def preload_applications!
-        Hanami::Environment.new(@options).require_application_environment
-        Hanami::Application.preload! unless code_reloading?
+      def preload_project!
+        Hanami.boot unless code_reloading?
       end
 
       # Check if code reloading is enabled
@@ -105,7 +107,7 @@ module Hanami
       # @since 0.?.?
       # @api private
       def code_reloading?
-        Hanami::Environment.new(@options).code_reloading?
+        environment.code_reloading?
       end
 
       # Check if entr(1) is installed

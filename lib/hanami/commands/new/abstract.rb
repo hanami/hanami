@@ -4,6 +4,7 @@ require 'hanami/generators/database_config'
 require 'hanami/generators/generatable'
 require 'hanami/generators/test_framework'
 require 'hanami/generators/template_engine'
+require 'hanami/utils'
 require 'hanami/utils/hash'
 
 module Hanami
@@ -63,6 +64,7 @@ module Hanami
           return if git_dir_present?
 
           source = database_config.filesystem? ? 'gitignore_with_db.tt' : 'gitignore.tt'
+          source = database_config.sqlite?     ? 'gitignore_with_sqlite.tt' : source
           target = '.gitignore'
           add_mapping(source, target)
         end
@@ -94,11 +96,15 @@ module Hanami
         end
 
         def hanami_version
-          "~> #{Hanami::VERSION.scan(/\A\d{1,2}\.\d{1,2}/).first}"
+          Hanami::Version.gem_requirement
         end
 
         def hanami_head?
           options.fetch(:hanami_head, false)
+        end
+
+        def code_reloading?
+          !Hanami::Utils.jruby?
         end
 
         def architecture

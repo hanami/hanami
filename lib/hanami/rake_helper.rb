@@ -16,17 +16,21 @@ module Hanami
 
     # @since 0.6.0
     # @api private
+    #
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def install
+      require 'hanami/environment'
+      Hanami::Environment.new.require_project_environment
+      Components.resolve('model')
+
       desc "Preload project configuration"
       task :preload do
-        require 'hanami/environment'
-        Hanami::Environment.new
       end
 
       desc "Load the full project"
       task environment: :preload do
-        require Hanami::Environment.new.env_config
-        Hanami::Application.preload_applications!
+        Components.resolve('apps')
       end
 
       # Ruby ecosystem compatibility
@@ -56,7 +60,7 @@ module Hanami
         task :migrate do
           system("bundle exec hanami db migrate") || exit($?.exitstatus)
         end
-      end
+      end unless Components['model'].nil?
 
       namespace :assets do
         task :precompile do
@@ -64,5 +68,7 @@ module Hanami
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
   end
 end

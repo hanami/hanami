@@ -53,7 +53,7 @@ module Hanami
     def _urls(root)
       return [] unless root.exist?
 
-      Dir.entries(root).map do |entry|
+      Dir.entries(root).sort.map do |entry|
         next if EXCLUDED_ENTRIES.include?(entry)
         "#{URL_PREFIX}#{entry}"
       end.compact

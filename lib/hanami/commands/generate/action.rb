@@ -1,5 +1,6 @@
 require 'hanami/commands/generate/abstract'
 require 'hanami/routing/route'
+require 'hanami/utils/blank'
 
 module Hanami
   module Commands
@@ -81,6 +82,7 @@ module Hanami
           assert_application_name!
           assert_controller_class_name!
           assert_action_name!
+          assert_url!
           assert_http_method!
         end
 
@@ -167,8 +169,8 @@ module Hanami
         # @since 0.5.0
         # @api private
         def known_application_names
-          Dir.glob(applications_path.join('/*')).map do |name|
-            File.basename(name)
+          applications_path.children.map do |app|
+            ::File.basename(app)
           end
         end
 
@@ -193,8 +195,18 @@ module Hanami
         def assert_application_name!
           return unless environment.container?
           if argument_blank?(@application_name) || !application_path.exist?
-            existing_apps = known_application_names.join('/')
-            raise ArgumentError.new("Unknown app: `#{ @application_name.downcase }'. Please specify one of (#{ existing_apps }) as application name")
+            existing_apps = known_application_names.map { |name| "`#{name}'" }.join(' ')
+            warn "`#{@application_name.downcase}' is not a valid APPLICATION_NAME. Please specify one of: #{existing_apps}"
+            exit(1)
+          end
+        end
+
+        # @since x.x.x
+        # @api private
+        def assert_url!
+          if options.key?(:url) && Hanami::Utils::Blank.blank?(options[:url])
+            warn "`#{options[:url]}' is not a valid URL"
+            exit(1)
           end
         end
 
@@ -202,8 +214,8 @@ module Hanami
         # @api private
         def assert_http_method!
           if !Hanami::Routing::Route::VALID_HTTP_VERBS.include?(http_method.upcase)
-            existing_http_methods = Hanami::Routing::Route::VALID_HTTP_VERBS
-            raise ArgumentError.new("Unknown HTTP method '#{http_method}', please use one of #{ existing_http_methods.join('/') }.")
+            warn "`#{http_method.upcase}' is not a valid HTTP method. Please use one of: #{Hanami::Routing::Route::VALID_HTTP_VERBS.map { |verb| "`#{verb}'" }.join(" ")}"
+            exit(1)
           end
         end
 

@@ -50,7 +50,7 @@ You can give back to Open Source, by supporting Hanami development via a [donati
 
 ## Rubies
 
-__Hanami__ supports Ruby (MRI) 2+
+__Hanami__ supports Ruby (MRI) 2.3+
 
 ## Installation
 
@@ -110,6 +110,33 @@ bundle exec hanami new --hanami-head=true bookshelf
 cd bookshelf
 vim Gemfile # edit with: gem 'hanami', path: '..'
 bundle
+```
+
+### Development Requirements
+
+  * Ruby 2.3+ / JRuby 9.1.5.0+
+  * Bundler
+  * Qt (MacOS)
+  * Node.js (MacOS)
+
+### Testing
+
+In order to simulate installed gems on developers' computers, the build installs
+all the gems locally in `vendor/cache`, including `hanami` code from `lib/`.
+
+**Before to run a test please make sure to have a fresh version of the code:**
+
+```shell
+% ./script/setup
+% bundle exec rspec spec/path/to/file_spec.rb
+```
+
+### Build / CI
+
+To run all the tests, please use:
+
+```shell
+% ./script/ci
 ```
 
 ## Versioning

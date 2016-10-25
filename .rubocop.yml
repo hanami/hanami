@@ -1,0 +1,14 @@
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  ExtraDetails: false
+Style/StringLiterals:
+  Enabled: false
+Metrics/LineLength:
+  Enabled: false
+Style/RegexpLiteral:
+  Enabled: false
+Style/RaiseArgs:
+  Enabled: false
+Style/AndOr:
+  Enabled: false

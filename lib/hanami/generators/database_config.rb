@@ -23,7 +23,10 @@ module Hanami
         @engine = engine
         @name = name
 
-        SUPPORTED_ENGINES.key?(engine.to_s) or fail "\"#{ engine }\" is not a valid database type"
+        unless SUPPORTED_ENGINES.key?(engine.to_s) # rubocop:disable Style/GuardClause
+          warn %(`#{engine}' is not a valid database engine)
+          exit(1)
+        end
       end
 
       def to_hash
@@ -44,6 +47,10 @@ module Hanami
 
       def filesystem?
         type == :file_system
+      end
+
+      def sqlite?
+        ['sqlite', 'sqlite3'].include?(engine)
       end
 
       private

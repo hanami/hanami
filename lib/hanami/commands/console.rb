@@ -1,3 +1,5 @@
+require 'hanami/commands/command'
+
 module Hanami
   module Commands
     # REPL that supports different engines.
@@ -8,14 +10,24 @@ module Hanami
     #
     # @since 0.1.0
     # @api private
-    class Console
-      module Methods
+    class Console < Command
+      requires 'all'
+
+      # Implements console code reloading
+      #
+      # @since 0.2.0
+      module CodeReloading
+        # @since 0.2.0
         def reload!
           puts 'Reloading...'
-          Kernel.exec "#{$0} console"
+          Kernel.exec "#{$PROGRAM_NAME} console"
         end
       end
 
+      # Supported engines
+      #
+      # @since 0.2.0
+      # @api private
       ENGINES = {
         'pry'  => 'Pry',
         'ripl' => 'Ripl',
@@ -32,20 +44,14 @@ module Hanami
       # @since 0.1.0
       # @see Hanami::Environment#initialize
       def initialize(options)
-        @environment = Hanami::Environment.new(options)
-        @options     = @environment.to_options
+        super(options)
+
+        @options = @environment.to_options
       end
 
       # @since 0.1.0
       def start
-        # Clear out ARGV so Pry/IRB don't attempt to parse the rest
-        ARGV.shift until ARGV.empty?
-        @environment.require_application_environment
-
-        # Add convenience methods to the main:Object binding
-        TOPLEVEL_BINDING.eval('self').send(:include, Methods)
-
-        load_application
+        prepare
         engine.start
       end
 
@@ -57,6 +63,16 @@ module Hanami
 
       private
 
+      # @since x.x.x
+      # @api private
+      def prepare
+        # Clear out ARGV so Pry/IRB don't attempt to parse the rest
+        ARGV.shift until ARGV.empty?
+
+        # Add convenience methods to the main:Object binding
+        TOPLEVEL_BINDING.eval('self').__send__(:include, CodeReloading)
+      end
+
       # @since 0.1.0
       # @api private
       def engine_lookup
@@ -65,26 +81,21 @@ module Hanami
 
       # @since 0.1.0
       # @api private
+      #
+      # rubocop:disable Lint/HandleExceptions
+      # rubocop:disable Lint/EnsureReturn
       def load_engine(engine)
         require engine
       rescue LoadError
       ensure
         return Object.const_get(
-          ENGINES.fetch(engine) {
-            raise ArgumentError.new("Unknown console engine: #{ engine }")
-          }
+          ENGINES.fetch(engine) do
+            raise ArgumentError.new("Unknown console engine: `#{engine}'")
+          end
         )
       end
-
-      # @since 0.1.0
-      # @api private
-      def load_application
-        if @environment.container?
-          Hanami::Container.new
-        else
-          Hanami::Application.preload_applications!
-        end
-      end
+      # rubocop:enable Lint/EnsureReturn
+      # rubocop:enable Lint/HandleExceptions
     end
   end
 end

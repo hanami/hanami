@@ -4,7 +4,7 @@ module Hanami
     class TestFramework
       RSPEC = 'rspec'.freeze
       MINITEST = 'minitest'.freeze
-      VALID_FRAMEWORKS = [RSPEC, MINITEST].freeze
+      VALID_FRAMEWORKS = [MINITEST, RSPEC].freeze
 
       attr_reader :framework
 
@@ -25,12 +25,13 @@ module Hanami
 
       def assert_framework!
         if !supported_framework?
-          raise ArgumentError.new("Unknown test framework '#{ framework}'. Please use one of #{ valid_test_frameworks.join(', ')}")
+          warn "`#{framework}' is not a valid test framework. Please use one of: #{valid_test_frameworks.join(', ')}"
+          exit(1)
         end
       end
 
       def valid_test_frameworks
-        VALID_FRAMEWORKS.map { |name| "'#{ name }'"}
+        VALID_FRAMEWORKS.map { |name| "`#{name}'"}
       end
 
       def supported_framework?

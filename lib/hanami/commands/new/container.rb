@@ -20,6 +20,7 @@ module Hanami
           {
             project_name:         project_name,
             hanami_head:          hanami_head?,
+            code_reloading:       code_reloading?,
             test:                 test_framework.framework,
             database:             database_config.type,
             database_config:      database_config.to_hash,

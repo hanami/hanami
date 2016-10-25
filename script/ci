@@ -2,15 +2,36 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+setup() {
+  ./script/setup
+}
+
+teardown() {
+  ./script/teardown
+}
+
 run_unit_tests() {
-  bundle exec rake test:coverage
+  bundle exec rake spec:coverage
+}
+
+run_isolation_tests() {
+  local pwd=$PWD
+  local root="$pwd/spec/isolation"
+
+  run_tests $root
 }
 
 run_integration_tests() {
   local pwd=$PWD
-  local root="$pwd/test/integration"
+  local root="$pwd/spec/integration"
 
-  for test in $(find $root -name 'test_*.rb')
+  run_tests $root
+}
+
+run_tests() {
+  local root=$1
+
+  for test in $(find $root -name '*_spec.rb')
   do
     run_test $test
 
@@ -26,12 +47,16 @@ run_test() {
   local test=$1
 
   printf "\n\n\nRunning: $test\n"
-  COVERAGE=true ruby -Itest $test
+  COVERAGE=true bundle exec rspec $test
 }
 
 main() {
-  run_unit_tests &&
+  setup &&
+    run_unit_tests &&
+    run_isolation_tests &&
     run_integration_tests
 }
+
+trap teardown EXIT
 
 main

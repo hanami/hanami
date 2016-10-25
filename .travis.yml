@@ -2,6 +2,10 @@ language: ruby
 sudo: false
 cache: bundler
 install: true
+before_install:
+  - mkdir $PWD/vendor/phantomjs && tar -xjf $PWD/vendor/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/vendor/phantomjs --strip-components=1
+  - export PATH=$PWD/vendor/phantomjs/bin:$PATH
+  - phantomjs --version
 env:
   global:
     - JRUBY_OPTS="--debug --dev"
@@ -10,9 +14,8 @@ script:
   - 'bundle install'
   - './script/ci'
 rvm:
-  - 2.2.5
   - 2.3.1
-  - jruby-9.1.2.0
+  - jruby-9.1.5.0
   - jruby-head
   - ruby-head
 
@@ -20,4 +23,4 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: jruby-9.1.2.0
+    - rvm: jruby-9.1.5.0

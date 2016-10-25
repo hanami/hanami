@@ -6,26 +6,18 @@ module Hanami
     class Security
       # @since 0.3.0
       # @api private
-      #
-      # @see Hanami::Loader#_configure_controller_framework!
       X_FRAME_OPTIONS_HEADER = 'X-Frame-Options'.freeze
 
       # @since 0.8.0
       # @api private
-      #
-      # @see Hanami::Loader#_configure_controller_framework!
       X_CONTENT_TYPE_OPTIONS_HEADER = 'X-Content-Type-Options'.freeze
 
       # @since 0.8.0
       # @api private
-      #
-      # @see Hanami::Loader#_configure_controller_framework!
       X_XSS_PROTECTION_HEADER = 'X-XSS-Protection'.freeze
 
       # @since 0.3.0
       # @api private
-      #
-      # @see Hanami::Loader#_configure_controller_framework!
       CONTENT_SECURITY_POLICY_HEADER = 'Content-Security-Policy'.freeze
 
       # @since 0.8.0

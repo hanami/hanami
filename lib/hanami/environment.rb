@@ -2,11 +2,9 @@ require 'thread'
 require 'pathname'
 require 'hanami/utils'
 require 'hanami/utils/hash'
+require 'hanami/env'
 require 'hanami/hanamirc'
-begin
-  require 'dotenv'
-rescue LoadError
-end
+require 'hanami/components'
 
 module Hanami
   # Define and expose information about the Hanami environment.
@@ -196,8 +194,10 @@ module Hanami
     #   # the one defined in the parent (eg `FOO` is overwritten). All the
     #   # other settings (eg `XYZ`) will be left untouched.
     def initialize(options = {})
+      opts     = options.to_h.dup
+      @env     = Hanami::Env.new(env: opts.delete(:env) || ENV)
       @options = Hanami::Hanamirc.new(root).options
-      @options.merge! Utils::Hash.new(options.clone).symbolize!
+      @options.merge! Utils::Hash.new(opts.clone).symbolize!
       LOCK.synchronize { set_env_vars! }
     end
 
@@ -218,7 +218,7 @@ module Hanami
     #
     # @see Hanami::Environment::DEFAULT_ENV
     def environment
-      @environment ||= ENV[HANAMI_ENV] || rack_env || DEFAULT_ENV
+      @environment ||= env[HANAMI_ENV] || rack_env || DEFAULT_ENV
     end
 
     # @since 0.3.1
@@ -304,9 +304,9 @@ module Hanami
     # @see Hanami::Environment::DEFAULT_HOST
     # @see Hanami::Environment::LISTEN_ALL_HOST
     def host
-      @host ||= @options.fetch(:host) {
-        ENV[HANAMI_HOST] || default_host
-      }
+      @host ||= @options.fetch(:host) do
+        env[HANAMI_HOST] || default_host
+      end
     end
 
     # The HTTP port
@@ -324,7 +324,9 @@ module Hanami
     #
     # @see Hanami::Environment::DEFAULT_PORT
     def port
-      @port ||= @options.fetch(:port) { ENV[HANAMI_PORT] || DEFAULT_PORT }.to_i
+      @port ||= @options.fetch(:port) do
+        env[HANAMI_PORT] || DEFAULT_PORT
+      end.to_i
     end
 
     # Path to the Rack configuration file
@@ -366,6 +368,8 @@ module Hanami
       root.join(@options.fetch(:environment) { config.join(DEFAULT_ENVIRONMENT_CONFIG) })
     end
 
+    alias project_environment_configuration env_config
+
     # Require application environment
     #
     # Eg <tt>require "config/environment"</tt>.
@@ -373,8 +377,10 @@ module Hanami
     # @since 0.4.0
     # @api private
     def require_application_environment
-      require env_config.to_s #if env_config.exist?
+      require project_environment_configuration.to_s # if project_environment_configuration.exist?
     end
+
+    alias require_project_environment require_application_environment
 
     # Determine if activate code reloading for the current environment while
     # running the server.
@@ -401,10 +407,10 @@ module Hanami
     # @since 0.4.0
     # @api private
     def architecture
-      @options.fetch(:architecture) {
+      @options.fetch(:architecture) do
         puts "Cannot recognize Hanami architecture, please check `.hanamirc'"
         exit 1
-      }
+      end
     end
 
     # @since 0.4.0
@@ -416,7 +422,7 @@ module Hanami
     # @since 0.6.0
     # @api private
     def serve_static_assets?
-      SERVE_STATIC_ASSETS_ENABLED == ENV[SERVE_STATIC_ASSETS]
+      SERVE_STATIC_ASSETS_ENABLED == env[SERVE_STATIC_ASSETS]
     end
 
     # @since 0.6.0
@@ -463,6 +469,8 @@ module Hanami
 
     private
 
+    attr_reader :env
+
     # @since 0.1.0
     # @api private
     def set_env_vars!
@@ -473,16 +481,18 @@ module Hanami
     # @since 0.2.0
     # @api private
     def set_hanami_env_vars!
-      ENV[HANAMI_ENV]  = ENV[RACK_ENV] = environment
-      ENV[HANAMI_HOST] = host
-      ENV[HANAMI_PORT] = port.to_s
+      env[HANAMI_ENV]  = env[RACK_ENV] = environment
+      env[HANAMI_HOST] = host
+      env[HANAMI_PORT] = port.to_s
     end
 
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      return unless defined?(Dotenv) && (dotenv = root.join(DEFAULT_DOTENV_ENV % environment)).exist?
-      Dotenv.overload dotenv
+      dotenv = root.join(DEFAULT_DOTENV_ENV % environment)
+      return unless dotenv.exist?
+
+      env.load!(dotenv)
     end
 
     # @since 0.1.0
@@ -494,11 +504,11 @@ module Hanami
     # @since 0.6.0
     # @api private
     def rack_env
-      case ENV[RACK_ENV]
+      case env[RACK_ENV]
       when RACK_ENV_DEPLOYMENT
         PRODUCTION_ENV
       else
-        ENV[RACK_ENV]
+        env[RACK_ENV]
       end
     end
   end

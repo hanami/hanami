@@ -85,16 +85,16 @@ module Hanami
       end
     end
 
-    desc 'new APPLICATION_NAME', 'Generate a new hanami project'
+    desc 'new PROJECT_NAME', 'Generate a new hanami project'
     long_desc <<-EOS
-      `hanami new` creates a new hanami project.
-      You can specify various options such as the database to be used as well as the path and architecture.
+`hanami new` creates a new hanami project.
+You can specify various options such as the database to be used as well as the path and architecture.
 
-      $ > hanami new fancy_app --application_name=admin
+$ > hanami new fancy_app --application_name=admin
 
-      $ > hanami new fancy_app --arch=app
+$ > hanami new fancy_app --arch=app
 
-      $ > hanami new fancy_app --hanami-head=true
+$ > hanami new fancy_app --hanami-head=true
     EOS
     method_option :database, aliases: ['-d', '--db'], desc: "Application database (#{Hanami::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Hanami::Generators::DatabaseConfig::DEFAULT_ENGINE
     method_option :architecture, aliases: ['-a', '--arch'], desc: 'Project architecture (container/app)', default: Hanami::Commands::New::Abstract::DEFAULT_ARCHITECTURE
@@ -108,7 +108,8 @@ module Hanami
       if options[:help]
         invoke :help, ['new']
       elsif application_name.nil?
-        raise InvocationError.new("\"hanami new\" was called with no arguments\nUsage: \"hanami new APPLICATION_NAME\"")
+        warn %(`hanami new` was called with no arguments\nUsage: `hanami new PROJECT_NAME`)
+        exit(1)
       elsif options[:architecture] == 'app'
         Hanami::Commands::New::App.new(options, application_name).start
       else

@@ -1,0 +1,41 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+remove_bundler_cache() {
+  local pwd=$PWD
+  local cache="$pwd/vendor/cache"
+
+  rm -rf $cache
+}
+
+uninstall_hanami_gems() {
+  declare -a frameworks=(hanami hanami-assets hanami-mailer hanami-controller hanami-view hanami-model hanami-helper hanami-router hanami-validations hanami-utils)
+
+  for framework in "${frameworks[@]}"
+  do
+    gem uninstall -ax --force $framework > /dev/null
+  done
+}
+
+bundle_install() {
+  bundle install > /dev/null
+}
+
+advertise_start() {
+  echo -en "Cleaning up.."
+}
+
+advertise_end() {
+  echo " done"
+}
+
+main() {
+  advertise_start &&
+    remove_bundler_cache &&
+    uninstall_hanami_gems &&
+    bundle_install &&
+    advertise_end
+}
+
+main
