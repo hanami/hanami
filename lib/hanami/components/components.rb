@@ -29,8 +29,8 @@ module Hanami
       end
 
       resolve do
-        Components['environment'].code_reloading? &&
-          defined?(Shotgun) &&
+        defined?(Shotgun) &&
+          Components['environment'].code_reloading? &&
           true
       end
     end
