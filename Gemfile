@@ -6,13 +6,16 @@ unless ENV['TRAVIS']
   gem 'yard',   require: false
 end
 
+# FIXME: this must be removed once next version of `rom-sql` will be released
+gem 'rom-sql', '~> 0.8', require: false, github: 'jodosha/rom-sql', branch: 'hanami-model-integration'
+
 gem 'i18n'
 gem 'hanami-utils',       '~> 0.8', require: false, github: 'hanami/utils',       branch: 'master'
 gem 'hanami-validations', '~> 0.6', require: false, github: 'hanami/validations', branch: 'master'
 gem 'hanami-router',      '~> 0.7', require: false, github: 'hanami/router',      branch: 'master'
 gem 'hanami-controller',  '~> 0.7', require: false, github: 'hanami/controller',  branch: '0.7.x'
 gem 'hanami-view',        '~> 0.7', require: false, github: 'hanami/view',        branch: '0.7.x'
-gem 'hanami-model',       '~> 0.7', require: false, github: 'hanami/model',       branch: '0.7.x'
+gem 'hanami-model',       '~> 0.7', require: false, github: 'hanami/model',       branch: 'new-engine'
 gem 'hanami-helpers',     '~> 0.5', require: false, github: 'hanami/helpers',     branch: 'master'
 gem 'hanami-mailer',      '~> 0.3', require: false, github: 'hanami/mailer',      branch: '0.3.x'
 gem 'hanami-assets',      '~> 0.4', require: false, github: 'hanami/assets',      branch: 'configuration'

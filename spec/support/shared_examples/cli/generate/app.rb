@@ -470,32 +470,17 @@ Hanami.configure do
     # Available options:
     #
     #  * SQL adapter
-    #    adapter type: :sql, uri: 'sqlite://db/#{project}_development.sqlite3'
-    #    adapter type: :sql, uri: 'postgres://localhost/#{project}_development'
-    #    adapter type: :sql, uri: 'mysql://localhost/#{project}_development'
+    #    adapter :sql, 'sqlite://db/#{project}_development.sqlite3'
+    #    adapter :sql, 'postgres://localhost/#{project}_development'
+    #    adapter :sql, 'mysql://localhost/#{project}_development'
     #
-    adapter type: :sql, uri: ENV['DATABASE_URL']
+    adapter :sql, ENV['DATABASE_URL']
 
     ##
     # Migrations
     #
     migrations 'db/migrations'
     schema     'db/schema.sql'
-
-    ##
-    # Database mapping
-    #
-    # Intended for specifying application wide mappings.
-    #
-    mapping do
-      # collection :users do
-      #   entity     User
-      #   repository UserRepository
-      #
-      #   attribute :id,   Integer
-      #   attribute :name, String
-      # end
-    end
   end
 
   mailer do

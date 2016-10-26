@@ -16,6 +16,25 @@ module Hanami
       resolve { true }
     end
 
+    # Check if code reloading is enabled
+    #
+    # @since x.x.x
+    # @api private
+    register 'code_reloading' do
+      prepare do
+        begin
+          require 'shotgun'
+        rescue LoadError # rubocop:disable Lint/HandleExceptions
+        end
+      end
+
+      resolve do
+        Components['environment'].code_reloading? &&
+          defined?(Shotgun) &&
+          true
+      end
+    end
+
     # Tries to load hanami-model, if available for the project
     #
     # @since x.x.x
@@ -29,10 +48,10 @@ module Hanami
     #   Hanami::Components.resolve('model')
     #   Hanami::Components['model'] # => nil
     register 'model' do
-      requires 'model.configuration'
+      requires 'model.configuration', 'model.sql'
 
       resolve do
-        if defined?(Hanami::Model)
+        if Components['model.configuration']
           Hanami::Model.load!
           true
         end
@@ -52,6 +71,56 @@ module Hanami
     #   Hanami::Components.resolve('model.configuration')
     #   Hanami::Components['model.configuration'].class # => NilClass
     register 'model.configuration' do
+      requires 'model.bundled'
+
+      resolve do |configuration|
+        if Components['model.bundled']
+          Hanami::Model.configure(&configuration.model)
+          Hanami::Model.configuration
+        end
+      end
+    end
+
+    # Tries to load SQL support for hanami, if available for the project
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @example With hanami-model
+    #   Hanami::Components.resolve('model.sql')
+    #   Hanami::Components['model.sql'] # => true
+    #
+    # @example Without hanami-model
+    #   Hanami::Components.resolve('model.sql')
+    #   Hanami::Components['model.sql'] # => nil
+    register 'model.sql' do
+      requires 'model.configuration'
+
+      prepare do
+        begin
+          require 'hanami/model/sql'
+        rescue LoadError # rubocop:disable Lint/HandleExceptions
+        end
+      end
+
+      resolve do
+        true if defined?(Hanami::Model::Sql)
+      end
+    end
+
+    # Check if hanami-model is bundled
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @example With hanami-model
+    #   Hanami::Components.resolve('model.bundled')
+    #   Hanami::Components['model.bundled'] # => true
+    #
+    # @example Without hanami-model
+    #   Hanami::Components.resolve('model.bundled')
+    #   Hanami::Components['model.bundled'] # => nil
+    register 'model.bundled' do
       prepare do
         begin
           require 'hanami/model'
@@ -59,11 +128,8 @@ module Hanami
         end
       end
 
-      resolve do |configuration|
-        if defined?(Hanami::Model)
-          Hanami::Model.configure(&configuration.model)
-          Hanami::Model.configuration
-        end
+      resolve do
+        true if defined?(Hanami::Model)
       end
     end
 

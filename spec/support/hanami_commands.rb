@@ -85,32 +85,6 @@ EOF
       # rubocop:enable Style/ClosingParenthesisIndentation
       # rubocop:enable Metrics/MethodLength
 
-      # FIXME: remove when we will integrate hanami-model 0.7
-      def entity(name, project, *attributes)
-        path = Pathname.new("lib").join(project, "entities", "#{name}.rb")
-
-        class_name = Hanami::Utils::String.new(name).classify
-        content    = <<-EOF
-class #{class_name}
-  include Hanami::Entity
-  attributes #{attributes.map { |a| ":#{a}" }.join(', ')}
-end
-EOF
-
-        rewrite(path, content)
-      end
-
-      # FIXME: remove when we will integrate hanami-model 0.7
-      def mapping(content)
-        path  = Pathname.new("config").join("environment.rb")
-
-        lines = ::File.readlines(path)
-        index = lines.index { |l| l =~ %r{mapping do} } + 1
-
-        lines.insert(index, content)
-        rewrite(path, lines.flatten)
-      end
-
       def setup_capybara(args)
         host = args.fetch(:host, Hanami::Environment::LISTEN_ALL_HOST)
         port = args.fetch(:port, Hanami::Environment::DEFAULT_PORT)

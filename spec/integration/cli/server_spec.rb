@@ -52,12 +52,10 @@ EOF
     end
 
     it "serves contents from database" do
-      project = "bookshelf_server_database"
-
-      with_project(project) do
-        setup_model(project)
+      with_project do
+        setup_model
         console do |input, _, _|
-          input.puts("BookRepository.create(Book.new(title: 'Learn Hanami'))")
+          input.puts("BookRepository.new.create(title: 'Learn Hanami')")
           input.puts("exit")
         end
 
@@ -69,7 +67,7 @@ module Web::Controllers::Books
     expose :book
 
     def call(params)
-      @book = BookRepository.find(params[:id]) or halt(404)
+      @book = BookRepository.new.find(params[:id]) or halt(404)
     end
   end
 end
@@ -303,7 +301,7 @@ EOF
 
   private
 
-  def setup_model(project) # rubocop:disable Metrics/MethodLength
+  def setup_model # rubocop:disable Metrics/MethodLength
     generate_model     "book"
     generate_migration "create_books", <<-EOF
 Hanami::Model.migration do
@@ -315,20 +313,6 @@ Hanami::Model.migration do
   end
 end
 EOF
-
-    # FIXME: remove when we will integrate hanami-model 0.7
-    entity("book", project, :title)
-
-    # FIXME: remove when we will integrate hanami-model 0.7
-    mapping <<-END
-    collection :books do
-      entity     Book
-      repository BookRepository
-
-      attribute :id,    Integer
-      attribute :title, String
-    end
-END
 
     migrate
   end

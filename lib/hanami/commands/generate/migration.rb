@@ -28,7 +28,7 @@ module Hanami
           @name = name
           @underscored_name = Utils::String.new(@name).underscore
 
-          environment.require_application_environment
+          Components.resolve('model.configuration')
           assert_migration_name!
         end
 

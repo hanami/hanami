@@ -1,4 +1,5 @@
 require 'hanami/environment'
+require 'hanami/commands/command'
 require 'hanami/generators/generatable'
 require 'hanami/generators/test_framework'
 require 'hanami/generators/template_engine'
@@ -8,17 +9,19 @@ require 'hanami/utils/string'
 module Hanami
   module Commands
     class Generate
-      class Abstract
+      class Abstract < Commands::Command
 
         include Hanami::Generators::Generatable
 
         attr_reader :options, :target_path
 
         def initialize(options)
+          super
+
           @options = Hanami::Utils::Hash.new(options).symbolize!
           assert_options!
 
-          @target_path = Pathname.pwd
+          @target_path = Hanami.root
         end
 
         def template_source_path
@@ -39,11 +42,6 @@ module Hanami
         def hanamirc
           @hanamirc ||= Hanamirc.new(target_path)
         end
-
-        def environment
-          @environment ||= Hanami::Environment.new(options)
-        end
-
 
         def template_engine
           @template_engine ||= Hanami::Generators::TemplateEngine.new(hanamirc, options[:template])

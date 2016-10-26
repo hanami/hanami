@@ -8,11 +8,11 @@ Hanami::Model.configure do
   # Available options:
   #
   #  * SQL adapter
-  #    adapter type: :sql, uri: 'sqlite://db/<%= config[:app_name] %>_development.sqlite3'
-  #    adapter type: :sql, uri: 'postgres://localhost/<%= config[:app_name] %>_development'
-  #    adapter type: :sql, uri: 'mysql://localhost/<%= config[:app_name] %>_development'
+  #    adapter :sql, 'sqlite://db/<%= config[:app_name] %>_development.sqlite3'
+  #    adapter :sql, 'postgres://localhost/<%= config[:app_name] %>_development'
+  #    adapter :sql, 'mysql://localhost/<%= config[:app_name] %>_development'
   #
-  adapter type: :<%= config[:database_config][:type] %>, uri: ENV['DATABASE_URL']
+  adapter :<%= config[:database_config][:type] %>, ENV['DATABASE_URL']
 
   <%- if config[:database_config][:type] == :sql -%>
   ##
@@ -20,22 +20,7 @@ Hanami::Model.configure do
   #
   migrations 'db/migrations'
   schema     'db/schema.sql'
-
   <%- end -%>
-  ##
-  # Database mapping
-  #
-  # Intended for specifying application wide mappings.
-  #
-  mapping do
-    # collection :users do
-    #   entity     User
-    #   repository UserRepository
-    #
-    #   attribute :id,   Integer
-    #   attribute :name, String
-    # end
-  end
 end.load!
 
 Hanami::Mailer.configure do
