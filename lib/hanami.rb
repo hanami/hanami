@@ -82,7 +82,7 @@ module Hanami
   # @since x.x.x
   # @api private
   def self.boot
-    Components.resolve('apps.configurations')
+    Components.resolve('all')
   end
 
   # Main application that mounts many Rack and/or Hanami applications.
