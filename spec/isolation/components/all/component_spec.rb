@@ -7,6 +7,8 @@ RSpec.describe "Components: all", type: :cli do
       require Pathname.new(Dir.pwd).join("config", "environment")
       Hanami::Components.resolve('all')
 
+      expect(Hanami::Components['all']).to be(true)
+
       expect(Hanami::Components['model.configuration']).to_not be(nil)
       expect(Hanami::Components['model']).to_not               be(nil)
 

@@ -156,10 +156,12 @@ module Hanami
     # @since x.x.x
     # @api private
     register 'apps' do
-      run do |configuration|
+      resolve do |configuration|
         configuration.apps do |app|
           component('app').call(app)
         end
+
+        true
       end
     end
 
