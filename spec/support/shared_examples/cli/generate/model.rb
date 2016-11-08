@@ -20,8 +20,7 @@ OUT
       # lib/<project>/entities/<model>.rb
       #
       expect("lib/#{project}/entities/#{model}.rb").to have_file_content <<-END
-class #{class_name}
-  include Hanami::Entity
+class #{class_name} < Hanami::Entity
 end
 END
 
