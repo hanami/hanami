@@ -6,9 +6,6 @@ unless ENV['TRAVIS']
   gem 'yard',   require: false
 end
 
-# FIXME: this must be removed once next version of `rom-sql` will be released
-gem 'rom-sql', '~> 0.8', require: false, github: 'rom-rb/rom-sql', branch: 'master'
-
 gem 'i18n'
 gem 'hanami-utils',       '~> 0.8', require: false, github: 'hanami/utils',       branch: 'master'
 gem 'hanami-validations', '~> 0.6', require: false, github: 'hanami/validations', branch: 'master'
