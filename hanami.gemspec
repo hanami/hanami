@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata['allowed_push_host'] = 'https://rubygems.org'
 
-  spec.add_dependency 'hanami-utils',       '~> 0.8'
+  spec.add_dependency 'hanami-utils',       '~> 0.9'
   spec.add_dependency 'hanami-validations', '~> 0.6'
   spec.add_dependency 'hanami-router',      '~> 0.7'
   spec.add_dependency 'hanami-controller',  '~> 0.7'
