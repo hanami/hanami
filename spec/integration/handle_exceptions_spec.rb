@@ -30,7 +30,7 @@ RSpec.describe "handle exceptions", type: :cli do
       generate_action
 
       RSpec::Support::Env['HANAMI_ENV']   = 'production'
-      RSpec::Support::Env['DATABASE_URL'] = "file://#{Pathname.new('db').join('bookshelf')}"
+      RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
 
       server do
         get '/books/1'

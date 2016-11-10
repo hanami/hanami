@@ -44,7 +44,7 @@ RSpec.describe "hanami new", type: :cli do
           #
           # config/environment.rb
           #
-          expect("config/environment.rb").to have_file_content(%r{  adapter type: :sql, uri: ENV\['DATABASE_URL'\]})
+          expect("config/environment.rb").to have_file_content(%r{  adapter :sql, ENV\['DATABASE_URL'\]})
           expect("config/environment.rb").to have_file_content(%r{  migrations 'db/migrations'})
           expect("config/environment.rb").to have_file_content(%r{  schema     'db/schema.sql'})
 
@@ -113,7 +113,7 @@ RSpec.describe "hanami new", type: :cli do
           #
           # config/environment.rb
           #
-          expect("config/environment.rb").to have_file_content(%r{  adapter type: :sql, uri: ENV\['DATABASE_URL'\]})
+          expect("config/environment.rb").to have_file_content(%r{  adapter :sql, ENV\['DATABASE_URL'\]})
           expect("config/environment.rb").to have_file_content(%r{  migrations 'db/migrations'})
           expect("config/environment.rb").to have_file_content(%r{  schema     'db/schema.sql'})
 
@@ -183,7 +183,7 @@ RSpec.describe "hanami new", type: :cli do
           #
           # config/environment.rb
           #
-          expect("config/environment.rb").to have_file_content(%r{  adapter type: :sql, uri: ENV\['DATABASE_URL'\]})
+          expect("config/environment.rb").to have_file_content(%r{  adapter :sql, ENV\['DATABASE_URL'\]})
           expect("config/environment.rb").to have_file_content(%r{  migrations 'db/migrations'})
           expect("config/environment.rb").to have_file_content(%r{  schema     'db/schema.sql'})
 

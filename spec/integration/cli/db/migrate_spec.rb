@@ -3,7 +3,7 @@ RSpec.describe "hanami db", type: :cli do
     it "migrates database" do
       project = "bookshelf_db_migrate"
 
-      with_project(project, database: :sqlite) do
+      with_project(project) do
         generate_migrations
 
         hanami "db create"
@@ -22,7 +22,7 @@ RSpec.describe "hanami db", type: :cli do
     it "migrates database up to a version" do
       project = "bookshelf_db_migrate_up_to_version"
 
-      with_project(project, database: :sqlite) do
+      with_project(project) do
         versions = generate_migrations
 
         hanami "db create"
@@ -41,7 +41,7 @@ RSpec.describe "hanami db", type: :cli do
     it "migrates database down to a version" do
       project = "bookshelf_db_migrate_down_to_version"
 
-      with_project(project, database: :sqlite) do
+      with_project(project) do
         versions = generate_migrations
 
         hanami "db create"
@@ -61,7 +61,7 @@ RSpec.describe "hanami db", type: :cli do
     it "migrates database down to 0" do
       project = "bookshelf_db_migrate_down_to_zero"
 
-      with_project(project, database: :sqlite) do
+      with_project(project) do
         generate_migrations
 
         hanami "db create"

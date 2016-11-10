@@ -13,32 +13,15 @@ module Hanami
   # @since 0.8.0
   # @api private
   class Server < ::Rack::Server
-
     attr_reader :options
 
     # @param options [Hash] Environment's options
     #
     # @since 0.8.0
     # @see Hanami::Environment#initialize
-    def initialize(options)
-      @_env    = Hanami::Environment.new(options)
+    def initialize
       @options = _extract_options
-    end
-
-
-    # @since 0.8.0
-    # @api private
-    def rackup_config
-      @_env.rackup.to_s
-    end
-
-
-    # Adds Shotgun Loader
-    #
-    # @since 0.8.0
-    # @api private
-    def app=(shotgun_loader)
-      @app = shotgun_loader
+      setup
     end
 
     # Primarily this removes the ::Rack::Chunked middleware
@@ -54,30 +37,57 @@ module Hanami
       mw
     end
 
+    def start
+      preload
+      super
+    end
+
     private
 
-    # @since 0.8.0
-    # @api private
-    def shotgun_available?
-      require 'shotgun'
-      true
-    rescue LoadError
-      false
+    def setup
+      if code_reloading?
+        @app = Shotgun::Loader.new(rackup, &model)
+      else
+        model.call
+      end
+    end
+
+    def model
+      ->(*) { Hanami::Components.resolve('model') }
+    end
+
+    def environment
+      Components['environment']
     end
 
     # @since 0.8.0
     # @api private
     def code_reloading?
-      @_env.code_reloading?
+      Components['code_reloading']
     end
 
+    def rackup
+      environment.rackup.to_s
+    end
+
+    def preload
+      if code_reloading?
+        Shotgun.enable_copy_on_write
+        Shotgun.preload
+      else
+        Hanami.boot
+      end
+    end
+
+    # Options for Rack::Server superclass
+    #
     # @since 0.8.0
     # @api private
     def _extract_options
-      @_env.to_options.merge(
-        config:      @_env.rackup.to_s,
-        Host:        @_env.host,
-        Port:        @_env.port,
+      environment.to_options.merge(
+        config:      rackup,
+        Host:        environment.host,
+        Port:        environment.port,
         AccessLog:   []
       )
     end

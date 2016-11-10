@@ -40,14 +40,10 @@ module Hanami
   #     mount Web::Application,   at: "/"
   #
   #     model do
-  #       adapter type: :sql, url: ENV['DATABASE_URL']
+  #       adapter :sql, ENV['DATABASE_URL']
   #
   #       migrations "db/migrations"
   #       schema     "db/schema.sql"
-  #
-  #       mapping do
-  #         # ...
-  #       end
   #     end
   #
   #     mailer do
@@ -86,7 +82,7 @@ module Hanami
   # @since x.x.x
   # @api private
   def self.boot
-    Components.resolve('apps.configurations')
+    Components.resolve('all')
   end
 
   # Main application that mounts many Rack and/or Hanami applications.
@@ -178,6 +174,8 @@ module Hanami
   # @api private
   # @since 0.3.2
   def self.environment
-    Environment.new
+    Components.resolved('environment') do
+      Environment.new
+    end
   end
 end

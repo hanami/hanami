@@ -6,7 +6,6 @@ require 'hanami/config/cookies'
 require 'hanami/config/framework_configuration'
 require 'hanami/config/load_paths'
 require 'hanami/config/logger'
-require 'hanami/config/mapping'
 require 'hanami/config/routes'
 require 'hanami/config/security'
 require 'hanami/config/sessions'
@@ -685,86 +684,6 @@ module Hanami
       @middleware ||= Hanami::Middleware.new(self)
     end
 
-    # Application collection mapping.
-    #
-    # Specify a set of collections for the application, by passing a block, or a
-    # relative path where to find the file that describes them.
-    #
-    # By default it's `nil`.
-    #
-    # This is part of a DSL, for this reason when this method is called with
-    # an argument, it will set the corresponding instance variable. When
-    # called without, it will return the already set value, or the default.
-    #
-    # @overload mapping(blk)
-    #   Specify a set of mapping in the given block
-    #   @param blk [Proc] the mapping definitions
-    #
-    # @overload mapping(path)
-    #   Specify a relative path where to find the mapping file
-    #   @param path [String] the relative path
-    #
-    # @overload mapping
-    #   Gets the value
-    #   @return [Hanami::Config::Mapping] the set of mappings
-    #
-    # @since 0.2.0
-    #
-    # @see http://rdoc.info/gems/hanami-model/Hanami/Mapper
-    #
-    # @example Getting the value
-    #   require 'hanami'
-    #
-    #   module Bookshelf
-    #     class Application < Hanami::Application
-    #     end
-    #   end
-    #
-    #   Bookshelf::Application.configuration.mapping
-    #     # => nil
-    #
-    # @example Setting the value, by passing a block
-    #   require 'hanami'
-    #
-    #   module Bookshelf
-    #     class Application < Hanami::Application
-    #       configure do
-    #         mapping do
-    #           collection :users do
-    #             entity User
-    #
-    #             attribute :id,   Integer
-    #             attribute :name, String
-    #           end
-    #         end
-    #       end
-    #     end
-    #   end
-    #
-    #   Bookshelf::Application.configuration.mapping
-    #     # => #<Hanami::Config::Mapping:0x007ff50a991388 @blk=#<Proc:0x007ff123991338@(irb):4>, @path=#<Pathname:.>>
-    #
-    # @example Setting the value, by passing a relative path
-    #   require 'hanami'
-    #
-    #   module Bookshelf
-    #     class Application < Hanami::Application
-    #       configure do
-    #         mapping 'config/mapping'
-    #       end
-    #     end
-    #   end
-    #
-    #   Bookshelf::Application.configuration.mapping
-    #     # => #<Hanami::Config::Routes:0x007ff50a991388 @blk=nil, @path=#<Pathname:config/mapping.rb>>
-    def mapping(path = nil, &blk)
-      if path or block_given?
-        @mapping = Config::Mapping.new(root, path, &blk)
-      else
-        @mapping
-      end
-    end
-
     # Adapter configuration.
     # The application will instantiate adapter instance based on this configuration.
     #
@@ -795,14 +714,14 @@ module Hanami
     #   module Bookshelf
     #     class Application < Hanami::Application
     #       configure do
-    #         adapter type: :sql, uri: 'sqlite3://uri'
+    #         adapter :sql, 'sqlite3://uri'
     #       end
     #     end
     #   end
     #
     #   Bookshelf::Application.configuration.adapter
-    #     # => {type: :sql, uri: 'sqlite3://uri'}
-    def adapter(options = {})
+    #     # => [:sql, 'sqlite3://uri']
+    def adapter(*options)
       if !options.empty?
         @adapter = options
       else
@@ -1460,7 +1379,7 @@ module Hanami
     #   module Bookshelf
     #     class Application < Hanami::Application
     #       configure do
-    #         model.adapter type: :memory, uri: 'memory://localhost/database'
+    #         model.adapter :sql, 'sqlite://db/bookshelf_development'
     #       end
     #     end
     #   end
@@ -1472,13 +1391,13 @@ module Hanami
     #   module Bookshelf
     #     class Application < Hanami::Application
     #       configure do
-    #         adapter       type: :sql,    uri: 'postgres://localhost/database'
-    #         model.adapter type: :memory, uri: 'memory://localhost/database'
+    #         adapter       :sql, 'postgres://localhost/database'
+    #         model.adapter :sql, 'sqlite://db/bookshelf_development'
     #       end
     #     end
     #   end
     #
-    #   # The memory adapter will override the SQL one
+    #   # The sqlite adapter will override the SQL one
     def model
       @model ||= Config::FrameworkConfiguration.new
     end

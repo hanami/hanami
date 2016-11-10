@@ -469,33 +469,18 @@ Hanami.configure do
     #
     # Available options:
     #
-    #  * File System adapter
-    #    adapter type: :file_system, uri: 'file:///db/#{project}_development'
-    #
-    #  * Memory adapter
-    #    adapter type: :memory, uri: 'memory://localhost/#{project}_development'
-    #
     #  * SQL adapter
-    #    adapter type: :sql, uri: 'sqlite://db/#{project}_development.sqlite3'
-    #    adapter type: :sql, uri: 'postgres://localhost/#{project}_development'
-    #    adapter type: :sql, uri: 'mysql://localhost/#{project}_development'
+    #    adapter :sql, 'sqlite://db/#{project}_development.sqlite3'
+    #    adapter :sql, 'postgres://localhost/#{project}_development'
+    #    adapter :sql, 'mysql://localhost/#{project}_development'
     #
-    adapter type: :file_system, uri: ENV['DATABASE_URL']
+    adapter :sql, ENV['DATABASE_URL']
 
     ##
-    # Database mapping
+    # Migrations
     #
-    # Intended for specifying application wide mappings.
-    #
-    mapping do
-      # collection :users do
-      #   entity     User
-      #   repository UserRepository
-      #
-      #   attribute :id,   Integer
-      #   attribute :name, String
-      # end
-    end
+    migrations 'db/migrations'
+    schema     'db/schema.sql'
   end
 
   mailer do
@@ -515,7 +500,7 @@ END
       # .env.development
       #
       expect(".env.development").to have_file_content(%r{# Define ENV variables for development environment})
-      expect(".env.development").to have_file_content(%r{DATABASE_URL="file:///db/#{project}_development"})
+      expect(".env.development").to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_development.sqlite"})
       expect(".env.development").to have_file_content(%r{SERVE_STATIC_ASSETS="true"})
       expect(".env.development").to have_file_content(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
       expect(".env.development").to have_file_content(%r{#{app_upcase}_SESSIONS_SECRET="[\w]{64}"})
@@ -524,7 +509,7 @@ END
       # .env.test
       #
       expect(".env.test").to have_file_content(%r{# Define ENV variables for test environment})
-      expect(".env.test").to have_file_content(%r{DATABASE_URL="file:///db/#{project}_test"})
+      expect(".env.test").to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_test.sqlite"})
       expect(".env.test").to have_file_content(%r{SERVE_STATIC_ASSETS="true"})
       expect(".env.test").to have_file_content(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
       expect(".env.test").to have_file_content(%r{#{app_upcase}_SESSIONS_SECRET="[\w]{64}"})

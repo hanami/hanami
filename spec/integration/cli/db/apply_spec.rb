@@ -1,9 +1,7 @@
 RSpec.describe "hanami db", type: :cli do
   describe "apply" do
     it "migrates, dumps structure, deletes migrations" do
-      project = "bookshelf_db_apply"
-
-      with_project(project, database: :sqlite) do
+      with_project do
         versions = generate_migrations
 
         hanami "db apply"

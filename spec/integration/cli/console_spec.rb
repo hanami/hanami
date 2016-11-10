@@ -1,16 +1,14 @@
 RSpec.describe "hanami console", type: :cli do
   context "irb" do
-    let(:project) { "bookshelf_console_irb" }
-
     it "starts console" do
-      with_project(project, database: :sqlite, console: :irb) do
-        setup_model(project)
+      with_project("bookshelf_console_irb", console: :irb) do
+        setup_model
 
         console do |input, _, _|
           input.puts("Hanami::VERSION")
           input.puts("Web::Application")
           input.puts("Web.routes")
-          input.puts("BookRepository.all")
+          input.puts("BookRepository.new.all.to_a")
           input.puts("exit")
         end
 
@@ -27,7 +25,7 @@ RSpec.describe "hanami console", type: :cli do
 
   private
 
-  def setup_model(project) # rubocop:disable Metrics/MethodLength
+  def setup_model # rubocop:disable Metrics/MethodLength
     generate_model     "book"
     generate_migration "create_books", <<-EOF
 Hanami::Model.migration do
@@ -39,20 +37,6 @@ Hanami::Model.migration do
   end
 end
 EOF
-
-    # FIXME: remove when we will integrate hanami-model 0.7
-    entity("book", project, :title)
-
-    # FIXME: remove when we will integrate hanami-model 0.7
-    mapping <<-END
-    collection :books do
-      entity     Book
-      repository BookRepository
-
-      attribute :id,    Integer
-      attribute :title, String
-    end
-END
 
     migrate
   end

@@ -2,7 +2,7 @@ require 'hanami/utils/kernel'
 
 module Hanami
   module Config
-    # Define a mapping for Hanami::Model
+    # Block or file mapper
     #
     # @since 0.1.0
     # @api private

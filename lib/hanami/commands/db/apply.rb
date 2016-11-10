@@ -4,7 +4,7 @@ module Hanami
   module Commands
     class DB
       class Apply < Command
-        requires 'model.configuration'
+        requires 'model.sql'
 
         def start
           require 'hanami/model/migrator'

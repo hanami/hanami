@@ -42,6 +42,8 @@ module Hanami
         @environment = Hanami::Environment.new(options)
         @environment.require_project_environment
         @configuration = Hanami.configuration
+
+        requirements.resolved('environment', environment)
         requirements.resolve(self.class.requirements)
       end
 

@@ -22,7 +22,7 @@ module Hanami
     def install
       require 'hanami/environment'
       Hanami::Environment.new.require_project_environment
-      Components.resolve('model')
+      Components.resolve('model.bundled')
 
       desc "Preload project configuration"
       task :preload do
@@ -60,7 +60,7 @@ module Hanami
         task :migrate do
           system("bundle exec hanami db migrate") || exit($?.exitstatus)
         end
-      end unless Components['model'].nil?
+      end unless Components['model.bundled'].nil?
 
       namespace :assets do
         task :precompile do

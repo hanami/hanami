@@ -3,7 +3,7 @@ RSpec.describe "Rake: db:migrate", type: :cli do
     it "migrates" do
       project = "bookshelf_rake_db_migrate"
 
-      with_project(project, database: :sqlite) do
+      with_project(project) do
         generate_migrations
 
         hanami "db create"
@@ -17,9 +17,7 @@ RSpec.describe "Rake: db:migrate", type: :cli do
     end
 
     it "exit the parent process with the child exit status" do
-      project = "bookshelf_rake_db_migrate"
-
-      with_project(project, database: :sqlite) do
+      with_project do
         FileUtils.rm_rf("db")
 
         bundle_exec "rake db:migrate"

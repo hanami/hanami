@@ -4,7 +4,7 @@ module Hanami
   module Commands
     class DB
       class Migrate < Command
-        requires 'model.configuration'
+        requires 'model.sql'
 
         def initialize(options, version)
           super(options)

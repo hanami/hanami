@@ -5,7 +5,7 @@ module Hanami
   module Commands
     class DB
       class Console < Command
-        requires 'model.configuration'
+        requires 'model.sql'
 
         def initialize(options, name)
           super(options)
@@ -13,33 +13,20 @@ module Hanami
         end
 
         def start
-          exec connection_string
+          exec console.connection_string
         end
 
         private
 
         attr_reader :name
 
-        def config
-          Hanami::Model.configuration
+        def configuration
+          Hanami::Components['model.configuration']
         end
 
-        def adapter_config
-          config.adapter_config
-        end
-
-        def mapper
-          config.mapper
-        end
-
-        def adapter_class
-          # FIXME: this has to be reviewed once hanami-model will be merged
-          require 'hanami/model/adapters/sql_adapter'
-          Hanami::Utils::Class.load_from_pattern!(adapter_config.class_name, Hanami::Model::Adapters)
-        end
-
-        def connection_string
-          adapter_class.new(mapper, adapter_config.uri).connection_string
+        def console
+          require 'hanami/model/sql/console'
+          Hanami::Model::Sql::Console.new(configuration.url)
         end
       end
     end
