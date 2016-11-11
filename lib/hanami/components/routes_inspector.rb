@@ -5,12 +5,12 @@ module Hanami
   module Components
     # Project's routes inspector
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     class RoutesInspector
       # @param configuration [Hanami::Configuration]
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def initialize(configuration)
         @configuration = configuration
@@ -20,7 +20,7 @@ module Hanami
       #
       # @return [String] printable routes
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def inspect
         routes.map do |r|
@@ -30,11 +30,11 @@ module Hanami
 
       private
 
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       attr_reader :configuration
 
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def routes
         configuration.mounted.each_with_object([]) do |(klass, app), result|
@@ -46,19 +46,19 @@ module Hanami
         end
       end
 
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def hanami_app?(klass)
         klass.ancestors.include?(Hanami::Application)
       end
 
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def resolve_hanami_app_router(app)
         App::Routes.application_routes(app)
       end
 
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def resolve_rack_app_router(app)
         Hanami::Router.new do

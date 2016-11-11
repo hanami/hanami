@@ -1,16 +1,16 @@
 module Hanami
   module Version
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
-    VERSION = '1.0.0.alpha1'.freeze
+    VERSION = '0.9.0'.freeze
 
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def self.version
       VERSION
     end
 
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def self.gem_requirement
       if prerelease?
@@ -20,13 +20,13 @@ module Hanami
       end
     end
 
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def self.prerelease?
       version =~ /alpha|beta|rc/
     end
 
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def major_minor
       version.scan(/\A\d{1,2}\.\d{1,2}/).first

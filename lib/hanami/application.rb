@@ -35,7 +35,7 @@ module Hanami
           #
           # @return [Hanami::Logger] the logger for this Hanami application
           #
-          # @since x.x.x
+          # @since 0.9.0
           # @api public
           #
           # @example
@@ -48,7 +48,7 @@ module Hanami
           #
           # @return [Hanami::Routes] the routes for this Hanami application
           #
-          # @since x.x.x
+          # @since 0.9.0
           # @api public
           #
           # @example
@@ -62,11 +62,11 @@ module Hanami
 
     # Class interface for Hanami applications
     #
-    # @since x.x.x
+    # @since 0.9.0
     module ClassMethods
       # Override Ruby's Class#extended
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       #
       # @see http://www.ruby-doc.org/core/Class.html#method-i-extended
@@ -79,15 +79,15 @@ module Hanami
           @_lock          = Mutex.new
 
           class << self
-            # @since x.x.x
+            # @since 0.9.0
             # @api private
             attr_reader :namespace
 
-            # @since x.x.x
+            # @since 0.9.0
             # @api private
             attr_reader :configurations
 
-            # @since x.x.x
+            # @since 0.9.0
             # @api private
             attr_reader :configuration
           end
@@ -98,7 +98,7 @@ module Hanami
       #
       # @return [String] the Hanami application name
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       #
       # @example

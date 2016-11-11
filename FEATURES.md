@@ -3,6 +3,19 @@
 
 ## Features
 
+## v0.9.0 - (unreleased)
+
+- Experimental repositories associations (only "has many")
+- Database automapping for SQL databases
+- Entities schema
+- Immutable entities
+- Removed dirty tracking for entities
+- Repositories CRUD operations can accept both entities and/or data
+- Removed Memory and File System adapters
+- SQLite is the default adapter for new projects
+- Native support for PostgreSQL types
+- CLI: `hanami secret` to generate and print a new session secret for a single Hanami app
+
 ## v0.8.0 - 2016-07-22
 
 - New validation syntax based on predicates

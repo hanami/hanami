@@ -6,7 +6,7 @@ module Hanami
     module App
       # hanami-controller configuration for a sigle Hanami application in the project.
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       class Controller
         STRICT_TRANSPORT_SECURITY_HEADER = 'Strict-Transport-Security'.freeze
@@ -16,7 +16,7 @@ module Hanami
         #
         # @param app [Hanami::Configuration::App] a Hanami application
         #
-        # @since x.x.x
+        # @since 0.9.0
         # @api private
         #
         # rubocop:disable Metrics/AbcSize

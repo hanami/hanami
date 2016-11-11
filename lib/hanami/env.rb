@@ -6,7 +6,7 @@ end
 module Hanami
   # Encapsulate access to ENV
   #
-  # @since x.x.x
+  # @since 0.9.0
   # @api private
   class Env
     # Create a new instance
@@ -15,7 +15,7 @@ module Hanami
     #
     # @return [Hanami::Env]
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def initialize(env: ENV)
       @env = env
@@ -27,7 +27,7 @@ module Hanami
     #
     # @return [String,NilClass] the value, if found
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def [](key)
       @env[key]
@@ -38,7 +38,7 @@ module Hanami
     # @param key [String] the key
     # @param value [String] the value
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def []=(key, value)
       @env[key] = value
@@ -50,7 +50,7 @@ module Hanami
     #
     # @return void
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def load!(path)
       return unless defined?(Dotenv)

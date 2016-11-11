@@ -19,7 +19,7 @@ module Hanami
   DEFAULT_PUBLIC_DIRECTORY = 'public'.freeze
 
   # @api private
-  # @since x.x.x
+  # @since 0.9.0
   @_mutex = Mutex.new
 
   # Configure Hanami project
@@ -28,7 +28,7 @@ module Hanami
   #
   # @param blk [Proc] the configuration block
   #
-  # @since x.x.x
+  # @since 0.9.0
   #
   # @example
   #   # config/environment.rb
@@ -68,7 +68,7 @@ module Hanami
   #
   # @see Hanami.configure
   #
-  # @since x.x.x
+  # @since 0.9.0
   # @api private
   def self.configuration
     @_mutex.synchronize do
@@ -79,7 +79,7 @@ module Hanami
 
   # Boot Hanami project
   #
-  # @since x.x.x
+  # @since 0.9.0
   # @api private
   def self.boot
     Components.resolve('all')
@@ -94,7 +94,7 @@ module Hanami
   #
   # @return [Hanami::App] the app
   #
-  # @since x.x.x
+  # @since 0.9.0
   # @api private
   def self.app
     App.new(configuration, environment)

@@ -89,15 +89,15 @@ module Hanami
     private
 
     # @api private
-    # @since x.x.x
+    # @since 0.9.0
     attr_reader :stack
 
     # @api private
-    # @since x.x.x
+    # @since 0.9.0
     attr_reader :builder
 
     # @api private
-    # @since x.x.x
+    # @since 0.9.0
     attr_reader :configuration
 
     # @api private

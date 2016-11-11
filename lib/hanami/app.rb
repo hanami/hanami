@@ -8,7 +8,7 @@ module Hanami
   #
   # @see Hanami.app
   #
-  # @since x.x.x
+  # @since 0.9.0
   # @api private
   class App
     # Initialize a new instance
@@ -16,7 +16,7 @@ module Hanami
     # @param configuration [Hanami::Configuration] general configuration
     # @param environment [Hanami::Environment] current environment
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def initialize(configuration, environment)
       Components.resolve('apps')
@@ -35,7 +35,7 @@ module Hanami
     #
     # @return [Array] a serialized Rack response
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def call(env)
       builder.call(env)
@@ -43,15 +43,15 @@ module Hanami
 
     private
 
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     attr_reader :builder
 
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     attr_reader :routes
 
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def mount(configuration)
       configuration.mounted.each do |klass, app|
@@ -59,7 +59,7 @@ module Hanami
       end
     end
 
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def middleware(environment)
       if middleware = environment.static_assets_middleware # rubocop:disable Lint/AssignmentInCondition

@@ -8,18 +8,18 @@ module Hanami
   #
   # The implementation is thread-safe
   #
-  # @since x.x.x
+  # @since 0.9.0
   # @api private
   module Components
     # Available components
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     @_components = Concurrent::Hash.new
 
     # Resolved components
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     @_resolved   = Concurrent::Map.new
 
@@ -28,7 +28,7 @@ module Hanami
     # @param name [String] the unique component name
     # @param blk [Proc] the logic of the component
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     #
     # @see Hanami::Components::Component
@@ -42,7 +42,7 @@ module Hanami
     #
     # @raise [ArgumentError] if the component is unknown
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def self.component(name)
       @_components.fetch(name) do
@@ -58,7 +58,7 @@ module Hanami
     # @param value [Object] the optional value of the component
     # @param blk [Proc] the optional block which returning value is associated with the component.
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def self.resolved(name, value = nil, &blk)
       if block_given?
@@ -76,7 +76,7 @@ module Hanami
     #
     # @param names [String,Array<String>] one or more components to be resolved
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def self.resolve(*names)
       Array(names).flatten.each do |name|
@@ -93,7 +93,7 @@ module Hanami
     #
     # @raise [ArgumentError] if the component is unknown or not resolved yet.
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def self.[](name)
       @_resolved.fetch(name) do

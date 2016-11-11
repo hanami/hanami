@@ -63,7 +63,7 @@ module Hanami
 
       private
 
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def prepare
         # Clear out ARGV so Pry/IRB don't attempt to parse the rest

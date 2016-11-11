@@ -3,14 +3,14 @@ require 'hanami/utils'
 module Hanami
   # Registered components
   #
-  # @since x.x.x
+  # @since 0.9.0
   # @api private
   #
   # @see Hanami::Components
   module Components # rubocop:disable Metrics/ModuleLength
     # Require the entire project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'all' do
       requires 'model', 'apps', 'finalizers'
@@ -20,7 +20,7 @@ module Hanami
 
     # Check if code reloading is enabled
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'code_reloading' do
       prepare do
@@ -39,7 +39,7 @@ module Hanami
 
     # Tries to load hanami-model, if available for the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     #
     # @example With hanami-model
@@ -62,7 +62,7 @@ module Hanami
 
     # Tries to evaluate hanami-model configuration, if available for the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     #
     # @example With hanami-model
@@ -85,7 +85,7 @@ module Hanami
 
     # Tries to load SQL support for hanami, if available for the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     #
     # @example With hanami-model
@@ -112,7 +112,7 @@ module Hanami
 
     # Check if hanami-model is bundled
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     #
     # @example With hanami-model
@@ -139,7 +139,7 @@ module Hanami
     #
     # This is used only by `hanami routes` command.
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'routes.inspector' do
       requires 'apps.configurations'
@@ -155,7 +155,7 @@ module Hanami
 
     # Loads all the Hanami applications in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'apps' do
       resolve do |configuration|
@@ -169,7 +169,7 @@ module Hanami
 
     # Evaluates all the Hanami applications' configurations in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'apps.configurations' do
       resolve do |configuration|
@@ -185,7 +185,7 @@ module Hanami
     #
     # This is used only by `hanami assets precompile` command.
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'apps.assets.configurations' do
       requires 'apps.configurations'
@@ -205,7 +205,7 @@ module Hanami
 
     # Finalizers for the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'finalizers' do
       requires 'finalizers.initializers'
@@ -215,7 +215,7 @@ module Hanami
 
     # Load project initializers
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'finalizers.initializers' do
       run do
@@ -227,7 +227,7 @@ module Hanami
 
     # Configure, load and finalize a Hanami application in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'app' do
       run do |app|
@@ -241,7 +241,7 @@ module Hanami
 
     # Evaluate the configuration of a single Hanami application in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'app.configuration' do
       run do |app|
@@ -255,7 +255,7 @@ module Hanami
 
     # Evaluate Hanami frameworks configurations of a single Hanami application in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'app.frameworks' do
       run do |app|
@@ -267,7 +267,7 @@ module Hanami
 
     # Evaluate hanami-controller configuration of a single Hanami application in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'app.controller' do
       prepare do
@@ -281,7 +281,7 @@ module Hanami
 
     # Evaluate hanami-view configuration of a single Hanami application in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'app.view' do
       prepare do
@@ -295,7 +295,7 @@ module Hanami
 
     # Evaluate hanami-assets configuration of a single Hanami application in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'app.assets' do
       prepare do
@@ -309,7 +309,7 @@ module Hanami
 
     # Evaluate hanami/logger configuration of a single Hanami application in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'app.logger' do
       prepare do
@@ -323,7 +323,7 @@ module Hanami
 
     # Load the code for a single Hanami application in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'app.code' do
       run do |app|
@@ -334,7 +334,7 @@ module Hanami
 
     # Load the routes for a single Hanami application in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'app.routes' do
       prepare do
@@ -348,7 +348,7 @@ module Hanami
 
     # Finalize a single Hanami application in the project
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     register 'app.finalizer' do
       run do |app|

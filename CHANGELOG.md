@@ -1,6 +1,29 @@
 # Hanami
 The web, with simplicity.
 
+## v0.9.0 - (unreleased)
+### Added
+- [Christophe Philemotte] Introduced `hanami secret` to generate and print a new sessions secret
+
+### Fixed
+- [Bruz Marzolf] Skip project code preloading when code reloading is enabled
+- [Bruz Marzolf] Ensure to generate project in current directory when running `hanami new .`
+- [Pascal Betz] Fix constant lookup within the project namespace
+- [Sean Collins] Ensure consistent order of code loading across operating systems
+- [Luca Guidi] Ensure to load the project configurations only once
+- [Luca Guidi] Fix duplicated Rack middleware in single Hanami application stacks
+
+### Changed
+- [Luca Guidi] Official support for Ruby MRI 2.3+
+- [Luca Guidi] Removed support for "application" architecture
+- [Luca Guidi] Removed `Hanami::Container.new` in favor of `Hanami.app`
+- [Luca Guidi] Removed `Hanami::Container.configure` in favor of `Hanami.configure`
+- [Luca Guidi] Configure model and mailer within `Hanami.configure` block in `config/environment.rb`
+- [Luca Guidi] Removed `mapping` from model configuration
+- [Luca Guidi] Removed `Hanami::Application.preload!` in favor of `Hanami.boot`
+- [Luca Guidi] Don't make available `db:migrate` Rake task if `hanami-model` isn't bundled
+- [Luca Guidi] Removed experimental code support for `entr(1)`
+
 ## v0.8.0 - 2016-07-22
 ### Added
 - [Luca Guidi] Generate new projects with Subresurce Integrity enabled in production (security).

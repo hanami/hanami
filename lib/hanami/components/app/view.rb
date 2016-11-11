@@ -3,14 +3,14 @@ module Hanami
     module App
       # hanami-view configuration for a sigle Hanami application in the project.
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       class View
         # Configure hanami-view for a single Hanami application in the project.
         #
         # @param app [Hanami::Configuration::App] a Hanami application
         #
-        # @since x.x.x
+        # @since 0.9.0
         # @api private
         #
         # rubocop:disable Metrics/AbcSize

@@ -201,7 +201,7 @@ module Hanami
           end
         end
 
-        # @since x.x.x
+        # @since 0.9.0
         # @api private
         def assert_url!
           if options.key?(:url) && Hanami::Utils::Blank.blank?(options[:url])

@@ -2,7 +2,7 @@ module Hanami
   module Components
     # Base component
     #
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     #
     # @see Hanami::Components
@@ -14,7 +14,7 @@ module Hanami
       #
       # @return [Hanami::Components::Component]
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def initialize(name, &blk)
         @name         = name
@@ -28,7 +28,7 @@ module Hanami
       #
       # @param [Hanami::Configuration] the Hanami configuration for the project
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def call(configuration)
         resolve_requirements
@@ -48,7 +48,7 @@ module Hanami
       #
       # @return [String]
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       attr_reader :name
 
@@ -56,25 +56,25 @@ module Hanami
       #
       # @return [Array<String>]
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       attr_reader :requirements
 
       # Prepare logic
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       attr_accessor :_prepare
 
       # Resolve logic
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       attr_accessor :_resolve
 
       # Run logic
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       attr_accessor :_run
 
@@ -90,7 +90,7 @@ module Hanami
       #
       # @param blk [Proc] prepare logic
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def prepare(&blk)
         self._prepare = blk
@@ -100,7 +100,7 @@ module Hanami
       #
       # @param blk [Proc] resolve logic
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def resolve(&blk)
         self._resolve = blk
@@ -110,7 +110,7 @@ module Hanami
       #
       # @param blk [Proc] run logic
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def run(&blk)
         self._run = blk
@@ -120,7 +120,7 @@ module Hanami
       #
       # @param names [Array<String>] the requirements
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       def requirements=(names)
         @requirements = Array(names).flatten
@@ -128,7 +128,7 @@ module Hanami
 
       # Resolve the requirements before to execute the logic of this component
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       #
       # @see Hanami::Components.resolve
@@ -140,7 +140,7 @@ module Hanami
       #
       # @param name [String] the component name
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       #
       # @see Hanami::Components.component
@@ -154,7 +154,7 @@ module Hanami
       # @param value [Object] the optional value of the component
       # @param blk [Proc] the optional block which returning value is associated with the component.
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       #
       # @see Hanami::Components.resolved

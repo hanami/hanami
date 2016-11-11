@@ -5,14 +5,14 @@ module Hanami
     module App
       # hanami/logger configuration for a sigle Hanami application in the project.
       #
-      # @since x.x.x
+      # @since 0.9.0
       # @api private
       class Logger
         # Configure hanami/logger for a single Hanami application in the project.
         #
         # @param app [Hanami::Configuration::App] a Hanami application
         #
-        # @since x.x.x
+        # @since 0.9.0
         # @api private
         def self.resolve(app)
           namespace = app.namespace

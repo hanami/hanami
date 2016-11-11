@@ -1522,7 +1522,7 @@ module Hanami
       @logger ||= Config::Logger.new
     end
 
-    # @since x.x.x
+    # @since 0.9.0
     # @api private
     def app_name
       ApplicationName.new(namespace)
