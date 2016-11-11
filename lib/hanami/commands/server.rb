@@ -9,12 +9,6 @@ module Hanami
     class Server < Command
       requires 'code_reloading'
 
-      # Message text when Shotgun enabled but interpreter does not support `fork`
-      #
-      # @since 0.8.0
-      # @api private
-      WARNING_MESSAGE = 'Your platform doesn\'t support code reloading.'.freeze
-
       def initialize(options)
         super(options)
 

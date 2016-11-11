@@ -14,6 +14,8 @@ RSpec.describe "Components: all", type: :cli do
 
       expect(Hanami::Components['web']).to_not   be(nil)
       expect(Hanami::Components['admin']).to_not be(nil)
+
+      expect(Hanami::Components['finalizers']).to_not be(nil)
     end
   end
 end

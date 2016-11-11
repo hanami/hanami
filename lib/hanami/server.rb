@@ -46,14 +46,14 @@ module Hanami
 
     def setup
       if code_reloading?
-        @app = Shotgun::Loader.new(rackup, &model)
+        @app = Shotgun::Loader.new(rackup, &reloadable)
       else
-        model.call
+        reloadable.call
       end
     end
 
-    def model
-      ->(*) { Hanami::Components.resolve('model') }
+    def reloadable
+      ->(*) { Hanami::Components.resolve('model', 'finalizers') }
     end
 
     def environment
