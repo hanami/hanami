@@ -14,7 +14,7 @@ module Hanami
           add_empty_directories
           add_test_templates
           add_sql_templates
-          add_git_templates
+          add_git_templates if git_available?
         end
 
         def template_options
@@ -34,7 +34,7 @@ module Hanami
         end
 
         def post_process_templates
-          init_git
+          init_git if git_available?
         end
 
         private
@@ -69,32 +69,33 @@ module Hanami
         end
 
         def add_empty_directories
-          add_mapping('.gitkeep', 'config/initializers/.gitkeep')
-          add_mapping('.gitkeep', 'app/controllers/.gitkeep')
-          add_mapping('.gitkeep', 'app/views/.gitkeep')
-          add_mapping('.gitkeep', 'app/assets/images/.gitkeep')
-          add_mapping('.gitkeep', 'app/assets/javascripts/.gitkeep')
-          add_mapping('.gitkeep', 'app/assets/stylesheets/.gitkeep')
-          add_mapping('.gitkeep', "lib/#{ app_name }/entities/.gitkeep")
-          add_mapping('.gitkeep', "lib/#{ app_name }/repositories/.gitkeep")
-          add_mapping('.gitkeep', "lib/#{ app_name }/mailers/.gitkeep")
-          add_mapping('.gitkeep', "lib/#{ app_name }/mailers/templates/.gitkeep")
-          add_mapping('.gitkeep', 'public/.gitkeep')
+          add_mapping('.keep', 'config/initializers/.keep')
+          add_mapping('.keep', 'app/controllers/.keep')
+          add_mapping('.keep', 'app/views/.keep')
+          add_mapping('.keep', 'app/assets/images/.keep')
+          add_mapping('.keep', 'app/assets/javascripts/.keep')
+          add_mapping('.keep', 'app/assets/stylesheets/.keep')
+          add_mapping('.keep', "lib/#{ app_name }/entities/.keep")
+          add_mapping('.keep', "lib/#{ app_name }/repositories/.keep")
+          add_mapping('.keep', "lib/#{ app_name }/mailers/.keep")
+          add_mapping('.keep', "lib/#{ app_name }/mailers/templates/.keep")
+          add_mapping('.keep', 'public/.keep')
 
-          add_mapping('.gitkeep', 'spec/features/.gitkeep')
-          add_mapping('.gitkeep', 'spec/controllers/.gitkeep')
-          add_mapping('.gitkeep', 'spec/views/.gitkeep')
-          add_mapping('.gitkeep', "spec/#{ app_name }/entities/.gitkeep")
-          add_mapping('.gitkeep', "spec/#{ app_name }/repositories/.gitkeep")
-          add_mapping('.gitkeep', "spec/#{ app_name }/mailers/.gitkeep")
-          add_mapping('.gitkeep', 'spec/support/.gitkeep')
+          add_mapping('.keep', 'spec/features/.keep')
+          add_mapping('.keep', 'spec/controllers/.keep')
+          add_mapping('.keep', 'spec/views/.keep')
+          add_mapping('.keep', "spec/#{ app_name }/entities/.keep")
+          add_mapping('.keep', "spec/#{ app_name }/repositories/.keep")
+          add_mapping('.keep', "spec/#{ app_name }/mailers/.keep")
+          add_mapping('.keep', 'spec/support/.keep')
 
           if database_config.sql?
-            add_mapping('.gitkeep', 'db/migrations/.gitkeep')
+            add_mapping('.keep', 'db/migrations/.keep')
           else
-            add_mapping('.gitkeep', 'db/.gitkeep')
+            add_mapping('.keep', 'db/.keep')
           end
         end
+
         def template_source_path
           Pathname.new(::File.dirname(__FILE__)).join('..', '..', 'generators', 'application', 'app').realpath
         end

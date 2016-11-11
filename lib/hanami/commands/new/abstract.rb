@@ -94,6 +94,10 @@ module Hanami
           File.directory?(target.join('.git'))
         end
 
+        def git_available?
+          system('which', 'git', out: File::NULL)
+        end
+
         def hanami_version
           Hanami::Version.gem_requirement
         end
