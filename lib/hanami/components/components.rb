@@ -1,3 +1,5 @@
+require 'hanami/utils'
+
 module Hanami
   # Registered components
   #
@@ -11,7 +13,7 @@ module Hanami
     # @since x.x.x
     # @api private
     register 'all' do
-      requires 'model', 'apps'
+      requires 'model', 'apps', 'finalizers'
 
       resolve { true }
     end
@@ -198,6 +200,28 @@ module Hanami
             result << Components::App::Assets.resolve(app)
           end
         end
+      end
+    end
+
+    # Finalizers for the project
+    #
+    # @since x.x.x
+    # @api private
+    register 'finalizers' do
+      requires 'finalizers.initializers'
+
+      resolve { true }
+    end
+
+    # Load project initializers
+    #
+    # @since x.x.x
+    # @api private
+    register 'finalizers.initializers' do
+      run do
+        Hanami::Utils.require!(
+          Hanami.root.join('config', 'initializers')
+        )
       end
     end
 
