@@ -28,7 +28,7 @@ module Hanami
 
     # @since 0.9.0
     # @api private
-    def major_minor
+    def self.major_minor
       version.scan(/\A\d{1,2}\.\d{1,2}/).first
     end
   end
