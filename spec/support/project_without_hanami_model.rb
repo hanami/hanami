@@ -8,6 +8,7 @@ module RSpec
       def project_without_hanami_model(project = "bookshelf", args = {})
         with_clean_env_project(project, args.merge(exclude_gems: ["hanami-model"])) do
           replace "config/environment.rb", "hanami/model", ""
+          replace "Rakefile",              "hanami/rake_tasks", ""
           yield
         end
       end

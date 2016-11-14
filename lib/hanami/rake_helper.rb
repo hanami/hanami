@@ -20,14 +20,6 @@ module Hanami
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
     def install
-      require 'hanami/environment'
-      Hanami::Environment.new.require_project_environment
-      Components.resolve('model.bundled')
-
-      desc "Preload project configuration"
-      task :preload do
-      end
-
       desc "Load the full project"
       task environment: :preload do
         Components.resolve('apps')
@@ -60,7 +52,7 @@ module Hanami
         task :migrate do
           system("bundle exec hanami db migrate") || exit($?.exitstatus)
         end
-      end unless Components['model.bundled'].nil?
+      end
 
       namespace :assets do
         task :precompile do
