@@ -1,6 +1,6 @@
 RSpec.describe "assets", type: :cli do
-  describe "digest mode" do
-    it "servers assets with digest url" do
+  describe "fingerprint mode" do
+    it "servers assets with fingerprint url" do
       with_project do
         generate "action web home#index --url=/"
 
