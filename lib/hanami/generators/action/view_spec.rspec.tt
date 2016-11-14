@@ -8,7 +8,8 @@ RSpec.describe <%= config[:app] %>::Views::<%= config[:controller] %>::<%= confi
 
   it 'exposes #foo' do
     pending 'This is an auto-generated test. You should edit or delete it.'
-
-    expect(view.foo).to eq exposures.fetch(:foo)
+    
+    # Example
+    # expect(view.foo).to eq exposures.fetch(:foo)
   end
 end
