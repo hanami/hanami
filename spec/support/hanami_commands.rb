@@ -8,8 +8,8 @@ module RSpec
     module HanamiCommands
       private
 
-      def hanami(cmd, &blk)
-        bundle_exec "hanami #{cmd}", &blk
+      def hanami(cmd, env: nil, &blk)
+        bundle_exec("hanami #{cmd}", env: env, &blk)
       end
 
       def server(args = {}, &blk)

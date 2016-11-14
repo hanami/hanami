@@ -53,15 +53,16 @@ module RSpec
         bundle "install --local --no-cache --retry 0 --no-color"
       end
 
-      def bundle_exec(cmd, &blk)
-        bundle "exec #{cmd}", &blk
+      def bundle_exec(cmd, env: nil, &blk)
+        bundle("exec #{cmd}", env: env, &blk)
       end
 
-      def bundle(cmd, &blk)
+      def bundle(cmd, env: nil, &blk)
         ruby_bin   = which("ruby")
         bundle_bin = which("bundle")
+        hanami_env = "HANAMI_ENV=#{env} " unless env.nil?
 
-        system_exec("#{ruby_bin} -I#{load_paths} #{bundle_bin} #{cmd}", &blk)
+        system_exec("#{hanami_env}#{ruby_bin} -I#{load_paths} #{bundle_bin} #{cmd}", &blk)
       end
 
       # Adapted from Bundler source code
