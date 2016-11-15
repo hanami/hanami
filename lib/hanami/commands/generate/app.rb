@@ -11,7 +11,11 @@ module Hanami
         attr_reader :base_path
 
         def initialize(options, application_name)
-          super(options)
+          @environment = Hanami::Environment.new(options)
+          @options = Hanami::Utils::Hash.new(options).symbolize!
+          assert_options!
+
+          @target_path = Hanami.root
           assert_application_name!(application_name)
           assert_architecture!
           assert_application_base_url!
