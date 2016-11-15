@@ -361,10 +361,10 @@ module #{app_name}
         # See: http://www.rubydoc.info/gems/hanami-assets#Configuration
         compile false
 
-        # Use digest file name for asset paths
+        # Use fingerprint file name for asset paths
         #
         # See: http://hanamirb.org/guides/assets/overview
-        digest  true
+        fingerprint true
 
         # Content Delivery Network (CDN)
         #

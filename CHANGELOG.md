@@ -21,8 +21,8 @@ The web, with simplicity.
 - [Luca Guidi] Configure model and mailer within `Hanami.configure` block in `config/environment.rb`
 - [Luca Guidi] Removed `mapping` from model configuration
 - [Luca Guidi] Removed `Hanami::Application.preload!` in favor of `Hanami.boot`
-- [Luca Guidi] Don't make available `db:migrate` Rake task if `hanami-model` isn't bundled
 - [Luca Guidi] Removed experimental code support for `entr(1)`
+- [Luca Guidi & Sean Collins] Renamed assets configuration `digest` into `fingerprint`
 
 ## v0.8.0 - 2016-07-22
 ### Added
