@@ -6,12 +6,7 @@ before_install:
   - mkdir $PWD/vendor/phantomjs && tar -xjf $PWD/vendor/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/vendor/phantomjs --strip-components=1
   - export PATH=$PWD/vendor/phantomjs/bin:$PATH
   - phantomjs --version
-env:
-  global:
-    - JRUBY_OPTS="--debug --dev"
 script:
-  - 'if [[ "$TRAVIS_RUBY_VERSION" =~ "jruby" ]]; then rvm get head && rvm reload && rvm use --install $TRAVIS_RUBY_VERSION && gem install bundler; fi'
-  - 'bundle install'
   - './script/ci'
 rvm:
   - 2.3.1
