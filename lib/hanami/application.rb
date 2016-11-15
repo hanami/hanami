@@ -116,7 +116,7 @@ module Hanami
 
       # Set configuration
       #
-      # @param [Hanami::ApplicationConfiguration] the configuration
+      # @param configuration [Hanami::ApplicationConfiguration] the application configuration
       #
       # @raise [RuntimeError] if the configuration is assigned more than once
       #
@@ -193,8 +193,6 @@ module Hanami
     end
 
     # Rendering policy
-    #
-    # @param [Hanami::RenderingPolicy]
     #
     # @since 0.2.0
     # @api private

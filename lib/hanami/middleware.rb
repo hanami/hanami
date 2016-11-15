@@ -25,8 +25,6 @@ module Hanami
 
     # Load the middleware stack
     #
-    # @param application [Hanami::Application] the application loading the middleware
-    #
     # @return [Hanami::Middleware] the loaded middleware stack
     #
     # @since 0.2.0

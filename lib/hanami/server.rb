@@ -15,9 +15,9 @@ module Hanami
   class Server < ::Rack::Server
     attr_reader :options
 
-    # @param options [Hash] Environment's options
-    #
     # @since 0.8.0
+    # @api private
+    #
     # @see Hanami::Environment#initialize
     def initialize
       @options = _extract_options

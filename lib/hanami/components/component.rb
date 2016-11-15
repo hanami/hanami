@@ -26,7 +26,7 @@ module Hanami
 
       # Run or resolve the component
       #
-      # @param [Hanami::Configuration] the Hanami configuration for the project
+      # @param configuration [Hanami::Configuration] the Hanami configuration for the project
       #
       # @since 0.9.0
       # @api private
