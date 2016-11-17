@@ -101,7 +101,7 @@ This Code of Conduct is adapted from the Contributor Covenant, version 1.1.0, av
 
 ### How To Use Hanami HEAD
 
-If you want to test Hanami HEAD to try a new feature or to test a bug fix here how to do:
+If you want to test Hanami's HEAD to try a new feature or to test a bug fix, here's how to do:
 
 ```
 git clone https://github.com/hanami/hanami.git
@@ -124,7 +124,7 @@ bundle
 In order to simulate installed gems on developers' computers, the build installs
 all the gems locally in `vendor/cache`, including `hanami` code from `lib/`.
 
-**Before to run a test please make sure to have a fresh version of the code:**
+**Before running a test, please make sure you have a fresh version of the code:**
 
 ```shell
 % ./script/setup
