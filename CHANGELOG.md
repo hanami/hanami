@@ -1,6 +1,10 @@
 # Hanami
 The web, with simplicity.
 
+## v0.9.1 - 2016-11-18
+### Fixed
+- [Luca Guidi] Ensure JSON body parser to not eval untrusted input
+
 ## v0.9.0 - 2016-11-15
 ### Added
 - [Christophe Philemotte] Introduced `hanami secret` to generate and print a new sessions secret
