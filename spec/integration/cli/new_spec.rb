@@ -9,17 +9,17 @@ RSpec.describe 'hanami new', type: :cli do
       create  config.ru
       create  config/environment.rb
       create  lib/#{project}.rb
-      create  public/.gitkeep
-      create  config/initializers/.gitkeep
-      create  lib/#{project}/entities/.gitkeep
-      create  lib/#{project}/repositories/.gitkeep
-      create  lib/#{project}/mailers/.gitkeep
-      create  lib/#{project}/mailers/templates/.gitkeep
-      create  spec/#{project}/entities/.gitkeep
-      create  spec/#{project}/repositories/.gitkeep
-      create  spec/#{project}/mailers/.gitkeep
-      create  spec/support/.gitkeep
-      create  db/migrations/.gitkeep
+      create  public/.keep
+      create  config/initializers/.keep
+      create  lib/#{project}/entities/.keep
+      create  lib/#{project}/repositories/.keep
+      create  lib/#{project}/mailers/.keep
+      create  lib/#{project}/mailers/templates/.keep
+      create  spec/#{project}/entities/.keep
+      create  spec/#{project}/repositories/.keep
+      create  spec/#{project}/mailers/.keep
+      create  spec/support/.keep
+      create  db/migrations/.keep
       create  Rakefile
       create  spec/spec_helper.rb
       create  spec/features_helper.rb
@@ -31,13 +31,13 @@ RSpec.describe 'hanami new', type: :cli do
       create  apps/web/views/application_layout.rb
       create  apps/web/templates/application.html.erb
       create  apps/web/assets/favicon.ico
-      create  apps/web/controllers/.gitkeep
-      create  apps/web/assets/images/.gitkeep
-      create  apps/web/assets/javascripts/.gitkeep
-      create  apps/web/assets/stylesheets/.gitkeep
-      create  spec/web/features/.gitkeep
-      create  spec/web/controllers/.gitkeep
-      create  spec/web/views/.gitkeep
+      create  apps/web/controllers/.keep
+      create  apps/web/assets/images/.keep
+      create  apps/web/assets/javascripts/.keep
+      create  apps/web/assets/stylesheets/.keep
+      create  spec/web/features/.keep
+      create  spec/web/controllers/.keep
+      create  spec/web/views/.keep
       insert  config/environment.rb
       insert  config/environment.rb
       append  .env.development
@@ -200,49 +200,49 @@ Hanami::Utils.require!("\#{__dir__}/#{project}")
 END
 
       #
-      # public/.gitkeep
+      # public/.keep
       #
-      expect('public/.gitkeep').to be_an_existing_file
+      expect('public/.keep').to be_an_existing_file
 
       #
-      # config/initializers/.gitkeep
+      # config/initializers/.keep
       #
-      expect('config/initializers/.gitkeep').to be_an_existing_file
+      expect('config/initializers/.keep').to be_an_existing_file
 
       #
-      # lib/<project>/entities/.gitkeep
+      # lib/<project>/entities/.keep
       #
-      expect("lib/#{project}/entities/.gitkeep").to be_an_existing_file
+      expect("lib/#{project}/entities/.keep").to be_an_existing_file
 
       #
-      # lib/<project>/mailers/.gitkeep
+      # lib/<project>/mailers/.keep
       #
-      expect("lib/#{project}/mailers/.gitkeep").to be_an_existing_file
+      expect("lib/#{project}/mailers/.keep").to be_an_existing_file
 
       #
-      # lib/<project>/mailers/templates/.gitkeep
+      # lib/<project>/mailers/templates/.keep
       #
-      expect("lib/#{project}/mailers/templates/.gitkeep").to be_an_existing_file
+      expect("lib/#{project}/mailers/templates/.keep").to be_an_existing_file
 
       #
-      # spec/<project>/entities/.gitkeep
+      # spec/<project>/entities/.keep
       #
-      expect("spec/#{project}/entities/.gitkeep").to be_an_existing_file
+      expect("spec/#{project}/entities/.keep").to be_an_existing_file
 
       #
-      # spec/<project>/repositories/.gitkeep
+      # spec/<project>/repositories/.keep
       #
-      expect("spec/#{project}/repositories/.gitkeep").to be_an_existing_file
+      expect("spec/#{project}/repositories/.keep").to be_an_existing_file
 
       #
-      # spec/<project>/mailers/.gitkeep
+      # spec/<project>/mailers/.keep
       #
-      expect("spec/#{project}/mailers/.gitkeep").to be_an_existing_file
+      expect("spec/#{project}/mailers/.keep").to be_an_existing_file
 
       #
-      # spec/support/.gitkeep
+      # spec/support/.keep
       #
-      expect("spec/support/.gitkeep").to be_an_existing_file
+      expect("spec/support/.keep").to be_an_existing_file
 
       #
       # Rakefile
@@ -701,39 +701,39 @@ END
       expect("apps/web/assets/favicon.ico").to be_an_existing_file
 
       #
-      # apps/web/controllers/.gitkeep
+      # apps/web/controllers/.keep
       #
-      expect("apps/web/controllers/.gitkeep").to be_an_existing_file
+      expect("apps/web/controllers/.keep").to be_an_existing_file
 
       #
-      # apps/web/assets/images/.gitkeep
+      # apps/web/assets/images/.keep
       #
-      expect("apps/web/assets/images/.gitkeep").to be_an_existing_file
+      expect("apps/web/assets/images/.keep").to be_an_existing_file
 
       #
-      # apps/web/assets/javascripts/.gitkeep
+      # apps/web/assets/javascripts/.keep
       #
-      expect("apps/web/assets/javascripts/.gitkeep").to be_an_existing_file
+      expect("apps/web/assets/javascripts/.keep").to be_an_existing_file
 
       #
-      # apps/web/assets/stylesheets/.gitkeep
+      # apps/web/assets/stylesheets/.keep
       #
-      expect("apps/web/assets/stylesheets/.gitkeep").to be_an_existing_file
+      expect("apps/web/assets/stylesheets/.keep").to be_an_existing_file
 
       #
-      # spec/web/features/.gitkeep
+      # spec/web/features/.keep
       #
-      expect("spec/web/features/.gitkeep").to be_an_existing_file
+      expect("spec/web/features/.keep").to be_an_existing_file
 
       #
-      # spec/web/controllers/.gitkeep
+      # spec/web/controllers/.keep
       #
-      expect("spec/web/controllers/.gitkeep").to be_an_existing_file
+      expect("spec/web/controllers/.keep").to be_an_existing_file
 
       #
-      # spec/web/views/.gitkeep
+      # spec/web/views/.keep
       #
-      expect("spec/web/views/.gitkeep").to be_an_existing_file
+      expect("spec/web/views/.keep").to be_an_existing_file
     end
   end
 

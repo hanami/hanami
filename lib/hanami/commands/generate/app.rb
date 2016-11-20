@@ -31,13 +31,13 @@ module Hanami
           add_mapping("templates/application.html.#{ template_engine.name }.tt", "templates/application.html.#{ template_engine.name }")
           add_mapping('favicon.ico', 'assets/favicon.ico')
 
-          add_mapping('.gitkeep', 'controllers/.gitkeep')
-          add_mapping('.gitkeep', 'assets/images/.gitkeep')
-          add_mapping('.gitkeep', 'assets/javascripts/.gitkeep')
-          add_mapping('.gitkeep', 'assets/stylesheets/.gitkeep')
-          add_mapping('.gitkeep', "../../spec/#{ app_name }/features/.gitkeep")
-          add_mapping('.gitkeep', "../../spec/#{ app_name }/controllers/.gitkeep")
-          add_mapping('.gitkeep', "../../spec/#{ app_name }/views/.gitkeep")
+          add_mapping('.keep', 'controllers/.keep')
+          add_mapping('.keep', 'assets/images/.keep')
+          add_mapping('.keep', 'assets/javascripts/.keep')
+          add_mapping('.keep', 'assets/stylesheets/.keep')
+          add_mapping('.keep', "../../spec/#{ app_name }/features/.keep")
+          add_mapping('.keep', "../../spec/#{ app_name }/controllers/.keep")
+          add_mapping('.keep', "../../spec/#{ app_name }/views/.keep")
         end
 
         def template_options

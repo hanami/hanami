@@ -8,13 +8,13 @@ RSpec.shared_examples "a new project" do
 
     [
       "create  lib/#{project}.rb",
-      "create  lib/#{project}/entities/.gitkeep",
-      "create  lib/#{project}/repositories/.gitkeep",
-      "create  lib/#{project}/mailers/.gitkeep",
-      "create  lib/#{project}/mailers/templates/.gitkeep",
-      "create  spec/#{project}/entities/.gitkeep",
-      "create  spec/#{project}/repositories/.gitkeep",
-      "create  spec/#{project}/mailers/.gitkeep"
+      "create  lib/#{project}/entities/.keep",
+      "create  lib/#{project}/repositories/.keep",
+      "create  lib/#{project}/mailers/.keep",
+      "create  lib/#{project}/mailers/templates/.keep",
+      "create  spec/#{project}/entities/.keep",
+      "create  spec/#{project}/repositories/.keep",
+      "create  spec/#{project}/mailers/.keep"
     ].each do |output|
       expect(all_output).to match(/#{output}/)
     end
@@ -48,34 +48,34 @@ Hanami::Utils.require!("\#{__dir__}/#{project}")
 END
 
       #
-      # lib/<project>/entities/.gitkeep
+      # lib/<project>/entities/.keep
       #
-      expect("lib/#{project}/entities/.gitkeep").to be_an_existing_file
+      expect("lib/#{project}/entities/.keep").to be_an_existing_file
 
       #
-      # lib/<project>/mailers/.gitkeep
+      # lib/<project>/mailers/.keep
       #
-      expect("lib/#{project}/mailers/.gitkeep").to be_an_existing_file
+      expect("lib/#{project}/mailers/.keep").to be_an_existing_file
 
       #
-      # lib/<project>/mailers/templates/.gitkeep
+      # lib/<project>/mailers/templates/.keep
       #
-      expect("lib/#{project}/mailers/templates/.gitkeep").to be_an_existing_file
+      expect("lib/#{project}/mailers/templates/.keep").to be_an_existing_file
 
       #
-      # spec/<project>/entities/.gitkeep
+      # spec/<project>/entities/.keep
       #
-      expect("spec/#{project}/entities/.gitkeep").to be_an_existing_file
+      expect("spec/#{project}/entities/.keep").to be_an_existing_file
 
       #
-      # spec/<project>/repositories/.gitkeep
+      # spec/<project>/repositories/.keep
       #
-      expect("spec/#{project}/repositories/.gitkeep").to be_an_existing_file
+      expect("spec/#{project}/repositories/.keep").to be_an_existing_file
 
       #
-      # spec/<project>/mailers/.gitkeep
+      # spec/<project>/mailers/.keep
       #
-      expect("spec/#{project}/mailers/.gitkeep").to be_an_existing_file
+      expect("spec/#{project}/mailers/.keep").to be_an_existing_file
 
       #
       # .gitignore
