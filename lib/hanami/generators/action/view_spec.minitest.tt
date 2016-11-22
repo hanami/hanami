@@ -8,7 +8,7 @@ describe <%= config[:app] %>::Views::<%= config[:controller] %>::<%= config[:act
   let(:rendered)  { view.render }
 
   it 'exposes #foo' do
-    skip 'This is an auto-generated test. You can edit or delete it.'
+    skip 'This is an auto-generated test. Edit it and add your own tests.'
 
     # Example
     view.foo.must_equal exposures.fetch(:foo)
