@@ -16,7 +16,7 @@ gem 'hanami',                             github: 'hanami/hanami'
 
 group :development do
   # Code reloading
-  # See: http://hanamirb.org/guides/applications/code-reloading
+  # See: http://hanamirb.org/guides/projects/code-reloading
   gem 'shotgun'
 end
 
