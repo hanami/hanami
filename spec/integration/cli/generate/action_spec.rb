@@ -268,6 +268,9 @@ describe Web::Views::Books::Index do
   let(:rendered)  { view.render }
 
   it 'exposes #foo' do
+    skip 'This is an auto-generated test. Edit it and add your own tests.'
+
+    # Example
     view.foo.must_equal exposures.fetch(:foo)
   end
 end
@@ -316,6 +319,9 @@ RSpec.describe Web::Views::Books::Index do
   let(:rendered)  { view.render }
 
   it 'exposes #foo' do
+    pending 'This is an auto-generated test. Edit it and add your own tests.'
+
+    # Example
     expect(view.foo).to eq exposures.fetch(:foo)
   end
 end
