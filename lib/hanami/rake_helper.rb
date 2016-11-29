@@ -21,8 +21,10 @@ module Hanami
     # rubocop:disable Metrics/MethodLength
     def install
       desc "Load the full project"
-      task environment: :preload do
-        Components.resolve('apps')
+      task :environment do
+        require 'hanami/environment'
+        Hanami::Environment.new.require_project_environment
+        Components.resolve('all')
       end
 
       # Ruby ecosystem compatibility
