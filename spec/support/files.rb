@@ -33,6 +33,13 @@ module RSpec
         rewrite(path, content)
       end
 
+      def append(path, contents)
+        content = ::File.readlines(path)
+        content << "#{contents}\n"
+
+        rewrite(path, content)
+      end
+
       def open(path, mode, *content)
         ::File.open(path, mode) do |file|
           file.write(Array(content).flatten.join)
