@@ -113,7 +113,7 @@ describe Hanami::Middleware do
         sessions_position   = middleware.stack.index(["Rack::Session::Cookie", [{:domain=>nil, :secure=>false}], nil]).to_i
         middleware_position = middleware.stack.index([MockMiddlewareClass, [], nil])
 
-        assert sessions_position < middleware_position,
+        assert (sessions_position < middleware_position),
           "Expected sessions middleware to be prepended"
       end
     end
