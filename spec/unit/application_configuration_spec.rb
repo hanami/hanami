@@ -78,6 +78,14 @@ RSpec.describe Hanami::ApplicationConfiguration do
             expect(subject.port).to eq(8200)
           end
         end
+
+        context "and forced by env var" do
+          let(:hanami_port) { 4321 }
+
+          xit "returns the one from the env var" do
+            expect(subject.port).to eq(4321)
+          end
+        end
       end
 
       context "only in the current environment configuration" do
