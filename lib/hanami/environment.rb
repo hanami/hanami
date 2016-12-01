@@ -329,6 +329,16 @@ module Hanami
       end.to_i
     end
 
+    # Check if the current port is the default one
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @see Hanami::ApplicationConfiguration#port
+    def default_port?
+      port == DEFAULT_PORT
+    end
+
     # Path to the Rack configuration file
     #
     # In order to decide the value, it looks up the following sources:
