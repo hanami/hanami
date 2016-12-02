@@ -1,16 +1,22 @@
 require 'hanami/commands/generate/abstract'
+require 'hanami/commands/generate/migration'
 
 module Hanami
   module Commands
     class Generate
       class Model < Abstract
 
-        attr_reader :input, :model_name
+        attr_reader :input, :model_name, :table_name
 
         def initialize(options, model_name)
           super(options)
           @input      = Utils::String.new(model_name).underscore
           @model_name = Utils::String.new(@input).classify
+          @table_name = Utils::String.new(@input).pluralize
+
+          unless skip_migration?
+            Components.resolve('model.configuration')
+          end
 
           assert_model_name!
         end
@@ -18,13 +24,17 @@ module Hanami
         def map_templates
           add_mapping('entity.rb.tt', entity_path)
           add_mapping('repository.rb.tt', repository_path)
+          unless skip_migration?
+            add_mapping('migration.rb.tt', migration_path)
+          end
           add_mapping("entity_spec.#{ test_framework.framework }.tt", entity_spec_path,)
           add_mapping("repository_spec.#{ test_framework.framework }.tt", repository_spec_path)
         end
 
         def template_options
           {
-            model_name: model_name
+            model_name: model_name,
+            table_name: table_name
           }
         end
 
@@ -57,6 +67,10 @@ module Hanami
           end
         end
 
+        def skip_migration?
+          options.fetch(:skip_migration, false)
+        end
+
         def model_root
           Pathname.new('lib').join(project_name)
         end
@@ -71,6 +85,14 @@ module Hanami
         # @api private
         def repository_path
           model_root.join('repositories', "#{ model_name_underscored }_repository.rb").to_s
+        end
+
+        # @since 0.9.1
+        # @api private
+        def migration_path
+          timestamp = Time.now.utc.strftime(Migration::TIMESTAMP_FORMAT)
+          filename = Migration::FILENAME_PATTERN % { timestamp: timestamp, name: "create_#{table_name}"}
+          Hanami::Model.configuration.migrations.join(filename)
         end
 
         # @since 0.5.0
