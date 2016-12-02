@@ -77,7 +77,15 @@ module Hanami
     end
   end
 
-  # Boot Hanami project
+  # Boot your Hanami project
+  #
+  # NOTE: In case this is invoked many times, it guarantees that the boot
+  #   process happens only once.
+  #
+  # NOTE: There is no reason to cache the result with `@_booted`, because it
+  #   already caches it internally.
+  #
+  # NOTE: This MUST NOT be wrapped by a Mutex, because it would cause a deadlock.
   #
   # @since 0.9.0
   # @api private
@@ -92,11 +100,20 @@ module Hanami
   #   * `config.ru` (`run Hanami.app`)
   #   * Feature tests (`Capybara.app = Hanami.app`)
   #
+  #
+  #
+  # It lazily loads your Hanami project, in case it wasn't booted on before.
+  # This is the case when `hanami server` isn't invoked, but we use different
+  # ways to run the project (eg. `rackup`).
+  #
   # @return [Hanami::App] the app
   #
   # @since 0.9.0
   # @api private
+  #
+  # @see Hanami.boot
   def self.app
+    boot
     App.new(configuration, environment)
   end
 

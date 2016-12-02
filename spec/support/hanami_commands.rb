@@ -8,22 +8,20 @@ module RSpec
     module HanamiCommands
       private
 
-      def hanami(cmd, env: nil, &blk)
-        bundle_exec("hanami #{cmd}", env: env, &blk)
+      def rackup(args = {}, &blk)
+        bundle_exec "rackup -p 2300" do |_, _, wait_thr|
+          exec_server_tests(args, wait_thr, &blk)
+        end
       end
 
       def server(args = {}, &blk)
         hanami "server#{_hanami_server_args(args)}" do |_, _, wait_thr|
-          begin
-            if block_given?
-              setup_capybara(args)
-              retry_exec(StandardError, &blk)
-            end
-          ensure
-            # Simulate Ctrl+C to stop the server
-            Process.kill 'INT', wait_thr[:pid]
-          end
+          exec_server_tests(args, wait_thr, &blk)
         end
+      end
+
+      def hanami(cmd, env: nil, &blk)
+        bundle_exec("hanami #{cmd}", env: env, &blk)
       end
 
       def console(&blk)
@@ -84,6 +82,32 @@ EOF
       end
       # rubocop:enable Style/ClosingParenthesisIndentation
       # rubocop:enable Metrics/MethodLength
+
+      def setup_model # rubocop:disable Metrics/MethodLength
+        generate_model     "book"
+        generate_migration "create_books", <<-EOF
+Hanami::Model.migration do
+  change do
+    create_table :books do
+      primary_key :id
+      column :title, String
+    end
+  end
+end
+        EOF
+
+        migrate
+      end
+
+      def exec_server_tests(args, wait_thr, &blk)
+        if block_given?
+          setup_capybara(args)
+          retry_exec(StandardError, &blk)
+        end
+      ensure
+        # Simulate Ctrl+C to stop the server
+        Process.kill 'INT', wait_thr[:pid]
+      end
 
       def setup_capybara(args)
         host = args.fetch(:host, Hanami::Environment::LISTEN_ALL_HOST)
