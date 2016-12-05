@@ -38,6 +38,26 @@ END
       end
     end
 
+    context "with skip-migration" do
+      it "doesn't create a migration file" do
+        model_name = "user"
+        table_name = "users"
+        project = "bookshelf_generate_model_skip_migration"
+        with_project(project) do
+          run_command "hanami generate model #{model_name} --skip-migration"
+          #
+          # db/migrations/<timestamp>_create_<models>.rb
+          #
+          migrations = Pathname.new('db').join('migrations').children
+          file       = migrations.find do |child|
+            child.to_s.include?("create_#{table_name}")
+          end
+
+          expect(file).to be_nil, "Expected to not find a migration matching: create_#{table_name}. Found #{file && file.to_s}"
+        end
+      end
+    end
+
     context "minitest" do
       it "generates model" do
         project = "bookshelf_generate_model_minitest"
