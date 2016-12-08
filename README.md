@@ -35,15 +35,15 @@ These components are designed to be used independently or together in a Hanami a
 __Hanami__ supports Ruby (MRI) 2.3+
 
 ```shell
-% gem install hanami
+gem install hanami
 ```
 
 ## Usage
 
 ```shell
-% hanami new bookshelf
-% cd bookshelf && bundle
-% bundle exec hanami server # visit http://localhost:2300
+hanami new bookshelf
+cd bookshelf && bundle
+bundle exec hanami server # visit http://localhost:2300
 ```
 
 Please follow along with the [Getting Started guide](http://hanamirb.org/guides/getting-started).
@@ -111,8 +111,8 @@ all the gems locally in `vendor/cache`, including `hanami` code from `lib/`.
 **Before running a test, please make sure you have a fresh version of the code:**
 
 ```shell
-% ./script/setup
-% bundle exec rspec spec/path/to/file_spec.rb
+./script/setup
+bundle exec rspec spec/path/to/file_spec.rb
 ```
 
 ### Build / CI
@@ -120,7 +120,7 @@ all the gems locally in `vendor/cache`, including `hanami` code from `lib/`.
 To run all the tests, please use:
 
 ```shell
-% ./script/ci
+./script/ci
 ```
 
 ## Versioning
