@@ -1,20 +1,27 @@
-# Hanami
+# Hanami :cherry_blossom:
 
 The web, with simplicity.
 
 ## Frameworks
 
-Hanami combines small yet powerful frameworks:
+Hanami is a **full-stack** Ruby web framework.
+It's made up of smaller, single-purpose frameworks.
 
-* [**Hanami::Utils**](https://github.com/hanami/utils) - Ruby core extensions and class utilities
-* [**Hanami::Router**](https://github.com/hanami/router) - Rack compatible HTTP router for Ruby
-* [**Hanami::Validations**](https://github.com/hanami/validations) - Validations mixin for Ruby objects
-* [**Hanami::Helpers**](https://github.com/hanami/helpers) - View helpers for Ruby applications
-* [**Hanami::Mailer**](https://github.com/hanami/mailer) - Mail for Ruby applications
+This repository is the full-stack framework,
+providing the glue to tie all the parts together,
+including a command-line utility.
+
+Here are the smaller single-purpose frameworks:
+
 * [**Hanami::Model**](https://github.com/hanami/model) - Persistence with entities, repositories and data mapper
-* [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby
 * [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
 * [**Hanami::Controller**](https://github.com/hanami/controller) - Full featured, fast and testable actions for Rack
+* [**Hanami::Validations**](https://github.com/hanami/validations) - Validations mixin for Ruby objects
+* [**Hanami::Router**](https://github.com/hanami/router) - Rack compatible HTTP router for Ruby
+* [**Hanami::Helpers**](https://github.com/hanami/helpers) - View helpers for Ruby applications
+* [**Hanami::Mailer**](https://github.com/hanami/mailer) - Mail for Ruby applications
+* [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby
+* [**Hanami::Utils**](https://github.com/hanami/utils) - Ruby core extensions and class utilities
 
 These components are designed to be used independently or together in a Hanami application.
 If you aren't familiar with them, please take time to go through their READMEs.
