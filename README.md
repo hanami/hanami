@@ -34,11 +34,8 @@ These components are designed to be used independently or together in a Hanami a
 [![Dependencies](https://gemnasium.com/hanami/hanami.svg)](https://gemnasium.com/hanami/hanami)
 [![Inline docs](http://inch-ci.org/github/hanami/hanami.svg)](http://inch-ci.org/github/hanami/hanami)
 
-## Ruby Version
-
-__Hanami__ supports Ruby (MRI) 2.3+
-
 ## Installation
+__Hanami__ supports Ruby (MRI) 2.3+
 
 ```shell
 % gem install hanami
@@ -70,9 +67,9 @@ You can give back to Open Source, by supporting Hanami development via a [donati
 * Mailing List: http://hanamirb.org/mailing-list
 * API Doc: http://rdoc.info/gems/hanami
 * Bugs/Issues: https://github.com/hanami/hanami/issues
-* Support: http://stackoverflow.com/questions/tagged/hanami
-* Forum: https://discuss.hanamirb.org
-* Chat: http://chat.hanamirb.org
+* Stack Overflow: http://stackoverflow.com/questions/tagged/hanami
+* Forum: https://disourse.hanamirb.org
+* **Chat**: http://chat.hanamirb.org
 
 ## Community
 
