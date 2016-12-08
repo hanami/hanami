@@ -25,14 +25,6 @@ Here are the smaller single-purpose frameworks:
 
 These components are designed to be used independently or together in a Hanami application.
 
-## Donations
-
-You can give back to Open Source, by supporting Hanami development via a [donation](https://salt.bountysource.com/teams/hanami). :green_heart:
-
-### Supporters
-
-  * [James Carlson](https://github.com/jxxcarlson)
-
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](http://badge.fury.io/rb/hanami)
@@ -42,19 +34,7 @@ You can give back to Open Source, by supporting Hanami development via a [donati
 [![Dependencies](https://gemnasium.com/hanami/hanami.svg)](https://gemnasium.com/hanami/hanami)
 [![Inline docs](http://inch-ci.org/github/hanami/hanami.svg)](http://inch-ci.org/github/hanami/hanami)
 
-## Contact
-
-* Home page: http://hanamirb.org
-* Community: http://hanamirb.org/community
-* Guides: http://hanamirb.org/guides
-* Mailing List: http://hanamirb.org/mailing-list
-* API Doc: http://rdoc.info/gems/hanami
-* Bugs/Issues: https://github.com/hanami/hanami/issues
-* Support: http://stackoverflow.com/questions/tagged/hanami
-* Forum: https://discuss.hanamirb.org
-* Chat: http://chat.hanamirb.org
-
-## Rubies
+## Ruby Version
 
 __Hanami__ supports Ruby (MRI) 2.3+
 
@@ -73,6 +53,26 @@ __Hanami__ supports Ruby (MRI) 2.3+
 ```
 
 Please follow along with the [Getting Started guide](http://hanamirb.org/guides/getting-started).
+
+## Donations
+
+You can give back to Open Source, by supporting Hanami development via a [donation](https://salt.bountysource.com/teams/hanami). :green_heart:
+
+### Supporters
+
+  * [James Carlson](https://github.com/jxxcarlson)
+
+## Contact
+
+* Home page: http://hanamirb.org
+* Community: http://hanamirb.org/community
+* Guides: http://hanamirb.org/guides
+* Mailing List: http://hanamirb.org/mailing-list
+* API Doc: http://rdoc.info/gems/hanami
+* Bugs/Issues: https://github.com/hanami/hanami/issues
+* Support: http://stackoverflow.com/questions/tagged/hanami
+* Forum: https://discuss.hanamirb.org
+* Chat: http://chat.hanamirb.org
 
 ## Community
 
