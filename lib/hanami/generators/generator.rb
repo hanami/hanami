@@ -36,7 +36,7 @@ module Hanami
         config = args.last.is_a?(Hash) ? args.pop : {}
         # Either prepend after the last comment line,
         # or the first line in the file, if there are no comments
-        config.merge!(after: /\A(?:^#.*$\s)*/)
+        config[:after] = /\A(?:^#.*$\s)*/
         @processor.insert_into_file(path, *(args << config), &block)
       end
     end
