@@ -292,7 +292,7 @@ module RakeTasksApp
 
         # Subresource Integrity
         #
-        # See: http://hanamirb.org/guides/assets/subresource-integrity
+        # See: http://hanamirb.org/guides/assets/content-delivery-network/#subresource-integrity
         subresource_integrity :sha256
       end
     end
