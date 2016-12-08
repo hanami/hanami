@@ -115,8 +115,6 @@ all the gems locally in `vendor/cache`, including `hanami` code from `lib/`.
 bundle exec rspec spec/path/to/file_spec.rb
 ```
 
-### Build / CI
-
 To run all the tests, please use:
 
 ```shell
