@@ -24,7 +24,6 @@ Here are the smaller single-purpose frameworks:
 * [**Hanami::Utils**](https://github.com/hanami/utils) - Ruby core extensions and class utilities
 
 These components are designed to be used independently or together in a Hanami application.
-If you aren't familiar with them, please take time to go through their READMEs.
 
 ## Donations
 
