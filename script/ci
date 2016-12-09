@@ -31,7 +31,7 @@ run_integration_tests() {
 run_tests() {
   local root=$1
 
-  for test in $(find $root -name '*_spec.rb')
+  for test in $(find $root -name 'without_git_spec.rb')
   do
     run_test $test
 
