@@ -25,38 +25,12 @@ module RSpec
         expect(last_command_started).to have_exit_status(exit_status)
       end
 
-      def without_command(cmd)
-        system("echo \"#!/bin/sh\nnonexistent_command\" > ./#{cmd}; chmod +x ./#{cmd}")
-        path = ENV['PATH']
-        ENV['PATH'] = "#{Dir.pwd}:#{path}"
+      def without_command(cmd, &block)
+        system("echo \"#!/bin/sh\nexit 255\" > ./#{cmd}; chmod +x ./#{cmd}")
 
-        p "Output of system(which #{cmd}) (path=#{ENV['PATH']}): "
-        system("which #{cmd}")
-        yield
+        with_environment('PATH' => "#{Dir.pwd}:#{ENV['PATH']}", &block)
       ensure
-        ENV['PATH'] = path
         system("rm ./#{cmd}")
-      end
-
-      # Cross-platform way of finding an executable in the $PATH.
-      #
-      #   which('ruby') #=> /usr/bin/ruby
-      #
-      # Adapted from http://stackoverflow.com/a/5471032/498386
-      def which(cmd)
-        exts = if RSpec::Support::Env['PATHEXT']
-                 RSpec::Support::Env['PATHEXT'].split(';')
-               else
-                 ['']
-               end
-        RSpec::Support::Env['PATH'].split(File::PATH_SEPARATOR).each do |path|
-          exts.each do |ext|
-            exe = File.join(path, "#{cmd}#{ext}")
-            return exe if File.executable?(exe) && !File.directory?(exe)
-          end
-        end
-
-        return nil
       end
 
       def match_output(output)
