@@ -95,6 +95,7 @@ module Hanami
         end
 
         def git_available?
+          system('echo $PATH')
           system('git', '--version', out: File::NULL)
         end
 

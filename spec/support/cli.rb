@@ -26,10 +26,16 @@ module RSpec
       end
 
       def without_command(cmd)
-        system("alias #{cmd}=/non_existent/binary; shopt -s expand_aliases")
+        system("echo \"#!/bin/sh\nnonexistent_command\" > ./#{cmd}; chmod +x ./#{cmd}")
+        path = ENV['PATH']
+        ENV['PATH'] = "#{Dir.pwd}:#{path}"
+
+        p "Output of system(which #{cmd}) (path=#{ENV['PATH']}): "
+        system("which #{cmd}")
         yield
       ensure
-        system("unalias #{cmd}")
+        ENV['PATH'] = path
+        system("rm ./#{cmd}")
       end
 
       # Cross-platform way of finding an executable in the $PATH.
