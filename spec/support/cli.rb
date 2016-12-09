@@ -26,16 +26,13 @@ module RSpec
       end
 
       def without_command(cmd)
-        cmd_path = which_path(cmd)
-        path = ENV['PATH']
-        ENV['PATH'] = path.split(File::PATH_SEPARATOR)
-                          .reject { |p| p == cmd_path }
-                          .join(File::PATH_SEPARATOR)
+        cmd_path = which(cmd)
+        renamed_cmd_path = cmd_path.gsub(cmd, "_#{cmd}")
+        File.rename(cmd_path, renamed_cmd_path)
 
-        p "CMD_PATH: #{cmd_path}, PATH: #{ENV['PATH']}, OTHER_CMD_PATH: #{which_path(cmd)}"
         yield
       ensure
-        ENV['PATH'] = path
+        File.rename(renamed_cmd_path, cmd_path)
       end
 
       # Cross-platform way of finding an executable in the $PATH.
@@ -43,7 +40,7 @@ module RSpec
       #   which('ruby') #=> /usr/bin/ruby
       #
       # Adapted from http://stackoverflow.com/a/5471032/498386
-      def which_path(cmd)
+      def which(cmd)
         exts = if RSpec::Support::Env['PATHEXT']
                  RSpec::Support::Env['PATHEXT'].split(';')
                else
@@ -52,7 +49,7 @@ module RSpec
         RSpec::Support::Env['PATH'].split(File::PATH_SEPARATOR).each do |path|
           exts.each do |ext|
             exe = File.join(path, "#{cmd}#{ext}")
-            return path if File.executable?(exe) && !File.directory?(exe)
+            return exe if File.executable?(exe) && !File.directory?(exe)
           end
         end
 

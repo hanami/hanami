@@ -43,11 +43,9 @@ RSpec.describe "hanami new", type: :cli do
         append  .env.test
 OUT
 
-      Hanami::Commands::New::Abstract
-        .any_instance should_receive(:system).with('git --version')
-                                             .and_return(nil)
-
-      run_command "hanami new #{project}", output
+      without_command('git') do
+        run_command "hanami new #{project}", output
+      end
 
       within_project_directory(project) do
         expect(exist?('.git')).to be false
