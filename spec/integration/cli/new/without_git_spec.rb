@@ -43,7 +43,7 @@ RSpec.describe "hanami new", type: :cli do
         append  .env.test
 OUT
 
-      Hanami::Command::New::Abstract
+      Hanami::Commands::New::Abstract
         .any_instance should_receive(:system).with('git --version')
                                              .and_return(nil)
 
