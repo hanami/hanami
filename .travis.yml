@@ -10,7 +10,7 @@ script:
   - './script/ci'
 rvm:
   - 2.3.3
-  - jruby-9.1.5.0
+  - jruby-9.1.6.0
   - jruby-head
   - ruby-head
 
@@ -18,4 +18,4 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: jruby-9.1.5.0
+    - rvm: jruby-9.1.6.0
