@@ -1,6 +1,8 @@
 require 'aruba'
 require 'aruba/api'
 require 'pathname'
+require_relative 'env'
+
 
 module RSpec
   module Support
@@ -21,6 +23,39 @@ module RSpec
 
         match_output(output)
         expect(last_command_started).to have_exit_status(exit_status)
+      end
+
+      def without_command(cmd)
+        cmd_path = which_path(cmd)
+        path = RSpec::Support::Env['PATH']
+        RSpec::Support::Env['PATH'] = path.split(File::PATH_SEPARATOR)
+                                          .reject { |p| p == cmd_path }
+                                          .join(File::PATH_SEPARATOR)
+
+        yield
+      ensure
+        RSpect::Support::Env['PATH'] = path
+      end
+
+      # Cross-platform way of finding an executable in the $PATH.
+      #
+      #   which('ruby') #=> /usr/bin/ruby
+      #
+      # Adapted from http://stackoverflow.com/a/5471032/498386
+      def which_path(cmd)
+        exts = if RSpec::Support::Env['PATHEXT']
+                 RSpec::Support::Env['PATHEXT'].split(';')
+               else
+                 ['']
+               end
+        RSpec::Support::Env['PATH'].split(File::PATH_SEPARATOR).each do |path|
+          exts.each do |ext|
+            exe = File.join(path, "#{cmd}#{ext}")
+            return path if File.executable?(exe) && !File.directory?(exe)
+          end
+        end
+
+        return nil
       end
 
       def match_output(output)
