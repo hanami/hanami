@@ -38,7 +38,7 @@ module RSpec
 
       def [](key)
         synchronize do
-          env[key]
+          env.fetch(key) { @original[key] }
         end
       end
 

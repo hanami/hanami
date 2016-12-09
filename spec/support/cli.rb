@@ -27,14 +27,15 @@ module RSpec
 
       def without_command(cmd)
         cmd_path = which_path(cmd)
-        path = RSpec::Support::Env['PATH']
-        RSpec::Support::Env['PATH'] = path.split(File::PATH_SEPARATOR)
-                                          .reject { |p| p == cmd_path }
-                                          .join(File::PATH_SEPARATOR)
+        path = ENV['PATH']
+        ENV['PATH'] = path.split(File::PATH_SEPARATOR)
+                          .reject { |p| p == cmd_path }
+                          .join(File::PATH_SEPARATOR)
 
+        p "CMD_PATH: #{cmd_path}, PATH: #{ENV['PATH']}, OTHER_CMD_PATH: #{which_path(cmd)}"
         yield
       ensure
-        RSpec::Support::Env['PATH'] = path
+        ENV['PATH'] = path
       end
 
       # Cross-platform way of finding an executable in the $PATH.
