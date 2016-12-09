@@ -34,7 +34,7 @@ module RSpec
 
         yield
       ensure
-        RSpect::Support::Env['PATH'] = path
+        RSpec::Support::Env['PATH'] = path
       end
 
       # Cross-platform way of finding an executable in the $PATH.
