@@ -26,13 +26,10 @@ module RSpec
       end
 
       def without_command(cmd)
-        cmd_path = which(cmd)
-        renamed_cmd_path = cmd_path.gsub(cmd, "_#{cmd}")
-        File.rename(cmd_path, renamed_cmd_path)
-
+        system("alias #{cmd}=/non_existent/binary; shopt -s expand_aliases")
         yield
       ensure
-        File.rename(renamed_cmd_path, cmd_path)
+        system("unalias #{cmd}")
       end
 
       # Cross-platform way of finding an executable in the $PATH.
