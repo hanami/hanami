@@ -12,7 +12,7 @@ The web, with simplicity.
 ## Frameworks
 
 Hanami is a **full-stack** Ruby web framework.
-It's made up of smaller, single-purpose frameworks.
+It's made up of smaller, single-purpose libraries.
 
 This repository is for the full-stack framework,
 which provides the glue that ties all the parts together.
