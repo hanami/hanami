@@ -15,9 +15,7 @@ Hanami is a **full-stack** Ruby web framework.
 It's made up of smaller, single-purpose libraries.
 
 This repository is for the full-stack framework,
-which provides the glue that ties all the parts together.
-
-Here are the smaller single-purpose frameworks:
+which provides the glue that ties all the parts together:
 
 * [**Hanami::Model**](https://github.com/hanami/model) - Persistence with entities, repositories and data mapper
 * [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
