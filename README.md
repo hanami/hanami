@@ -63,7 +63,7 @@ You can give back to Open Source, by supporting Hanami development via a [donati
 * API Doc: http://rdoc.info/gems/hanami
 * Bugs/Issues: https://github.com/hanami/hanami/issues
 * Stack Overflow: http://stackoverflow.com/questions/tagged/hanami
-* Forum: https://disourse.hanamirb.org
+* Forum: https://discourse.hanamirb.org
 * **Chat**: http://chat.hanamirb.org
 
 ## Community
