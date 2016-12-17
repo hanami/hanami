@@ -19,3 +19,11 @@ matrix:
     - rvm: ruby-head
     - rvm: jruby-head
     - rvm: jruby-9.1.6.0
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/fde2367248d53de4fe70
+    on_success: change  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start:   never   # options: [always|never|change] default: always
