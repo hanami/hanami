@@ -100,7 +100,7 @@ bundle
 
   * Ruby 2.3+ / JRuby 9.1.5.0+
   * Bundler
-  * Qt (MacOS)
+  * [PhantomJS](http://phantomjs.org/download.html)
   * Node.js (MacOS)
 
 ### Testing

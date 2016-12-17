@@ -41,11 +41,7 @@ if RUBY_DESCRIPTION =~ /linux/
   gem 'therubyrhino', require: false, platforms: :jruby
 end
 
-if RUBY_DESCRIPTION =~ /linux|jruby/
-  gem 'poltergeist', require: false
-else
-  gem 'capybara-webkit', require: false
-end
+gem 'poltergeist', require: false
 
 # `hanami assets` integration tests
 gem 'sass',          require: false
