@@ -68,7 +68,7 @@ You can give back to Open Source, by supporting Hanami development via a [donati
 
 ## Community
 
-We strive for a Community made of **inclusive, helpful and smart people**.
+We strive for an inclusive and helpful community.
 We have a [Code of Conduct](http://hanamirb.org/community/#code-of-conduct) to handle controversial cases.
 In general, we expect **you** to be **nice** with other people.
 Our hope is for a great software and a great Community.
