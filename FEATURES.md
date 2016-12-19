@@ -3,7 +3,11 @@
 
 ## Features
 
-## v0.9.0 - (unreleased)
+## v0.9.2 - 2016-12-19
+
+## v0.9.1 - 2016-11-18
+
+## v0.9.0 - 2016-11-15
 
 - Experimental repositories associations (only "has many")
 - Database automapping for SQL databases

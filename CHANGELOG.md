@@ -1,7 +1,7 @@
 # Hanami
 The web, with simplicity.
 
-## v0.9.2 - 2016-12-20
+## v0.9.2 - 2016-12-19
 ### Fixed
 - [Luca Guidi] Rake task `:environment` no longer depends on the removed `:preload` task
 - [Luca Guidi] Ensure force SSL to use the default port, or the configured one
