@@ -33,20 +33,6 @@ EOF
 
   private
 
-  def setup_model
-    generate_model     "book"
-    generate_migration "create_books", <<-EOF
-Hanami::Model.migration do
-  change do
-    create_table :books do
-      primary_key :id
-      column :title, String
-    end
-  end
-end
-EOF
-  end
-
   def prepare_development_database
     prepare_database
   end

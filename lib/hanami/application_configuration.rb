@@ -21,6 +21,10 @@ module Hanami
     # @see Hanami::Configuration#ssl?
     SSL_SCHEME = 'https'.freeze
 
+    # @since x.x.x
+    # @api private
+    DEFAULT_SSL_PORT = 443
+
     # @since 0.1.0
     # @api private
     attr_reader :namespace
@@ -37,11 +41,11 @@ module Hanami
     #
     # @since 0.1.0
     # @api private
-    def initialize(namespace, configurations, path_prefix)
+    def initialize(namespace, configurations, path_prefix, env: Environment.new)
       @namespace      = namespace
       @configurations = configurations
       @path_prefix    = path_prefix
-      @env            = Environment.new
+      @env            = env
 
       evaluate_configurations!
     end
@@ -1012,7 +1016,10 @@ module Hanami
       if value
         @port = Integer(value)
       else
-        @port || @env.port
+        return @port if defined?(@port)
+        return @env.port unless @env.default_port?
+        return DEFAULT_SSL_PORT if force_ssl
+        @env.port
       end
     end
 

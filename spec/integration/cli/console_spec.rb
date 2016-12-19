@@ -22,22 +22,4 @@ RSpec.describe "hanami console", type: :cli do
 
   # TODO: test with pry
   # TODO: test with ripl
-
-  private
-
-  def setup_model # rubocop:disable Metrics/MethodLength
-    generate_model     "book"
-    generate_migration "create_books", <<-EOF
-Hanami::Model.migration do
-  change do
-    create_table :books do
-      primary_key :id
-      column :title, String
-    end
-  end
-end
-EOF
-
-    migrate
-  end
 end

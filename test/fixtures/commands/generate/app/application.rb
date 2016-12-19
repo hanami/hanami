@@ -273,7 +273,7 @@ module Admin
       handle_exceptions false
 
       # Logger
-      # See: http://hanamirb.org/guides/applications/logging
+      # See: http://hanamirb.org/guides/projects/logging
       #
       # Logger stream. It defaults to STDOUT.
       # logger.stream "log/development.log"
@@ -293,7 +293,7 @@ module Admin
       handle_exceptions false
 
       # Logger
-      # See: http://hanamirb.org/guides/applications/logging
+      # See: http://hanamirb.org/guides/projects/logging
       #
       # Logger level. It defaults to ERROR
       logger.level :error
@@ -308,7 +308,7 @@ module Admin
       # port   443
 
       # Logger
-      # See: http://hanamirb.org/guides/applications/logging
+      # See: http://hanamirb.org/guides/projects/logging
       #
       # Logger stream. It defaults to STDOUT.
       # logger.stream "log/production.log"
@@ -340,7 +340,7 @@ module Admin
 
         # Subresource Integrity
         #
-        # See: http://hanamirb.org/guides/assets/subresource-integrity
+        # See: http://hanamirb.org/guides/assets/content-delivery-network/#subresource-integrity
         subresource_integrity :sha256
       end
     end

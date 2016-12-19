@@ -1,14 +1,20 @@
+# Please keep AllCops, Bundler, Style, Metrics groups and then order cops
+# alphabetically
 AllCops:
   DisplayCopNames: true
   DisplayStyleGuide: true
   ExtraDetails: false
-Style/StringLiterals:
+Bundler/OrderedGems:
   Enabled: false
-Metrics/LineLength:
+Style/AndOr:
   Enabled: false
-Style/RegexpLiteral:
+Style/EmptyMethod:
   Enabled: false
 Style/RaiseArgs:
   Enabled: false
-Style/AndOr:
+Style/RegexpLiteral:
+  Enabled: false
+Style/StringLiterals:
+  Enabled: false
+Metrics/LineLength:
   Enabled: false
