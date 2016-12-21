@@ -293,6 +293,7 @@ END
           # spec/web/controllers/books/index_spec.rb
           #
           expect('spec/web/controllers/books/index_spec.rb').to have_file_content <<-END
+require 'spec_helper'
 require_relative '../../../../apps/web/controllers/books/index'
 
 RSpec.describe Web::Controllers::Books::Index do
@@ -310,6 +311,7 @@ END
           # spec/web/views/books/index_spec.rb
           #
           expect('spec/web/views/books/index_spec.rb').to have_file_content <<-END
+require 'spec_helper'
 require_relative '../../../../apps/web/views/books/index'
 
 RSpec.describe Web::Views::Books::Index do

@@ -95,6 +95,8 @@ END
           # spec/<project>/entities/<model>_spec.rb
           #
           expect("spec/#{project}/entities/#{model}_spec.rb").to have_file_content <<-END
+require 'spec_helper'
+
 RSpec.describe #{class_name} do
   # place your tests here
 end
@@ -104,6 +106,8 @@ END
           # spec/<project>/repositories/<model>_repository_spec.rb
           #
           expect("spec/#{project}/repositories/#{model}_repository_spec.rb").to have_file_content <<-END
+require 'spec_helper'
+
 RSpec.describe BookRepository do
   # place your tests here
 end

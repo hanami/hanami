@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 RSpec.describe <%= config[:model_name] %> do
   # place your tests here
 end
