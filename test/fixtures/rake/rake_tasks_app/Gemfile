@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'bundler'
 gem 'rake'
 gem 'sqlite3',      platforms: :ruby
 gem 'jdbc-sqlite3', platforms: :jruby
