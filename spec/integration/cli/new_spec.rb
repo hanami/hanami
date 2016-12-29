@@ -83,7 +83,6 @@ END
         expect('Gemfile').to have_file_content <<-END
 source 'https://rubygems.org'
 
-gem 'bundler'
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
 gem 'hanami-model', '~> 1.0.0.beta1'
@@ -115,7 +114,6 @@ END
         expect('Gemfile').to have_file_content <<-END
 source 'https://rubygems.org'
 
-gem 'bundler'
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
 gem 'hanami-model', '~> 1.0.0.beta1'
