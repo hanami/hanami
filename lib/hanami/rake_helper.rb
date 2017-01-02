@@ -58,6 +58,11 @@ module Hanami
 
       namespace :assets do
         task :precompile do
+          puts "=============================================================="
+          puts "NOTE: In order to serve static assets on Heroku (and others), "
+          puts "the environment variable SERVE_STATIC_ASSETS must equal 'true'"
+          puts "To do this, run `heroku config:set SERVE_STATIC_ASSETS=true`  "
+          puts "=============================================================="
           system("bundle exec hanami assets precompile") || exit($?.exitstatus)
         end
       end

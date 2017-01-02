@@ -40,7 +40,9 @@ describe Hanami::RakeHelper do
   describe 'when "assets:precompile" task failed' do
     it 'exits with failed status code' do
       task = rake_task "assets:precompile"
-      -> { task.invoke }.must_raise SystemExit
+      capture_io do
+        -> { task.invoke }.must_raise SystemExit
+      end
     end
   end
 
