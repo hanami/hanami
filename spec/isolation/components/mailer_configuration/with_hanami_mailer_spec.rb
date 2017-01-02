@@ -1,6 +1,6 @@
 RSpec.describe "Components: mailer.configuration", type: :cli do
   context "with hanami-mailer" do
-    it "resolves model configuration" do
+    it "resolves mailer configuration" do
       with_project do
         require Pathname.new(Dir.pwd).join("config", "environment")
         Hanami::Components.resolve('mailer.configuration')
