@@ -13,7 +13,7 @@ module Hanami
     # @since 0.9.0
     # @api private
     register 'all' do
-      requires 'model', 'apps', 'finalizers'
+      requires 'mailer', 'model', 'apps', 'finalizers'
 
       resolve { true }
     end
@@ -132,6 +132,45 @@ module Hanami
 
       resolve do
         true if defined?(Hanami::Model)
+      end
+    end
+
+    # Tries to evaluate hanami-mailer configuration
+    #
+    # @since 1.0.0.beta1
+    # @api private
+    #
+    # @example With hanami-mailer
+    #   Hanami::Components.resolve('mailer.configuration')
+    #   Hanami::Components['mailer.configuration'].class # => Hanami::Mailer::Configuration
+    register 'mailer.configuration' do
+      prepare do
+        require 'hanami/mailer'
+        require 'hanami/mailer/glue'
+      end
+
+      resolve do |configuration|
+        Hanami::Mailer.configure(&configuration.mailer)
+        Hanami::Mailer.configuration
+      end
+    end
+
+    # Tries to load hanami-mailer
+    #
+    # @since 1.0.0.beta1
+    # @api private
+    #
+    # @example
+    #   Hanami::Components.resolve('mailer')
+    #   Hanami::Components['mailer'] # => true
+    register 'mailer' do
+      requires 'mailer.configuration'
+
+      resolve do
+        if Components['mailer.configuration']
+          Hanami::Mailer.load!
+          true
+        end
       end
     end
 
