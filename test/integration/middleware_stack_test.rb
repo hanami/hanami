@@ -35,6 +35,14 @@ describe 'Middleware stack' do
     response.headers['X-Runtime'].must_equal '50ms'
   end
 
+  it 'returns a not found response from middleware' do
+    get '/unknown'
+
+    response.status.must_equal 404
+    response.headers.must_equal('Content-Length' => '16')
+    response.body.must_equal('Legacy Not Found')
+  end
+
   it 'returns a not found response for assets' do
     get '/logo.png'
 

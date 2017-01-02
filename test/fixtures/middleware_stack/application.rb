@@ -1,6 +1,9 @@
 module MiddlewareStack
   class Application < Hanami::Application
     configure do
+      # Test rendering from middleware
+      middleware.use 'Middlewares::LegacyNotFound'
+
       # Test lazy loading with relative class name
       middleware.use 'Middlewares::Runtime'
 
@@ -20,6 +23,22 @@ module MiddlewareStack
   end
 
   module Middlewares
+    class LegacyNotFound
+      def initialize(app)
+        @app = app
+      end
+
+      def call(env)
+        status, headers, body = @app.call(env)
+
+        if status == 404
+          [status, {}, ['Legacy Not Found']]
+        else
+          [status, headers, body]
+        end
+      end
+    end
+
     class Runtime
       def initialize(app)
         @app = app

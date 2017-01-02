@@ -14,6 +14,10 @@ module Hanami
 
         def call(env)
         end
+
+        def renderable?
+          false
+        end
       end
 
       def call(env)
