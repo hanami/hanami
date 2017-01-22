@@ -62,6 +62,7 @@ EOF
 
   it "returns empty body for HEAD requests with send file" do
     with_project do
+      write "public/static.txt", "Plain text file"
       generate "action web home#index --url=/"
       rewrite "apps/web/controllers/home/index.rb", <<-EOF
 module Web::Controllers::Home
@@ -69,7 +70,7 @@ module Web::Controllers::Home
     include Web::Action
 
     def call(params)
-      send_file __FILE__
+      send_file "static.txt"
     end
   end
 end
