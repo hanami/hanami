@@ -1,6 +1,8 @@
 RSpec.describe "Rake: environment", type: :cli do
   it "loads the project" do
     with_project do
+      puts Bundler.rubygems.user_home.inspect
+      puts ENV.inspect
       generate_migrations
       generate_model "user"
       hanami "db prepare"
