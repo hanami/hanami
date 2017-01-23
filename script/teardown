@@ -31,11 +31,17 @@ advertise_end() {
 }
 
 main() {
-  advertise_start &&
-    remove_bundler_cache &&
-    uninstall_hanami_gems &&
-    bundle_install &&
-    advertise_end
+  local ci=${CI:-false}
+
+  if [ "$ci" = true ] ; then
+    echo "Running on CI, skipping cleanup"
+  else
+    advertise_start &&
+      remove_bundler_cache &&
+      uninstall_hanami_gems &&
+      bundle_install &&
+      advertise_end
+  fi
 }
 
 main
