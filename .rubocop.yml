@@ -4,6 +4,8 @@ AllCops:
   DisplayCopNames: true
   DisplayStyleGuide: true
   ExtraDetails: false
+  Exclude:
+    - tmp/**/*.rb
 Bundler/OrderedGems:
   Enabled: false
 Style/AndOr:
