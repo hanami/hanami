@@ -13,7 +13,7 @@ module Hanami
     # @since 0.9.0
     # @api private
     register 'all' do
-      requires 'mailer', 'model', 'apps', 'finalizers'
+      requires 'mailer', 'code', 'model', 'apps', 'finalizers'
 
       resolve { true }
     end
@@ -31,9 +31,20 @@ module Hanami
       end
 
       resolve do
-        defined?(Shotgun) &&
-          Components['environment'].code_reloading? &&
-          true
+        !!(defined?(Shotgun) && # rubocop:disable Style/DoubleNegation
+           Components['environment'].code_reloading?)
+      end
+    end
+
+    register 'code' do
+      run do
+        directory = Hanami.root.join('lib')
+
+        if Hanami.code_reloading?
+          Utils.reload!(directory)
+        else
+          Utils.require!(directory)
+        end
       end
     end
 
@@ -77,6 +88,7 @@ module Hanami
 
       resolve do |configuration|
         if Components['model.bundled']
+          Hanami::Model.instance_variable_set(:@configuration, nil) if Hanami.code_reloading?
           Hanami::Model.configure(&configuration.model)
           Hanami::Model.configuration
         end
@@ -150,6 +162,7 @@ module Hanami
       end
 
       resolve do |configuration|
+        Hanami::Mailer.configuration = Hanami::Mailer::Configuration.new if Hanami.code_reloading?
         Hanami::Mailer.configure(&configuration.mailer)
         Hanami::Mailer.configuration
       end

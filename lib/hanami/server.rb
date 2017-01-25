@@ -45,15 +45,8 @@ module Hanami
     private
 
     def setup
-      if code_reloading?
-        @app = Shotgun::Loader.new(rackup, &reloadable)
-      else
-        reloadable.call
-      end
-    end
-
-    def reloadable
-      ->(*) { Hanami::Components.resolve('model', 'finalizers') }
+      return unless code_reloading?
+      @app = Shotgun::Loader.new(rackup)
     end
 
     def environment
@@ -63,7 +56,7 @@ module Hanami
     # @since 0.8.0
     # @api private
     def code_reloading?
-      Components['code_reloading']
+      Hanami.code_reloading?
     end
 
     def rackup
