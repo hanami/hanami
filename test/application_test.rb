@@ -13,7 +13,7 @@ describe Hanami::Application do
   end
 
   describe '.configure' do
-    it 'yields the given block and returns a configuration' do
+    it 'returns a valid configuration' do
       configuration = CoffeeShop::Application.configuration
 
       configuration.must_be_kind_of Hanami::Configuration
