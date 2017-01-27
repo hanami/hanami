@@ -58,6 +58,7 @@ describe Hanami::Generators::DatabaseConfig do
 
   describe '#to_hash' do
     let(:adapter_prefix) { :'jdbc:' if Hanami::Utils.jruby? }
+    let(:adapter_postfix) { :'ql' if Hanami::Utils.jruby? }
 
     describe 'SQL databases' do
       let(:engine) { 'postgres' }
@@ -67,8 +68,8 @@ describe Hanami::Generators::DatabaseConfig do
           gem: (Hanami::Utils.jruby? ? 'jdbc-postgres' : 'pg'),
           type: :sql,
           uri: {
-            development: "#{ adapter_prefix }postgres://localhost/basecamp_development",
-            test: "#{ adapter_prefix }postgres://localhost/basecamp_test"
+            development: "#{ adapter_prefix }postgres#{ adapter_postfix }://localhost/basecamp_development",
+            test: "#{ adapter_prefix }postgres#{ adapter_postfix }://localhost/basecamp_test"
           }
         )
       end
