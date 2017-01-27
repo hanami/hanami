@@ -36,6 +36,10 @@ module RSpec
         hanami "generate #{target}"
       end
 
+      def destroy(target)
+        hanami "destroy #{target}"
+      end
+
       def migrate
         hanami "db migrate"
       end
