@@ -26,5 +26,15 @@ RSpec.describe Hanami::Env do
       subject.load!('spec/support/fixtures/dotenv/.env.development')
       expect(subject['BAZ']).to eq('yes')
     end
+
+    it "does not overwrite existing env vars" do
+      env = { "BAZ" => "no" }
+      subject = described_class.new(env: env)
+
+      subject.load!('spec/support/fixtures/dotenv/.env.development')
+      expect(subject['BAZ']).to eq('no')
+      expect(subject['HANAMI_PORT']).to eq('42')
+      expect(subject['WAT']).to eq('true')
+    end
   end
 end
