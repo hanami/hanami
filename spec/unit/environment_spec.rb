@@ -58,6 +58,21 @@ RSpec.describe Hanami::Environment do
           expect(subject.port).to eq(42)
         end
       end
+
+      context 'with same ENV variable set in ENV and .env.development' do
+        let(:env) { {'WAT' => 'false'} }
+
+        it 'sets manual set ENV vars over .env.development set' do
+          with_directory('spec/support/fixtures/dotenv') do
+            described_class.new(env: env)
+
+            expect(env['HANAMI_PORT']).to eq('42')
+
+            expect(env['BAZ']).to eq('yes')
+            expect(env['WAT']).to eq('false')
+          end
+        end
+      end
     end
 
     context "missing per environment .env" do
