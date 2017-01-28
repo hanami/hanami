@@ -77,11 +77,7 @@ module Hanami
             "mysql2://localhost/#{ name }"
           end
         when 'postgresql', 'postgres'
-          if Hanami::Utils.jruby?
-            "postgresql://localhost/#{ name }"
-          else
-            "postgres://localhost/#{ name }"
-          end
+          "postgresql://localhost/#{ name }"
         when 'sqlite', 'sqlite3'
           "sqlite://db/#{ Shellwords.escape(name) }"
         end
