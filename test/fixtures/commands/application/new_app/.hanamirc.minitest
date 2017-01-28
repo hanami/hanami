@@ -1,4 +1,0 @@
-project=new_app
-architecture=app
-test=minitest
-template=erb
