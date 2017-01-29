@@ -110,7 +110,7 @@ module Hanami
         end
 
         def core_root
-          Pathname.new("lib").join(::File.basename(Dir.getwd))
+          Pathname.new("lib").join(project_name)
         end
       end
     end
