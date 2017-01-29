@@ -14,7 +14,7 @@ EOF
             bundle_exec "ruby script/components"
           end
 
-          expect(out).to include("NilClass")
+          expect(out).to include("FalseClass")
         end
       end
     end

@@ -124,7 +124,7 @@ module Hanami
       # @api private
       def configuration=(configuration)
         @_lock.synchronize do
-          raise "Can't assign configuration more than once (#{app_name})" unless @configuration.nil?
+          # raise "Can't assign configuration more than once (#{app_name})" unless @configuration.nil?
           @configuration = configuration
         end
       end

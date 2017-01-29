@@ -101,6 +101,17 @@ module Hanami
       end
     end
 
+    # Release all the resolved components.
+    # This is used for code reloading.
+    #
+    # NOTE: this MUST NOT be used unless you know what you're doing.
+    #
+    # @since x.x.x
+    # @api private
+    def self.release
+      @_resolved.clear
+    end
+
     require 'hanami/components/component'
     require 'hanami/components/components'
   end

@@ -90,6 +90,7 @@ module Hanami
   # @since 0.9.0
   # @api private
   def self.boot
+    Components.release if code_reloading?
     Components.resolve('all')
   end
 
@@ -194,5 +195,19 @@ module Hanami
     Components.resolved('environment') do
       Environment.new
     end
+  end
+
+  # Check if code reloading is enabled.
+  #
+  # @return [TrueClass,FalseClass] the result of the check
+  #
+  # @since x.x.x
+  # @api private
+  #
+  # @see http://hanamirb.org/guides/projects/code-reloading/
+  def self.code_reloading?
+    environment
+    Components.resolve('code_reloading')
+    Components['code_reloading']
   end
 end
