@@ -77,7 +77,7 @@ module Hanami
             "mysql2://localhost/#{ name }"
           end
         when 'postgresql', 'postgres'
-          "postgres://localhost/#{ name }"
+          "postgresql://localhost/#{ name }"
         when 'sqlite', 'sqlite3'
           "sqlite://db/#{ Shellwords.escape(name) }"
         end

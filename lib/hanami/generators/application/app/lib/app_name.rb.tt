@@ -9,7 +9,7 @@ Hanami::Model.configure do
   #
   #  * SQL adapter
   #    adapter :sql, 'sqlite://db/<%= config[:app_name] %>_development.sqlite3'
-  #    adapter :sql, 'postgres://localhost/<%= config[:app_name] %>_development'
+  #    adapter :sql, 'postgresql://localhost/<%= config[:app_name] %>_development'
   #    adapter :sql, 'mysql://localhost/<%= config[:app_name] %>_development'
   #
   adapter :<%= config[:database_config][:type] %>, ENV['DATABASE_URL']
