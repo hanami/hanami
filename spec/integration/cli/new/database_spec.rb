@@ -15,8 +15,8 @@ RSpec.describe "hanami new", type: :cli do
           # .env.development
           #
           development_url = Platform.match do
-            engine(:ruby)  { "postgres://localhost/#{project}_development" }
-            engine(:jruby) { "jdbc:postgres://localhost/#{project}_development" }
+            engine(:ruby)  { "postgresql://localhost/#{project}_development" }
+            engine(:jruby) { "jdbc:postgresql://localhost/#{project}_development" }
           end
 
           expect('.env.development').to have_file_content(%r{DATABASE_URL="#{development_url}"})
@@ -25,8 +25,8 @@ RSpec.describe "hanami new", type: :cli do
           # .env.test
           #
           test_url = Platform.match do
-            engine(:ruby)  { "postgres://localhost/#{project}_test" }
-            engine(:jruby) { "jdbc:postgres://localhost/#{project}_test" }
+            engine(:ruby)  { "postgresql://localhost/#{project}_test" }
+            engine(:jruby) { "jdbc:postgresql://localhost/#{project}_test" }
           end
 
           expect('.env.test').to have_file_content(%r{DATABASE_URL="#{test_url}"})

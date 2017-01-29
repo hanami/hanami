@@ -1398,7 +1398,7 @@ module Hanami
     #   module Bookshelf
     #     class Application < Hanami::Application
     #       configure do
-    #         adapter       :sql, 'postgres://localhost/database'
+    #         adapter       :sql, 'postgresql://localhost/database'
     #         model.adapter :sql, 'sqlite://db/bookshelf_development'
     #       end
     #     end

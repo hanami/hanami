@@ -471,7 +471,7 @@ Hanami.configure do
     #
     #  * SQL adapter
     #    adapter :sql, 'sqlite://db/#{project}_development.sqlite3'
-    #    adapter :sql, 'postgres://localhost/#{project}_development'
+    #    adapter :sql, 'postgresql://localhost/#{project}_development'
     #    adapter :sql, 'mysql://localhost/#{project}_development'
     #
     adapter :sql, ENV['DATABASE_URL']

@@ -155,10 +155,10 @@ describe Hanami::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_development\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgresql://localhost/new_container_development\"")
 
             actual_content = File.read('.env.test')
-            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_test\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgresql://localhost/new_container_test\"")
 
             assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }postgres"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.postgres.rb'), 'lib/new_container.rb')
@@ -196,10 +196,10 @@ describe Hanami::Commands::New::Container do
           fixture_root = original_wd.join('test', 'fixtures', 'commands', 'application', 'new_container')
           Dir.chdir('new_container') do
             actual_content = File.read('.env.development')
-            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_development\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgresql://localhost/new_container_development\"")
 
             actual_content = File.read('.env.test')
-            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgres://localhost/new_container_test\"")
+            actual_content.must_include("DATABASE_URL=\"#{ adapter_prefix }postgresql://localhost/new_container_test\"")
 
             assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }postgres"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.postgres.rb'), 'lib/new_container.rb')

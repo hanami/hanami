@@ -67,8 +67,8 @@ describe Hanami::Generators::DatabaseConfig do
           gem: (Hanami::Utils.jruby? ? 'jdbc-postgres' : 'pg'),
           type: :sql,
           uri: {
-            development: "#{ adapter_prefix }postgres://localhost/basecamp_development",
-            test: "#{ adapter_prefix }postgres://localhost/basecamp_test"
+            development: "#{ adapter_prefix }postgresql://localhost/basecamp_development",
+            test: "#{ adapter_prefix }postgresql://localhost/basecamp_test"
           }
         )
       end
