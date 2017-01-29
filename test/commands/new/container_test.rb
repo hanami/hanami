@@ -102,7 +102,7 @@ describe Hanami::Commands::New::Container do
 
             assert_generated_file(fixture_root.join("Gemfile.#{runtime_prefix}memory"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.memory.rb'), 'lib/new_container.rb')
-            assert_file_exists('db/.gitkeep')
+            assert_file_exists('db/.keep')
           end
         end
       end
@@ -122,7 +122,7 @@ describe Hanami::Commands::New::Container do
 
             assert_generated_file(fixture_root.join("Gemfile.#{runtime_prefix}filesystem"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.filesystem.rb'), 'lib/new_container.rb')
-            assert_file_exists('db/.gitkeep')
+            assert_file_exists('db/.keep')
           end
         end
       end
@@ -142,7 +142,7 @@ describe Hanami::Commands::New::Container do
 
             assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }sqlite3"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.sqlite3.rb'), 'lib/new_container.rb')
-            assert_file_exists('db/migrations/.gitkeep')
+            assert_file_exists('db/migrations/.keep')
           end
         end
       end
@@ -162,7 +162,7 @@ describe Hanami::Commands::New::Container do
 
             assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }postgres"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.postgres.rb'), 'lib/new_container.rb')
-            assert_file_exists('db/migrations/.gitkeep')
+            assert_file_exists('db/migrations/.keep')
           end
         end
       end
@@ -183,7 +183,7 @@ describe Hanami::Commands::New::Container do
 
             assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }mysql2"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.mysql2.rb'), 'lib/new_container.rb')
-            assert_file_exists('db/migrations/.gitkeep')
+            assert_file_exists('db/migrations/.keep')
           end
         end
       end
@@ -203,7 +203,7 @@ describe Hanami::Commands::New::Container do
 
             assert_generated_file(fixture_root.join("Gemfile.#{ adapter_prefix }postgres"), 'Gemfile')
             assert_generated_file(fixture_root.join('lib', 'new_container.postgres.rb'), 'lib/new_container.rb')
-            assert_file_exists('db/migrations/.gitkeep')
+            assert_file_exists('db/migrations/.keep')
           end
         end
       end
@@ -291,16 +291,16 @@ describe Hanami::Commands::New::Container do
 
       assert_generated_file(fixture_root.join('config', 'environment.rb'), 'config/environment.rb')
       assert_generated_file(fixture_root.join('lib', 'new_container.rb'), 'lib/new_container.rb')
-      assert_file_exists('config/initializers/.gitkeep')
-      assert_file_exists('lib/new_container/entities/.gitkeep')
-      assert_file_exists('lib/new_container/repositories/.gitkeep')
-      assert_file_exists('lib/new_container/mailers/.gitkeep')
-      assert_file_exists('lib/new_container/mailers/templates/.gitkeep')
-      assert_file_exists('spec/new_container/entities/.gitkeep')
-      assert_file_exists('spec/new_container/repositories/.gitkeep')
-      assert_file_exists('spec/new_container/mailers/.gitkeep')
-      assert_file_exists('spec/support/.gitkeep')
-      assert_file_exists('db/.gitkeep')
+      assert_file_exists('config/initializers/.keep')
+      assert_file_exists('lib/new_container/entities/.keep')
+      assert_file_exists('lib/new_container/repositories/.keep')
+      assert_file_exists('lib/new_container/mailers/.keep')
+      assert_file_exists('lib/new_container/mailers/templates/.keep')
+      assert_file_exists('spec/new_container/entities/.keep')
+      assert_file_exists('spec/new_container/repositories/.keep')
+      assert_file_exists('spec/new_container/mailers/.keep')
+      assert_file_exists('spec/support/.keep')
+      assert_file_exists('db/.keep')
       assert_file_exists('.git')
       assert_generated_file(fixture_root.join("Rakefile.#{ test_framework }"), 'Rakefile')
       assert_generated_file(fixture_root.join('spec', "spec_helper.#{ test_framework }.rb"), 'spec/spec_helper.rb')

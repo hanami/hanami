@@ -1,6 +1,8 @@
 require 'aruba'
 require 'aruba/api'
 require 'pathname'
+require_relative 'env'
+
 
 module RSpec
   module Support
@@ -21,6 +23,14 @@ module RSpec
 
         match_output(output)
         expect(last_command_started).to have_exit_status(exit_status)
+      end
+
+      def without_command(cmd, &block)
+        system("echo \"#!/bin/sh\nexit 255\" > ./#{cmd}; chmod +x ./#{cmd}")
+
+        with_environment('PATH' => "#{Dir.pwd}:#{ENV['PATH']}", &block)
+      ensure
+        system("rm ./#{cmd}")
       end
 
       def match_output(output)

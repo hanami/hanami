@@ -15,13 +15,13 @@ RSpec.shared_examples "a new app" do
       create  apps/#{app}/views/application_layout.rb
       create  apps/#{app}/templates/application.html.erb
       create  apps/#{app}/assets/favicon.ico
-      create  apps/#{app}/controllers/.gitkeep
-      create  apps/#{app}/assets/images/.gitkeep
-      create  apps/#{app}/assets/javascripts/.gitkeep
-      create  apps/#{app}/assets/stylesheets/.gitkeep
-      create  spec/#{app}/features/.gitkeep
-      create  spec/#{app}/controllers/.gitkeep
-      create  spec/#{app}/views/.gitkeep
+      create  apps/#{app}/controllers/.keep
+      create  apps/#{app}/assets/images/.keep
+      create  apps/#{app}/assets/javascripts/.keep
+      create  apps/#{app}/assets/stylesheets/.keep
+      create  spec/#{app}/features/.keep
+      create  spec/#{app}/controllers/.keep
+      create  spec/#{app}/views/.keep
       insert  config/environment.rb
       insert  config/environment.rb
       append  .env.development
@@ -414,39 +414,39 @@ END
       expect("apps/#{app}/assets/favicon.ico").to be_an_existing_file
 
       #
-      # apps/<app>/controllers/.gitkeep
+      # apps/<app>/controllers/.keep
       #
-      expect("apps/#{app}/controllers/.gitkeep").to be_an_existing_file
+      expect("apps/#{app}/controllers/.keep").to be_an_existing_file
 
       #
-      # apps/<app>/assets/images/.gitkeep
+      # apps/<app>/assets/images/.keep
       #
-      expect("apps/#{app}/assets/images/.gitkeep").to be_an_existing_file
+      expect("apps/#{app}/assets/images/.keep").to be_an_existing_file
 
       #
-      # apps/<app>/assets/javascripts/.gitkeep
+      # apps/<app>/assets/javascripts/.keep
       #
-      expect("apps/#{app}/assets/javascripts/.gitkeep").to be_an_existing_file
+      expect("apps/#{app}/assets/javascripts/.keep").to be_an_existing_file
 
       #
-      # apps/<app>/assets/stylesheets/.gitkeep
+      # apps/<app>/assets/stylesheets/.keep
       #
-      expect("apps/#{app}/assets/stylesheets/.gitkeep").to be_an_existing_file
+      expect("apps/#{app}/assets/stylesheets/.keep").to be_an_existing_file
 
       #
-      # spec/<app>/features/.gitkeep
+      # spec/<app>/features/.keep
       #
-      expect("spec/#{app}/features/.gitkeep").to be_an_existing_file
+      expect("spec/#{app}/features/.keep").to be_an_existing_file
 
       #
-      # spec/<app>/controllers/.gitkeep
+      # spec/<app>/controllers/.keep
       #
-      expect("spec/#{app}/controllers/.gitkeep").to be_an_existing_file
+      expect("spec/#{app}/controllers/.keep").to be_an_existing_file
 
       #
-      # spec/<app>/views/.gitkeep
+      # spec/<app>/views/.keep
       #
-      expect("spec/#{app}/views/.gitkeep").to be_an_existing_file
+      expect("spec/#{app}/views/.keep").to be_an_existing_file
 
       #
       # config/environment.rb

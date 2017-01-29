@@ -4,7 +4,7 @@ RSpec.describe "hanami new", type: :cli do
       it "generates project" do
         project = 'bookshelf_postgresql'
         output  = [
-          "create  db/migrations/.gitkeep",
+          "create  db/migrations/.keep",
           "create  db/schema.sql"
         ]
 
@@ -49,9 +49,9 @@ RSpec.describe "hanami new", type: :cli do
           expect("config/environment.rb").to have_file_content(%r{  schema     'db/schema.sql'})
 
           #
-          # db/migrations/.gitkeep
+          # db/migrations/.keep
           #
-          expect('db/migrations/.gitkeep').to be_an_existing_file
+          expect('db/migrations/.keep').to be_an_existing_file
 
           #
           # db/schema.sql
@@ -73,7 +73,7 @@ RSpec.describe "hanami new", type: :cli do
       it "generates project" do
         project = 'bookshelf_sqlite'
         output  = [
-          "create  db/migrations/.gitkeep",
+          "create  db/migrations/.keep",
           "create  db/schema.sql"
         ]
 
@@ -118,9 +118,9 @@ RSpec.describe "hanami new", type: :cli do
           expect("config/environment.rb").to have_file_content(%r{  schema     'db/schema.sql'})
 
           #
-          # db/migrations/.gitkeep
+          # db/migrations/.keep
           #
-          expect('db/migrations/.gitkeep').to be_an_existing_file
+          expect('db/migrations/.keep').to be_an_existing_file
 
           #
           # db/schema.sql
@@ -143,7 +143,7 @@ RSpec.describe "hanami new", type: :cli do
       it "generates project" do
         project = 'bookshelf_mysql'
         output  = [
-          "create  db/migrations/.gitkeep",
+          "create  db/migrations/.keep",
           "create  db/schema.sql"
         ]
 
@@ -188,9 +188,9 @@ RSpec.describe "hanami new", type: :cli do
           expect("config/environment.rb").to have_file_content(%r{  schema     'db/schema.sql'})
 
           #
-          # db/migrations/.gitkeep
+          # db/migrations/.keep
           #
-          expect('db/migrations/.gitkeep').to be_an_existing_file
+          expect('db/migrations/.keep').to be_an_existing_file
 
           #
           # db/schema.sql
