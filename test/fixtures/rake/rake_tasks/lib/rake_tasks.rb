@@ -22,7 +22,7 @@ Hanami::Model.configure do
   #
   #  * SQL adapter
   #    adapter type: :sql, uri: 'sqlite://db/rake_tasks_development.sqlite3'
-  #    adapter type: :sql, uri: 'postgres://localhost/rake_tasks_development'
+  #    adapter type: :sql, uri: 'postgresql://localhost/rake_tasks_development'
   #    adapter type: :sql, uri: 'mysql://localhost/rake_tasks_development'
   #
   adapter type: :sql, uri: "#{ADAPTER_TYPE}://#{Dir.pwd}/db/rake_tasks_test.sqlite"
