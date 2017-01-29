@@ -1,3 +1,0 @@
-architecture=app
-test=minitest
-template=erb

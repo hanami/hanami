@@ -1,6 +1,0 @@
-<%=
-  form_for :book, routes.book_path(id: book.id), method: :patch, values: {book: book} do
-    text_field :name, placeholder: "Name"
-    submit "Update"
-  end
-%>

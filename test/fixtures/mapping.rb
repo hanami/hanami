@@ -1,2 +1,0 @@
-collection :customers do
-end
