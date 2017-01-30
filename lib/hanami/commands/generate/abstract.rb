@@ -53,7 +53,7 @@ module Hanami
           end
         end
 
-        # @since 0.8.0
+        # @since x.x.x
         # @api private
         def project_name
           Utils::String.new(Hanami::Environment.new.project_name).underscore
