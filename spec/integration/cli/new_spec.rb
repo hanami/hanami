@@ -193,7 +193,7 @@ Hanami.configure do
     delivery do
       development :test
       test        :test
-      # production :smtp, address: ENV['SMTP_PORT'], port: 1025
+      # production :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
     end
   end
 end
