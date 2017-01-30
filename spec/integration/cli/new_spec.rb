@@ -166,6 +166,9 @@ require_relative '../apps/web/application'
 Hanami.configure do
   mount Web::Application, at: '/'
 
+  # See: http://hanamirb.org/guides/projects/logging
+  logger level: :debug
+
   model do
     ##
     # Database adapter

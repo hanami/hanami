@@ -46,6 +46,14 @@ module Hanami
       end
     end
 
+    def logger(options = nil)
+      if options.nil?
+        settings.fetch(:logger)
+      else
+        settings.put_if_absent(:logger, options)
+      end
+    end
+
     private
 
     attr_reader :settings

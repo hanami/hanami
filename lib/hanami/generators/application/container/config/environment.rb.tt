@@ -5,6 +5,9 @@ require_relative '../lib/<%= config[:project_name] %>'
 
 Hanami.configure do
 
+  # See: http://hanamirb.org/guides/projects/logging
+  logger level: :debug
+
   model do
     ##
     # Database adapter

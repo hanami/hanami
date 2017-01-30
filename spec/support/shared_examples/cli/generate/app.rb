@@ -463,6 +463,9 @@ Hanami.configure do
   mount #{app_name}::Application, at: '/#{app}'
   mount Web::Application, at: '/'
 
+  # See: http://hanamirb.org/guides/projects/logging
+  logger level: :debug
+
   model do
     ##
     # Database adapter

@@ -7,7 +7,7 @@ unless ENV['TRAVIS']
 end
 
 gem 'i18n'
-gem 'hanami-utils',       '~> 1.0.0.beta1', require: false, github: 'hanami/utils',       branch: '1.0.x'
+gem 'hanami-utils',       '~> 1.0.0.beta1', require: false, github: 'hanami/utils',       branch: 'tagged-logger'
 gem 'hanami-validations', '~> 1.0.0.beta1', require: false, github: 'hanami/validations', branch: '1.0.x'
 gem 'hanami-router',      '~> 1.0.0.beta1', require: false, github: 'hanami/router',      branch: '1.0.x'
 gem 'hanami-controller',  '~> 1.0.0.beta1', require: false, github: 'hanami/controller',  branch: '1.0.x'

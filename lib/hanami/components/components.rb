@@ -13,9 +13,23 @@ module Hanami
     # @since 0.9.0
     # @api private
     register 'all' do
-      requires 'mailer', 'code', 'model', 'apps', 'finalizers'
+      requires 'logger', 'mailer', 'code', 'model', 'apps', 'finalizers'
 
       resolve { true }
+    end
+
+    # Setup project's logger
+    #
+    # @since x.x.x
+    # @api private
+    register 'logger' do
+      prepare do
+        require 'hanami/logger'
+      end
+
+      resolve do |configuration|
+        Hanami::Logger.new(Hanami.environment.project_name, configuration.logger)
+      end
     end
 
     # Check if code reloading is enabled
