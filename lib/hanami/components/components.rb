@@ -75,11 +75,12 @@ module Hanami
     #   Hanami::Components.resolve('model')
     #   Hanami::Components['model'] # => nil
     register 'model' do
-      requires 'model.configuration', 'model.sql'
+      requires 'logger', 'model.configuration', 'model.sql'
 
       resolve do
         if Components['model.configuration']
           Hanami::Model.load!
+          Hanami::Model.configuration.logger = Components['logger']
           true
         end
       end
