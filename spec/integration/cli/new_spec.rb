@@ -7,6 +7,7 @@ RSpec.describe 'hanami new', type: :cli do
       create  .env.test
       create  Gemfile
       create  config.ru
+      create  config/boot.rb
       create  config/environment.rb
       create  lib/#{project}.rb
       create  public/.gitkeep
@@ -142,6 +143,14 @@ END
 require './config/environment'
 
 run Hanami.app
+END
+
+      #
+      # config/boot.rb
+      #
+      expect('config/boot.rb').to have_file_content <<-END
+require_relative './environment'
+Hanami.boot
 END
 
       #
