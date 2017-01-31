@@ -8,7 +8,6 @@ RSpec.describe "Components: app.frameworks", type: :cli do
       expect(defined?(Web::View)).to   eq("constant")
       expect(defined?(Web::Assets)).to eq("constant")
 
-      expect(Web.logger).to be_kind_of(Hanami::Logger)
       expect(Web.routes).to be_kind_of(Hanami::Routes)
     end
   end

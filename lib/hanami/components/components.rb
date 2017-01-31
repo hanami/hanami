@@ -326,7 +326,7 @@ module Hanami
     # @api private
     register 'app.frameworks' do
       run do |app|
-        ['app.controller', 'app.view', 'app.assets', 'app.logger'].each do |c|
+        ['app.controller', 'app.view', 'app.assets'].each do |c|
           component(c).call(app)
         end
       end
@@ -371,20 +371,6 @@ module Hanami
 
       run do |app|
         Components::App::Assets.resolve(app)
-      end
-    end
-
-    # Evaluate hanami/logger configuration of a single Hanami application in the project
-    #
-    # @since 0.9.0
-    # @api private
-    register 'app.logger' do
-      prepare do
-        require 'hanami/components/app/logger'
-      end
-
-      run do |app|
-        Components::App::Logger.resolve(app)
       end
     end
 
