@@ -30,8 +30,7 @@ module Hanami
     # @since 0.8.0
     def middleware
       mw = Hash.new { |e, m| e[m] = [] }
-      mw["deployment"].concat([::Rack::ContentLength, ::Rack::CommonLogger])
-      mw["development"].concat(mw["deployment"] + [::Rack::ShowExceptions, ::Rack::Lint])
+      mw["development"].concat([::Rack::ShowExceptions, ::Rack::Lint])
       require 'hanami/assets/static'
       mw["development"].push(::Hanami::Assets::Static)
       mw

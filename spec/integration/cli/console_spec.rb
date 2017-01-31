@@ -1,7 +1,8 @@
 RSpec.describe "hanami console", type: :cli do
   context "irb" do
     it "starts console" do
-      with_project("bookshelf_console_irb", console: :irb) do
+      project_name = "bookshelf_console_irb"
+      with_project(project_name, console: :irb) do
         setup_model
 
         console do |input, _, _|
@@ -16,6 +17,8 @@ RSpec.describe "hanami console", type: :cli do
         expect(out).to include("Web::Application")
         expect(out).to include("#<Hanami::Routes")
         expect(out).to include("[]")
+        expect(out).to include("[#{project_name}] [INFO]")
+        expect(out).to include("SELECT `id`, `title` FROM `books` ORDER BY `books`.`id`")
       end
     end
   end # irb

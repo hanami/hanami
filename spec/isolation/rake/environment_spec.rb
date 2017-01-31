@@ -13,7 +13,7 @@ EOF
 
       bundle_exec "rake database_counts"
 
-      expect(out).to eq("users: 0")
+      expect(out).to match("users: 0")
     end
   end
 end
