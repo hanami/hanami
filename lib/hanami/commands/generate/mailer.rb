@@ -50,7 +50,7 @@ module Hanami
         # @since 0.x.x
         # @api private
         def map_templates
-          add_mapping("mailer_spec.rb.tt", mailer_spec_path)
+          add_mapping("mailer_spec.rb.#{test_framework.framework}.tt", mailer_spec_path)
           add_mapping("mailer.rb.tt", mailer_path)
           add_mapping("template.txt.tt", txt_template_path)
           add_mapping("template.html.tt", html_template_path)

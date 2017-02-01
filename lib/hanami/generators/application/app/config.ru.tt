@@ -1,3 +1,0 @@
-require './config/environment'
-
-run <%= config[:classified_app_name] %>::Application.new
