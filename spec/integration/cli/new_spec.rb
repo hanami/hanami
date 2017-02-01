@@ -11,6 +11,7 @@ RSpec.describe 'hanami new', type: :cli do
       create  config/environment.rb
       create  lib/#{project}.rb
       create  public/.gitkeep
+      create  log/.gitkeep
       create  config/initializers/.gitkeep
       create  lib/#{project}/entities/.gitkeep
       create  lib/#{project}/repositories/.gitkeep
@@ -199,6 +200,14 @@ Hanami.configure do
       # production :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
     end
   end
+
+  environment :test do
+    logger level: :debug, stream: 'log/test.log'
+  end
+
+  environment :production do
+    logger level: :info, formatter: :json
+  end
 end
 END
 
@@ -213,6 +222,11 @@ END
       # public/.gitkeep
       #
       expect('public/.gitkeep').to be_an_existing_file
+
+      #
+      # log/.gitkeep
+      #
+      expect('log/.gitkeep').to be_an_existing_file
 
       #
       # config/initializers/.gitkeep

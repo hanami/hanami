@@ -466,6 +466,14 @@ Hanami.configure do
       # production :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
     end
   end
+
+  environment :test do
+    logger level: :debug, stream: 'log/test.log'
+  end
+
+  environment :production do
+    logger level: :info, formatter: :json
+  end
 end
 END
 

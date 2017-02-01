@@ -64,6 +64,7 @@ module Hanami
 
         def add_empty_directories
           add_mapping('.gitkeep', 'public/.gitkeep')
+          add_mapping('.gitkeep', 'log/.gitkeep')
           add_mapping('.gitkeep', 'config/initializers/.gitkeep')
           add_mapping('.gitkeep', "lib/#{ project_name }/entities/.gitkeep")
           add_mapping('.gitkeep', "lib/#{ project_name }/repositories/.gitkeep")
