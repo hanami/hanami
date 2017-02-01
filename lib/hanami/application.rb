@@ -31,19 +31,6 @@ module Hanami
       base.extend(ClassMethods)
       base.namespace.module_eval do
         class << self
-          # Logger for this application
-          #
-          # @return [Hanami::Logger] the logger for this Hanami application
-          #
-          # @since 0.9.0
-          # @api public
-          #
-          # @example
-          #
-          #   Web.logger
-          #   Admin.logger
-          attr_accessor :logger
-
           # Routes for this application
           #
           # @return [Hanami::Routes] the routes for this Hanami application

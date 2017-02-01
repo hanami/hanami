@@ -210,4 +210,13 @@ module Hanami
     Components.resolve('code_reloading')
     Components['code_reloading']
   end
+
+  # Project logger
+  #
+  # @return [Hanami::Logger] the logger
+  #
+  # @since x.x.x
+  def self.logger
+    Components['logger']
+  end
 end
