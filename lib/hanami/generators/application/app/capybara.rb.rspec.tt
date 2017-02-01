@@ -1,8 +1,0 @@
-module RSpec
-  module FeatureExampleGroup
-    def self.included(group)
-      group.metadata[:type] = :feature
-      Capybara.app = <%= config[:classified_app_name] %>::Application.new
-    end
-  end
-end
