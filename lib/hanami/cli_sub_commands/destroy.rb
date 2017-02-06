@@ -60,7 +60,7 @@ module Hanami
         `hanami destroy model` will destroy an entity along with repository
         and corresponding tests
 
-        > $ hanami generate model car
+        > $ hanami destroy model car
       EOS
 
       def model(name)

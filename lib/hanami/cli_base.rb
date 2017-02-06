@@ -27,5 +27,9 @@ module Hanami
     def define_commands(&blk)
       class_eval(&blk) if block_given?
     end
+
+    def banner(command, nspace = true, subcommand = false)
+      super(command, nspace, namespace != 'hanami:cli')
+    end
   end
 end

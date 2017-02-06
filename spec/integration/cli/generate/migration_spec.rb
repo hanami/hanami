@@ -29,7 +29,7 @@ RSpec.describe "hanami generate", type: :cli do
         with_project('bookshelf_generate_migration_missing_arguments') do
           output = <<-END
 ERROR: "hanami migration" was called with no arguments
-Usage: "hanami migration NAME"
+Usage: "hanami generate migration NAME"
 END
           run_command "hanami generate migration", output # , exit_status: 1 FIXME: Thor exit with 0
         end

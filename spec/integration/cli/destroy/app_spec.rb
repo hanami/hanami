@@ -33,7 +33,7 @@ RSpec.describe "hanami destroy", type: :cli do
       with_project do
         output = <<-OUT
 ERROR: "hanami application" was called with no arguments
-Usage: "hanami application NAME"
+Usage: "hanami destroy application NAME"
 OUT
         run_command "hanami destroy app", output
       end

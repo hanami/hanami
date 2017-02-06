@@ -28,7 +28,7 @@ RSpec.describe "hanami destroy", type: :cli do
       with_project do
         output = <<-OUT
 ERROR: "hanami actions" was called with no arguments
-Usage: "hanami action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
+Usage: "hanami destroy action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
 OUT
 
         run_command "hanami destroy action", output # , exit_status: 1 FIXME: Thor exit with 0

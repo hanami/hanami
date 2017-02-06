@@ -49,7 +49,7 @@ END
       with_project('bookshelf_generate_action_without_args') do
         output = <<-OUT
 ERROR: "hanami actions" was called with no arguments
-Usage: "hanami action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
+Usage: "hanami generate action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
 OUT
 
         run_command "hanami generate action", output # , exit_status: 1 FIXME: Thor exit with 0
