@@ -17,7 +17,6 @@ module Hanami
 
     def initialize(&blk)
       @settings = Concurrent::Map.new
-      # @settings[:environments] = Concurrent::Hash.new { |h, k| h[k] = [] }
       instance_eval(&blk)
     end
 
@@ -49,14 +48,13 @@ module Hanami
 
     def logger(options = nil)
       if options.nil?
-        settings.fetch(:logger)
+        settings.fetch(:logger, nil)
       else
         settings[:logger] = options
       end
     end
 
     def environment(name)
-      # settings[:environments][name.to_sym] << blk
       yield if ENV['HANAMI_ENV'] == name.to_s
     end
 

@@ -11,7 +11,6 @@ RSpec.describe 'hanami new', type: :cli do
       create  config/environment.rb
       create  lib/#{project}.rb
       create  public/.gitkeep
-      create  log/.gitkeep
       create  config/initializers/.gitkeep
       create  lib/#{project}/entities/.gitkeep
       create  lib/#{project}/repositories/.gitkeep
@@ -167,9 +166,6 @@ require_relative '../apps/web/application'
 Hanami.configure do
   mount Web::Application, at: '/'
 
-  # See: http://hanamirb.org/guides/projects/logging
-  logger level: :debug
-
   model do
     ##
     # Database adapter
@@ -194,19 +190,20 @@ Hanami.configure do
     root 'lib/#{project}/mailers'
 
     # See http://hanamirb.org/guides/mailers/delivery
-    delivery do
-      development :test
-      test        :test
-      # production :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
-    end
+    delivery :test
   end
 
-  environment :test do
-    logger level: :debug, stream: 'log/test.log'
+  environment :development do
+    # See: http://hanamirb.org/guides/projects/logging
+    logger level: :debug
   end
 
   environment :production do
     logger level: :info, formatter: :json
+
+    mailer do
+      delivery :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
+    end
   end
 end
 END
@@ -222,11 +219,6 @@ END
       # public/.gitkeep
       #
       expect('public/.gitkeep').to be_an_existing_file
-
-      #
-      # log/.gitkeep
-      #
-      expect('log/.gitkeep').to be_an_existing_file
 
       #
       # config/initializers/.gitkeep

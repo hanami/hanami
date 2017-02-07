@@ -28,7 +28,7 @@ module Hanami
       end
 
       resolve do |configuration|
-        Hanami::Logger.new(Hanami.environment.project_name, configuration.logger)
+        Hanami::Logger.new(Hanami.environment.project_name, configuration.logger) unless configuration.logger.nil?
       end
     end
 
