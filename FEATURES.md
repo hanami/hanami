@@ -3,6 +3,11 @@
 
 ## Features
 
+## v1.0.0.beta1 (unreleased)
+- CLI: `hanami generate model` now also generates a migration
+- Project logger `Hanami.logger`
+- Automatic logging of HTTP requests, migrations, and SQL queries
+
 ## v0.9.2 - 2016-12-19
 
 ## v0.9.1 - 2016-11-18
