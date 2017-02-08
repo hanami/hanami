@@ -106,7 +106,7 @@ module Hanami
     #
     # NOTE: this MUST NOT be used unless you know what you're doing.
     #
-    # @since x.x.x
+    # @since 1.0.0.beta1
     # @api private
     def self.release
       @_resolved.clear

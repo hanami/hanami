@@ -20,7 +20,7 @@ module Hanami
 
     # Setup project's logger
     #
-    # @since x.x.x
+    # @since 1.0.0.beta1
     # @api private
     register 'logger' do
       prepare do

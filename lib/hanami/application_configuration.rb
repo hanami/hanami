@@ -20,7 +20,7 @@ module Hanami
     # @see Hanami::Configuration#ssl?
     SSL_SCHEME = 'https'.freeze
 
-    # @since x.x.x
+    # @since 1.0.0.beta1
     # @api private
     DEFAULT_SSL_PORT = 443
 
