@@ -9,6 +9,8 @@ RSpec.describe "Rake: default task", type: :cli do
 
         prepare_test_database
 
+        generate 'mailer bookshelf'
+
         write "spec/bookshelf/repositories/book_repository_spec.rb", <<-EOF
 RSpec.describe BookRepository do
   before do
@@ -22,7 +24,9 @@ end
 EOF
 
         bundle_exec "rake"
-        expect(out).to include("1 example, 0 failures")
+
+        # The default mailer_spec fails on purpose so you set the correct delivery information.
+        expect(out).to include("2 examples, 1 failure")
 
         assert_development_data
       end

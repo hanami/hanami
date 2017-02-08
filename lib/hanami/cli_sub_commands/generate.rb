@@ -77,6 +77,7 @@ module Hanami
         > $ hanami generate model vehicles/car
       EOS
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .hanamirc file.'
+      method_option :skip_migration, desc: 'Skips the generation of a migration to create the model\'s table', default: false, type: :boolean
       def model(name)
         if options[:help]
           invoke :help, ['model']

@@ -36,6 +36,10 @@ module RSpec
         hanami "generate #{target}"
       end
 
+      def destroy(target)
+        hanami "destroy #{target}"
+      end
+
       def migrate
         hanami "db migrate"
       end
@@ -45,13 +49,20 @@ module RSpec
       end
 
       def generate_migration(name, content)
-        sleep 1 # prevent two migrations to have the same timestamp
-        generate "migration #{name}"
+        # Check if the migration already exist because `hanami generate model`
+        migration = Dir.glob(Pathname.new("db").join("migrations", "*_#{name}.rb")).sort.last
 
-        last_migration = Dir.glob(Pathname.new("db").join("migrations", "**", "*.rb")).sort.last
-        rewrite(last_migration, content)
+        # If it doesn't exist, generate it
+        if migration.nil?
+          sleep 1 # prevent two migrations to have the same timestamp
+          generate "migration #{name}"
 
-        Integer(last_migration.scan(/[0-9]+/).first)
+          migration = Dir.glob(Pathname.new("db").join("migrations", "**", "*.rb")).sort.last
+        end
+
+        # write the given content, then return the timestamp
+        rewrite(migration, content)
+        Integer(migration.scan(/[0-9]+/).first)
       end
 
       # rubocop:disable Metrics/MethodLength

@@ -2,6 +2,7 @@ require 'rack'
 require 'rack/builder'
 require 'hanami/router'
 require 'hanami/components'
+require 'hanami/common_logger'
 
 module Hanami
   # Main application that mounts many Rack and/or Hanami applications.
@@ -62,6 +63,9 @@ module Hanami
     # @since 0.9.0
     # @api private
     def middleware(environment)
+      builder.use Hanami::CommonLogger, Hanami.logger
+      builder.use Rack::ContentLength
+
       if middleware = environment.static_assets_middleware # rubocop:disable Lint/AssignmentInCondition
         builder.use middleware
       end

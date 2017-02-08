@@ -5,15 +5,18 @@ RSpec.shared_examples "a new model" do
 
   it 'generates model' do
     class_name = Hanami::Utils::String.new(model).classify
+    table_name = Hanami::Utils::String.new(model).pluralize
     project    = "bookshelf_generate_model_#{Random.rand(100_000_000)}"
 
     with_project(project) do
-      output = <<-OUT
-      create  lib/#{project}/entities/#{model}.rb
-      create  lib/#{project}/repositories/#{model}_repository.rb
-      create  spec/#{project}/entities/#{model}_spec.rb
-      create  spec/#{project}/repositories/#{model}_repository_spec.rb
-OUT
+      output = [
+        "create  lib/#{project}/entities/#{model}.rb",
+        "create  lib/#{project}/repositories/#{model}_repository.rb",
+        /create  db\/migrations\/(\d+)_create_#{table_name}.rb/,
+        "create  spec/#{project}/entities/#{model}_spec.rb",
+        "create  spec/#{project}/repositories/#{model}_repository_spec.rb"
+      ]
+
       run_command "hanami generate model #{input}", output
 
       #
@@ -29,6 +32,29 @@ END
       #
       expect("lib/#{project}/repositories/#{model}_repository.rb").to have_file_content <<-END
 class #{class_name}Repository < Hanami::Repository
+end
+END
+
+
+      #
+      # db/migrations/<timestamp>_create_<models>.rb
+      #
+      migrations = Pathname.new('db').join('migrations').children
+      file       = migrations.find do |child|
+        child.to_s.include?("create_#{table_name}")
+      end
+      expect(file).to_not be_nil, "Expected to find a migration matching: create_#{table_name}.\nFound: #{migrations.map(&:basename).join(' ')}"
+            
+      expect(file.to_s).to have_file_content <<-END
+Hanami::Model.migration do
+  change do
+    create_table :#{table_name} do
+      primary_key :id
+
+      column :created_at, DateTime, null: false
+      column :updated_at, DateTime, null: false
+    end
+  end
 end
 END
 

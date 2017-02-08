@@ -13,9 +13,23 @@ module Hanami
     # @since 0.9.0
     # @api private
     register 'all' do
-      requires 'model', 'apps', 'finalizers'
+      requires 'logger', 'mailer', 'code', 'model', 'apps', 'finalizers'
 
       resolve { true }
+    end
+
+    # Setup project's logger
+    #
+    # @since 1.0.0.beta1
+    # @api private
+    register 'logger' do
+      prepare do
+        require 'hanami/logger'
+      end
+
+      resolve do |configuration|
+        Hanami::Logger.new(Hanami.environment.project_name, configuration.logger) unless configuration.logger.nil?
+      end
     end
 
     # Check if code reloading is enabled
@@ -31,9 +45,20 @@ module Hanami
       end
 
       resolve do
-        defined?(Shotgun) &&
-          Components['environment'].code_reloading? &&
-          true
+        !!(defined?(Shotgun) && # rubocop:disable Style/DoubleNegation
+           Components['environment'].code_reloading?)
+      end
+    end
+
+    register 'code' do
+      run do
+        directory = Hanami.root.join('lib')
+
+        if Hanami.code_reloading?
+          Utils.reload!(directory)
+        else
+          Utils.require!(directory)
+        end
       end
     end
 
@@ -50,11 +75,12 @@ module Hanami
     #   Hanami::Components.resolve('model')
     #   Hanami::Components['model'] # => nil
     register 'model' do
-      requires 'model.configuration', 'model.sql'
+      requires 'logger', 'model.configuration', 'model.sql'
 
       resolve do
         if Components['model.configuration']
           Hanami::Model.load!
+          Hanami::Model.configuration.logger = Components['logger']
           true
         end
       end
@@ -77,6 +103,7 @@ module Hanami
 
       resolve do |configuration|
         if Components['model.bundled']
+          Hanami::Model.instance_variable_set(:@configuration, nil) if Hanami.code_reloading?
           Hanami::Model.configure(&configuration.model)
           Hanami::Model.configuration
         end
@@ -132,6 +159,46 @@ module Hanami
 
       resolve do
         true if defined?(Hanami::Model)
+      end
+    end
+
+    # Tries to evaluate hanami-mailer configuration
+    #
+    # @since 1.0.0.beta1
+    # @api private
+    #
+    # @example With hanami-mailer
+    #   Hanami::Components.resolve('mailer.configuration')
+    #   Hanami::Components['mailer.configuration'].class # => Hanami::Mailer::Configuration
+    register 'mailer.configuration' do
+      prepare do
+        require 'hanami/mailer'
+        require 'hanami/mailer/glue'
+      end
+
+      resolve do |configuration|
+        Hanami::Mailer.configuration = Hanami::Mailer::Configuration.new if Hanami.code_reloading?
+        Hanami::Mailer.configure(&configuration.mailer)
+        Hanami::Mailer.configuration
+      end
+    end
+
+    # Tries to load hanami-mailer
+    #
+    # @since 1.0.0.beta1
+    # @api private
+    #
+    # @example
+    #   Hanami::Components.resolve('mailer')
+    #   Hanami::Components['mailer'] # => true
+    register 'mailer' do
+      requires 'mailer.configuration'
+
+      resolve do
+        if Components['mailer.configuration']
+          Hanami::Mailer.load!
+          true
+        end
       end
     end
 
@@ -259,7 +326,7 @@ module Hanami
     # @api private
     register 'app.frameworks' do
       run do |app|
-        ['app.controller', 'app.view', 'app.assets', 'app.logger'].each do |c|
+        ['app.controller', 'app.view', 'app.assets'].each do |c|
           component(c).call(app)
         end
       end
@@ -304,20 +371,6 @@ module Hanami
 
       run do |app|
         Components::App::Assets.resolve(app)
-      end
-    end
-
-    # Evaluate hanami/logger configuration of a single Hanami application in the project
-    #
-    # @since 0.9.0
-    # @api private
-    register 'app.logger' do
-      prepare do
-        require 'hanami/components/app/logger'
-      end
-
-      run do |app|
-        Components::App::Logger.resolve(app)
       end
     end
 

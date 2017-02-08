@@ -52,7 +52,7 @@ module Hanami
   #       delivery do
   #         development :test
   #         test        :test
-  #         # production :smtp, address: ENV['SMTP_HOST'], port: 1025
+  #         # production :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
   #       end
   #     end
   #   end
@@ -90,6 +90,7 @@ module Hanami
   # @since 0.9.0
   # @api private
   def self.boot
+    Components.release if code_reloading?
     Components.resolve('all')
   end
 
@@ -194,5 +195,28 @@ module Hanami
     Components.resolved('environment') do
       Environment.new
     end
+  end
+
+  # Check if code reloading is enabled.
+  #
+  # @return [TrueClass,FalseClass] the result of the check
+  #
+  # @since 1.0.0.beta1
+  # @api private
+  #
+  # @see http://hanamirb.org/guides/projects/code-reloading/
+  def self.code_reloading?
+    environment
+    Components.resolve('code_reloading')
+    Components['code_reloading']
+  end
+
+  # Project logger
+  #
+  # @return [Hanami::Logger] the logger
+  #
+  # @since 1.0.0.beta1
+  def self.logger
+    Components['logger']
   end
 end

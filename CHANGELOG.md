@@ -1,6 +1,31 @@
 # Hanami
 The web, with simplicity.
 
+## v1.0.0.beta1 (unreleased)
+### Added
+- [Luca Guidi] Official support for Ruby: MRI 2.4
+- [yjukaku] CLI: `hanami generate model` now also generates a migration
+- [Luca Guidi] Generate `config/boot.rb` for new Hanami projects.
+- [Luca Guidi] Introduced `Hanami.logger` as project logger
+- [Luca Guidi] Automatic logging of HTTP requests, migrations, and SQL queries
+- [Luca Guidi] Introduced `environment` for env specific settings in `config/environment.rb`
+
+### Fixed
+- [Marcello Rocha] Fix Hanami::Mailer loading
+- [Kai Kuchenbecker] Serve only existing assets with `Hanami::Static`
+- [Gabriel Gizotti] Ensure inline ENV vars to not be overwritten by `.env.*` files
+- [Adrian Madrid] Ensure new Hanami projects to have the right `jdbc` prefix for JRuby
+- [Luca Guidi] Fixed code reloading for objects under `lib/`
+- [Semyon Pupkov] Ensure generated mailer to respect the project name under `lib/`
+- [Semyon Pupkov] Fixed generation of mailer settings for new projects
+
+### Changed
+- [Ozawa Sakuro] Don't include `bundler` as a dependency `Gemfile` for new Hanami projects
+- [Luca Guidi] Make compatible with Rack 2.0 only
+- [Luca Guidi] Removed `logger` settings from Hanami applications
+- [Luca Guidi] Removed logger for Hanami applications (eg `Web.logger`)
+- [Luca Guidi] Changed mailer syntax in `config/enviroment.rb`
+
 ## v0.9.2 - 2016-12-19
 ## Added
 - [The Crab] Mark unit tests/specs as pending for generated actions and views

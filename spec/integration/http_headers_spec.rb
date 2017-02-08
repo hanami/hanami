@@ -9,8 +9,8 @@ RSpec.describe "HTTP headers", type: :cli do
         expect(last_response.status).to       eq(200)
         expect(last_response.headers.keys).to eq(
           ["X-Frame-Options", "X-Content-Type-Options", "X-Xss-Protection",
-           "Content-Security-Policy", "Content-Type", "Server", "Date",
-           "Content-Length", "Connection"]
+           "Content-Security-Policy", "Content-Type", "Content-Length",
+           "Server", "Date", "Connection"]
         )
 
         expect(last_response.headers["X-Frame-Options"]).to         eq("DENY")

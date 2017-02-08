@@ -13,7 +13,7 @@ Hanami.configure do
     #
     #  * SQL adapter
     #    adapter :sql, 'sqlite://db/<%= config[:project_name] %>_development.sqlite3'
-    #    adapter :sql, 'postgres://localhost/<%= config[:project_name] %>_development'
+    #    adapter :sql, 'postgresql://localhost/<%= config[:project_name] %>_development'
     #    adapter :sql, 'mysql://localhost/<%= config[:project_name] %>_development'
     #
     adapter :<%= config[:database_config][:type] %>, ENV['DATABASE_URL']
@@ -31,10 +31,19 @@ Hanami.configure do
     root 'lib/<%= config[:project_name] %>/mailers'
 
     # See http://hanamirb.org/guides/mailers/delivery
-    delivery do
-      development :test
-      test        :test
-      # production :smtp, address: ENV['SMTP_PORT'], port: 1025
+    delivery :test
+  end
+
+  environment :development do
+    # See: http://hanamirb.org/guides/projects/logging
+    logger level: :debug
+  end
+
+  environment :production do
+    logger level: :info, formatter: :json
+
+    mailer do
+      delivery :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
     end
   end
 end

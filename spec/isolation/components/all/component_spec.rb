@@ -12,6 +12,10 @@ RSpec.describe "Components: all", type: :cli do
       expect(Hanami::Components['model.configuration']).to_not be(nil)
       expect(Hanami::Components['model']).to_not               be(nil)
 
+      expect(Hanami::Components['mailer.configuration']).to_not be(nil)
+      expect(Hanami::Components['mailer']).to_not               be(nil)
+
+
       expect(Hanami::Components['web']).to_not   be(nil)
       expect(Hanami::Components['admin']).to_not be(nil)
 

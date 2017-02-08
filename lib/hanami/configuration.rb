@@ -46,6 +46,18 @@ module Hanami
       end
     end
 
+    def logger(options = nil)
+      if options.nil?
+        settings.fetch(:logger, nil)
+      else
+        settings[:logger] = options
+      end
+    end
+
+    def environment(name)
+      yield if ENV['HANAMI_ENV'] == name.to_s
+    end
+
     private
 
     attr_reader :settings

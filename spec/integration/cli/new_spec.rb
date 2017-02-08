@@ -7,6 +7,7 @@ RSpec.describe 'hanami new', type: :cli do
       create  .env.test
       create  Gemfile
       create  config.ru
+      create  config/boot.rb
       create  config/environment.rb
       create  lib/#{project}.rb
       create  public/.gitkeep
@@ -83,7 +84,6 @@ END
         expect('Gemfile').to have_file_content <<-END
 source 'https://rubygems.org'
 
-gem 'bundler'
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
 gem 'hanami-model', '~> 1.0.0.beta1'
@@ -115,7 +115,6 @@ END
         expect('Gemfile').to have_file_content <<-END
 source 'https://rubygems.org'
 
-gem 'bundler'
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
 gem 'hanami-model', '~> 1.0.0.beta1'
@@ -147,6 +146,14 @@ run Hanami.app
 END
 
       #
+      # config/boot.rb
+      #
+      expect('config/boot.rb').to have_file_content <<-END
+require_relative './environment'
+Hanami.boot
+END
+
+      #
       # config/environment.rb
       #
       expect('config/environment.rb').to have_file_content <<-END
@@ -167,7 +174,7 @@ Hanami.configure do
     #
     #  * SQL adapter
     #    adapter :sql, 'sqlite://db/#{project}_development.sqlite3'
-    #    adapter :sql, 'postgres://localhost/#{project}_development'
+    #    adapter :sql, 'postgresql://localhost/#{project}_development'
     #    adapter :sql, 'mysql://localhost/#{project}_development'
     #
     adapter :sql, ENV['DATABASE_URL']
@@ -183,10 +190,19 @@ Hanami.configure do
     root 'lib/#{project}/mailers'
 
     # See http://hanamirb.org/guides/mailers/delivery
-    delivery do
-      development :test
-      test        :test
-      # production :smtp, address: ENV['SMTP_PORT'], port: 1025
+    delivery :test
+  end
+
+  environment :development do
+    # See: http://hanamirb.org/guides/projects/logging
+    logger level: :debug
+  end
+
+  environment :production do
+    logger level: :info, formatter: :json
+
+    mailer do
+      delivery :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
     end
   end
 end
@@ -578,18 +594,6 @@ module Web
     configure :development do
       # Don't handle exceptions, render the stack trace
       handle_exceptions false
-
-      # Logger
-      # See: http://hanamirb.org/guides/projects/logging
-      #
-      # Logger stream. It defaults to STDOUT.
-      # logger.stream "log/development.log"
-      #
-      # Logger level. It defaults to DEBUG
-      # logger.level :debug
-      #
-      # Logger format. It defaults to DEFAULT
-      # logger.format :default
     end
 
     ##
@@ -598,12 +602,6 @@ module Web
     configure :test do
       # Don't handle exceptions, render the stack trace
       handle_exceptions false
-
-      # Logger
-      # See: http://hanamirb.org/guides/projects/logging
-      #
-      # Logger level. It defaults to ERROR
-      logger.level :error
     end
 
     ##
@@ -613,18 +611,6 @@ module Web
       # scheme 'https'
       # host   'example.org'
       # port   443
-
-      # Logger
-      # See: http://hanamirb.org/guides/projects/logging
-      #
-      # Logger stream. It defaults to STDOUT.
-      # logger.stream "log/production.log"
-      #
-      # Logger level. It defaults to INFO
-      logger.level :info
-
-      # Logger format.
-      logger.format :json
 
       assets do
         # Don't compile static assets in production mode (eg. Sass, ES6)

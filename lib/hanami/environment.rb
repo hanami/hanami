@@ -193,6 +193,10 @@ module Hanami
     #   # is "development". The settings defined in this last file override
     #   # the one defined in the parent (eg `FOO` is overwritten). All the
     #   # other settings (eg `XYZ`) will be left untouched.
+    #   # Variables declared on `.env` and `.env.development` will not override
+    #   # any variable declared on the shell when calling a `hanami` command.
+    #   # Eg. In `FOO="not ok" bundle exec hanami c` `FOO` will not be overwritten
+    #   # to `"ok"`.
     def initialize(options = {})
       opts     = options.to_h.dup
       @env     = Hanami::Env.new(env: opts.delete(:env) || ENV)
@@ -331,7 +335,7 @@ module Hanami
 
     # Check if the current port is the default one
     #
-    # @since x.x.x
+    # @since 1.0.0.beta1
     # @api private
     #
     # @see Hanami::ApplicationConfiguration#port

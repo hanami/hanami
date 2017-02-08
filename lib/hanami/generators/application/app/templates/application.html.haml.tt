@@ -1,7 +1,0 @@
-!!!
-%html
-  %head
-    %title <%= config[:classified_app_name] %>
-    = favicon
-  %body
-    = yield

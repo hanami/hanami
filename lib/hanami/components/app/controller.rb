@@ -28,6 +28,7 @@ module Hanami
           unless namespace.const_defined?('Controller', false)
             controller = Hanami::Controller.duplicate(namespace) do
               handle_exceptions config.handle_exceptions
+              public_directory  Hanami.public_directory
               default_request_format config.default_request_format
               default_response_format config.default_response_format
               default_headers(

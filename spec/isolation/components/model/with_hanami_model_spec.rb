@@ -7,6 +7,7 @@ RSpec.describe "Components: model", type: :cli do
 
         expect(Hanami::Components['model']).to     be(true)
         expect(Hanami::Components['model.sql']).to be(true)
+        expect(Hanami::Model.configuration.logger).to eq(Hanami.logger)
       end
     end
   end

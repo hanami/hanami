@@ -34,10 +34,6 @@ module Hanami
 
     # @since 0.8.0
     # @api private
-    EXCLUDED_ENTRIES = %w(. ..).freeze
-
-    # @since 0.8.0
-    # @api private
     URL_PREFIX = '/'.freeze
 
     # @since 0.6.0
@@ -53,10 +49,10 @@ module Hanami
     def _urls(root)
       return [] unless root.exist?
 
-      Dir.entries(root).sort.map do |entry|
-        next if EXCLUDED_ENTRIES.include?(entry)
-        "#{URL_PREFIX}#{entry}"
-      end.compact
+      asset_files = Dir.chdir(root) do
+        Dir['**/*'].select { |path| File.file? path }
+      end
+      Hash[asset_files.map { |entry| ["#{URL_PREFIX}#{entry}", entry] }]
     end
   end
 end

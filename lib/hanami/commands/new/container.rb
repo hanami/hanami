@@ -43,6 +43,7 @@ module Hanami
           add_mapping('.env.test.tt', '.env.test')
           add_mapping('Gemfile.tt', 'Gemfile')
           add_mapping('config.ru.tt', 'config.ru')
+          add_mapping('config/boot.rb.tt', 'config/boot.rb')
           add_mapping('config/environment.rb.tt', 'config/environment.rb')
           add_mapping('lib/project.rb.tt', "lib/#{ project_name }.rb")
         end

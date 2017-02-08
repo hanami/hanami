@@ -5,7 +5,6 @@ require 'hanami/middleware'
 require 'hanami/config/cookies'
 require 'hanami/config/framework_configuration'
 require 'hanami/config/load_paths'
-require 'hanami/config/logger'
 require 'hanami/config/routes'
 require 'hanami/config/security'
 require 'hanami/config/sessions'
@@ -21,7 +20,7 @@ module Hanami
     # @see Hanami::Configuration#ssl?
     SSL_SCHEME = 'https'.freeze
 
-    # @since x.x.x
+    # @since 1.0.0.beta1
     # @api private
     DEFAULT_SSL_PORT = 443
 
@@ -1398,7 +1397,7 @@ module Hanami
     #   module Bookshelf
     #     class Application < Hanami::Application
     #       configure do
-    #         adapter       :sql, 'postgres://localhost/database'
+    #         adapter       :sql, 'postgresql://localhost/database'
     #         model.adapter :sql, 'sqlite://db/bookshelf_development'
     #       end
     #     end
@@ -1493,40 +1492,6 @@ module Hanami
     #   # It will use `:backend` layout
     def view
       @view ||= Config::FrameworkConfiguration.new
-    end
-
-    # Defines a Config::Logger instance to the logger configuration.
-    #
-    # This instance will be used to generate the hanami logger available on application module.
-    #
-    # @return [Config::Logger] Configure logger instance
-    #
-    # @since 0.5.0
-    #
-    # @example Define a logger
-    #   require 'hanami'
-    #
-    #   module Bookshelf
-    #     class Application < Hanami::Application
-    #       configure do
-    #         logger.stream 'path/to/log/file'
-    #       end
-    #       load!
-    #     end
-    #
-    #     module Controllers::Error
-    #       class Index
-    #         include Bookshelf::Action
-    #
-    #         def call(params)
-    #           Bookshelf::Logger.info "Logging to STDOUT"
-    #         end
-    #       end
-    #     end
-    #   end
-    #
-    def logger
-      @logger ||= Config::Logger.new
     end
 
     # @since 0.9.0

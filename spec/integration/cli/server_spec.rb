@@ -262,6 +262,72 @@ EOF
       end
     end
 
+    it "reloads model" do
+      project_name = "bookshelf"
+
+      with_project(project_name) do
+        # STEP 1: prepare the database and the repository
+        generate_model "user"
+        generate_migration "create_users", <<-EOF
+Hanami::Model.migration do
+  change do
+    create_table :users do
+      primary_key :id
+      column :name, String
+    end
+
+    execute "INSERT INTO users (name) VALUES('L')"
+    execute "INSERT INTO users (name) VALUES('MG')"
+  end
+end
+EOF
+
+        rewrite "lib/#{project_name}/repositories/user_repository.rb", <<-EOF
+class UserRepository < Hanami::Repository
+  def listing
+    all
+  end
+end
+EOF
+
+        hanami "db prepare"
+
+        # STEP 2: generate the action
+        generate "action web users#index --url=/users"
+
+        rewrite "apps/web/controllers/users/index.rb", <<-EOF
+module Web::Controllers::Users
+  class Index
+    include Web::Action
+
+    def call(params)
+      self.body = UserRepository.new.listing.map(&:name).join(", ")
+    end
+  end
+end
+EOF
+
+        server do
+          # STEP 3: visit the page
+          visit "/users"
+
+          expect(page).to have_content("L, MG")
+
+          # STEP 4: change the repository, then visit the page again
+          rewrite "lib/#{project_name}/repositories/user_repository.rb", <<-EOF
+class UserRepository < Hanami::Repository
+  def listing
+    all.reverse
+  end
+end
+EOF
+          visit "/users"
+
+          expect(page).to have_content("MG, L")
+        end
+      end
+    end
+
     xit "reloads asset" do
       with_project do
         server do

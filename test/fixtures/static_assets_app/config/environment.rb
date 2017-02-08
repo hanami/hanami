@@ -1,5 +1,0 @@
-require 'bundler/setup'
-require 'hanami/setup'
-require 'tilt/sass'
-require_relative '../lib/static_assets_app'
-require_relative '../config/application'

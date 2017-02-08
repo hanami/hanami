@@ -35,5 +35,34 @@ EOF
         end
       end
     end
+
+    it "serve assets with prefixes" do
+      with_project do
+        generate "action web home#index --url=/"
+
+        replace(
+          "apps/web/application.rb",
+          "# Specify sources for assets",
+          "prefix '/library/assets'\n# Specify sources for assets"
+        )
+
+        replace(
+          "apps/web/config/routes.rb",
+          "/",
+          "namespace :library { get '/', to: 'home#index' }"
+        )
+
+        write "apps/web/assets/javascripts/application.js", <<-EOF
+console.log('test');
+EOF
+
+        hanami "assets precompile"
+
+        server do
+          visit "/library/assets/application.js"
+          expect(page).to have_content("console.log('test');")
+        end
+      end
+    end
   end
 end
