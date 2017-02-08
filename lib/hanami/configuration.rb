@@ -48,10 +48,14 @@ module Hanami
 
     def logger(options = nil)
       if options.nil?
-        settings.fetch(:logger)
+        settings.fetch(:logger, nil)
       else
-        settings.put_if_absent(:logger, options)
+        settings[:logger] = options
       end
+    end
+
+    def environment(name)
+      yield if ENV['HANAMI_ENV'] == name.to_s
     end
 
     private
