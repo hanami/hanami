@@ -90,7 +90,7 @@ END
     it "fails with missing arguments" do
       with_project('bookshelf_generate_mailer_without_args') do
         output = <<-OUT
-ERROR: "hanami mailer" was called with no arguments
+ERROR: "hanami generate mailer" was called with no arguments
 Usage: "hanami generate mailer NAME"
 OUT
 

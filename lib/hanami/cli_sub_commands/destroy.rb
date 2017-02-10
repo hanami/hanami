@@ -28,7 +28,7 @@ module Hanami
       def actions(application_name = nil, controller_and_action_name)
         if Hanami::Environment.new(options).container? && application_name.nil?
           msg = "ERROR: \"hanami destroy action\" was called with arguments [\"#{controller_and_action_name}\"]\n" \
-                "Usage: \"hanami action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME\""
+                "Usage: \"hanami destroy action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME\""
           fail Error, msg
         end
 
