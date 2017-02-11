@@ -27,8 +27,8 @@ RSpec.describe "hanami destroy", type: :cli do
     it "fails with missing arguments" do
       with_project do
         output = <<-OUT
-ERROR: "hanami actions" was called with no arguments
-Usage: "hanami action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
+ERROR: "hanami destroy actions" was called with no arguments
+Usage: "hanami destroy action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
 OUT
 
         run_command "hanami destroy action", output # , exit_status: 1 FIXME: Thor exit with 0
@@ -39,7 +39,7 @@ OUT
       with_project('bookshelf_generate_action_without_app') do
         output = <<-OUT
 ERROR: "hanami destroy action" was called with arguments ["home#index"]
-Usage: "hanami action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
+Usage: "hanami destroy action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
 OUT
 
         run_command "hanami destroy action home#index", output # , exit_status: 1 FIXME: Thor exit with 0
