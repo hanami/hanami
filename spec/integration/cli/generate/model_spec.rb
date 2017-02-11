@@ -30,8 +30,8 @@ RSpec.describe "hanami generate", type: :cli do
       it "fails" do
         with_project('bookshelf_generate_model_missing_arguments') do
           output = <<-END
-ERROR: "hanami model" was called with no arguments
-Usage: "hanami model NAME"
+ERROR: "hanami generate model" was called with no arguments
+Usage: "hanami generate model NAME"
 END
           run_command "hanami generate model", output # , exit_status: 1 FIXME: Thor exit with 0
         end

@@ -28,10 +28,26 @@ RSpec.describe "hanami destroy", type: :cli do
     it "fails with missing argument" do
       with_project do
         output = <<-OUT
-ERROR: "hanami model" was called with no arguments
-Usage: "hanami model NAME"
+ERROR: "hanami destroy model" was called with no arguments
+Usage: "hanami destroy model NAME"
 OUT
         run_command "hanami destroy model", output
+      end
+    end
+
+    it 'prints help message' do
+      with_project do
+        output = <<-OUT
+Usage:
+  hanami destroy model NAME
+
+Description:
+  `hanami destroy model` will destroy an entity along with repository and \n  corresponding tests
+
+  > $ hanami destroy model car
+OUT
+
+        run_command 'hanami destroy model --help', output
       end
     end
 

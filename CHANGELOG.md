@@ -18,6 +18,7 @@ The web, with simplicity.
 - [Luca Guidi] Fixed code reloading for objects under `lib/`
 - [Semyon Pupkov] Ensure generated mailer to respect the project name under `lib/`
 - [Semyon Pupkov] Fixed generation of mailer settings for new projects
+- [Victor Franco] Fixed CLI subcommands help output
 
 ### Changed
 - [Ozawa Sakuro] Don't include `bundler` as a dependency `Gemfile` for new Hanami projects

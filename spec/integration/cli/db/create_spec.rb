@@ -24,5 +24,19 @@ RSpec.describe "hanami db", type: :cli do
         expect(db).to_not be_an_existing_file
       end
     end
+
+    it 'prints help message' do
+      output = <<-OUT
+Usage:
+  hanami db create
+
+Options:
+  [--environment=ENVIRONMENT]  # Path to environment configuration (config/environment.rb)
+
+Create database for current environment
+OUT
+
+      run_command 'hanami db create --help', output
+    end
   end
 end
