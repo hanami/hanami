@@ -205,6 +205,12 @@ module <%= config[:classified_app_name] %>
       # Inline JavaScript is NOT allowed. To enable it, please use:
       # "script-src 'unsafe-inline'".
       #
+      # Javascript eval() and similar methods are NOT allowed. It needs to be enabled
+      # for Javascript frameworks that rely on
+      # such features, such as vue.js. To enable it, please use:
+      # "script-src unsafe-eval'".
+      #
+      #
       # Content Security Policy introduction:
       #
       #  * http://www.html5rocks.com/en/tutorials/security/content-security-policy/
