@@ -88,16 +88,15 @@ module Hanami
     desc 'new PROJECT_NAME', 'Generate a new hanami project'
     long_desc <<-EOS
 `hanami new` creates a new hanami project.
-You can specify various options such as the database to be used as well as the path and architecture.
+You can specify various options, like which database type, testing framework or templating engine the project will use.
 
 $ > hanami new fancy_app --application_name=admin
 
-$ > hanami new fancy_app --arch=app
+$ > hanami new fancy_app --database=postgresql
 
 $ > hanami new fancy_app --hanami-head=true
     EOS
     method_option :database, aliases: ['-d', '--db'], desc: "Application database (#{Hanami::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Hanami::Generators::DatabaseConfig::DEFAULT_ENGINE
-    method_option :architecture, aliases: ['-a', '--arch'], desc: 'Project architecture (container/app)', default: Hanami::Commands::New::Abstract::DEFAULT_ARCHITECTURE
     method_option :application_name, desc: 'Application name, only for container', default: Hanami::Commands::New::Container::DEFAULT_APPLICATION_NAME
     method_option :application_base_url, desc: 'Application base url', default: Hanami::Commands::New::Abstract::DEFAULT_APPLICATION_BASE_URL
     method_option :template, desc: "Template engine (#{Hanami::Generators::TemplateEngine::SUPPORTED_ENGINES.join('/')})", default: Hanami::Generators::TemplateEngine::DEFAULT_ENGINE
@@ -110,8 +109,6 @@ $ > hanami new fancy_app --hanami-head=true
       elsif application_name.nil?
         warn %(`hanami new` was called with no arguments\nUsage: `hanami new PROJECT_NAME`)
         exit(1)
-      elsif options[:architecture] == 'app'
-        Hanami::Commands::New::App.new(options, application_name).start
       else
         Hanami::Commands::New::Container.new(options, application_name).start
       end

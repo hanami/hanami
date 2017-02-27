@@ -227,15 +227,8 @@ module Hanami
           end
         end
 
-        # The directory of the application
-        # ./app for 'app' architecture
-        # ./apps/APPLICATION_NAME for 'container'
         def application_path
-          if environment.container?
-            applications_path.join(application_name_as_snake_case)
-          else
-            Pathname.new('app')
-          end
+          applications_path.join(application_name_as_snake_case)
         end
 
         # The parent dir of the application directory.

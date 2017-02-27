@@ -24,9 +24,9 @@ module Hanami
       long_desc <<-EOS
         `hanami generate action` generates an an action, view and template along with specs and a route.
 
-        For Application architecture the application name is 'app'. For Container architecture the default application is called 'web'.
+        Note: the default application is named 'web'.
 
-        > $ hanami generate action app cars#index
+        > $ hanami generate action web cars#index
 
         > $ hanami generate action other-app cars#index
 
@@ -108,8 +108,6 @@ module Hanami
       desc 'app APPLICATION_NAME', 'Generate an app'
       long_desc <<-EOS
         `hanami generate app` creates a new app inside the 'apps' directory.
-
-        It can only be called for hanami applications with container architecture.
 
         > $ hanami generate app admin
 

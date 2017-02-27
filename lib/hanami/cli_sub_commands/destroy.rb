@@ -12,9 +12,9 @@ module Hanami
       long_desc <<-EOS
         `hanami destroy action` will destroy an an action, view and template along with specs and a route.
 
-        For Application architecture the application name is 'app'. For Container architecture the default application is called 'web'.
+        Note: the default application is named 'web'.
 
-        > $ hanami destroy action app cars#index
+        > $ hanami destroy action web cars#index
 
         > $ hanami destroy action other-app cars#index
 

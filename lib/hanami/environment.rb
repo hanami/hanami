@@ -110,19 +110,7 @@ module Hanami
 
     # @since 0.4.0
     # @api private
-    CONTAINER = 'container'.freeze
-
-    # @since 0.4.0
-    # @api private
-    CONTAINER_PATH = 'apps'.freeze
-
-    # @since 0.4.0
-    # @api private
-    APPLICATION = 'app'.freeze
-
-    # @since 0.4.0
-    # @api private
-    APPLICATION_PATH = 'app'.freeze
+    APPS_PATH = 'apps'.freeze
 
     # @since 0.4.0
     # @api private
@@ -420,17 +408,8 @@ module Hanami
 
     # @since 0.4.0
     # @api private
-    def architecture
-      @options.fetch(:architecture) do
-        puts "Cannot recognize Hanami architecture, please check `.hanamirc'"
-        exit 1
-      end
-    end
-
-    # @since 0.4.0
-    # @api private
     def container?
-      architecture == CONTAINER
+      true
     end
 
     # @since 0.6.0
@@ -456,12 +435,7 @@ module Hanami
     # @since 0.4.0
     # @api private
     def apps_path
-      @options.fetch(:path) {
-        case architecture
-        when CONTAINER   then CONTAINER_PATH
-        when APPLICATION then APPLICATION_PATH
-        end
-      }
+      @options.fetch(:path) { APPS_PATH }
     end
 
     # Serialize the most relevant settings into a Hash
