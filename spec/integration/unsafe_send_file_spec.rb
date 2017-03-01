@@ -1,4 +1,4 @@
-RSpec.describe "Send file", type: :cli do
+RSpec.describe "Unsafe send file", type: :cli do
   it "sends file from the public directory" do
     with_project do
       write "public/static.txt", "Static file"
@@ -9,7 +9,7 @@ module Web::Controllers::Home
     include Web::Action
 
     def call(params)
-      send_file "static.txt"
+      unsafe_send_file "public/static.txt"
     end
   end
 end
@@ -24,7 +24,7 @@ EOF
     end
   end
 
-  it "doesn't send file outside of public directory" do
+  it "sends file outside of the public directory" do
     with_project do
       generate "action web home#index --url=/"
       rewrite "apps/web/controllers/home/index.rb", <<-EOF
@@ -33,7 +33,7 @@ module Web::Controllers::Home
     include Web::Action
 
     def call(params)
-      send_file __FILE__
+      unsafe_send_file __FILE__
     end
   end
 end
@@ -42,7 +42,8 @@ EOF
       server do
         get '/'
 
-        expect(last_response.status).to eq(404)
+        expect(last_response.status).to eq(200)
+        expect(last_response.body).to   include("Web::Controllers::Home")
       end
     end
   end
