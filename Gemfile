@@ -12,7 +12,7 @@ gem 'hanami-validations', '~> 1.0.0.beta1', require: false, github: 'hanami/vali
 gem 'hanami-router',      '~> 1.0.0.beta1', require: false, github: 'hanami/router',      branch: '1.0.x'
 gem 'hanami-controller',  '~> 1.0.0.beta1', require: false, github: 'hanami/controller',  branch: '1.0.x'
 gem 'hanami-view',        '~> 1.0.0.beta1', require: false, github: 'hanami/view',        branch: '1.0.x'
-gem 'hanami-model',       '~> 1.0.0.beta1', require: false, github: 'hanami/model',       branch: '1.0.x'
+gem 'hanami-model',       '~> 1.0.0.beta1', require: false, github: 'hanami/model',       branch: 'hanami-model-disconnect'
 gem 'hanami-helpers',     '~> 1.0.0.beta1', require: false, github: 'hanami/helpers',     branch: '1.0.x'
 gem 'hanami-mailer',      '~> 1.0.0.beta1', require: false, github: 'hanami/mailer',      branch: '1.0.x'
 gem 'hanami-assets',      '~> 1.0.0.beta1', require: false, github: 'hanami/assets',      branch: '1.0.x'
