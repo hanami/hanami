@@ -17,7 +17,6 @@ module Hanami
 
           @target_path = Hanami.root
           assert_application_name!(application_name)
-          assert_architecture!
           assert_application_base_url!
 
           @application_name = ApplicationName.new(application_name)
@@ -112,12 +111,6 @@ module Hanami
         def assert_application_name!(value)
           if argument_blank?(value)
             raise ArgumentError.new('Application name is missing')
-          end
-        end
-
-        def assert_architecture!
-          if !environment.container?
-            raise ArgumentError.new('App generator is only available for container architecture.')
           end
         end
 

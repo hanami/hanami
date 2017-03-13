@@ -56,7 +56,6 @@ OUT
       #
       expect('.hanamirc').to have_file_content <<-END
 project=#{project}
-architecture=container
 test=minitest
 template=erb
 END
@@ -769,8 +768,6 @@ Usage:
 Options:
   -d, --db, [--database=DATABASE]                        # Application database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3/filesystem/memory)
                                                          # Default: filesystem
-  -a, --arch, [--architecture=ARCHITECTURE]              # Project architecture (container/app)
-                                                         # Default: container
           [--application-name=APPLICATION_NAME]          # Application name, only for container
                                                          # Default: web
           [--application-base-url=APPLICATION_BASE_URL]  # Application base url
@@ -786,11 +783,11 @@ OUT
 # rubocop:disable Style/CommentIndentation
 # FIXME: this extra verbatim causes a spec failure
 # Description:
-#   `hanami new` creates a new hanami project. You can specify various options such as the database to be used as well as the path and architecture.
+#   `hanami new` creates a new hanami project. You can specify various options, like which database type, testing framework or templating engine the proejct will use.
 #
 #   $ > hanami new fancy_app --application_name=admin
 #
-#   $ > hanami new fancy_app --arch=app
+#   $ > hanami new fancy_app --database=postgresql
 #
 #   $ > hanami new fancy_app --hanami-head=true
 # rubocop:enable Style/CommentIndentation

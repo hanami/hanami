@@ -14,7 +14,6 @@ module Hanami
 
         include Hanami::Generators::Generatable
 
-        DEFAULT_ARCHITECTURE = 'container'.freeze
         DEFAULT_APPLICATION_BASE_URL = '/'.freeze
 
         attr_reader :options, :target_path, :database_config,
@@ -27,7 +26,6 @@ module Hanami
 
           assert_options!
           assert_name!
-          assert_architecture!
 
           @hanami_model_version = '~> 1.0.0.beta2'
           @database_config = Hanami::Generators::DatabaseConfig.new(options[:database], project_name)
@@ -106,19 +104,9 @@ module Hanami
           !Hanami::Utils.jruby?
         end
 
-        def architecture
-          options.fetch(:architecture, DEFAULT_ARCHITECTURE)
-        end
-
         def assert_name!
           if argument_blank?(@name) || @name.include?(File::SEPARATOR)
             raise ArgumentError.new("APPLICATION_NAME is required and must not contain #{File::SEPARATOR}.")
-          end
-        end
-
-        def assert_architecture!
-          if !['app', 'container'].include?(architecture)
-            raise ArgumentError.new("Architecture must be one of 'app', 'container' but was '#{architecture}'")
           end
         end
 
