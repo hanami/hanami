@@ -39,7 +39,7 @@ RSpec.describe "Components: model", type: :cli do
         # part of the boot process.
         #
         # Invoking disconnect again **here in the test** should return an empty
-        # collection, because we haven't tryied to connect to the database again.
+        # collection, because we haven't tried to connect to the database again.
         expect(Hanami::Model.disconnect).to be_empty
       end
     end
