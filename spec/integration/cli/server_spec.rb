@@ -85,10 +85,10 @@ EOF
   end
 
   context "logging" do
-    context "when enabled" do
-      let(:log)     { "log/development.log" }
-      let(:project) { "bookshelf" }
+    let(:log)     { "log/development.log" }
+    let(:project) { "bookshelf" }
 
+    context "when enabled" do
       it "logs request" do
         with_project(project) do
           touch log
@@ -102,6 +102,23 @@ EOF
           content = contents(log)
           expect(content).to include("[#{project}] [INFO]")
           expect(content).to match(%r{HTTP/1.1 GET 200 (.*) /})
+        end
+      end
+    end
+
+    context "when not enabled" do
+      it "does not log request" do
+        with_project(project) do
+          touch log
+          replace "config/environment.rb", "logger level: :debug", "logger stream: false"
+
+          server do
+            visit "/"
+            expect(page).to have_title("Hanami | The web, with simplicity")
+          end
+
+          content = contents(log)
+          expect(content).to be_empty
         end
       end
     end
