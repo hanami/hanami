@@ -5,6 +5,8 @@ module Hanami
     # @since 0.1.0
     # @api private
     class NullView
+      # @since 0.1.0
+      # @api private
       def render(_context)
         nil
       end

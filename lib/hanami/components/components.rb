@@ -50,6 +50,7 @@ module Hanami
       end
     end
 
+    # @api private
     register 'code' do
       run do
         directory = Hanami.root.join('lib')

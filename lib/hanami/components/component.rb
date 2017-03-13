@@ -1,4 +1,6 @@
 module Hanami
+  # @since 0.9.0
+  # @api private
   module Components
     # Base component
     #

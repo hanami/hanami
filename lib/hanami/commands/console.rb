@@ -1,6 +1,7 @@
 require 'hanami/commands/command'
 
 module Hanami
+  # @api private
   module Commands
     # REPL that supports different engines.
     #
@@ -34,14 +35,18 @@ module Hanami
         'irb'  => 'IRB'
       }.freeze
 
+      # @api private
       DEFAULT_ENGINE = ['irb'].freeze
 
       # @since 0.1.0
+      # @api private
       attr_reader :options
 
       # @param options [Hash] Environment's options
       #
       # @since 0.1.0
+      # @api private
+      #
       # @see Hanami::Environment#initialize
       def initialize(options)
         super(options)
@@ -50,6 +55,7 @@ module Hanami
       end
 
       # @since 0.1.0
+      # @api private
       def start
         prepare
         engine.start

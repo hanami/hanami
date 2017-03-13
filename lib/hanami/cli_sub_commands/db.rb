@@ -1,4 +1,5 @@
 module Hanami
+  # @api private
   class CliSubCommands
     # A set of subcommands related to DB
     #
@@ -14,6 +15,8 @@ module Hanami
 
       desc 'console', 'Start DB console'
       method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
+      # @since 0.6.0
+      # @api private
       def console(name = nil)
         if options[:help]
           invoke :help, ['console']
@@ -25,6 +28,8 @@ module Hanami
 
       desc 'create', 'Create database for current environment'
       method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
+      # @since 0.6.0
+      # @api private
       def create
         if options[:help]
           invoke :help, ['create']
@@ -37,6 +42,8 @@ module Hanami
 
       desc 'drop', 'Drop database for current environment'
       method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
+      # @since 0.6.0
+      # @api private
       def drop
         if options[:help]
           invoke :help, ['drop']
@@ -49,6 +56,8 @@ module Hanami
 
       desc 'migrate', 'Migrate database for current environment'
       method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
+      # @since 0.6.0
+      # @api private
       def migrate(version = nil)
         if options[:help]
           invoke :help, ['migrate']
@@ -60,6 +69,8 @@ module Hanami
 
       desc 'apply', 'Migrate, dump schema, delete migrations (experimental)'
       method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
+      # @since 0.6.0
+      # @api private
       def apply
         if options[:help]
           invoke :help, ['apply']
@@ -72,6 +83,8 @@ module Hanami
 
       desc 'prepare', 'Create and migrate database'
       method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
+      # @since 0.6.0
+      # @api private
       def prepare
         if options[:help]
           invoke :help, ['prepare']
@@ -82,10 +95,10 @@ module Hanami
         end
       end
 
-      # @since 0.6.0
-      # @api private
       desc 'version', 'Current database version'
       method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
+      # @since 0.6.0
+      # @api private
       def version
         if options[:help]
           invoke :help, ['version']

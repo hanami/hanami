@@ -1502,6 +1502,7 @@ module Hanami
 
     private
 
+    # @api private
     attr_reader :configurations
 
     # @since 0.2.0

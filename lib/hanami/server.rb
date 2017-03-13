@@ -13,6 +13,7 @@ module Hanami
   # @since 0.8.0
   # @api private
   class Server < ::Rack::Server
+    # @api private
     attr_reader :options
 
     # @since 0.8.0
@@ -36,6 +37,7 @@ module Hanami
       mw
     end
 
+    # @api private
     def start
       preload
       super
@@ -43,11 +45,13 @@ module Hanami
 
     private
 
+    # @api private
     def setup
       return unless code_reloading?
       @app = Shotgun::Loader.new(rackup)
     end
 
+    # @api private
     def environment
       Components['environment']
     end
@@ -58,10 +62,12 @@ module Hanami
       Hanami.code_reloading?
     end
 
+    # @api private
     def rackup
       environment.rackup.to_s
     end
 
+    # @api private
     def preload
       if code_reloading?
         Shotgun.enable_copy_on_write

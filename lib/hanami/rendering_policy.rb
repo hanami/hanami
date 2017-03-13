@@ -8,16 +8,24 @@ module Hanami
   # @since 0.1.0
   # @api private
   class RenderingPolicy
+    # @api private
     STATUS  = 0
+    # @api private
     HEADERS = 1
+    # @api private
     BODY    = 2
 
+    # @api private
     HANAMI_ACTION = 'hanami.action'.freeze
+    # @api private
     RACK_EXCEPTION = 'rack.exception'.freeze
 
+    # @api private
     SUCCESSFUL_STATUSES = (200..201).freeze
+    # @api private
     RENDERABLE_FORMATS = [:all, :html].freeze
 
+    # @api private
     def initialize(configuration)
       @controller_pattern = %r{#{ configuration.controller_pattern.gsub(/\%\{(controller|action)\}/) { "(?<#{ $1 }>(.*))" } }}
       @view_pattern       = configuration.view_pattern
@@ -25,6 +33,7 @@ module Hanami
       @templates          = configuration.templates
     end
 
+    # @api private
     def render(env, response)
       body = _render(env, response)
 
@@ -33,6 +42,7 @@ module Hanami
     end
 
     private
+    # @api private
     def _render(env, response)
       if action = renderable?(env)
         _render_action(action, env, response) ||
@@ -40,6 +50,7 @@ module Hanami
       end
     end
 
+    # @api private
     def _render_action(action, env, response)
       begin
         view_for(action, response).render(
@@ -51,20 +62,24 @@ module Hanami
       end
     end
 
+    # @api private
     def _render_status_page(action, response)
       if render_status_page?(action, response)
         Hanami::Views::Default.render(@templates, response[STATUS], response: response, format: :html)
       end
     end
 
+    # @api private
     def renderable?(env)
       ((action = env.delete(HANAMI_ACTION)) && action.renderable?) and action
     end
 
+    # @api private
     def render_status_page?(action, response)
       RENDERABLE_FORMATS.include?(action.format) && !SUCCESSFUL_STATUSES.include?(response[STATUS])
     end
 
+    # @api private
     def view_for(action, response)
       view = if response[BODY].respond_to?(:empty?) && response[BODY].empty?
         captures = @controller_pattern.match(action.class.name)

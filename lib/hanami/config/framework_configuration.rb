@@ -1,4 +1,5 @@
 module Hanami
+  # @api private
   module Config
     # Collects all the settings for a given framework configuration and then
     # forwards them when the application is loaded.

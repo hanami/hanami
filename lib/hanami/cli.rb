@@ -5,6 +5,7 @@ require 'hanami/commands/new/app'
 require 'hanami/commands/new/container'
 
 module Hanami
+  # @api private
   class Cli < Thor
     # include Thor::Actions
     extend CliBase
@@ -13,6 +14,7 @@ module Hanami
     long_desc <<-EOS
     `hanami version` prints the version of the bundled hanami gem.
     EOS
+    # @api private
     def version
       require 'hanami/version'
       puts "v#{ Hanami::VERSION }"
@@ -38,6 +40,7 @@ module Hanami
     method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
     method_option :code_reloading, desc: 'Code reloading', type: :boolean, default: true
     method_option :help, desc: 'Displays the usage message'
+    # @api private
     def server
       if options[:help]
         invoke :help, ['server']
@@ -58,6 +61,7 @@ module Hanami
     method_option :pid, desc: 'path to write a pid file after daemonize'
     method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
     method_option :help, desc: 'displays the usage message'
+    # @api private
     def rackserver
       if options[:help]
         invoke :help, ['rackserver']
@@ -77,6 +81,7 @@ module Hanami
     method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
     method_option :engine, desc: "Choose a specific console engine: (#{Hanami::Commands::Console::ENGINES.keys.join('/')})"
     method_option :help, desc: 'Displays the usage method'
+    # @api private
     def console
       if options[:help]
         invoke :help, ['console']
@@ -104,6 +109,7 @@ $ > hanami new fancy_app --hanami-head=true
     method_option :test, desc: "Project test framework (#{Hanami::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Hanami::Hanamirc::DEFAULT_TEST_SUITE
     method_option :hanami_head, desc: 'Use hanami HEAD (true/false)', type: :boolean, default: false
     method_option :help, desc: 'Displays the usage method'
+    # @api private
     def new(application_name=nil)
       if options[:help]
         invoke :help, ['new']
@@ -123,6 +129,7 @@ $ > hanami new fancy_app --hanami-head=true
     EOS
     method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
     method_option :help, desc: 'Displays the usage method'
+    # @api private
     def routes
       if options[:help]
         invoke :help, ['routes']

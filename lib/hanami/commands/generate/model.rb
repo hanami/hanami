@@ -2,12 +2,21 @@ require 'hanami/commands/generate/abstract'
 require 'hanami/commands/generate/migration'
 
 module Hanami
+  # @api private
   module Commands
+    # @api private
     class Generate
+      # @api private
       class Model < Abstract
 
-        attr_reader :input, :model_name, :table_name
+        # @api private
+        attr_reader :input
+        # @api private
+        attr_reader :model_name
+        # @api private
+        attr_reader :table_name
 
+        # @api private
         def initialize(options, model_name)
           super(options)
           @input      = Utils::String.new(model_name).underscore
@@ -21,6 +30,7 @@ module Hanami
           assert_model_name!
         end
 
+        # @api private
         def map_templates
           add_mapping('entity.rb.tt', entity_path)
           add_mapping('repository.rb.tt', repository_path)
@@ -31,6 +41,7 @@ module Hanami
           add_mapping("repository_spec.#{ test_framework.framework }.tt", repository_spec_path)
         end
 
+        # @api private
         def template_options
           {
             model_name: model_name,
@@ -67,10 +78,12 @@ module Hanami
           end
         end
 
+        # @api private
         def skip_migration?
           options.fetch(:skip_migration, false)
         end
 
+        # @api private
         def model_root
           Pathname.new('lib').join(project_name)
         end

@@ -50,6 +50,7 @@ module Hanami
     # Class interface for Hanami applications
     #
     # @since 0.9.0
+    # @api private
     module ClassMethods
       # Override Ruby's Class#extended
       #
@@ -146,6 +147,7 @@ module Hanami
     # @return [Hanami::Application] a new instance of the application
     #
     # @since 0.1.0
+    # @api private
     def initialize
       @renderer   = RenderingPolicy.new(configuration)
       @middleware = configuration.middleware

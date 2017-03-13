@@ -2,12 +2,17 @@ require 'hanami/commands/generate/app'
 require 'hanami/commands/new/abstract'
 
 module Hanami
+  # @api private
   module Commands
+    # @api private
     class New
+      # @api private
       class Container < Abstract
 
+        # @api private
         DEFAULT_APPLICATION_NAME = 'web'.freeze
 
+        # @api private
         def map_templates
           add_application_templates
           add_empty_directories
@@ -16,6 +21,7 @@ module Hanami
           add_git_templates
         end
 
+        # @api private
         def template_options
           {
             project_name:         project_name,
@@ -30,6 +36,7 @@ module Hanami
           }
         end
 
+        # @api private
         def post_process_templates
           init_git
           generate_app
@@ -37,6 +44,7 @@ module Hanami
 
         private
 
+        # @api private
         def add_application_templates
           add_mapping('hanamirc.tt', '.hanamirc')
           add_mapping('.env.development.tt', '.env.development')
@@ -48,6 +56,7 @@ module Hanami
           add_mapping('lib/project.rb.tt', "lib/#{ project_name }.rb")
         end
 
+        # @api private
         def add_test_templates
           if test_framework.rspec?
             add_mapping('Rakefile.rspec.tt', 'Rakefile')
@@ -62,6 +71,7 @@ module Hanami
           end
         end
 
+        # @api private
         def add_empty_directories
           add_mapping('.gitkeep', 'public/.gitkeep')
           add_mapping('.gitkeep', 'config/initializers/.gitkeep')
@@ -81,20 +91,24 @@ module Hanami
           end
         end
 
+        # @api private
         def generate_app
           Hanami::Commands::Generate::App.new(app_options, app_slice_name).start
         end
 
+        # @api private
         def app_options
           {
             application_base_url: application_base_url
           }
         end
 
+        # @api private
         def app_slice_name
           options.fetch(:application_name, DEFAULT_APPLICATION_NAME)
         end
 
+        # @api private
         def template_source_path
           Pathname.new(::File.dirname(__FILE__)).join('..', '..', 'generators', 'application', 'container').realpath
         end

@@ -1,6 +1,7 @@
 require 'securerandom'
 
 module Hanami
+  # @api private
   module Action
     # Invalid CSRF Token
     #
@@ -154,6 +155,23 @@ module Hanami
       # Override and return <tt>false</tt> if you want to bypass security check.
       #
       # @since 0.4.0
+      #
+      # @example
+      #   module Web::Controllers::Books
+      #     class Create
+      #       include Web::Action
+      #
+      #       def call(params)
+      #         # ...
+      #       end
+      #
+      #       private
+      #
+      #       def verify_csrf_token?
+      #         false
+      #       end
+      #     end
+      #   end
       def verify_csrf_token?
         !IDEMPOTENT_HTTP_METHODS[request_method]
       end
@@ -167,6 +185,23 @@ module Hanami
       # @raise [Hanami::Action::InvalidCSRFTokenError]
       #
       # @since 0.4.0
+      #
+      # @example
+      #   module Web::Controllers::Books
+      #     class Create
+      #       include Web::Action
+      #
+      #       def call(params)
+      #         # ...
+      #       end
+      #
+      #       private
+      #
+      #       def handle_invalid_csrf_token
+      #         # custom invalid CSRF management goes here
+      #       end
+      #     end
+      #   end
       def handle_invalid_csrf_token
         session.clear
         raise InvalidCSRFTokenError.new

@@ -8,13 +8,19 @@ require 'hanami/utils/string'
 
 module Hanami
   module Commands
+    # @api private
     class Generate
+      # @api private
       class Abstract < Commands::Command
 
         include Hanami::Generators::Generatable
 
-        attr_reader :options, :target_path
+        # @api private
+        attr_reader :options
+        # @api private
+        attr_reader :target_path
 
+        # @api private
         def initialize(options)
           super
 
@@ -24,6 +30,7 @@ module Hanami
           @target_path = Hanami.root
         end
 
+        # @api private
         def template_source_path
           generator = self.class.name.split('::').last.downcase
           Pathname.new(::File.dirname(__FILE__) + "/../../generators/#{generator}/").realpath
@@ -31,22 +38,27 @@ module Hanami
 
         private
 
+        # @api private
         def test_framework
           @test_framework ||= Hanami::Generators::TestFramework.new(hanamirc, options[:test])
         end
 
+        # @api private
         def hanamirc_options
           hanamirc.options
         end
 
+        # @api private
         def hanamirc
           @hanamirc ||= Hanamirc.new(target_path)
         end
 
+        # @api private
         def template_engine
           @template_engine ||= Hanami::Generators::TemplateEngine.new(hanamirc, options[:template])
         end
 
+        # @api private
         def assert_options!
           if options.nil?
             raise ArgumentError.new('options must not be nil')

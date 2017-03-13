@@ -1,5 +1,9 @@
 module Hanami
+  # @since 0.9.0
+  # @api private
   module Components
+    # @since 0.9.0
+    # @api private
     module App
       # hanami-assets configuration for a sigle Hanami application in the project.
       #

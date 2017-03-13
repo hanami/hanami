@@ -4,11 +4,13 @@ module Hanami
   # An application name.
   #
   # @since 0.2.1
+  # @api private
   class ApplicationName
 
     # A list of words that are prohibited from forming the application name
     #
     # @since 0.2.1
+    # @api private
     RESERVED_WORDS = %w(hanami).freeze
 
     # Initialize and check against reserved words
@@ -29,6 +31,7 @@ module Hanami
     # @return [Hanami::ApplicationName] a new instance of the application name
     #
     # @since 0.2.1
+    # @api private
     def initialize(name)
       @name = sanitize(name.to_s)
       ensure_validity!
@@ -42,6 +45,7 @@ module Hanami
     #   ApplicationName.new("my-App ").to_s # => "my_app"
     #
     # @since 0.2.1
+    # @api private
     def to_s
       @name
     end
@@ -59,6 +63,7 @@ module Hanami
     #   ApplicationName.new("my-app").to_env_s => "MY_APP"
     #
     # @since 0.2.1
+    # @api private
     def to_env_s
       @name.upcase.gsub(/\W/, '_')
     end
@@ -73,6 +78,7 @@ module Hanami
     #   Hanami::ApplicationName.invalid?("hanami") # => true
     #
     # @since 0.2.1
+    # @api private
     def self.invalid?(name)
       RESERVED_WORDS.include?(name)
     end
@@ -81,8 +87,8 @@ module Hanami
 
     # Raises RuntimeError with explanation if the provided name is invalid.
     #
-    # @api private
     # @since 0.2.1
+    # @api private
     def ensure_validity!
       if self.class.invalid?(@name)
         raise RuntimeError,
@@ -93,8 +99,8 @@ module Hanami
 
     # Cleans a string to be a functioning application name.
     #
-    # @api private
     # @since 0.2.1
+    # @api private
     def sanitize(name)
       Utils::String.new(
         name.strip
