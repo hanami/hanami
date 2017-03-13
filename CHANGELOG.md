@@ -1,6 +1,8 @@
 # Hanami
 The web, with simplicity.
 
+## v1.0.0.beta3 (unreleased)
+
 ## v1.0.0.beta2 - 2017-03-02
 
 ## v1.0.0.beta1 - 2017-02-14
