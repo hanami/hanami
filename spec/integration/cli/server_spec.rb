@@ -364,4 +364,17 @@ EOF
       end
     end
   end
+
+  context "without email" do
+    it "returns page" do
+      with_project do
+        replace "config/environment.rb", "delivery :test", ""
+
+        server do
+          visit "/"
+          expect(page).to have_title("Hanami | The web, with simplicity")
+        end
+      end
+    end
+  end
 end
