@@ -109,16 +109,13 @@ EOF
     context "when not enabled" do
       it "does not log request" do
         with_project(project) do
-          touch log
-          replace "config/environment.rb", "logger level: :debug", "logger stream: false"
+          replace "config/environment.rb", "logger level: :debug", ""
 
           server do
             visit "/"
-            expect(page).to have_title("Hanami | The web, with simplicity")
           end
 
-          content = contents(log)
-          expect(content).to be_empty
+          expect(log).to_not be_an_existing_file
         end
       end
     end
