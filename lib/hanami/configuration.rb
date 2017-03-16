@@ -7,11 +7,12 @@ require 'hanami/utils/string'
 module Hanami
   class Configuration
     class App < SimpleDelegator
-      attr_reader :path_prefix
+      attr_reader :path_prefix, :host
 
-      def initialize(app, path_prefix)
+      def initialize(app, path_prefix, host)
         super(app)
         @path_prefix = path_prefix
+        @host = host
       end
     end
 
@@ -21,7 +22,7 @@ module Hanami
     end
 
     def mount(app, options)
-      mounted[app] = App.new(app, options.fetch(:at))
+      mounted[app] = App.new(app, options.fetch(:at), options.fetch(:host))
     end
 
     def model(&blk)
