@@ -9,7 +9,7 @@ module Hanami
     class App < SimpleDelegator
       attr_reader :path_prefix, :host
 
-      def initialize(app, path_prefix, host)
+      def initialize(app, path_prefix, host = nil)
         super(app)
         @path_prefix = path_prefix
         @host = host
@@ -22,7 +22,7 @@ module Hanami
     end
 
     def mount(app, options)
-      mounted[app] = App.new(app, options.fetch(:at), options.fetch(:host))
+      mounted[app] = App.new(app, options.fetch(:at), options.fetch(:host) { nil })
     end
 
     def model(&blk)
