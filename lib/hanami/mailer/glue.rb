@@ -1,3 +1,4 @@
+# @api private
 module Hanami::Mailer
   # @since 0.5.0
   # @api private

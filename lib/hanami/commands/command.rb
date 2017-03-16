@@ -9,6 +9,8 @@ module Hanami
     #
     # @since 0.9.0
     class Command
+      # @since 0.9.0
+      # @api private
       def self.inherited(component)
         super
 
@@ -21,15 +23,22 @@ module Hanami
       # Class level interface
       #
       # @since 0.9.0
+      # @api private
       module ClassMethods
+        # @since 0.9.0
+        # @api private
         def register_as(name)
           Hanami::Components.register(name, self)
         end
 
+        # @since 0.9.0
+        # @api private
         def requires(*names)
           requirements.concat(names)
         end
 
+        # @since 0.9.0
+        # @api private
         def requirements
           @_requirements
         end
@@ -38,6 +47,7 @@ module Hanami
       # @param options [Hash] Environment's options
       #
       # @since 0.9.0
+      # @api private
       def initialize(options)
         @environment = Hanami::Environment.new(options)
         @environment.require_project_environment
@@ -50,12 +60,15 @@ module Hanami
       private
 
       # @since 0.9.0
+      # @api private
       attr_reader :environment
 
       # @since 0.9.0
+      # @api private
       attr_reader :configuration
 
       # @since 0.9.0
+      # @api private
       def requirements
         Hanami::Components
       end

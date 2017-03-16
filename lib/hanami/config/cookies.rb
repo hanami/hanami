@@ -1,4 +1,5 @@
 module Hanami
+  # @api private
   module Config
     # Cookies configuration
     #

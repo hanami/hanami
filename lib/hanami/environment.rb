@@ -157,6 +157,8 @@ module Hanami
     # @see Hanami::Commands::Server
     # @see Hanami::Environment#config
     #
+    # @api private
+    #
     # @example Define ENV variables from .env
     #
     #   # % tree .
@@ -219,6 +221,7 @@ module Hanami
     # @return [String] the current environment
     #
     # @since 0.1.0
+    # @api private
     #
     # @see Hanami::Environment::DEFAULT_ENV
     def environment
@@ -226,6 +229,7 @@ module Hanami
     end
 
     # @since 0.3.1
+    # @api private
     #
     # @see Hanami.env?(name)
     def environment?(*names)
@@ -262,6 +266,7 @@ module Hanami
     # @return [Pathname] application's root
     #
     # @since 0.2.0
+    # @api private
     def root
       @root ||= Pathname.new(Dir.pwd)
     end
@@ -282,6 +287,7 @@ module Hanami
     # @return [Pathname] the config directory
     #
     # @since 0.2.0
+    # @api private
     #
     # @see Hanami::Environment::DEFAULT_CONFIG
     # @see Hanami::Environment#root
@@ -304,6 +310,7 @@ module Hanami
     # @return [String] the HTTP host name
     #
     # @since 0.1.0
+    # @api private
     #
     # @see Hanami::Environment::DEFAULT_HOST
     # @see Hanami::Environment::LISTEN_ALL_HOST
@@ -325,6 +332,7 @@ module Hanami
     # @return [Integer] the default port
     #
     # @since 0.1.0
+    # @api private
     #
     # @see Hanami::Environment::DEFAULT_PORT
     def port
@@ -357,6 +365,7 @@ module Hanami
     # @return [Pathname] path to the Rack configuration file
     #
     # @since 0.2.0
+    # @api private
     def rackup
       root.join(@options.fetch(:rackup) { DEFAULT_RACKUP })
     end
@@ -376,6 +385,7 @@ module Hanami
     # @return [Pathname] path to applications
     #
     # @since 0.1.0
+    # @api private
     #
     # @see Hanami::Environment::DEFAULT_ENVIRONMENT_CONFIG
     def env_config
@@ -394,6 +404,7 @@ module Hanami
       require project_environment_configuration.to_s # if project_environment_configuration.exist?
     end
 
+    # @api private
     alias require_project_environment require_application_environment
 
     # Determine if activate code reloading for the current environment while
@@ -411,6 +422,7 @@ module Hanami
     # @return [TrueClass,FalseClass] the result of the check
     #
     # @since 0.2.0
+    # @api private
     #
     # @see Hanami::Commands::Server
     # @see Hanami::Environment::CODE_RELOADING
@@ -483,6 +495,7 @@ module Hanami
 
     private
 
+    # @api private
     attr_reader :env
 
     # @since 0.1.0

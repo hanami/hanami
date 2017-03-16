@@ -4,12 +4,17 @@ require 'hanami/utils/blank'
 require 'securerandom'
 
 module Hanami
+  # @api private
   module Commands
+    # @api private
     class Generate
+      # @api private
       class App < Abstract
 
+        # @api private
         attr_reader :base_path
 
+        # @api private
         def initialize(options, application_name)
           @environment = Hanami::Environment.new(options)
           @options = Hanami::Utils::Hash.new(options).symbolize!
@@ -24,6 +29,7 @@ module Hanami
           @base_path = Pathname.pwd
         end
 
+        # @api private
         def map_templates
           add_mapping('application.rb.tt', 'application.rb')
           add_mapping('config/routes.rb.tt', 'config/routes.rb')
@@ -40,6 +46,7 @@ module Hanami
           add_mapping('.gitkeep', "../../spec/#{ app_name }/views/.gitkeep")
         end
 
+        # @api private
         def template_options
           {
             app_name:            app_name,
@@ -51,6 +58,7 @@ module Hanami
           }
         end
 
+        # @api private
         def post_process_templates
           add_require_app
           add_mount_app
@@ -59,10 +67,12 @@ module Hanami
 
         private
 
+        # @api private
         def application_base_url
           options.fetch(:application_base_url, "/#{app_name}")
         end
 
+        # @api private
         def add_require_app
           # Add "require_relative '../apps/web/application'"
           generator.inject_into_file base_path.join('config/environment.rb'), after: /require_relative '\.\.\/lib\/.*'/ do
@@ -70,12 +80,14 @@ module Hanami
           end
         end
 
+        # @api private
         def add_mount_app
           generator.inject_into_file base_path.join('config/environment.rb'), after: /Hanami.configure do/ do |match|
             "\n  mount #{ classified_app_name }::Application, at: '#{ application_base_url }'"
           end
         end
 
+        # @api private
         def add_web_session_secret
           ['development', 'test'].each do |environment|
             # Add WEB_SESSIONS_SECRET="abc123" (random hex)
@@ -85,42 +97,51 @@ module Hanami
           end
         end
 
+        # @api private
         def hanamirc
           @hanamirc ||= Hanamirc.new(base_path)
         end
 
+        # @api private
         def target_path
           base_path.join(application_base_path)
         end
 
+        # @api private
         def app_name
           @application_name.to_s
         end
 
+        # @api private
         def upcase_app_name
           @application_name.to_env_s
         end
 
+        # @api private
         def application_base_path
           ["apps", @application_name].join(::File::SEPARATOR)
         end
 
+        # @api private
         def classified_app_name
           Utils::String.new(app_name).classify.tr('::', '')
         end
 
+        # @api private
         def assert_application_name!(value)
           if argument_blank?(value)
             raise ArgumentError.new('Application name is missing')
           end
         end
 
+        # @api private
         def assert_architecture!
           if !environment.container?
             raise ArgumentError.new('App generator is only available for container architecture.')
           end
         end
 
+        # @api private
         def assert_application_base_url!
           if options.key?(:application_base_url) && Utils::Blank.blank?(options[:application_base_url])
             warn "`' is not a valid URL"

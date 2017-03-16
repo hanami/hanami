@@ -3,6 +3,10 @@ module RSpec
     module Files
       private
 
+      def touch(path)
+        write(path, "")
+      end
+
       def write(path, *content)
         Pathname.new(path).dirname.mkpath
         open(path, ::File::CREAT | ::File::WRONLY, *content)
@@ -44,6 +48,10 @@ module RSpec
         ::File.open(path, mode) do |file|
           file.write(Array(content).flatten.join)
         end
+      end
+
+      def contents(path)
+        ::IO.read(Hanami.root.join(path))
       end
 
       def index(content, path, target)

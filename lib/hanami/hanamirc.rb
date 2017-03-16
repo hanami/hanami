@@ -135,10 +135,12 @@ module Hanami
 
     private
 
+    # @api private
     def symbolize(hash)
       Utils::Hash.new(hash).symbolize!
     end
 
+    # @api private
     def file_options
       symbolize(exists? ? parse_file(path_file) : {})
     end

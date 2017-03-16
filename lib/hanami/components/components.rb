@@ -50,6 +50,7 @@ module Hanami
       end
     end
 
+    # @api private
     register 'code' do
       run do
         directory = Hanami.root.join('lib')
@@ -76,6 +77,10 @@ module Hanami
     #   Hanami::Components['model'] # => nil
     register 'model' do
       requires 'logger', 'model.configuration', 'model.sql'
+
+      prepare do
+        Hanami::Model.disconnect if Components['model.configuration']
+      end
 
       resolve do
         if Components['model.configuration']

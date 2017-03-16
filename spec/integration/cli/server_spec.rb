@@ -84,6 +84,29 @@ EOF
     end
   end
 
+  context "logging" do
+    context "when enabled" do
+      let(:log)     { "log/development.log" }
+      let(:project) { "bookshelf" }
+
+      it "logs request" do
+        with_project(project) do
+          touch log
+          replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
+
+          server do
+            visit "/"
+            expect(page).to have_title("Hanami | The web, with simplicity")
+          end
+
+          content = contents(log)
+          expect(content).to include("[#{project}] [INFO]")
+          expect(content).to match(%r{HTTP/1.1 GET 200 (.*) /})
+        end
+      end
+    end
+  end
+
   context "--host" do
     it "starts on given host" do
       with_project do

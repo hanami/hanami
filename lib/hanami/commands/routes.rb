@@ -1,6 +1,7 @@
 require 'hanami/commands/command'
 
 module Hanami
+  # @api private
   module Commands
     # Display application/container routes.
     #
@@ -16,6 +17,7 @@ module Hanami
       # Display to STDOUT application routes
       #
       # @since 0.1.0
+      # @api private
       def start
         puts requirements['routes.inspector'].inspect
       end

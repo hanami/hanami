@@ -4,7 +4,9 @@ require 'hanami/utils/blank'
 
 module Hanami
   module Commands
+    # @api private
     class Generate
+      # @api private
       class Action < Abstract
 
         # @since 0.8.0
@@ -59,6 +61,7 @@ module Hanami
           'Edit'    => '/:id/edit',
         }.freeze
 
+        # @api private
         def initialize(options, application_name, controller_and_action_name)
           super(options)
           if !environment.container?
@@ -86,6 +89,7 @@ module Hanami
           assert_http_method!
         end
 
+        # @api private
         def map_templates
           add_mapping("action_spec.#{test_framework.framework}.tt", action_spec_path)
 
@@ -99,6 +103,7 @@ module Hanami
           end
         end
 
+        # @api private
         def post_process_templates
           generate_route
         end
@@ -116,6 +121,7 @@ module Hanami
           }
         end
 
+        # @api private
         def destroy
           generator.gsub_file(routes_path, /^.*#{@controller_and_action_name}.*\n/, '', verbose: false)
           super
@@ -132,6 +138,7 @@ module Hanami
           generator.prepend_after_leading_comments(routes_path, "#{ http_method } '#{ route_url }', to: '#{ route_endpoint }'\n")
         end
 
+        # @api private
         def skip_view?
           options.fetch(:skip_view, false)
         end
@@ -219,6 +226,7 @@ module Hanami
           end
         end
 
+        # @api private
         def routes_path
           if environment.container?
             application_path.join('config', 'routes.rb')
@@ -230,6 +238,7 @@ module Hanami
         # The directory of the application
         # ./app for 'app' architecture
         # ./apps/APPLICATION_NAME for 'container'
+        # @api private
         def application_path
           if environment.container?
             applications_path.join(application_name_as_snake_case)
@@ -239,42 +248,52 @@ module Hanami
         end
 
         # The parent dir of the application directory.
+        # @api private
         def applications_path
           Pathname.new('apps')
         end
 
+        # @api private
         def view_path
           application_path.join('views', *@controller_directory, "#{@action_name}.rb")
         end
 
+        # @api private
         def view_spec_path
           spec_root.join('views', *@controller_directory, "#{@action_name}_spec.rb")
         end
 
+        # @api private
         def template_path
           application_path.join('templates', *@controller_directory, "#{@action_name}.html.#{template_engine.name}")
         end
 
+        # @api private
         def action_path
           application_path.join('controllers', *@controller_directory, "#{@action_name}.rb")
         end
 
+        # @api private
         def action_spec_path
           spec_root.join('controllers', *@controller_directory, "#{@action_name}_spec.rb")
         end
 
+        # @api private
         def spec_root
           Pathname.new('spec').join(app_base_dir)
         end
 
+        # @api private
         def relative_action_path
           relative_base_path.join(application_path, 'controllers', *@controller_directory, @action_name)
         end
 
+        # @api private
         def relative_view_path
           relative_base_path.join(application_path, 'views', *@controller_directory, @action_name)
         end
 
+        # @api private
         def relative_base_path
           nestings = [UP_DIRECTORY] * @controller_name.count(CONTROLLER_SEPARATOR)
           nestings << UP_DIRECTORY if environment.container?
@@ -284,6 +303,7 @@ module Hanami
           )
         end
 
+        # @api private
         def app_base_dir
           if environment.container?
             application_name_as_snake_case
@@ -292,6 +312,7 @@ module Hanami
           end
         end
 
+        # @api private
         def application_name_as_snake_case
           @application_name.gsub(/(.)([A-Z])/,'\1_\2').downcase
         end

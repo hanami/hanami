@@ -2,6 +2,8 @@ require 'ipaddr'
 require 'hanami/utils/string'
 
 module Hanami
+  # @since 0.2.0
+  # @api private
   module Config
     # Sessions configuration
     #
@@ -82,6 +84,8 @@ module Hanami
         end
       end
 
+      # @since 0.2.0
+      # @api private
       def domain
         domain = @configuration.host
         if !BLACKLISTED_DOMAINS.include?(domain) && !ip_address?(domain)
@@ -89,6 +93,8 @@ module Hanami
         end
       end
 
+      # @since 0.2.0
+      # @api private
       def ip_address?(string)
         !!IPAddr.new(string) rescue false
       end

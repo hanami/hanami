@@ -63,6 +63,17 @@ module Hanami
     # @since 0.2.0
     #
     # @see Hanami::Middleware#prepend
+    #
+    # @example
+    #   # apps/web/application.rb
+    #   module Web
+    #     class Application < Hanami::Application
+    #       configure do
+    #         # ...
+    #         use MyRackMiddleware, foo: 'bar'
+    #       end
+    #     end
+    #   end
     def use(middleware, *args, &blk)
       stack.push [middleware, args, blk]
       stack.uniq!
@@ -79,6 +90,17 @@ module Hanami
     # @since 0.6.0
     #
     # @see Hanami::Middleware#use
+    #
+    # @example
+    #   # apps/web/application.rb
+    #   module Web
+    #     class Application < Hanami::Application
+    #       configure do
+    #         # ...
+    #         prepend MyRackMiddleware, foo: 'bar'
+    #       end
+    #     end
+    #   end
     def prepend(middleware, *args, &blk)
       stack.unshift [middleware, args, blk]
       stack.uniq!
@@ -109,6 +131,8 @@ module Hanami
       end
     end
 
+    # @api private
+    # @since 0.9.0
     def routes
       Components["#{configuration.app_name}.routes"]
     end
