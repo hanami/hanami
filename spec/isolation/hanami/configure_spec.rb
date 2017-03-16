@@ -2,12 +2,13 @@ RSpec.describe "Hanami.configure" do
   before do
     application           = app
     application_with_host = app_with_host
+    application_host      = host
     model_config          = model_configuration
     mailer_config         = mailer_configuration
 
     Hanami.configure do
       mount application, at: '/'
-      mount application_with_host, at: '/', host: 'hanami'
+      mount application_with_host, at: '/', host: application_host
       model(&model_config)
       mailer(&mailer_config)
     end
@@ -15,6 +16,7 @@ RSpec.describe "Hanami.configure" do
 
   let(:app) { double('app') }
   let(:app_with_host) { double('app') }
+  let(:host) { 'hanami' }
 
   let(:model_configuration) do
     lambda do
@@ -37,7 +39,7 @@ RSpec.describe "Hanami.configure" do
   it "setups apps" do
     mounted = Hanami.configuration.mounted
     expect(mounted[app]).to eq(Hanami::Configuration::App.new(app, '/'))
-    expect(mounted[app_with_host]).to eq(Hanami::Configuration::App.new(app_with_host, '/', 'hanami'))
+    expect(mounted[app_with_host]).to eq(Hanami::Configuration::App.new(app_with_host, '/', host))
   end
 
   it "holds model configuration" do
