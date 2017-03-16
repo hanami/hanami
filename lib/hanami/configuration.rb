@@ -43,7 +43,7 @@ module Hanami
     #     # ...
     #   end
     def mount(app, options)
-      mounted[app] = App.new(app, options.fetch(:at), options.fetch(:host) { nil })
+      mounted[app] = App.new(app, options.fetch(:at), options[:host])
     end
 
     # Configure database
