@@ -44,6 +44,20 @@ module RSpec
         rewrite(path, content)
       end
 
+      def remove_block(path, target) # rubocop:disable Metrics/AbcSize
+        content  = ::File.readlines(path)
+        starting = index(content, path, target)
+        line     = content[starting]
+        size     = line[/\A[[:space:]]*/].bytesize
+        closing  = (" " * size) + (target =~ /{/ ? '}' : 'end')
+        ending   = starting + index(content[starting..-1], path, closing)
+
+        content.slice!(starting..ending)
+        rewrite(path, content)
+
+        remove_block(path, target) if containts?(content, target)
+      end
+
       def open(path, mode, *content)
         ::File.open(path, mode) do |file|
           file.write(Array(content).flatten.join)
@@ -55,8 +69,16 @@ module RSpec
       end
 
       def index(content, path, target)
-        content.index { |l| l.include?(target) } or
+        line_number(content, target) or
           raise ArgumentError.new("Cannot find `#{target}' inside `#{path}'.")
+      end
+
+      def containts?(content, target)
+        !line_number(content, target).nil?
+      end
+
+      def line_number(content, target)
+        content.index { |l| l.include?(target) }
       end
     end
   end

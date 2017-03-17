@@ -401,4 +401,17 @@ EOF
       end
     end
   end
+
+  context "without mailer" do
+    it "returns page" do
+      with_project do
+        remove_block "config/environment.rb", "mailer do"
+
+        server do
+          visit "/"
+          expect(page).to have_title("Hanami | The web, with simplicity")
+        end
+      end
+    end
+  end
 end

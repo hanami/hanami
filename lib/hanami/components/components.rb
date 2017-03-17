@@ -182,9 +182,11 @@ module Hanami
       end
 
       resolve do |configuration|
-        Hanami::Mailer.configuration = Hanami::Mailer::Configuration.new if Hanami.code_reloading?
-        Hanami::Mailer.configure(&configuration.mailer)
-        Hanami::Mailer.configuration
+        unless configuration.mailer.nil?
+          Hanami::Mailer.configuration = Hanami::Mailer::Configuration.new if Hanami.code_reloading?
+          Hanami::Mailer.configure(&configuration.mailer)
+          Hanami::Mailer.configuration
+        end
       end
     end
 
