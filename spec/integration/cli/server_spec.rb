@@ -365,10 +365,10 @@ EOF
     end
   end
 
-  context "without email" do
+  context "without mailer" do
     it "returns page" do
       with_project do
-        replace "config/environment.rb", "delivery :test", ""
+        remove_block "config/environment.rb", "mailer do"
 
         server do
           visit "/"

@@ -1,14 +1,14 @@
 RSpec.describe "Components: mailer.configuration", type: :cli do
-  context "without hanami-mailer" do
-    it "resolves mailer configuration" do
+  context "without mailer configuration" do
+    it "doesn't resolve mailer configuration" do
       with_project do
         environment_file = Pathname.new(Dir.pwd).join("config", "environment")
-        replace "#{environment_file}.rb", "delivery :test", ""
+        remove_block "config/environment.rb", "mailer do"
 
         require environment_file
         Hanami::Components.resolve('mailer.configuration')
 
-        expect(Hanami::Components['mailer.configuration']).to be nil
+        expect(Hanami::Components['mailer.configuration']).to be(nil)
       end
     end
   end
