@@ -8,6 +8,9 @@ The web, with simplicity.
 - [Anton Davydov] Don't configure mailers, if it's mailing is disabled for the project.
 - [Marcello Rocha] Ensure code reloading don't misconfigure mailer settings
 
+### Changed
+- [Luca Guidi] Removed deprecated `ApplicationConfiguration#default_format`. Use `#default_request_format` instead.
+
 ## v1.0.0.beta2 - 2017-03-02
 
 ## v1.0.0.beta1 - 2017-02-14
