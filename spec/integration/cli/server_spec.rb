@@ -84,6 +84,43 @@ EOF
     end
   end
 
+  context "logging" do
+    let(:log)     { "log/development.log" }
+    let(:project) { "bookshelf" }
+
+    context "when enabled" do
+      it "logs request" do
+        with_project(project) do
+          touch log
+          replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
+
+          server do
+            visit "/"
+            expect(page).to have_title("Hanami | The web, with simplicity")
+          end
+
+          content = contents(log)
+          expect(content).to include("[#{project}] [INFO]")
+          expect(content).to match(%r{HTTP/1.1 GET 200 (.*) /})
+        end
+      end
+    end
+
+    context "when not enabled" do
+      it "does not log request" do
+        with_project(project) do
+          replace "config/environment.rb", "logger level: :debug", ""
+
+          server do
+            visit "/"
+          end
+
+          expect(log).to_not be_an_existing_file
+        end
+      end
+    end
+  end
+
   context "--host" do
     it "starts on given host" do
       with_project do
@@ -358,6 +395,19 @@ EOF
           expect(page).to have_title("Hanami | The web, with simplicity")
           generate "action web home#index --url=/"
 
+          visit "/"
+          expect(page).to have_title("Hanami | The web, with simplicity")
+        end
+      end
+    end
+  end
+
+  context "without mailer" do
+    it "returns page" do
+      with_project do
+        remove_block "config/environment.rb", "mailer do"
+
+        server do
           visit "/"
           expect(page).to have_title("Hanami | The web, with simplicity")
         end

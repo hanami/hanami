@@ -63,7 +63,7 @@ module Hanami
     # @since 0.9.0
     # @api private
     def middleware(environment)
-      builder.use Hanami::CommonLogger, Hanami.logger
+      builder.use Hanami::CommonLogger, Hanami.logger unless Hanami.logger.nil?
       builder.use Rack::ContentLength
 
       if middleware = environment.static_assets_middleware # rubocop:disable Lint/AssignmentInCondition

@@ -129,4 +129,4 @@ Released under MIT License.
 
 This project was formerly known as Lotus (`lotusrb`).
 
-Copyright © 2014-2016 Luca Guidi.
+Copyright © 2014-2017 Luca Guidi.

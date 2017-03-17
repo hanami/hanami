@@ -38,7 +38,7 @@ EOF
         expect(JSON.parse(manifest)).to be_kind_of(Hash) # assert it's a well-formed JSON
 
         expect(manifest).to include(%("/assets/application.css":{"target":"/assets/application-068e7d97b3671a14824bc20437ac5d06.css","sri":["sha256-cHgODQTP2nNk9ER+ViDGp+lC+ddHRmuLgJk05glJ4+w=","sha512-TDyxo1Ow7UjBib6ykALJh7J1OHEcE0yX4X21s1714ZBAhwdOz7k9t8+QQDAwWAmeH97bNaZGY7oTfVrwyTQ3cw=="]}))
-        expect(manifest).to include(%("/assets/favicon.ico":{"target":"/assets/favicon-2d931609a81d94071c81890f77209101.ico","sri":["sha256-QxGPbQhTL64Lp6vYed7gabWjwB7Uhxkiztdj7LCU23A=","sha512-riH2RZwaTbMOmvfrUcpRWMQORhX9Bz9PLfENwDWm93wD+ESkaIUiYqDl+NShF0hja4L67lTbMglW8lUSmF3Tsg=="]}))
+        expect(manifest).to include(%("/assets/favicon.ico":{"target":"/assets/favicon-b0979f93c7f7246ac70949a80f7cbdfd.ico","sri":["sha256-PLEDhpDsTBpxl1KtXjzBjg+PUG67zpf05B1z2db4iJU=","sha512-9NvaW7aVAywbLPPi3fw5s4wtWwd37i8VpzgfEo9uCOyr/mDT2dbYJtGNjfTJa4R8TOw69yHr4NhazPQsLt1WHw=="]}))
 
         server do
           visit '/'

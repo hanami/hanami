@@ -18,8 +18,6 @@ module Hanami
 
       namespace :generate
 
-      # @since 0.6.0
-      # @api private
       desc 'action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME', 'Generate a hanami action'
       long_desc <<-EOS
         `hanami generate action` generates an an action, view and template along with specs and a route.
@@ -37,6 +35,8 @@ module Hanami
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .hanamirc file.'
       method_option :skip_view, desc: 'Skip the generation of the view. Also skips template generation.', default: false, type: :boolean
       method_option :template, desc: 'Extension to be used for the generated template. Default is defined through your .hanamirc file.'
+      # @since 0.6.0
+      # @api private
       def actions(application_name = nil, controller_and_action_name)
         if Hanami::Environment.new(options).container? && application_name.nil?
           msg = "ERROR: \"hanami generate action\" was called with arguments [\"#{controller_and_action_name}\"]\n" \
@@ -57,6 +57,7 @@ module Hanami
 
       > $ hanami generate migration do_something
       EOS
+      # @api private
       def migration(name)
         if options[:help]
           invoke :help, ['migration']
@@ -78,6 +79,7 @@ module Hanami
       EOS
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .hanamirc file.'
       method_option :skip_migration, desc: 'Skips the generation of a migration to create the model\'s table', default: false, type: :boolean
+      # @api private
       def model(name)
         if options[:help]
           invoke :help, ['model']
@@ -97,6 +99,7 @@ module Hanami
       method_option :to, desc: 'Sender email', default: Hanami::Commands::Generate::Mailer::DEFAULT_TO
       method_option :from, desc: 'Sendee email', default: Hanami::Commands::Generate::Mailer::DEFAULT_FROM
       method_option :subject, desc: 'Email subject', default: Hanami::Commands::Generate::Mailer::DEFAULT_SUBJECT
+      # @api private
       def mailer(name)
         if options[:help]
           invoke :help, ['mailer']
@@ -116,6 +119,7 @@ module Hanami
         > $ hanami generate app reporting --application_base_url=/reports
       EOS
       method_option :application_base_url, desc: 'Base URL for the new app. If missing, then it is inferred from APPLICATION_NAME'
+      # @api private
       def app(application_name)
         if options[:help]
           invoke :help, ['app']
@@ -132,6 +136,7 @@ module Hanami
         > $ hanami generate secret web
 
       EOS
+      # @api private
       def secret(application_name = nil)
         if options[:help]
           invoke :help, ['secret']

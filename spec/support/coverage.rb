@@ -24,6 +24,7 @@ module RSpec
 
       def self.enabled?
         !ENV['COVERAGE'].nil?
+        false
       end
 
       def self.configure_simplecov!

@@ -82,13 +82,9 @@ module Hanami
   # NOTE: In case this is invoked many times, it guarantees that the boot
   #   process happens only once.
   #
-  # NOTE: There is no reason to cache the result with `@_booted`, because it
-  #   already caches it internally.
-  #
   # NOTE: This MUST NOT be wrapped by a Mutex, because it would cause a deadlock.
   #
   # @since 0.9.0
-  # @api private
   def self.boot
     Components.release if code_reloading?
     Components.resolve('all')
@@ -135,7 +131,6 @@ module Hanami
   # @return [Pathname] public directory
   #
   # @since 0.6.0
-  # @api private
   #
   # @example
   #   Hanami.public_directory # => #<Pathname:/Users/luca/Code/bookshelf/public>

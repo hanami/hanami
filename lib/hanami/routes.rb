@@ -7,6 +7,7 @@ module Hanami
   # to the `Routes` constant, under the application namespace.
   #
   # @since 0.1.0
+  # @api private
   class Routes
     # Initialize the factory
     #
@@ -15,6 +16,7 @@ module Hanami
     # @return [Hanami::Routes] the factory
     #
     # @since 0.1.0
+    # @api private
     def initialize(routes)
       @routes = routes
     end
@@ -36,7 +38,7 @@ module Hanami
     # @example Basic example
     #   require 'hanami'
     #
-    #   module Bookshelf
+    #   module Web
     #     class Application < Hanami::Application
     #       configure do
     #         routes do
@@ -46,16 +48,16 @@ module Hanami
     #     end
     #   end
     #
-    #   Bookshelf::Routes.path(:login)
+    #   Web.routes.path(:login)
     #     # => '/login'
     #
-    #   Bookshelf::Routes.path(:login, return_to: '/dashboard')
+    #   Web.routes.path(:login, return_to: '/dashboard')
     #     # => '/login?return_to=%2Fdashboard'
     #
     # @example Dynamic finders
     #   require 'hanami'
     #
-    #   module Bookshelf
+    #   module Web
     #     class Application < Hanami::Application
     #       configure do
     #         routes do
@@ -65,10 +67,10 @@ module Hanami
     #     end
     #   end
     #
-    #   Bookshelf::Routes.login_path
+    #   Web.routes.login_path
     #     # => '/login'
     #
-    #   Bookshelf::Routes.login_path(return_to: '/dashboard')
+    #   Web.routes.login_path(return_to: '/dashboard')
     #     # => '/login?return_to=%2Fdashboard'
     def path(name, *args)
       Utils::Escape::SafeString.new(@routes.path(name, *args))
@@ -91,7 +93,7 @@ module Hanami
     # @example Basic example
     #   require 'hanami'
     #
-    #   module Bookshelf
+    #   module Web
     #     class Application < Hanami::Application
     #       configure do
     #         routes do
@@ -104,16 +106,16 @@ module Hanami
     #     end
     #   end
     #
-    #   Bookshelf::Routes.url(:login)
+    #   Web.routes.url(:login)
     #     # => 'https://bookshelf.org/login'
     #
-    #   Bookshelf::Routes.url(:login, return_to: '/dashboard')
+    #   Web.routes.url(:login, return_to: '/dashboard')
     #     # => 'https://bookshelf.org/login?return_to=%2Fdashboard'
     #
     # @example Dynamic finders
     #   require 'hanami'
     #
-    #   module Bookshelf
+    #   module Web
     #     class Application < Hanami::Application
     #       configure do
     #         routes do
@@ -126,10 +128,10 @@ module Hanami
     #     end
     #   end
     #
-    #   Bookshelf::Routes.login_url
+    #   Web.routes.login_url
     #     # => 'https://bookshelf.org/login'
     #
-    #   Bookshelf::Routes.login_url(return_to: '/dashboard')
+    #   Web.routes.login_url(return_to: '/dashboard')
     #     # => 'https://bookshelf.org/login?return_to=%2Fdashboard'
     def url(name, *args)
       Utils::Escape::SafeString.new(@routes.url(name, *args))

@@ -2,7 +2,11 @@ require 'hanami/routes'
 require 'hanami/routing/default'
 
 module Hanami
+  # @since 0.9.0
+  # @api private
   module Components
+    # @since 0.9.0
+    # @api private
     module App
       # hanami-router configuration for a sigle Hanami application in the project.
       #
@@ -26,6 +30,8 @@ module Hanami
           Components.resolved("#{app.app_name}.routes", routes)
         end
 
+        # @since 0.9.0
+        # @api private
         def self.application_routes(app) # rubocop:disable Metrics/MethodLength
           config      = app.configuration
           namespace   = app.namespace

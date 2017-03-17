@@ -1,6 +1,7 @@
 require 'hanami/utils/file_list'
 
 module Hanami
+  # @api private
   module Assets
     # Requested asset
     #

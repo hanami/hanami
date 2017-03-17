@@ -1,14 +1,19 @@
 require 'hanami/commands/new/abstract'
 
 module Hanami
+  # @api private
   module Commands
+    # @api private
     class New
+      # @api private
       class App < Abstract
 
+        # @api private
         def initialize(options, name)
           super(options, name)
         end
 
+        # @api private
         def map_templates
           add_application_templates
           add_empty_directories
@@ -17,6 +22,7 @@ module Hanami
           add_git_templates
         end
 
+        # @api private
         def template_options
           {
             app_name:             app_name,
@@ -33,12 +39,14 @@ module Hanami
           }
         end
 
+        # @api private
         def post_process_templates
           init_git
         end
 
         private
 
+        # @api private
         def add_application_templates
           add_mapping('hanamirc.tt', '.hanamirc')
           add_mapping('.env.development.tt', '.env.development')
@@ -54,6 +62,7 @@ module Hanami
           add_mapping('favicon.ico', 'app/assets/favicon.ico')
         end
 
+        # @api private
         def add_test_templates
           if test_framework.rspec?
             add_mapping('Rakefile.rspec.tt', 'Rakefile')
@@ -68,6 +77,7 @@ module Hanami
           end
         end
 
+        # @api private
         def add_empty_directories
           add_mapping('.gitkeep', 'config/initializers/.gitkeep')
           add_mapping('.gitkeep', 'app/controllers/.gitkeep')
@@ -95,18 +105,23 @@ module Hanami
             add_mapping('.gitkeep', 'db/.gitkeep')
           end
         end
+
+        # @api private
         def template_source_path
           Pathname.new(::File.dirname(__FILE__)).join('..', '..', 'generators', 'application', 'app').realpath
         end
 
+        # @api private
         def upcase_app_name
           app_name.to_env_s
         end
 
+        # @api private
         def classified_app_name
           Utils::String.new(app_name).classify.tr('::', '')
         end
 
+        # @api private
         alias app_name project_name
       end
     end

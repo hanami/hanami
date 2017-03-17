@@ -1,13 +1,23 @@
 require "hanami/commands/generate/abstract"
 
 module Hanami
+  # @api private
   module Commands
+    # @api private
     class Generate
       # @since 0.5.0
       # @api private
       class Mailer < Abstract
-
-        attr_reader :name, :name_underscored, :from, :to, :subject
+        # @api private
+        attr_reader :name
+        # @api private
+        attr_reader :name_underscored
+        # @api private
+        attr_reader :from
+        # @api private
+        attr_reader :to
+        # @api private
+        attr_reader :subject
 
         # @since 0.5.0
         # @api private
@@ -47,7 +57,7 @@ module Hanami
           assert_name!
         end
 
-        # @since 0.x.x
+        # @since 0.5.0
         # @api private
         def map_templates
           add_mapping("mailer_spec.rb.#{test_framework.framework}.tt", mailer_spec_path)
@@ -56,6 +66,7 @@ module Hanami
           add_mapping("template.html.tt", html_template_path)
         end
 
+        # @api private
         def template_options
           {
             mailer:  name,
@@ -105,10 +116,12 @@ module Hanami
           core_root.join("mailers", "templates", "#{ name_underscored }#{ format }.#{ DEFAULT_ENGINE }")
         end
 
+        # @api private
         def spec_root
           Pathname.new("spec")
         end
 
+        # @api private
         def core_root
           Pathname.new("lib").join(project_name)
         end

@@ -3,6 +3,8 @@
 
 ## Features
 
+## v1.0.0.beta3 - 2017-03-17
+
 ## v1.0.0.beta2 - 2017-03-02
 - Added: `Action#unsafe_send_file` to send files outside of the public directory
 

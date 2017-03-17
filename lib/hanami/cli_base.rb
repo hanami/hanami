@@ -1,4 +1,5 @@
 module Hanami
+  # @api private
   module CliBase
     # Add new custom CLI command to special CLI class.
     # Please be careful. This is a private method that
@@ -28,10 +29,12 @@ module Hanami
       class_eval(&blk) if block_given?
     end
 
+    # @api private
     def banner(command, nspace = true, subcommand = false)
       super(command, nspace, namespace != 'hanami:cli')
     end
 
+    # @api private
     def handle_argument_error(command, error, args, arity)
       name = [(namespace == 'hanami:cli' ? nil : namespace), command.name].compact.join(" ")
 

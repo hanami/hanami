@@ -3,6 +3,7 @@ require 'hanami/commands/generate/action'
 
 module Hanami
   class CliSubCommands
+    # @api private
     class Destroy < Thor
       extend CliBase
       include Thor::Actions
@@ -25,6 +26,7 @@ module Hanami
       method_option :url, desc: 'Relative URL for action, will be used for the route', default: nil
       method_option :template, desc: 'Extension used when the template was generated. Default is defined through your .hanamirc file.'
 
+      # @api private
       def actions(application_name = nil, controller_and_action_name)
         if Hanami::Environment.new(options).container? && application_name.nil?
           msg = "ERROR: \"hanami destroy action\" was called with arguments [\"#{controller_and_action_name}\"]\n" \
@@ -46,6 +48,7 @@ module Hanami
       > $ hanami destroy migration create_books
       EOS
 
+      # @api private
       def migration(name)
         if options[:help]
           invoke :help, ['migration']
@@ -63,6 +66,7 @@ module Hanami
         > $ hanami destroy model car
       EOS
 
+      # @api private
       def model(name)
         if options[:help]
           invoke :help, ['model']
@@ -78,6 +82,7 @@ module Hanami
 
       > $ hanami destroy application api
       EOS
+      # @api private
       def application(name)
         if options[:help]
           invoke :help, ['app']
@@ -94,6 +99,7 @@ module Hanami
       > $ hanami destroy mailer forgot_password
       EOS
 
+      # @api private
       def mailer(name)
         if options[:help]
           invoke :help, ['mailer']

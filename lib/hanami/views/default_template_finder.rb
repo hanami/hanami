@@ -1,5 +1,6 @@
 module Hanami
   module Views
+    # @api private
     class DefaultTemplateFinder < View::Rendering::TemplateFinder
       # Template Finder
       #
@@ -12,6 +13,7 @@ module Hanami
       end
 
       private
+      # @api private
       def root
         @root
       end

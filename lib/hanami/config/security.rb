@@ -1,4 +1,6 @@
 module Hanami
+  # @since 0.3.0
+  # @api private
   module Config
     # Security policies are stored here.
     #

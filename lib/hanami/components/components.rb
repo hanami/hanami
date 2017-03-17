@@ -13,7 +13,7 @@ module Hanami
     # @since 0.9.0
     # @api private
     register 'all' do
-      requires 'logger', 'mailer', 'code', 'model', 'apps', 'finalizers'
+      requires 'logger', 'code', 'mailer', 'model', 'apps', 'finalizers'
 
       resolve { true }
     end
@@ -50,11 +50,12 @@ module Hanami
       end
     end
 
+    # @api private
     register 'code' do
       run do
         directory = Hanami.root.join('lib')
 
-        if Hanami.code_reloading?
+        if Components['environment'].code_reloading?
           Utils.reload!(directory)
         else
           Utils.require!(directory)
@@ -76,6 +77,10 @@ module Hanami
     #   Hanami::Components['model'] # => nil
     register 'model' do
       requires 'logger', 'model.configuration', 'model.sql'
+
+      prepare do
+        Hanami::Model.disconnect if Components['model.configuration']
+      end
 
       resolve do
         if Components['model.configuration']
@@ -177,9 +182,11 @@ module Hanami
       end
 
       resolve do |configuration|
-        Hanami::Mailer.configuration = Hanami::Mailer::Configuration.new if Hanami.code_reloading?
-        Hanami::Mailer.configure(&configuration.mailer)
-        Hanami::Mailer.configuration
+        unless configuration.mailer.nil?
+          Hanami::Mailer.configuration = Hanami::Mailer::Configuration.new if Hanami.code_reloading?
+          Hanami::Mailer.configure(&configuration.mailer)
+          Hanami::Mailer.configuration
+        end
       end
     end
 
