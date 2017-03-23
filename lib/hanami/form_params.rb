@@ -6,6 +6,8 @@ module Hanami
   # @since x.x.x
   # @api private
   class FormParams
+    class InvalidFilteredParameterTypeException < StandardError; end
+
     def initialize(params, filtered_parameters: Hanami.configuration.filtered_parameters)
       @params = params
       @filtered_parameters = filtered_parameters
@@ -65,9 +67,14 @@ module Hanami
 
     def filtered_key?(key)
       @filtered_parameters.any? do |filter|
-        processed_filter = filter.is_a?(Symbol) ? filter.to_s : filter
-
-        key.match?(processed_filter)
+        case filter
+        when Symbol, String
+          key == filter.to_s
+        when Regexp
+          key.match(filter)
+        else
+          raise InvalidFilteredParameterTypeException, "Filter must be of any of the following types [Regexp, Symbol, String]. Actual: #{filter.class}"
+        end
       end
     end
   end
