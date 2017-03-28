@@ -183,7 +183,10 @@ module Hanami
 
       resolve do |configuration|
         unless configuration.mailer.nil?
-          Hanami::Mailer.configuration = Hanami::Mailer::Configuration.new if Hanami.code_reloading?
+          if Hanami.code_reloading? && !Hanami::Mailer.configuration.nil?
+            Hanami::Mailer.configuration = Hanami::Mailer.configuration.dup
+          end
+
           Hanami::Mailer.configure(&configuration.mailer)
           Hanami::Mailer.configuration
         end
