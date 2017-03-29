@@ -178,12 +178,15 @@ module Hanami
       end
 
       resolve do |configuration|
-        unless configuration.mailer.nil?
+        unless configuration.mailer_settings.empty?
           if Hanami.code_reloading? && !Hanami::Mailer.configuration.nil?
             Hanami::Mailer.configuration = Hanami::Mailer.configuration.dup
           end
 
-          Hanami::Mailer.configure(&configuration.mailer)
+          configuration.mailer_settings.each do |settings|
+            Hanami::Mailer.configure(&settings)
+          end
+
           Hanami::Mailer.configuration
         end
       end
