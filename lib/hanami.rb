@@ -88,6 +88,7 @@ module Hanami
   def self.boot
     Components.release if code_reloading?
     Components.resolve('all')
+    Hanami::Model.disconnect if defined?(Hanami::Model)
   end
 
   # Main application that mounts many Rack and/or Hanami applications.
