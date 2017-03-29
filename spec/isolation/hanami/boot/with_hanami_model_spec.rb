@@ -5,6 +5,7 @@ RSpec.describe "Hanami.boot", type: :cli do
         generate "app admin"
 
         require Pathname.new(Dir.pwd).join("config", "environment")
+        expect(Hanami::Model).to receive(:disconnect)
         Hanami.boot
 
         expect(Hanami::Components['all']).to  be(true)
