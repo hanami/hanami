@@ -402,6 +402,49 @@ EOF
     end
   end
 
+  context "without hanami model" do
+    it "uses custom model domain" do
+      project_without_hanami_model("bookshelf", gems: ['dry-struct']) do
+        write "lib/entities/access_token.rb", <<-EOF
+require 'dry-struct'
+require 'securerandom'
+
+module Types
+  include Dry::Types.module
+end
+
+class AccessToken < Dry::Struct
+  attribute :id,     Types::String.default { SecureRandom.uuid }
+  attribute :secret, Types::String
+  attribute :digest, Types::String
+end
+EOF
+        generate "action web access_tokens#show --url=/access_tokens/:id"
+        rewrite  "apps/web/controllers/access_tokens/show.rb", <<-EOF
+module Web::Controllers::AccessTokens
+  class Show
+    include Web::Action
+    expose :access_token
+
+    def call(params)
+      @access_token = AccessToken.new(id: '1', secret: 'shh', digest: 'abc')
+    end
+  end
+end
+EOF
+        rewrite  "apps/web/templates/access_tokens/show.html.erb", <<-EOF
+<h1><%= access_token.secret %></h1>
+EOF
+
+        server do
+          visit "/access_tokens/1"
+          visit "/access_tokens/1" # forces code reloading
+          expect(page).to have_content("shh")
+        end
+      end
+    end
+  end
+
   context "without mailer" do
     it "returns page" do
       with_project do

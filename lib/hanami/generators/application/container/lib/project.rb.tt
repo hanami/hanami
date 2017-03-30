@@ -1,1 +1,0 @@
-Hanami::Utils.require!("#{__dir__}/<%= config[:project_name] %>")

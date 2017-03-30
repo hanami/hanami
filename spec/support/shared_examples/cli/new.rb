@@ -44,7 +44,6 @@ RSpec.shared_examples "a new project" do
       # lib/<project>.rb
       #
       expect("lib/#{project}.rb").to have_file_content <<-END
-Hanami::Utils.require!("\#{__dir__}/#{project}")
 END
 
       #
