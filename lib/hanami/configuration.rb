@@ -92,7 +92,13 @@ module Hanami
     #     # ...
     #   end
     def mailer(&blk)
-      settings.put_if_absent(:mailer, blk)
+      mailer_settings.push(blk) if block_given?
+    end
+
+    # @since next
+    # @api private
+    def mailer_settings
+      settings.fetch_or_store(:mailers, [])
     end
 
     # @since 0.9.0
