@@ -5,6 +5,9 @@ source 'https://rubygems.org'
 gem 'rake'
 <%- if config[:hanami_head] -%>
 
+# Fix default github source url builder (use https instead of git protocol).
+git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
+
 gem 'hanami-utils',       require: false, github: 'hanami/utils'
 gem 'hanami-router',      require: false, github: 'hanami/router'
 gem 'hanami-validations', require: false, github: 'hanami/validations'
