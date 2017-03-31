@@ -25,6 +25,7 @@ module Hanami
         def template_options
           {
             project_name:         project_name,
+            project_module:       project_module,
             hanami_head:          hanami_head?,
             code_reloading:       code_reloading?,
             test:                 test_framework.framework,

@@ -6,6 +6,7 @@ require 'hanami/generators/test_framework'
 require 'hanami/generators/template_engine'
 require 'hanami/utils'
 require 'hanami/utils/hash'
+require 'hanami/utils/string'
 
 module Hanami
   # @api private
@@ -97,6 +98,11 @@ module Hanami
         # @api private
         def project_name
           ApplicationName.new(real_project_name)
+        end
+
+        # @api private
+        def project_module
+          Utils::String.new(project_name).classify
         end
 
         # @api private

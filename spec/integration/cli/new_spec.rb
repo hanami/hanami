@@ -208,10 +208,13 @@ Hanami.configure do
 end
 END
 
+      project_module = Hanami::Utils::String.new(project).classify
       #
       # lib/<project>.rb
       #
       expect("lib/#{project}.rb").to have_file_content <<-END
+module #{project_module}
+end
 END
 
       #
