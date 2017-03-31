@@ -1,6 +1,13 @@
 # Hanami
 The web, with simplicity.
 
+## v1.0.0.rc1 - 2017-03-31
+### Fixed
+- [Luca Guidi] Ensure code reloading don't misconfigure mailer settings (regression from v1.0.0.beta3)
+- [Luca Guidi] Ensure database disconnection to happen in the same thread of `Hanami.boot`
+- [Luca Guidi] Ensure `mailer` block in `config/environment.rb` to be evaluated multiple times, according to the current Hanami environment
+- [Luca Guidi] Ensure a Hanami project to require only once the code under `lib/`
+
 ## v1.0.0.beta3 - 2017-03-17
 ### Fixed
 - [Luca Guidi] Try to disconnect from database at the boot time. This is useful to prune stale connection during production deploys.
