@@ -40,11 +40,14 @@ RSpec.shared_examples "a new project" do
       #
       expect('config/environment.rb').to have_file_content %r{require_relative '../lib/#{project}'}
 
+      project_module = Hanami::Utils::String.new(project).classify
+
       #
       # lib/<project>.rb
       #
       expect("lib/#{project}.rb").to have_file_content <<-END
-Hanami::Utils.require!("\#{__dir__}/#{project}")
+module #{project_module}
+end
 END
 
       #
