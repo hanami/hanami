@@ -24,10 +24,7 @@ RSpec.describe "Hanami.configure" do
 
   let(:mailer_configuration) do
     lambda do
-      delivery do
-        development :test
-        test        :test
-      end
+      delivery :test
     end
   end
 
@@ -42,7 +39,7 @@ RSpec.describe "Hanami.configure" do
   end
 
   it "holds mailer configuration" do
-    config = Hanami.configuration.mailer
-    expect(config).to eq(mailer_configuration)
+    config = Hanami.configuration.mailer_settings
+    expect(config).to eq([mailer_configuration])
   end
 end

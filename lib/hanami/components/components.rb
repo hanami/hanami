@@ -28,7 +28,7 @@ module Hanami
       end
 
       resolve do |configuration|
-        Hanami::Logger.new(Hanami.environment.project_name, configuration.logger) unless configuration.logger.nil?
+        Hanami::Logger.new(Hanami.environment.project_name, *configuration.logger) unless configuration.logger.nil?
       end
     end
 
@@ -77,10 +77,6 @@ module Hanami
     #   Hanami::Components['model'] # => nil
     register 'model' do
       requires 'logger', 'model.configuration', 'model.sql'
-
-      prepare do
-        Hanami::Model.disconnect if Components['model.configuration']
-      end
 
       resolve do
         if Components['model.configuration']
@@ -182,9 +178,15 @@ module Hanami
       end
 
       resolve do |configuration|
-        unless configuration.mailer.nil?
-          Hanami::Mailer.configuration = Hanami::Mailer::Configuration.new if Hanami.code_reloading?
-          Hanami::Mailer.configure(&configuration.mailer)
+        unless configuration.mailer_settings.empty?
+          if Hanami.code_reloading? && !Hanami::Mailer.configuration.nil?
+            Hanami::Mailer.configuration = Hanami::Mailer.configuration.dup
+          end
+
+          configuration.mailer_settings.each do |settings|
+            Hanami::Mailer.configure(&settings)
+          end
+
           Hanami::Mailer.configuration
         end
       end

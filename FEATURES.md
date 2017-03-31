@@ -3,21 +3,27 @@
 
 ## Features
 
-## v1.0.0.beta3 - 2017-03-17
+### v1.0.0.rc1 - 2017-03-31
 
-## v1.0.0.beta2 - 2017-03-02
+- Logger rotation
+
+### v1.0.0.beta3 - 2017-03-17
+
+### v1.0.0.beta2 - 2017-03-02
+
 - Added: `Action#unsafe_send_file` to send files outside of the public directory
 
-## v1.0.0.beta1 - 2017-02-14
+### v1.0.0.beta1 - 2017-02-14
+
 - CLI: `hanami generate model` now also generates a migration
 - Project logger `Hanami.logger`
 - Automatic logging of HTTP requests, migrations, and SQL queries
 
-## v0.9.2 - 2016-12-19
+### v0.9.2 - 2016-12-19
 
-## v0.9.1 - 2016-11-18
+### v0.9.1 - 2016-11-18
 
-## v0.9.0 - 2016-11-15
+### v0.9.0 - 2016-11-15
 
 - Experimental repositories associations (only "has many")
 - Database automapping for SQL databases
@@ -30,7 +36,7 @@
 - Native support for PostgreSQL types
 - CLI: `hanami secret` to generate and print a new session secret for a single Hanami app
 
-## v0.8.0 - 2016-07-22
+### v0.8.0 - 2016-07-22
 
 - New validation syntax based on predicates
 - Custom and shared predicates for validations
@@ -49,19 +55,19 @@
 - Experimental code reloading via `entr(1)`
 - CLI: `hanami new` can be used with `--template` argument to generate a new project with (`erb`/`haml`/`slim`) templates
 
-## v0.7.3 - 2016-05-23
+### v0.7.3 - 2016-05-23
 
-## v0.7.2 - 2016-02-09
+### v0.7.2 - 2016-02-09
 
-## v0.7.1 - 2016-02-05
+### v0.7.1 - 2016-02-05
 
-## v0.7.0 - 2016-01-22
+### v0.7.0 - 2016-01-22
 
 - Renamed from Lotus to Hanami
 
-## v0.6.1 - 2016-01-19
+### v0.6.1 - 2016-01-19
 
-## v0.6.0 - 2016-01-12
+### v0.6.0 - 2016-01-12
 
 - Assets preprocessors support (eg. Sass, ES6, Opal, Less, CoffeScript..)
 - Assets compressors (eg. YUI, UglifyJS2, Google Closure Compiler, Sass..)
@@ -82,16 +88,16 @@
 - Custom initializers (`apps/web/config/initializers`)
 - Rake tasks `:preload` and `:environment`
 
-## v0.5.0 - 2015-09-30
+### v0.5.0 - 2015-09-30
 
 - Mailers
 - CLI: `lotus generate mailer`
 - SQL joins
 - Custom coercers for data mapper
 
-## v0.4.1 - 2015-07-10
+### v0.4.1 - 2015-07-10
 
-## v0.4.0 - 2015-06-23
+### v0.4.0 - 2015-06-23
 
 - Application architecture
 - Database migrations
@@ -101,14 +107,14 @@
 - Force SSL
 - Number formatting helper
 
-## v0.3.2 - 2015-05-22
+### v0.3.2 - 2015-05-22
 
 - Automatic secure cookies
 - Routing helpers for actions
 - Send files from actions
 - `Lotus.root` returns top level directory of the project.
 
-## v0.3.1 - 2015-05-15
+### v0.3.1 - 2015-05-15
 
 - CLI: `lotus generate app admin` creates a new application (`apps/admin`).
 - CLI: `lotus generate model user`. It generates entity, repository and related unit test files.
@@ -119,7 +125,7 @@
 - Nested RESTful resource(s)
 - String pluralization and singularization
 
-## v0.3.0 - 2015-03-23
+### v0.3.0 - 2015-03-23
 
 - CLI: `lotus generate action web dashboard#index`. It generates an action, a view, a template, a route and related unit test files.
 - CLI: `lotus db console`. It starts a database REPL.
@@ -138,14 +144,14 @@
 - Interactors (aka Service Objects)
 - Database transactions
 
-## v0.2.1 - 2015-02-06
+### v0.2.1 - 2015-02-06
 
 - Allow entities to include validations.
 - `lotus new .` to generate a Lotus project for an existing code base (Eg. a gem that needs a web UI).
 - `lotus new` supports `--path` (for destination directory), `--test` (to generate Minitest or RSpec boilerplate).
 - Lotus logger
 
-## v0.2.0 - 2014-12-23
+### v0.2.0 - 2014-12-23
 
 - Support Minitest as default testing framework (`bundle exec rake` runs the entire test suite of an application).
 - Support for _Method Override_ technique.
@@ -171,7 +177,7 @@
 - JSON body parser for non-GET HTTP requests
 - Routes inspector for CLI
 
-## v0.1.0 - 2014-06-23
+### v0.1.0 - 2014-06-23
 
 - Run multiple Lotus applications in the same Ruby process
 - Serve static files

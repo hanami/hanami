@@ -6,6 +6,7 @@ require 'hanami/generators/test_framework'
 require 'hanami/generators/template_engine'
 require 'hanami/utils'
 require 'hanami/utils/hash'
+require 'hanami/utils/string'
 
 module Hanami
   # @api private
@@ -45,7 +46,7 @@ module Hanami
           assert_name!
           assert_architecture!
 
-          @hanami_model_version = '~> 1.0.0.beta3'
+          @hanami_model_version = '~> 1.0.0.rc1'
           @database_config = Hanami::Generators::DatabaseConfig.new(options[:database], project_name)
           @test_framework = Hanami::Generators::TestFramework.new(hanamirc, @options[:test])
           @template_engine = Hanami::Generators::TemplateEngine.new(hanamirc, @options[:template])
@@ -97,6 +98,11 @@ module Hanami
         # @api private
         def project_name
           ApplicationName.new(real_project_name)
+        end
+
+        # @api private
+        def project_module
+          Utils::String.new(project_name).classify
         end
 
         # @api private

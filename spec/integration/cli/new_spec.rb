@@ -86,7 +86,7 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
-gem 'hanami-model', '~> 1.0.0.beta3'
+gem 'hanami-model', '~> 1.0.0.rc1'
 
 gem 'sqlite3'
 
@@ -117,7 +117,7 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
-gem 'hanami-model', '~> 1.0.0.beta3'
+gem 'hanami-model', '~> 1.0.0.rc1'
 
 gem 'jdbc-sqlite3'
 
@@ -208,11 +208,13 @@ Hanami.configure do
 end
 END
 
+      project_module = Hanami::Utils::String.new(project).classify
       #
       # lib/<project>.rb
       #
       expect("lib/#{project}.rb").to have_file_content <<-END
-Hanami::Utils.require!("\#{__dir__}/#{project}")
+module #{project_module}
+end
 END
 
       #
