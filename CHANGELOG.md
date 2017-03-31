@@ -2,6 +2,9 @@
 The web, with simplicity.
 
 ## v1.0.0.rc1 - 2017-03-31
+### Added
+- [Luca Guidi] Allow `logger` setting in `config/environment.rb` to accept arbitrary arguments to make `Hanami::Logger` to be compatible with Ruby's `Logger`. (eg. `logger 'daily', level: :info`)
+
 ### Fixed
 - [Luca Guidi] Ensure code reloading don't misconfigure mailer settings (regression from v1.0.0.beta3)
 - [Luca Guidi] Ensure database disconnection to happen in the same thread of `Hanami.boot`

@@ -119,12 +119,14 @@ module Hanami
     #
     # @since 1.0.0.beta1
     #
-    # @param options [Hash] a set of options
+    # @param options [Array] a set of options
     #
     # @see Hanami.logger
     # @see Hanami::Logger
     #
-    # @example
+    # @see http://hanamirb.org/guides/projects/logging/
+    #
+    # @example Basic Usage
     #   # config/environment.rb
     #   # ...
     #   Hanami.configure do
@@ -133,8 +135,18 @@ module Hanami
     #       logger level: :debug
     #     end
     #   end
-    def logger(options = nil)
-      if options.nil?
+    #
+    # @example Daily Rotation
+    #   # config/environment.rb
+    #   # ...
+    #   Hanami.configure do
+    #     # ...
+    #     environment :development do
+    #       logger 'daily', level: :debug
+    #     end
+    #   end
+    def logger(*options)
+      if options.empty?
         settings.fetch(:logger, nil)
       else
         settings[:logger] = options
