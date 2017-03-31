@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Mailers::<%= config[:mailer] %> do
   it 'delivers email' do
     mail = Mailers::<%= config[:mailer] %>.deliver

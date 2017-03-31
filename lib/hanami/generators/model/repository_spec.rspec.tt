@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe <%= config[:model_name] %>Repository do
   # place your tests here
 end

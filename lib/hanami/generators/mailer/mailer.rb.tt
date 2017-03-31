@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Mailers::<%= config[:mailer] %>
   include Hanami::Mailer
 

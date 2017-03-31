@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module <%= config[:app] %>::Views::<%= config[:controller] %>
   class <%= config[:action] %>
     include <%= config[:app] %>::View
