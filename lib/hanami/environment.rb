@@ -343,7 +343,7 @@ module Hanami
 
     # Check if the current port is the default one
     #
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     #
     # @see Hanami::ApplicationConfiguration#port

@@ -20,7 +20,7 @@ module Hanami
 
     # Setup project's logger
     #
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     register 'logger' do
       prepare do
@@ -165,7 +165,7 @@ module Hanami
 
     # Tries to evaluate hanami-mailer configuration
     #
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     #
     # @example With hanami-mailer
@@ -194,7 +194,7 @@ module Hanami
 
     # Tries to load hanami-mailer
     #
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     #
     # @example

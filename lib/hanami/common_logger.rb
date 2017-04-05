@@ -3,44 +3,44 @@ require 'rack/common_logger'
 module Hanami
   # Rack logger for Hanami.app
   #
-  # @since 1.0.0.beta1
+  # @since 1.0.0
   # @api private
   class CommonLogger < Rack::CommonLogger
     private
 
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     HTTP_VERSION         = 'HTTP_VERSION'.freeze
 
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     REQUEST_METHOD       = 'REQUEST_METHOD'.freeze
 
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     HTTP_X_FORWARDED_FOR = 'HTTP_X_FORWARDED_FOR'.freeze
 
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     REMOTE_ADDR          = 'REMOTE_ADDR'.freeze
 
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     SCRIPT_NAME          = 'SCRIPT_NAME'.freeze
 
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     PATH_INFO            = 'PATH_INFO'.freeze
 
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     QUERY_STRING         = 'QUERY_STRING'.freeze
 
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     RACK_ERRORS          = 'rack.errors'.freeze
 
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     # @api private
     #
     # rubocop:disable Metrics/AbcSize

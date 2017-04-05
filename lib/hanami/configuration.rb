@@ -117,7 +117,7 @@ module Hanami
 
     # Configure logger
     #
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     #
     # @param options [Array] a set of options
     #
@@ -154,7 +154,7 @@ module Hanami
     end
 
     # Configure settings for the current environment
-    # @since 1.0.0.beta1
+    # @since 1.0.0
     #
     # @param name [Symbol] the name of the Hanami environment
     #
