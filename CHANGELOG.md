@@ -1,6 +1,8 @@
 # Hanami
 The web, with simplicity.
 
+## v1.0.0 - 2017-04-06
+
 ## v1.0.0.rc1 - 2017-03-31
 ### Added
 - [Luca Guidi] Allow `logger` setting in `config/environment.rb` to accept arbitrary arguments to make `Hanami::Logger` to be compatible with Ruby's `Logger`. (eg. `logger 'daily', level: :info`)

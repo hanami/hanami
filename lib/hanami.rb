@@ -197,7 +197,7 @@ module Hanami
   #
   # @return [TrueClass,FalseClass] the result of the check
   #
-  # @since 1.0.0.beta1
+  # @since 1.0.0
   # @api private
   #
   # @see http://hanamirb.org/guides/projects/code-reloading/
@@ -211,7 +211,7 @@ module Hanami
   #
   # @return [Hanami::Logger] the logger
   #
-  # @since 1.0.0.beta1
+  # @since 1.0.0
   def self.logger
     Components['logger']
   end
