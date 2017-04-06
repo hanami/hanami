@@ -18,41 +18,31 @@ RSpec.describe Hanami::FormParams do
       ]
     ]
   end
-  let(:pretty_generated_params) do
-    "{\n" \
-    "  \"post\": {\n" \
-    "    \"title\": \"My Post\",\n" \
-    "    \"body\": \"Blog post body\",\n" \
-    "    \"credit_card\": \"[FILTERED]\",\n" \
-    "    \"user\": {\n" \
-    "      \"name\": \"User\",\n" \
-    "      \"password\": \"[FILTERED]\"\n" \
-    "    },\n" \
-    "    \"password\": \"[FILTERED]\",\n" \
-    "    \"password_confirmation\": \"[FILTERED]\"\n" \
-    "  }\n" \
-    "}"
+  let(:symbolized_params) do
+    {
+      post: {
+        title: 'My Post',
+        body: 'Blog post body',
+        credit_card: '[FILTERED]',
+        user: {
+          name: 'User',
+          password: '[FILTERED]'
+        },
+        password: '[FILTERED]',
+        password_confirmation: '[FILTERED]'
+      }
+    }
   end
   let(:present_params) { described_class.new(raw_params, filtered_parameters: filtered_parameters) }
   let(:absent_params) { described_class.new(nil, filtered_parameters: filtered_parameters) }
 
   describe '#prepared_params' do
     it 'return pretty printed params hash if initiated with params hash' do
-      expect(present_params.prepared_params).to eq(pretty_generated_params)
+      expect(present_params.prepared_params).to eq(symbolized_params)
     end
 
     it 'return nil if initiated with nil params' do
       expect(absent_params.prepared_params).to be_nil
-    end
-  end
-
-  describe '#log_message' do
-    it 'return true if initiated with params hash' do
-      expect(present_params.log_message).to eq("Parameters: #{pretty_generated_params}")
-    end
-
-    it 'return nil if initiated with nil params' do
-      expect(absent_params.log_message).to be_nil
     end
   end
 

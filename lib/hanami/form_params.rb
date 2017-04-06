@@ -1,7 +1,5 @@
-require 'json'
-
 module Hanami
-  # Formatted and filtered form params for CommonLogger
+  #  Filtered form params for CommonLogger
   #
   # @since x.x.x
   # @api private
@@ -18,15 +16,7 @@ module Hanami
     def prepared_params
       return unless present?
 
-      @prepared_params ||= JSON.pretty_generate(filtered_params.deep_symbolize!.to_h)
-    end
-
-    # @since x.x.x
-    # @api private
-    def log_message
-      return unless present?
-
-      "Parameters: #{prepared_params}"
+      @prepared_params ||= filtered_params.deep_symbolize!.to_h
     end
 
     # @since x.x.x
