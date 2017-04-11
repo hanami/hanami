@@ -28,7 +28,13 @@ module Hanami
       end
 
       resolve do |configuration|
-        Hanami::Logger.new(Hanami.environment.project_name, *configuration.logger) unless configuration.logger.nil?
+        if configuration.logger.is_a?(Array)
+          if configuration.logger.length == 1 && configuration.logger[0].is_a?(::Logger)
+            configuration.logger[0]
+          else
+            Hanami::Logger.new(Hanami.environment.project_name, *configuration.logger)
+          end
+        end
       end
     end
 
