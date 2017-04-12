@@ -29,8 +29,8 @@ module Hanami
 
       resolve do |configuration|
         if configuration.logger.is_a?(Array)
-          if configuration.logger.length == 1 && configuration.logger[0].is_a?(::Logger)
-            configuration.logger[0]
+          if configuration.logger.first.is_a?(::Logger)
+            configuration.logger.first
           else
             Hanami::Logger.new(Hanami.environment.project_name, *configuration.logger)
           end
