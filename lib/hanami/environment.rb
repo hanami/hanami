@@ -48,11 +48,17 @@ module Hanami
     # @api private
     RACK_ENV_DEPLOYMENT = 'deployment'.freeze
 
-    # Default `.env` per environment file name
+    # Default `.env` file name
     #
     # @since 0.2.0
     # @api private
-    DEFAULT_DOTENV_ENV = '.env.%s'.freeze
+    DEFAULT_DOTENV_ENV = '.env'.freeze
+
+    # Specific `.env` per environment file name
+    #
+    # @since 1.0.0
+    # @api private
+    SPECIFIC_DOTENV_ENV = '.env.%s'.freeze
 
     # Default configuration directory under application root
     #
@@ -501,7 +507,8 @@ module Hanami
     # @since 0.1.0
     # @api private
     def set_env_vars!
-      set_application_env_vars!
+      set_application_env_vars!(DEFAULT_DOTENV_ENV)
+      set_application_env_vars!(SPECIFIC_DOTENV_ENV % environment)
       set_hanami_env_vars!
     end
 
@@ -515,8 +522,8 @@ module Hanami
 
     # @since 0.2.0
     # @api private
-    def set_application_env_vars!
-      dotenv = root.join(DEFAULT_DOTENV_ENV % environment)
+    def set_application_env_vars!(dotenv_filename)
+      dotenv = root.join(dotenv_filename)
       return unless dotenv.exist?
 
       env.load!(dotenv)

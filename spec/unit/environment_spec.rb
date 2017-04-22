@@ -21,20 +21,19 @@ RSpec.describe Hanami::Environment do
 
   describe "#initialize" do
     context "global .env" do
-      it "doesn't set env vars from .env" do
+      it "sets env vars from .env" do
         with_directory('spec/support/fixtures') do
           described_class.new(env: env)
 
-          expect(env['FOO']).to be_nil # see spec/support/fixtures/.env
+          expect(env['FOO']).to eq('bar') # see spec/support/fixtures/.env
         end
       end
 
-      it "doesn't sets port" do
+      it "sets port from .env" do
         with_directory('spec/support/fixtures') do
           subject = described_class.new(env: env)
 
-          # returns default instead the value from spec/support/fixtures/.env
-          expect(subject.port).to eq(2300)
+          expect(subject.port).to eq(42)
         end
       end
     end
