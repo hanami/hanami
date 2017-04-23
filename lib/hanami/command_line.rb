@@ -15,7 +15,7 @@ module Hanami
       end
     end
 
-    register "version", Version
+    register "version", "-v", "--version", Version
   end
 
   # @api private
