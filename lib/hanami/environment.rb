@@ -144,7 +144,9 @@ module Hanami
     # located under the config directory. All the settings in those files will
     # be exported as `ENV` variables.
     #
-    # Master `.env` file is ignored for security reason.
+    # Master .env file is ignored to suggest clear separation of environment
+    # configurations and discourage putting sensitive information into source
+    # control.
     #
     # The format of those `.env.<environment>` files is compatible with `dotenv`
     # and `foreman` gems.
