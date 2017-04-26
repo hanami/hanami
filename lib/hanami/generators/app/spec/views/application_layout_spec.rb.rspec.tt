@@ -1,0 +1,12 @@
+require "spec_helper"
+require_relative "../../../apps/<%= config[:app_name] %>/views/application_layout"
+
+describe <%= config[:classified_app_name] %>::Views::ApplicationLayout do
+  let(:layout)   { <%= config[:classified_app_name] %>::Views::ApplicationLayout.new(template, {}) }
+  let(:rendered) { layout.render }
+  let(:template) { Hanami::View::Template.new('apps/<%= config[:app_name] %>/templates/application.html.<%= config[:template] %>') }
+
+  it 'contains application name' do
+    expect(rendered).to include('<%= config[:classified_app_name] %>')
+  end
+end

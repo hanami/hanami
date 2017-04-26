@@ -32,13 +32,13 @@ RSpec.describe 'hanami new', type: :cli do
       create  apps/web/views/application_layout.rb
       create  apps/web/templates/application.html.erb
       create  apps/web/assets/favicon.ico
+      create  spec/web/views/application_layout_spec.rb
       create  apps/web/controllers/.gitkeep
       create  apps/web/assets/images/.gitkeep
       create  apps/web/assets/javascripts/.gitkeep
       create  apps/web/assets/stylesheets/.gitkeep
       create  spec/web/features/.gitkeep
       create  spec/web/controllers/.gitkeep
-      create  spec/web/views/.gitkeep
       insert  config/environment.rb
       insert  config/environment.rb
       append  .env.development
@@ -725,11 +725,6 @@ END
       # spec/web/controllers/.gitkeep
       #
       expect("spec/web/controllers/.gitkeep").to be_an_existing_file
-
-      #
-      # spec/web/views/.gitkeep
-      #
-      expect("spec/web/views/.gitkeep").to be_an_existing_file
     end
   end
 

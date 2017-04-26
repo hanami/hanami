@@ -5,7 +5,8 @@ RSpec.describe "hanami new", type: :cli do
         project = 'bookshelf_minitest'
         output  = [
           "create  spec/spec_helper.rb",
-          "create  spec/features_helper.rb"
+          "create  spec/features_helper.rb",
+          "create  spec/web/views/application_layout_spec.rb"
         ]
 
         run_command "hanami new #{project} --test=minitest", output
@@ -45,6 +46,24 @@ class MiniTest::Spec
   include Capybara::DSL
 end
 END
+
+          #
+          # spec/<app>/views/application_layout_spec.rb
+          #
+          expect("spec/web/views/application_layout_spec.rb").to have_file_content <<-END
+require "spec_helper"
+require_relative "../../../apps/web/views/application_layout"
+
+describe Web::Views::ApplicationLayout do
+  let(:layout)   { Web::Views::ApplicationLayout.new(template, {}) }
+  let(:rendered) { layout.render }
+  let(:template) { Hanami::View::Template.new('apps/web/templates/application.html.erb') }
+
+  it 'contains application name' do
+    rendered.must_include('Web')
+  end
+end
+END
         end
       end
     end # minitest
@@ -55,7 +74,8 @@ END
         output  = [
           "create  spec/spec_helper.rb",
           "create  spec/features_helper.rb",
-          "create  spec/support/capybara.rb"
+          "create  spec/support/capybara.rb",
+          "create  spec/web/views/application_layout_spec.rb"
         ]
 
         run_command "hanami new #{project} --test=rspec", output
@@ -206,6 +226,26 @@ module RSpec
   end
 end
 END
+
+          #
+          # spec/<app>/views/application_layout_spec.rb
+          #
+          expect("spec/web/views/application_layout_spec.rb").to have_file_content <<-END
+require "spec_helper"
+require_relative "../../../apps/web/views/application_layout"
+
+describe Web::Views::ApplicationLayout do
+  let(:layout)   { Web::Views::ApplicationLayout.new(template, {}) }
+  let(:rendered) { layout.render }
+  let(:template) { Hanami::View::Template.new('apps/web/templates/application.html.erb') }
+
+  it 'contains application name' do
+    expect(rendered).to include('Web')
+  end
+end
+END
+
+
         end
       end
     end # rspec

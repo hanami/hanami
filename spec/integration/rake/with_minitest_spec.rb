@@ -24,7 +24,7 @@ end
 EOF
 
         bundle_exec "rake"
-        expect(out).to include("1 runs, 1 assertions, 0 failures, 0 errors, 0 skips")
+        expect(out).to include("2 runs, 3 assertions, 0 failures, 0 errors, 0 skips")
 
         assert_development_data
       end
