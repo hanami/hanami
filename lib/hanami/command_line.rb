@@ -1,3 +1,4 @@
+require 'hanami/cli'
 require 'thor'
 require 'hanami/cli_base'
 require 'hanami/commands/console'
@@ -5,21 +6,22 @@ require 'hanami/commands/new/app'
 require 'hanami/commands/new/container'
 
 module Hanami
+  module CommandLine
+    include Hanami::Cli
+
+    class Version
+      def call
+        puts "v#{Hanami::VERSION}"
+      end
+    end
+
+    register "version", "-v", "--version", Version
+  end
+
   # @api private
-  class Cli < Thor
+  class OldCommandLine < Thor
     # include Thor::Actions
     extend CliBase
-
-    desc 'version', 'Prints hanami version'
-    long_desc <<-EOS
-    `hanami version` prints the version of the bundled hanami gem.
-    EOS
-    # @api private
-    def version
-      require 'hanami/version'
-      puts "v#{ Hanami::VERSION }"
-    end
-    map %w{--version -v} => :version
 
     desc 'server', 'Starts a hanami server'
     long_desc <<-EOS
