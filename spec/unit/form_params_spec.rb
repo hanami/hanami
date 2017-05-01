@@ -1,5 +1,4 @@
 RSpec.describe Hanami::FormParams do
-  let(:filtered_parameters) { [/.*password.*/, :credit_card] }
   let(:raw_params) do
     Hash[
       'post' => Hash[
@@ -18,23 +17,9 @@ RSpec.describe Hanami::FormParams do
       ]
     ]
   end
-  let(:symbolized_params) do
-    {
-      post: {
-        title: 'My Post',
-        body: 'Blog post body',
-        credit_card: '[FILTERED]',
-        user: {
-          name: 'User',
-          password: '[FILTERED]'
-        },
-        password: '[FILTERED]',
-        password_confirmation: '[FILTERED]'
-      }
-    }
-  end
-  let(:present_params) { described_class.new(raw_params, filtered_parameters: filtered_parameters) }
-  let(:absent_params) { described_class.new(nil, filtered_parameters: filtered_parameters) }
+  let(:symbolized_params) { Hanami::Utils::Hash.new(raw_params).deep_symbolize!.to_h }
+  let(:present_params) { described_class.new(raw_params) }
+  let(:absent_params) { described_class.new(nil) }
 
   describe '#prepared_params' do
     it 'return pretty printed params hash if initiated with params hash' do

@@ -153,31 +153,6 @@ module Hanami
       end
     end
 
-    # Configure request filtered form parameters
-    #
-    # @since x.x.x
-    #
-    # @param keys [Array] a list of filtered keys or Regex
-    #
-    # @see Hanami::FormParams
-    #
-    # @example
-    #   # config/environment.rb
-    #   # ...
-    #   Hanami.configure do
-    #     # ...
-    #     environment :development do
-    #       filtered_parameters [:password, /.*token.*/]
-    #     end
-    #   end
-    def filtered_parameters(keys_or_regexes = nil)
-      if keys_or_regexes.nil?
-        settings.fetch(:filtered_parameters, nil)
-      else
-        settings[:filtered_parameters] = keys_or_regexes
-      end
-    end
-
     # Configure settings for the current environment
     # @since 1.0.0
     #
