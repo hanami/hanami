@@ -36,7 +36,7 @@ END
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
           #
           expect('spec/bookshelf_generate_mailer/mailers/welcome_spec.rb').to have_file_content <<-END
-require 'spec_helper'
+require_relative '../../spec_helper'
 
 describe Mailers::Welcome do
   it 'delivers email' do

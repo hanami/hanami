@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative '../../spec_helper'
 
 describe Mailers::<%= config[:mailer] %> do
   it 'delivers email' do
