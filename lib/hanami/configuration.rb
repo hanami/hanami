@@ -110,6 +110,7 @@ module Hanami
     # @since 0.9.0
     # @api private
     def apps
+      # but I think we need to use this method for filter apps
       mounted.each_pair do |klass, app|
         yield(app) if klass.ancestors.include?(Hanami::Application)
       end

@@ -270,8 +270,14 @@ module Hanami
     # @api private
     register 'apps' do
       resolve do |configuration|
+        allowed_apps = ENV['HANAMI_APPS'].to_s.split(',').map { |app_name| Hanami::Utils::String.new("#{app_name}::application").classify }
+
         configuration.apps do |app|
-          component('app').call(app)
+          if allowed_apps.any?
+            component('app').call(app) if allowed_apps.include?(app.name)
+          else
+            component('app').call(app)
+          end
         end
 
         true
