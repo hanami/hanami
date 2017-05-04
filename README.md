@@ -52,7 +52,9 @@ You can give back to Open Source, by supporting Hanami development via a [donati
 
 ### Supporters
 
+  * [Trung Lê](https://github.com/joneslee85)
   * [James Carlson](https://github.com/jxxcarlson)
+  * [Creditas](https://www.creditas.com.br/)
 
 ## Contact
 
