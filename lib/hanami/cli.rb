@@ -139,8 +139,10 @@ $ > hanami new fancy_app --hanami-head=true
       end
     end
 
-    require 'hanami/cli_sub_commands/db'
-    register Hanami::CliSubCommands::DB, 'db', 'db [SUBCOMMAND]', 'Manage set of DB operations'
+    if defined?(Hanami::Model)
+      require 'hanami/cli_sub_commands/db'
+      register Hanami::CliSubCommands::DB, 'db', 'db [SUBCOMMAND]', 'Manage set of DB operations'
+    end
 
     require 'hanami/cli_sub_commands/generate'
     register Hanami::CliSubCommands::Generate, 'generate', 'generate [SUBCOMMAND]', 'Generate hanami classes'
@@ -148,7 +150,9 @@ $ > hanami new fancy_app --hanami-head=true
     require 'hanami/cli_sub_commands/destroy'
     register Hanami::CliSubCommands::Destroy, 'destroy', 'destroy [SUBCOMMAND]', 'Destroy hanami classes'
 
-    require 'hanami/cli_sub_commands/assets'
-    register Hanami::CliSubCommands::Assets, 'assets', 'assets [SUBCOMMAND]', 'Manage assets'
+    if Hanami::Environment.disable_assets_piplene?
+      require 'hanami/cli_sub_commands/assets'
+      register Hanami::CliSubCommands::Assets, 'assets', 'assets [SUBCOMMAND]', 'Manage assets'
+    end
   end
 end
