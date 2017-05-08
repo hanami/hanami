@@ -119,7 +119,6 @@ END
       end
     end # haml
 
-
     context "slim" do
       it "generates app" do
         with_project('bookshelf_generate_app_slim', template: :slim) do
