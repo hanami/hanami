@@ -42,7 +42,12 @@ module Hanami
     #     # ...
     #   end
     def mount(app, options)
-      mounted[app] = App.new(app, options.fetch(:at))
+      allowed_apps = ENV['HANAMI_APPS'].to_s.split(',')
+
+      if allowed_apps.empty? || allowed_apps.any? { |a| app.to_s.downcase[a] }
+        app = yield if block_given?
+        mounted[app] = App.new(app, options.fetch(:at))
+      end
     end
 
     # Configure database
@@ -110,7 +115,6 @@ module Hanami
     # @since 0.9.0
     # @api private
     def apps
-      # but I think we need to use this method for filter apps
       mounted.each_pair do |klass, app|
         yield(app) if klass.ancestors.include?(Hanami::Application)
       end
