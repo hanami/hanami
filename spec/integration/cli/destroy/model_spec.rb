@@ -5,13 +5,12 @@ RSpec.describe "hanami destroy", type: :cli do
     it "destroys model" do
       with_project do
         generate "model user"
-        _migration = Dir.glob(Pathname.new("db").join("migrations", "*_create_users.rb")).first.to_s
+        migration = Dir.glob(Pathname.new("db").join("migrations", "*_create_users.rb")).first.to_s
 
         output = [
           "remove  lib/bookshelf/entities/user.rb",
           "remove  lib/bookshelf/repositories/user_repository.rb",
-          # FIXME: with Hanami 1.1
-          # "remove  #{migration}",
+          "remove  #{migration}",
           "remove  spec/bookshelf/entities/user_spec.rb",
           "remove  spec/bookshelf/repositories/user_repository_spec.rb"
         ]
@@ -20,8 +19,30 @@ RSpec.describe "hanami destroy", type: :cli do
 
         expect("lib/bookshelf/entities/user.rb").to_not                      be_an_existing_file
         expect("lib/bookshelf/repositories/user_repository.rb").to_not       be_an_existing_file
+        expect(migration).to_not                                             be_an_existing_file
         expect("spec/bookshelf/entities/user_spec.rb").to_not                be_an_existing_file
         expect("spec/bookshelf/repositories/user_repository_spec.rb").to_not be_an_existing_file
+      end
+    end
+
+    it "destroys model even if migration was deleted manually" do
+      with_project do
+        generate "model user"
+        migration = Dir.glob(Pathname.new("db").join("migrations", "*_create_users.rb")).first.to_s
+
+        run_simple "rm #{migration}"
+
+        expect(migration).to_not be_an_existing_file
+
+        output = [
+          "remove  lib/bookshelf/entities/user.rb",
+          "remove  lib/bookshelf/repositories/user_repository.rb",
+          /remove.+_create_users\.rb/,
+          "remove  spec/bookshelf/entities/user_spec.rb",
+          "remove  spec/bookshelf/repositories/user_repository_spec.rb"
+        ]
+
+        run_command "hanami destroy model user", output
       end
     end
 
