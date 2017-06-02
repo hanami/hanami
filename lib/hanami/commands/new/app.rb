@@ -70,10 +70,12 @@ module Hanami
             add_mapping('spec_helper.rb.rspec.tt', 'spec/spec_helper.rb')
             add_mapping('features_helper.rb.rspec.tt', 'spec/features_helper.rb')
             add_mapping('capybara.rb.rspec.tt', 'spec/support/capybara.rb')
+            add_mapping("spec/views/application_layout_spec.rb.rspec.tt", "spec/#{ app_name }/views/application_layout_spec.rb")
           else
             add_mapping('Rakefile.minitest.tt', 'Rakefile')
             add_mapping('spec_helper.rb.minitest.tt', 'spec/spec_helper.rb')
             add_mapping('features_helper.rb.minitest.tt', 'spec/features_helper.rb')
+            add_mapping("spec/views/application_layout_spec.rb.minitest.tt", "spec/#{ app_name }/views/application_layout_spec.rb")
           end
         end
 
@@ -81,7 +83,6 @@ module Hanami
         def add_empty_directories
           add_mapping('.gitkeep', 'config/initializers/.gitkeep')
           add_mapping('.gitkeep', 'app/controllers/.gitkeep')
-          add_mapping('.gitkeep', 'app/views/.gitkeep')
           add_mapping('.gitkeep', 'app/assets/images/.gitkeep')
           add_mapping('.gitkeep', 'app/assets/javascripts/.gitkeep')
           add_mapping('.gitkeep', 'app/assets/stylesheets/.gitkeep')
@@ -93,7 +94,6 @@ module Hanami
 
           add_mapping('.gitkeep', 'spec/features/.gitkeep')
           add_mapping('.gitkeep', 'spec/controllers/.gitkeep')
-          add_mapping('.gitkeep', 'spec/views/.gitkeep')
           add_mapping('.gitkeep', "spec/#{ app_name }/entities/.gitkeep")
           add_mapping('.gitkeep', "spec/#{ app_name }/repositories/.gitkeep")
           add_mapping('.gitkeep', "spec/#{ app_name }/mailers/.gitkeep")

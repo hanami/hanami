@@ -36,6 +36,8 @@ module Hanami
           add_mapping('views/application_layout.rb.tt', 'views/application_layout.rb')
           add_mapping("templates/application.html.#{ template_engine.name }.tt", "templates/application.html.#{ template_engine.name }")
           add_mapping('favicon.ico', 'assets/favicon.ico')
+          add_mapping("spec/views/application_layout_spec.rb.#{ test_framework.framework }.tt",
+            "../../spec/#{ app_name }/views/application_layout_spec.rb")
 
           add_mapping('.gitkeep', 'controllers/.gitkeep')
           add_mapping('.gitkeep', 'assets/images/.gitkeep')
@@ -43,7 +45,6 @@ module Hanami
           add_mapping('.gitkeep', 'assets/stylesheets/.gitkeep')
           add_mapping('.gitkeep', "../../spec/#{ app_name }/features/.gitkeep")
           add_mapping('.gitkeep', "../../spec/#{ app_name }/controllers/.gitkeep")
-          add_mapping('.gitkeep', "../../spec/#{ app_name }/views/.gitkeep")
         end
 
         # @api private

@@ -79,6 +79,10 @@ RSpec.describe "hanami generate", type: :cli do
   </body>
 </html>
 END
+          #
+          # spec/admin/views/application_layout_spec.rb
+          #
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.erb})
         end
       end
     end # erb
@@ -105,7 +109,12 @@ END
     = favicon
   %body
     = yield
-END
+ END
+
+          #
+          # spec/admin/views/application_layout_spec.rb
+          #
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.haml})
         end
       end
     end # haml
@@ -134,6 +143,11 @@ html
   body
     = yield
 END
+
+          #
+          # spec/admin/views/application_layout_spec.rb
+          #
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.slim})
         end
       end
     end # slim

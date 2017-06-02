@@ -18,7 +18,7 @@ RSpec.describe "hanami destroy", type: :cli do
           "remove  apps/admin/assets/stylesheets/.gitkeep",
           "remove  spec/admin/features/.gitkeep",
           "remove  spec/admin/controllers/.gitkeep",
-          "remove  spec/admin/views/.gitkeep",
+          "remove  spec/admin/views/application_layout_spec.rb",
           "subtract  config/environment.rb",
           "subtract  config/environment.rb",
           "subtract  .env.development",
