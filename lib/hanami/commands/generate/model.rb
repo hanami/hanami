@@ -103,9 +103,24 @@ module Hanami
         # @since 0.9.1
         # @api private
         def migration_path
+          existing_migration_path || new_migration_path
+        end
+
+        # @since 1.1.0
+        # @api private
+        def new_migration_path
           timestamp = Time.now.utc.strftime(Migration::TIMESTAMP_FORMAT)
-          filename = Migration::FILENAME_PATTERN % { timestamp: timestamp, name: "create_#{table_name}"}
+          filename = Migration::FILENAME_PATTERN % { timestamp: timestamp, name: migration_name_underscored }
+
           Hanami::Model.configuration.migrations.join(filename)
+        end
+
+        # @since 1.1.0
+        # @api private
+        def existing_migration_path
+          Utils::FileList["#{Hanami::Model.configuration.migrations}/*.rb"].find do |filename|
+            %r{/\d{14}_#{migration_name_underscored}.rb\z} =~ filename
+          end
         end
 
         # @since 0.5.0
@@ -125,6 +140,12 @@ module Hanami
         # @api private
         def model_name_underscored
           input
+        end
+
+        # @since 1.1.0
+        # @api private
+        def migration_name_underscored
+          "create_#{table_name}"
         end
       end
     end
