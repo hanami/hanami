@@ -19,7 +19,7 @@ module Hanami
       require 'hanami/version'
       puts "v#{ Hanami::VERSION }"
     end
-    map %w{--version -v} => :version
+    map %w({--version -v}) => :version
 
     desc 'server', 'Starts a hanami server'
     long_desc <<-EOS
