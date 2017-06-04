@@ -1,3 +1,4 @@
+require 'spec_helper'
 require_relative '<%= config[:relative_action_path] %>'
 
 RSpec.describe <%= config[:app] %>::Controllers::<%= config[:controller] %>::<%= config[:action] %> do
