@@ -10,12 +10,14 @@ module Hanami
     include Hanami::Cli
 
     class Version
+      include Hanami::Cli::Command
+      register "version"
+      aliases '--version', '-v'
+
       def call
         puts "v#{Hanami::VERSION}"
       end
     end
-
-    register "version", "-v", "--version", Version
   end
 
   # @api private

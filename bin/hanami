@@ -2,7 +2,8 @@
 require 'bundler'
 require 'hanami/command_line'
 
-result = Hanami::CommandLine.run
+# FIXME: ignore_unkwnon_commands MUST be removed after the migration of the CLI is done.
+result = Hanami::CommandLine.call(ignore_unknown_commands: true)
 
 exit(0) if result
 Hanami::OldCommandLine.start
