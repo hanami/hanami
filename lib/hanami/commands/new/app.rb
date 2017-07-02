@@ -51,6 +51,7 @@ module Hanami
           add_mapping('hanamirc.tt', '.hanamirc')
           add_mapping('.env.development.tt', '.env.development')
           add_mapping('.env.test.tt', '.env.test')
+          add_mapping('README.md.tt', 'README.md')
           add_mapping('Gemfile.tt', 'Gemfile')
           add_mapping('config.ru.tt', 'config.ru')
           add_mapping('config/environment.rb.tt', 'config/environment.rb')

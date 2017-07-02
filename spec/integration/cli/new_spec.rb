@@ -5,6 +5,7 @@ RSpec.describe 'hanami new', type: :cli do
       create  .hanamirc
       create  .env.development
       create  .env.test
+      create  README.md
       create  Gemfile
       create  config.ru
       create  config/boot.rb
@@ -76,6 +77,29 @@ END
       expect('.env.test').to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_test.sqlite"})
       expect('.env.test').to have_file_content(%r{SERVE_STATIC_ASSETS="true"})
       expect('.env.test').to have_file_content(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
+
+      #
+      # README.md
+      #
+      expect('README.md').to have_file_content <<-END
+# bookshelf
+
+Welcome to your new hanami project!
+
+TODO: Delete this and the text above, and describe your project
+
+## Installation
+
+TODO: Delete this text and describe installation process
+
+## Usage
+
+TODO: Write usage instructions here
+
+## License
+
+The project is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+END
 
       #
       # Gemfile

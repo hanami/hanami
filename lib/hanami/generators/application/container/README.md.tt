@@ -1,0 +1,17 @@
+# <%= config[:project_name] %>
+
+Welcome to your new hanami project!
+
+TODO: Delete this and the text above, and describe your project
+
+## Installation
+
+TODO: Delete this text and describe installation process
+
+## Usage
+
+TODO: Write usage instructions here
+
+## License
+
+The project is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
