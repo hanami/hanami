@@ -148,8 +148,9 @@ module Hanami
     # configurations and discourage putting sensitive information into source
     # control.
     #
-    # The format of those `.env.<environment>` files is compatible with `dotenv`
-    # and `foreman` gems.
+    # The format of those `.env.<environment>` files follows UNIX and UNIX-like
+    # operating system environment variable declaration format and compatible
+    # with `dotenv` and `foreman` gems.
     #
     # @param options [Hash] override default options for various environment
     #   attributes
