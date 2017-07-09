@@ -9,6 +9,7 @@ module Hanami
     include Hanami::Cli
 
     require 'hanami/command_line/console'
+    require 'hanami/command_line/routes'
     require 'hanami/command_line/server'
     require 'hanami/command_line/version'
   end
@@ -69,22 +70,6 @@ $ > hanami new fancy_app --hanami-head=true
         Hanami::Commands::New::App.new(options, application_name).start
       else
         Hanami::Commands::New::Container.new(options, application_name).start
-      end
-    end
-
-    desc 'routes', 'Prints the routes'
-    long_desc <<-EOS
-      `hanami routes` outputs all the registered routes to the console.
-    EOS
-    method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
-    method_option :help, desc: 'Displays the usage method'
-    # @api private
-    def routes
-      if options[:help]
-        invoke :help, ['routes']
-      else
-        require 'hanami/commands/routes'
-        Hanami::Commands::Routes.new(options).start
       end
     end
 
