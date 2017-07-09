@@ -44,7 +44,7 @@ END
         child.to_s.include?("create_#{table_name}")
       end
       expect(file).to_not be_nil, "Expected to find a migration matching: create_#{table_name}.\nFound: #{migrations.map(&:basename).join(' ')}"
-            
+
       expect(file.to_s).to have_file_content <<-END
 Hanami::Model.migration do
   change do

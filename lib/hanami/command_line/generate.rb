@@ -8,6 +8,7 @@ module Hanami
       require "hanami/command_line/generate/action"
       require "hanami/command_line/generate/mailer"
       require "hanami/command_line/generate/migration"
+      require "hanami/command_line/generate/model"
     end
   end
 end
