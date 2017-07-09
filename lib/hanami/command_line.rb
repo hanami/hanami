@@ -9,50 +9,14 @@ module Hanami
   module CommandLine
     include Hanami::Cli
 
-    class Version
-      include Hanami::Cli::Command
-      register "version"
-      aliases '--version', '-v'
-
-      def call
-        puts "v#{Hanami::VERSION}"
-      end
-    end
+    require "hanami/command_line/server"
+    require "hanami/command_line/version"
   end
 
   # @api private
   class OldCommandLine < Thor
     # include Thor::Actions
     extend CliBase
-
-    desc 'server', 'Starts a hanami server'
-    long_desc <<-EOS
-    `hanami server` starts a server for the current hanami project.
-
-    $ > hanami server
-
-    $ > hanami server -p 4500
-    EOS
-    method_option :port, aliases: '-p', desc: 'The port to run the server on'
-    method_option :server, desc: 'Choose a specific Rack::Handler (webrick, thin, etc)'
-    method_option :rackup, desc: 'A rackup configuration file path to load (config.ru)'
-    method_option :host, desc: 'The host address to bind to'
-    method_option :debug, desc: 'Turn on debug output'
-    method_option :warn, desc: 'Turn on warnings'
-    method_option :daemonize, desc: 'If true, the server will daemonize itself (fork, detach, etc)'
-    method_option :pid, desc: 'Path to write a pid file after daemonize'
-    method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
-    method_option :code_reloading, desc: 'Code reloading', type: :boolean, default: true
-    method_option :help, desc: 'Displays the usage message'
-    # @api private
-    def server
-      if options[:help]
-        invoke :help, ['server']
-      else
-        require 'hanami/commands/server'
-        Hanami::Commands::Server.new(options).start
-      end
-    end
 
     desc 'rackserver', '[private]'
     method_option :port, aliases: '-p', desc: 'The port to run the server on, '
