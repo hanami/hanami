@@ -6,6 +6,7 @@ module Hanami
       register "generate", subcommand: true
 
       require "hanami/command_line/generate/action"
+      require "hanami/command_line/generate/mailer"
     end
   end
 end
