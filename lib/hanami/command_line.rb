@@ -1,7 +1,6 @@
 require 'hanami/cli'
 require 'thor'
 require 'hanami/cli_base'
-require 'hanami/commands/console'
 require 'hanami/commands/new/app'
 require 'hanami/commands/new/container'
 
@@ -9,8 +8,9 @@ module Hanami
   module CommandLine
     include Hanami::Cli
 
-    require "hanami/command_line/server"
-    require "hanami/command_line/version"
+    require 'hanami/command_line/console'
+    require 'hanami/command_line/server'
+    require 'hanami/command_line/version'
   end
 
   # @api private
@@ -36,25 +36,6 @@ module Hanami
       else
         require 'hanami/server'
         Hanami::Server.new(options).start
-      end
-    end
-
-
-    desc 'console', 'Starts a hanami console'
-    long_desc <<-EOS
-    `hanami console` starts the interactive hanami console.
-
-    $ > hanami console --engine=pry
-    EOS
-    method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
-    method_option :engine, desc: "Choose a specific console engine: (#{Hanami::Commands::Console::ENGINES.keys.join('/')})"
-    method_option :help, desc: 'Displays the usage method'
-    # @api private
-    def console
-      if options[:help]
-        invoke :help, ['console']
-      else
-        Hanami::Commands::Console.new(options).start
       end
     end
 
