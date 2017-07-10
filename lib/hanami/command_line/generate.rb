@@ -5,6 +5,7 @@ module Hanami
       include Hanami::Cli::Command
       register "generate", subcommand: true
 
+      require "hanami/command_line/generate/app"
       require "hanami/command_line/generate/action"
       require "hanami/command_line/generate/mailer"
       require "hanami/command_line/generate/migration"

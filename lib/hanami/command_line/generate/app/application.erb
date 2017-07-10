@@ -1,43 +1,7 @@
-require 'hanami/utils/string'
-
-RSpec.shared_examples "a new app" do
-  let(:app) { Hanami::Utils::String.new(input).underscore.to_s }
-
-  it 'generates vanilla app' do
-    project = "bookshelf_generate_app_#{Random.rand(100_000_000)}"
-
-    with_project(project) do
-      app_name   = Hanami::Utils::String.new(app).classify
-      app_upcase = Hanami::Utils::String.new(app).upcase
-      output     = <<-OUT
-      create  apps/#{app}/application.rb
-      create  apps/#{app}/config/routes.rb
-      create  apps/#{app}/views/application_layout.rb
-      create  apps/#{app}/templates/application.html.erb
-      create  apps/#{app}/assets/favicon.ico
-      create  apps/#{app}/controllers/.gitkeep
-      create  apps/#{app}/assets/images/.gitkeep
-      create  apps/#{app}/assets/javascripts/.gitkeep
-      create  apps/#{app}/assets/stylesheets/.gitkeep
-      create  spec/#{app}/features/.gitkeep
-      create  spec/#{app}/controllers/.gitkeep
-      create  spec/#{app}/views/application_layout_spec.rb
-      insert  config/environment.rb
-      insert  config/environment.rb
-      append  .env.development
-      append  .env.test
-OUT
-
-      run_command "hanami generate app #{input}", output
-
-      #
-      # apps/<app>/application.rb
-      #
-      expect("apps/#{app}/application.rb").to have_file_content <<-END
 require 'hanami/helpers'
 require 'hanami/assets'
 
-module #{app_name}
+module <%= app.classify %>
   class Application < Hanami::Application
     configure do
       ##
@@ -117,7 +81,7 @@ module #{app_name}
       #
       # See: http://www.rubydoc.info/gems/rack/Rack/Session/Cookie
       #
-      # sessions :cookie, secret: ENV['#{app_upcase}_SESSIONS_SECRET']
+      # sessions :cookie, secret: ENV['<%= app.upcase %>_SESSIONS_SECRET']
 
       # Configure Rack middleware for this application
       #
@@ -152,7 +116,7 @@ module #{app_name}
 
       # The layout to be used by all views
       #
-      layout :application # It will load #{app_name}::Views::ApplicationLayout
+      layout :application # It will load <%= app.classify %>::Views::ApplicationLayout
 
       # The relative path to templates
       #
@@ -290,7 +254,7 @@ module #{app_name}
       # FRAMEWORKS
       #
 
-      # Configure the code that will yield each time #{app_name}::Action is included
+      # Configure the code that will yield each time <%= app.classify %>::Action is included
       # This is useful for sharing common functionality
       #
       # See: http://www.rubydoc.info/gems/hanami-controller#Configuration
@@ -299,13 +263,13 @@ module #{app_name}
         # before :authenticate!    # run an authentication before callback
       end
 
-      # Configure the code that will yield each time #{app_name}::View is included
+      # Configure the code that will yield each time <%= app.classify %>::View is included
       # This is useful for sharing common functionality
       #
       # See: http://www.rubydoc.info/gems/hanami-view#Configuration
       view.prepare do
         include Hanami::Helpers
-        include #{app_name}::Assets::Helpers
+        include <%= app.classify %>::Assets::Helpers
       end
     end
 
@@ -357,149 +321,6 @@ module #{app_name}
         # See: http://hanamirb.org/guides/assets/content-delivery-network/#subresource-integrity
         subresource_integrity :sha256
       end
-    end
-  end
-end
-END
-
-      #
-      # apps/<app>/config/routes.rb
-      #
-      expect("apps/#{app}/config/routes.rb").to have_file_content <<-END
-# Configure your routes here
-# See: http://hanamirb.org/guides/routing/overview/
-#
-# Example:
-# get '/hello', to: ->(env) { [200, {}, ['Hello from Hanami!']] }
-END
-
-      #
-      # apps/<app>/views/application_layout.rb
-      #
-      expect("apps/#{app}/views/application_layout.rb").to have_file_content <<-END
-module #{app_name}
-  module Views
-    class ApplicationLayout
-      include #{app_name}::Layout
-    end
-  end
-end
-END
-
-      #
-      # apps/<app>/assets/favicon.ico
-      #
-      expect("apps/#{app}/assets/favicon.ico").to be_an_existing_file
-
-      #
-      # spec/<app>/views/application_layout_spec.rb
-      #
-      expect("spec/#{app}/views/application_layout_spec.rb").to be_an_existing_file
-
-      #
-      # apps/<app>/controllers/.gitkeep
-      #
-      expect("apps/#{app}/controllers/.gitkeep").to be_an_existing_file
-
-      #
-      # apps/<app>/assets/images/.gitkeep
-      #
-      expect("apps/#{app}/assets/images/.gitkeep").to be_an_existing_file
-
-      #
-      # apps/<app>/assets/javascripts/.gitkeep
-      #
-      expect("apps/#{app}/assets/javascripts/.gitkeep").to be_an_existing_file
-
-      #
-      # apps/<app>/assets/stylesheets/.gitkeep
-      #
-      expect("apps/#{app}/assets/stylesheets/.gitkeep").to be_an_existing_file
-
-      #
-      # spec/<app>/features/.gitkeep
-      #
-      expect("spec/#{app}/features/.gitkeep").to be_an_existing_file
-
-      #
-      # spec/<app>/controllers/.gitkeep
-      #
-      expect("spec/#{app}/controllers/.gitkeep").to be_an_existing_file
-
-      #
-      # config/environment.rb
-      #
-      expect("config/environment.rb").to have_file_content <<-END
-require 'bundler/setup'
-require 'hanami/setup'
-require 'hanami/model'
-require_relative '../lib/#{project}'
-require_relative '../apps/#{app}/application'
-require_relative '../apps/web/application'
-
-Hanami.configure do
-  mount #{app_name}::Application, at: '/#{app}'
-  mount Web::Application, at: '/'
-
-  model do
-    ##
-    # Database adapter
-    #
-    # Available options:
-    #
-    #  * SQL adapter
-    #    adapter :sql, 'sqlite://db/#{project}_development.sqlite3'
-    #    adapter :sql, 'postgresql://localhost/#{project}_development'
-    #    adapter :sql, 'mysql://localhost/#{project}_development'
-    #
-    adapter :sql, ENV['DATABASE_URL']
-
-    ##
-    # Migrations
-    #
-    migrations 'db/migrations'
-    schema     'db/schema.sql'
-  end
-
-  mailer do
-    root 'lib/#{project}/mailers'
-
-    # See http://hanamirb.org/guides/mailers/delivery
-    delivery :test
-  end
-
-  environment :development do
-    # See: http://hanamirb.org/guides/projects/logging
-    logger level: :debug
-  end
-
-  environment :production do
-    logger level: :info, formatter: :json
-
-    mailer do
-      delivery :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
-    end
-  end
-end
-END
-
-      #
-      # .env.development
-      #
-      expect(".env.development").to have_file_content(%r{# Define ENV variables for development environment})
-      expect(".env.development").to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_development.sqlite"})
-      expect(".env.development").to have_file_content(%r{SERVE_STATIC_ASSETS="true"})
-      expect(".env.development").to have_file_content(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
-      expect(".env.development").to have_file_content(%r{#{app_upcase}_SESSIONS_SECRET="[\w]{64}"})
-
-      #
-      # .env.test
-      #
-      expect(".env.test").to have_file_content(%r{# Define ENV variables for test environment})
-      expect(".env.test").to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_test.sqlite"})
-      expect(".env.test").to have_file_content(%r{SERVE_STATIC_ASSETS="true"})
-      expect(".env.test").to have_file_content(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
-      expect(".env.test").to have_file_content(%r{#{app_upcase}_SESSIONS_SECRET="[\w]{64}"})
     end
   end
 end
