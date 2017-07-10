@@ -1,7 +1,6 @@
 require 'hanami/cli'
 require 'thor'
 require 'hanami/cli_base'
-require 'hanami/commands/console'
 require 'hanami/commands/new/app'
 require 'hanami/commands/new/container'
 require 'ostruct'
@@ -33,91 +32,15 @@ module Hanami
     end
 
     require "hanami/command_line/generate"
-
-    class Version
-      include Hanami::Cli::Command
-      register "version"
-      aliases '--version', '-v'
-
-      def call
-        puts "v#{Hanami::VERSION}"
-      end
-    end
+    require 'hanami/command_line/console'
+    require 'hanami/command_line/routes'
+    require 'hanami/command_line/server'
+    require 'hanami/command_line/version'
   end
 
   # @api private
   class OldCommandLine < Thor
-    # include Thor::Actions
     extend CliBase
-
-    desc 'server', 'Starts a hanami server'
-    long_desc <<-EOS
-    `hanami server` starts a server for the current hanami project.
-
-    $ > hanami server
-
-    $ > hanami server -p 4500
-    EOS
-    method_option :port, aliases: '-p', desc: 'The port to run the server on'
-    method_option :server, desc: 'Choose a specific Rack::Handler (webrick, thin, etc)'
-    method_option :rackup, desc: 'A rackup configuration file path to load (config.ru)'
-    method_option :host, desc: 'The host address to bind to'
-    method_option :debug, desc: 'Turn on debug output'
-    method_option :warn, desc: 'Turn on warnings'
-    method_option :daemonize, desc: 'If true, the server will daemonize itself (fork, detach, etc)'
-    method_option :pid, desc: 'Path to write a pid file after daemonize'
-    method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
-    method_option :code_reloading, desc: 'Code reloading', type: :boolean, default: true
-    method_option :help, desc: 'Displays the usage message'
-    # @api private
-    def server
-      if options[:help]
-        invoke :help, ['server']
-      else
-        require 'hanami/commands/server'
-        Hanami::Commands::Server.new(options).start
-      end
-    end
-
-    desc 'rackserver', '[private]'
-    method_option :port, aliases: '-p', desc: 'The port to run the server on, '
-    method_option :server, desc: 'choose a specific Rack::Handler, e.g. webrick, thin etc'
-    method_option :rackup, desc: 'a rackup configuration file path to load (config.ru)'
-    method_option :host, desc: 'the host address to bind to'
-    method_option :debug, desc: 'turn on debug output'
-    method_option :warn, desc: 'turn on warnings'
-    method_option :daemonize, desc: 'if true, the server will daemonize itself (fork, detach, etc)'
-    method_option :pid, desc: 'path to write a pid file after daemonize'
-    method_option :environment, desc: 'path to environment configuration (config/environment.rb)'
-    method_option :help, desc: 'displays the usage message'
-    # @api private
-    def rackserver
-      if options[:help]
-        invoke :help, ['rackserver']
-      else
-        require 'hanami/server'
-        Hanami::Server.new(options).start
-      end
-    end
-
-
-    desc 'console', 'Starts a hanami console'
-    long_desc <<-EOS
-    `hanami console` starts the interactive hanami console.
-
-    $ > hanami console --engine=pry
-    EOS
-    method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
-    method_option :engine, desc: "Choose a specific console engine: (#{Hanami::Commands::Console::ENGINES.keys.join('/')})"
-    method_option :help, desc: 'Displays the usage method'
-    # @api private
-    def console
-      if options[:help]
-        invoke :help, ['console']
-      else
-        Hanami::Commands::Console.new(options).start
-      end
-    end
 
     desc 'new PROJECT_NAME', 'Generate a new hanami project'
     long_desc <<-EOS
@@ -149,22 +72,6 @@ $ > hanami new fancy_app --hanami-head=true
         Hanami::Commands::New::App.new(options, application_name).start
       else
         Hanami::Commands::New::Container.new(options, application_name).start
-      end
-    end
-
-    desc 'routes', 'Prints the routes'
-    long_desc <<-EOS
-      `hanami routes` outputs all the registered routes to the console.
-    EOS
-    method_option :environment, desc: 'Path to environment configuration (config/environment.rb)'
-    method_option :help, desc: 'Displays the usage method'
-    # @api private
-    def routes
-      if options[:help]
-        invoke :help, ['routes']
-      else
-        require 'hanami/commands/routes'
-        Hanami::Commands::Routes.new(options).start
       end
     end
 
