@@ -86,19 +86,33 @@ END
 
 Welcome to your new hanami project!
 
-TODO: Delete this and the text above, and describe your project
+## Useful informations
 
-## Installation
+How to run tests:
+```
+% bundle exec rake
+```
 
-TODO: Delete this text and describe installation process
+How to run a development console:
+```
+% bundle exec hanami console
+```
 
-## Usage
+How to run a development server:
+```
+% bundle exec hanami server
+```
 
-TODO: Write usage instructions here
+How to create and migrate DB for development and test ENVs:
+```
+% bundle exec hanami db create
+% bundle exec hanami db migrate
 
-## License
+% HANAMI_ENV=test bundle exec hanami db create
+% HANAMI_ENV=test bundle exec hanami db migrate
+```
 
-The project is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+Explore the other [guides](http://hanamirb.org/guides/), the Hanami [API documentation](http://hanamirb.org/docs/1.0.0/) and read [the source code](http://github.com/hanami). Enjoy!
 END
 
       #
