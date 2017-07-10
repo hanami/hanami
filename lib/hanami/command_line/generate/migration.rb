@@ -24,7 +24,7 @@ module Hanami
 
         TIMESTAMP_FORMAT = '%Y%m%d%H%M%S'.freeze
 
-        FILENAME_PATTERN = '%{timestamp}_%{name}.rb'.freeze
+        FILENAME_PATTERN = '%{timestamp}_%{name}'.freeze
 
         def generate_migration(context)
           # FIXME: extract these hardcoded values
