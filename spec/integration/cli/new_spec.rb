@@ -84,21 +84,21 @@ END
       expect('README.md').to have_file_content <<-END
 # bookshelf
 
-Welcome to your new hanami project!
+Welcome to your new Hanami project!
 
-## Useful informations
+## Setup
 
 How to run tests:
 ```
 % bundle exec rake
 ```
 
-How to run a development console:
+How to run the development console:
 ```
 % bundle exec hanami console
 ```
 
-How to run a development server:
+How to run the development server:
 ```
 % bundle exec hanami server
 ```
@@ -112,7 +112,7 @@ How to create and migrate DB for development and test ENVs:
 % HANAMI_ENV=test bundle exec hanami db migrate
 ```
 
-Explore the other [guides](http://hanamirb.org/guides/), the Hanami [API documentation](http://hanamirb.org/docs/1.0.0/) and read [the source code](http://github.com/hanami). Enjoy!
+Explore Hanami [guides](http://hanamirb.org/guides/), [API docs](http://hanamirb.org/docs/1.0.0/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
 END
 
       #
