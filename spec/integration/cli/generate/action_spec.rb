@@ -48,11 +48,10 @@ END
     it "fails with missing arguments" do
       with_project('bookshelf_generate_action_without_args') do
         output = <<-OUT
-ERROR: "hanami generate actions" was called with no arguments
-Usage: "hanami generate action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
+ERROR: "hanami generate action" was called with no arguments
+Usage: "hanami generate action APP ACTION"
 OUT
-
-        run_command "hanami generate action", output # , exit_status: 1 FIXME: Thor exit with 0
+        run_command "hanami generate action", output, exit_status: 1
       end
     end
 
@@ -60,16 +59,16 @@ OUT
       with_project('bookshelf_generate_action_without_app') do
         output = <<-OUT
 ERROR: "hanami generate action" was called with arguments ["home#index"]
-Usage: "hanami generate action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
+Usage: "hanami generate action APP ACTION"
 OUT
 
-        run_command "hanami generate action home#index", output # , exit_status: 1 FIXME: Thor exit with 0
+        run_command "hanami generate action home#index", output, exit_status: 1
       end
     end
 
     it "fails with unknown app" do
       with_project('bookshelf_generate_action_with_unknown_app') do
-        output = "`foo' is not a valid APPLICATION_NAME. Please specify one of: `web'"
+        output = "`foo' is not a valid APP. Please specify one of: `web'"
 
         run_command "hanami generate action foo home#index", output, exit_status: 1
       end
@@ -103,8 +102,8 @@ OUT
       it "generates action" do
         with_project('bookshelf_generate_action_skip_view') do
           run_command "hanami generate action web status#check --skip-view", <<-OUT
-      create  spec/web/controllers/status/check_spec.rb
       create  apps/web/controllers/status/check.rb
+      create  spec/web/controllers/status/check_spec.rb
       insert  apps/web/config/routes.rb
 OUT
 
@@ -241,7 +240,6 @@ END
           #
           expect('spec/web/controllers/books/index_spec.rb').to have_file_content <<-END
 require 'spec_helper'
-require_relative '../../../../apps/web/controllers/books/index'
 
 describe Web::Controllers::Books::Index do
   let(:action) { Web::Controllers::Books::Index.new }
@@ -259,7 +257,6 @@ END
           #
           expect('spec/web/views/books/index_spec.rb').to have_file_content <<-END
 require 'spec_helper'
-require_relative '../../../../apps/web/views/books/index'
 
 describe Web::Views::Books::Index do
   let(:exposures) { Hash[foo: 'bar'] }
@@ -293,8 +290,6 @@ END
           # spec/web/controllers/books/index_spec.rb
           #
           expect('spec/web/controllers/books/index_spec.rb').to have_file_content <<-END
-require_relative '../../../../apps/web/controllers/books/index'
-
 RSpec.describe Web::Controllers::Books::Index do
   let(:action) { described_class.new }
   let(:params) { Hash[] }
@@ -310,8 +305,6 @@ END
           # spec/web/views/books/index_spec.rb
           #
           expect('spec/web/views/books/index_spec.rb').to have_file_content <<-END
-require_relative '../../../../apps/web/views/books/index'
-
 RSpec.describe Web::Views::Books::Index do
   let(:exposures) { Hash[foo: 'bar'] }
   let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }

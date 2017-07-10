@@ -2,8 +2,8 @@ RSpec.describe "hanami generate", type: :cli do
   describe 'mailer' do
     context 'generates a new mailer' do
       let(:output) do
-        ["create  spec/bookshelf_generate_mailer/mailers/welcome_spec.rb",
-         "create  lib/bookshelf_generate_mailer/mailers/welcome.rb",
+        ["create  lib/bookshelf_generate_mailer/mailers/welcome.rb",
+         "create  spec/bookshelf_generate_mailer/mailers/welcome_spec.rb",
          "create  lib/bookshelf_generate_mailer/mailers/templates/welcome.txt.erb",
          "create  lib/bookshelf_generate_mailer/mailers/templates/welcome.html.erb"]
       end
@@ -91,10 +91,10 @@ END
       with_project('bookshelf_generate_mailer_without_args') do
         output = <<-OUT
 ERROR: "hanami generate mailer" was called with no arguments
-Usage: "hanami generate mailer NAME"
+Usage: "hanami generate mailer MAILER"
 OUT
 
-        run_command "hanami generate mailer", output
+        run_command "hanami generate mailer", output, exit_status: 1
       end
     end
   end
