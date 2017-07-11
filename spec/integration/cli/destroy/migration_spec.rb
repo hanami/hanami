@@ -21,19 +21,18 @@ RSpec.describe "hanami destroy", type: :cli do
       with_project do
         output = <<-OUT
 ERROR: "hanami destroy migration" was called with no arguments
-Usage: "hanami destroy migration NAME"
+Usage: "hanami destroy migration MIGRATION"
 OUT
-        run_command "hanami destroy migration", output
+        run_command "hanami destroy migration", output, exit_status: 1
       end
     end
 
-    xit "fails with unknown migration" do
+    it "fails with unknown migration" do
       with_project do
         output = <<-OUT
-ERROR: "hanami migration" was called with no arguments
-Usage: "hanami migration NAME"
+cannot find `create_unknowns'. Please have a look at `db/migrations' directory to find an existing migration
 OUT
-        run_command "hanami destroy migration create_unknowns", output
+        run_command "hanami destroy migration create_unknowns", output, exit_status: 1
       end
     end
   end # migration
