@@ -32,6 +32,7 @@ module Hanami
     end
 
     require "hanami/command_line/generate"
+    require "hanami/command_line/destroy"
     require 'hanami/command_line/console'
     require 'hanami/command_line/routes'
     require 'hanami/command_line/server'
