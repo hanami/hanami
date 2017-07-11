@@ -85,53 +85,5 @@ OUT
         run_command "hanami destroy action web home#index", output, exit_status: 1
       end
     end
-
-    context "erb" do
-      it "destroys action" do
-        with_project('bookshelf_destroy_action_erb', template: 'erb') do
-          generate "action web books#index"
-
-          output = [
-            "remove  apps/web/templates/books/index.html.erb"
-          ]
-
-          run_command "hanami destroy action web books#index", output
-
-          expect('apps/web/templates/authors/index.html.erb').to_not be_an_existing_file
-        end
-      end
-    end # erb
-
-    context "haml" do
-      it "destroys action" do
-        with_project('bookshelf_generate_action_haml', template: 'haml') do
-          generate "action web books#index"
-
-          output = [
-            "remove  apps/web/templates/books/index.html.haml"
-          ]
-
-          run_command "hanami destroy action web books#index", output
-
-          expect('apps/web/templates/books/index.html.haml').to_not be_an_existing_file
-        end
-      end
-    end # haml
-
-    context "slim" do
-      it "destroys action" do
-        with_project('bookshelf_generate_action_slim', template: 'slim') do
-          generate "action web books#index"
-
-          output = [
-            "remove  apps/web/templates/books/index.html.slim"
-          ]
-
-          run_command "hanami destroy action web books#index", output
-
-          expect('apps/web/templates/books/index.html.slim').to_not be_an_existing_file
-        end
-      end
-    end # slim
   end # action
 end
