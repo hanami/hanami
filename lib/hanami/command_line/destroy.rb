@@ -6,6 +6,7 @@ module Hanami
       register "destroy", subcommand: true
 
       require "hanami/command_line/destroy/app"
+      require "hanami/command_line/destroy/action"
     end
   end
 end
