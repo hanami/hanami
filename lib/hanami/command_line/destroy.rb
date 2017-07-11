@@ -7,6 +7,7 @@ module Hanami
 
       require "hanami/command_line/destroy/app"
       require "hanami/command_line/destroy/action"
+      require "hanami/command_line/destroy/migration"
     end
   end
 end
