@@ -25,7 +25,7 @@ RSpec.describe "hanami db", type: :cli do
       end
     end
 
-    it 'prints help message' do
+    xit 'prints help message' do
       output = <<-OUT
 Usage:
   hanami db create
