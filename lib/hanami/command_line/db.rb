@@ -9,6 +9,7 @@ module Hanami
       require "hanami/command_line/db/create"
       require "hanami/command_line/db/drop"
       require "hanami/command_line/db/migrate"
+      require "hanami/command_line/db/prepare"
     end
   end
 end
