@@ -6,6 +6,7 @@ module Hanami
       register "db", subcommand: true
 
       require "hanami/command_line/db/version"
+      require "hanami/command_line/db/create"
     end
   end
 end
