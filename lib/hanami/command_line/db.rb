@@ -7,6 +7,7 @@ module Hanami
 
       require "hanami/command_line/db/version"
       require "hanami/command_line/db/create"
+      require "hanami/command_line/db/drop"
     end
   end
 end
