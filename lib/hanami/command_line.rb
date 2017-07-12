@@ -36,6 +36,7 @@ module Hanami
     require 'hanami/command_line/console'
     require "hanami/command_line/db"
     require 'hanami/command_line/routes'
+    require "hanami/command_line/assets"
     require 'hanami/command_line/server'
     require 'hanami/command_line/version'
   end
