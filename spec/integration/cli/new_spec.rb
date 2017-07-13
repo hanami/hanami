@@ -33,13 +33,13 @@ RSpec.describe 'hanami new', type: :cli do
       create  apps/web/views/application_layout.rb
       create  apps/web/templates/application.html.erb
       create  apps/web/assets/favicon.ico
-      create  spec/web/views/application_layout_spec.rb
       create  apps/web/controllers/.gitkeep
       create  apps/web/assets/images/.gitkeep
       create  apps/web/assets/javascripts/.gitkeep
       create  apps/web/assets/stylesheets/.gitkeep
       create  spec/web/features/.gitkeep
       create  spec/web/controllers/.gitkeep
+      create  spec/web/views/application_layout_spec.rb
       insert  config/environment.rb
       insert  config/environment.rb
       append  .env.development
@@ -791,8 +791,8 @@ END
   context "with missing name" do
     it "fails" do
       output = <<-OUT
-`hanami new` was called with no arguments
-Usage: `hanami new PROJECT_NAME`
+ERROR: "hanami new" was called with no arguments
+Usage: "hanami new PROJECT_NAME"
       OUT
 
       run_command "hanami new", output, exit_status: 1
@@ -800,26 +800,25 @@ Usage: `hanami new PROJECT_NAME`
   end
 
   context "help" do
-    xit "prints help message" do
+    # TODO: show deafult in description
+    it "prints help message" do
       output = <<-OUT
 Usage:
-  hanami new PROJECT_NAME
+  hanami new
+
+Description:
+  Generate a new hanami project
 
 Options:
-  -d, --db, [--database=DATABASE]                        # Application database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3/filesystem/memory)
-                                                         # Default: filesystem
-  -a, --arch, [--architecture=ARCHITECTURE]              # Project architecture (container/app)
-                                                         # Default: container
-          [--application-name=APPLICATION_NAME]          # Application name, only for container
-                                                         # Default: web
-          [--application-base-url=APPLICATION_BASE_URL]  # Application base url
-                                                         # Default: /
-          [--template=TEMPLATE]                          # Template engine (erb/slim/haml)
-                                                         # Default: erb
-          [--test=TEST]                                  # Project test framework (rspec/minitest)
-                                                         # Default: minitest
-          [--hanami-head], [--no-hanami-head]            # Use hanami HEAD (true/false)
-          [--help=HELP]                                  # Displays the usage method
+        --database database          Application database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3)
+        --application-name application_name
+                                     Application name, only for container
+        --application-base-url application_base_url
+                                     Application base url
+        --template template          Template engine (erb/haml/slim)
+        --test test                  Project test framework (minitest/rspec)
+        --[no-]hanami-head           Use hanami HEAD (true/false)
+    -h, --help                       Show this message
 OUT
 
 # rubocop:disable Style/CommentIndentation
