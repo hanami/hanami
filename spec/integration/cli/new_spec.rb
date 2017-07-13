@@ -84,21 +84,39 @@ END
       expect('README.md').to have_file_content <<-END
 # bookshelf
 
-Welcome to your new hanami project!
+Welcome to your new Hanami project!
 
-TODO: Delete this and the text above, and describe your project
+## Setup
 
-## Installation
+How to run tests:
 
-TODO: Delete this text and describe installation process
+```
+% bundle exec rake
+```
 
-## Usage
+How to run the development console:
 
-TODO: Write usage instructions here
+```
+% bundle exec hanami console
+```
 
-## License
+How to run the development server:
 
-The project is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+```
+% bundle exec hanami server
+```
+
+How to create and migrate DB for development and test ENVs:
+
+```
+% bundle exec hanami db create
+% bundle exec hanami db migrate
+
+% HANAMI_ENV=test bundle exec hanami db create
+% HANAMI_ENV=test bundle exec hanami db migrate
+```
+
+Explore Hanami [guides](http://hanamirb.org/guides/), [API docs](http://hanamirb.org/docs/1.0.0/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
 END
 
       #
