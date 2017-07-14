@@ -6,4 +6,3 @@ require 'hanami/command_line'
 result = Hanami::CommandLine.call(ignore_unknown_commands: true)
 
 exit(0) if result
-Hanami::OldCommandLine.start

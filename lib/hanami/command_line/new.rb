@@ -1,12 +1,201 @@
-require 'hanami/generators/database_config'
-require 'hanami/generators/test_framework'
-require 'hanami/generators/template_engine'
-
 module Hanami
   module CommandLine
     class New
       include Hanami::Cli::Command
       register 'new'
+
+      class DatabaseConfig
+        # @api private
+        SUPPORTED_ENGINES = {
+          'mysql'      => { type: :sql,         mri: 'mysql2',  jruby: 'jdbc-mysql'    },
+          'mysql2'     => { type: :sql,         mri: 'mysql2',  jruby: 'jdbc-mysql'    },
+          'postgresql' => { type: :sql,         mri: 'pg',      jruby: 'jdbc-postgres' },
+          'postgres'   => { type: :sql,         mri: 'pg',      jruby: 'jdbc-postgres' },
+          'sqlite'     => { type: :sql,         mri: 'sqlite3', jruby: 'jdbc-sqlite3'  },
+          'sqlite3'    => { type: :sql,         mri: 'sqlite3', jruby: 'jdbc-sqlite3'  }
+        }.freeze
+
+        # @api private
+        DEFAULT_ENGINE = 'sqlite'.freeze
+
+        # @api private
+        attr_reader :engine
+        # @api private
+        attr_reader :name
+
+        # @api private
+        def initialize(engine, name)
+          @engine = engine
+          @name = name
+
+          unless SUPPORTED_ENGINES.key?(engine.to_s) # rubocop:disable Style/GuardClause
+            warn %(`#{engine}' is not a valid database engine)
+            exit(1)
+          end
+        end
+
+        # @api private
+        def to_hash
+          {
+            gem: gem,
+            uri: uri,
+            type: type
+          }
+        end
+
+        # @api private
+        def type
+          SUPPORTED_ENGINES[engine][:type]
+        end
+
+        # @api private
+        def sql?
+          type == :sql
+        end
+
+        # @api private
+        def sqlite?
+          ['sqlite', 'sqlite3'].include?(engine)
+        end
+
+        private
+
+        # @api private
+        def platform
+          Hanami::Utils.jruby? ? :jruby : :mri
+        end
+
+        # @api private
+        def platform_prefix
+          'jdbc:'.freeze if Hanami::Utils.jruby?
+        end
+
+        # @api private
+        def uri
+          {
+            development: environment_uri(:development),
+            test: environment_uri(:test)
+          }
+        end
+
+        # @api private
+        def gem
+          SUPPORTED_ENGINES[engine][platform]
+        end
+
+        # @api private
+        def base_uri
+          case engine
+          when 'mysql', 'mysql2'
+            if Hanami::Utils.jruby?
+              "mysql://localhost/#{ name }"
+            else
+              "mysql2://localhost/#{ name }"
+            end
+          when 'postgresql', 'postgres'
+            "postgresql://localhost/#{ name }"
+          when 'sqlite', 'sqlite3'
+            "sqlite://db/#{ Shellwords.escape(name) }"
+          end
+        end
+
+        # @api private
+        def environment_uri(environment)
+          case engine
+          when 'sqlite', 'sqlite3'
+            "#{ platform_prefix }#{ base_uri }_#{ environment }.sqlite"
+          else
+            "#{ platform_prefix if sql? }#{ base_uri }_#{ environment }"
+          end
+        end
+      end
+
+      class TestFramework
+        # @api private
+        RSPEC = 'rspec'.freeze
+        # @api private
+        MINITEST = 'minitest'.freeze
+        # @api private
+        VALID_FRAMEWORKS = [MINITEST, RSPEC].freeze
+
+        # @api private
+        attr_reader :framework
+
+        # @api private
+        def initialize(hanamirc, framework)
+          @framework = (framework || hanamirc.options.fetch(:test))
+          assert_framework!
+        end
+
+        # @api private
+        def rspec?
+          framework == RSPEC
+        end
+
+        # @api private
+        def minitest?
+          framework == MINITEST
+        end
+
+        private
+
+        # @api private
+        def assert_framework!
+          if !supported_framework?
+            warn "`#{framework}' is not a valid test framework. Please use one of: #{valid_test_frameworks.join(', ')}"
+            exit(1)
+          end
+        end
+
+        # @api private
+        def valid_test_frameworks
+          VALID_FRAMEWORKS.map { |name| "`#{name}'"}
+        end
+
+        # @api private
+        def supported_framework?
+          VALID_FRAMEWORKS.include?(framework)
+        end
+      end
+
+      class TemplateEngine
+        class UnsupportedTemplateEngine < ::StandardError
+        end
+
+        # @api private
+        SUPPORTED_ENGINES = %w(erb haml slim).freeze
+        # @api private
+        DEFAULT_ENGINE = 'erb'.freeze
+
+        # @api private
+        attr_reader :name
+
+        # @api private
+        def initialize(hanamirc, engine)
+          @name = (engine || hanamirc.options.fetch(:template))
+          assert_engine!
+        end
+
+        private
+
+        # @api private
+        def assert_engine!
+          if !supported_engine?
+            warn "`#{name}' is not a valid template engine. Please use one of: #{valid_template_engines.join(', ')}"
+            exit(1)
+          end
+        end
+
+        # @api private
+        def valid_template_engines
+          SUPPORTED_ENGINES.map { |name| "`#{name}'"}
+        end
+
+        # @api private
+        def supported_engine?
+          SUPPORTED_ENGINES.include?(@name.to_s)
+        end
+      end
 
       DEFAULT_APPLICATION_NAME = 'web'.freeze
       DEFAULT_APPLICATION_BASE_URL = '/'.freeze
@@ -16,11 +205,11 @@ module Hanami
       desc 'Generate a new hanami project'
 
       argument :project_name, required: true
-      option :database, aliases: ['-d', '--db'], desc: "Application database (#{Hanami::Generators::DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: Hanami::Generators::DatabaseConfig::DEFAULT_ENGINE
+      option :database, aliases: ['-d', '--db'], desc: "Application database (#{DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: DatabaseConfig::DEFAULT_ENGINE
       option :application_name, desc: 'Application name, only for container', default: DEFAULT_APPLICATION_NAME
       option :application_base_url, desc: 'Application base url', default: DEFAULT_APPLICATION_BASE_URL
-      option :template, desc: "Template engine (#{Hanami::Generators::TemplateEngine::SUPPORTED_ENGINES.join('/')})", default: Hanami::Generators::TemplateEngine::DEFAULT_ENGINE
-      option :test, desc: "Project test framework (#{Hanami::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Hanami::Hanamirc::DEFAULT_TEST_SUITE
+      option :template, desc: "Template engine (#{TemplateEngine::SUPPORTED_ENGINES.join('/')})", default: TemplateEngine::DEFAULT_ENGINE
+      option :test, desc: "Project test framework (#{TestFramework::VALID_FRAMEWORKS.join('/')})", default: Hanami::Hanamirc::DEFAULT_TEST_SUITE
       option :hanami_head, desc: 'Use hanami HEAD (true/false)', type: :boolean, default: false
 
       def call(project_name:, **options)
@@ -28,9 +217,9 @@ module Hanami
         options = Hanami.environment.to_options.merge(options)
 
         project_name    = Utils::String.new(project_name).underscore
-        database_config = Hanami::Generators::DatabaseConfig.new(options[:database], project_name)
-        test_framework  = Hanami::Generators::TestFramework.new(hanamirc, options[:test])
-        template_engine = Hanami::Generators::TemplateEngine.new(hanamirc, options[:template])
+        database_config = DatabaseConfig.new(options[:database], project_name)
+        test_framework  = TestFramework.new(hanamirc, options[:test])
+        template_engine = TemplateEngine.new(hanamirc, options[:template])
 
         context = Context.new(
           project_name: project_name,

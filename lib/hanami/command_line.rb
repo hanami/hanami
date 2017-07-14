@@ -1,7 +1,6 @@
 require 'hanami/cli'
-require 'thor'
-require 'hanami/cli_base'
 require 'ostruct'
+require 'erb'
 
 module Hanami
   module CommandLine
@@ -27,7 +26,7 @@ module Hanami
       TRIM_MODE = "-".freeze
 
       def call(template, context)
-        ERB.new(template, nil, TRIM_MODE).result(context)
+        ::ERB.new(template, nil, TRIM_MODE).result(context)
       end
     end
 
@@ -40,20 +39,5 @@ module Hanami
     require 'hanami/command_line/routes'
     require 'hanami/command_line/server'
     require 'hanami/command_line/version'
-  end
-
-  # @api private
-  class OldCommandLine < Thor
-    require 'hanami/cli_sub_commands/db'
-    register Hanami::CliSubCommands::DB, 'db', 'db [SUBCOMMAND]', 'Manage set of DB operations'
-
-    require 'hanami/cli_sub_commands/generate'
-    register Hanami::CliSubCommands::Generate, 'generate', 'generate [SUBCOMMAND]', 'Generate hanami classes'
-
-    require 'hanami/cli_sub_commands/destroy'
-    register Hanami::CliSubCommands::Destroy, 'destroy', 'destroy [SUBCOMMAND]', 'Destroy hanami classes'
-
-    require 'hanami/cli_sub_commands/assets'
-    register Hanami::CliSubCommands::Assets, 'assets', 'assets [SUBCOMMAND]', 'Manage assets'
   end
 end
