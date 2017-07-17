@@ -3,12 +3,8 @@ require "hanami/utils/file_list"
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Destroy
-        class Action
-          include Hanami::Cli::Command
-          register "destroy action"
-
+      module Destroy
+        class Action < Command
           argument :app,    required: true
           argument :action, required: true
 

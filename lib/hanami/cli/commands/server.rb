@@ -1,10 +1,8 @@
 module Hanami
   module Cli
     module Commands
-      class Server
-        include Hanami::Cli::Command
-
-        register 'server'
+      class Server < Command
+        requires 'code_reloading'
 
         desc 'Starts a hanami server'
 
@@ -20,10 +18,12 @@ module Hanami
         option :code_reloading, desc: 'Code reloading', type: :boolean, default: true
 
         def call(options)
-          require 'hanami/commands/server'
-          Hanami::Commands::Server.new(options).start
+          require 'hanami/server'
+          Hanami::Server.new.start
         end
       end
     end
+
+    register "server", Commands::Server
   end
 end

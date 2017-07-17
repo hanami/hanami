@@ -1,11 +1,9 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Db
-        class Console
-          include Hanami::Cli::Command
-          register "db console"
+      module Db
+        class Console < Command
+          requires 'model.sql'
 
           def call(**options)
             context = Context.new(options: options)
@@ -16,9 +14,17 @@ module Hanami
           private
 
           def start_console(context)
-            # FIXME: this should be unified here
-            require "hanami/commands/db/console"
-            Hanami::Commands::DB::Console.new({}, nil).start
+            exec console.connection_string
+          end
+
+          def configuration_url
+            Hanami::Components['model.configuration'].url
+          end
+
+          # @api private
+          def console
+            require "hanami/model/sql/console"
+            Hanami::Model::Sql::Console.new(configuration_url)
           end
         end
       end

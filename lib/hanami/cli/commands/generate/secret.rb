@@ -4,12 +4,8 @@ require "securerandom"
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Generate
-        class Secret
-          include Hanami::Cli::Command
-          register "generate secret"
-
+      module Generate
+        class Secret < Command
           argument :app
 
           def call(app: nil, **options)

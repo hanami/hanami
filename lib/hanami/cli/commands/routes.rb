@@ -1,22 +1,18 @@
-require 'hanami/commands/console'
-
 module Hanami
   module Cli
     module Commands
-      class Routes
-        include Hanami::Cli::Command
-
-        register 'routes'
-
-        desc 'Prints the routes'
+      class Routes < Command
+        requires "routes.inspector"
+        desc "Prints the routes"
 
         option :environment, desc: 'Path to environment configuration (config/environment.rb)'
 
         def call(options)
-          require 'hanami/commands/routes'
-          Hanami::Commands::Routes.new(options).start
+          puts requirements['routes.inspector'].inspect
         end
       end
     end
+
+    register "routes", Commands::Routes
   end
 end

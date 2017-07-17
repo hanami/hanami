@@ -1,12 +1,8 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Generate
-        class App
-          include Hanami::Cli::Command
-          register "generate app"
-
+      module Generate
+        class App < Command
           argument :app, required: true
           option :application_base_url
 

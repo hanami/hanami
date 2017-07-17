@@ -1,11 +1,9 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Assets
-        class Precompile
-          include Hanami::Cli::Command
-          register "assets precompile"
+      module Assets
+        class Precompile < Command
+          requires "apps.assets.configurations"
 
           def call(**options)
             context = Context.new(options: options)
@@ -16,9 +14,12 @@ module Hanami
           private
 
           def precompile_assets(context)
-            # FIXME: this should be unified here
-            require "hanami/commands/assets/precompile"
-            Hanami::Commands::Assets::Precompile.new({}).start
+            Hanami::Assets.precompile(configurations)
+          end
+
+          # @api private
+          def configurations
+            requirements['apps.assets.configurations']
           end
         end
       end

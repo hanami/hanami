@@ -1,16 +1,13 @@
 module Hanami
   module Cli
     module Commands
-      class Version
-        include Hanami::Cli::Command
-
-        register "version"
-        aliases '--version', '-v'
-
-        def call
+      class Version < Command
+        def call(*)
           puts "v#{Hanami::VERSION}"
         end
       end
     end
+
+    register "version", Commands::Version, aliases: ["v", "-v", "--version"]
   end
 end

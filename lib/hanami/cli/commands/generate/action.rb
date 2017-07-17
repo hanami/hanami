@@ -1,12 +1,8 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Generate
-        class Action
-          include Hanami::Cli::Command
-          register "generate action"
-
+      module Generate
+        class Action < Command
           argument :app,    required: true
           argument :action, required: true
           option :url

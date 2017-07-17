@@ -31,6 +31,7 @@ module Hanami
         end
       end
 
+      require 'hanami/cli/commands/command'
       require 'hanami/cli/commands/assets'
       require 'hanami/cli/commands/console'
       require 'hanami/cli/commands/db'

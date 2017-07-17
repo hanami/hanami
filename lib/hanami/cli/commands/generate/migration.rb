@@ -1,12 +1,8 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Generate
-        class Migration
-          include Hanami::Cli::Command
-          register "generate migration"
-
+      module Generate
+        class Migration < Command
           argument :migration, required: true
 
           def call(migration:, **options)

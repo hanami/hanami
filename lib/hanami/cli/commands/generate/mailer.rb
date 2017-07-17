@@ -1,27 +1,17 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Generate
-        class Mailer
-          include Hanami::Cli::Command
-          register "generate mailer"
-
+      module Generate
+        class Mailer < Command
           argument :mailer, required: true
           option :from
           option :to
           option :subject
-          # option :method
-          # option :skip_view, type: :boolean, default: false
 
           def call(mailer:, **options)
             # TODO: extract this operation into a mixin
             options = Hanami.environment.to_options.merge(options)
 
-            # controller, action = controller_and_action_name(action)
-            # template           = File.join("apps", app, "templates", controller, "#{action}.html.#{options.fetch(:template)}")
-            # http_method        = route_http_method(action, options)
-            # context            = Context.new(app: app, controller: controller, action: action, template: template, test: options.fetch(:test), http_method: http_method, options: options)
             from    = options.fetch(:from,    DEFAULT_FROM)
             to      = options.fetch(:to,      DEFAULT_TO)
             subject = options.fetch(:subject, DEFAULT_SUBJECT)

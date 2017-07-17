@@ -1,12 +1,9 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Db
-        class Migrate
-          include Hanami::Cli::Command
-          register "db migrate"
-
+      module Db
+        class Migrate < Command
+          requires "model.sql"
           argument :version
 
           def call(version: nil, **options)
@@ -18,9 +15,8 @@ module Hanami
           private
 
           def migrate_database(context)
-            # FIXME: this should be unified here
-            require "hanami/commands/db/migrate"
-            Hanami::Commands::DB::Migrate.new({}, context.version).start
+            require "hanami/model/migrator"
+            Hanami::Model::Migrator.migrate(version: context.version)
           end
         end
       end

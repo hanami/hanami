@@ -1,12 +1,8 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Generate
-        class Model
-          include Hanami::Cli::Command
-          register "generate model"
-
+      module Generate
+        class Model < Command
           argument :model, required: true
           option :skip_migration, type: :boolean, default: false
 

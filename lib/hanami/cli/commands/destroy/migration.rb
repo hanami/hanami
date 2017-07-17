@@ -1,12 +1,8 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Destroy
-        class Migration
-          include Hanami::Cli::Command
-          register "destroy migration"
-
+      module Destroy
+        class Migration < Command
           argument :migration, required: true
 
           def call(migration:, **options)

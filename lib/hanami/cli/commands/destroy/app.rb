@@ -1,12 +1,8 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Destroy
-        class App
-          include Hanami::Cli::Command
-          register "destroy app"
-
+      module Destroy
+        class App < Command
           argument :app, required: true
 
           def call(app:, **options)

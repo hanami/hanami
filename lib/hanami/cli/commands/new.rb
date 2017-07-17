@@ -1,10 +1,7 @@
 module Hanami
   module Cli
     module Commands
-      class New
-        include Hanami::Cli::Command
-        register 'new'
-
+      class New < Command
         class DatabaseConfig
           # @api private
           SUPPORTED_ENGINES = {
@@ -406,7 +403,7 @@ module Hanami
         end
 
         def generate_app(context)
-          Hanami::Cli::Commands::Generate::App.new(nil).call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
+          Hanami::Cli::Commands::Generate::App.new.call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
         end
 
         def init_git
@@ -458,5 +455,7 @@ module Hanami
         end
       end
     end
+
+    register "new", Commands::New
   end
 end

@@ -1,11 +1,9 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Db
-        class Prepare
-          include Hanami::Cli::Command
-          register "db prepare"
+      module Db
+        class Prepare < Command
+          requires "model.sql"
 
           def call(**options)
             context = Context.new(options: options)
@@ -16,9 +14,8 @@ module Hanami
           private
 
           def prepare_database(context)
-            # FIXME: this should be unified here
-            require "hanami/commands/db/prepare"
-            Hanami::Commands::DB::Prepare.new({}).start
+            require 'hanami/model/migrator'
+            Hanami::Model::Migrator.prepare
           end
         end
       end

@@ -1,12 +1,8 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Destroy
-        class Mailer
-          include Hanami::Cli::Command
-          register "destroy mailer"
-
+      module Destroy
+        class Mailer < Command
           argument :mailer, required: true
 
           def call(mailer:, **options)

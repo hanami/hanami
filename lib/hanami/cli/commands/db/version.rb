@@ -1,11 +1,9 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Db
-        class Version
-          include Hanami::Cli::Command
-          register "db version"
+      module Db
+        class Version < Command
+          requires "model.configuration"
 
           def call(**options)
             context = Context.new(options: options)
@@ -16,9 +14,8 @@ module Hanami
           private
 
           def print_database_version(context)
-            # FIXME: this should be unified here
-            require "hanami/commands/db/version"
-            Hanami::Commands::DB::Version.new({}).start
+            require "hanami/model/migrator"
+            puts Hanami::Model::Migrator.version
           end
         end
       end

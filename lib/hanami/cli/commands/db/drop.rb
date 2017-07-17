@@ -1,11 +1,9 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Db
-        class Drop
-          include Hanami::Cli::Command
-          register "db drop"
+      module Db
+        class Drop < Command
+          requires "model.configuration"
 
           def call(**options)
             context = Context.new(options: options)
@@ -16,9 +14,8 @@ module Hanami
           private
 
           def drop_database(context)
-            # FIXME: this should be unified here
-            require "hanami/commands/db/drop"
-            Hanami::Commands::DB::Drop.new({}).start
+            require "hanami/model/migrator"
+            Hanami::Model::Migrator.drop
           end
         end
       end

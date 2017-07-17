@@ -1,11 +1,9 @@
 module Hanami
   module Cli
     module Commands
-      # FIXME: this must be a module
-      class Db
-        class Create
-          include Hanami::Cli::Command
-          register "db create"
+      module Db
+        class Create < Command
+          requires "model.configuration"
 
           def call(**options)
             context = Context.new(options: options)
@@ -16,9 +14,8 @@ module Hanami
           private
 
           def create_database(context)
-            # FIXME: this should be unified here
-            require "hanami/commands/db/create"
-            Hanami::Commands::DB::Create.new({}).start
+            require "hanami/model/migrator"
+            Hanami::Model::Migrator.create
           end
         end
       end
