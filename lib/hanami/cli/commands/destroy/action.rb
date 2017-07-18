@@ -58,7 +58,7 @@ module Hanami
             content     = %r{#{context.action_name}}
 
             begin
-              remove_line(destination, content)
+              files.remove_line(destination, content)
             rescue ArgumentError
               warn "cannot find `#{context.action_name}' in `#{context.app}' application."
               warn "please run `hanami routes' to know the existing actions."
@@ -70,18 +70,16 @@ module Hanami
 
           def destroy_view_spec(context)
             destination = File.join("spec", context.app, "views", context.controller, "#{context.action}_spec.rb")
-            return unless File.exist?(destination)
+            return unless files.exist?(destination)
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
           end
 
           def destroy_action_spec(context)
             destination = File.join("spec", context.app, "controllers", context.controller, "#{context.action}_spec.rb")
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
           end
 
@@ -89,8 +87,7 @@ module Hanami
             pattern      = File.join("apps", context.app, "templates", context.controller, "#{context.action}.*.*")
             destinations = Hanami::Utils::FileList[pattern]
             destinations.each do |destination|
-              FileUtils.rm(destination)
-
+              files.delete(destination)
               say(:remove, destination)
             end
           end
@@ -99,57 +96,15 @@ module Hanami
             destination = File.join("apps", context.app, "views", context.controller, "#{context.action}.rb")
             return unless File.exist?(destination)
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
           end
 
           def destroy_action(context)
             destination = File.join("apps", context.app, "controllers", context.controller, "#{context.action}.rb")
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
-          end
-
-          FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-          def say(operation, path)
-            puts(FORMATTER % { operation: operation, path: path })
-          end
-
-          def remove_line(path, contents)
-            content = ::File.readlines(path)
-            i       = index(content, path, contents)
-
-            content.delete_at(i)
-            rewrite(path, content)
-          end
-
-          def rewrite(path, *content)
-            open(path, ::File::TRUNC | ::File::WRONLY, *content)
-          end
-
-          def open(path, mode, *content)
-            ::File.open(path, mode) do |file|
-              file.write(Array(content).flatten.join)
-            end
-          end
-
-          def index(content, path, target)
-            line_number(content, target) or
-              raise ArgumentError.new("Cannot find `#{target}' inside `#{path}'.")
-          end
-
-          def line_number(content, target)
-            content.index do |l|
-              case target
-              when String
-                l.include?(target)
-              when Regexp
-                l =~ target
-              end
-            end
           end
         end
       end

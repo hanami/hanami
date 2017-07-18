@@ -46,8 +46,7 @@ module Hanami
             destination = File.join(".env.test")
             content     = "#{context.app.upcase}_SESSIONS_SECRET"
 
-            remove_line(destination, content)
-
+            files.remove_line(destination, content)
             say(:subtract, destination)
           end
 
@@ -55,8 +54,7 @@ module Hanami
             destination = File.join(".env.development")
             content     = "#{context.app.upcase}_SESSIONS_SECRET"
 
-            remove_line(destination, content)
-
+            files.remove_line(destination, content)
             say(:subtract, destination)
           end
 
@@ -64,8 +62,7 @@ module Hanami
             destination = File.join("config", "environment.rb")
             content     = "mount #{context.app.classify}::Application"
 
-            remove_line(destination, content)
-
+            files.remove_line(destination, content)
             say(:subtract, destination)
           end
 
@@ -74,8 +71,7 @@ module Hanami
             destination = File.join("config", "environment.rb")
             content     = "require_relative '../apps/#{context.app}/application'"
 
-            remove_line(destination, content)
-
+            files.remove_line(destination, content)
             say(:subtract, destination)
           end
 
@@ -84,20 +80,18 @@ module Hanami
             assets_directory = context.base_url.sub(/\A\//, "").split("/")
             # FIXME: extract these hardcoded values
             destination = File.join("public", "assets", *assets_directory)
-            return unless File.directory?(destination)
+            return unless files.directory?(destination)
 
-            FileUtils.remove_entry_secure(destination)
-
+            files.delete_directory(destination)
             say(:remove, destination)
           end
 
           def destroy_assets_manifest(context)
             # FIXME: extract these hardcoded values
             destination = File.join("public", "assets.json")
-            return unless File.exist?(destination)
+            return unless files.exist?(destination)
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
           end
 
@@ -105,8 +99,7 @@ module Hanami
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.app)
 
-            FileUtils.remove_entry_secure(destination)
-
+            files.delete_directory(destination)
             say(:remove, destination)
           end
 
@@ -114,8 +107,7 @@ module Hanami
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app)
 
-            FileUtils.remove_entry_secure(destination)
-
+            files.delete_directory(destination)
             say(:remove, destination)
           end
 
@@ -123,64 +115,10 @@ module Hanami
             destination = File.join("config", "environment.rb")
             content     = "mount #{app.classify}::Application"
 
-            line  = read_matching_line(destination, content)
+            line  = files.read_matching_line(destination, content)
             *, at = line.split(/at\:[[:space:]]*/)
 
             at.strip.gsub(/["']*/, "")
-          end
-
-          FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-          def say(operation, path)
-            puts(FORMATTER % { operation: operation, path: path })
-          end
-
-          def remove_line(path, contents)
-            content = ::File.readlines(path)
-            i       = index(content, path, contents)
-
-            content.delete_at(i)
-            rewrite(path, content)
-          end
-
-          def read_matching_line(path, target)
-            content = ::File.readlines(path)
-            line    = content.find do |l|
-              case target
-              when String
-                l.include?(target)
-              when Regexp
-                l =~ target
-              end
-            end
-
-            line or raise ArgumentError.new("Cannot find `#{target}' inside `#{path}'.")
-          end
-
-          def rewrite(path, *content)
-            open(path, ::File::TRUNC | ::File::WRONLY, *content)
-          end
-
-          def open(path, mode, *content)
-            ::File.open(path, mode) do |file|
-              file.write(Array(content).flatten.join)
-            end
-          end
-
-          def index(content, path, target)
-            line_number(content, target) or
-              raise ArgumentError.new("Cannot find `#{target}' inside `#{path}'.")
-          end
-
-          def line_number(content, target)
-            content.index do |l|
-              case target
-              when String
-                l.include?(target)
-              when Regexp
-                l =~ target
-              end
-            end
           end
         end
       end

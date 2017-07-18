@@ -1,6 +1,5 @@
 require 'hanami/cli'
 require 'ostruct'
-require 'erb'
 
 module Hanami
   module Cli
@@ -20,14 +19,6 @@ module Hanami
 
         def binding
           super
-        end
-      end
-
-      class Renderer
-        TRIM_MODE = "-".freeze
-
-        def call(template, context)
-          ::ERB.new(template, nil, TRIM_MODE).result(context)
         end
       end
 

@@ -240,7 +240,8 @@ module Hanami
           assert_project_name!(context)
 
           directory = project_directory(project_name)
-          FileUtils.mkdir_p(directory)
+          files.mkdir(directory)
+
           Dir.chdir(directory) do
             generate_application_templates(context)
             generate_empty_directories(context)
@@ -266,136 +267,137 @@ module Hanami
         end
 
         def generate_application_templates(context)
-          destination   = File.join(".hanamirc")
-          template_path = File.join(__dir__, "new", "hanamirc.erb")
-          create_file(destination, template_path, context)
+          destination = File.join(".hanamirc")
+          source      = File.join(__dir__, "new", "hanamirc.erb")
+          generate_file(source, destination, context)
 
-          destination   = File.join(".env.development")
-          template_path = File.join(__dir__, "new", ".env.development.erb")
-          create_file(destination, template_path, context)
+          destination = File.join(".env.development")
+          source      = File.join(__dir__, "new", ".env.development.erb")
+          generate_file(source, destination, context)
 
-          destination   = File.join(".env.test")
-          template_path = File.join(__dir__, "new", ".env.test.erb")
-          create_file(destination, template_path, context)
+          destination = File.join(".env.test")
+          source      = File.join(__dir__, "new", ".env.test.erb")
+          generate_file(source, destination, context)
 
-          destination   = File.join("README.md")
-          template_path = File.join(__dir__, "new", "README.md.erb")
-          create_file(destination, template_path, context)
+          destination = File.join("README.md")
+          source      = File.join(__dir__, "new", "README.md.erb")
+          generate_file(source, destination, context)
 
-          destination   = File.join("Gemfile")
-          template_path = File.join(__dir__, "new", "Gemfile.erb")
-          create_file(destination, template_path, context)
+          destination = File.join("Gemfile")
+          source      = File.join(__dir__, "new", "Gemfile.erb")
+          generate_file(source, destination, context)
 
-          destination   = File.join("config.ru")
-          template_path = File.join(__dir__, "new", "config.ru.erb")
-          create_file(destination, template_path, context)
+          destination = File.join("config.ru")
+          source      = File.join(__dir__, "new", "config.ru.erb")
+          generate_file(source, destination, context)
 
-          destination   = File.join("config", "boot.rb")
-          template_path = File.join(__dir__, "new", "config", "boot.erb")
-          create_file(destination, template_path, context)
+          destination = File.join("config", "boot.rb")
+          source      = File.join(__dir__, "new", "config", "boot.erb")
+          generate_file(source, destination, context)
 
-          destination   = File.join("config", "environment.rb")
-          template_path = File.join(__dir__, "new", "config", "environment.erb")
-          create_file(destination, template_path, context)
+          destination = File.join("config", "environment.rb")
+          source      = File.join(__dir__, "new", "config", "environment.erb")
+          generate_file(source, destination, context)
 
-          destination   = File.join("lib", "#{context.project_name}.rb")
-          template_path = File.join(__dir__, "new", "lib", "project.erb")
-          create_file(destination, template_path, context)
+          destination = File.join("lib", "#{context.project_name}.rb")
+          source      = File.join(__dir__, "new", "lib", "project.erb")
+          generate_file(source, destination, context)
         end
 
         def generate_empty_directories(context)
-          template_path = File.join(__dir__, "new", ".gitkeep.erb")
+          source = File.join(__dir__, "new", ".gitkeep.erb")
 
           destination = File.join("public", ".gitkeep")
-          create_file(destination, template_path, context)
+          generate_file(source, destination, context)
 
           destination = File.join("config", "initializers", ".gitkeep")
-          create_file(destination, template_path, context)
+          generate_file(source, destination, context)
 
           destination = File.join("lib", context.project_name, "entities", ".gitkeep")
-          create_file(destination, template_path, context)
+          generate_file(source, destination, context)
 
           destination = File.join("lib", context.project_name, "repositories", ".gitkeep")
-          create_file(destination, template_path, context)
+          generate_file(source, destination, context)
 
           destination = File.join("lib", context.project_name, "mailers", ".gitkeep")
-          create_file(destination, template_path, context)
+          generate_file(source, destination, context)
 
           destination = File.join("lib", context.project_name, "mailers", "templates", ".gitkeep")
-          create_file(destination, template_path, context)
+          generate_file(source, destination, context)
 
           destination = File.join("spec", context.project_name, "entities", ".gitkeep")
-          create_file(destination, template_path, context)
+          generate_file(source, destination, context)
 
           destination = File.join("spec", context.project_name, "repositories", ".gitkeep")
-          create_file(destination, template_path, context)
+          generate_file(source, destination, context)
 
           destination = File.join("spec", context.project_name, "mailers", ".gitkeep")
-          create_file(destination, template_path, context)
+          generate_file(source, destination, context)
 
           destination = File.join("spec", "support", ".gitkeep")
-          create_file(destination, template_path, context)
+          generate_file(source, destination, context)
 
           if context.database_config.sql?
             destination = File.join("db", "migrations", ".gitkeep")
-            create_file(destination, template_path, context)
+            generate_file(source, destination, context)
           else
             destination = File.join("db", ".gitkeep")
-            create_file(destination, template_path, context)
+            generate_file(source, destination, context)
           end
         end
 
         def generate_test_templates(context)
           if context.test_framework.rspec?
-            destination   = File.join("Rakefile")
-            template_path = File.join(__dir__, "new", "rspec", "Rakefile.erb")
-            create_file(destination, template_path, context)
+            destination = File.join("Rakefile")
+            source      = File.join(__dir__, "new", "rspec", "Rakefile.erb")
+            generate_file(source, destination, context)
 
-            destination   = File.join(".rspec")
-            template_path = File.join(__dir__, "new", "rspec", "rspec.erb")
-            create_file(destination, template_path, context)
+            destination = File.join(".rspec")
+            source      = File.join(__dir__, "new", "rspec", "rspec.erb")
+            generate_file(source, destination, context)
 
-            destination   = File.join("spec", "spec_helper.rb")
-            template_path = File.join(__dir__, "new", "rspec", "spec_helper.erb")
-            create_file(destination, template_path, context)
+            destination = File.join("spec", "spec_helper.rb")
+            source      = File.join(__dir__, "new", "rspec", "spec_helper.erb")
+            generate_file(source, destination, context)
 
-            destination   = File.join("spec", "features_helper.rb")
-            template_path = File.join(__dir__, "new", "rspec", "features_helper.erb")
-            create_file(destination, template_path, context)
+            destination = File.join("spec", "features_helper.rb")
+            source      = File.join(__dir__, "new", "rspec", "features_helper.erb")
+            generate_file(source, destination, context)
 
-            destination   = File.join("spec", "support", "capybara.rb")
-            template_path = File.join(__dir__, "new", "rspec", "capybara.erb")
-            create_file(destination, template_path, context)
+            destination = File.join("spec", "support", "capybara.rb")
+            source      = File.join(__dir__, "new", "rspec", "capybara.erb")
+            generate_file(source, destination, context)
           else # minitest (default)
-            destination   = File.join("Rakefile")
-            template_path = File.join(__dir__, "new", "minitest", "Rakefile.erb")
-            create_file(destination, template_path, context)
+            destination = File.join("Rakefile")
+            source      = File.join(__dir__, "new", "minitest", "Rakefile.erb")
+            generate_file(source, destination, context)
 
-            destination   = File.join("spec", "spec_helper.rb")
-            template_path = File.join(__dir__, "new", "minitest", "spec_helper.erb")
-            create_file(destination, template_path, context)
+            destination = File.join("spec", "spec_helper.rb")
+            source      = File.join(__dir__, "new", "minitest", "spec_helper.erb")
+            generate_file(source, destination, context)
 
-            destination   = File.join("spec", "features_helper.rb")
-            template_path = File.join(__dir__, "new", "minitest", "features_helper.erb")
-            create_file(destination, template_path, context)
+            destination = File.join("spec", "features_helper.rb")
+            source      = File.join(__dir__, "new", "minitest", "features_helper.erb")
+            generate_file(source, destination, context)
           end
         end
 
         def generate_sql_templates(context)
           return unless context.database_config.sql?
 
-          destination   = File.join("db", "schema.sql")
-          template_path = File.join(__dir__, "new", "schema.sql.erb")
-          create_file(destination, template_path, context)
+          destination = File.join("db", "schema.sql")
+          source      = File.join(__dir__, "new", "schema.sql.erb")
+          generate_file(source, destination, context)
         end
 
         def generate_git_templates(context)
           return if git_dir_present?
 
-          destination   = File.join(".gitignore")
-          source        = context.database_config.sqlite? ? 'gitignore_with_sqlite.erb' : 'gitignore.erb'
-          template_path = File.join(__dir__, "new", source)
-          create_file(destination, template_path, context)
+          destination = File.join(".gitignore")
+          source      = context.database_config.sqlite? ? 'gitignore_with_sqlite.erb' : 'gitignore.erb'
+          source      = File.join(__dir__, "new", source)
+
+          generate_file(source, destination, context)
         end
 
         def target_path
@@ -414,7 +416,7 @@ module Hanami
         end
 
         def git_dir_present?
-          File.directory?(target.join('.git'))
+          files.directory?('.git')
         end
 
         def target
@@ -437,20 +439,8 @@ module Hanami
           Hanami::Version.gem_requirement
         end
 
-        FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-        def say(operation, path)
-          puts(FORMATTER % { operation: operation, path: path })
-        end
-
-        def create_file(destination, template_path, context)
-          template = File.read(template_path)
-          renderer = Renderer.new
-          output   = renderer.call(template, context.binding)
-
-          FileUtils.mkpath(File.dirname(destination))
-          File.open(destination, "wb") { |f| f.write(output) }
-
+        def generate_file(source, destination, context)
+          super
           say(:create, destination)
         end
       end

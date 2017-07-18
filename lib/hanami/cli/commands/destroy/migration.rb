@@ -37,15 +37,8 @@ module Hanami
           end
 
           def destroy_migration(context)
-            FileUtils.rm(context.path)
-
+            files.delete(context.path)
             say(:remove, context.path)
-          end
-
-          FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-          def say(operation, path)
-            puts(FORMATTER % { operation: operation, path: path })
           end
         end
       end

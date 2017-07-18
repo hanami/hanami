@@ -36,55 +36,35 @@ module Hanami
           def generate_mailer(context)
             # FIXME: extract these hardcoded values
             destination = File.join("lib", context.options.fetch(:project), "mailers", "#{context.mailer}.rb")
-            template    = File.join(__dir__, "mailer", "mailer.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "mailer", "mailer.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_mailer_spec(context)
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.options.fetch(:project), "mailers", "#{context.mailer}_spec.rb")
-            template    = File.join(__dir__, "mailer", "mailer_spec.#{context.test}.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "mailer", "mailer_spec.#{context.test}.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_text_template(context)
+            # FIXME: extract these hardcoded values
             destination = File.join("lib", context.options.fetch(:project), "mailers", "templates", "#{context.mailer}.txt.#{context.options.fetch(:template)}")
 
-            FileUtils.mkpath(File.dirname(destination))
-            FileUtils.touch([destination])
-
+            files.touch(destination)
             say(:create, destination)
           end
 
           def generate_html_template(context)
+            # FIXME: extract these hardcoded values
             destination = File.join("lib", context.options.fetch(:project), "mailers", "templates", "#{context.mailer}.html.#{context.options.fetch(:template)}")
 
-            FileUtils.mkpath(File.dirname(destination))
-            FileUtils.touch([destination])
-
+            files.touch(destination)
             say(:create, destination)
-          end
-
-          FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-          def say(operation, path)
-            puts(FORMATTER % { operation: operation, path: path })
           end
         end
       end

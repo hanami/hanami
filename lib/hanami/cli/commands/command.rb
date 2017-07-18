@@ -3,6 +3,8 @@ require 'hanami/environment'
 require 'hanami/components'
 require 'hanami/cli/command'
 require 'concurrent'
+require 'hanami/utils/files'
+require 'erb'
 
 module Hanami
   module Cli
@@ -62,7 +64,46 @@ module Hanami
           end
         end
 
+        def initialize(out: $stdout, files: Utils::Files)
+          @out   = out
+          @files = files
+        end
+
         private
+
+        class Renderer
+          TRIM_MODE = "-".freeze
+
+          def initialize
+            freeze
+          end
+
+          def call(template, context)
+            ::ERB.new(template, nil, TRIM_MODE).result(context)
+          end
+        end
+
+        SAY_FORMATTER = "%<operation>12s  %<path>s\n".freeze
+
+        attr_reader :out, :files
+
+        def render(path, context)
+          template = File.read(path)
+          renderer = Renderer.new
+
+          renderer.call(template, context.binding)
+        end
+
+        def generate_file(source, destination, context)
+          files.write(
+            destination,
+            render(source, context)
+          )
+        end
+
+        def say(operation, path)
+          out.puts(SAY_FORMATTER % { operation: operation, path: path })
+        end
 
         # @since 0.9.0
         # @api private

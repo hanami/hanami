@@ -29,22 +29,10 @@ module Hanami
             filename  = FILENAME_PATTERN % { timestamp: timestamp, name: context.migration }
 
             destination = File.join("db", "migrations", "#{filename}.rb")
-            template    = File.join(__dir__, "migration", "migration.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "migration", "migration.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
-          end
-
-          FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-          def say(operation, path)
-            puts(FORMATTER % { operation: operation, path: path })
           end
         end
       end

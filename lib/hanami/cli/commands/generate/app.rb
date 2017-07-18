@@ -54,176 +54,108 @@ module Hanami
           def generate_app(context)
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "application.rb")
-            template    = File.join(__dir__, "app", "application.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "application.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_routes(context)
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "config", "routes.rb")
-            template    = File.join(__dir__, "app", "routes.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "routes.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_layout(context)
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "views", "application_layout.rb")
-            template    = File.join(__dir__, "app", "layout.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "layout.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_template(context)
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "templates", "application.html.#{context.template}")
-            template    = File.join(__dir__, "app", "template.#{context.template}.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "template.#{context.template}.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_favicon(context)
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "assets", "favicon.ico")
-            template    = File.join(__dir__, "app", "favicon.ico")
+            source      = File.join(__dir__, "app", "favicon.ico")
 
-            FileUtils.mkpath(File.dirname(destination))
-            FileUtils.cp(template, destination)
-
+            files.cp(source, destination)
             say(:create, destination)
           end
 
           def create_controllers_directory(context)
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "controllers", ".gitkeep")
-            template    = File.join(__dir__, "app", "gitkeep.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "gitkeep.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def create_assets_images_directory(context)
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "assets", "images", ".gitkeep")
-            template    = File.join(__dir__, "app", "gitkeep.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "gitkeep.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def create_assets_javascripts_directory(context)
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "assets", "javascripts", ".gitkeep")
-            template    = File.join(__dir__, "app", "gitkeep.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "gitkeep.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def create_assets_stylesheets_directory(context)
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "assets", "stylesheets", ".gitkeep")
-            template    = File.join(__dir__, "app", "gitkeep.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "gitkeep.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def create_spec_features_directory(context)
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.app, "features", ".gitkeep")
-            template    = File.join(__dir__, "app", "gitkeep.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "gitkeep.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def create_spec_controllers_directory(context)
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.app, "controllers", ".gitkeep")
-            template    = File.join(__dir__, "app", "gitkeep.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "gitkeep.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_layout_spec(context)
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.app, "views", "application_layout_spec.rb")
-            template    = File.join(__dir__, "app", "layout_spec.#{context.options.fetch(:test)}.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "app", "layout_spec.#{context.options.fetch(:test)}.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
@@ -232,8 +164,7 @@ module Hanami
             destination = File.join("config", "environment.rb")
             content     = "require_relative '../apps/#{context.app}/application'"
 
-            inject_after(destination, content, /require_relative '\.\.\/lib\/.*'/)
-
+            files.inject_after(destination, content, /require_relative '\.\.\/lib\/.*'/)
             say(:insert, destination)
           end
 
@@ -241,8 +172,7 @@ module Hanami
             destination = File.join("config", "environment.rb")
             content     = "  mount #{context.app.classify}::Application, at: '#{context.base_url}'"
 
-            inject_after(destination, content, /Hanami.configure do/)
-
+            files.inject_after(destination, content, /Hanami.configure do/)
             say(:insert, destination)
           end
 
@@ -251,8 +181,7 @@ module Hanami
             destination = File.join(".env.development")
             content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{SecureRandom.hex(32)}")
 
-            append(destination, content)
-
+            files.append(destination, content)
             say(:append, destination)
           end
 
@@ -261,56 +190,8 @@ module Hanami
             destination = File.join(".env.test")
             content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{SecureRandom.hex(32)}")
 
-            append(destination, content)
-
+            files.append(destination, content)
             say(:append, destination)
-          end
-
-          FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-          def say(operation, path)
-            puts(FORMATTER % { operation: operation, path: path })
-          end
-
-          def inject_after(path, contents, after)
-            content = ::File.readlines(path)
-            i       = index(content, path, after)
-
-            content.insert(i + 1, "#{contents}\n")
-            rewrite(path, content)
-          end
-
-          def index(content, path, target)
-            line_number(content, target) or
-              raise ArgumentError.new("Cannot find `#{target}' inside `#{path}'.")
-          end
-
-          def rewrite(path, *content)
-            open(path, ::File::TRUNC | ::File::WRONLY, *content)
-          end
-
-          def append(path, contents)
-            content = ::File.readlines(path)
-            content << "#{contents}\n"
-
-            rewrite(path, content)
-          end
-
-          def open(path, mode, *content)
-            ::File.open(path, mode) do |file|
-              file.write(Array(content).flatten.join)
-            end
-          end
-
-          def line_number(content, target)
-            content.index do |l|
-              case target
-              when String
-                l.include?(target)
-              when Regexp
-                l =~ target
-              end
-            end
           end
         end
       end

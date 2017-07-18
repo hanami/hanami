@@ -39,8 +39,7 @@ module Hanami
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.options.fetch(:project), "repositories", "#{context.model}_repository_spec.rb")
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
           end
 
@@ -48,31 +47,22 @@ module Hanami
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.options.fetch(:project), "entities", "#{context.model}_spec.rb")
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
           end
 
           def destroy_repository(context)
             destination = File.join("lib", context.options.fetch(:project), "repositories", "#{context.model}_repository.rb")
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
           end
 
           def destroy_entity(context)
             destination = File.join("lib", context.options.fetch(:project), "entities", "#{context.model}.rb")
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
-          end
-
-          FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-          def say(operation, path)
-            puts(FORMATTER % { operation: operation, path: path })
           end
         end
       end

@@ -28,30 +28,18 @@ module Hanami
           def generate_entity(context)
             # FIXME: extract these hardcoded values
             destination = File.join("lib", context.options.fetch(:project), "entities", "#{context.model}.rb")
-            template    = File.join(__dir__, "model", "entity.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "model", "entity.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_repository(context)
             # FIXME: extract these hardcoded values
             destination = File.join("lib", context.options.fetch(:project), "repositories", "#{context.model}_repository.rb")
-            template    = File.join(__dir__, "model", "repository.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "model", "repository.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
@@ -68,52 +56,28 @@ module Hanami
             filename  = FILENAME_PATTERN % { timestamp: timestamp, name: "create_#{context.relation}" }
 
             destination = File.join("db", "migrations", "#{filename}.rb")
-            template    = File.join(__dir__, "model", "migration.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "model", "migration.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_entity_spec(context)
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.options.fetch(:project), "entities", "#{context.model}_spec.rb")
-            template    = File.join(__dir__, "model", "entity_spec.#{context.test}.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "model", "entity_spec.#{context.test}.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_repository_spec(context)
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.options.fetch(:project), "repositories", "#{context.model}_repository_spec.rb")
-            template    = File.join(__dir__, "model", "repository_spec.#{context.test}.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "model", "repository_spec.#{context.test}.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
-          end
-
-          FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-          def say(operation, path)
-            puts(FORMATTER % { operation: operation, path: path })
           end
         end
       end

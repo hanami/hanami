@@ -38,8 +38,7 @@ module Hanami
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.options.fetch(:project), "mailers", "#{context.mailer}_spec.rb")
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
           end
 
@@ -48,8 +47,7 @@ module Hanami
             pattern      = File.join("lib", context.options.fetch(:project), "mailers", "templates", "#{context.mailer}.*.*")
             destinations = Utils::FileList[pattern]
             destinations.each do |destination|
-              FileUtils.rm(destination)
-
+              files.delete(destination)
               say(:remove, destination)
             end
           end
@@ -58,15 +56,8 @@ module Hanami
             # FIXME: extract these hardcoded values
             destination = File.join("lib", context.options.fetch(:project), "mailers", "#{context.mailer}.rb")
 
-            FileUtils.rm(destination)
-
+            files.delete(destination)
             say(:remove, destination)
-          end
-
-          FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-          def say(operation, path)
-            puts(FORMATTER % { operation: operation, path: path })
           end
         end
       end

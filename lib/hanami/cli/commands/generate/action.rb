@@ -67,20 +67,13 @@ module Hanami
           def generate_action(context)
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "controllers", context.controller, "#{context.action}.rb")
-            template    = if context.options.fetch(:skip_view, false)
+            source      = if context.options.fetch(:skip_view, false)
                             File.join(__dir__, "action", "action_without_view.erb")
                           else
                             File.join(__dir__, "action", "action.erb")
                           end
 
-            template    = File.read(template)
-
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
@@ -89,15 +82,9 @@ module Hanami
 
             # FIXME: extract these hardcoded values
             destination = File.join("apps", context.app, "views", context.controller, "#{context.action}.rb")
-            template    = File.join(__dir__, "action", "view.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "action", "view.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
@@ -107,24 +94,16 @@ module Hanami
             # FIXME: extract these hardcoded values
             destination = context.template
 
-            FileUtils.mkpath(File.dirname(destination))
-            FileUtils.touch([destination])
-
+            files.touch(destination)
             say(:create, destination)
           end
 
           def generate_action_spec(context)
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.app, "controllers", context.controller, "#{context.action}_spec.rb")
-            template    = File.join(__dir__, "action", "action_spec.#{context.test}.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "action", "action_spec.#{context.test}.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
@@ -133,15 +112,9 @@ module Hanami
 
             # FIXME: extract these hardcoded values
             destination = File.join("spec", context.app, "views", context.controller, "#{context.action}_spec.rb")
-            template    = File.join(__dir__, "action", "view_spec.#{context.test}.erb")
-            template    = File.read(template)
+            source      = File.join(__dir__, "action", "view_spec.#{context.test}.erb")
 
-            renderer = Renderer.new
-            output   = renderer.call(template, context.binding)
-
-            FileUtils.mkpath(File.dirname(destination))
-            File.open(destination, "wb") { |f| f.write(output) }
-
+            generate_file(source, destination, context)
             say(:create, destination)
           end
 
@@ -150,9 +123,7 @@ module Hanami
             destination = File.join("apps", context.app, "config", "routes.rb")
             content     = "#{context.http_method} '#{route_url(context)}', to: '#{route_endpoint(context)}'".downcase
 
-            FileUtils.mkpath(File.dirname(destination))
-            append(destination, content)
-
+            files.append(destination, content)
             say(:insert, destination)
           end
 
@@ -198,29 +169,6 @@ module Hanami
 
           def route_endpoint(context)
             "#{context.controller}##{context.action}"
-          end
-
-          FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-          def say(operation, path)
-            puts(FORMATTER % { operation: operation, path: path })
-          end
-
-          def append(path, contents)
-            content = ::File.readlines(path)
-            content << "#{contents}\n"
-
-            rewrite(path, content)
-          end
-
-          def rewrite(path, *content)
-            open(path, ::File::TRUNC | ::File::WRONLY, *content)
-          end
-
-          def open(path, mode, *content)
-            ::File.open(path, mode) do |file|
-              file.write(Array(content).flatten.join)
-            end
           end
         end
       end
