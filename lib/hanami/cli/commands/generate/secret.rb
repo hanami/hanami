@@ -6,12 +6,10 @@ module Hanami
     module Commands
       module Generate
         class Secret < Command
+          requires "environment"
           argument :app
 
           def call(app: nil, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             context = Context.new(app: app, options: options)
 
             generate_secret(context)

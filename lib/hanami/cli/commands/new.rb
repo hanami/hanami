@@ -211,9 +211,6 @@ module Hanami
         option :hanami_head, desc: 'Use hanami HEAD (true/false)', type: :boolean, default: false
 
         def call(project_name:, **options)
-          # TODO: extract this operation into a mixin
-          options = Hanami.environment.to_options.merge(options)
-
           project_name    = Utils::String.new(project_name).underscore
           database_config = DatabaseConfig.new(options[:database], project_name)
           test_framework  = TestFramework.new(hanamirc, options[:test])

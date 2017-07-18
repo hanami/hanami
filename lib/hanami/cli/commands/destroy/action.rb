@@ -9,9 +9,6 @@ module Hanami
           argument :action, required: true
 
           def call(app:, action:, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             app                = Utils::String.new(app).underscore
             controller, action = controller_and_action(action)
             action_name        = controller_and_action_name(controller, action)

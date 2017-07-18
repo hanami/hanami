@@ -3,15 +3,13 @@ module Hanami
     module Commands
       module Generate
         class Mailer < Command
+          requires "environment"
           argument :mailer, required: true
           option :from
           option :to
           option :subject
 
           def call(mailer:, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             from    = options.fetch(:from,    DEFAULT_FROM)
             to      = options.fetch(:to,      DEFAULT_TO)
             subject = options.fetch(:subject, DEFAULT_SUBJECT)

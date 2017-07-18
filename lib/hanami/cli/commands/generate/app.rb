@@ -3,13 +3,11 @@ module Hanami
     module Commands
       module Generate
         class App < Command
+          requires "environment"
           argument :app, required: true
           option :application_base_url
 
           def call(app:, application_base_url: nil, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             app      = Utils::String.new(app).underscore
             template = options.fetch(:template)
             base_url = application_base_url || "/#{app}"

@@ -6,9 +6,6 @@ module Hanami
           argument :app, required: true
 
           def call(app:, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             app = Utils::String.new(app).underscore
             assert_valid_app!(app)
 

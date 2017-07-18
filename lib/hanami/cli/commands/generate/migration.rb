@@ -3,12 +3,10 @@ module Hanami
     module Commands
       module Generate
         class Migration < Command
+          requires "environment"
           argument :migration, required: true
 
           def call(migration:, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             migration = Utils::String.new(migration).underscore
             context   = Context.new(migration: migration, options: options)
 

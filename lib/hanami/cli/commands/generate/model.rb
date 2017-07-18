@@ -3,13 +3,11 @@ module Hanami
     module Commands
       module Generate
         class Model < Command
+          requires "environment"
           argument :model, required: true
           option :skip_migration, type: :boolean, default: false
 
           def call(model:, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             model    = Utils::String.new(model).underscore
             relation = Utils::String.new(model).pluralize
             context  = Context.new(model: model, relation: relation, test: options.fetch(:test), options: options)

@@ -3,12 +3,10 @@ module Hanami
     module Commands
       module Destroy
         class Mailer < Command
+          requires "environment"
           argument :mailer, required: true
 
           def call(mailer:, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             mailer  = Utils::String.new(mailer).underscore.singularize
             context = Context.new(mailer: mailer, options: options)
 

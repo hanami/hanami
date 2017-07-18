@@ -52,15 +52,16 @@ module Hanami
         module InstanceMethods
           def call(**options)
             if self.class.requirements.any?
-              @environment = Hanami::Environment.new(options)
-              @environment.require_project_environment
-              @configuration = Hanami.configuration
+              environment = Hanami::Environment.new(options)
+              environment.require_project_environment
 
               requirements.resolved('environment', environment)
               requirements.resolve(self.class.requirements)
+
+              options = environment.to_options.merge(options)
             end
 
-            super
+            super(options)
           end
         end
 
@@ -104,14 +105,6 @@ module Hanami
         def say(operation, path)
           out.puts(SAY_FORMATTER % { operation: operation, path: path })
         end
-
-        # @since 0.9.0
-        # @api private
-        attr_reader :environment
-
-        # @since 0.9.0
-        # @api private
-        attr_reader :configuration
 
         # @since 0.9.0
         # @api private

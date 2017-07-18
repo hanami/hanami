@@ -3,12 +3,10 @@ module Hanami
     module Commands
       module Destroy
         class Model < Command
+          requires "environment"
           argument :model, required: true
 
           def call(model:, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             model   = Utils::String.new(model).underscore.singularize
             context = Context.new(model: model, options: options)
 

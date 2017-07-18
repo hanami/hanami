@@ -3,6 +3,8 @@ module Hanami
     module Commands
       module Generate
         class Action < Command
+          requires "environment"
+
           argument :app,    required: true
           argument :action, required: true
           option :url
@@ -10,9 +12,6 @@ module Hanami
           option :skip_view, type: :boolean, default: false
 
           def call(app:, action:, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             controller, action = controller_and_action_name(action)
             template           = File.join("apps", app, "templates", controller, "#{action}.html.#{options.fetch(:template)}")
             http_method        = route_http_method(action, options)

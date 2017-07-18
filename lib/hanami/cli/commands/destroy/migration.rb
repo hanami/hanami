@@ -6,9 +6,6 @@ module Hanami
           argument :migration, required: true
 
           def call(migration:, **options)
-            # TODO: extract this operation into a mixin
-            options = Hanami.environment.to_options.merge(options)
-
             migration = Utils::String.new(migration).underscore
             path      = find_migration(migration)
             context   = Context.new(migration: migration, path: path, options: options)
