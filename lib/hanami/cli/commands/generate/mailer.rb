@@ -30,7 +30,7 @@ module Hanami
           DEFAULT_SUBJECT = "'Hello'".freeze
 
           def generate_mailer(context)
-            source      = File.join(__dir__, "mailer", "mailer.erb")
+            source      = templates.find("mailer.erb")
             destination = project.mailer(context)
 
             generate_file(source, destination, context)
@@ -38,7 +38,7 @@ module Hanami
           end
 
           def generate_mailer_spec(context)
-            source      = File.join(__dir__, "mailer", "mailer_spec.#{context.test}.erb")
+            source      = templates.find("mailer_spec.#{context.test}.erb")
             destination = project.mailer_spec(context)
 
             generate_file(source, destination, context)

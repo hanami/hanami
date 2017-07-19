@@ -3,6 +3,7 @@ require 'hanami/environment'
 require 'hanami/components'
 require 'hanami/cli/command'
 require 'hanami/cli/commands/project'
+require 'hanami/cli/commands/templates'
 require 'concurrent'
 require 'hanami/utils/files'
 require 'erb'
@@ -67,8 +68,9 @@ module Hanami
         end
 
         def initialize(out: $stdout, files: Utils::Files)
-          @out   = out
-          @files = files
+          @out       = out
+          @files     = files
+          @templates = Templates.new(self.class.name)
         end
 
         private
@@ -87,7 +89,7 @@ module Hanami
 
         SAY_FORMATTER = "%<operation>12s  %<path>s\n".freeze
 
-        attr_reader :out, :files
+        attr_reader :out, :files, :templates
 
         def render(path, context)
           template = File.read(path)

@@ -59,10 +59,10 @@ module Hanami
           end
 
           def generate_action(context)
-            source      = if context.options.fetch(:skip_view, false)
-                            File.join(__dir__, "action", "action_without_view.erb")
+            source      = if skip_view?(context)
+                            templates.find("action_without_view.erb")
                           else
-                            File.join(__dir__, "action", "action.erb")
+                            templates.find("action.erb")
                           end
             destination = project.action(context)
 
@@ -71,9 +71,9 @@ module Hanami
           end
 
           def generate_view(context)
-            return if context.options.fetch(:skip_view, false)
+            return if skip_view?(context)
 
-            source      = File.join(__dir__, "action", "view.erb")
+            source      = templates.find("view.erb")
             destination = project.view(context)
 
             generate_file(source, destination, context)
@@ -81,7 +81,7 @@ module Hanami
           end
 
           def generate_template(context)
-            return if context.options.fetch(:skip_view, false)
+            return if skip_view?(context)
             destination = project.template(context)
 
             files.touch(destination)
@@ -89,7 +89,7 @@ module Hanami
           end
 
           def generate_action_spec(context)
-            source      = File.join(__dir__, "action", "action_spec.#{context.test}.erb")
+            source      = templates.find("action_spec.#{context.test}.erb")
             destination = project.action_spec(context)
 
             generate_file(source, destination, context)
@@ -97,9 +97,9 @@ module Hanami
           end
 
           def generate_view_spec(context)
-            return if context.options.fetch(:skip_view, false)
+            return if skip_view?(context)
 
-            source      = File.join(__dir__, "action", "view_spec.#{context.test}.erb")
+            source      = templates.find("view_spec.#{context.test}.erb")
             destination = project.view_spec(context)
 
             generate_file(source, destination, context)
@@ -116,6 +116,10 @@ module Hanami
 
           def route_http_method(action, options)
             options.fetch(:method) { route_resourceful_http_method(action) }
+          end
+
+          def skip_view?(context)
+            context.options.fetch(:skip_view, false)
           end
 
           DEFAULT_HTTP_METHOD = 'GET'.freeze

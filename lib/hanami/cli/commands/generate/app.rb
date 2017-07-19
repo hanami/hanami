@@ -35,9 +35,6 @@ module Hanami
 
             append_development_http_session_secret(context)
             append_test_http_session_secret(context)
-
-            # FIXME this should be removed
-            true
           end
 
           private
@@ -50,7 +47,7 @@ module Hanami
           end
 
           def generate_app(context)
-            source      = File.join(__dir__, "app", "application.erb")
+            source      = templates.find("application.erb")
             destination = project.app_application(context)
 
             generate_file(source, destination, context)
@@ -58,7 +55,7 @@ module Hanami
           end
 
           def generate_routes(context)
-            source      = File.join(__dir__, "app", "routes.erb")
+            source      = templates.find("routes.erb")
             destination = project.app_routes(context)
 
             generate_file(source, destination, context)
@@ -66,7 +63,7 @@ module Hanami
           end
 
           def generate_layout(context)
-            source      = File.join(__dir__, "app", "layout.erb")
+            source      = templates.find("layout.erb")
             destination = project.app_layout(context)
 
             generate_file(source, destination, context)
@@ -74,7 +71,7 @@ module Hanami
           end
 
           def generate_template(context)
-            source      = File.join(__dir__, "app", "template.#{context.template}.erb")
+            source      = templates.find("template.#{context.template}.erb")
             destination = project.app_template(context)
 
             generate_file(source, destination, context)
@@ -82,7 +79,7 @@ module Hanami
           end
 
           def generate_favicon(context)
-            source      = File.join(__dir__, "app", "favicon.ico")
+            source      = templates.find("favicon.ico")
             destination = project.app_favicon(context)
 
             files.cp(source, destination)
@@ -90,7 +87,7 @@ module Hanami
           end
 
           def create_controllers_directory(context)
-            source      = File.join(__dir__, "app", "gitkeep.erb")
+            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.controllers(context))
 
             generate_file(source, destination, context)
@@ -98,7 +95,7 @@ module Hanami
           end
 
           def create_assets_images_directory(context)
-            source      = File.join(__dir__, "app", "gitkeep.erb")
+            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.images(context))
 
             generate_file(source, destination, context)
@@ -106,7 +103,7 @@ module Hanami
           end
 
           def create_assets_javascripts_directory(context)
-            source      = File.join(__dir__, "app", "gitkeep.erb")
+            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.javascripts(context))
 
             generate_file(source, destination, context)
@@ -114,7 +111,7 @@ module Hanami
           end
 
           def create_assets_stylesheets_directory(context)
-            source      = File.join(__dir__, "app", "gitkeep.erb")
+            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.stylesheets(context))
 
             generate_file(source, destination, context)
@@ -122,7 +119,7 @@ module Hanami
           end
 
           def create_spec_features_directory(context)
-            source      = File.join(__dir__, "app", "gitkeep.erb")
+            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.features_spec(context))
 
             generate_file(source, destination, context)
@@ -130,7 +127,7 @@ module Hanami
           end
 
           def create_spec_controllers_directory(context)
-            source      = File.join(__dir__, "app", "gitkeep.erb")
+            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.controllers_spec(context))
 
             generate_file(source, destination, context)
@@ -138,7 +135,7 @@ module Hanami
           end
 
           def generate_layout_spec(context)
-            source      = File.join(__dir__, "app", "layout_spec.#{context.options.fetch(:test)}.erb")
+            source      = templates.find("layout_spec.#{context.options.fetch(:test)}.erb")
             destination = project.app_layout_spec(context)
 
             generate_file(source, destination, context)

@@ -16,7 +16,7 @@ module Hanami
           private
 
           def generate_migration(context)
-            source      = File.join(__dir__, "migration", "migration.erb")
+            source      = templates.find("migration.erb")
             destination = project.migration(context)
 
             generate_file(source, destination, context)

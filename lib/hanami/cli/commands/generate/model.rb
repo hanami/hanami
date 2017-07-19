@@ -23,7 +23,7 @@ module Hanami
           private
 
           def generate_entity(context)
-            source      = File.join(__dir__, "model", "entity.erb")
+            source      = templates.find("entity.erb")
             destination = project.entity(context)
 
             generate_file(source, destination, context)
@@ -31,7 +31,7 @@ module Hanami
           end
 
           def generate_repository(context)
-            source      = File.join(__dir__, "model", "repository.erb")
+            source      = templates.find("repository.erb")
             destination = project.repository(context)
 
             generate_file(source, destination, context)
@@ -39,9 +39,9 @@ module Hanami
           end
 
           def generate_migration(context)
-            return if context.options.fetch(:skip_migration, false)
+            return if skip_migration?(context)
 
-            source      = File.join(__dir__, "model", "migration.erb")
+            source      = templates.find("migration.erb")
             destination = project.migration(context)
 
             generate_file(source, destination, context)
@@ -49,7 +49,7 @@ module Hanami
           end
 
           def generate_entity_spec(context)
-            source      = File.join(__dir__, "model", "entity_spec.#{context.test}.erb")
+            source      = templates.find("entity_spec.#{context.test}.erb")
             destination = project.entity_spec(context)
 
             generate_file(source, destination, context)
@@ -57,11 +57,15 @@ module Hanami
           end
 
           def generate_repository_spec(context)
-            source      = File.join(__dir__, "model", "repository_spec.#{context.test}.erb")
+            source      = templates.find("repository_spec.#{context.test}.erb")
             destination = project.repository_spec(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
+          end
+
+          def skip_migration?(context)
+            context.options.fetch(:skip_migration, false)
           end
         end
       end

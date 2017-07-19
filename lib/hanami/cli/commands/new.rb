@@ -265,45 +265,45 @@ module Hanami
         end
 
         def generate_application_templates(context)
-          source      = File.join(__dir__, "new", "hanamirc.erb")
+          source      = templates.find("hanamirc.erb")
           destination = project.hanamirc(context)
           generate_file(source, destination, context)
 
-          source      = File.join(__dir__, "new", ".env.development.erb")
+          source      = templates.find(".env.development.erb")
           destination = project.env(context, "development")
           generate_file(source, destination, context)
 
-          source      = File.join(__dir__, "new", ".env.test.erb")
+          source      = templates.find(".env.test.erb")
           destination = project.env(context, "test")
           generate_file(source, destination, context)
 
-          source      = File.join(__dir__, "new", "README.md.erb")
+          source      = templates.find("README.md.erb")
           destination = project.readme(context)
           generate_file(source, destination, context)
 
-          source      = File.join(__dir__, "new", "Gemfile.erb")
+          source      = templates.find("Gemfile.erb")
           destination = project.gemfile(context)
           generate_file(source, destination, context)
 
-          source      = File.join(__dir__, "new", "config.ru.erb")
+          source      = templates.find("config.ru.erb")
           destination = project.config_ru(context)
           generate_file(source, destination, context)
 
-          source      = File.join(__dir__, "new", "config", "boot.erb")
+          source      = templates.find("config", "boot.erb")
           destination = project.boot(context)
           generate_file(source, destination, context)
 
-          source      = File.join(__dir__, "new", "config", "environment.erb")
+          source      = templates.find("config", "environment.erb")
           destination = project.environment(context)
           generate_file(source, destination, context)
 
-          source      = File.join(__dir__, "new", "lib", "project.erb")
+          source      = templates.find("lib", "project.erb")
           destination = project.project(context)
           generate_file(source, destination, context)
         end
 
         def generate_empty_directories(context)
-          source = File.join(__dir__, "new", ".gitkeep.erb")
+          source = templates.find(".gitkeep.erb")
 
           destination = project.keep(project.public_directory(context))
           generate_file(source, destination, context)
@@ -346,35 +346,35 @@ module Hanami
 
         def generate_test_templates(context)
           if context.test_framework.rspec?
-            source      = File.join(__dir__, "new", "rspec", "Rakefile.erb")
+            source      = templates.find("rspec", "Rakefile.erb")
             destination = project.rakefile(context)
             generate_file(source, destination, context)
 
-            source      = File.join(__dir__, "new", "rspec", "rspec.erb")
+            source      = templates.find("rspec", "rspec.erb")
             destination = project.dotrspec(context)
             generate_file(source, destination, context)
 
-            source      = File.join(__dir__, "new", "rspec", "spec_helper.erb")
+            source      = templates.find("rspec", "spec_helper.erb")
             destination = project.spec_helper(context)
             generate_file(source, destination, context)
 
-            source      = File.join(__dir__, "new", "rspec", "features_helper.erb")
+            source      = templates.find("rspec", "features_helper.erb")
             destination = project.features_helper(context)
             generate_file(source, destination, context)
 
-            source      = File.join(__dir__, "new", "rspec", "capybara.erb")
+            source      = templates.find("rspec", "capybara.erb")
             destination = project.capybara(context)
             generate_file(source, destination, context)
           else # minitest (default)
-            source      = File.join(__dir__, "new", "minitest", "Rakefile.erb")
+            source      = templates.find("minitest", "Rakefile.erb")
             destination = project.rakefile(context)
             generate_file(source, destination, context)
 
-            source      = File.join(__dir__, "new", "minitest", "spec_helper.erb")
+            source      = templates.find("minitest", "spec_helper.erb")
             destination = project.spec_helper(context)
             generate_file(source, destination, context)
 
-            source      = File.join(__dir__, "new", "minitest", "features_helper.erb")
+            source      = templates.find("minitest", "features_helper.erb")
             destination = project.features_helper(context)
             generate_file(source, destination, context)
           end
@@ -383,7 +383,7 @@ module Hanami
         def generate_sql_templates(context)
           return unless context.database_config.sql?
 
-          source      = File.join(__dir__, "new", "schema.sql.erb")
+          source      = templates.find("schema.sql.erb")
           destination = project.db_schema(context)
           generate_file(source, destination, context)
         end
@@ -392,7 +392,7 @@ module Hanami
           return if git_dir_present?
 
           source      = context.database_config.sqlite? ? 'gitignore_with_sqlite.erb' : 'gitignore.erb'
-          source      = File.join(__dir__, "new", source)
+          source      = templates.find(source)
           destination = project.gitignore(context)
 
           generate_file(source, destination, context)
