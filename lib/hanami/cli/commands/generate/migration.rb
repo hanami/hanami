@@ -11,23 +11,13 @@ module Hanami
             context   = Context.new(migration: migration, options: options)
 
             generate_migration(context)
-
-            true
           end
 
           private
 
-          TIMESTAMP_FORMAT = '%Y%m%d%H%M%S'.freeze
-
-          FILENAME_PATTERN = '%{timestamp}_%{name}'.freeze
-
           def generate_migration(context)
-            # FIXME: extract these hardcoded values
-            timestamp = Time.now.utc.strftime(TIMESTAMP_FORMAT)
-            filename  = FILENAME_PATTERN % { timestamp: timestamp, name: context.migration }
-
-            destination = File.join("db", "migrations", "#{filename}.rb")
             source      = File.join(__dir__, "migration", "migration.erb")
+            destination = project.migration(context)
 
             generate_file(source, destination, context)
             say(:create, destination)

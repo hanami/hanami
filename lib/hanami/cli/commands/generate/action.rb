@@ -13,9 +13,9 @@ module Hanami
 
           def call(app:, action:, **options)
             controller, action = controller_and_action_name(action)
-            template           = File.join("apps", app, "templates", controller, "#{action}.html.#{options.fetch(:template)}")
             http_method        = route_http_method(action, options)
-            context            = Context.new(app: app, controller: controller, action: action, template: template, test: options.fetch(:test), http_method: http_method, options: options)
+            context            = Context.new(app: app, controller: controller, action: action, test: options.fetch(:test), http_method: http_method, options: options)
+            context            = context.with(template: project.template(context))
 
             assert_valid_app!(context)
             assert_valid_route_url!(context)
@@ -27,9 +27,6 @@ module Hanami
             generate_action_spec(context)
             generate_view_spec(context)
             insert_route(context)
-
-            # FIXME this should be removed
-            true
           end
 
           private
@@ -40,11 +37,9 @@ module Hanami
           end
 
           def assert_valid_app!(context)
-            # FIXME: extract these hardcoded values
-            apps = Dir.glob(File.join("apps", "*")).map { |app| File.basename(app) }
+            return if project.app?(context)
 
-            return if apps.include?(context.app)
-            existing_apps = apps.map { |name| "`#{name}'" }.join(' ')
+            existing_apps = project.apps.map { |name| "`#{name}'" }.join(' ')
             warn "`#{context.app}' is not a valid APP. Please specify one of: #{existing_apps}"
             exit(1)
           end
@@ -64,13 +59,12 @@ module Hanami
           end
 
           def generate_action(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "controllers", context.controller, "#{context.action}.rb")
             source      = if context.options.fetch(:skip_view, false)
                             File.join(__dir__, "action", "action_without_view.erb")
                           else
                             File.join(__dir__, "action", "action.erb")
                           end
+            destination = project.action(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
@@ -79,9 +73,8 @@ module Hanami
           def generate_view(context)
             return if context.options.fetch(:skip_view, false)
 
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "views", context.controller, "#{context.action}.rb")
             source      = File.join(__dir__, "action", "view.erb")
+            destination = project.view(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
@@ -89,18 +82,15 @@ module Hanami
 
           def generate_template(context)
             return if context.options.fetch(:skip_view, false)
-
-            # FIXME: extract these hardcoded values
-            destination = context.template
+            destination = project.template(context)
 
             files.touch(destination)
             say(:create, destination)
           end
 
           def generate_action_spec(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("spec", context.app, "controllers", context.controller, "#{context.action}_spec.rb")
             source      = File.join(__dir__, "action", "action_spec.#{context.test}.erb")
+            destination = project.action_spec(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
@@ -109,18 +99,16 @@ module Hanami
           def generate_view_spec(context)
             return if context.options.fetch(:skip_view, false)
 
-            # FIXME: extract these hardcoded values
-            destination = File.join("spec", context.app, "views", context.controller, "#{context.action}_spec.rb")
             source      = File.join(__dir__, "action", "view_spec.#{context.test}.erb")
+            destination = project.view_spec(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def insert_route(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "config", "routes.rb")
             content     = "#{context.http_method} '#{route_url(context)}', to: '#{route_endpoint(context)}'".downcase
+            destination = project.app_routes(context)
 
             files.append(destination, content)
             say(:insert, destination)

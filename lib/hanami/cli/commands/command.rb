@@ -2,6 +2,7 @@ require 'hanami'
 require 'hanami/environment'
 require 'hanami/components'
 require 'hanami/cli/command'
+require 'hanami/cli/commands/project'
 require 'concurrent'
 require 'hanami/utils/files'
 require 'erb'
@@ -104,6 +105,10 @@ module Hanami
 
         def say(operation, path)
           out.puts(SAY_FORMATTER % { operation: operation, path: path })
+        end
+
+        def project
+          Project
         end
 
         # @since 0.9.0

@@ -50,125 +50,112 @@ module Hanami
           end
 
           def generate_app(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "application.rb")
             source      = File.join(__dir__, "app", "application.erb")
+            destination = project.app_application(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_routes(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "config", "routes.rb")
             source      = File.join(__dir__, "app", "routes.erb")
+            destination = project.app_routes(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_layout(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "views", "application_layout.rb")
             source      = File.join(__dir__, "app", "layout.erb")
+            destination = project.app_layout(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_template(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "templates", "application.html.#{context.template}")
             source      = File.join(__dir__, "app", "template.#{context.template}.erb")
+            destination = project.app_template(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_favicon(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "assets", "favicon.ico")
             source      = File.join(__dir__, "app", "favicon.ico")
+            destination = project.app_favicon(context)
 
             files.cp(source, destination)
             say(:create, destination)
           end
 
           def create_controllers_directory(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "controllers", ".gitkeep")
             source      = File.join(__dir__, "app", "gitkeep.erb")
+            destination = project.keep(project.controllers(context))
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def create_assets_images_directory(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "assets", "images", ".gitkeep")
             source      = File.join(__dir__, "app", "gitkeep.erb")
+            destination = project.keep(project.images(context))
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def create_assets_javascripts_directory(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "assets", "javascripts", ".gitkeep")
             source      = File.join(__dir__, "app", "gitkeep.erb")
+            destination = project.keep(project.javascripts(context))
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def create_assets_stylesheets_directory(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app, "assets", "stylesheets", ".gitkeep")
             source      = File.join(__dir__, "app", "gitkeep.erb")
+            destination = project.keep(project.stylesheets(context))
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def create_spec_features_directory(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("spec", context.app, "features", ".gitkeep")
             source      = File.join(__dir__, "app", "gitkeep.erb")
+            destination = project.keep(project.features_spec(context))
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def create_spec_controllers_directory(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("spec", context.app, "controllers", ".gitkeep")
             source      = File.join(__dir__, "app", "gitkeep.erb")
+            destination = project.keep(project.controllers_spec(context))
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_layout_spec(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("spec", context.app, "views", "application_layout_spec.rb")
             source      = File.join(__dir__, "app", "layout_spec.#{context.options.fetch(:test)}.erb")
+            destination = project.app_layout_spec(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def inject_require_app(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("config", "environment.rb")
             content     = "require_relative '../apps/#{context.app}/application'"
+            destination = project.environment(context)
 
             files.inject_after(destination, content, /require_relative '\.\.\/lib\/.*'/)
             say(:insert, destination)
           end
 
           def inject_mount_app(context)
-            destination = File.join("config", "environment.rb")
             content     = "  mount #{context.app.classify}::Application, at: '#{context.base_url}'"
+            destination = project.environment(context)
 
             files.inject_after(destination, content, /Hanami.configure do/)
             say(:insert, destination)
@@ -176,17 +163,16 @@ module Hanami
 
           def append_development_http_session_secret(context)
             # FIXME: Unify the secret generation algorithm with `hanami secret` command
-            destination = File.join(".env.development")
             content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{SecureRandom.hex(32)}")
+            destination = project.env(context, "development")
 
             files.append(destination, content)
             say(:append, destination)
           end
 
           def append_test_http_session_secret(context)
-            # FIXME: Unify the secret generation algorithm with `hanami secret` command
-            destination = File.join(".env.test")
             content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{SecureRandom.hex(32)}")
+            destination = project.env(context, "test")
 
             files.append(destination, content)
             say(:append, destination)

@@ -19,8 +19,6 @@ module Hanami
             generate_mailer_spec(context)
             generate_text_template(context)
             generate_html_template(context)
-
-            true
           end
 
           private
@@ -32,34 +30,30 @@ module Hanami
           DEFAULT_SUBJECT = "'Hello'".freeze
 
           def generate_mailer(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("lib", context.options.fetch(:project), "mailers", "#{context.mailer}.rb")
             source      = File.join(__dir__, "mailer", "mailer.erb")
+            destination = project.mailer(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_mailer_spec(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("spec", context.options.fetch(:project), "mailers", "#{context.mailer}_spec.rb")
             source      = File.join(__dir__, "mailer", "mailer_spec.#{context.test}.erb")
+            destination = project.mailer_spec(context)
 
             generate_file(source, destination, context)
             say(:create, destination)
           end
 
           def generate_text_template(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("lib", context.options.fetch(:project), "mailers", "templates", "#{context.mailer}.txt.#{context.options.fetch(:template)}")
+            destination = project.mailer_template(context, "txt")
 
             files.touch(destination)
             say(:create, destination)
           end
 
           def generate_html_template(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("lib", context.options.fetch(:project), "mailers", "templates", "#{context.mailer}.html.#{context.options.fetch(:template)}")
+            destination = project.mailer_template(context, "html")
 
             files.touch(destination)
             say(:create, destination)

@@ -17,6 +17,10 @@ module Hanami
           freeze
         end
 
+        def with(data)
+          self.class.new(to_h.merge(data))
+        end
+
         def binding
           super
         end

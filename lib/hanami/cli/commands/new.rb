@@ -215,6 +215,7 @@ module Hanami
           database_config = DatabaseConfig.new(options[:database], project_name)
           test_framework  = TestFramework.new(hanamirc, options[:test])
           template_engine = TemplateEngine.new(hanamirc, options[:template])
+          options[:project] = project_name
 
           context = Context.new(
             project_name: project_name,
@@ -264,117 +265,117 @@ module Hanami
         end
 
         def generate_application_templates(context)
-          destination = File.join(".hanamirc")
           source      = File.join(__dir__, "new", "hanamirc.erb")
+          destination = project.hanamirc(context)
           generate_file(source, destination, context)
 
-          destination = File.join(".env.development")
           source      = File.join(__dir__, "new", ".env.development.erb")
+          destination = project.env(context, "development")
           generate_file(source, destination, context)
 
-          destination = File.join(".env.test")
           source      = File.join(__dir__, "new", ".env.test.erb")
+          destination = project.env(context, "test")
           generate_file(source, destination, context)
 
-          destination = File.join("README.md")
           source      = File.join(__dir__, "new", "README.md.erb")
+          destination = project.readme(context)
           generate_file(source, destination, context)
 
-          destination = File.join("Gemfile")
           source      = File.join(__dir__, "new", "Gemfile.erb")
+          destination = project.gemfile(context)
           generate_file(source, destination, context)
 
-          destination = File.join("config.ru")
           source      = File.join(__dir__, "new", "config.ru.erb")
+          destination = project.config_ru(context)
           generate_file(source, destination, context)
 
-          destination = File.join("config", "boot.rb")
           source      = File.join(__dir__, "new", "config", "boot.erb")
+          destination = project.boot(context)
           generate_file(source, destination, context)
 
-          destination = File.join("config", "environment.rb")
           source      = File.join(__dir__, "new", "config", "environment.erb")
+          destination = project.environment(context)
           generate_file(source, destination, context)
 
-          destination = File.join("lib", "#{context.project_name}.rb")
           source      = File.join(__dir__, "new", "lib", "project.erb")
+          destination = project.project(context)
           generate_file(source, destination, context)
         end
 
         def generate_empty_directories(context)
           source = File.join(__dir__, "new", ".gitkeep.erb")
 
-          destination = File.join("public", ".gitkeep")
+          destination = project.keep(project.public_directory(context))
           generate_file(source, destination, context)
 
-          destination = File.join("config", "initializers", ".gitkeep")
+          destination = project.keep(project.initializers(context))
           generate_file(source, destination, context)
 
-          destination = File.join("lib", context.project_name, "entities", ".gitkeep")
+          destination = project.keep(project.entities(context))
           generate_file(source, destination, context)
 
-          destination = File.join("lib", context.project_name, "repositories", ".gitkeep")
+          destination = project.keep(project.repositories(context))
           generate_file(source, destination, context)
 
-          destination = File.join("lib", context.project_name, "mailers", ".gitkeep")
+          destination = project.keep(project.mailers(context))
           generate_file(source, destination, context)
 
-          destination = File.join("lib", context.project_name, "mailers", "templates", ".gitkeep")
+          destination = project.keep(project.mailers_templates(context))
           generate_file(source, destination, context)
 
-          destination = File.join("spec", context.project_name, "entities", ".gitkeep")
+          destination = project.keep(project.entities_spec(context))
           generate_file(source, destination, context)
 
-          destination = File.join("spec", context.project_name, "repositories", ".gitkeep")
+          destination = project.keep(project.repositories_spec(context))
           generate_file(source, destination, context)
 
-          destination = File.join("spec", context.project_name, "mailers", ".gitkeep")
+          destination = project.keep(project.mailers_spec(context))
           generate_file(source, destination, context)
 
-          destination = File.join("spec", "support", ".gitkeep")
+          destination = project.keep(project.support_spec(context))
           generate_file(source, destination, context)
 
           if context.database_config.sql?
-            destination = File.join("db", "migrations", ".gitkeep")
-            generate_file(source, destination, context)
+            destination = project.keep(project.migrations(context))
           else
-            destination = File.join("db", ".gitkeep")
-            generate_file(source, destination, context)
+            destination = project.keep(project.db(context))
           end
+
+          generate_file(source, destination, context)
         end
 
         def generate_test_templates(context)
           if context.test_framework.rspec?
-            destination = File.join("Rakefile")
             source      = File.join(__dir__, "new", "rspec", "Rakefile.erb")
+            destination = project.rakefile(context)
             generate_file(source, destination, context)
 
-            destination = File.join(".rspec")
             source      = File.join(__dir__, "new", "rspec", "rspec.erb")
+            destination = project.dotrspec(context)
             generate_file(source, destination, context)
 
-            destination = File.join("spec", "spec_helper.rb")
             source      = File.join(__dir__, "new", "rspec", "spec_helper.erb")
+            destination = project.spec_helper(context)
             generate_file(source, destination, context)
 
-            destination = File.join("spec", "features_helper.rb")
             source      = File.join(__dir__, "new", "rspec", "features_helper.erb")
+            destination = project.features_helper(context)
             generate_file(source, destination, context)
 
-            destination = File.join("spec", "support", "capybara.rb")
             source      = File.join(__dir__, "new", "rspec", "capybara.erb")
+            destination = project.capybara(context)
             generate_file(source, destination, context)
           else # minitest (default)
-            destination = File.join("Rakefile")
             source      = File.join(__dir__, "new", "minitest", "Rakefile.erb")
+            destination = project.rakefile(context)
             generate_file(source, destination, context)
 
-            destination = File.join("spec", "spec_helper.rb")
             source      = File.join(__dir__, "new", "minitest", "spec_helper.erb")
+            destination = project.spec_helper(context)
             generate_file(source, destination, context)
 
-            destination = File.join("spec", "features_helper.rb")
             source      = File.join(__dir__, "new", "minitest", "features_helper.erb")
+            destination = project.features_helper(context)
             generate_file(source, destination, context)
           end
         end
@@ -382,17 +383,17 @@ module Hanami
         def generate_sql_templates(context)
           return unless context.database_config.sql?
 
-          destination = File.join("db", "schema.sql")
           source      = File.join(__dir__, "new", "schema.sql.erb")
+          destination = project.db_schema(context)
           generate_file(source, destination, context)
         end
 
         def generate_git_templates(context)
           return if git_dir_present?
 
-          destination = File.join(".gitignore")
           source      = context.database_config.sqlite? ? 'gitignore_with_sqlite.erb' : 'gitignore.erb'
           source      = File.join(__dir__, "new", source)
+          destination = project.gitignore(context)
 
           generate_file(source, destination, context)
         end

@@ -13,8 +13,6 @@ module Hanami
             context = Context.new(app: app, options: options)
 
             generate_secret(context)
-
-            true
           end
 
           private

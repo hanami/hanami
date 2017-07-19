@@ -1,5 +1,3 @@
-require "hanami/utils/file_list"
-
 module Hanami
   module Cli
     module Commands
@@ -23,19 +21,14 @@ module Hanami
             destroy_templates(context)
             destroy_view(context)
             destroy_action(context)
-
-            # FIXME this should be removed
-            true
           end
 
           private
 
           def assert_valid_app!(context)
-            # FIXME: extract these hardcoded values
-            apps = Dir.glob(File.join("apps", "*")).map { |a| File.basename(a) }
+            return if project.app?(context)
 
-            return if apps.include?(context.app)
-            existing_apps = apps.map { |name| "`#{name}'" }.join(' ')
+            existing_apps = project.apps.map { |name| "`#{name}'" }.join(' ')
             warn "`#{context.app}' is not a valid APP. Please specify one of: #{existing_apps}"
             exit(1)
           end
@@ -51,8 +44,8 @@ module Hanami
           end
 
           def remove_route(context)
-            destination = File.join("apps", context.app, "config", "routes.rb")
             content     = %r{#{context.action_name}}
+            destination = project.app_routes(context)
 
             begin
               files.remove_line(destination, content)
@@ -66,7 +59,7 @@ module Hanami
           end
 
           def destroy_view_spec(context)
-            destination = File.join("spec", context.app, "views", context.controller, "#{context.action}_spec.rb")
+            destination = project.view_spec(context)
             return unless files.exist?(destination)
 
             files.delete(destination)
@@ -74,15 +67,14 @@ module Hanami
           end
 
           def destroy_action_spec(context)
-            destination = File.join("spec", context.app, "controllers", context.controller, "#{context.action}_spec.rb")
+            destination = project.action_spec(context)
 
             files.delete(destination)
             say(:remove, destination)
           end
 
           def destroy_templates(context)
-            pattern      = File.join("apps", context.app, "templates", context.controller, "#{context.action}.*.*")
-            destinations = Hanami::Utils::FileList[pattern]
+            destinations = project.templates(context)
             destinations.each do |destination|
               files.delete(destination)
               say(:remove, destination)
@@ -90,15 +82,15 @@ module Hanami
           end
 
           def destroy_view(context)
-            destination = File.join("apps", context.app, "views", context.controller, "#{context.action}.rb")
-            return unless File.exist?(destination)
+            destination = project.view(context)
+            return unless files.exist?(destination)
 
             files.delete(destination)
             say(:remove, destination)
           end
 
           def destroy_action(context)
-            destination = File.join("apps", context.app, "controllers", context.controller, "#{context.action}.rb")
+            destination = project.action(context)
 
             files.delete(destination)
             say(:remove, destination)

@@ -16,48 +16,42 @@ module Hanami
             destroy_entity_spec(context)
             destroy_repository(context)
             destroy_entity(context)
-
-            # FIXME this should be removed
-            true
           end
 
           private
 
           def assert_valid_model!(context)
-            # FIXME: extract these hardcoded values
-            path = File.join("lib", context.options.fetch(:project), "entities", "#{context.model}.rb")
-            return if File.exist?(path)
+            destination = project.entity(context)
+            return if files.exist?(destination)
 
-            path = File.join("lib", context.options.fetch(:project), "entities")
-            warn "cannot find `#{context.model}' model. Please have a look at `#{path}' directory to find an existing model."
+            destination = project.entities(context)
+            warn "cannot find `#{context.model}' model. Please have a look at `#{destination}' directory to find an existing model."
             exit(1)
           end
 
           def destroy_repository_spec(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("spec", context.options.fetch(:project), "repositories", "#{context.model}_repository_spec.rb")
+            destination = project.repository_spec(context)
 
             files.delete(destination)
             say(:remove, destination)
           end
 
           def destroy_entity_spec(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("spec", context.options.fetch(:project), "entities", "#{context.model}_spec.rb")
+            destination = project.entity_spec(context)
 
             files.delete(destination)
             say(:remove, destination)
           end
 
           def destroy_repository(context)
-            destination = File.join("lib", context.options.fetch(:project), "repositories", "#{context.model}_repository.rb")
+            destination = project.repository(context)
 
             files.delete(destination)
             say(:remove, destination)
           end
 
           def destroy_entity(context)
-            destination = File.join("lib", context.options.fetch(:project), "entities", "#{context.model}.rb")
+            destination = project.entity(context)
 
             files.delete(destination)
             say(:remove, destination)

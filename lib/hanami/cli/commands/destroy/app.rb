@@ -6,10 +6,11 @@ module Hanami
           argument :app, required: true
 
           def call(app:, **options)
-            app = Utils::String.new(app).underscore
-            assert_valid_app!(app)
+            app     = Utils::String.new(app).underscore
+            context = Context.new(app: app, options: options)
 
-            context = Context.new(app: app, base_url: base_url(app), options: options)
+            assert_valid_app!(context)
+            context = context.with(base_url: base_url(context))
 
             remove_test_http_session_secret(context)
             remove_development_http_session_secret(context)
@@ -22,61 +23,52 @@ module Hanami
 
             recursively_destroy_specs(context)
             recursively_destroy_app(context)
-
-            # FIXME this should be removed
-            true
           end
 
           private
 
-          def assert_valid_app!(app)
-            # FIXME: extract these hardcoded values
-            apps = Dir.glob(File.join("apps", "*")).map { |a| File.basename(a) }
+          def assert_valid_app!(context)
+            return if project.app?(context)
 
-            return if apps.include?(app)
-            existing_apps = apps.map { |name| "`#{name}'" }.join(' ')
-            warn "`#{app}' is not a valid APP. Please specify one of: #{existing_apps}"
+            existing_apps = project.apps.map { |name| "`#{name}'" }.join(' ')
+            warn "`#{context.app}' is not a valid APP. Please specify one of: #{existing_apps}"
             exit(1)
           end
 
           def remove_test_http_session_secret(context)
-            destination = File.join(".env.test")
             content     = "#{context.app.upcase}_SESSIONS_SECRET"
+            destination = project.env(context, "test")
 
             files.remove_line(destination, content)
             say(:subtract, destination)
           end
 
           def remove_development_http_session_secret(context)
-            destination = File.join(".env.development")
             content     = "#{context.app.upcase}_SESSIONS_SECRET"
+            destination = project.env(context, "development")
 
             files.remove_line(destination, content)
             say(:subtract, destination)
           end
 
           def remove_mount_app(context)
-            destination = File.join("config", "environment.rb")
             content     = "mount #{context.app.classify}::Application"
+            destination = project.environment(context)
 
             files.remove_line(destination, content)
             say(:subtract, destination)
           end
 
           def remove_require_app(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("config", "environment.rb")
             content     = "require_relative '../apps/#{context.app}/application'"
+            destination = project.environment(context)
 
             files.remove_line(destination, content)
             say(:subtract, destination)
           end
 
           def recursively_destroy_precompiled_assets(context)
-            # FIXME: extract this URL to path conversion into Hanami::Utils
-            assets_directory = context.base_url.sub(/\A\//, "").split("/")
-            # FIXME: extract these hardcoded values
-            destination = File.join("public", "assets", *assets_directory)
+            destination = project.public_app_assets(context)
             return unless files.directory?(destination)
 
             files.delete_directory(destination)
@@ -84,8 +76,7 @@ module Hanami
           end
 
           def destroy_assets_manifest(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("public", "assets.json")
+            destination = project.assets_manifest(context)
             return unless files.exist?(destination)
 
             files.delete(destination)
@@ -93,24 +84,22 @@ module Hanami
           end
 
           def recursively_destroy_specs(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("spec", context.app)
+            destination = project.app_spec(context)
 
             files.delete_directory(destination)
             say(:remove, destination)
           end
 
           def recursively_destroy_app(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("apps", context.app)
+            destination = project.app(context)
 
             files.delete_directory(destination)
             say(:remove, destination)
           end
 
-          def base_url(app)
-            destination = File.join("config", "environment.rb")
-            content     = "mount #{app.classify}::Application"
+          def base_url(context)
+            content     = "mount #{context.app.classify}::Application"
+            destination = project.environment(context)
 
             line  = files.read_matching_line(destination, content)
             *, at = line.split(/at\:[[:space:]]*/)

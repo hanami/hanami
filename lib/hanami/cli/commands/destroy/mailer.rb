@@ -15,35 +15,28 @@ module Hanami
             destroy_mailer_spec(context)
             destroy_templates(context)
             destroy_mailer(context)
-
-            # FIXME this should be removed
-            true
           end
 
           private
 
           def assert_valid_mailer!(context)
-            # FIXME: extract these hardcoded values
-            path = File.join("lib", context.options.fetch(:project), "mailers", "#{context.mailer}.rb")
-            return if File.exist?(path)
+            destination = project.mailer(context)
+            return if files.exist?(destination)
 
-            path = File.join("lib", context.options.fetch(:project), "mailers")
-            warn "cannot find `#{context.mailer}' mailer. Please have a look at `#{path}' directory to find an existing mailer."
+            destination = project.mailers(context)
+            warn "cannot find `#{context.mailer}' mailer. Please have a look at `#{destination}' directory to find an existing mailer."
             exit(1)
           end
 
           def destroy_mailer_spec(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("spec", context.options.fetch(:project), "mailers", "#{context.mailer}_spec.rb")
+            destination = project.mailer_spec(context)
 
             files.delete(destination)
             say(:remove, destination)
           end
 
           def destroy_templates(context)
-            # FIXME: extract these hardcoded values
-            pattern      = File.join("lib", context.options.fetch(:project), "mailers", "templates", "#{context.mailer}.*.*")
-            destinations = Utils::FileList[pattern]
+            destinations = project.mailer_templates(context)
             destinations.each do |destination|
               files.delete(destination)
               say(:remove, destination)
@@ -51,8 +44,7 @@ module Hanami
           end
 
           def destroy_mailer(context)
-            # FIXME: extract these hardcoded values
-            destination = File.join("lib", context.options.fetch(:project), "mailers", "#{context.mailer}.rb")
+            destination = project.mailer(context)
 
             files.delete(destination)
             say(:remove, destination)
