@@ -64,6 +64,9 @@ module Hanami
             end
 
             super(options)
+          rescue StandardError => e
+            warn e.message
+            exit(1)
           end
         end
 

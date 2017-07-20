@@ -22,6 +22,17 @@ RSpec.describe "hanami console", type: :cli do
       end
     end
 
+    it "starts console with --engine option" do
+      with_project("bookshelf_console_irb", console: :irb) do
+        console(" --engine=irb") do |input, _, _|
+          input.puts("Hanami::VERSION")
+          input.puts("exit")
+        end
+
+        expect(out).to include(Hanami::VERSION)
+      end
+    end
+
     it "starts console without hanami-model" do
       project_without_hanami_model("bookshelf", gems: ['dry-struct'], console: :irb) do
         write "lib/entities/access_token.rb", <<-EOF
@@ -47,6 +58,38 @@ EOF
       end
     end
   end # irb
+
+  xit "returns error when known engine isn't bundled" do
+    with_project("bookshelf_console_irb", console: :irb) do
+      output = "Missing gem for `pry' console engine. Please make sure to add it to `Gemfile'."
+      run_command "hanami console --engine=pry", output, exit_status: 1
+    end
+  end
+
+  it "returns error when unknown engine is requested" do
+    with_project("bookshelf_console_irb", console: :irb) do
+      output = "Unknown console engine: `foo'."
+      run_command "hanami console --engine=foo", output, exit_status: 1
+    end
+  end
+
+  it "prints help message" do
+    with_project do
+      output = <<-OUT
+Usage:
+  hanami console
+
+Description:
+  Starts Hanami console
+
+Options:
+        --engine engine              Choose a specific console engine: (pry/ripl/irb)
+    -h, --help                       Show this message
+OUT
+
+      run_command "hanami console --help", output
+    end
+  end
 
   # TODO: test with pry
   # TODO: test with ripl

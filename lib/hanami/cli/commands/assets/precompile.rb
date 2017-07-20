@@ -5,6 +5,7 @@ module Hanami
         class Precompile < Command
           requires "apps.assets.configurations"
 
+          desc "Precompile assets for deployment"
           def call(**options)
             context = Context.new(options: options)
 

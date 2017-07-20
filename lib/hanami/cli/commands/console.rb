@@ -13,9 +13,8 @@ module Hanami
         }.freeze
 
         requires "all"
-        desc 'Starts a hanami console'
+        desc "Starts Hanami console"
 
-        option :environment, desc: 'Path to environment configuration (config/environment.rb)'
         # TODO: OptParser support enums, extract to CLI
         option :engine, desc: "Choose a specific console engine: (#{ENGINES.keys.join('/')})"
 
@@ -70,22 +69,20 @@ module Hanami
         # @api private
         #
         # rubocop:disable Lint/HandleExceptions
-        # rubocop:disable Lint/EnsureReturn
         def load_engine(engine)
           require engine
-        rescue LoadError
-        ensure
-          return Object.const_get(
-            ENGINES.fetch(engine) do
-              raise ArgumentError.new("Unknown console engine: `#{engine}'")
-            end
-          )
+          Object.const_get(ENGINES.fetch(engine))
+        rescue LoadError, NameError
+          if ENGINES.key?(engine)
+            raise ArgumentError.new("Missing gem for `#{engine}' console engine. Please make sure to add it to `Gemfile'.")
+          else
+            raise ArgumentError.new("Unknown console engine: `#{engine}'.")
+          end
         end
-        # rubocop:enable Lint/EnsureReturn
         # rubocop:enable Lint/HandleExceptions
       end
     end
 
-    register 'console', Commands::Console
+    register "console", Commands::Console, aliases: ["c"]
   end
 end

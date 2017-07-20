@@ -43,9 +43,6 @@ EOF
         # Precompile
         #
         RSpec::Support::Env['HANAMI_ENV'] = 'production'
-        # FIXME: database connection shouldn't be required for `assets precompile`
-        RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
-
         hanami "assets precompile"
 
         # rubocop:disable Lint/ImplicitStringConcatenation
@@ -120,6 +117,23 @@ return Dashboard;})();}).call(this);
 
         # rubocop:enable Lint/ImplicitStringConcatenation
         # rubocop:enable Style/FirstParameterIndentation
+      end
+    end
+
+    it "prints help message" do
+      with_project do
+        output = <<-OUT
+Usage:
+  hanami assets precompile
+
+Description:
+  Precompile assets for deployment
+
+Options:
+    -h, --help                       Show this message
+OUT
+
+        run_command "hanami assets precompile --help", output
       end
     end
   end
