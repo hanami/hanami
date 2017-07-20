@@ -2,7 +2,7 @@ require "hanami/utils/blank"
 require "securerandom"
 
 module Hanami
-  module Cli
+  class Cli
     module Commands
       module Generate
         class Secret < Command

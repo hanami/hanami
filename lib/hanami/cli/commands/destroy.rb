@@ -1,5 +1,5 @@
 module Hanami
-  module Cli
+  class Cli
     module Commands
       module Destroy
         require "hanami/cli/commands/destroy/app"

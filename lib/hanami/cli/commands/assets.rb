@@ -1,5 +1,5 @@
 module Hanami
-  module Cli
+  class Cli
     module Commands
       module Assets
         require "hanami/cli/commands/assets/precompile"

@@ -1,5 +1,5 @@
 module Hanami
-  module Cli
+  class Cli
     module Commands
       class Server < Command
         requires 'code_reloading'

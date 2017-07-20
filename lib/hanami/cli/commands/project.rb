@@ -1,7 +1,7 @@
 require "hanami/utils/file_list"
 
 module Hanami
-  module Cli
+  class Cli
     module Commands
       module Project
         def self.readme(context)

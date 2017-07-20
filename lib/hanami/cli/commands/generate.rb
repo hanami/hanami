@@ -1,5 +1,5 @@
 module Hanami
-  module Cli
+  class Cli
     module Commands
       module Generate
         require "hanami/cli/commands/generate/app"

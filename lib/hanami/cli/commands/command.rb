@@ -9,7 +9,7 @@ require 'hanami/utils/files'
 require 'erb'
 
 module Hanami
-  module Cli
+  class Cli
     module Commands
       # Abstract command
       #
