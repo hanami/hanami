@@ -3,9 +3,8 @@ module Hanami
     module Commands
       class Routes < Command
         requires "routes.inspector"
-        desc "Prints the routes"
 
-        option :environment, desc: 'Path to environment configuration (config/environment.rb)'
+        desc "Prints routes"
 
         def call(options)
           puts requirements['routes.inspector'].inspect

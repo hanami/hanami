@@ -25,18 +25,24 @@ RSpec.describe "hanami db", type: :cli do
       end
     end
 
-    xit 'prints help message' do
-      output = <<-OUT
+    it 'prints help message' do
+      with_project do
+        output = <<-OUT
+Command:
+  hanami db create
+
 Usage:
   hanami db create
 
-Options:
-  [--environment=ENVIRONMENT]  # Path to environment configuration (config/environment.rb)
+Description:
+  Create the database (only for development/test)
 
-Create database for current environment
+Options:
+  --help, -h                      	# Print this help
 OUT
 
-      run_command 'hanami db create --help', output
+        run_command 'hanami db create --help', output
+      end
     end
   end
 end

@@ -3,8 +3,15 @@ module Hanami
     module Commands
       module Destroy
         class Action < Command
-          argument :app,    required: true
-          argument :action, required: true
+          desc "Destroy an action from app"
+
+          example [
+            "web home#index    # Basic usage",
+            "admin users#index # Destroy from `admin` app"
+          ]
+
+          argument :app,    required: true, desc: "The application name (eg. `web`)"
+          argument :action, required: true, desc: "The action name (eg. `home#index`)"
 
           def call(app:, action:, **options)
             app                = Utils::String.new(app).underscore

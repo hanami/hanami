@@ -76,6 +76,9 @@ EOF
   it "prints help message" do
     with_project do
       output = <<-OUT
+Command:
+  hanami console
+
 Usage:
   hanami console
 
@@ -83,8 +86,12 @@ Description:
   Starts Hanami console
 
 Options:
-        --engine engine              Choose a specific console engine: (pry/ripl/irb)
-    -h, --help                       Show this message
+  --engine=VALUE                  	# Force a specific console engine: (pry/ripl/irb)
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami console              # Uses the bundled engine
+  hanami console --engine=pry # Force to use Pry
 OUT
 
       run_command "hanami console --help", output

@@ -4,7 +4,14 @@ module Hanami
       module Destroy
         class Model < Command
           requires "environment"
-          argument :model, required: true
+
+          desc "Destroy a model"
+
+          argument :model, required: true, desc: "The model name (eg. `user`)"
+
+          example [
+            "user # Destroy `User` entity and `UserRepository` repository"
+          ]
 
           def call(model:, **options)
             model   = Utils::String.new(model).underscore.singularize

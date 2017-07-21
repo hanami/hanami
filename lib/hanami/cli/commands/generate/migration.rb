@@ -4,7 +4,13 @@ module Hanami
       module Generate
         class Migration < Command
           requires "environment"
-          argument :migration, required: true
+          desc "Generate a migration"
+
+          argument :migration, required: true, desc: "The migration name (eg. `create_users`)"
+
+          example [
+            "create_users # Generate `db/migrations/#{Project.migration_timestamp}_create_users.rb`"
+          ]
 
           def call(migration:, **options)
             migration = Utils::String.new(migration).underscore

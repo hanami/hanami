@@ -5,6 +5,8 @@ module Hanami
         class Version < Command
           requires "model.configuration"
 
+          desc "Print the current migrated version"
+
           def call(**options)
             context = Context.new(options: options)
 

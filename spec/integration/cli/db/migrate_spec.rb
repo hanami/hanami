@@ -77,5 +77,36 @@ RSpec.describe "hanami db", type: :cli do
         expect(version).to eq("")
       end
     end
+
+    xit 'prints help message' do
+      with_project do
+        banner = <<-OUT
+Command:
+  hanami db migrate
+
+Usage:
+  hanami db migrate [VERSION]
+
+Description:
+  Migrate the database
+
+Arguments:
+  VERSION             	# The target version of the migration (see `hanami db version`)
+
+Options:
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami db migrate                # Migrate to the last version
+OUT
+
+        output = [
+          banner,
+          %r{  hanami db migrate [\d]{14} # Migrate to a specific version}
+        ]
+
+        run_command 'hanami db drop --help', output
+      end
+    end
   end
 end

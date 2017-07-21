@@ -5,11 +5,22 @@ module Hanami
         class Action < Command
           requires "environment"
 
-          argument :app,    required: true
-          argument :action, required: true
-          option :url
-          option :method
-          option :skip_view, type: :boolean, default: false
+          desc "Generate an action for app"
+
+          example [
+            "web home#index                    # Basic usage",
+            "admin home#index                  # Generate for `admin` app",
+            "web home#index --url=/            # Specify URL",
+            "web sessions#destroy --method=GET # Specify HTTP method",
+            "web books#create --skip-view      # Skip view and template"
+          ]
+
+          argument :app,    required: true, desc: "The application name (eg. `web`)"
+          argument :action, required: true, desc: "The action name (eg. `home#index`)"
+
+          option :url, desc: "The action URL"
+          option :method, desc: "The action HTTP method"
+          option :skip_view, type: :boolean, default: false, desc: "Skip view and template"
 
           def call(app:, action:, **options)
             controller, action = controller_and_action_name(action)

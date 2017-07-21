@@ -3,7 +3,13 @@ module Hanami
     module Commands
       module Destroy
         class Migration < Command
-          argument :migration, required: true
+          desc "Destroy a migration"
+
+          argument :migration, required: true, desc: "The migration name (eg. `create_users`)"
+
+          example [
+            "create_users # Destroy `db/migrations/#{Project.migration_timestamp}_create_users.rb`"
+          ]
 
           def call(migration:, **options)
             migration   = Utils::String.new(migration).underscore

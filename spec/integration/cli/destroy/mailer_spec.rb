@@ -42,5 +42,31 @@ OUT
         run_command "hanami destroy mailer unknown", output, exit_status: 1
       end
     end
+
+    it 'prints help message' do
+      with_project do
+        output = <<-OUT
+Command:
+  hanami destroy mailer
+
+Usage:
+  hanami destroy mailer MAILER
+
+Description:
+  Destroy a mailer
+
+Arguments:
+  MAILER              	# REQUIRED The mailer name (eg. `welcome`)
+
+Options:
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami destroy mailer welcome # Destroy `WelcomeMailer` mailer
+OUT
+
+        run_command 'hanami destroy mailer --help', output
+      end
+    end
   end
 end

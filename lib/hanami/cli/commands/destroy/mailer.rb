@@ -4,7 +4,13 @@ module Hanami
       module Destroy
         class Mailer < Command
           requires "environment"
-          argument :mailer, required: true
+          desc "Destroy a mailer"
+
+          argument :mailer, required: true, desc: "The mailer name (eg. `welcome`)"
+
+          example [
+            "welcome # Destroy `WelcomeMailer` mailer"
+          ]
 
           def call(mailer:, **options)
             mailer  = Utils::String.new(mailer).underscore.singularize

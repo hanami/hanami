@@ -4,8 +4,16 @@ module Hanami
       module Generate
         class Model < Command
           requires "environment"
-          argument :model, required: true
-          option :skip_migration, type: :boolean, default: false
+
+          desc "Generate a model"
+
+          argument :model, required: true, desc: "Model name (eg. `user`)"
+          option :skip_migration, type: :boolean, default: false, desc: "Skip migration"
+
+          example [
+            "user                  # Generate `User` entity, `UserRepository` repository, and the migration",
+            "user --skip-migration # Generate `User` entity and `UserRepository` repository"
+          ]
 
           def call(model:, **options)
             model     = Utils::String.new(model).underscore

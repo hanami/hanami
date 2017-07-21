@@ -457,4 +457,39 @@ EOF
       end
     end
   end
+
+  it 'prints help message' do
+    with_project do
+      output = <<-OUT
+Command:
+  hanami server
+
+Usage:
+  hanami server
+
+Description:
+  Start Hanami server (only for development)
+
+Options:
+  --server=VALUE                  	# Force a server engine (eg, webrick, puma, thin, etc..)
+  --host=VALUE                    	# The host address to bind to
+  --port=VALUE, -p VALUE          	# The port to run the server on
+  --debug=VALUE                   	# Turn on debug output
+  --warn=VALUE                    	# Turn on warnings
+  --daemonize=VALUE               	# Daemonize the server
+  --pid=VALUE                     	# Path to write a pid file after daemonize
+  --[no-]code-reloading           	# Code reloading, default: true
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami server                     # Basic usage (it uses the bundled server engine)
+  hanami server --server=webrick    # Force `webrick` server engine
+  hanami server --host=0.0.0.0      # Bind to a host
+  hanami server --port=2306         # Bind to a port
+  hanami server --no-code-reloading # Disable code reloading
+OUT
+
+      run_command 'hanami server --help', output
+    end
+  end
 end

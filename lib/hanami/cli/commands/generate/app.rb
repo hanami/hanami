@@ -4,8 +4,16 @@ module Hanami
       module Generate
         class App < Command
           requires "environment"
-          argument :app, required: true
-          option :application_base_url
+
+          desc "Generate an app"
+
+          argument :app, required: true, desc: "The application name (eg. `web`)"
+          option :application_base_url, desc: "The app base URL (eg. `/api/v1`)"
+
+          example [
+            "admin                              # Generate `admin` app",
+            "api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`"
+          ]
 
           def call(app:, application_base_url: nil, **options)
             app      = Utils::String.new(app).underscore

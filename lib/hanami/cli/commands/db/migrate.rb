@@ -4,7 +4,15 @@ module Hanami
       module Db
         class Migrate < Command
           requires "model.sql"
-          argument :version
+
+          desc "Migrate the database"
+
+          argument :version, desc: "The target version of the migration (see `hanami db version`)"
+
+          example [
+            "               # Migrate to the last version",
+            "#{Project.migration_timestamp} # Migrate to a specific version"
+          ]
 
           def call(version: nil, **options)
             context = Context.new(version: version, options: options)

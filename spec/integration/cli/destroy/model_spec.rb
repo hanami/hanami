@@ -81,5 +81,31 @@ OUT
         run_command "hanami destroy model unknown", output, exit_status: 1
       end
     end
+
+    it 'prints help message' do
+      with_project do
+        output = <<-OUT
+Command:
+  hanami destroy model
+
+Usage:
+  hanami destroy model MODEL
+
+Description:
+  Destroy a model
+
+Arguments:
+  MODEL               	# REQUIRED The model name (eg. `user`)
+
+Options:
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami destroy model user # Destroy `User` entity and `UserRepository` repository
+OUT
+
+        run_command 'hanami destroy model --help', output
+      end
+    end
   end # model
 end

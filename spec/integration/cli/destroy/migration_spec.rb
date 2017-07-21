@@ -35,5 +35,34 @@ OUT
         run_command "hanami destroy migration create_unknowns", output, exit_status: 1
       end
     end
+
+    it 'prints help message' do
+      with_project do
+        banner = <<-OUT
+Command:
+  hanami destroy migration
+
+Usage:
+  hanami destroy migration MIGRATION
+
+Description:
+  Destroy a migration
+
+Arguments:
+  MIGRATION           	# REQUIRED The migration name (eg. `create_users`)
+
+Options:
+  --help, -h                      	# Print this help
+
+Examples:
+OUT
+        output = [
+          banner,
+          %r{  hanami destroy migration create_users # Destroy `db/migrations/[\d]{14}_create_users.rb`}
+        ]
+
+        run_command 'hanami destroy migration --help', output
+      end
+    end
   end # migration
 end

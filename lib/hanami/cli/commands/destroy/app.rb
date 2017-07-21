@@ -3,7 +3,13 @@ module Hanami
     module Commands
       module Destroy
         class App < Command
-          argument :app, required: true
+          desc "Destroy an app"
+
+          argument :app, required: true, desc: "The application name (eg. `web`)"
+
+          example [
+            "admin # Destroy `admin` app"
+          ]
 
           def call(app:, **options)
             app     = Utils::String.new(app).underscore

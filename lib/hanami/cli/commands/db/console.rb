@@ -5,6 +5,8 @@ module Hanami
         class Console < Command
           requires 'model.sql'
 
+          desc "Starts a database console"
+
           def call(**options)
             context = Context.new(options: options)
 

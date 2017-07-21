@@ -5,6 +5,8 @@ module Hanami
         class Create < Command
           requires "model.configuration"
 
+          desc "Create the database (only for development/test)"
+
           def call(**options)
             context = Context.new(options: options)
 

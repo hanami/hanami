@@ -6,6 +6,12 @@ module Hanami
           requires "apps.assets.configurations"
 
           desc "Precompile assets for deployment"
+
+          example [
+            "                      # Basic usage",
+            "HANAMI_ENV=production # Precompile assets for production environment"
+          ]
+
           def call(**options)
             context = Context.new(options: options)
 

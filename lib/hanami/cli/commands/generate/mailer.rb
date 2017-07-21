@@ -4,10 +4,21 @@ module Hanami
       module Generate
         class Mailer < Command
           requires "environment"
-          argument :mailer, required: true
-          option :from
-          option :to
-          option :subject
+
+          desc "Generate a mailer"
+
+          argument :mailer, required: true, desc: "The mailer name (eg. `welcome`)"
+
+          option :from,    desc: "The default `from` field of the mail"
+          option :to,      desc: "The default `to` field of the mail"
+          option :subject, desc: "The mail subject"
+
+          example [
+            "welcome                                         # Basic usage",
+            'welcome --from="noreply@example.com"            # Generate with default `from` value',
+            'announcement --to="users@example.com"           # Generate with default `to` value',
+            'forgot_password --subject="Your password reset" # Generate with default `subject`'
+          ]
 
           def call(mailer:, **options)
             from    = options.fetch(:from,    DEFAULT_FROM)

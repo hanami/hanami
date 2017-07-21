@@ -57,10 +57,13 @@ module Hanami
         end
 
         def self.migration(context)
-          timestamp = Time.now.utc.strftime(MIGRATION_TIMESTAMP_FORMAT)
-          filename  = MIGRATION_FILENAME_PATTERN % { timestamp: timestamp, name: context.migration }
+          filename = MIGRATION_FILENAME_PATTERN % { timestamp: migration_timestamp, name: context.migration }
 
           root.join("db", "migrations", "#{filename}.rb")
+        end
+
+        def self.migration_timestamp
+          Time.now.utc.strftime(MIGRATION_TIMESTAMP_FORMAT)
         end
 
         def self.find_migration(context)
@@ -123,6 +126,10 @@ module Hanami
 
         def self.app_application(context)
           root.join("apps", context.app, "application.rb")
+        end
+
+        def self.app_sessions_secret
+          SecureRandom.hex(32)
         end
 
         def self.app_routes(context)

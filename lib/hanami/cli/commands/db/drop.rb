@@ -5,6 +5,8 @@ module Hanami
         class Drop < Command
           requires "model.configuration"
 
+          desc "Drop the database (only for development/test)"
+
           def call(**options)
             context = Context.new(options: options)
 

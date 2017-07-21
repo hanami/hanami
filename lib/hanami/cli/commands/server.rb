@@ -4,26 +4,32 @@ module Hanami
       class Server < Command
         requires 'code_reloading'
 
-        desc 'Starts a hanami server'
+        desc "Start Hanami server (only for development)"
 
-        option :port, alias: '-p', desc: 'The port to run the server on'
-        option :server, desc: 'Choose a specific Rack::Handler (webrick, thin, etc)'
-        option :rackup, desc: 'A rackup configuration file path to load (config.ru)'
-        option :host, desc: 'The host address to bind to'
-        option :debug, desc: 'Turn on debug output'
-        option :warn, desc: 'Turn on warnings'
-        option :daemonize, desc: 'If true, the server will daemonize itself (fork, detach, etc)'
-        option :pid, desc: 'Path to write a pid file after daemonize'
-        option :environment, desc: 'Path to environment configuration (config/environment.rb)'
-        option :code_reloading, desc: 'Code reloading', type: :boolean, default: true
+        option :server,         desc: "Force a server engine (eg, webrick, puma, thin, etc..)"
+        option :host,           desc: "The host address to bind to"
+        option :port,           desc: "The port to run the server on", aliases: ["-p"]
+        option :debug,          desc: "Turn on debug output"
+        option :warn,           desc: "Turn on warnings"
+        option :daemonize,      desc: "Daemonize the server"
+        option :pid,            desc: "Path to write a pid file after daemonize"
+        option :code_reloading, desc: "Code reloading", type: :boolean, default: true
 
-        def call(options)
+        example [
+          "                    # Basic usage (it uses the bundled server engine)",
+          "--server=webrick    # Force `webrick` server engine",
+          "--host=0.0.0.0      # Bind to a host",
+          "--port=2306         # Bind to a port",
+          "--no-code-reloading # Disable code reloading"
+        ]
+
+        def call(*)
           require 'hanami/server'
           Hanami::Server.new.start
         end
       end
     end
 
-    register "server", Commands::Server
+    register "server", Commands::Server, aliases: ["s"]
   end
 end

@@ -200,25 +200,33 @@ module Hanami
 
         attr_reader :target_path
 
-        desc 'Generate a new hanami project'
+        desc "Generate a new Hanami project"
+        argument :project, required: true, desc: "The project name"
 
-        argument :project_name, required: true
-        option :database, aliases: ['-d', '--db'], desc: "Application database (#{DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: DatabaseConfig::DEFAULT_ENGINE
-        option :application_name, desc: 'Application name, only for container', default: DEFAULT_APPLICATION_NAME
-        option :application_base_url, desc: 'Application base url', default: DEFAULT_APPLICATION_BASE_URL
-        option :template, desc: "Template engine (#{TemplateEngine::SUPPORTED_ENGINES.join('/')})", default: TemplateEngine::DEFAULT_ENGINE
-        option :test, desc: "Project test framework (#{TestFramework::VALID_FRAMEWORKS.join('/')})", default: Hanami::Hanamirc::DEFAULT_TEST_SUITE
-        option :hanami_head, desc: 'Use hanami HEAD (true/false)', type: :boolean, default: false
+        option :database,             desc: "Database (#{DatabaseConfig::SUPPORTED_ENGINES.keys.join('/')})", default: DatabaseConfig::DEFAULT_ENGINE, aliases: ["-d"]
+        option :application_name,     desc: "App name", default: DEFAULT_APPLICATION_NAME
+        option :application_base_url, desc: "App base URL", default: DEFAULT_APPLICATION_BASE_URL
+        option :template,             desc: "Template engine (#{TemplateEngine::SUPPORTED_ENGINES.join('/')})", default: TemplateEngine::DEFAULT_ENGINE
+        option :test,                 desc: "Project testing framework (#{TestFramework::VALID_FRAMEWORKS.join('/')})", default: Hanami::Hanamirc::DEFAULT_TEST_SUITE
+        option :hanami_head,          desc: "Use Hanami HEAD (true/false)", type: :boolean, default: false
 
-        def call(project_name:, **options)
-          project_name    = Utils::String.new(project_name).underscore
-          database_config = DatabaseConfig.new(options[:database], project_name)
+        example [
+          "bookshelf                     # Basic usage",
+          "bookshelf --test=rspec        # Setup RSpec testing framework",
+          "bookshelf --database=postgres # Setup Postgres database",
+          "bookshelf --template=slim     # Setup Slim template engine",
+          "bookshelf --hanami-head       # Use Hanami HEAD"
+        ]
+
+        def call(project:, **options)
+          project         = Utils::String.new(project).underscore
+          database_config = DatabaseConfig.new(options[:database], project)
           test_framework  = TestFramework.new(hanamirc, options[:test])
           template_engine = TemplateEngine.new(hanamirc, options[:template])
-          options[:project] = project_name
+          options[:project] = project
 
           context = Context.new(
-            project_name: project_name,
+            project: project,
             database: database_config.type,
             database_config_hash: database_config.to_hash,
             database_config: database_config,
@@ -231,13 +239,13 @@ module Hanami
             hanami_model_version: '~> 1.0',
             code_reloading: code_reloading?,
             hanami_version: hanami_version,
-            project_module: Utils::String.new(project_name).classify,
+            project_module: Utils::String.new(project).classify,
             options: options
           )
 
           assert_project_name!(context)
 
-          directory = project_directory(project_name)
+          directory = project_directory(project)
           files.mkdir(directory)
 
           Dir.chdir(directory) do
@@ -259,8 +267,8 @@ module Hanami
         private
 
         def assert_project_name!(context)
-          if context.project_name.include?(File::SEPARATOR)
-            raise ArgumentError.new("PROJECT_NAME must not contain #{File::SEPARATOR}.")
+          if context.project.include?(File::SEPARATOR)
+            raise ArgumentError.new("PROJECT must not contain #{File::SEPARATOR}.")
           end
         end
 
@@ -425,8 +433,8 @@ module Hanami
           @hanamirc ||= Hanamirc.new(Pathname.new('.'))
         end
 
-        def project_directory(project_name)
-          @name == '.' ? '.' : project_name
+        def project_directory(project)
+          @name == '.' ? '.' : project
         end
 
         def code_reloading?

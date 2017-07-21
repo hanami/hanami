@@ -16,7 +16,12 @@ module Hanami
         desc "Starts Hanami console"
 
         # TODO: OptParser support enums, extract to CLI
-        option :engine, desc: "Choose a specific console engine: (#{ENGINES.keys.join('/')})"
+        option :engine, desc: "Force a specific console engine: (#{ENGINES.keys.join('/')})"
+
+        example [
+          "             # Uses the bundled engine",
+          "--engine=pry # Force to use Pry"
+        ]
 
         # Implements console code reloading
         #

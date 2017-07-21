@@ -10,7 +10,7 @@ module Hanami
       end
     end
 
-    register "destroy" do |prefix|
+    register "destroy", aliases: ["d"] do |prefix|
       prefix.register "app",       Commands::Destroy::App
       prefix.register "action",    Commands::Destroy::Action
       prefix.register "model",     Commands::Destroy::Model

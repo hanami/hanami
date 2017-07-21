@@ -5,6 +5,8 @@ module Hanami
         class Prepare < Command
           requires "model.sql"
 
+          desc "Drop, create, and migrate the database (only for development/test)"
+
           def call(**options)
             context = Context.new(options: options)
 

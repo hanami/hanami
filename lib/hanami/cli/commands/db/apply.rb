@@ -5,6 +5,8 @@ module Hanami
         class Apply < Command
           requires "model.sql"
 
+          desc "Migrate, dump the SQL schema, and delete the migrations (experimental)"
+
           def call(**options)
             context = Context.new(options: options)
 
