@@ -3,7 +3,7 @@ module Hanami
     module Commands
       module Db
         class Version < Command
-          requires "model.configuration"
+          requires "model.configuration.no_logger"
 
           desc "Print the current migrated version"
 

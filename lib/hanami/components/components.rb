@@ -117,6 +117,35 @@ module Hanami
       end
     end
 
+    # Tries to evaluate hanami-model configuration, if available for the project
+    # and it doesn't activate migrations logger
+    #
+    # @since x.x.x
+    # @api private
+    #
+    # @example With hanami-model
+    #   Hanami::Components.resolve('model.configuration.no_logger')
+    #   Hanami::Components['model.configuration.no_logger'].class # => Hanami::Model::Configuration
+    #
+    # @example Without hanami-model
+    #   Hanami::Components.resolve('model.configuration.no_logger')
+    #   Hanami::Components['model.configuration.no_logger'].class # => NilClass
+    register 'model.configuration.no_logger' do
+      requires 'model.bundled'
+
+      prepare do
+        require 'stringio'
+      end
+
+      resolve do |configuration|
+        if Components['model.bundled']
+          Hanami::Model.configure(&configuration.model)
+          Hanami::Model.config.migrations_logger(StringIO.new)
+          Hanami::Model.configuration
+        end
+      end
+    end
+
     # Tries to load SQL support for hanami, if available for the project
     #
     # @since 0.9.0
