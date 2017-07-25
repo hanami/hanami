@@ -23,6 +23,8 @@ module Hanami
           @model_name = Utils::String.new(@input).classify
           @table_name = Utils::String.new(@input).pluralize
 
+          FileUtils.mkdir_p("#{target_path}/db/migrations") unless File.exist?("#{target_path}/db/migrations")
+
           unless skip_migration?
             Components.resolve('model.configuration')
           end
