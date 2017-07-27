@@ -498,7 +498,6 @@ OUT
       with_project do
         generate "app admin"
 
-
         replace "config/environment.rb", "require_relative '../apps/admin/application'", ""
         replace "config/environment.rb", "mount Admin::Application, at: '/admin'", "mount :admin, at: '/admin' do\nrequire_relative '../apps/admin/application'\nAdmin::Application\nend"
 

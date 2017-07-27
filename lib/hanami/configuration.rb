@@ -42,12 +42,7 @@ module Hanami
     #     # ...
     #   end
     def mount(app, options)
-      allowed_apps = ENV['HANAMI_APPS'].to_s.split(',')
-
-      if allowed_apps.empty? || allowed_apps.any? { |a| app.to_s.downcase[a] }
-        app = yield if block_given?
-        mounted[app] = App.new(app, options.fetch(:at))
-      end
+      mounted[app] = App.new(app, options.fetch(:at))
     end
 
     # Configure database
