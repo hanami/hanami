@@ -70,7 +70,9 @@ module Hanami
           end
         end
 
-        def initialize(out: $stdout, files: Utils::Files)
+        def initialize(command_name:, out: $stdout, files: Utils::Files)
+          super(command_name: command_name)
+
           @out       = out
           @files     = files
           @templates = Templates.new(self.class.name)

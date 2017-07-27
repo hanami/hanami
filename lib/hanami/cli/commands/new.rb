@@ -411,7 +411,7 @@ module Hanami
         end
 
         def generate_app(context)
-          Hanami::Cli::Commands::Generate::App.new.call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
+          Hanami::Cli::Commands::Generate::App.new(command_name: "generate app", out: @out, files: @files).call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
         end
 
         def init_git

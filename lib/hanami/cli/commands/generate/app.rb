@@ -154,7 +154,7 @@ module Hanami
             content     = "require_relative '../apps/#{context.app}/application'"
             destination = project.environment(context)
 
-            files.inject_after(destination, content, /require_relative '\.\.\/lib\/.*'/)
+            files.inject_line_after(destination, /require_relative '\.\.\/lib\/.*'/, content)
             say(:insert, destination)
           end
 
@@ -162,7 +162,7 @@ module Hanami
             content     = "  mount #{context.app.classify}::Application, at: '#{context.base_url}'"
             destination = project.environment(context)
 
-            files.inject_after(destination, content, /Hanami.configure do/)
+            files.inject_line_after(destination, /Hanami.configure do/, content)
             say(:insert, destination)
           end
 

@@ -107,10 +107,24 @@ module Hanami
             content     = "mount #{context.app.classify}::Application"
             destination = project.environment(context)
 
-            line  = files.read_matching_line(destination, content)
+            line  = read_matching_line(destination, content)
             *, at = line.split(/at\:[[:space:]]*/)
 
             at.strip.gsub(/["']*/, "")
+          end
+
+          def read_matching_line(path, target)
+            content = ::File.readlines(path)
+            line    = content.find do |l|
+              case target
+              when String
+                l.include?(target)
+              when Regexp
+                l =~ target
+              end
+            end
+
+            line or raise ArgumentError.new("Cannot find `#{target}' inside `#{path}'.")
           end
         end
       end
