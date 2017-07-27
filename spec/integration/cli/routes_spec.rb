@@ -24,4 +24,24 @@ EOF
       expect(out).to eq "Name Method     Path                           Action                        \n\n                                /ping                          Ping                          \n\n                Name Method     Path                           Action                        \n\n                     GET, HEAD  /admin                         Admin::Controllers::Home::Index\n\n                Name Method     Path                           Action                        \n\n                     GET, HEAD  /                              Web::Controllers::Home::Index \n                     POST       /books                         Web::Controllers::Books::Create"
     end
   end
+
+  it 'prints help message' do
+    with_project do
+      output = <<-OUT
+Command:
+  hanami routes
+
+Usage:
+  hanami routes
+
+Description:
+  Prints routes
+
+Options:
+  --help, -h                      	# Print this help
+OUT
+
+      run_command 'hanami routes --help', output
+    end
+  end
 end

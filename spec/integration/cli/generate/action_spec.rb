@@ -322,5 +322,39 @@ END
         end
       end
     end # rspec
+
+    it 'prints help message' do
+      with_project do
+        output = <<-OUT
+Command:
+  hanami generate action
+
+Usage:
+  hanami generate action APP ACTION
+
+Description:
+  Generate an action for app
+
+Arguments:
+  APP                 	# REQUIRED The application name (eg. `web`)
+  ACTION              	# REQUIRED The action name (eg. `home#index`)
+
+Options:
+  --url=VALUE                     	# The action URL
+  --method=VALUE                  	# The action HTTP method
+  --[no-]skip-view                	# Skip view and template, default: false
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami generate action web home#index                    # Basic usage
+  hanami generate action admin home#index                  # Generate for `admin` app
+  hanami generate action web home#index --url=/            # Specify URL
+  hanami generate action web sessions#destroy --method=GET # Specify HTTP method
+  hanami generate action web books#create --skip-view      # Skip view and template
+OUT
+
+        run_command 'hanami generate action --help', output
+      end
+    end
   end # action
 end

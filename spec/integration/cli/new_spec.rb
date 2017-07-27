@@ -792,48 +792,44 @@ END
     it "fails" do
       output = <<-OUT
 ERROR: "hanami new" was called with no arguments
-Usage: "hanami new PROJECT_NAME"
+Usage: "hanami new PROJECT"
       OUT
 
       run_command "hanami new", output, exit_status: 1
     end
   end
 
-  context "help" do
-    # TODO: show deafult in description
-    it "prints help message" do
-      output = <<-OUT
-Usage:
+  it 'prints help message' do
+    output = <<-OUT
+Command:
   hanami new
 
+Usage:
+  hanami new PROJECT
+
 Description:
-  Generate a new hanami project
+  Generate a new Hanami project
+
+Arguments:
+  PROJECT             	# REQUIRED The project name
 
 Options:
-        --database database          Application database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3)
-        --application-name application_name
-                                     Application name, only for container
-        --application-base-url application_base_url
-                                     Application base url
-        --template template          Template engine (erb/haml/slim)
-        --test test                  Project test framework (minitest/rspec)
-        --[no-]hanami-head           Use hanami HEAD (true/false)
-    -h, --help                       Show this message
+  --database=VALUE, -d VALUE      	# Database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3), default: "sqlite"
+  --application-name=VALUE        	# App name, default: "web"
+  --application-base-url=VALUE    	# App base URL, default: "/"
+  --template=VALUE                	# Template engine (erb/haml/slim), default: "erb"
+  --test=VALUE                    	# Project testing framework (minitest/rspec), default: "minitest"
+  --[no-]hanami-head              	# Use Hanami HEAD (true/false), default: false
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami new bookshelf                     # Basic usage
+  hanami new bookshelf --test=rspec        # Setup RSpec testing framework
+  hanami new bookshelf --database=postgres # Setup Postgres database
+  hanami new bookshelf --template=slim     # Setup Slim template engine
+  hanami new bookshelf --hanami-head       # Use Hanami HEAD
 OUT
 
-# rubocop:disable Style/CommentIndentation
-# FIXME: this extra verbatim causes a spec failure
-# Description:
-#   `hanami new` creates a new hanami project. You can specify various options such as the database to be used as well as the path and architecture.
-#
-#   $ > hanami new fancy_app --application_name=admin
-#
-#   $ > hanami new fancy_app --arch=app
-#
-#   $ > hanami new fancy_app --hanami-head=true
-# rubocop:enable Style/CommentIndentation
-
-      run_command "hanami new --help", output
-    end
+    run_command 'hanami new --help', output
   end
 end

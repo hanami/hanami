@@ -24,8 +24,8 @@ module RSpec
         bundle_exec("hanami #{cmd}", env: env, &blk)
       end
 
-      def console(&blk)
-        hanami "console", &blk
+      def console(args = "", &blk)
+        hanami "console#{args}", &blk
       end
 
       def db_console(&blk)

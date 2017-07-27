@@ -84,5 +84,31 @@ OUT
         run_command "hanami destroy app unknown", output, exit_status: 1
       end
     end
+
+    it 'prints help message' do
+      with_project do
+        output = <<-OUT
+Command:
+  hanami destroy app
+
+Usage:
+  hanami destroy app APP
+
+Description:
+  Destroy an app
+
+Arguments:
+  APP                 	# REQUIRED The application name (eg. `web`)
+
+Options:
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami destroy app admin # Destroy `admin` app
+OUT
+
+        run_command 'hanami destroy app --help', output
+      end
+    end
   end # app
 end

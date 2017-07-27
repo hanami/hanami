@@ -389,7 +389,7 @@ module Hanami
     #
     # @see Hanami::Environment::DEFAULT_ENVIRONMENT_CONFIG
     def env_config
-      root.join(@options.fetch(:environment) { config.join(DEFAULT_ENVIRONMENT_CONFIG) })
+      root.join("config", "environment.rb")
     end
 
     alias project_environment_configuration env_config
