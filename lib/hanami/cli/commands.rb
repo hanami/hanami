@@ -2,13 +2,13 @@ require 'hanami/cli'
 require 'ostruct'
 
 module Hanami
-  class Cli
+  class CLI
     def self.register(name, command = nil, aliases: [], &blk)
       Commands.register(name, command, aliases: aliases, &blk)
     end
 
     module Commands
-      extend Hanami::Cli::Registry
+      extend Hanami::CLI::Registry
 
       class Context < OpenStruct
         def initialize(data)
