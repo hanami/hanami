@@ -31,9 +31,9 @@ RSpec.describe "hanami generate", type: :cli do
         with_project('bookshelf_generate_model_missing_arguments') do
           output = <<-END
 ERROR: "hanami generate model" was called with no arguments
-Usage: "hanami generate model NAME"
+Usage: "hanami generate model MODEL"
 END
-          run_command "hanami generate model", output # , exit_status: 1 FIXME: Thor exit with 0
+          run_command "hanami generate model", output, exit_status: 1
         end
       end
     end
@@ -131,5 +131,33 @@ END
         end
       end
     end # rspec
-  end # migration
+
+    it 'prints help message' do
+      with_project do
+        output = <<-OUT
+Command:
+  hanami generate model
+
+Usage:
+  hanami generate model MODEL
+
+Description:
+  Generate a model
+
+Arguments:
+  MODEL               	# REQUIRED Model name (eg. `user`)
+
+Options:
+  --[no-]skip-migration           	# Skip migration, default: false
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami generate model user                  # Generate `User` entity, `UserRepository` repository, and the migration
+  hanami generate model user --skip-migration # Generate `User` entity and `UserRepository` repository
+OUT
+
+        run_command 'hanami generate model --help', output
+      end
+    end
+  end # model
 end

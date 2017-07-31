@@ -7,7 +7,7 @@ unless ENV['TRAVIS']
 end
 
 gem 'i18n'
-gem 'hanami-utils',       '~> 1.0', require: false, git: 'https://github.com/hanami/utils.git',       branch: '1.0.x'
+gem 'hanami-utils',       '~> 1.0', require: false, git: 'https://github.com/hanami/utils.git',       branch: 'develop'
 gem 'hanami-validations', '~> 1.0', require: false, git: 'https://github.com/hanami/validations.git', branch: '1.0.x'
 gem 'hanami-router',      '~> 1.0', require: false, git: 'https://github.com/hanami/router.git',      branch: '1.0.x'
 gem 'hanami-controller',  '~> 1.0', require: false, git: 'https://github.com/hanami/controller.git',  branch: '1.0.x'
@@ -16,6 +16,7 @@ gem 'hanami-model',       '~> 1.0', require: false, git: 'https://github.com/han
 gem 'hanami-helpers',     '~> 1.0', require: false, git: 'https://github.com/hanami/helpers.git',     branch: '1.0.x'
 gem 'hanami-mailer',      '~> 1.0', require: false, git: 'https://github.com/hanami/mailer.git',      branch: '1.0.x'
 gem 'hanami-assets',      '~> 1.0', require: false, git: 'https://github.com/hanami/assets.git',      branch: '1.0.x'
+gem 'hanami-cli',         '~> 1.0', require: false, git: 'https://github.com/hanami/cli.git',         branch: 'master'
 
 platforms :ruby do
   gem 'sqlite3'

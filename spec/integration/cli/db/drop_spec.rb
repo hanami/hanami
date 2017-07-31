@@ -28,5 +28,25 @@ RSpec.describe "hanami db", type: :cli do
         expect(db).to be_an_existing_file
       end
     end
+
+    it 'prints help message' do
+      with_project do
+        output = <<-OUT
+Command:
+  hanami db drop
+
+Usage:
+  hanami db drop
+
+Description:
+  Drop the database (only for development/test)
+
+Options:
+  --help, -h                      	# Print this help
+OUT
+
+        run_command 'hanami db drop --help', output
+      end
+    end
   end
 end

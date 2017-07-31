@@ -29,8 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'hanami-helpers',     '~> 1.0'
   spec.add_dependency 'hanami-mailer',      '~> 1.0'
   spec.add_dependency 'hanami-assets',      '~> 1.0'
+  spec.add_dependency 'hanami-cli',         '~> 1.0'
   spec.add_dependency 'concurrent-ruby',    '~> 1.0'
-  spec.add_dependency 'thor',               '~> 0.19'
   spec.add_dependency 'bundler',            '~> 1.13'
 
   spec.add_development_dependency 'rspec',     '~>  3.5'

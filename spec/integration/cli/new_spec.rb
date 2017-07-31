@@ -5,6 +5,7 @@ RSpec.describe 'hanami new', type: :cli do
       create  .hanamirc
       create  .env.development
       create  .env.test
+      create  README.md
       create  Gemfile
       create  config.ru
       create  config/boot.rb
@@ -38,7 +39,7 @@ RSpec.describe 'hanami new', type: :cli do
       create  apps/web/assets/stylesheets/.gitkeep
       create  spec/web/features/.gitkeep
       create  spec/web/controllers/.gitkeep
-      create  spec/web/views/.gitkeep
+      create  spec/web/views/application_layout_spec.rb
       insert  config/environment.rb
       insert  config/environment.rb
       append  .env.development
@@ -76,6 +77,47 @@ END
       expect('.env.test').to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_test.sqlite"})
       expect('.env.test').to have_file_content(%r{SERVE_STATIC_ASSETS="true"})
       expect('.env.test').to have_file_content(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
+
+      #
+      # README.md
+      #
+      expect('README.md').to have_file_content <<-END
+# bookshelf
+
+Welcome to your new Hanami project!
+
+## Setup
+
+How to run tests:
+
+```
+% bundle exec rake
+```
+
+How to run the development console:
+
+```
+% bundle exec hanami console
+```
+
+How to run the development server:
+
+```
+% bundle exec hanami server
+```
+
+How to create and migrate DB for development and test ENVs:
+
+```
+% bundle exec hanami db create
+% bundle exec hanami db migrate
+
+% HANAMI_ENV=test bundle exec hanami db create
+% HANAMI_ENV=test bundle exec hanami db migrate
+```
+
+Explore Hanami [guides](http://hanamirb.org/guides/), [API docs](http://hanamirb.org/docs/1.0.0/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
+END
 
       #
       # Gemfile
@@ -725,11 +767,6 @@ END
       # spec/web/controllers/.gitkeep
       #
       expect("spec/web/controllers/.gitkeep").to be_an_existing_file
-
-      #
-      # spec/web/views/.gitkeep
-      #
-      expect("spec/web/views/.gitkeep").to be_an_existing_file
     end
   end
 
@@ -754,50 +791,45 @@ END
   context "with missing name" do
     it "fails" do
       output = <<-OUT
-`hanami new` was called with no arguments
-Usage: `hanami new PROJECT_NAME`
+ERROR: "hanami new" was called with no arguments
+Usage: "hanami new PROJECT"
       OUT
 
       run_command "hanami new", output, exit_status: 1
     end
   end
 
-  context "help" do
-    xit "prints help message" do
-      output = <<-OUT
+  it 'prints help message' do
+    output = <<-OUT
+Command:
+  hanami new
+
 Usage:
-  hanami new PROJECT_NAME
+  hanami new PROJECT
+
+Description:
+  Generate a new Hanami project
+
+Arguments:
+  PROJECT             	# REQUIRED The project name
 
 Options:
-  -d, --db, [--database=DATABASE]                        # Application database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3/filesystem/memory)
-                                                         # Default: filesystem
-  -a, --arch, [--architecture=ARCHITECTURE]              # Project architecture (container/app)
-                                                         # Default: container
-          [--application-name=APPLICATION_NAME]          # Application name, only for container
-                                                         # Default: web
-          [--application-base-url=APPLICATION_BASE_URL]  # Application base url
-                                                         # Default: /
-          [--template=TEMPLATE]                          # Template engine (erb/slim/haml)
-                                                         # Default: erb
-          [--test=TEST]                                  # Project test framework (rspec/minitest)
-                                                         # Default: minitest
-          [--hanami-head], [--no-hanami-head]            # Use hanami HEAD (true/false)
-          [--help=HELP]                                  # Displays the usage method
+  --database=VALUE, -d VALUE      	# Database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3), default: "sqlite"
+  --application-name=VALUE        	# App name, default: "web"
+  --application-base-url=VALUE    	# App base URL, default: "/"
+  --template=VALUE                	# Template engine (erb/haml/slim), default: "erb"
+  --test=VALUE                    	# Project testing framework (minitest/rspec), default: "minitest"
+  --[no-]hanami-head              	# Use Hanami HEAD (true/false), default: false
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami new bookshelf                     # Basic usage
+  hanami new bookshelf --test=rspec        # Setup RSpec testing framework
+  hanami new bookshelf --database=postgres # Setup Postgres database
+  hanami new bookshelf --template=slim     # Setup Slim template engine
+  hanami new bookshelf --hanami-head       # Use Hanami HEAD
 OUT
 
-# rubocop:disable Style/CommentIndentation
-# FIXME: this extra verbatim causes a spec failure
-# Description:
-#   `hanami new` creates a new hanami project. You can specify various options such as the database to be used as well as the path and architecture.
-#
-#   $ > hanami new fancy_app --application_name=admin
-#
-#   $ > hanami new fancy_app --arch=app
-#
-#   $ > hanami new fancy_app --hanami-head=true
-# rubocop:enable Style/CommentIndentation
-
-      run_command "hanami new --help", output
-    end
+    run_command 'hanami new --help', output
   end
 end

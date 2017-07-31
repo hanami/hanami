@@ -79,6 +79,10 @@ RSpec.describe "hanami generate", type: :cli do
   </body>
 </html>
 END
+          #
+          # spec/admin/views/application_layout_spec.rb
+          #
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.erb})
         end
       end
     end # erb
@@ -105,7 +109,12 @@ END
     = favicon
   %body
     = yield
-END
+ END
+
+          #
+          # spec/admin/views/application_layout_spec.rb
+          #
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.haml})
         end
       end
     end # haml
@@ -134,8 +143,41 @@ html
   body
     = yield
 END
+
+          #
+          # spec/admin/views/application_layout_spec.rb
+          #
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.slim})
         end
       end
     end # slim
+
+    it 'prints help message' do
+      with_project do
+        output = <<-OUT
+Command:
+  hanami generate app
+
+Usage:
+  hanami generate app APP
+
+Description:
+  Generate an app
+
+Arguments:
+  APP                 	# REQUIRED The application name (eg. `web`)
+
+Options:
+  --application-base-url=VALUE    	# The app base URL (eg. `/api/v1`)
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami generate app admin                              # Generate `admin` app
+  hanami generate app api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
+OUT
+
+        run_command 'hanami generate app --help', output
+      end
+    end
   end # app
 end

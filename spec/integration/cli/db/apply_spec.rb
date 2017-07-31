@@ -23,5 +23,25 @@ SQL
         expect(migrations.children).to be_empty
       end
     end
+
+    it "prints help message" do
+      with_project do
+        output = <<-OUT
+Command:
+  hanami db apply
+
+Usage:
+  hanami db apply
+
+Description:
+  Migrate, dump the SQL schema, and delete the migrations (experimental)
+
+Options:
+  --help, -h                      	# Print this help
+OUT
+
+        run_command "hanami db apply --help", output
+      end
+    end
   end
 end

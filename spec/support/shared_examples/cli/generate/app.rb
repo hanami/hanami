@@ -21,7 +21,7 @@ RSpec.shared_examples "a new app" do
       create  apps/#{app}/assets/stylesheets/.gitkeep
       create  spec/#{app}/features/.gitkeep
       create  spec/#{app}/controllers/.gitkeep
-      create  spec/#{app}/views/.gitkeep
+      create  spec/#{app}/views/application_layout_spec.rb
       insert  config/environment.rb
       insert  config/environment.rb
       append  .env.development
@@ -392,6 +392,11 @@ END
       expect("apps/#{app}/assets/favicon.ico").to be_an_existing_file
 
       #
+      # spec/<app>/views/application_layout_spec.rb
+      #
+      expect("spec/#{app}/views/application_layout_spec.rb").to be_an_existing_file
+
+      #
       # apps/<app>/controllers/.gitkeep
       #
       expect("apps/#{app}/controllers/.gitkeep").to be_an_existing_file
@@ -420,11 +425,6 @@ END
       # spec/<app>/controllers/.gitkeep
       #
       expect("spec/#{app}/controllers/.gitkeep").to be_an_existing_file
-
-      #
-      # spec/<app>/views/.gitkeep
-      #
-      expect("spec/#{app}/views/.gitkeep").to be_an_existing_file
 
       #
       # config/environment.rb

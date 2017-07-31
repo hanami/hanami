@@ -140,12 +140,17 @@ module Hanami
     # When initialized, it sets standard `ENV` variables for Rack and Hanami,
     # such as `RACK_ENV` and `HANAMI_ENV`.
     #
-    # It also evaluates configuration from `.env` and `.env.<environment>`
+    # It evaluates configuration ONLY from `.env.<environment>` file
     # located under the config directory. All the settings in those files will
     # be exported as `ENV` variables.
     #
-    # The format of those `.env` files is compatible with `dotenv` and `foreman`
-    # gems.
+    # Master .env file is ignored to suggest clear separation of environment
+    # configurations and discourage putting sensitive information into source
+    # control.
+    #
+    # The format of those `.env.<environment>` files follows UNIX and UNIX-like
+    # operating system environment variable declaration format and compatible
+    # with `dotenv` and `foreman` gems.
     #
     # @param options [Hash] override default options for various environment
     #   attributes
@@ -164,10 +169,10 @@ module Hanami
     #   # % tree .
     #   #   .
     #   #   # ...
-    #   #   ├── .env
+    #   #   ├── .env.test
     #   #   └── .env.development
     #
-    #   # % cat .env
+    #   # % cat .env.test
     #   #   FOO="bar"
     #   #   XYZ="yes"
     #
@@ -188,14 +193,11 @@ module Hanami
     #
     #   # User defined ENV vars
     #   ENV['FOO']        # => "ok"
-    #   ENV['XYZ']        # => "yes"
+    #   ENV['XYZ']        # => nil
     #
-    #   # Hanami::Environment evaluates `.env` first as master configuration.
-    #   # Then it evaluates `.env.development` because the current environment
-    #   # is "development". The settings defined in this last file override
-    #   # the one defined in the parent (eg `FOO` is overwritten). All the
-    #   # other settings (eg `XYZ`) will be left untouched.
-    #   # Variables declared on `.env` and `.env.development` will not override
+    #   # Hanami::Environment evaluates `.env.development` because the current
+    #   # environment is "development".
+    #   # Variables declared on `.env.development` will not override
     #   # any variable declared on the shell when calling a `hanami` command.
     #   # Eg. In `FOO="not ok" bundle exec hanami c` `FOO` will not be overwritten
     #   # to `"ok"`.
@@ -389,7 +391,7 @@ module Hanami
     #
     # @see Hanami::Environment::DEFAULT_ENVIRONMENT_CONFIG
     def env_config
-      root.join(@options.fetch(:environment) { config.join(DEFAULT_ENVIRONMENT_CONFIG) })
+      root.join("config", "environment.rb")
     end
 
     alias project_environment_configuration env_config
