@@ -15,6 +15,7 @@ module RSpec
       end
 
       def server(args = {}, &blk)
+        args[:port] ||= rand(2300..9999)
         hanami "server#{_hanami_server_args(args)}" do |_, _, wait_thr|
           exec_server_tests(args, wait_thr, &blk)
         end
