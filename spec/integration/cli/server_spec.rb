@@ -492,28 +492,4 @@ OUT
       run_command 'hanami server --help', output
     end
   end
-
-  context "with HANAMI_APPS ENV variable" do
-    it "loads only specific application" do
-      with_project do
-        generate "app admin"
-
-        replace "config/environment.rb", "require_relative '../apps/admin/application'", ""
-        replace "config/environment.rb", "mount Admin::Application, at: '/admin'", "mount :admin, at: '/admin' do\nrequire_relative '../apps/admin/application'\nAdmin::Application\nend"
-
-        replace "config/environment.rb", "require_relative '../apps/web/application'", ""
-        replace "config/environment.rb", "mount Web::Application, at: '/'", "mount :web, at: '/' do\nrequire_relative '../apps/web/application'\nWeb::Application\nend"
-
-        RSpec::Support::Env['HANAMI_APPS'] = 'web'
-
-        server(port: 9999) do
-          visit "/"
-          expect(page).to have_title("Hanami | The web, with simplicity")
-
-          visit "/admin"
-          expect(page).to have_title("")
-        end
-      end
-    end
-  end
 end
