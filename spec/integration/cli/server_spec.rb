@@ -506,7 +506,7 @@ OUT
 
         RSpec::Support::Env['HANAMI_APPS'] = 'web'
 
-        server do
+        server(port: 9999) do
           visit "/"
           expect(page).to have_title("Hanami | The web, with simplicity")
 
