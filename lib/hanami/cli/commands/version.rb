@@ -1,5 +1,5 @@
 module Hanami
-  class Cli
+  class CLI
     module Commands
       class Version < Command
         desc "Print Hanami version"
