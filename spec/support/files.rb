@@ -1,3 +1,5 @@
+require "hanami/utils/files"
+
 module RSpec
   module Support
     module Files
@@ -56,6 +58,14 @@ module RSpec
         rewrite(path, content)
 
         remove_block(path, target) if containts?(content, target)
+      end
+
+      def remove_line(path, target)
+        Hanami::Utils::Files.remove_line(path, target)
+      end
+
+      def inject_line_after(path, target, contents)
+        Hanami::Utils::Files.inject_line_after(path, target, contents)
       end
 
       def open(path, mode, *content)

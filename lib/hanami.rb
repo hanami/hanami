@@ -118,6 +118,33 @@ module Hanami
     App.new(configuration, environment)
   end
 
+  # Check if an application is allowed to load.
+  #
+  # The list of applications to be loaded can be set via the `HANAMI_APPS`
+  # env variable. If the HANAMI_APPS env variable is not set, it defaults
+  # to loading all applications.
+  #
+  # @return [TrueClass,FalseClass] the result of the check
+  #
+  # @since x.x.x
+  #
+  # @example
+  #
+  #   # Mount hanami app for specific app
+  #   Hanami.configure do
+  #     if Hanami.app?(:web)
+  #       require_relative '../apps/web/application'
+  #       mount Web::Application, at: '/'
+  #     end
+  #   end
+  #
+  def self.app?(app)
+    return true unless ENV.key?('HANAMI_APPS')
+
+    allowed_apps = ENV['HANAMI_APPS'].to_s.split(',')
+    allowed_apps.include?(app.to_s.downcase)
+  end
+
   # Return root of the project (top level directory).
   #
   # @return [Pathname] root path
