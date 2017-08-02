@@ -141,10 +141,8 @@ module Hanami
     # @since 0.2.0
     def load_default_stack
       @default_stack_loaded ||= begin
-        _load_assets_middleware
         _load_session_middleware
         _load_default_welcome_page
-        _load_method_override_middleware
 
         true
       end
@@ -168,30 +166,6 @@ module Hanami
     def _load_session_middleware
       if configuration.sessions.enabled?
         prepend(*configuration.sessions.middleware)
-      end
-    end
-
-    # Use static assets middleware
-    #
-    # @api private
-    # @since 0.6.0
-    def _load_assets_middleware
-      env = Hanami.environment
-
-      if !env.container? && (middleware = env.static_assets_middleware)
-        use middleware
-      end
-    end
-
-    # Use MethodOverride middleware
-    #
-    # @api private
-    # @since 0.8.0
-    def _load_method_override_middleware
-      env = Hanami.environment
-
-      if !env.container?
-        use Rack::MethodOverride
       end
     end
   end

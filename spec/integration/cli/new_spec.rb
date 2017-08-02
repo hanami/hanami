@@ -57,7 +57,6 @@ OUT
       #
       expect('.hanamirc').to have_file_content <<-END
 project=#{project}
-architecture=container
 test=minitest
 template=erb
 END

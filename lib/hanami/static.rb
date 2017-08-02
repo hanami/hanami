@@ -2,7 +2,7 @@ require 'rack/static'
 
 module Hanami
   # Serve static assets in deployment environments (production, staging) where
-  # the architecture doesn't include a web server.
+  # the stack doesn't include a web server.
   #
   # Web servers like Nginx are the ideal candidate to serve static assets.
   # They are faster than Ruby application servers (eg. Puma) and they should be
