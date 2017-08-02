@@ -492,4 +492,66 @@ OUT
       run_command 'hanami server --help', output
     end
   end
+
+  context "with HANAMI_APPS ENV variable" do
+    it "loads only specific application" do
+      with_project do
+        generate "app admin"
+
+        remove_line "config/environment.rb", "require_relative '../apps/admin/application'"
+        remove_line "config/environment.rb", "mount Admin::Application"
+
+        remove_line "config/environment.rb", "require_relative '../apps/web/application'"
+        remove_line "config/environment.rb", "mount Web::Application"
+
+        inject_line_after "config/environment.rb", "Hanami.configure", <<-EOL
+  if Hanami.app?(:admin)
+    require_relative '../apps/admin/application'
+    mount Admin::Application, at: '/admin'
+  end
+
+  if Hanami.app?(:web)
+    require_relative '../apps/web/application'
+    mount Web::Application, at: '/'
+  end
+EOL
+        generate "action web home#index --url=/"
+
+        rewrite "apps/web/controllers/home/index.rb", <<-EOF
+module Web::Controllers::Home
+  class Index
+    include Web::Action
+
+    def call(params)
+      self.body = "app: web"
+    end
+  end
+end
+EOF
+        generate "action admin home#index --url=/"
+
+        rewrite "apps/admin/controllers/home/index.rb", <<-EOF
+module Web::Controllers::Home
+  class Index
+    include Admin::Action
+
+    def call(params)
+      self.body = "app: admin"
+    end
+  end
+end
+EOF
+
+        RSpec::Support::Env['HANAMI_APPS'] = 'web'
+
+        server do
+          visit "/"
+          expect(page).to have_content("app: web")
+
+          visit "/admin"
+          expect(page).to have_content("Not Found")
+        end
+      end
+    end
+  end
 end
