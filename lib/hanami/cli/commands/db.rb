@@ -1,5 +1,5 @@
 module Hanami
-  class Cli
+  class CLI
     module Commands
       module Db
         require "hanami/cli/commands/db/version"

@@ -4,7 +4,7 @@ require 'pathname'
 
 module RSpec
   module Support
-    module Cli
+    module CLI
       def self.included(spec)
         spec.before do
           aruba = Pathname.new(Dir.pwd).join('tmp', 'aruba')
@@ -43,5 +43,5 @@ end
 
 RSpec.configure do |config|
   config.include Aruba::Api,          type: :cli
-  config.include RSpec::Support::Cli, type: :cli
+  config.include RSpec::Support::CLI, type: :cli
 end
