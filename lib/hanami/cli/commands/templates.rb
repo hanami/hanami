@@ -1,5 +1,5 @@
 module Hanami
-  class Cli
+  class CLI
     module Commands
       class Templates
         NAMESPACE = name.sub(Utils::String.new(name).demodulize, "").freeze

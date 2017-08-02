@@ -9,12 +9,12 @@ require 'hanami/utils/files'
 require 'erb'
 
 module Hanami
-  class Cli
+  class CLI
     module Commands
       # Abstract command
       #
       # @since 0.9.0
-      class Command < Hanami::Cli::Command
+      class Command < Hanami::CLI::Command
         # @since 0.9.0
         # @api private
         def self.inherited(component)
