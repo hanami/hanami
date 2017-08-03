@@ -239,7 +239,7 @@ END
           # spec/web/controllers/books/index_spec.rb
           #
           expect('spec/web/controllers/books/index_spec.rb').to have_file_content <<-END
-require 'spec_helper'
+require_relative '../../../spec_helper'
 
 describe Web::Controllers::Books::Index do
   let(:action) { Web::Controllers::Books::Index.new }
@@ -256,7 +256,7 @@ END
           # spec/web/views/books/index_spec.rb
           #
           expect('spec/web/views/books/index_spec.rb').to have_file_content <<-END
-require 'spec_helper'
+require_relative '../../../spec_helper'
 
 describe Web::Views::Books::Index do
   let(:exposures) { Hash[foo: 'bar'] }
