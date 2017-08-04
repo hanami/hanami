@@ -38,6 +38,18 @@ END
       end
     end
 
+    context "with a missing migration folder" do
+      it "will create a migration file and folder" do
+        model_name = "book"
+        project = "missing_migrations_folder"
+        with_project(project) do
+          FileUtils.rm_rf('db/migrations')
+          run_command "hanami generate model #{model_name}"
+          expect(Pathname.new('db/migrations')).to be_directory
+        end
+      end
+    end
+
     context "with skip-migration" do
       it "doesn't create a migration file" do
         model_name = "user"
