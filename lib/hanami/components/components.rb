@@ -185,6 +185,10 @@ module Hanami
 
           configuration.mailer_settings.each do |settings|
             Hanami::Mailer.configure(&settings)
+            Hanami::Mailer.configuration.mailers.each do |mailer|
+              mailer.configuration = Hanami::Mailer.configuration.duplicate
+              Hanami::Mailer.configuration.copy!(mailer)
+            end
           end
 
           Hanami::Mailer.configuration
