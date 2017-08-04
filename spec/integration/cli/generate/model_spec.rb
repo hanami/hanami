@@ -38,14 +38,21 @@ END
       end
     end
 
-    context "with a missing migration folder" do
-      it "will create a migration file and folder" do
-        model_name = "book"
-        project = "missing_migrations_folder"
-        with_project(project) do
-          FileUtils.rm_rf('db/migrations')
+    context "with missing migrations directory" do
+      it "will create directory and migration" do
+        with_project do
+          model_name = "book"
+          directory  = Pathname.new("db").join("migrations")
+          FileUtils.rm_rf(directory)
+
           run_command "hanami generate model #{model_name}"
-          expect(Pathname.new('db/migrations')).to be_directory
+          expect(directory).to be_directory
+
+          migration = directory.children.find do |m|
+            m.to_s.include?(model_name)
+          end
+
+          expect(migration).to_not be(nil)
         end
       end
     end
