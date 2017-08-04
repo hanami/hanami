@@ -1012,10 +1012,6 @@ module Hanami
 
     # Defines a relative pattern to find controllers.
     #
-    # Hanami supports multiple architectures (aka application structures), this
-    # setting helps to understand the namespace where to find applications'
-    # controllers and actions.
-    #
     # By default this equals to <tt>"Controllers::%{controller}::%{action}"</tt>
     # That means controllers must be structured like this:
     # <tt>Bookshelf::Controllers::Dashboard::Index</tt>, where <tt>Bookshelf</tt>
@@ -1142,10 +1138,6 @@ module Hanami
     end
 
     # Defines a relative pattern to find views:.
-    #
-    # Hanami supports multiple architectures (aka application structures), this
-    # setting helps to understand the namespace where to find applications'
-    # views:.
     #
     # By default this equals to <tt>"Views::%{controller}::%{action}"</tt>
     # That means views must be structured like this:

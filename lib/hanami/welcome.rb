@@ -21,26 +21,16 @@ module Hanami
 
     # @api private
     def application_name
-      " #{ app }" if container?
+      application_class.app_name
     end
 
     private
-
-    # @api private
-    def container?
-      Environment.new.container?
-    end
 
     # @api private
     def application_class
       Hanami.configuration.apps do |app|
         return app if @request_path.include?(app.path_prefix)
       end
-    end
-
-    # @api private
-    def app
-      application_class.app_name
     end
   end
 end
