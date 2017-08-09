@@ -60,7 +60,7 @@ module Hanami
         ip:      env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
         path:    env[SCRIPT_NAME] + env[PATH_INFO],
         length:  length,
-        params:  env[QUERY_HASH].merge(env[FORM_HASH]),
+        params:  env[QUERY_HASH].merge(env[FORM_HASH] || Hash[]),
         elapsed: now - began_at
       ]
 
