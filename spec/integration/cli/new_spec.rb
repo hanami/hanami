@@ -240,7 +240,7 @@ Hanami.configure do
   end
 
   environment :production do
-    logger level: :info, formatter: :json
+    logger level: :info, formatter: :json, filter: []
 
     mailer do
       delivery :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
