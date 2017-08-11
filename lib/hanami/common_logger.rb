@@ -34,11 +34,15 @@ module Hanami
 
     # @since 1.0.0
     # @api private
-    QUERY_STRING         = 'QUERY_STRING'.freeze
-
-    # @since 1.0.0
-    # @api private
     RACK_ERRORS          = 'rack.errors'.freeze
+
+    # @since x.x.x
+    # @api private
+    QUERY_HASH           = 'rack.request.query_hash'.freeze
+
+    # @since x.x.x
+    # @api private
+    FORM_HASH            = 'rack.request.form_hash'.freeze
 
     # @since 1.0.0
     # @api private
@@ -55,8 +59,8 @@ module Hanami
         status:  status.to_s[0..3],
         ip:      env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
         path:    env[SCRIPT_NAME] + env[PATH_INFO],
-        query:   env[QUERY_STRING],
         length:  length,
+        params:  env[QUERY_HASH].merge(env[FORM_HASH] || Hash[]),
         elapsed: now - began_at
       ]
 
