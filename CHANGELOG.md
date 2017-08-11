@@ -1,7 +1,7 @@
 # Hanami
 The web, with simplicity.
 
-## v1.1.0.beta1 (unreleased)
+## v1.1.0.beta1 - 2017-08-11
 ### Added
 - [Ben Johnson] Allow to use custom logger as `Hanami.logger` (eg. `Hanami.configure { logger Timber::Logger.new($stdout) }`)
 - [akhramov] Generate spec file for application layout when generating a new app
