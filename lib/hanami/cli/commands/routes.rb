@@ -1,12 +1,16 @@
 module Hanami
   class CLI
     module Commands
+      # @since 1.1.0
+      # @api private
       class Routes < Command
         requires "routes.inspector"
 
         desc "Prints routes"
 
-        def call(options)
+        # @since 1.1.0
+        # @api private
+        def call(*)
           puts requirements['routes.inspector'].inspect
         end
       end

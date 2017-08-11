@@ -127,7 +127,7 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
-gem 'hanami-model', '~> 1.0'
+gem 'hanami-model', '1.1.0.beta1'
 
 gem 'sqlite3'
 
@@ -158,7 +158,7 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
-gem 'hanami-model', '~> 1.0'
+gem 'hanami-model', '1.1.0.beta1'
 
 gem 'jdbc-sqlite3'
 

@@ -2,11 +2,15 @@ module Hanami
   class CLI
     module Commands
       module Db
+        # @since x.x.x
+        # @api private
         class Create < Command
           requires "model.configuration"
 
           desc "Create the database (only for development/test)"
 
+          # @since x.x.x
+          # @api private
           def call(**options)
             context = Context.new(options: options)
 
@@ -15,7 +19,9 @@ module Hanami
 
           private
 
-          def create_database(context)
+          # @since x.x.x
+          # @api private
+          def create_database(*)
             require "hanami/model/migrator"
             Hanami::Model::Migrator.create
           end

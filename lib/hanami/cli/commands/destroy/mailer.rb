@@ -2,6 +2,8 @@ module Hanami
   class CLI
     module Commands
       module Destroy
+        # @since 1.1.0
+        # @api private
         class Mailer < Command
           requires "environment"
           desc "Destroy a mailer"
@@ -12,8 +14,10 @@ module Hanami
             "welcome # Destroy `WelcomeMailer` mailer"
           ]
 
+          # @since 1.1.0
+          # @api private
           def call(mailer:, **options)
-            mailer  = Utils::String.new(mailer).underscore.singularize
+            mailer  = Utils::String.transform(mailer, :underscore, :singularize)
             context = Context.new(mailer: mailer, options: options)
 
             assert_valid_mailer!(context)
@@ -25,6 +29,8 @@ module Hanami
 
           private
 
+          # @since 1.1.0
+          # @api private
           def assert_valid_mailer!(context)
             destination = project.mailer(context)
             return if files.exist?(destination)
@@ -34,6 +40,8 @@ module Hanami
             exit(1)
           end
 
+          # @since 1.1.0
+          # @api private
           def destroy_mailer_spec(context)
             destination = project.mailer_spec(context)
 
@@ -41,6 +49,8 @@ module Hanami
             say(:remove, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def destroy_templates(context)
             destinations = project.mailer_templates(context)
             destinations.each do |destination|
@@ -49,6 +59,8 @@ module Hanami
             end
           end
 
+          # @since 1.1.0
+          # @api private
           def destroy_mailer(context)
             destination = project.mailer(context)
 

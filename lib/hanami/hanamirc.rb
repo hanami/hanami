@@ -72,7 +72,7 @@ module Hanami
 
     # Read hanamirc file (if exists) and parse it's values or return default.
     #
-    # @return [Hanami::Utils::Hash] parsed values
+    # @return [::Hash] parsed values
     #
     # @example Default values if file doesn't exist
     #   Hanami::Hanamirc.new(Pathname.new(Dir.pwd)).options
@@ -93,11 +93,11 @@ module Hanami
     #
     # @see Hanami::Hanamirc#options
     def default_options
-      @default_options ||= Utils::Hash.new({
+      @default_options ||= Utils::Hash.symbolize({
                                            PROJECT_NAME     => project_name,
                                            TEST_KEY         => DEFAULT_TEST_SUITE,
                                            TEMPLATE_KEY     => DEFAULT_TEMPLATE
-                                         }).symbolize!.freeze
+                                         }).freeze
     end
 
     # Check if hanamirc file exists
@@ -114,7 +114,7 @@ module Hanami
 
     # @api private
     def symbolize(hash)
-      Utils::Hash.new(hash).symbolize!
+      Utils::Hash.symbolize(hash)
     end
 
     # @api private

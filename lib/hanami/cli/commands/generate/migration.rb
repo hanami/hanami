@@ -2,6 +2,8 @@ module Hanami
   class CLI
     module Commands
       module Generate
+        # @since 1.1.0
+        # @api private
         class Migration < Command
           requires "environment"
           desc "Generate a migration"
@@ -12,8 +14,10 @@ module Hanami
             "create_users # Generate `db/migrations/#{Project.migration_timestamp}_create_users.rb`"
           ]
 
+          # @since 1.1.0
+          # @api private
           def call(migration:, **options)
-            migration = Utils::String.new(migration).underscore
+            migration = Utils::String.underscore(migration)
             context   = Context.new(migration: migration, options: options)
 
             generate_migration(context)
@@ -21,6 +25,8 @@ module Hanami
 
           private
 
+          # @since 1.1.0
+          # @api private
           def generate_migration(context)
             source      = templates.find("migration.erb")
             destination = project.migration(context)

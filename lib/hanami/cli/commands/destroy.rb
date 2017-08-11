@@ -1,6 +1,11 @@
 module Hanami
+  # Hanami CLI
+  #
+  # @since 1.1.0
   class CLI
     module Commands
+      # @since 1.1.0
+      # @api private
       module Destroy
         require "hanami/cli/commands/destroy/app"
         require "hanami/cli/commands/destroy/action"

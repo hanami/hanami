@@ -1,6 +1,19 @@
 # Hanami
 The web, with simplicity.
 
+## v1.1.0.beta1 (unreleased)
+### Added
+- [Ben Johnson] Allow to use custom logger as `Hanami.logger` (eg. `Hanami.configure { logger Timber::Logger.new($stdout) }`)
+- [akhramov] Generate spec file for application layout when generating a new app
+- [Anton Davydov] Generate `README.md` file for new projects
+- [Anton Davydov] Selectively boot apps via `HANAMI_APPS=web bundle exec hanami server`
+- [Marion Duprey & Gabriel Gizotti] Log payload (params) for non-GET HTTP requests
+- [Marion Duprey & Gabriel Gizotti] Filter sensitive data in logs
+
+### Fixed
+- [jarosluv] Ensure to remove the correct migration file when executing `hanami db destroy model`
+- [sovetnik] Fix require path for Minitest spec helper
+
 ## v1.0.0 - 2017-04-06
 
 ## v1.0.0.rc1 - 2017-03-31
@@ -19,6 +32,7 @@ The web, with simplicity.
 - [Tobias Sandelius] Don't mount `Hanami::CommonLogger` middleware if logging is disabled for the project.
 - [Anton Davydov] Don't configure mailers, if it's mailing is disabled for the project.
 - [Marcello Rocha] Ensure code reloading don't misconfigure mailer settings
+- [Jimmy Börjesson] Make `apps/web/application.rb` code to wrap around the 80th column
 
 ### Changed
 - [Luca Guidi] Removed deprecated `ApplicationConfiguration#default_format`. Use `#default_request_format` instead.

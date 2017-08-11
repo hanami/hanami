@@ -1,8 +1,16 @@
 module Hanami
+  # Hanami CLI
+  #
+  # @since 1.1.0
   class CLI
     module Commands
-      class New < Command
+      # @since 1.1.0
+      # @api private
+      class New < Command # rubocop:disable Metrics/ClassLength
+        # @since 1.1.0
+        # @api private
         class DatabaseConfig
+          # @since 1.1.0
           # @api private
           SUPPORTED_ENGINES = {
             'mysql'      => { type: :sql,         mri: 'mysql2',  jruby: 'jdbc-mysql'    },
@@ -13,14 +21,19 @@ module Hanami
             'sqlite3'    => { type: :sql,         mri: 'sqlite3', jruby: 'jdbc-sqlite3'  }
           }.freeze
 
+          # @since 1.1.0
           # @api private
           DEFAULT_ENGINE = 'sqlite'.freeze
 
+          # @since 1.1.0
           # @api private
           attr_reader :engine
+
+          # @since 1.1.0
           # @api private
           attr_reader :name
 
+          # @since 1.1.0
           # @api private
           def initialize(engine, name)
             @engine = engine
@@ -32,6 +45,7 @@ module Hanami
             end
           end
 
+          # @since 1.1.0
           # @api private
           def to_hash
             {
@@ -41,33 +55,39 @@ module Hanami
             }
           end
 
+          # @since 1.1.0
           # @api private
           def type
             SUPPORTED_ENGINES[engine][:type]
           end
 
+          # @since 1.1.0
           # @api private
           def sql?
             type == :sql
           end
 
+          # @since 1.1.0
           # @api private
           def sqlite?
-            ['sqlite', 'sqlite3'].include?(engine)
+            %w[sqlite sqlite3].include?(engine)
           end
 
           private
 
+          # @since 1.1.0
           # @api private
           def platform
             Hanami::Utils.jruby? ? :jruby : :mri
           end
 
+          # @since 1.1.0
           # @api private
           def platform_prefix
             'jdbc:'.freeze if Hanami::Utils.jruby?
           end
 
+          # @since 1.1.0
           # @api private
           def uri
             {
@@ -76,60 +96,74 @@ module Hanami
             }
           end
 
+          # @since 1.1.0
           # @api private
           def gem
             SUPPORTED_ENGINES[engine][platform]
           end
 
+          # @since 1.1.0
           # @api private
-          def base_uri
+          def base_uri # rubocop:disable Metrics/MethodLength
             case engine
             when 'mysql', 'mysql2'
               if Hanami::Utils.jruby?
-                "mysql://localhost/#{ name }"
+                "mysql://localhost/#{name}"
               else
-                "mysql2://localhost/#{ name }"
+                "mysql2://localhost/#{name}"
               end
             when 'postgresql', 'postgres'
-              "postgresql://localhost/#{ name }"
+              "postgresql://localhost/#{name}"
             when 'sqlite', 'sqlite3'
-              "sqlite://db/#{ Shellwords.escape(name) }"
+              "sqlite://db/#{Shellwords.escape(name)}"
             end
           end
 
+          # @since 1.1.0
           # @api private
           def environment_uri(environment)
             case engine
             when 'sqlite', 'sqlite3'
-              "#{ platform_prefix }#{ base_uri }_#{ environment }.sqlite"
+              "#{platform_prefix}#{base_uri}_#{environment}.sqlite"
             else
-              "#{ platform_prefix if sql? }#{ base_uri }_#{ environment }"
+              "#{platform_prefix if sql?}#{base_uri}_#{environment}"
             end
           end
         end
 
+        # @since 1.1.0
+        # @api private
         class TestFramework
+          # @since 1.1.0
           # @api private
           RSPEC = 'rspec'.freeze
+
+          # @since 1.1.0
           # @api private
           MINITEST = 'minitest'.freeze
+
+          # @since 1.1.0
           # @api private
           VALID_FRAMEWORKS = [MINITEST, RSPEC].freeze
 
+          # @since 1.1.0
           # @api private
           attr_reader :framework
 
+          # @since 1.1.0
           # @api private
           def initialize(hanamirc, framework)
             @framework = (framework || hanamirc.options.fetch(:test))
             assert_framework!
           end
 
+          # @since 1.1.0
           # @api private
           def rspec?
             framework == RSPEC
           end
 
+          # @since 1.1.0
           # @api private
           def minitest?
             framework == MINITEST
@@ -137,37 +171,49 @@ module Hanami
 
           private
 
+          # @since 1.1.0
           # @api private
           def assert_framework!
-            if !supported_framework?
+            unless supported_framework? # rubocop:disable Style/GuardClause
               warn "`#{framework}' is not a valid test framework. Please use one of: #{valid_test_frameworks.join(', ')}"
               exit(1)
             end
           end
 
+          # @since 1.1.0
           # @api private
           def valid_test_frameworks
-            VALID_FRAMEWORKS.map { |name| "`#{name}'"}
+            VALID_FRAMEWORKS.map { |name| "`#{name}'" }
           end
 
+          # @since 1.1.0
           # @api private
           def supported_framework?
             VALID_FRAMEWORKS.include?(framework)
           end
         end
 
+        # @since 1.1.0
+        # @api private
         class TemplateEngine
+          # @since 1.1.0
+          # @api private
           class UnsupportedTemplateEngine < ::StandardError
           end
 
+          # @since 1.1.0
           # @api private
-          SUPPORTED_ENGINES = %w(erb haml slim).freeze
+          SUPPORTED_ENGINES = %w[erb haml slim].freeze
+
+          # @since 1.1.0
           # @api private
           DEFAULT_ENGINE = 'erb'.freeze
 
+          # @since 1.1.0
           # @api private
           attr_reader :name
 
+          # @since 1.1.0
           # @api private
           def initialize(hanamirc, engine)
             @name = (engine || hanamirc.options.fetch(:template))
@@ -176,28 +222,38 @@ module Hanami
 
           private
 
+          # @since 1.1.0
           # @api private
           def assert_engine!
-            if !supported_engine?
+            unless supported_engine? # rubocop:disable Style/GuardClause
               warn "`#{name}' is not a valid template engine. Please use one of: #{valid_template_engines.join(', ')}"
               exit(1)
             end
           end
 
+          # @since 1.1.0
           # @api private
           def valid_template_engines
-            SUPPORTED_ENGINES.map { |name| "`#{name}'"}
+            SUPPORTED_ENGINES.map { |name| "`#{name}'" }
           end
 
+          # @since 1.1.0
           # @api private
           def supported_engine?
             SUPPORTED_ENGINES.include?(@name.to_s)
           end
         end
 
+        # @since 1.1.0
+        # @api private
         DEFAULT_APPLICATION_NAME = 'web'.freeze
+
+        # @since 1.1.0
+        # @api private
         DEFAULT_APPLICATION_BASE_URL = '/'.freeze
 
+        # @since 1.1.0
+        # @api private
         attr_reader :target_path
 
         desc "Generate a new Hanami project"
@@ -218,8 +274,13 @@ module Hanami
           "bookshelf --hanami-head       # Use Hanami HEAD"
         ]
 
+        # @since 1.1.0
+        # @api private
+        #
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def call(project:, **options)
-          project         = Utils::String.new(project).underscore
+          project         = Utils::String.underscore(project)
           database_config = DatabaseConfig.new(options[:database], project)
           test_framework  = TestFramework.new(hanamirc, options[:test])
           template_engine = TemplateEngine.new(hanamirc, options[:template])
@@ -236,10 +297,10 @@ module Hanami
             application_name: options.fetch(:application_name),
             application_base_url: options.fetch(:application_base_url),
             hanami_head: options.fetch(:hanami_head),
-            hanami_model_version: '~> 1.0',
+            hanami_model_version: '1.1.0.beta1',
             code_reloading: code_reloading?,
             hanami_version: hanami_version,
-            project_module: Utils::String.new(project).classify,
+            project_module: Utils::String.classify(project),
             options: options
           )
 
@@ -259,19 +320,25 @@ module Hanami
 
             generate_app(context)
           end
-
-          # FIXME this should be removed
-          true
         end
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize
 
         private
 
+        # @since 1.1.0
+        # @api private
         def assert_project_name!(context)
-          if context.project.include?(File::SEPARATOR)
+          if context.project.include?(File::SEPARATOR) # rubocop:disable Style/GuardClause
             raise ArgumentError.new("PROJECT must not contain #{File::SEPARATOR}.")
           end
         end
 
+        # @since 1.1.0
+        # @api private
+        #
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def generate_application_templates(context)
           source      = templates.find("hanamirc.erb")
           destination = project.hanamirc(context)
@@ -309,7 +376,11 @@ module Hanami
           destination = project.project(context)
           generate_file(source, destination, context)
         end
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize
 
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def generate_empty_directories(context)
           source = templates.find(".gitkeep.erb")
 
@@ -343,7 +414,7 @@ module Hanami
           destination = project.keep(project.support_spec(context))
           generate_file(source, destination, context)
 
-          if context.database_config.sql?
+          if context.database_config.sql? # rubocop:disable Style/ConditionalAssignment
             destination = project.keep(project.migrations(context))
           else
             destination = project.keep(project.db(context))
@@ -351,7 +422,12 @@ module Hanami
 
           generate_file(source, destination, context)
         end
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize
 
+        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable Style/IdenticalConditionalBranches
         def generate_test_templates(context)
           if context.test_framework.rspec?
             source      = templates.find("rspec", "Rakefile.erb")
@@ -387,7 +463,12 @@ module Hanami
             generate_file(source, destination, context)
           end
         end
+        # rubocop:enable Style/IdenticalConditionalBranches
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize
 
+        # @since 1.1.0
+        # @api private
         def generate_sql_templates(context)
           return unless context.database_config.sql?
 
@@ -396,6 +477,8 @@ module Hanami
           generate_file(source, destination, context)
         end
 
+        # @since 1.1.0
+        # @api private
         def generate_git_templates(context)
           return if git_dir_present?
 
@@ -406,14 +489,20 @@ module Hanami
           generate_file(source, destination, context)
         end
 
+        # @since 1.1.0
+        # @api private
         def target_path
           Pathname.pwd
         end
 
+        # @since 1.1.0
+        # @api private
         def generate_app(context)
           Hanami::CLI::Commands::Generate::App.new(command_name: "generate app", out: @out, files: @files).call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
         end
 
+        # @since 1.1.0
+        # @api private
         def init_git
           return if git_dir_present?
 
@@ -421,30 +510,44 @@ module Hanami
           system("git init #{Shellwords.escape(target)}", out: File::NULL)
         end
 
+        # @since 1.1.0
+        # @api private
         def git_dir_present?
           files.directory?('.git')
         end
 
+        # @since 1.1.0
+        # @api private
         def target
           Pathname.new('.')
         end
 
+        # @since 1.1.0
+        # @api private
         def hanamirc
           @hanamirc ||= Hanamirc.new(Pathname.new('.'))
         end
 
+        # @since 1.1.0
+        # @api private
         def project_directory(project)
           @name == '.' ? '.' : project
         end
 
+        # @since 1.1.0
+        # @api private
         def code_reloading?
           !Hanami::Utils.jruby?
         end
 
+        # @since 1.1.0
+        # @api private
         def hanami_version
           Hanami::Version.gem_requirement
         end
 
+        # @since 1.1.0
+        # @api private
         def generate_file(source, destination, context)
           super
           say(:create, destination)

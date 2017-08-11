@@ -7,7 +7,7 @@ module Hanami
     # @api private
     def self.resolve(name)
       Utils::Class.load!(
-        Utils::String.new(name).namespace
+        Utils::String.namespace(name)
       )
     end
   end

@@ -120,7 +120,7 @@ module Hanami
     # Tries to evaluate hanami-model configuration, if available for the project
     # and it doesn't activate migrations logger
     #
-    # @since x.x.x
+    # @since 1.1.0
     # @api private
     #
     # @example With hanami-model

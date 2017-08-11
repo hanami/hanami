@@ -2,6 +2,8 @@ module Hanami
   class CLI
     module Commands
       module Generate
+        # @since 1.1.0
+        # @api private
         class Model < Command
           requires "environment"
 
@@ -15,9 +17,11 @@ module Hanami
             "user --skip-migration # Generate `User` entity and `UserRepository` repository"
           ]
 
+          # @since 1.1.0
+          # @api private
           def call(model:, **options)
-            model     = Utils::String.new(model).underscore
-            relation  = Utils::String.new(model).pluralize
+            model     = Utils::String.underscore(model)
+            relation  = Utils::String.pluralize(model)
             migration = "create_#{relation}"
             context   = Context.new(model: model, relation: relation, migration: migration, test: options.fetch(:test), options: options)
 
@@ -30,6 +34,8 @@ module Hanami
 
           private
 
+          # @since 1.1.0
+          # @api private
           def generate_entity(context)
             source      = templates.find("entity.erb")
             destination = project.entity(context)
@@ -38,6 +44,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_repository(context)
             source      = templates.find("repository.erb")
             destination = project.repository(context)
@@ -46,6 +54,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_migration(context)
             return if skip_migration?(context)
 
@@ -56,6 +66,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_entity_spec(context)
             source      = templates.find("entity_spec.#{context.test}.erb")
             destination = project.entity_spec(context)
@@ -64,6 +76,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_repository_spec(context)
             source      = templates.find("repository_spec.#{context.test}.erb")
             destination = project.repository_spec(context)
@@ -72,6 +86,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def skip_migration?(context)
             context.options.fetch(:skip_migration, false)
           end

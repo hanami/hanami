@@ -2,7 +2,9 @@ module Hanami
   class CLI
     module Commands
       module Generate
-        class App < Command
+        # @since 1.1.0
+        # @api private
+        class App < Command # rubocop:disable Metrics/ClassLength
           requires "environment"
 
           desc "Generate an app"
@@ -15,8 +17,13 @@ module Hanami
             "api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`"
           ]
 
+          # @since 1.1.0
+          # @api private
+          #
+          # rubocop:disable Metrics/AbcSize
+          # rubocop:disable Metrics/MethodLength
           def call(app:, application_base_url: nil, **options)
-            app      = Utils::String.new(app).underscore
+            app      = Utils::String.underscore(app)
             template = options.fetch(:template)
             base_url = application_base_url || "/#{app}"
             context  = Context.new(app: app, base_url: base_url, test: options.fetch(:test), template: template, options: options)
@@ -44,16 +51,22 @@ module Hanami
             append_development_http_session_secret(context)
             append_test_http_session_secret(context)
           end
+          # rubocop:enable Metrics/MethodLength
+          # rubocop:enable Metrics/AbcSize
 
           private
 
+          # @since 1.1.0
+          # @api private
           def assert_valid_base_url!(context)
-            if Utils::Blank.blank?(context.base_url)
+            if Utils::Blank.blank?(context.base_url) # rubocop:disable Style/GuardClause
               warn "`' is not a valid URL"
               exit(1)
             end
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_app(context)
             source      = templates.find("application.erb")
             destination = project.app_application(context)
@@ -62,6 +75,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_routes(context)
             source      = templates.find("routes.erb")
             destination = project.app_routes(context)
@@ -70,6 +85,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_layout(context)
             source      = templates.find("layout.erb")
             destination = project.app_layout(context)
@@ -78,6 +95,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_template(context)
             source      = templates.find("template.#{context.template}.erb")
             destination = project.app_template(context)
@@ -86,6 +105,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_favicon(context)
             source      = templates.find("favicon.ico")
             destination = project.app_favicon(context)
@@ -94,6 +115,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def create_controllers_directory(context)
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.controllers(context))
@@ -102,6 +125,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def create_assets_images_directory(context)
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.images(context))
@@ -110,6 +135,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def create_assets_javascripts_directory(context)
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.javascripts(context))
@@ -118,6 +145,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def create_assets_stylesheets_directory(context)
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.stylesheets(context))
@@ -126,6 +155,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def create_spec_features_directory(context)
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.features_spec(context))
@@ -134,6 +165,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def create_spec_controllers_directory(context)
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.controllers_spec(context))
@@ -142,6 +175,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_layout_spec(context)
             source      = templates.find("layout_spec.#{context.options.fetch(:test)}.erb")
             destination = project.app_layout_spec(context)
@@ -150,6 +185,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def inject_require_app(context)
             content     = "require_relative '../apps/#{context.app}/application'"
             destination = project.environment(context)
@@ -158,6 +195,8 @@ module Hanami
             say(:insert, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def inject_mount_app(context)
             content     = "  mount #{context.app.classify}::Application, at: '#{context.base_url}'"
             destination = project.environment(context)
@@ -166,17 +205,20 @@ module Hanami
             say(:insert, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def append_development_http_session_secret(context)
-            # FIXME: Unify the secret generation algorithm with `hanami secret` command
-            content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{SecureRandom.hex(32)}")
+            content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{project.app_sessions_secret}")
             destination = project.env(context, "development")
 
             files.append(destination, content)
             say(:append, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def append_test_http_session_secret(context)
-            content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{SecureRandom.hex(32)}")
+            content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{project.app_sessions_secret}")
             destination = project.env(context, "test")
 
             files.append(destination, content)

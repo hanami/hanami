@@ -1,10 +1,12 @@
 module Hanami
   class CLI
     module Commands
+      # @since 1.1.0
+      # @api private
       class Console < Command
         # Supported engines
         #
-        # @since 0.2.0
+        # @since 1.1.0
         # @api private
         ENGINES = {
           'pry'  => 'Pry',
@@ -25,19 +27,22 @@ module Hanami
 
         # Implements console code reloading
         #
-        # @since 0.2.0
+        # @since 1.1.0
+        # @api private
         module CodeReloading
-          # @since 0.2.0
+          # @since 1.1.0
+          # @api private
           def reload!
             puts 'Reloading...'
             Kernel.exec "#{$PROGRAM_NAME} console"
           end
         end
 
+        # @since 1.1.0
         # @api private
         DEFAULT_ENGINE = ['irb'].freeze
 
-        # @since 0.1.0
+        # @since 1.1.0
         # @api private
         def call(options)
           context = Context.new(options: options)
@@ -48,13 +53,13 @@ module Hanami
 
         private
 
-        # @since 0.1.0
+        # @since 1.1.0
         # @api private
         def engine(context)
           load_engine context.options.fetch(:engine) { engine_lookup }
         end
 
-        # @since 0.9.0
+        # @since 1.1.0
         # @api private
         def prepare
           # Clear out ARGV so Pry/IRB don't attempt to parse the rest
@@ -64,27 +69,24 @@ module Hanami
           TOPLEVEL_BINDING.eval('self').__send__(:include, CodeReloading)
         end
 
-        # @since 0.1.0
+        # @since 1.1.0
         # @api private
         def engine_lookup
           (ENGINES.find { |_, klass| Object.const_defined?(klass) } || DEFAULT_ENGINE).first
         end
 
-        # @since 0.1.0
+        # @since 1.1.0
         # @api private
-        #
-        # rubocop:disable Lint/HandleExceptions
         def load_engine(engine)
           require engine
           Object.const_get(ENGINES.fetch(engine))
         rescue LoadError, NameError
-          if ENGINES.key?(engine)
+          if ENGINES.key?(engine) # rubocop:disable Style/GuardClause
             raise ArgumentError.new("Missing gem for `#{engine}' console engine. Please make sure to add it to `Gemfile'.")
           else
             raise ArgumentError.new("Unknown console engine: `#{engine}'.")
           end
         end
-        # rubocop:enable Lint/HandleExceptions
       end
     end
 

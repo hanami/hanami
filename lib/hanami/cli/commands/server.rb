@@ -1,6 +1,8 @@
 module Hanami
   class CLI
     module Commands
+      # @since 1.1.0
+      # @api private
       class Server < Command
         requires 'code_reloading'
 
@@ -23,8 +25,10 @@ module Hanami
           "--no-code-reloading # Disable code reloading"
         ]
 
+        # @since 1.1.0
+        # @api private
         def call(*)
-          require 'hanami/server'
+          require "hanami/server"
           Hanami::Server.new.start
         end
       end

@@ -2,6 +2,8 @@ module Hanami
   class CLI
     module Commands
       module Generate
+        # @since 1.1.0
+        # @api private
         class Action < Command
           requires "environment"
 
@@ -22,6 +24,11 @@ module Hanami
           option :method, desc: "The action HTTP method"
           option :skip_view, type: :boolean, default: false, desc: "Skip view and template"
 
+          # @since 1.1.0
+          # @api private
+          #
+          # rubocop:disable Metrics/AbcSize
+          # rubocop:disable Metrics/MethodLength
           def call(app:, action:, **options)
             controller, action = controller_and_action_name(action)
             http_method        = route_http_method(action, options)
@@ -39,14 +46,20 @@ module Hanami
             generate_view_spec(context)
             insert_route(context)
           end
+          # rubocop:enable Metrics/MethodLength
+          # rubocop:enable Metrics/AbcSize
 
           private
 
+          # @since 1.1.0
+          # @api private
           def controller_and_action_name(name)
             # FIXME: extract this regexp
             name.split(/#|\//)
           end
 
+          # @since 1.1.0
+          # @api private
           def assert_valid_app!(context)
             return if project.app?(context)
 
@@ -55,20 +68,26 @@ module Hanami
             exit(1)
           end
 
+          # @since 1.1.0
+          # @api private
           def assert_valid_route_url!(context)
-            if context.options.key?(:url) && Utils::Blank.blank?(context.options[:url])
+            if context.options.key?(:url) && Utils::Blank.blank?(context.options[:url]) # rubocop:disable Style/GuardClause
               warn "`#{context.options[:url]}' is not a valid URL"
               exit(1)
             end
           end
 
+          # @since 1.1.0
+          # @api private
           def assert_valid_route_http_method!(context)
-            if !Hanami::Routing::Route::VALID_HTTP_VERBS.include?(context.http_method.upcase)
-              warn "`#{context.http_method.upcase}' is not a valid HTTP method. Please use one of: #{Hanami::Routing::Route::VALID_HTTP_VERBS.map { |verb| "`#{verb}'" }.join(" ")}"
+            unless Hanami::Routing::Route::VALID_HTTP_VERBS.include?(context.http_method.upcase) # rubocop:disable Style/GuardClause
+              warn "`#{context.http_method.upcase}' is not a valid HTTP method. Please use one of: #{Hanami::Routing::Route::VALID_HTTP_VERBS.map { |verb| "`#{verb}'" }.join(' ')}"
               exit(1)
             end
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_action(context)
             source      = if skip_view?(context)
                             templates.find("action_without_view.erb")
@@ -81,6 +100,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_view(context)
             return if skip_view?(context)
 
@@ -91,6 +112,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_template(context)
             return if skip_view?(context)
             destination = project.template(context)
@@ -99,6 +122,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_action_spec(context)
             source      = templates.find("action_spec.#{context.test}.erb")
             destination = project.action_spec(context)
@@ -107,6 +132,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_view_spec(context)
             return if skip_view?(context)
 
@@ -117,6 +144,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def insert_route(context)
             content     = "#{context.http_method} '#{route_url(context)}', to: '#{route_endpoint(context)}'".downcase
             destination = project.app_routes(context)
@@ -125,19 +154,23 @@ module Hanami
             say(:insert, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def route_http_method(action, options)
             options.fetch(:method) { route_resourceful_http_method(action) }
           end
 
+          # @since 1.1.0
+          # @api private
           def skip_view?(context)
             context.options.fetch(:skip_view, false)
           end
 
+          # @since 1.1.0
+          # @api private
           DEFAULT_HTTP_METHOD = 'GET'.freeze
 
-          # HTTP methods used when generating resourceful actions.
-          #
-          # @since 0.6.0
+          # @since 1.1.0
           # @api private
           RESOURCEFUL_HTTP_METHODS = {
             'create'  => 'POST',
@@ -145,18 +178,26 @@ module Hanami
             'destroy' => 'DELETE'
           }.freeze
 
+          # @since 1.1.0
+          # @api private
           def route_resourceful_http_method(action)
             RESOURCEFUL_HTTP_METHODS.fetch(action, DEFAULT_HTTP_METHOD)
           end
 
+          # @since 1.1.0
+          # @api private
           def route_url(context)
             context.options.fetch(:url) { route_resourceful_url(context) }
           end
 
+          # @since 1.1.0
+          # @api private
           def route_resourceful_url(context)
             "/#{context.controller}#{route_resourceful_url_suffix(context)}"
           end
 
+          # @since 1.1.0
+          # @api private
           RESOURCEFUL_ROUTE_URL_SUFFIXES = {
             'show'    => '/:id',
             'update'  => '/:id',
@@ -165,10 +206,14 @@ module Hanami
             'edit'    => '/:id/edit'
           }.freeze
 
+          # @since 1.1.0
+          # @api private
           def route_resourceful_url_suffix(context)
             RESOURCEFUL_ROUTE_URL_SUFFIXES.fetch(context.action) { "" }
           end
 
+          # @since 1.1.0
+          # @api private
           def route_endpoint(context)
             "#{context.controller}##{context.action}"
           end

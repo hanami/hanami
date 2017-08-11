@@ -2,6 +2,8 @@ module Hanami
   class CLI
     module Commands
       module Destroy
+        # @since 1.1.0
+        # @api private
         class Migration < Command
           desc "Destroy a migration"
 
@@ -11,8 +13,10 @@ module Hanami
             "create_users # Destroy `db/migrations/#{Project.migration_timestamp}_create_users.rb`"
           ]
 
+          # @since 1.1.0
+          # @api private
           def call(migration:, **options)
-            migration   = Utils::String.new(migration).underscore
+            migration   = Utils::String.underscore(migration)
             context     = Context.new(migration: migration, options: options)
             context     = context.with(destination: project.find_migration(context))
 
@@ -24,6 +28,8 @@ module Hanami
 
           private
 
+          # @since 1.1.0
+          # @api private
           def assert_valid_migration!(context)
             return if !context.destination.nil? && files.exist?(context.destination)
 
@@ -32,6 +38,8 @@ module Hanami
             exit(1)
           end
 
+          # @since 1.1.0
+          # @api private
           def destroy_migration(context)
             files.delete(context.destination)
             say(:remove, context.destination)

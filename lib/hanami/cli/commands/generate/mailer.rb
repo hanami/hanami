@@ -2,6 +2,8 @@ module Hanami
   class CLI
     module Commands
       module Generate
+        # @since 1.1.0
+        # @api private
         class Mailer < Command
           requires "environment"
 
@@ -20,6 +22,8 @@ module Hanami
             'forgot_password --subject="Your password reset" # Generate with default `subject`'
           ]
 
+          # @since 1.1.0
+          # @api private
           def call(mailer:, **options)
             from    = options.fetch(:from,    DEFAULT_FROM)
             to      = options.fetch(:to,      DEFAULT_TO)
@@ -34,12 +38,20 @@ module Hanami
 
           private
 
+          # @since 1.1.0
+          # @api private
           DEFAULT_FROM = "'<from>'".freeze
 
+          # @since 1.1.0
+          # @api private
           DEFAULT_TO = "'<to>'".freeze
 
+          # @since 1.1.0
+          # @api private
           DEFAULT_SUBJECT = "'Hello'".freeze
 
+          # @since 1.1.0
+          # @api private
           def generate_mailer(context)
             source      = templates.find("mailer.erb")
             destination = project.mailer(context)
@@ -48,6 +60,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_mailer_spec(context)
             source      = templates.find("mailer_spec.#{context.test}.erb")
             destination = project.mailer_spec(context)
@@ -56,6 +70,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_text_template(context)
             destination = project.mailer_template(context, "txt")
 
@@ -63,6 +79,8 @@ module Hanami
             say(:create, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def generate_html_template(context)
             destination = project.mailer_template(context, "html")
 

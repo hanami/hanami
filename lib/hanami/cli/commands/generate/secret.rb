@@ -5,6 +5,8 @@ module Hanami
   class CLI
     module Commands
       module Generate
+        # @since 1.1.0
+        # @api private
         class Secret < Command
           requires "environment"
 
@@ -17,6 +19,8 @@ module Hanami
             "web # Prints session secret (eg. `WEB_SESSIONS_SECRET=#{Project.app_sessions_secret}`)"
           ]
 
+          # @since 1.1.0
+          # @api private
           def call(app: nil, **options)
             context = Context.new(app: app, options: options)
 
@@ -25,6 +29,8 @@ module Hanami
 
           private
 
+          # @since 1.1.0
+          # @api private
           def generate_secret(context)
             secret = project.app_sessions_secret
 

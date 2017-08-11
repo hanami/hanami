@@ -1,6 +1,11 @@
 module Hanami
+  # Hanami CLI
+  #
+  # @since 1.1.0
   class CLI
     module Commands
+      # @since 1.1.0
+      # @api private
       module Generate
         require "hanami/cli/commands/generate/app"
         require "hanami/cli/commands/generate/action"

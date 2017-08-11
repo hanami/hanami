@@ -7,16 +7,16 @@ unless ENV['TRAVIS']
 end
 
 gem 'i18n'
-gem 'hanami-utils',       '~> 1.0', require: false, git: 'https://github.com/hanami/utils.git',       branch: 'develop'
-gem 'hanami-validations', '~> 1.0', require: false, git: 'https://github.com/hanami/validations.git', branch: '1.0.x'
-gem 'hanami-router',      '~> 1.0', require: false, git: 'https://github.com/hanami/router.git',      branch: '1.0.x'
-gem 'hanami-controller',  '~> 1.0', require: false, git: 'https://github.com/hanami/controller.git',  branch: '1.0.x'
-gem 'hanami-view',        '~> 1.0', require: false, git: 'https://github.com/hanami/view.git',        branch: '1.0.x'
-gem 'hanami-model',       '~> 1.0', require: false, git: 'https://github.com/hanami/model.git',       branch: '1.0.x'
-gem 'hanami-helpers',     '~> 1.0', require: false, git: 'https://github.com/hanami/helpers.git',     branch: '1.0.x'
-gem 'hanami-mailer',      '~> 1.0', require: false, git: 'https://github.com/hanami/mailer.git',      branch: '1.0.x'
-gem 'hanami-assets',      '~> 1.0', require: false, git: 'https://github.com/hanami/assets.git',      branch: '1.0.x'
-gem 'hanami-cli',         '~> 1.0', require: false, git: 'https://github.com/hanami/cli.git',         branch: 'master'
+gem 'hanami-utils',       '1.1.0.beta1', require: false, git: 'https://github.com/hanami/utils.git',       branch: 'develop'
+gem 'hanami-validations', '1.1.0.beta1', require: false, git: 'https://github.com/hanami/validations.git', branch: 'develop'
+gem 'hanami-router',      '1.1.0.beta1', require: false, git: 'https://github.com/hanami/router.git',      branch: 'develop'
+gem 'hanami-controller',  '1.1.0.beta1', require: false, git: 'https://github.com/hanami/controller.git',  branch: 'develop'
+gem 'hanami-view',        '1.1.0.beta1', require: false, git: 'https://github.com/hanami/view.git',        branch: 'develop'
+gem 'hanami-model',       '1.1.0.beta1', require: false, git: 'https://github.com/hanami/model.git',       branch: 'develop'
+gem 'hanami-helpers',     '1.1.0.beta1', require: false, git: 'https://github.com/hanami/helpers.git',     branch: 'develop'
+gem 'hanami-mailer',      '1.1.0.beta1', require: false, git: 'https://github.com/hanami/mailer.git',      branch: 'develop'
+gem 'hanami-assets',      '1.1.0.beta1', require: false, git: 'https://github.com/hanami/assets.git',      branch: 'develop'
+gem 'hanami-cli',         '0.1.0.beta1', require: false, git: 'https://github.com/hanami/cli.git',         branch: 'develop'
 
 platforms :ruby do
   gem 'sqlite3'

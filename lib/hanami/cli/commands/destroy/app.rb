@@ -2,6 +2,8 @@ module Hanami
   class CLI
     module Commands
       module Destroy
+        # @since 1.1.0
+        # @api private
         class App < Command
           desc "Destroy an app"
 
@@ -11,8 +13,10 @@ module Hanami
             "admin # Destroy `admin` app"
           ]
 
-          def call(app:, **options)
-            app     = Utils::String.new(app).underscore
+          # @since 1.1.0
+          # @api private
+          def call(app:, **options) # rubocop:disable Metrics/MethodLength
+            app     = Utils::String.underscore(app)
             context = Context.new(app: app, options: options)
 
             assert_valid_app!(context)
@@ -33,6 +37,8 @@ module Hanami
 
           private
 
+          # @since 1.1.0
+          # @api private
           def assert_valid_app!(context)
             return if project.app?(context)
 
@@ -41,6 +47,8 @@ module Hanami
             exit(1)
           end
 
+          # @since 1.1.0
+          # @api private
           def remove_test_http_session_secret(context)
             content     = "#{context.app.upcase}_SESSIONS_SECRET"
             destination = project.env(context, "test")
@@ -49,6 +57,8 @@ module Hanami
             say(:subtract, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def remove_development_http_session_secret(context)
             content     = "#{context.app.upcase}_SESSIONS_SECRET"
             destination = project.env(context, "development")
@@ -57,6 +67,8 @@ module Hanami
             say(:subtract, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def remove_mount_app(context)
             content     = "mount #{context.app.classify}::Application"
             destination = project.environment(context)
@@ -65,6 +77,8 @@ module Hanami
             say(:subtract, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def remove_require_app(context)
             content     = "require_relative '../apps/#{context.app}/application'"
             destination = project.environment(context)
@@ -73,6 +87,8 @@ module Hanami
             say(:subtract, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def recursively_destroy_precompiled_assets(context)
             destination = project.public_app_assets(context)
             return unless files.directory?(destination)
@@ -81,6 +97,8 @@ module Hanami
             say(:remove, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def destroy_assets_manifest(context)
             destination = project.assets_manifest(context)
             return unless files.exist?(destination)
@@ -89,6 +107,8 @@ module Hanami
             say(:remove, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def recursively_destroy_specs(context)
             destination = project.app_spec(context)
 
@@ -96,6 +116,8 @@ module Hanami
             say(:remove, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def recursively_destroy_app(context)
             destination = project.app(context)
 
@@ -103,6 +125,8 @@ module Hanami
             say(:remove, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def base_url(context)
             content     = "mount #{context.app.classify}::Application"
             destination = project.environment(context)
@@ -113,6 +137,8 @@ module Hanami
             at.strip.gsub(/["']*/, "")
           end
 
+          # @since 1.1.0
+          # @api private
           def read_matching_line(path, target)
             content = ::File.readlines(path)
             line    = content.find do |l|

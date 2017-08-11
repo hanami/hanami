@@ -2,6 +2,8 @@ module Hanami
   class CLI
     module Commands
       module Destroy
+        # @since 1.1.0
+        # @api private
         class Model < Command
           requires "environment"
 
@@ -13,8 +15,10 @@ module Hanami
             "user # Destroy `User` entity and `UserRepository` repository"
           ]
 
+          # @since 1.1.0
+          # @api private
           def call(model:, **options)
-            model   = Utils::String.new(model).underscore.singularize
+            model   = Utils::String.transform(model, :underscore, :singularize)
             context = Context.new(model: model, options: options)
 
             assert_valid_model!(context)
@@ -27,6 +31,8 @@ module Hanami
 
           private
 
+          # @since 1.1.0
+          # @api private
           def assert_valid_model!(context)
             destination = project.entity(context)
             return if files.exist?(destination)
@@ -36,6 +42,8 @@ module Hanami
             exit(1)
           end
 
+          # @since 1.1.0
+          # @api private
           def destroy_repository_spec(context)
             destination = project.repository_spec(context)
 
@@ -43,6 +51,8 @@ module Hanami
             say(:remove, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def destroy_entity_spec(context)
             destination = project.entity_spec(context)
 
@@ -50,6 +60,8 @@ module Hanami
             say(:remove, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def destroy_repository(context)
             destination = project.repository(context)
 
@@ -57,6 +69,8 @@ module Hanami
             say(:remove, destination)
           end
 
+          # @since 1.1.0
+          # @api private
           def destroy_entity(context)
             destination = project.entity(context)
 

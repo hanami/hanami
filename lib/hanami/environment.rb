@@ -193,7 +193,7 @@ module Hanami
       opts     = options.to_h.dup
       @env     = Hanami::Env.new(env: opts.delete(:env) || ENV)
       @options = Hanami::Hanamirc.new(root).options
-      @options.merge! Utils::Hash.new(opts.clone).symbolize!
+      @options.merge! Utils::Hash.symbolize(opts.clone)
       LOCK.synchronize { set_env_vars! }
     end
 
@@ -448,7 +448,7 @@ module Hanami
 
     # Serialize the most relevant settings into a Hash
     #
-    # @return [Hanami::Utils::Hash]
+    # @return [::Hash]
     #
     # @since 0.1.0
     # @api private

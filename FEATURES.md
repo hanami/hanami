@@ -3,6 +3,18 @@
 
 ## Features
 
+## v1.1.0 (unreleased)
+
+- One-To-Many association (aka `belongs_to`)
+- One-To-One association (aka `has_one`)
+- Many-To-Many association (aka `has_many :through`)
+- Allow third-party developers to register commands for CLI (eg `hanami generate webpack`)
+- Introduced new extra behaviors for entity manual schema: `:schema` (default), `:strict`, `:weak`, and `:permissive`
+- Custom logger for `Hanami.logger`
+- Selectively boot apps via `HANAMI_APPS=web` env var
+- Log payload (params) for non-GET HTTP requests
+- Filter sensitive data in logs
+
 ### v1.0.0 - 2017-04-06
 
 - Logger rotation
