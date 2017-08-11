@@ -1,3 +1,5 @@
+require "hanami/cli/commands/generate/app"
+
 module Hanami
   # Hanami CLI
   #
@@ -498,7 +500,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def generate_app(context)
-          Hanami::CLI::Commands::Generate::App.new(command_name: "generate app", out: @out, files: @files).call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
+          Hanami::CLI::Commands::New::App.new(command_name: "generate app", out: @out, files: @files).call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
         end
 
         # @since 1.1.0
@@ -551,6 +553,19 @@ module Hanami
         def generate_file(source, destination, context)
           super
           say(:create, destination)
+        end
+
+        # @since 1.1.0
+        # @api private
+        class App < Commands::Generate::App
+          requirements.clear
+
+          # @since 1.1.0
+          # @api private
+          def initialize(*)
+            super
+            @templates = Templates.new(self.class.superclass)
+          end
         end
       end
     end

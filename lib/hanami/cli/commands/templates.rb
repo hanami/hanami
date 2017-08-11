@@ -8,8 +8,8 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def initialize(class_name)
-          word = class_name.sub(NAMESPACE, "").split("::").map(&:downcase)
+        def initialize(klass)
+          word = klass.name.sub(NAMESPACE, "").split("::").map(&:downcase)
           @root = Pathname.new(File.join(__dir__, *word))
           freeze
         end

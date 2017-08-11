@@ -96,7 +96,7 @@ module Hanami
 
           @out       = out
           @files     = files
-          @templates = Templates.new(self.class.name)
+          @templates = Templates.new(self.class)
         end
 
         private
