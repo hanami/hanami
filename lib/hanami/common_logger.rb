@@ -1,4 +1,5 @@
 require 'rack/common_logger'
+require_relative './form_params'
 
 module Hanami
   # Rack logger for Hanami.app
@@ -44,6 +45,10 @@ module Hanami
     # @api private
     FORM_HASH            = 'rack.request.form_hash'.freeze
 
+    # @since x.x.x
+    # @api private
+    FORM_HASH            = 'rack.request.form_hash'.freeze
+
     # @since 1.0.0
     # @api private
     #
@@ -64,13 +69,20 @@ module Hanami
         elapsed: now - began_at
       ]
 
+      form_params = FormParams.new(env[FORM_HASH])
+      form_params_msg = Hash[
+        form_params: form_params.prepared_params
+      ]
+
       logger = @logger || env[RACK_ERRORS]
       # Standard library logger doesn't support write but it supports << which actually
       # calls to write on the log device without formatting
       if logger.respond_to?(:write)
         logger.write(msg)
+        logger.write(form_params_msg) if form_params.present?
       else
         logger.info(msg)
+        logger.info(form_params_msg) if form_params.present?
       end
     end
 
