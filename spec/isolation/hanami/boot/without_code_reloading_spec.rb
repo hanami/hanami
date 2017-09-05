@@ -17,23 +17,24 @@ EOF
         hanami "db prepare"
 
         write "script/components", <<-EOF
-require "\#{__dir__}/../config/environment"
-Hanami.boot
-puts "code reloading: \#{Hanami.code_reloading?}"
+        require "\#{__dir__}/../config/environment"
 
-mailer_configuration = Hanami::Components['mailer.configuration']
-model_configuration  = Hanami::Components['model.configuration']
+        Hanami.boot
+        puts "code reloading: \#{Hanami.code_reloading?}"
 
-admin_configuration = Hanami::Components['admin.configuration']
-web_configuration   = Hanami::Components['web.configuration']
+        mailer_configuration = Hanami::Components['mailer.configuration']
+        model_configuration  = Hanami::Components['model.configuration']
 
-Hanami.boot
+        admin_configuration = Hanami::Components['admin.configuration']
+        web_configuration   = Hanami::Components['web.configuration']
 
-puts "mailer configuration: \#{mailer_configuration.object_id == Hanami::Components['mailer.configuration'].object_id}"
-puts "model configuration: \#{model_configuration.object_id == Hanami::Components['model.configuration'].object_id}"
+        Hanami.boot
 
-puts "admin configuration: \#{admin_configuration.object_id == Hanami::Components['admin.configuration'].object_id}"
-puts "web configuration: \#{web_configuration.object_id == Hanami::Components['web.configuration'].object_id}"
+        puts "mailer configuration: \#{mailer_configuration.object_id == Hanami::Components['mailer.configuration'].object_id}"
+        puts "model configuration: \#{model_configuration.object_id == Hanami::Components['model.configuration'].object_id}"
+
+        puts "admin configuration: \#{admin_configuration.object_id == Hanami::Components['admin.configuration'].object_id}"
+        puts "web configuration: \#{web_configuration.object_id == Hanami::Components['web.configuration'].object_id}"
 EOF
 
         bundle_exec "ruby script/components"
