@@ -140,7 +140,12 @@ module Hanami
       Utils::Hash.new(hash).symbolize!
     end
 
+    # Returns options from hanamirc file
+    #
+    # @since 0.6.0
     # @api private
+    #
+    # @return [Hash] hanamirc parsed values
     def file_options
       symbolize(exists? ? parse_file(path_file) : {})
     end
