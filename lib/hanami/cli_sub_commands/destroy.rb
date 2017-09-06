@@ -76,14 +76,14 @@ module Hanami
         end
       end
 
-      desc 'application NAME', 'Destroy an application'
+      desc 'app APPLICATION_NAME', 'Destroy an app'
       long_desc <<-EOS
-      `hanami destroy application` will destroy an application, along with templates and specs.
+      `hanami destroy app` will destroy an application, along with templates and specs.
 
-      > $ hanami destroy application api
+      > $ hanami destroy app api
       EOS
       # @api private
-      def application(name)
+      def app(name)
         if options[:help]
           invoke :help, ['app']
         else
@@ -91,6 +91,7 @@ module Hanami
           Hanami::Commands::Generate::App.new(options, name).destroy.start
         end
       end
+      map "application" => :app
 
       desc 'mailer NAME', 'Destroy a mailer'
       long_desc <<-EOS
