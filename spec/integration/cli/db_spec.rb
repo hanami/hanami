@@ -9,6 +9,7 @@ Commands:
   hanami db drop                            # Drop the database (only for development/test)
   hanami db migrate [VERSION]               # Migrate the database
   hanami db prepare                         # Drop, create, and migrate the database (only for development/test)
+  hanami db rollback [STEPS]                # Rollback the database
   hanami db version                         # Print the current migrated version
 OUT
 
