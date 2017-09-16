@@ -121,6 +121,10 @@ To run all the tests, please use:
 ./script/ci
 ```
 
+### Creating bug reports
+
+If you want to create bug report, please, use a minimal Hanami app from `templates` directory.
+
 ## Versioning
 
 __Hanami__ uses [Semantic Versioning 2.0.0](http://semver.org)
