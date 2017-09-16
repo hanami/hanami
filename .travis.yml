@@ -11,8 +11,8 @@ script:
   - './script/ci'
 rvm:
   - 2.3.4
-  - 2.4.1
-  - jruby-9.1.8.0
+  - 2.4.2
+  - jruby-9.1.13.0
   - jruby-head
   - ruby-head
 
@@ -20,7 +20,7 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
-    - rvm: jruby-9.1.8.0
+    - rvm: jruby-9.1.13.0
 
 notifications:
   webhooks:
