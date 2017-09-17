@@ -13,8 +13,7 @@ RSpec.describe "Components: code", type: :cli do
             end
           end
         end
-
-        EOF
+EOF
 
         hanami "db prepare"
 
@@ -35,8 +34,7 @@ RSpec.describe "Components: code", type: :cli do
             name.upcase
           end
         end
-
-        EOF
+EOF
 
         rewrite "lib/bookshelf/repositories/user_repository.rb", <<-EOF
 
@@ -45,8 +43,7 @@ RSpec.describe "Components: code", type: :cli do
             create(name: 'l')
           end
         end
-
-        EOF
+EOF
 
         rewrite "lib/bookshelf/mailers/welcome.rb", <<-EOF
 
@@ -57,8 +54,7 @@ RSpec.describe "Components: code", type: :cli do
           to      '<to>'
           subject 'Ciao'
         end
-
-        EOF
+EOF
 
         Hanami.boot # this resolves `code` again AND configures Hanami::Model so we can connect to the db
 
