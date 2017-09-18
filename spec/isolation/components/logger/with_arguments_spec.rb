@@ -1,7 +1,6 @@
 RSpec.describe "Components: logger", type: :cli do
   it "accepts arbitrary arguments" do
     with_project do
-      FileUtils.mkpath('log')
       count = 5
       replace 'config/environment.rb', 'logger ', "logger #{count}, 128, stream: 'log/development.log'"
 
