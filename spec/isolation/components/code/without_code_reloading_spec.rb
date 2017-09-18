@@ -5,16 +5,15 @@ RSpec.describe "Components: code", type: :cli do
         generate_model "user"
         generate_migration "create_users", <<-EOF
 
-        Hanami::Model.migration do
-          change do
-            create_table :users do
-              primary_key :id
-              column :name, String
+          Hanami::Model.migration do
+            change do
+              create_table :users do
+                primary_key :id
+                column :name, String
+              end
             end
           end
-        end
-
-        EOF
+EOF
 
         hanami "db prepare"
         hanami "generate mailer welcome"
@@ -29,35 +28,32 @@ RSpec.describe "Components: code", type: :cli do
 
         rewrite "lib/bookshelf/entities/user.rb", <<-EOF
 
-        class User < Hanami::Entity
-          def upcase_name
-            name.upcase
+          class User < Hanami::Entity
+            def upcase_name
+              name.upcase
+            end
           end
-        end
-
-        EOF
+EOF
 
         rewrite "lib/bookshelf/repositories/user_repository.rb", <<-EOF
 
-        class UserRepository < Hanami::Repository
-          def create_with_name
-            create(name: 'l')
+          class UserRepository < Hanami::Repository
+            def create_with_name
+              create(name: 'l')
+            end
           end
-        end
-
-        EOF
+EOF
 
         rewrite "lib/bookshelf/mailers/welcome.rb", <<-EOF
 
-        class Mailers::Welcome
-          include Hanami::Mailer
+          class Mailers::Welcome
+            include Hanami::Mailer
 
-          from    '<from>'
-          to      '<to>'
-          subject 'Ciao'
-        end
-
-        EOF
+            from    '<from>'
+            to      '<to>'
+            subject 'Ciao'
+          end
+EOF
 
         Hanami.boot # this resolves `code` again AND configures Hanami::Model so we can connect to the db
 
