@@ -81,7 +81,7 @@ END
       # README.md
       #
       expect('README.md').to have_file_content <<-END
-# bookshelf
+# Bookshelf
 
 Welcome to your new Hanami project!
 
