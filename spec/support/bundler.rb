@@ -33,13 +33,22 @@ module RSpec
 
       attr_reader :out, :err, :exitstatus
 
-      def setup_gemfile(gems: [], exclude_gems: [], path: "Gemfile")
+      def setup_gemfile(gems: [], exclude_gems: [], path: "Gemfile") # rubocop:disable Metrics/MethodLength
         source     = "source 'file://#{cache}'"
         content    = ::File.readlines(path)
         content[0] = "#{source}\n"
 
-        unless gems.empty? # rubocop:disable Style/IfUnlessModifier
-          content.concat gems.map { |g| "gem '#{g}'\n" }
+        unless gems.empty?
+          gems = gems.map do |g|
+            case g
+            when String
+              "gem '#{g}'\n"
+            when Array
+              "gem '#{g.first}', #{g.last}\n"
+            end
+          end
+
+          content.concat(gems)
         end
 
         exclude_gems.each do |g|

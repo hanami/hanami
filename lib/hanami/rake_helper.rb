@@ -17,7 +17,6 @@ module Hanami
     # @since 0.6.0
     # @api private
     #
-    # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
     def install
       desc "Load the full project"
@@ -50,19 +49,30 @@ module Hanami
       #
       # This is the preferred way to run Hanami command line tasks.
       # Please use them when you're in control of your deployment environment.
+      #
+      # If you're not in control and your deployment requires these "standard"
+      # Rake tasks, they are here to solve this only specific problem.
       namespace :db do
         task :migrate do
-          system("bundle exec hanami db migrate") || exit($?.exitstatus)
+          run_hanami_command("db migrate")
         end
       end
 
       namespace :assets do
         task :precompile do
-          system("bundle exec hanami assets precompile") || exit($?.exitstatus)
+          run_hanami_command("assets precompile")
         end
       end
     end
+
+    private
+
+    # @since 1.1.0
+    # @api private
+    def run_hanami_command(command)
+      require "hanami/cli/commands"
+      Hanami::CLI.new(Hanami::CLI::Commands).call(arguments: command.split(/[[:space:]]/))
+    end
     # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/AbcSize
   end
 end

@@ -391,6 +391,7 @@ module Hanami
     # @since 0.4.0
     # @api private
     def require_application_environment
+      Bundler.setup(*bundler_groups)
       require project_environment_configuration.to_s # if project_environment_configuration.exist?
     end
 

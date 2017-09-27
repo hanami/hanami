@@ -2,4 +2,5 @@
 require 'bundler'
 require 'hanami/cli/commands'
 
+Bundler.require(:plugins)
 Hanami::CLI.new(Hanami::CLI::Commands).call
