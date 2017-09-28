@@ -45,6 +45,51 @@ END
       end
     end
 
+    it "generates namespaced action" do
+      with_project('bookshelf_generate_action') do
+        output = [
+          "create  spec/web/controllers/api/authors/index_spec.rb",
+          "create  apps/web/controllers/api/authors/index.rb",
+          "create  apps/web/views/api/authors/index.rb",
+          "create  apps/web/templates/api/authors/index.html.erb",
+          "create  spec/web/views/api/authors/index_spec.rb",
+          "insert  apps/web/config/routes.rb"
+        ]
+
+        run_command "hanami generate action web api/authors#index", output
+
+        #
+        # apps/web/controllers/api/authors/index.rb
+        #
+        expect('apps/web/controllers/api/authors/index.rb').to have_file_content <<-END
+module Web::Controllers::Api::Authors
+  class Index
+    include Web::Action
+
+    def call(params)
+    end
+  end
+end
+END
+
+        #
+        # apps/web/views/api/authors/index.rb
+        #
+        expect('apps/web/views/api/authors/index.rb').to have_file_content <<-END
+module Web::Views::Api::Authors
+  class Index
+    include Web::View
+  end
+end
+END
+
+        #
+        # apps/web/config/routes.rb
+        #
+        expect('apps/web/config/routes.rb').to have_file_content(%r{get '/api/authors', to: 'api/authors#index'})
+      end
+    end
+
     it "fails with missing arguments" do
       with_project('bookshelf_generate_action_without_args') do
         output = <<-OUT
