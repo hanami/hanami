@@ -24,6 +24,30 @@ RSpec.describe "hanami destroy", type: :cli do
       end
     end
 
+    it "destroys namespaced action" do
+      with_project do
+        generate "action web api/books#index"
+        output = [
+          "subtract  apps/web/config/routes.rb",
+          "remove  spec/web/views/api/books/index_spec.rb",
+          "remove  apps/web/templates/api/books/index.html.erb",
+          "remove  apps/web/views/api/books/index.rb",
+          "remove  apps/web/controllers/api/books/index.rb",
+          "remove  spec/web/controllers/api/books/index_spec.rb"
+        ]
+
+        run_command "hanami destroy action web api/books#index", output
+
+        expect('spec/web/controllers/api/books/index_spec.rb').to_not be_an_existing_file
+        expect('apps/web/controllers/api/books/index.rb').to_not      be_an_existing_file
+        expect('apps/web/views/api/books/index.rb').to_not            be_an_existing_file
+        expect('apps/web/templates/api/books/index.html.erb').to_not  be_an_existing_file
+        expect('spec/web/views/api/books/index_spec.rb').to_not       be_an_existing_file
+
+        expect('apps/web/config/routes.rb').to_not have_file_content(%r{get '/api/books', to: 'api/books#index'})
+      end
+    end
+
     it "destroys action without view" do
       with_project do
         generate "action web home#ping --skip-view --url=/ping"

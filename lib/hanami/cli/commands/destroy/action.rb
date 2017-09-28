@@ -19,7 +19,7 @@ module Hanami
           # @api private
           def call(app:, action:, **options)
             app                = Utils::String.underscore(app)
-            controller, action = controller_and_action(action)
+            *controller, action = controller_and_action(action)
             action_name        = controller_and_action_name(controller, action)
 
             context = Context.new(app: app, controller: controller, action: action, action_name: action_name, options: options)
@@ -57,7 +57,13 @@ module Hanami
           # @api private
           def controller_and_action_name(controller, action)
             # FIXME: extract this separator
-            [controller, action].join("#")
+            [namespaced_controller(controller), action].join("#")
+          end
+
+          # @since 1.1.0
+          # #api private
+          def namespaced_controller(controller)
+            controller.join("/")
           end
 
           # @since 1.1.0
