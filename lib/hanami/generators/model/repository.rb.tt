@@ -1,2 +1,5 @@
 class <%= config[:model_name] %>Repository < Hanami::Repository
+<%- if config[:override_table_name] -%>
+  self.relation = '<%= config[:table_name] %>'
+<%- end -%>
 end

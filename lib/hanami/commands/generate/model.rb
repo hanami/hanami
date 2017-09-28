@@ -21,7 +21,11 @@ module Hanami
           super(options)
           @input      = Utils::String.new(model_name).underscore
           @model_name = Utils::String.new(@input).classify
-          @table_name = Utils::String.new(@input).pluralize
+          @table_name = if override_table_name?
+                          options[:table_name]
+                        else
+                          Utils::String.new(@input).pluralize
+                        end
 
           unless skip_migration?
             Components.resolve('model.configuration')
@@ -52,7 +56,8 @@ module Hanami
         def template_options
           {
             model_name: model_name,
-            table_name: table_name
+            table_name: table_name,
+            override_table_name: override_table_name?
           }
         end
 
@@ -88,6 +93,11 @@ module Hanami
         # @api private
         def skip_migration?
           options.fetch(:skip_migration, false)
+        end
+
+        # @api private
+        def override_table_name?
+          !options.fetch(:table_name, '').empty?
         end
 
         # @api private

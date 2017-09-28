@@ -79,6 +79,8 @@ module Hanami
       EOS
       method_option :test, desc: 'Defines the testing Framework to be used. Default is defined through your .hanamirc file.'
       method_option :skip_migration, desc: 'Skips the generation of a migration to create the model\'s table', default: false, type: :boolean
+      method_option :table_name, desc: 'Defines the table name. If not set, pluralized model name will be used', type: :string
+
       # @api private
       def model(name)
         if options[:help]
