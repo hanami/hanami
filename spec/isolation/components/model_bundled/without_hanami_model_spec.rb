@@ -7,8 +7,7 @@ RSpec.describe "Components: model.bundled", type: :cli do
           require "\#{__dir__}/../config/environment"
           Hanami::Components.resolve('model.bundled')
           puts Hanami::Components['model.bundled'].class
-
-        EOF
+EOF
 
         bundle_exec "ruby script/components"
         expect(out).to include("NilClass")
