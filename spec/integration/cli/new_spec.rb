@@ -81,7 +81,7 @@ END
       # README.md
       #
       expect('README.md').to have_file_content <<-END
-# bookshelf
+# Bookshelf
 
 Welcome to your new Hanami project!
 
@@ -105,14 +105,12 @@ How to run the development server:
 % bundle exec hanami server
 ```
 
-How to create and migrate DB for development and test ENVs:
+How to prepare (create and migrate) DB for `development` and `test` environments:
 
 ```
-% bundle exec hanami db create
-% bundle exec hanami db migrate
+% bundle exec hanami db prepare
 
-% HANAMI_ENV=test bundle exec hanami db create
-% HANAMI_ENV=test bundle exec hanami db migrate
+% HANAMI_ENV=test bundle exec hanami db prepare
 ```
 
 Explore Hanami [guides](http://hanamirb.org/guides/), [API docs](http://hanamirb.org/docs/1.0.0/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
