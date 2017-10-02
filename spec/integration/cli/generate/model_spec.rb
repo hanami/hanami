@@ -77,6 +77,38 @@ END
       end
     end
 
+    context 'with table-name option' do
+      let(:project)    { 'generate_model_with_table_name' }
+      let(:model_name) { 'stimulus' }
+      let(:class_name) { 'Stimulus' }
+      let(:table_name) { 'stimuli' }
+      let(:generate_cmd) { "hanami generate model #{model_name} --table-name=#{table_name}" }
+
+      it 'creates correct migration' do
+        with_project(project) do
+          run_command generate_cmd
+
+          migration = Pathname.new('db').join('migrations').children.find do |child|
+            child.to_s.include?("create_#{table_name}")
+          end
+
+          expect(migration).to_not be(nil)
+        end
+      end
+
+      it 'set correct `relation` in repository' do
+        with_project(project) do
+          run_command generate_cmd
+
+          expect("lib/#{project}/repositories/#{model_name}_repository.rb").to have_file_content <<-END
+class #{class_name}Repository < Hanami::Repository
+  self.relation = '#{table_name}'
+end
+END
+        end
+      end
+    end
+
     context "minitest" do
       it "generates model" do
         project = "bookshelf_generate_model_minitest"
@@ -168,11 +200,13 @@ Arguments:
 
 Options:
   --[no-]skip-migration           	# Skip migration, default: false
+  --table-name=VALUE              	# Name of table to create, default: pluralized model name
   --help, -h                      	# Print this help
 
 Examples:
-  hanami generate model user                  # Generate `User` entity, `UserRepository` repository, and the migration
-  hanami generate model user --skip-migration # Generate `User` entity and `UserRepository` repository
+  hanami generate model user                       # Generate `User` entity, `UserRepository` repository, and the migration
+  hanami generate model user --skip-migration      # Generate `User` entity and `UserRepository` repository
+  hanami generate model user --table-name=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
 OUT
 
         run_command 'hanami generate model --help', output

@@ -11,19 +11,21 @@ module Hanami
 
           argument :model, required: true, desc: "Model name (eg. `user`)"
           option :skip_migration, type: :boolean, default: false, desc: "Skip migration"
+          option :table_name, type: :string, desc: "Name of table to create, default: pluralized model name"
 
           example [
-            "user                  # Generate `User` entity, `UserRepository` repository, and the migration",
-            "user --skip-migration # Generate `User` entity and `UserRepository` repository"
+            "user                       # Generate `User` entity, `UserRepository` repository, and the migration",
+            "user --skip-migration      # Generate `User` entity and `UserRepository` repository",
+            "user --table-name=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table"
           ]
 
           # @since 1.1.0
           # @api private
           def call(model:, **options)
             model     = Utils::String.underscore(model)
-            relation  = Utils::String.pluralize(model)
+            relation  = relation_name(options, model)
             migration = "create_#{relation}"
-            context   = Context.new(model: model, relation: relation, migration: migration, test: options.fetch(:test), options: options)
+            context   = Context.new(model: model, relation: relation, migration: migration, test: options.fetch(:test), override_relation_name: override_relation_name?(options), options: options)
 
             generate_entity(context)
             generate_repository(context)
@@ -90,6 +92,22 @@ module Hanami
           # @api private
           def skip_migration?(context)
             context.options.fetch(:skip_migration, false)
+          end
+
+          # @since 1.1.0
+          # @api private
+          def relation_name(options, model)
+            if override_relation_name?(options)
+              options[:table_name]
+            else
+              Utils::String.pluralize(model)
+            end
+          end
+
+          # @since 1.1.0
+          # @api private
+          def override_relation_name?(options)
+            !options.fetch(:table_name, '').empty?
           end
         end
       end
