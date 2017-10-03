@@ -377,11 +377,9 @@ END
       # apps/<app>/views/application_layout.rb
       #
       expect("apps/#{app}/views/application_layout.rb").to have_file_content <<-END
-module #{app_name}
-  module Views
-    class ApplicationLayout
-      include #{app_name}::Layout
-    end
+module #{app_name}::Views
+  class ApplicationLayout
+    include #{app_name}::Layout
   end
 end
 END
