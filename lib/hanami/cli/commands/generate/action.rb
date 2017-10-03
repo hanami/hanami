@@ -30,10 +30,11 @@ module Hanami
           # rubocop:disable Metrics/AbcSize
           # rubocop:disable Metrics/MethodLength
           def call(app:, action:, **options)
-            controller, action = controller_and_action_name(action)
-            http_method        = route_http_method(action, options)
-            context            = Context.new(app: app, controller: controller, action: action, test: options.fetch(:test), http_method: http_method, options: options)
-            context            = context.with(template: project.template(context))
+            *controller, action        = controller_and_action_name(action)
+            classified_controller_name = classified_controller(controller)
+            http_method                = route_http_method(action, options)
+            context                    = Context.new(app: app, controller: controller, classified_controller_name: classified_controller_name, action: action, test: options.fetch(:test), http_method: http_method, options: options)
+            context                    = context.with(template: project.template(context))
 
             assert_valid_app!(context)
             assert_valid_route_url!(context)
@@ -193,7 +194,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def route_resourceful_url(context)
-            "/#{context.controller}#{route_resourceful_url_suffix(context)}"
+            "/#{namespaced_controller(context)}#{route_resourceful_url_suffix(context)}"
           end
 
           # @since 1.1.0
@@ -215,7 +216,21 @@ module Hanami
           # @since 1.1.0
           # @api private
           def route_endpoint(context)
-            "#{context.controller}##{context.action}"
+            "#{namespaced_controller(context)}##{context.action}"
+          end
+
+          # @since 1.1.0
+          # @api private
+          def classified_controller(controller)
+            controller.
+              map { |controller_name| Utils::String.new(controller_name).classify }.
+              join("::")
+          end
+
+          # @since 1.1.0
+          # @api private
+          def namespaced_controller(context)
+            context.controller.join("/")
           end
         end
       end
