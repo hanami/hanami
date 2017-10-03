@@ -14,7 +14,6 @@ RSpec.describe "Components: finalizers", type: :cli do
             @counter += 1
           end
         end
-
         Counter.increment!
 EOF
 
