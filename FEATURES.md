@@ -9,6 +9,7 @@
 - One-To-One association (aka `has_one`)
 - Many-To-Many association (aka `has_many :through`)
 - Allow third-party developers to register commands for CLI (eg `hanami generate webpack`)
+- Initial support for plugins via `:plugins` group in `Gemfile`
 - Introduced new extra behaviors for entity manual schema: `:schema` (default), `:strict`, `:weak`, and `:permissive`
 - Custom logger for `Hanami.logger`
 - Selectively boot apps via `HANAMI_APPS=web` env var
