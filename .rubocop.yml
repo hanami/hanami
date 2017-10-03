@@ -1,20 +1,12 @@
 # Please keep AllCops, Bundler, Style, Metrics groups and then order cops
 # alphabetically
+inherit_from:
+  - https://raw.githubusercontent.com/hanami/devtools/master/.rubocop.yml
 AllCops:
-  DisplayCopNames: true
-  DisplayStyleGuide: true
-  ExtraDetails: false
-Bundler/OrderedGems:
-  Enabled: false
-Style/AndOr:
-  Enabled: false
-Style/EmptyMethod:
-  Enabled: false
-Style/RaiseArgs:
-  Enabled: false
-Style/RegexpLiteral:
-  Enabled: false
-Style/StringLiterals:
-  Enabled: false
-Metrics/LineLength:
-  Enabled: false
+  Exclude:
+    - "vendor/**/*"
+    - "spec/support/**/*"
+    - "**/*.gemspec"
+Style/MixinGrouping:
+  Exclude:
+    - "spec/support/**/*"

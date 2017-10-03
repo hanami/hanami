@@ -1,6 +1,11 @@
 # Hanami
 The web, with simplicity.
 
+## v1.1.0.beta2 - 2017-10-03
+### Added
+- [Luca Guidi] Introduce `:plugins` group for `Gemfile` in order enable Hanami plugin gems
+- [Alfonso Uceda] CLI: `hanami db rollback` to revert one or more migrations at once
+
 ## v1.1.0.beta1 - 2017-08-11
 ### Added
 - [Ben Johnson] Allow to use custom logger as `Hanami.logger` (eg. `Hanami.configure { logger Timber::Logger.new($stdout) }`)
