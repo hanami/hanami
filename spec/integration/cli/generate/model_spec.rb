@@ -77,22 +77,33 @@ END
       end
     end
 
-    context 'with table-name option' do
-      let(:project)    { 'generate_model_with_table_name' }
+    context 'with relation-name option' do
+      let(:project)    { 'generate_model_with_relation_name' }
       let(:model_name) { 'stimulus' }
       let(:class_name) { 'Stimulus' }
-      let(:table_name) { 'stimuli' }
-      let(:generate_cmd) { "hanami generate model #{model_name} --table-name=#{table_name}" }
+      let(:relation_name) { 'stimuli' }
+      let(:generate_cmd) { "hanami generate model #{model_name} --relation-name=#{relation_name}" }
 
       it 'creates correct migration' do
         with_project(project) do
           run_command generate_cmd
 
           migration = Pathname.new('db').join('migrations').children.find do |child|
-            child.to_s.include?("create_#{table_name}")
+            child.to_s.include?("create_#{relation_name}")
           end
 
-          expect(migration).to_not be(nil)
+          expect(migration.to_s).to have_file_content <<-END
+Hanami::Model.migration do
+  change do
+    create_table :#{relation_name} do
+      primary_key :id
+
+      column :created_at, DateTime, null: false
+      column :updated_at, DateTime, null: false
+    end
+  end
+end
+END
         end
       end
 
@@ -102,7 +113,7 @@ END
 
           expect("lib/#{project}/repositories/#{model_name}_repository.rb").to have_file_content <<-END
 class #{class_name}Repository < Hanami::Repository
-  self.relation = '#{table_name}'
+  self.relation = '#{relation_name}'
 end
 END
         end
@@ -200,13 +211,13 @@ Arguments:
 
 Options:
   --[no-]skip-migration           	# Skip migration, default: false
-  --table-name=VALUE              	# Name of table to create, default: pluralized model name
+  --relation-name=VALUE           	# Name of relation, default: pluralized model name
   --help, -h                      	# Print this help
 
 Examples:
-  hanami generate model user                       # Generate `User` entity, `UserRepository` repository, and the migration
-  hanami generate model user --skip-migration      # Generate `User` entity and `UserRepository` repository
-  hanami generate model user --table-name=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
+  hanami generate model user                          # Generate `User` entity, `UserRepository` repository, and the migration
+  hanami generate model user --skip-migration         # Generate `User` entity and `UserRepository` repository
+  hanami generate model user --relation-name=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
 OUT
 
         run_command 'hanami generate model --help', output
