@@ -1,4 +1,4 @@
-require 'fileutils'
+require 'hanami/utils/files'
 require_relative 'with_directory'
 
 module RSpec
@@ -6,14 +6,12 @@ module RSpec
     module WithTmpDirectory
       private
 
-      def with_tmp_directory
-        dir = Pathname.new('tmp').join('aruba')
-
+      def with_tmp_directory(dir = Pathname.new('tmp').join('aruba'))
         with_directory(dir) do
           yield
         end
       ensure
-        FileUtils.rm_rf(dir)
+        Hanami::Utils::Files.delete_directory(dir)
       end
     end
   end
