@@ -15,6 +15,18 @@ RSpec.describe "CLI plugins", type: :cli do
     end
   end
 
+  # See https://github.com/hanami/hanami/issues/838
+  it "guarantees 'hanami new' to generate a project" do
+    project = 'bookshelf_without_gemfile'
+
+    with_system_tmp_directory do
+      run_command_with_clean_env "hanami new #{project}"
+      destination = Pathname.new(Dir.pwd).join(project)
+
+      expect(destination).to exist
+    end
+  end
+
   private
 
   def with_project

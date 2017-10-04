@@ -23,6 +23,11 @@ module RSpec
         expect(last_command_started).to have_exit_status(exit_status)
       end
 
+      def run_command_with_clean_env(cmd, successful: true)
+        result = ::Bundler.clean_system(cmd, out: File::NULL)
+        expect(result).to be(successful)
+      end
+
       def match_output(output)
         case output
         when String
