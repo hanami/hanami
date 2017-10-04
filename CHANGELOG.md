@@ -1,6 +1,10 @@
 # Hanami
 The web, with simplicity.
 
+## v1.1.0.beta3 - 2017-10-04
+### Fixed
+- [Luca Guidi] Don't require `:plugins` group when running `hanami new`
+
 ## v1.1.0.beta2 - 2017-10-03
 ### Added
 - [Luca Guidi] Introduce `:plugins` group for `Gemfile` in order enable Hanami plugin gems
