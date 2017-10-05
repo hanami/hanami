@@ -75,18 +75,47 @@ END
           expect(file).to be_nil, "Expected to not find a migration matching: create_#{table_name}. Found #{file && file.to_s}"
         end
       end
+
+      it "doesn't create a migration file when --relation is used" do
+        model_name = "user"
+        table_name = "accounts"
+        project = "bookshelf_generate_model_skip_migration"
+        with_project(project) do
+          run_command "hanami generate model #{model_name} --skip-migration --relation=#{table_name}"
+          #
+          # db/migrations/<timestamp>_create_<models>.rb
+          #
+          migrations = Pathname.new('db').join('migrations').children
+          file       = migrations.find do |child|
+            child.to_s.include?("create_#{table_name}")
+          end
+
+          expect(file).to be_nil, "Expected to not find a migration matching: create_#{table_name}. Found #{file && file.to_s}"
+        end
+      end
     end
 
-    context 'with relation-name option' do
+    context 'with relation option' do
       let(:project)    { 'generate_model_with_relation_name' }
       let(:model_name) { 'stimulus' }
       let(:class_name) { 'Stimulus' }
       let(:relation_name) { 'stimuli' }
-      let(:generate_cmd) { "hanami generate model #{model_name} --relation-name=#{relation_name}" }
 
-      it 'creates correct migration' do
+      it "creates correct entity, repository, and migration" do
         with_project(project) do
-          run_command generate_cmd
+          output = [
+            "create  lib/#{project}/entities/#{model_name}.rb",
+            "create  lib/#{project}/repositories/#{model_name}_repository.rb",
+            /create  db\/migrations\/(\d+)_create_#{relation_name}.rb/
+          ]
+
+          run_command "hanami generate model #{model_name} --relation=#{relation_name}", output
+
+          expect("lib/#{project}/repositories/#{model_name}_repository.rb").to have_file_content <<-END
+class #{class_name}Repository < Hanami::Repository
+  self.relation = :#{relation_name}
+end
+END
 
           migration = Pathname.new('db').join('migrations').children.find do |child|
             child.to_s.include?("create_#{relation_name}")
@@ -107,15 +136,46 @@ END
         end
       end
 
-      it 'set correct `relation` in repository' do
+      it "handles CamelCase arguments" do
         with_project(project) do
-          run_command generate_cmd
+          model         = "sheep"
+          relation_name = "black_sheeps"
+          output = [
+            "create  lib/#{project}/entities/#{model}.rb",
+            "create  lib/#{project}/repositories/#{model}_repository.rb",
+            /create  db\/migrations\/(\d+)_create_#{relation_name}.rb/
+          ]
 
-          expect("lib/#{project}/repositories/#{model_name}_repository.rb").to have_file_content <<-END
-class #{class_name}Repository < Hanami::Repository
-  self.relation = '#{relation_name}'
+          run_command "hanami generate model #{model} --relation=BlackSheeps", output
+
+          expect("lib/#{project}/repositories/sheep_repository.rb").to have_file_content <<-END
+class SheepRepository < Hanami::Repository
+  self.relation = :#{relation_name}
 end
 END
+
+          migration = Pathname.new('db').join('migrations').children.find do |child|
+            child.to_s.include?("create_#{relation_name}")
+          end
+
+          expect(migration.to_s).to have_file_content <<-END
+Hanami::Model.migration do
+  change do
+    create_table :#{relation_name} do
+      primary_key :id
+
+      column :created_at, DateTime, null: false
+      column :updated_at, DateTime, null: false
+    end
+  end
+end
+END
+        end
+      end
+
+      it "returns error for blank option" do
+        with_project(project) do
+          run_command "hanami generate model #{model_name} --relation=", "`' is not a valid relation name", exit_status: 1
         end
       end
     end
@@ -211,13 +271,13 @@ Arguments:
 
 Options:
   --[no-]skip-migration           	# Skip migration, default: false
-  --relation-name=VALUE           	# Name of relation, default: pluralized model name
+  --relation=VALUE                	# Name of the database relation, default: pluralized model name
   --help, -h                      	# Print this help
 
 Examples:
-  hanami generate model user                          # Generate `User` entity, `UserRepository` repository, and the migration
-  hanami generate model user --skip-migration         # Generate `User` entity and `UserRepository` repository
-  hanami generate model user --relation-name=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
+  hanami generate model user                     # Generate `User` entity, `UserRepository` repository, and the migration
+  hanami generate model user --skip-migration    # Generate `User` entity and `UserRepository` repository
+  hanami generate model user --relation=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
 OUT
 
         run_command 'hanami generate model --help', output
