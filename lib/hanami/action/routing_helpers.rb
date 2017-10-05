@@ -34,6 +34,8 @@ module Hanami
       #
       #  # Removes namespace and provide routes method
       #
+      #  @see http://github.com/hanami/utils/blob/master/lib/hanami/utils/string.rb#L230
+      #
       #  => factory = "#{Utils::String.new(Web::Application).namespace}.routes"
       #  => 'Application.routes'
       #
