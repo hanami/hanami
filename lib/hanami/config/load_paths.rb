@@ -10,7 +10,7 @@ module Hanami
     class LoadPaths < Utils::LoadPaths
       # Overrides Utils::LoadPath initialize method
       #
-      # @see http://github.com/hanami/utils/blob/master/lib/hanami/utils/load_paths.rb#L20
+      # @see Hanami::Utils::LoadPaths#initialize
       #
       # @since 0.1.0
       # @api private
@@ -21,7 +21,7 @@ module Hanami
 
       # Requires relative @pats [Utils::Kernel.Array] variable via each method
       #
-      # @see http://github.com/hanami/utils/blob/master/lib/hanami/utils/load_paths.rb#L63
+      # @see Hanami::Utils::LoadPaths#each
       #
       # @since 0.1.0
       # @api private
@@ -35,7 +35,7 @@ module Hanami
 
       # Overrides Utils::LoadPath realpath method
       #
-      # @see https://github.com/hanami/utils/blob/master/lib/hanami/utils/load_paths.rb#L164
+      # @see Hanami::Utils::LoadPaths#realpath
       #
       # @api private
       def realpath(path)
