@@ -24,6 +24,30 @@ module Hanami
     #     end
     #   end
     module RoutingHelpers
+      # @since 0.3.2
+      #
+      # @example
+      #  module Web
+      #    class Application
+      #    end
+      #  end
+      #
+      #  # Removes namespace and provide routes method
+      #
+      #  => factory = "#{Utils::String.new(Web::Application).namespace}.routes"
+      #  => 'Application.routes'
+      #
+      #  # After that defines private method for Api::ExamplesController:
+      #
+      #  module Web
+      #    class Application
+      #      private
+      #
+      #      def routes
+      #        ExamplesController.routes
+      #      end
+      #    end
+      #  end
       def self.included(base)
         factory = "#{Utils::String.new(base).namespace}.routes"
 
