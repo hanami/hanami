@@ -6,6 +6,10 @@ RSpec.describe "Components: model", type: :cli do
         require "\#{__dir__}/../config/environment"
         Hanami::Components.resolve('model')
         puts Hanami::Components['model'].class
+
+        require "\#{__dir__}/../config/environment"
+        Hanami::Components.resolve('model')
+        puts Hanami::Components['model'].class
 EOF
 
         bundle_exec "ruby script/components"
