@@ -14,13 +14,12 @@ RSpec.describe "Components: mailer.configuration", type: :cli do
         unshift "config/environment.rb", "ENV['HANAMI_ENV'] = 'production'"
         write "script/components", <<-EOF
 
-        require "\#{__dir__}/../config/environment"
-        Hanami::Components.resolve('mailer.configuration')
+          require "\#{__dir__}/../config/environment"
+          Hanami::Components.resolve('mailer.configuration')
 
-        configuration = Hanami::Components['mailer.configuration']
-        puts "mailer.configuration.delivery_method: \#{configuration.delivery_method.first.inspect}"
-
-        EOF
+          configuration = Hanami::Components['mailer.configuration']
+          puts "mailer.configuration.delivery_method: \#{configuration.delivery_method.first.inspect}"
+EOF
 
         bundle_exec "ruby script/components"
 
