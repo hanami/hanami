@@ -335,7 +335,7 @@ END
           # spec/web/controllers/books/index_spec.rb
           #
           expect('spec/web/controllers/books/index_spec.rb').to have_file_content <<-END
-RSpec.describe Web::Controllers::Books::Index do
+RSpec.describe Web::Controllers::Books::Index, type: :action do
   let(:action) { described_class.new }
   let(:params) { Hash[] }
 
@@ -350,7 +350,7 @@ END
           # spec/web/views/books/index_spec.rb
           #
           expect('spec/web/views/books/index_spec.rb').to have_file_content <<-END
-RSpec.describe Web::Views::Books::Index do
+RSpec.describe Web::Views::Books::Index, type: :view do
   let(:exposures) { Hash[foo: 'bar'] }
   let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }
   let(:view)      { described_class.new(template, exposures) }

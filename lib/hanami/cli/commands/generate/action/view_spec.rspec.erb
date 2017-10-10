@@ -1,4 +1,4 @@
-RSpec.describe <%= app.classify %>::Views::<%= classified_controller_name %>::<%= action.classify %> do
+RSpec.describe <%= app.classify %>::Views::<%= classified_controller_name %>::<%= action.classify %>, type: :view do
   let(:exposures) { Hash[foo: 'bar'] }
   let(:template)  { Hanami::View::Template.new('<%= template %>') }
   let(:view)      { described_class.new(template, exposures) }
