@@ -4,6 +4,7 @@ RSpec.describe Hanami::Middleware, type: :cli do
       with_project do
         generate "action web home#index"
         replace "apps/web/application.rb", "Application < Hanami::Application", <<-END
+
 class RackApp
   def initialize(app, options = {}, &blk)
     @app     = app
@@ -20,23 +21,23 @@ class Application < Hanami::Application
 END
 
         replace "apps/web/application.rb", "configure do", <<-END
-configure do
-  block1 = ->() {}
-  block2 = ->() {}
-  block3 = ->() {}
+        configure do
+          block1 = ->() {}
+          block2 = ->() {}
+          block3 = ->() {}
 
-  middleware.use Web::RackApp, foo: :bar
-  middleware.use Web::RackApp, foo: :bar # this is a duplicate and it shouldn't be included
-  middleware.use Web::RackApp, baz: :bat
-  middleware.use Web::RackApp, &block1
-  middleware.use Web::RackApp, &block1   # this is a duplicate and it shouldn't be included
-  middleware.use Web::RackApp, &block2
+          middleware.use Web::RackApp, foo: :bar
+          middleware.use Web::RackApp, foo: :bar # this is a duplicate and it shouldn't be included
+          middleware.use Web::RackApp, baz: :bat
+          middleware.use Web::RackApp, &block1
+          middleware.use Web::RackApp, &block1   # this is a duplicate and it shouldn't be included
+          middleware.use Web::RackApp, &block2
 
-  middleware.prepend Web::RackApp, foo: :bar # this is a duplicate and it shouldn't be included
-  middleware.prepend Web::RackApp, cap: :tain
-  middleware.prepend Web::RackApp, &block1   # this is a duplicate and it shouldn't be included
-  middleware.prepend Web::RackApp, &block2   # this is a duplicate and it shouldn't be included
-  middleware.prepend Web::RackApp, &block3
+          middleware.prepend Web::RackApp, foo: :bar # this is a duplicate and it shouldn't be included
+          middleware.prepend Web::RackApp, cap: :tain
+          middleware.prepend Web::RackApp, &block1   # this is a duplicate and it shouldn't be included
+          middleware.prepend Web::RackApp, &block2   # this is a duplicate and it shouldn't be included
+          middleware.prepend Web::RackApp, &block3
 END
 
         require Pathname.new(Dir.pwd).join("config", "environment")
