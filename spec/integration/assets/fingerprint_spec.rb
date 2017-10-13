@@ -5,20 +5,20 @@ RSpec.describe "assets", type: :cli do
         generate "action web home#index --url=/"
 
         write "apps/web/assets/javascripts/application.css", <<-EOF
-body { color: #333 };
+        body { color: #333 };
 EOF
         rewrite "apps/web/templates/application.html.erb", <<-EOF
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Web</title>
-    <%= favicon %>
-    <%= stylesheet 'application' %>
-  </head>
-  <body>
-    <%= yield %>
-  </body>
-</html>
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Web</title>
+            <%= favicon %>
+            <%= stylesheet 'application' %>
+          </head>
+          <body>
+            <%= yield %>
+          </body>
+        </html>
 EOF
         #
         # Precompile
