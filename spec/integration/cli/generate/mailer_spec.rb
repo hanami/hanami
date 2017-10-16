@@ -54,7 +54,7 @@ END
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
           #
           expect('spec/bookshelf_generate_mailer/mailers/welcome_spec.rb').to have_file_content <<-END
-RSpec.describe Mailers::Welcome do
+RSpec.describe Mailers::Welcome, type: :mailer do
   it 'delivers email' do
     mail = Mailers::Welcome.deliver
   end
