@@ -1,6 +1,11 @@
 # Hanami
 The web, with simplicity.
 
+## v1.1.0.rc1 - 2017-10-16
+### Added
+- [Yuji Ueki] Generate RSpec tests with `:type` metadata (eg `type: :action`)
+- [Kirill] Add `--relation` option for `hanami generate model` (eg `bundle exec hanami generate model user --relation=accounts`)
+
 ## v1.1.0.beta3 - 2017-10-04
 ### Fixed
 - [Luca Guidi] Don't require `:plugins` group when running `hanami new`

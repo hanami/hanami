@@ -1,7 +1,7 @@
 module Hanami
   class CLI
     module Commands
-      # @since x.x.x
+      # @since 1.1.0
       # @api private
       module Db
         class Drop < Command
@@ -9,7 +9,7 @@ module Hanami
 
           desc "Drop the database (only for development/test)"
 
-          # @since x.x.x
+          # @since 1.1.0
           # @api private
           def call(**options)
             context = Context.new(options: options)
@@ -19,7 +19,7 @@ module Hanami
 
           private
 
-          # @since x.x.x
+          # @since 1.1.0
           # @api private
           def drop_database(*)
             require "hanami/model/migrator"

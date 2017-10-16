@@ -2,7 +2,7 @@ module Hanami
   class CLI
     module Commands
       module Db
-        # @since x.x.x
+        # @since 1.1.0
         # @api private
         class Rollback < Command
           requires "model.sql"
@@ -16,7 +16,7 @@ module Hanami
             "2 # Rollbacks last two migrations"
           ]
 
-          # @since x.x.x
+          # @since 1.1.0
           # @api private
           def call(steps:, **)
             context = Context.new(steps: steps.to_int)
@@ -26,7 +26,7 @@ module Hanami
 
           private
 
-          # @since x.x.x
+          # @since 1.1.0
           # @api private
           def rollback_database(context)
             require "hanami/model/migrator"

@@ -36,11 +36,11 @@ module Hanami
     # @api private
     RACK_ERRORS          = 'rack.errors'.freeze
 
-    # @since x.x.x
+    # @since 1.1.0
     # @api private
     QUERY_HASH           = 'rack.request.query_hash'.freeze
 
-    # @since x.x.x
+    # @since 1.1.0
     # @api private
     FORM_HASH            = 'rack.request.form_hash'.freeze
 
