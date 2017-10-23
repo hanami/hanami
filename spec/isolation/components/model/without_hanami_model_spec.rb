@@ -3,9 +3,6 @@ RSpec.describe "Components: model", type: :cli do
     it "is nil" do
       project_without_hanami_model do
         write "script/components", <<-EOF
-        require "\#{__dir__}/../config/environment"
-        Hanami::Components.resolve('model')
-        puts Hanami::Components['model'].class
 
         require "\#{__dir__}/../config/environment"
         Hanami::Components.resolve('model')
