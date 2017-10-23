@@ -2,19 +2,19 @@ RSpec.describe "Components: finalizers", type: :cli do
   it "ensures to load components once" do
     with_project do
       write "config/initializers/counter.rb", <<-EOF
-class Counter
-  @counter = 0
+      class Counter
+        @counter = 0
 
-  def self.counter
-    @counter
-  end
+        def self.counter
+          @counter
+        end
 
-  def self.increment!
-    @counter += 1
-  end
-end
+        def self.increment!
+          @counter += 1
+        end
+      end
 
-Counter.increment!
+        Counter.increment!
 EOF
 
       require Pathname.new(Dir.pwd).join("config", "environment")
