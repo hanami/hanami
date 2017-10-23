@@ -4,7 +4,6 @@ RSpec.describe "Components: code", type: :cli do
       with_project do
         generate_model "user"
         generate_migration "create_users", <<-EOF
-
         Hanami::Model.migration do
           change do
             create_table :users do
