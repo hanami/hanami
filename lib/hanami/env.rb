@@ -1,5 +1,5 @@
 begin
-  require 'dotenv'
+  require 'dotenv/parser'
 rescue LoadError # rubocop:disable Lint/HandleExceptions
 end
 
@@ -53,7 +53,7 @@ module Hanami
     # @since 0.9.0
     # @api private
     def load!(path)
-      return unless defined?(Dotenv)
+      return unless defined?(Dotenv::Parser)
 
       contents = ::File.open(path, "rb:bom|utf-8", &:read)
       parsed   = Dotenv::Parser.call(contents)

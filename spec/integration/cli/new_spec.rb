@@ -771,8 +771,6 @@ Usage:
 Options:
   -d, --db, [--database=DATABASE]                        # Application database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3/filesystem/memory)
                                                          # Default: filesystem
-  -a, --arch, [--architecture=ARCHITECTURE]              # Project architecture (container/app)
-                                                         # Default: container
           [--application-name=APPLICATION_NAME]          # Application name, only for container
                                                          # Default: web
           [--application-base-url=APPLICATION_BASE_URL]  # Application base url
@@ -788,7 +786,7 @@ OUT
 # rubocop:disable Style/CommentIndentation
 # FIXME: this extra verbatim causes a spec failure
 # Description:
-#   `hanami new` creates a new hanami project. You can specify various options such as the database to be used as well as the path and architecture.
+#   `hanami new` creates a new hanami project. You can specify various options such as the database to be used as well as the path.
 #
 #   $ > hanami new fancy_app --application_name=admin
 #

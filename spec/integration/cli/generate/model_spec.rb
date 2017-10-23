@@ -38,6 +38,25 @@ END
       end
     end
 
+    context "with missing migrations directory" do
+      it "will create directory and migration" do
+        with_project do
+          model_name = "book"
+          directory  = Pathname.new("db").join("migrations")
+          FileUtils.rm_rf(directory)
+
+          run_command "hanami generate model #{model_name}"
+          expect(directory).to be_directory
+
+          migration = directory.children.find do |m|
+            m.to_s.include?(model_name)
+          end
+
+          expect(migration).to_not be(nil)
+        end
+      end
+    end
+
     context "with skip-migration" do
       it "doesn't create a migration file" do
         model_name = "user"

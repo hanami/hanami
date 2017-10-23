@@ -25,6 +25,13 @@ module Hanami
 
           unless skip_migration?
             Components.resolve('model.configuration')
+
+            # FIXME: Hanami 2.0
+            # Because Hanami::Model::Configuration#migrations uses Pathname#realpath,
+            # it's impossible to reference the migrations path if the directory doesn't exist.
+            configuration = Components['model.configuration']
+            path = Hanami.root.join(configuration.instance_variable_get(:@migrations))
+            path.mkpath
           end
 
           assert_model_name!

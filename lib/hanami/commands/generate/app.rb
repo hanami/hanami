@@ -82,7 +82,7 @@ module Hanami
 
         # @api private
         def add_mount_app
-          generator.inject_into_file base_path.join('config/environment.rb'), after: /Hanami.configure do/ do |match|
+          generator.inject_into_file base_path.join('config/environment.rb'), after: /Hanami.configure do/ do
             "\n  mount #{ classified_app_name }::Application, at: '#{ application_base_url }'"
           end
         end
