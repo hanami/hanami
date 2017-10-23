@@ -14,10 +14,10 @@ RSpec.describe "hanami db", type: :cli do
         migrations = db.join('migrations')
 
         expect(schema).to have_file_content <<-SQL
-CREATE TABLE `schema_migrations` (`filename` varchar(255) NOT NULL PRIMARY KEY);
-CREATE TABLE `users` (`id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `name` varchar(255), `age` integer);
-INSERT INTO "schema_migrations" VALUES('#{versions.first}_create_users.rb');
-INSERT INTO "schema_migrations" VALUES('#{versions.last}_add_age_to_users.rb');
+        CREATE TABLE `schema_migrations` (`filename` varchar(255) NOT NULL PRIMARY KEY);
+        CREATE TABLE `users` (`id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `name` varchar(255), `age` integer);
+        INSERT INTO "schema_migrations" VALUES('#{versions.first}_create_users.rb');
+        INSERT INTO "schema_migrations" VALUES('#{versions.last}_add_age_to_users.rb');
 SQL
 
         expect(migrations.children).to be_empty
