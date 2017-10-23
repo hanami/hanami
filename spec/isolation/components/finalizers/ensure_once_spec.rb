@@ -2,6 +2,7 @@ RSpec.describe "Components: finalizers", type: :cli do
   it "ensures to load components once" do
     with_project do
       write "config/initializers/counter.rb", <<-EOF
+
       class Counter
         @counter = 0
 
