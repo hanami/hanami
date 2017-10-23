@@ -17,6 +17,7 @@ EOF
         hanami "db prepare"
 
         write "script/components", <<-EOF
+
         require "\#{__dir__}/../config/environment"
 
         Hanami.boot
