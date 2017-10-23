@@ -6,9 +6,9 @@ RSpec.describe "Rake: environment", type: :cli do
       hanami "db prepare"
 
       append "Rakefile", <<-EOF
-task database_counts: :environment do
-puts "users: \#{UserRepository.new.all.count}"
-end
+      task database_counts: :environment do
+      puts "users: \#{UserRepository.new.all.count}"
+      end
 EOF
 
       bundle_exec "rake database_counts"
