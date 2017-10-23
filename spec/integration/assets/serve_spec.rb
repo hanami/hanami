@@ -7,23 +7,23 @@ RSpec.describe "assets", type: :cli do
         generate "action web home#index --url=/"
 
         write "apps/web/assets/javascripts/application.css.sass", <<-EOF
-$font-family: Helvetica, sans-serif
+        $font-family: Helvetica, sans-serif
 
-body
-  font: 100% $font-family
+        body
+          font: 100% $font-family
 EOF
         rewrite "apps/web/templates/application.html.erb", <<-EOF
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Web</title>
-    <%= favicon %>
-    <%= stylesheet 'application' %>
-  </head>
-  <body>
-    <%= yield %>
-  </body>
-</html>
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Web</title>
+            <%= favicon %>
+            <%= stylesheet 'application' %>
+          </head>
+          <body>
+            <%= yield %>
+          </body>
+        </html>
 EOF
 
         server do
@@ -53,7 +53,7 @@ EOF
         )
 
         write "apps/web/assets/javascripts/application.js", <<-EOF
-console.log('test');
+        console.log('test');
 EOF
 
         hanami "assets precompile"
