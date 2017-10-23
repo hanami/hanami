@@ -5,19 +5,19 @@ RSpec.describe Hanami::Middleware, type: :cli do
         generate "action web home#index"
         replace "apps/web/application.rb", "Application < Hanami::Application", <<-END
 
-class RackApp
-  def initialize(app, options = {}, &blk)
-    @app     = app
-    @options = options
-    @blk     = blk
-  end
+        class RackApp
+          def initialize(app, options = {}, &blk)
+            @app     = app
+            @options = options
+            @blk     = blk
+          end
 
-  def call(env)
-    @app.call(env)
-  end
-end
+          def call(env)
+            @app.call(env)
+          end
+        end
 
-class Application < Hanami::Application
+        class Application < Hanami::Application
 END
 
         replace "apps/web/application.rb", "configure do", <<-END
