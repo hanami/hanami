@@ -32,8 +32,8 @@ RSpec.describe "hanami destroy", type: :cli do
     it "fails with missing argument" do
       with_project do
         output = <<-OUT
-ERROR: "hanami destroy application" was called with no arguments
-Usage: "hanami destroy application NAME"
+        ERROR: "hanami destroy application" was called with no arguments
+        Usage: "hanami destroy application NAME"
 OUT
         run_command "hanami destroy app", output
       end
@@ -42,8 +42,8 @@ OUT
     xit "fails with unknown app" do
       with_project do
         output = <<-OUT
-ERROR: "hanami destroy application" was called with no arguments
-Usage: "hanami application NAME"
+        ERROR: "hanami destroy application" was called with no arguments
+        Usage: "hanami application NAME"
 OUT
         run_command "hanami destroy app unknown", output
       end
