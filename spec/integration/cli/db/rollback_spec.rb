@@ -40,6 +40,30 @@ RSpec.describe "hanami db", type: :cli do
       end
     end
 
+    it "returns an error when steps isn't an integer" do
+      with_project do
+        generate_migrations
+
+        hanami "db create"
+        hanami "db migrate"
+
+        output = "the number of steps must be a positive integer (you entered `quindici')."
+        run_command "hanami db rollback quindici", output, exit_status: 1
+      end
+    end
+
+    it "returns an error when steps is 0" do
+      with_project do
+        generate_migrations
+
+        hanami "db create"
+        hanami "db migrate"
+
+        output = "the number of steps must be a positive integer (you entered `0')."
+        run_command "hanami db rollback 0", output, exit_status: 1
+      end
+    end
+
     it 'prints help message' do
       with_project do
         output = <<-OUT
