@@ -1,6 +1,10 @@
 # Hanami
 The web, with simplicity.
 
+## v1.1.0 - 2017-10-25
+### Fixed
+- [Luca Guidi] Ensure `hanami db rollback` steps to be a positive integer
+
 ## v1.1.0.rc1 - 2017-10-16
 ### Added
 - [Yuji Ueki] Generate RSpec tests with `:type` metadata (eg `type: :action`)
