@@ -17,25 +17,25 @@ RSpec.describe "hanami generate", type: :cli do
         # apps/web/controllers/authors/index.rb
         #
         expect('apps/web/controllers/authors/index.rb').to have_file_content <<-END
-module Web::Controllers::Authors
-  class Index
-    include Web::Action
+        module Web::Controllers::Authors
+          class Index
+            include Web::Action
 
-    def call(params)
-    end
-  end
-end
+            def call(params)
+            end
+          end
+        end
 END
 
         #
         # apps/web/views/authors/index.rb
         #
         expect('apps/web/views/authors/index.rb').to have_file_content <<-END
-module Web::Views::Authors
-  class Index
-    include Web::View
-  end
-end
+        module Web::Views::Authors
+          class Index
+            include Web::View
+          end
+        end
 END
 
         #
@@ -48,8 +48,8 @@ END
     it "fails with missing arguments" do
       with_project('bookshelf_generate_action_without_args') do
         output = <<-OUT
-ERROR: "hanami generate actions" was called with no arguments
-Usage: "hanami generate action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
+        ERROR: "hanami generate actions" was called with no arguments
+        Usage: "hanami generate action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
 OUT
 
         run_command "hanami generate action", output # , exit_status: 1 FIXME: Thor exit with 0
@@ -59,8 +59,8 @@ OUT
     it "fails with missing app" do
       with_project('bookshelf_generate_action_without_app') do
         output = <<-OUT
-ERROR: "hanami generate action" was called with arguments ["home#index"]
-Usage: "hanami generate action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
+        ERROR: "hanami generate action" was called with arguments ["home#index"]
+        Usage: "hanami generate action APPLICATION_NAME CONTROLLER_NAME#ACTION_NAME"
 OUT
 
         run_command "hanami generate action home#index", output # , exit_status: 1 FIXME: Thor exit with 0
@@ -103,24 +103,24 @@ OUT
       it "generates action" do
         with_project('bookshelf_generate_action_skip_view') do
           run_command "hanami generate action web status#check --skip-view", <<-OUT
-      create  spec/web/controllers/status/check_spec.rb
-      create  apps/web/controllers/status/check.rb
-      insert  apps/web/config/routes.rb
+          create  spec/web/controllers/status/check_spec.rb
+          create  apps/web/controllers/status/check.rb
+          insert  apps/web/config/routes.rb
 OUT
 
           #
           # apps/web/controllers/status/check.rb
           #
           expect('apps/web/controllers/status/check.rb').to have_file_content <<-END
-module Web::Controllers::Status
-  class Check
-    include Web::Action
+          module Web::Controllers::Status
+            class Check
+              include Web::Action
 
-    def call(params)
-      self.body = 'OK'
-    end
-  end
-end
+              def call(params)
+                self.body = 'OK'
+              end
+            end
+          end
 END
         end
       end
@@ -240,40 +240,40 @@ END
           # spec/web/controllers/books/index_spec.rb
           #
           expect('spec/web/controllers/books/index_spec.rb').to have_file_content <<-END
-require 'spec_helper'
-require_relative '../../../../apps/web/controllers/books/index'
+          require 'spec_helper'
+          require_relative '../../../../apps/web/controllers/books/index'
 
-describe Web::Controllers::Books::Index do
-  let(:action) { Web::Controllers::Books::Index.new }
-  let(:params) { Hash[] }
+          describe Web::Controllers::Books::Index do
+            let(:action) { Web::Controllers::Books::Index.new }
+            let(:params) { Hash[] }
 
-  it 'is successful' do
-    response = action.call(params)
-    response[0].must_equal 200
-  end
-end
+            it 'is successful' do
+              response = action.call(params)
+              response[0].must_equal 200
+            end
+          end
 END
 
           #
           # spec/web/views/books/index_spec.rb
           #
           expect('spec/web/views/books/index_spec.rb').to have_file_content <<-END
-require 'spec_helper'
-require_relative '../../../../apps/web/views/books/index'
+          require 'spec_helper'
+          require_relative '../../../../apps/web/views/books/index'
 
-describe Web::Views::Books::Index do
-  let(:exposures) { Hash[foo: 'bar'] }
-  let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }
-  let(:view)      { Web::Views::Books::Index.new(template, exposures) }
-  let(:rendered)  { view.render }
+          describe Web::Views::Books::Index do
+            let(:exposures) { Hash[foo: 'bar'] }
+            let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }
+            let(:view)      { Web::Views::Books::Index.new(template, exposures) }
+            let(:rendered)  { view.render }
 
-  it 'exposes #foo' do
-    skip 'This is an auto-generated test. Edit it and add your own tests.'
+            it 'exposes #foo' do
+              skip 'This is an auto-generated test. Edit it and add your own tests.'
 
-    # Example
-    view.foo.must_equal exposures.fetch(:foo)
-  end
-end
+              # Example
+              view.foo.must_equal exposures.fetch(:foo)
+            end
+          end
 END
         end
       end
@@ -293,38 +293,38 @@ END
           # spec/web/controllers/books/index_spec.rb
           #
           expect('spec/web/controllers/books/index_spec.rb').to have_file_content <<-END
-require_relative '../../../../apps/web/controllers/books/index'
+          require_relative '../../../../apps/web/controllers/books/index'
 
-RSpec.describe Web::Controllers::Books::Index do
-  let(:action) { described_class.new }
-  let(:params) { Hash[] }
+          RSpec.describe Web::Controllers::Books::Index do
+            let(:action) { described_class.new }
+            let(:params) { Hash[] }
 
-  it 'is successful' do
-    response = action.call(params)
-    expect(response[0]).to eq 200
-  end
-end
+            it 'is successful' do
+              response = action.call(params)
+              expect(response[0]).to eq 200
+            end
+          end
 END
 
           #
           # spec/web/views/books/index_spec.rb
           #
           expect('spec/web/views/books/index_spec.rb').to have_file_content <<-END
-require_relative '../../../../apps/web/views/books/index'
+          require_relative '../../../../apps/web/views/books/index'
 
-RSpec.describe Web::Views::Books::Index do
-  let(:exposures) { Hash[foo: 'bar'] }
-  let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }
-  let(:view)      { described_class.new(template, exposures) }
-  let(:rendered)  { view.render }
+          RSpec.describe Web::Views::Books::Index do
+            let(:exposures) { Hash[foo: 'bar'] }
+            let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }
+            let(:view)      { described_class.new(template, exposures) }
+            let(:rendered)  { view.render }
 
-  it 'exposes #foo' do
-    pending 'This is an auto-generated test. Edit it and add your own tests.'
+            it 'exposes #foo' do
+              pending 'This is an auto-generated test. Edit it and add your own tests.'
 
-    # Example
-    expect(view.foo).to eq exposures.fetch(:foo)
-  end
-end
+              # Example
+              expect(view.foo).to eq exposures.fetch(:foo)
+            end
+          end
 END
         end
       end
