@@ -68,16 +68,16 @@ RSpec.describe "hanami generate", type: :cli do
           # apps/admin/templates/application.html.erb
           #
           expect("apps/admin/templates/application.html.erb").to have_file_content <<-END
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>#{app_name}</title>
-    <%= favicon %>
-  </head>
-  <body>
-    <%= yield %>
-  </body>
-</html>
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>#{app_name}</title>
+              <%= favicon %>
+            </head>
+            <body>
+              <%= yield %>
+            </body>
+          </html>
 END
         end
       end
@@ -98,13 +98,13 @@ END
           # apps/admin/templates/application.html.haml
           #
           expect("apps/admin/templates/application.html.haml").to have_file_content <<-END
-!!!
-%html
-  %head
-    %title #{app_name}
-    = favicon
-  %body
-    = yield
+          !!!
+          %html
+            %head
+              %title #{app_name}
+              = favicon
+            %body
+              = yield
 END
         end
       end
@@ -125,14 +125,14 @@ END
           # apps/admin/templates/application.html.slim
           #
           expect("apps/admin/templates/application.html.slim").to have_file_content <<-END
-doctype html
-html
-  head
-    title
-      | #{app_name}
-    = favicon
-  body
-    = yield
+          doctype html
+          html
+            head
+              title
+                | #{app_name}
+              = favicon
+            body
+              = yield
 END
         end
       end
