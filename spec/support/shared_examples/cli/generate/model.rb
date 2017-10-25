@@ -44,7 +44,7 @@ END
         child.to_s.include?("create_#{table_name}")
       end
       expect(file).to_not be_nil, "Expected to find a migration matching: create_#{table_name}.\nFound: #{migrations.map(&:basename).join(' ')}"
-            
+
       expect(file.to_s).to have_file_content <<-END
 Hanami::Model.migration do
   change do
@@ -62,7 +62,7 @@ END
       # spec/<project>/entities/<model>_spec.rb
       #
       expect("spec/#{project}/entities/#{model}_spec.rb").to have_file_content <<-END
-require 'spec_helper'
+require_relative '../../spec_helper'
 
 describe #{class_name} do
   # place your tests here
@@ -73,7 +73,7 @@ END
       # spec/<project>/repositories/<model>_repository_spec.rb
       #
       expect("spec/#{project}/repositories/#{model}_repository_spec.rb").to have_file_content <<-END
-require 'spec_helper'
+require_relative '../../spec_helper'
 
 describe #{class_name}Repository do
   # place your tests here

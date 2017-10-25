@@ -8,6 +8,29 @@ module Hanami
   #
   # The implementation is thread-safe
   #
+  # @example
+  #   Hanami::Components.resolved('repo') { UserRepository.new }
+  #   Hanami::Components['repository.users'] # => #<UserRepository relations=[...]>
+  #
+  # Also you can use Hanami::Components with dry-auto_inject
+  #
+  # @example
+  #   Hanami::Components.resolved('repo') { UserRepository.new }
+  #   Hanami::Components['repository.users'] # => #<UserRepository relations=[...]>
+  #
+  #   HanamiImport = Dry::AutoInject(Hanami::Components)
+  #
+  #   class CreateUser
+  #     include HanamiImport['repository.users']
+  #
+  #     def call(payload)
+  #       users.create(payload)
+  #     end
+  #   end
+  #
+  #   CreateUser.new.call # => #<User:...>
+  #   CreateUser.new(users: MockRepository.new).call # => #<MockUser:...>
+  #
   # @since 0.9.0
   # @api private
   module Components
@@ -87,7 +110,13 @@ module Hanami
       end
     end
 
-    # Return the value of an already resolved component.
+    # Return the value of an already resolved component. Or raise error for not resolved component.
+    #
+    # @example
+    #   Hanami::Components.resolved('repository.users') { UserRepository.new }
+    #
+    #   Hanami::Components['repository.users'] # => #<UserRepository relations=[...]>
+    #   Hanami::Components['repository.other'] # => error
     #
     # @param name [String] the component name
     #
@@ -105,6 +134,15 @@ module Hanami
     # This is used for code reloading.
     #
     # NOTE: this MUST NOT be used unless you know what you're doing.
+    #
+    # @example
+    #   Hanami::Components.resolved('repository.users') { UserRepository.new }
+    #   Hanami::Components['repository.users'] # => #<UserRepository relations=[...]>
+    #
+    #   Hanami::Components.release
+    #   Hanami::Components['repository.users']
+    #   # => ArgumentError: Component not resolved: `repo'.
+    #   # => Resolved components are: ...
     #
     # @since 1.0.0
     # @api private

@@ -10,7 +10,7 @@ remove_bundler_cache() {
 }
 
 uninstall_hanami_gems() {
-  declare -a frameworks=(hanami hanami-assets hanami-mailer hanami-controller hanami-view hanami-model hanami-helper hanami-router hanami-validations hanami-utils)
+  declare -a frameworks=(hanami hanami-assets hanami-mailer hanami-controller hanami-view hanami-model hanami-helper hanami-router hanami-validations hanami-cli hanami-utils)
 
   for framework in "${frameworks[@]}"
   do

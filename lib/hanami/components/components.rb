@@ -28,7 +28,13 @@ module Hanami
       end
 
       resolve do |configuration|
-        Hanami::Logger.new(Hanami.environment.project_name, *configuration.logger) unless configuration.logger.nil?
+        if configuration.logger.is_a?(Array)
+          if configuration.logger.first.is_a?(::Logger)
+            configuration.logger.first
+          else
+            Hanami::Logger.new(Hanami.environment.project_name, *configuration.logger)
+          end
+        end
       end
     end
 
@@ -106,6 +112,35 @@ module Hanami
         if Components['model.bundled']
           Hanami::Model.instance_variable_set(:@configuration, nil) if Hanami.code_reloading?
           Hanami::Model.configure(&configuration.model)
+          Hanami::Model.configuration
+        end
+      end
+    end
+
+    # Tries to evaluate hanami-model configuration, if available for the project
+    # and it doesn't activate migrations logger
+    #
+    # @since 1.1.0
+    # @api private
+    #
+    # @example With hanami-model
+    #   Hanami::Components.resolve('model.configuration.no_logger')
+    #   Hanami::Components['model.configuration.no_logger'].class # => Hanami::Model::Configuration
+    #
+    # @example Without hanami-model
+    #   Hanami::Components.resolve('model.configuration.no_logger')
+    #   Hanami::Components['model.configuration.no_logger'].class # => NilClass
+    register 'model.configuration.no_logger' do
+      requires 'model.bundled'
+
+      prepare do
+        require 'stringio'
+      end
+
+      resolve do |configuration|
+        if Components['model.bundled']
+          Hanami::Model.configure(&configuration.model)
+          Hanami::Model.config.migrations_logger(StringIO.new)
           Hanami::Model.configuration
         end
       end

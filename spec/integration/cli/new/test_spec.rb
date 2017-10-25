@@ -5,7 +5,8 @@ RSpec.describe "hanami new", type: :cli do
         project = 'bookshelf_minitest'
         output  = [
           "create  spec/spec_helper.rb",
-          "create  spec/features_helper.rb"
+          "create  spec/features_helper.rb",
+          "create  spec/web/views/application_layout_spec.rb"
         ]
 
         run_command "hanami new #{project} --test=minitest", output
@@ -45,6 +46,23 @@ class MiniTest::Spec
   include Capybara::DSL
 end
 END
+
+          #
+          # spec/<app>/views/application_layout_spec.rb
+          #
+          expect("spec/web/views/application_layout_spec.rb").to have_file_content <<-END
+require "spec_helper"
+
+describe Web::Views::ApplicationLayout do
+  let(:layout)   { Web::Views::ApplicationLayout.new(template, {}) }
+  let(:rendered) { layout.render }
+  let(:template) { Hanami::View::Template.new('apps/web/templates/application.html.erb') }
+
+  it 'contains application name' do
+    rendered.must_include('Web')
+  end
+end
+END
         end
       end
     end # minitest
@@ -53,9 +71,11 @@ END
       it "generates project" do
         project = 'bookshelf_rspec'
         output  = [
+          "create  .rspec",
           "create  spec/spec_helper.rb",
           "create  spec/features_helper.rb",
-          "create  spec/support/capybara.rb"
+          "create  spec/support/capybara.rb",
+          "create  spec/web/views/application_layout_spec.rb"
         ]
 
         run_command "hanami new #{project} --test=rspec", output
@@ -65,6 +85,14 @@ END
           # .hanamirc
           #
           expect('.hanamirc').to have_file_content(%r{test=rspec})
+
+          #
+          # .rspec
+          #
+          expect(".rspec").to have_file_content <<-END
+--color
+--require spec_helper
+END
 
           #
           # spec/spec_helper.rb
@@ -206,6 +234,25 @@ module RSpec
   end
 end
 END
+
+          #
+          # spec/<app>/views/application_layout_spec.rb
+          #
+          expect("spec/web/views/application_layout_spec.rb").to have_file_content <<-END
+require "spec_helper"
+
+RSpec.describe Web::Views::ApplicationLayout, type: :view do
+  let(:layout)   { Web::Views::ApplicationLayout.new(template, {}) }
+  let(:rendered) { layout.render }
+  let(:template) { Hanami::View::Template.new('apps/web/templates/application.html.erb') }
+
+  it 'contains application name' do
+    expect(rendered).to include('Web')
+  end
+end
+END
+
+
         end
       end
     end # rspec

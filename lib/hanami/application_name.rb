@@ -102,9 +102,7 @@ module Hanami
     # @since 0.2.1
     # @api private
     def sanitize(name)
-      Utils::String.new(
-        name.strip
-      ).namespace.underscore.to_s
+      Utils::String.transform(name.strip, :namespace, :underscore)
     end
   end
 end

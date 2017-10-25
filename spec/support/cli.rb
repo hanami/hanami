@@ -4,7 +4,7 @@ require 'pathname'
 
 module RSpec
   module Support
-    module Cli
+    module CLI
       def self.included(spec)
         spec.before do
           aruba = Pathname.new(Dir.pwd).join('tmp', 'aruba')
@@ -21,6 +21,11 @@ module RSpec
 
         match_output(output)
         expect(last_command_started).to have_exit_status(exit_status)
+      end
+
+      def run_command_with_clean_env(cmd, successful: true)
+        result = ::Bundler.clean_system(cmd, out: File::NULL)
+        expect(result).to be(successful)
       end
 
       def match_output(output)
@@ -43,5 +48,5 @@ end
 
 RSpec.configure do |config|
   config.include Aruba::Api,          type: :cli
-  config.include RSpec::Support::Cli, type: :cli
+  config.include RSpec::Support::CLI, type: :cli
 end

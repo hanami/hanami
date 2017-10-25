@@ -1,0 +1,11 @@
+require "spec_helper"
+
+describe <%= app.classify %>::Views::ApplicationLayout do
+  let(:layout)   { <%= app.classify %>::Views::ApplicationLayout.new(template, {}) }
+  let(:rendered) { layout.render }
+  let(:template) { Hanami::View::Template.new('apps/<%= app %>/templates/application.html.<%= template %>') }
+
+  it 'contains application name' do
+    rendered.must_include('<%= app.classify %>')
+  end
+end

@@ -457,4 +457,101 @@ EOF
       end
     end
   end
+
+  it 'prints help message' do
+    with_project do
+      output = <<-OUT
+Command:
+  hanami server
+
+Usage:
+  hanami server
+
+Description:
+  Start Hanami server (only for development)
+
+Options:
+  --server=VALUE                  	# Force a server engine (eg, webrick, puma, thin, etc..)
+  --host=VALUE                    	# The host address to bind to
+  --port=VALUE, -p VALUE          	# The port to run the server on
+  --debug=VALUE                   	# Turn on debug output
+  --warn=VALUE                    	# Turn on warnings
+  --daemonize=VALUE               	# Daemonize the server
+  --pid=VALUE                     	# Path to write a pid file after daemonize
+  --[no-]code-reloading           	# Code reloading, default: true
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami server                     # Basic usage (it uses the bundled server engine)
+  hanami server --server=webrick    # Force `webrick` server engine
+  hanami server --host=0.0.0.0      # Bind to a host
+  hanami server --port=2306         # Bind to a port
+  hanami server --no-code-reloading # Disable code reloading
+OUT
+
+      run_command 'hanami server --help', output
+    end
+  end
+
+  context "with HANAMI_APPS ENV variable" do
+    it "loads only specific application" do
+      with_project do
+        generate "app admin"
+
+        remove_line "config/environment.rb", "require_relative '../apps/admin/application'"
+        remove_line "config/environment.rb", "mount Admin::Application"
+
+        remove_line "config/environment.rb", "require_relative '../apps/web/application'"
+        remove_line "config/environment.rb", "mount Web::Application"
+
+        inject_line_after "config/environment.rb", "Hanami.configure", <<-EOL
+  if Hanami.app?(:admin)
+    require_relative '../apps/admin/application'
+    mount Admin::Application, at: '/admin'
+  end
+
+  if Hanami.app?(:web)
+    require_relative '../apps/web/application'
+    mount Web::Application, at: '/'
+  end
+EOL
+        generate "action web home#index --url=/"
+
+        rewrite "apps/web/controllers/home/index.rb", <<-EOF
+module Web::Controllers::Home
+  class Index
+    include Web::Action
+
+    def call(params)
+      self.body = "app: web"
+    end
+  end
+end
+EOF
+        generate "action admin home#index --url=/"
+
+        rewrite "apps/admin/controllers/home/index.rb", <<-EOF
+module Web::Controllers::Home
+  class Index
+    include Admin::Action
+
+    def call(params)
+      self.body = "app: admin"
+    end
+  end
+end
+EOF
+
+        RSpec::Support::Env['HANAMI_APPS'] = 'web'
+
+        server do
+          visit "/"
+          expect(page).to have_content("app: web")
+
+          visit "/admin"
+          expect(page).to have_content("Not Found")
+        end
+      end
+    end
+  end
 end

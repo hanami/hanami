@@ -1,2 +1,0 @@
-module <%= config[:project_module] %>
-end

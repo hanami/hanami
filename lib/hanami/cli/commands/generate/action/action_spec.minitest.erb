@@ -1,0 +1,11 @@
+require_relative '../../../spec_helper'
+
+describe <%= app.classify %>::Controllers::<%= classified_controller_name %>::<%= action.classify %> do
+  let(:action) { <%= app.classify %>::Controllers::<%= classified_controller_name %>::<%= action.classify %>.new }
+  let(:params) { Hash[] }
+
+  it 'is successful' do
+    response = action.call(params)
+    response[0].must_equal 200
+  end
+end

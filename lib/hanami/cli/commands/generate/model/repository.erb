@@ -1,0 +1,5 @@
+class <%= model.classify %>Repository < Hanami::Repository
+<%- if override_relation_name -%>
+  self.relation = :<%= relation %>
+<%- end -%>
+end

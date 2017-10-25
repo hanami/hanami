@@ -58,7 +58,7 @@ module Hanami
       def middleware
         middleware = case @adapter
                      when Symbol
-                       RACK_NAMESPACE % Utils::String.new(@adapter).classify
+                       RACK_NAMESPACE % Utils::String.classify(@adapter)
                      else
                        @adapter
                      end

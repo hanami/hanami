@@ -26,7 +26,7 @@ EOF
         bundle_exec "rake"
 
         # The default mailer_spec fails on purpose so you set the correct delivery information.
-        expect(out).to include("2 examples, 1 failure")
+        expect(out).to include("3 examples, 1 failure")
 
         assert_development_data
       end

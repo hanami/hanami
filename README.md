@@ -25,6 +25,7 @@ which provides the glue that ties all the parts together:
 * [**Hanami::Helpers**](https://github.com/hanami/helpers) - View helpers for Ruby applications
 * [**Hanami::Mailer**](https://github.com/hanami/mailer) - Mail for Ruby applications
 * [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby
+* [**Hanami::CLI**](https://github.com/hanami/cli) - Ruby command line interface
 * [**Hanami::Utils**](https://github.com/hanami/utils) - Ruby core extensions and class utilities
 
 These components are designed to be used independently or together in a Hanami application.

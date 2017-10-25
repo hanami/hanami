@@ -2,12 +2,12 @@ RSpec.describe "Rake: environment", type: :cli do
   it "loads the project" do
     with_project do
       generate_migrations
-      generate_model "user"
+      generate_model "author"
       hanami "db prepare"
 
       append "Rakefile", <<-EOF
 task database_counts: :environment do
-puts "users: \#{UserRepository.new.all.count}"
+puts "users: \#{AuthorRepository.new.all.count}"
 end
 EOF
 

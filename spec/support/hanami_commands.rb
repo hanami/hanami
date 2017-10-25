@@ -1,6 +1,7 @@
 require_relative 'bundler'
 require_relative 'files'
 require_relative 'retry'
+require_relative 'random_port'
 require 'hanami/utils/string'
 
 module RSpec
@@ -9,12 +10,16 @@ module RSpec
       private
 
       def rackup(args = {}, &blk)
-        bundle_exec "rackup -p 2300" do |_, _, wait_thr|
+        args[:port] ||= RandomPort.call
+
+        bundle_exec "rackup -p #{args[:port]}" do |_, _, wait_thr|
           exec_server_tests(args, wait_thr, &blk)
         end
       end
 
       def server(args = {}, &blk)
+        args[:port] ||= RandomPort.call
+
         hanami "server#{_hanami_server_args(args)}" do |_, _, wait_thr|
           exec_server_tests(args, wait_thr, &blk)
         end
@@ -24,8 +29,8 @@ module RSpec
         bundle_exec("hanami #{cmd}", env: env, &blk)
       end
 
-      def console(&blk)
-        hanami "console", &blk
+      def console(args = "", &blk)
+        hanami "console#{args}", &blk
       end
 
       def db_console(&blk)

@@ -1,6 +1,40 @@
 # Hanami
 The web, with simplicity.
 
+## v1.1.0 - 2017-10-25
+### Fixed
+- [Luca Guidi] Ensure `hanami db rollback` steps to be a positive integer
+
+## v1.1.0.rc1 - 2017-10-16
+### Added
+- [Yuji Ueki] Generate RSpec tests with `:type` metadata (eg `type: :action`)
+- [Kirill] Add `--relation` option for `hanami generate model` (eg `bundle exec hanami generate model user --relation=accounts`)
+
+## v1.1.0.beta3 - 2017-10-04
+### Fixed
+- [Luca Guidi] Don't require `:plugins` group when running `hanami new`
+
+## v1.1.0.beta2 - 2017-10-03
+### Added
+- [Luca Guidi] Introduce `:plugins` group for `Gemfile` in order enable Hanami plugin gems
+- [Alfonso Uceda] CLI: `hanami db rollback` to revert one or more migrations at once
+
+### Fixed
+- [Gabriel Gizotti] Fix generate/destroy for nested actions
+
+## v1.1.0.beta1 - 2017-08-11
+### Added
+- [Ben Johnson] Allow to use custom logger as `Hanami.logger` (eg. `Hanami.configure { logger Timber::Logger.new($stdout) }`)
+- [akhramov] Generate spec file for application layout when generating a new app
+- [Anton Davydov] Generate `README.md` file for new projects
+- [Anton Davydov] Selectively boot apps via `HANAMI_APPS=web bundle exec hanami server`
+- [Marion Duprey & Gabriel Gizotti] Log payload (params) for non-GET HTTP requests
+- [Marion Duprey & Gabriel Gizotti] Filter sensitive data in logs
+
+### Fixed
+- [jarosluv] Ensure to remove the correct migration file when executing `hanami db destroy model`
+- [sovetnik] Fix require path for Minitest spec helper
+
 ## v1.0.0 - 2017-04-06
 
 ## v1.0.0.rc1 - 2017-03-31
@@ -19,6 +53,7 @@ The web, with simplicity.
 - [Tobias Sandelius] Don't mount `Hanami::CommonLogger` middleware if logging is disabled for the project.
 - [Anton Davydov] Don't configure mailers, if it's mailing is disabled for the project.
 - [Marcello Rocha] Ensure code reloading don't misconfigure mailer settings
+- [Jimmy Börjesson] Make `apps/web/application.rb` code to wrap around the 80th column
 
 ### Changed
 - [Luca Guidi] Removed deprecated `ApplicationConfiguration#default_format`. Use `#default_request_format` instead.

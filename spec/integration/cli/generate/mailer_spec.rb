@@ -2,8 +2,8 @@ RSpec.describe "hanami generate", type: :cli do
   describe 'mailer' do
     context 'generates a new mailer' do
       let(:output) do
-        ["create  spec/bookshelf_generate_mailer/mailers/welcome_spec.rb",
-         "create  lib/bookshelf_generate_mailer/mailers/welcome.rb",
+        ["create  lib/bookshelf_generate_mailer/mailers/welcome.rb",
+         "create  spec/bookshelf_generate_mailer/mailers/welcome_spec.rb",
          "create  lib/bookshelf_generate_mailer/mailers/templates/welcome.txt.erb",
          "create  lib/bookshelf_generate_mailer/mailers/templates/welcome.html.erb"]
       end
@@ -36,7 +36,7 @@ END
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
           #
           expect('spec/bookshelf_generate_mailer/mailers/welcome_spec.rb').to have_file_content <<-END
-require 'spec_helper'
+require_relative '../../spec_helper'
 
 describe Mailers::Welcome do
   it 'delivers email' do
@@ -54,7 +54,7 @@ END
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
           #
           expect('spec/bookshelf_generate_mailer/mailers/welcome_spec.rb').to have_file_content <<-END
-RSpec.describe Mailers::Welcome do
+RSpec.describe Mailers::Welcome, type: :mailer do
   it 'delivers email' do
     mail = Mailers::Welcome.deliver
   end
@@ -91,10 +91,42 @@ END
       with_project('bookshelf_generate_mailer_without_args') do
         output = <<-OUT
 ERROR: "hanami generate mailer" was called with no arguments
-Usage: "hanami generate mailer NAME"
+Usage: "hanami generate mailer MAILER"
 OUT
 
-        run_command "hanami generate mailer", output
+        run_command "hanami generate mailer", output, exit_status: 1
+      end
+    end
+
+    it 'prints help message' do
+      with_project do
+        output = <<-OUT
+Command:
+  hanami generate mailer
+
+Usage:
+  hanami generate mailer MAILER
+
+Description:
+  Generate a mailer
+
+Arguments:
+  MAILER              	# REQUIRED The mailer name (eg. `welcome`)
+
+Options:
+  --from=VALUE                    	# The default `from` field of the mail
+  --to=VALUE                      	# The default `to` field of the mail
+  --subject=VALUE                 	# The mail subject
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami generate mailer welcome                                         # Basic usage
+  hanami generate mailer welcome --from="noreply@example.com"            # Generate with default `from` value
+  hanami generate mailer announcement --to="users@example.com"           # Generate with default `to` value
+  hanami generate mailer forgot_password --subject="Your password reset" # Generate with default `subject`
+OUT
+
+        run_command 'hanami generate mailer --help', output
       end
     end
   end

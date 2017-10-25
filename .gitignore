@@ -31,3 +31,4 @@ test/fixtures/rake/rake_tasks/db/*.sqlite
 test/fixtures/rake/rake_tasks_app/db/*.sqlite
 vendor
 .byebug_history
+.rubocop-*

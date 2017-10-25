@@ -1,0 +1,9 @@
+module <%= app.classify %>::Controllers::<%= classified_controller_name %>
+  class <%= action.classify %>
+    include <%= app.classify %>::Action
+
+    def call(params)
+      self.body = 'OK'
+    end
+  end
+end
