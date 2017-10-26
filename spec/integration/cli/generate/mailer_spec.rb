@@ -15,13 +15,13 @@ RSpec.describe "hanami generate", type: :cli do
           # lib/bookshelf_generate_mailer/mailers/welcome.rb
           #
           expect('lib/bookshelf_generate_mailer/mailers/welcome.rb').to have_file_content <<-END
-class Mailers::Welcome
-  include Hanami::Mailer
+          class Mailers::Welcome
+            include Hanami::Mailer
 
-  from    '<from>'
-  to      '<to>'
-  subject 'Hello'
-end
+            from    '<from>'
+            to      '<to>'
+            subject 'Hello'
+          end
 END
 
           expect('lib/bookshelf_generate_mailer/mailers/templates/welcome.txt.erb').to have_file_content ''
@@ -36,13 +36,13 @@ END
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
           #
           expect('spec/bookshelf_generate_mailer/mailers/welcome_spec.rb').to have_file_content <<-END
-require 'spec_helper'
+          require 'spec_helper'
 
-describe Mailers::Welcome do
-  it 'delivers email' do
-    mail = Mailers::Welcome.deliver
-  end
-end
+          describe Mailers::Welcome do
+            it 'delivers email' do
+              mail = Mailers::Welcome.deliver
+            end
+          end
 END
         end
       end
@@ -54,11 +54,11 @@ END
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
           #
           expect('spec/bookshelf_generate_mailer/mailers/welcome_spec.rb').to have_file_content <<-END
-RSpec.describe Mailers::Welcome do
-  it 'delivers email' do
-    mail = Mailers::Welcome.deliver
-  end
-end
+          RSpec.describe Mailers::Welcome do
+            it 'delivers email' do
+              mail = Mailers::Welcome.deliver
+            end
+          end
 END
         end
       end
@@ -76,13 +76,13 @@ END
         run_command "hanami generate mailer welcome --from=\"'mail@example.com'\" --to=\"'user@example.com'\" --subject=\"'Welcome'\"", output
 
         expect('lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb').to have_file_content <<-END
-class Mailers::Welcome
-  include Hanami::Mailer
+        class Mailers::Welcome
+          include Hanami::Mailer
 
-  from    'mail@example.com'
-  to      'user@example.com'
-  subject 'Welcome'
-end
+          from    'mail@example.com'
+          to      'user@example.com'
+          subject 'Welcome'
+        end
 END
       end
     end
@@ -90,8 +90,8 @@ END
     it "fails with missing arguments" do
       with_project('bookshelf_generate_mailer_without_args') do
         output = <<-OUT
-ERROR: "hanami generate mailer" was called with no arguments
-Usage: "hanami generate mailer NAME"
+        ERROR: "hanami generate mailer" was called with no arguments
+        Usage: "hanami generate mailer NAME"
 OUT
 
         run_command "hanami generate mailer", output
