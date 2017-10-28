@@ -30,8 +30,8 @@ RSpec.describe "hanami generate", type: :cli do
       it "fails" do
         with_project('bookshelf_generate_model_missing_arguments') do
           output = <<-END
-ERROR: "hanami generate model" was called with no arguments
-Usage: "hanami generate model NAME"
+          ERROR: "hanami generate model" was called with no arguments
+          Usage: "hanami generate model NAME"
 END
           run_command "hanami generate model", output # , exit_status: 1 FIXME: Thor exit with 0
         end
@@ -95,22 +95,22 @@ END
           # spec/<project>/entities/<model>_spec.rb
           #
           expect("spec/#{project}/entities/#{model}_spec.rb").to have_file_content <<-END
-require 'spec_helper'
+          require 'spec_helper'
 
-describe #{class_name} do
-  # place your tests here
-end
+          describe #{class_name} do
+            # place your tests here
+          end
 END
 
           #
           # spec/<project>/repositories/<model>_repository_spec.rb
           #
           expect("spec/#{project}/repositories/#{model}_repository_spec.rb").to have_file_content <<-END
-require 'spec_helper'
+          require 'spec_helper'
 
-describe #{class_name}Repository do
-  # place your tests here
-end
+          describe #{class_name}Repository do
+            # place your tests here
+          end
 END
         end
       end
@@ -134,18 +134,18 @@ END
           # spec/<project>/entities/<model>_spec.rb
           #
           expect("spec/#{project}/entities/#{model}_spec.rb").to have_file_content <<-END
-RSpec.describe #{class_name} do
-  # place your tests here
-end
+          RSpec.describe #{class_name} do
+            # place your tests here
+          end
 END
 
           #
           # spec/<project>/repositories/<model>_repository_spec.rb
           #
           expect("spec/#{project}/repositories/#{model}_repository_spec.rb").to have_file_content <<-END
-RSpec.describe BookRepository do
-  # place your tests here
-end
+          RSpec.describe BookRepository do
+            # place your tests here
+          end
 END
         end
       end
