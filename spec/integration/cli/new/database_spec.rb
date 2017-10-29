@@ -62,9 +62,9 @@ RSpec.describe "hanami new", type: :cli do
           # .gitignore
           #
           expect(".gitignore").to have_file_content <<-END
-/public/assets*
-/tmp
-          END
+          /public/assets*
+          /tmp
+END
         end
       end
     end # postgres
@@ -131,10 +131,10 @@ RSpec.describe "hanami new", type: :cli do
           # .gitignore
           #
           expect(".gitignore").to have_file_content <<-END
-/db/*.sqlite
-/public/assets*
-/tmp
-          END
+          /db/*.sqlite
+          /public/assets*
+          /tmp
+END
         end
       end
     end # sqlite
@@ -201,9 +201,9 @@ RSpec.describe "hanami new", type: :cli do
           # .gitignore
           #
           expect(".gitignore").to have_file_content <<-END
-/public/assets*
-/tmp
-          END
+          /public/assets*
+          /tmp
+END
         end
       end
     end # mysql
