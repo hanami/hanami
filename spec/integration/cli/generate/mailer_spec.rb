@@ -64,7 +64,7 @@ END
       end
     end
 
-    it 'generates mailer with options from, to, subject' do
+    it 'generates mailer with options from, to and subject with single quotes' do
       with_project('bookshelf_generate_mailer_with_options') do
         output = [
           "create  spec/bookshelf_generate_mailer_with_options/mailers/welcome_spec.rb",
@@ -73,7 +73,53 @@ END
           "create  lib/bookshelf_generate_mailer_with_options/mailers/templates/welcome.html.erb"
         ]
 
-        run_command "hanami generate mailer welcome --from=\"'mail@example.com'\" --to=\"'user@example.com'\" --subject=\"'Welcome'\"", output
+        run_command "hanami generate mailer welcome --from=\"'mail@example.com'\" --to=\"'user@example.com'\" --subject=\"'Let\'s start'\"", output
+
+        expect('lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb').to have_file_content <<-END
+class Mailers::Welcome
+  include Hanami::Mailer
+
+  from    'mail@example.com'
+  to      'user@example.com'
+  subject 'Let\'s start'
+end
+END
+      end
+    end
+
+    it 'generates mailer with options from, to and subject with double quotes' do
+      with_project('bookshelf_generate_mailer_with_options') do
+        output = [
+          "create  spec/bookshelf_generate_mailer_with_options/mailers/welcome_spec.rb",
+          "create  lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb",
+          "create  lib/bookshelf_generate_mailer_with_options/mailers/templates/welcome.txt.erb",
+          "create  lib/bookshelf_generate_mailer_with_options/mailers/templates/welcome.html.erb"
+        ]
+
+        run_command "hanami generate mailer welcome --from='\"mail@example.com\"' --to='\"user@example.com\"' --subject='\"Come on \"Folks\"\"'", output
+
+        expect('lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb').to have_file_content <<-END
+class Mailers::Welcome
+  include Hanami::Mailer
+
+  from    'mail@example.com'
+  to      'user@example.com'
+  subject 'Come on \"Folks\"'
+end
+END
+      end
+    end
+
+    it 'generates mailer with options from, to and subject without quotes' do
+      with_project('bookshelf_generate_mailer_with_options') do
+        output = [
+          "create  spec/bookshelf_generate_mailer_with_options/mailers/welcome_spec.rb",
+          "create  lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb",
+          "create  lib/bookshelf_generate_mailer_with_options/mailers/templates/welcome.txt.erb",
+          "create  lib/bookshelf_generate_mailer_with_options/mailers/templates/welcome.html.erb"
+        ]
+
+        run_command "hanami generate mailer welcome --from=mail@example.com --to=user@example.com --subject=Welcome", output
 
         expect('lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb').to have_file_content <<-END
 class Mailers::Welcome
