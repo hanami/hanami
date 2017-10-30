@@ -108,6 +108,7 @@ $ > hanami new fancy_app --hanami-head=true
     method_option :template, desc: "Template engine (#{Hanami::Generators::TemplateEngine::SUPPORTED_ENGINES.join('/')})", default: Hanami::Generators::TemplateEngine::DEFAULT_ENGINE
     method_option :test, desc: "Project test framework (#{Hanami::Generators::TestFramework::VALID_FRAMEWORKS.join('/')})", default: Hanami::Hanamirc::DEFAULT_TEST_SUITE
     method_option :hanami_head, desc: 'Use hanami HEAD (true/false)', type: :boolean, default: false
+    method_option :run_bundler, desc: 'Run `bundle install` command after project generating (true/false)', type: :boolean, default: false
     method_option :help, desc: 'Displays the usage method'
     # @api private
     def new(application_name=nil)

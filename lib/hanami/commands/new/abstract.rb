@@ -123,6 +123,13 @@ module Hanami
         end
 
         # @api private
+        def run_bundler
+          return unless run_bundler?
+
+          generator.run("bundle install --binstubs", capture: false)
+        end
+
+        # @api private
         def git_dir_present?
           File.directory?(target.join('.git'))
         end
@@ -135,6 +142,11 @@ module Hanami
         # @api private
         def hanami_head?
           options.fetch(:hanami_head, false)
+        end
+
+        # @api private
+        def run_bundler?
+          options.fetch(:run_bundler, false)
         end
 
         # @api private

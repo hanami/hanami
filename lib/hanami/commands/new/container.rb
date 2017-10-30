@@ -27,6 +27,7 @@ module Hanami
             project_name:         project_name,
             project_module:       project_module,
             hanami_head:          hanami_head?,
+            run_bundler:          run_bundler?,
             code_reloading:       code_reloading?,
             test:                 test_framework.framework,
             database:             database_config.type,
@@ -41,6 +42,7 @@ module Hanami
         def post_process_templates
           init_git
           generate_app
+          run_bundler
         end
 
         private

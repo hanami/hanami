@@ -30,6 +30,7 @@ module Hanami
             classified_app_name:  classified_app_name,
             application_base_url: application_base_url,
             hanami_head:          hanami_head?,
+            run_bundler:          run_bundler?,
             test:                 test_framework.framework,
             database:             database_config.type,
             database_config:      database_config.to_hash,
@@ -42,6 +43,7 @@ module Hanami
         # @api private
         def post_process_templates
           init_git
+          run_bundler
         end
 
         private
