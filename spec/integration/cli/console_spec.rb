@@ -25,18 +25,18 @@ RSpec.describe "hanami console", type: :cli do
     it "starts console without hanami-model" do
       project_without_hanami_model("bookshelf", gems: ['dry-struct'], console: :irb) do
         write "lib/entities/access_token.rb", <<-EOF
-require 'dry-struct'
-require 'securerandom'
+        require 'dry-struct'
+        require 'securerandom'
 
-module Types
-  include Dry::Types.module
-end
+        module Types
+          include Dry::Types.module
+        end
 
-class AccessToken < Dry::Struct
-  attribute :id,     Types::String.default { SecureRandom.uuid }
-  attribute :secret, Types::String
-  attribute :digest, Types::String
-end
+        class AccessToken < Dry::Struct
+          attribute :id,     Types::String.default { SecureRandom.uuid }
+          attribute :secret, Types::String
+          attribute :digest, Types::String
+        end
 EOF
         console do |input, _, _|
           input.puts("AccessToken.new(id: '1', secret: 'shh', digest: 'def')")
