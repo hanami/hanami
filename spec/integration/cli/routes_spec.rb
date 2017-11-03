@@ -4,11 +4,11 @@ RSpec.describe "hanami routes", type: :cli do
       generate "app admin"
 
       write "lib/ping.rb", <<-EOF
-class Ping
-  def call(env)
-    [200, {}, ["PONG"]]
-  end
-end
+      class Ping
+        def call(env)
+          [200, {}, ["PONG"]]
+        end
+      end
 EOF
 
       unshift "config/environment.rb", "require_relative '../lib/ping'"
