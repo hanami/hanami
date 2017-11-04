@@ -43,8 +43,9 @@ RSpec.describe 'hanami server', type: :cli do
       with_project do
         server do
           write "apps/web/assets/javascripts/application.js", <<-EOF
-console.log('test');
+          console.log('test');
 EOF
+          
           visit "/assets/application.js"
           expect(page).to have_content("console.log('test');")
         end
@@ -61,19 +62,20 @@ EOF
 
         generate "action web books#show --url=/books/:id"
         rewrite  "apps/web/controllers/books/show.rb", <<-EOF
-module Web::Controllers::Books
-  class Show
-    include Web::Action
-    expose :book
+        module Web::Controllers::Books
+          class Show
+            include Web::Action
+            expose :book
 
-    def call(params)
-      @book = BookRepository.new.find(params[:id]) or halt(404)
-    end
-  end
-end
+            def call(params)
+              @book = BookRepository.new.find(params[:id]) or halt(404)
+            end
+          end
+        end
 EOF
+        
         rewrite  "apps/web/templates/books/show.html.erb", <<-EOF
-<h1><%= book.title %></h1>
+        <h1><%= book.title %></h1>
 EOF
 
         server do
@@ -167,15 +169,15 @@ EOF
         generate "action web home#index --url=/"
 
         rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
+        module Web::Controllers::Home
+          class Index
+            include Web::Action
 
-    def call(params)
-      self.body = Hanami.env
-    end
-  end
-end
+            def call(params)
+              self.body = Hanami.env
+            end
+          end
+        end
 EOF
 
         RSpec::Support::Env['HANAMI_ENV']   = env = 'production'
@@ -232,7 +234,7 @@ EOF
           generate "action web home#index --url=/"
 
           rewrite "apps/web/templates/home/index.html.erb", <<-EOF
-<h1>Hello, World!</h1>
+          <h1>Hello, World!</h1>
 EOF
 
           visit "/"
@@ -251,19 +253,19 @@ EOF
           generate "action web home#index --url=/"
 
           rewrite "apps/web/views/home/index.rb", <<-EOF
-module Web::Views::Home
-  class Index
-    include Web::View
+          module Web::Views::Home
+            class Index
+              include Web::View
 
-    def greeting
-      "Ciao!"
-    end
-  end
-end
+              def greeting
+                "Ciao!"
+              end
+            end
+          end
 EOF
 
           rewrite "apps/web/templates/home/index.html.erb", <<-EOF
-<%= greeting %>
+          <%= greeting %>
 EOF
 
           visit "/"
@@ -282,15 +284,15 @@ EOF
           generate "action web home#index --url=/"
 
           rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
+          module Web::Controllers::Home
+            class Index
+              include Web::Action
 
-    def call(params)
-      self.body = "Hi!"
-    end
-  end
-end
+              def call(params)
+                self.body = "Hi!"
+              end
+            end
+          end
 EOF
 
           visit "/"
@@ -306,25 +308,25 @@ EOF
         # STEP 1: prepare the database and the repository
         generate_model "user"
         generate_migration "create_users", <<-EOF
-Hanami::Model.migration do
-  change do
-    create_table :users do
-      primary_key :id
-      column :name, String
-    end
+        Hanami::Model.migration do
+          change do
+            create_table :users do
+              primary_key :id
+              column :name, String
+            end
 
-    execute "INSERT INTO users (name) VALUES('L')"
-    execute "INSERT INTO users (name) VALUES('MG')"
-  end
-end
+            execute "INSERT INTO users (name) VALUES('L')"
+            execute "INSERT INTO users (name) VALUES('MG')"
+          end
+        end
 EOF
 
         rewrite "lib/#{project_name}/repositories/user_repository.rb", <<-EOF
-class UserRepository < Hanami::Repository
-  def listing
-    all
-  end
-end
+        class UserRepository < Hanami::Repository
+          def listing
+            all
+          end
+        end
 EOF
 
         hanami "db prepare"
@@ -333,15 +335,15 @@ EOF
         generate "action web users#index --url=/users"
 
         rewrite "apps/web/controllers/users/index.rb", <<-EOF
-module Web::Controllers::Users
-  class Index
-    include Web::Action
+        module Web::Controllers::Users
+          class Index
+            include Web::Action
 
-    def call(params)
-      self.body = UserRepository.new.listing.map(&:name).join(", ")
-    end
-  end
-end
+            def call(params)
+              self.body = UserRepository.new.listing.map(&:name).join(", ")
+            end
+          end
+        end
 EOF
 
         server do
@@ -352,11 +354,11 @@ EOF
 
           # STEP 4: change the repository, then visit the page again
           rewrite "lib/#{project_name}/repositories/user_repository.rb", <<-EOF
-class UserRepository < Hanami::Repository
-  def listing
-    all.reverse
-  end
-end
+          class UserRepository < Hanami::Repository
+            def listing
+              all.reverse
+            end
+          end
 EOF
           visit "/users"
 
@@ -369,14 +371,14 @@ EOF
       with_project do
         server do
           write "apps/web/assets/stylesheets/style.css", <<-EOF
-body { background-color: #fff; }
+          body { background-color: #fff; }
 EOF
 
           visit "/assets/style.css"
           expect(page).to have_content("#fff")
 
           rewrite "apps/web/assets/stylesheets/style.css", <<-EOF
-body { background-color: #333; }
+          body { background-color: #333; }
 EOF
 
           visit "/assets/style.css"
@@ -406,34 +408,34 @@ EOF
     it "uses custom model domain" do
       project_without_hanami_model("bookshelf", gems: ['dry-struct']) do
         write "lib/entities/access_token.rb", <<-EOF
-require 'dry-struct'
-require 'securerandom'
+        require 'dry-struct'
+        require 'securerandom'
 
-module Types
-  include Dry::Types.module
-end
+        module Types
+          include Dry::Types.module
+        end
 
-class AccessToken < Dry::Struct
-  attribute :id,     Types::String.default { SecureRandom.uuid }
-  attribute :secret, Types::String
-  attribute :digest, Types::String
-end
+        class AccessToken < Dry::Struct
+          attribute :id,     Types::String.default { SecureRandom.uuid }
+          attribute :secret, Types::String
+          attribute :digest, Types::String
+        end
 EOF
         generate "action web access_tokens#show --url=/access_tokens/:id"
         rewrite  "apps/web/controllers/access_tokens/show.rb", <<-EOF
-module Web::Controllers::AccessTokens
-  class Show
-    include Web::Action
-    expose :access_token
+        module Web::Controllers::AccessTokens
+          class Show
+            include Web::Action
+            expose :access_token
 
-    def call(params)
-      @access_token = AccessToken.new(id: '1', secret: 'shh', digest: 'abc')
-    end
-  end
-end
+            def call(params)
+              @access_token = AccessToken.new(id: '1', secret: 'shh', digest: 'abc')
+            end
+          end
+        end
 EOF
         rewrite  "apps/web/templates/access_tokens/show.html.erb", <<-EOF
-<h1><%= access_token.secret %></h1>
+        <h1><%= access_token.secret %></h1>
 EOF
 
         server do
