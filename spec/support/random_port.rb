@@ -25,7 +25,7 @@ module RSpec
             s = TCPSocket.new(HOST, port)
             s.close
             return true
-          rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
+          rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::EADDRNOTAVAIL
             return false
           end
         end
