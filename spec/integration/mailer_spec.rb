@@ -3,21 +3,21 @@ RSpec.describe "Mailer", type: :cli do
     with_project do
       generate "mailer welcome"
       write "lib/bookshelf/mailers/default_user.rb", <<-EOF
-module Mailers
-  module DefaultUser
-    def user_name
-      "Alfonso"
-    end
-  end
-end
+      module Mailers
+        module DefaultUser
+          def user_name
+            "Alfonso"
+          end
+        end
+      end
 EOF
 
       replace "config/environment.rb", "delivery :test", <<-EOF
-    delivery :test
+      delivery :test
 
-    prepare do
-      include Mailers::DefaultUser
-    end
+      prepare do
+        include Mailers::DefaultUser
+      end
 EOF
 
       console do |input, _, _|
