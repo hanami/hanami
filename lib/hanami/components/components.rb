@@ -61,7 +61,7 @@ module Hanami
       run do
         directory = Hanami.root.join('lib')
 
-        if Components['environment'].code_reloading?
+        if Hanami.code_reloading?
           Utils.reload!(directory)
         else
           Utils.require!(directory)
