@@ -9,20 +9,20 @@ RSpec.describe 'rackup', type: :cli do
 
       generate "action web books#show --url=/books/:id"
       rewrite  "apps/web/controllers/books/show.rb", <<-EOF
-module Web::Controllers::Books
-  class Show
-    include Web::Action
-    expose :book
+      module Web::Controllers::Books
+        class Show
+          include Web::Action
+          expose :book
 
-    def call(params)
-      @book = BookRepository.new.find(params[:id]) or halt(404)
-    end
-  end
-end
-      EOF
+          def call(params)
+            @book = BookRepository.new.find(params[:id]) or halt(404)
+          end
+        end
+      end
+EOF
       rewrite "apps/web/templates/books/show.html.erb", <<-EOF
-<h1><%= book.title %></h1>
-      EOF
+      <h1><%= book.title %></h1>
+EOF
 
       rackup do
         visit "/books/1"
