@@ -113,7 +113,7 @@ How to prepare (create and migrate) DB for `development` and `test` environments
 % HANAMI_ENV=test bundle exec hanami db prepare
 ```
 
-Explore Hanami [guides](http://hanamirb.org/guides/), [API docs](http://hanamirb.org/docs/1.0.0/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
+Explore Hanami [guides](http://hanamirb.org/guides/), [API docs](http://docs.hanamirb.org/#{Hanami::VERSION}/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
 END
 
       #
