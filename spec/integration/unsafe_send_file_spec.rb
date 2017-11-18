@@ -4,15 +4,15 @@ RSpec.describe "Unsafe send file", type: :cli do
       write "public/static.txt", "Static file"
       generate "action web home#index --url=/"
       rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
+      module Web::Controllers::Home
+        class Index
+          include Web::Action
 
-    def call(params)
-      unsafe_send_file "public/static.txt"
-    end
-  end
-end
+          def call(params)
+            unsafe_send_file "public/static.txt"
+          end
+        end
+      end
 EOF
 
       server do
@@ -28,15 +28,15 @@ EOF
     with_project do
       generate "action web home#index --url=/"
       rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
+      module Web::Controllers::Home
+        class Index
+          include Web::Action
 
-    def call(params)
-      unsafe_send_file __FILE__
-    end
-  end
-end
+          def call(params)
+            unsafe_send_file __FILE__
+          end
+        end
+      end
 EOF
 
       server do
