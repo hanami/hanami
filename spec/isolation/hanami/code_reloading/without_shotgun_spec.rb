@@ -2,10 +2,10 @@ RSpec.describe "Hanami.code_reloading?", type: :cli do
   context "without shotgun" do
     it "returns false" do
       with_project("bookshelf", exclude_gems: ["shotgun"]) do
-        write "script/components", <<-EOF
-require "\#{__dir__}/../config/environment"
-Hanami.boot
-puts "code reloading: \#{Hanami.code_reloading?}"
+        write "script/components", <<~EOF
+          require "\#{__dir__}/../config/environment"
+          Hanami.boot
+          puts "code reloading: \#{Hanami.code_reloading?}"
 EOF
         bundle_exec "ruby script/components"
 

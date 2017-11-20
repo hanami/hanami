@@ -15,16 +15,16 @@ RSpec.describe "HTTP HEAD", type: :cli do
   it "returns empty body for HEAD requests when body is set by the action" do
     with_project do
       generate "action web home#index --url=/"
-      rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      self.body = "Hello"
-    end
-  end
-end
+      rewrite "apps/web/controllers/home/index.rb", <<~EOF
+        module Web::Controllers::Home
+          class Index
+            include Web::Action
+        
+            def call(params)
+              self.body = "Hello"
+            end
+          end
+        end
 EOF
 
       server do
@@ -39,16 +39,16 @@ EOF
   it "returns empty body for HEAD requests when body is set by the view" do
     with_project do
       generate "action web home#index --url=/"
-      rewrite "apps/web/views/home/index.rb", <<-EOF
-module Web::Views::Home
-  class Index
-    include Web::View
-
-    def render
-      "World"
-    end
-  end
-end
+      rewrite "apps/web/views/home/index.rb", <<~EOF
+        module Web::Views::Home
+          class Index
+            include Web::View
+        
+            def render
+              "World"
+            end
+          end
+        end
 EOF
 
       server do
@@ -64,16 +64,16 @@ EOF
     with_project do
       write "public/static.txt", "Plain text file"
       generate "action web home#index --url=/"
-      rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      send_file "static.txt"
-    end
-  end
-end
+      rewrite "apps/web/controllers/home/index.rb", <<~EOF
+        module Web::Controllers::Home
+          class Index
+            include Web::Action
+        
+            def call(params)
+              send_file "static.txt"
+            end
+          end
+        end
 EOF
 
       server do

@@ -4,15 +4,15 @@ RSpec.describe "Hanami.boot", type: :cli do
       with_project do
         generate "app admin"
         generate_model "user"
-        generate_migration "create_users", <<-EOF
-Hanami::Model.migration do
-  change do
-    create_table :users do
-      primary_key :id
-      column :name, String
-    end
-  end
-end
+        generate_migration "create_users", <<~EOF
+          Hanami::Model.migration do
+            change do
+              create_table :users do
+                primary_key :id
+                column :name, String
+              end
+            end
+          end
 EOF
         hanami "db prepare"
 

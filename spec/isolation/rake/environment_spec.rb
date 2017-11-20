@@ -5,10 +5,10 @@ RSpec.describe "Rake: environment", type: :cli do
       generate_model "author"
       hanami "db prepare"
 
-      append "Rakefile", <<-EOF
-task database_counts: :environment do
-puts "users: \#{AuthorRepository.new.all.count}"
-end
+      append "Rakefile", <<~EOF
+        task database_counts: :environment do
+        puts "users: \#{AuthorRepository.new.all.count}"
+        end
 EOF
 
       bundle_exec "rake database_counts"

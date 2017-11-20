@@ -4,31 +4,31 @@ RSpec.describe "Hanami.boot", type: :cli do
       project_without_hanami_model do
         generate "app admin"
 
-        write "script/components", <<-EOF
-require "\#{__dir__}/../config/environment"
-Hanami.boot
-
-puts "all: \#{Hanami::Components['all']}"
-puts "apps: \#{Hanami::Components['apps']}"
-
-puts "model: \#{Hanami::Components['model'].inspect}"
-puts "model.sql: \#{Hanami::Components['model.sql'].inspect}"
-puts "model.configuration: \#{Hanami::Components['model.configuration'].inspect}"
-puts "model.bundled: \#{Hanami::Components['model.bundled'].inspect}"
-
-puts "admin: \#{Hanami::Components['admin']}"
-puts "web: \#{Hanami::Components['web']}"
-
-puts "admin.configuration: \#{Hanami::Components['admin.configuration'].class}"
-puts "web.configuration: \#{Hanami::Components['web.configuration'].class}"
-
-puts "Hanami::Model: \#{defined?(Hanami::Model).inspect}"
-
-puts "Admin::Controllers: \#{defined?(Admin::Controllers)}"
-puts "Web::Controllers: \#{defined?(Web::Controllers)}"
-
-puts "Admin::Views: \#{defined?(Admin::Views)}"
-puts "Web::Views: \#{defined?(Web::Views)}"
+        write "script/components", <<~EOF
+          require "\#{__dir__}/../config/environment"
+          Hanami.boot
+          
+          puts "all: \#{Hanami::Components['all']}"
+          puts "apps: \#{Hanami::Components['apps']}"
+          
+          puts "model: \#{Hanami::Components['model'].inspect}"
+          puts "model.sql: \#{Hanami::Components['model.sql'].inspect}"
+          puts "model.configuration: \#{Hanami::Components['model.configuration'].inspect}"
+          puts "model.bundled: \#{Hanami::Components['model.bundled'].inspect}"
+          
+          puts "admin: \#{Hanami::Components['admin']}"
+          puts "web: \#{Hanami::Components['web']}"
+          
+          puts "admin.configuration: \#{Hanami::Components['admin.configuration'].class}"
+          puts "web.configuration: \#{Hanami::Components['web.configuration'].class}"
+          
+          puts "Hanami::Model: \#{defined?(Hanami::Model).inspect}"
+          
+          puts "Admin::Controllers: \#{defined?(Admin::Controllers)}"
+          puts "Web::Controllers: \#{defined?(Web::Controllers)}"
+          
+          puts "Admin::Views: \#{defined?(Admin::Views)}"
+          puts "Web::Views: \#{defined?(Web::Views)}"
 EOF
 
         bundle_exec "ruby script/components"

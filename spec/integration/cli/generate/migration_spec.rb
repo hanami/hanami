@@ -27,9 +27,9 @@ RSpec.describe "hanami generate", type: :cli do
     context "with missing argument" do
       it "fails" do
         with_project('bookshelf_generate_migration_missing_arguments') do
-          output = <<-END
-ERROR: "hanami generate migration" was called with no arguments
-Usage: "hanami generate migration MIGRATION"
+          output = <<~END
+            ERROR: "hanami generate migration" was called with no arguments
+            Usage: "hanami generate migration MIGRATION"
 END
           run_command "hanami generate migration", output, exit_status: 1
         end
@@ -38,23 +38,23 @@ END
 
     it 'prints help message' do
       with_project do
-        banner = <<-OUT
-Command:
-  hanami generate migration
-
-Usage:
-  hanami generate migration MIGRATION
-
-Description:
-  Generate a migration
-
-Arguments:
-  MIGRATION           	# REQUIRED The migration name (eg. `create_users`)
-
-Options:
-  --help, -h                      	# Print this help
-
-Examples:
+        banner = <<~OUT
+          Command:
+            hanami generate migration
+          
+          Usage:
+            hanami generate migration MIGRATION
+          
+          Description:
+            Generate a migration
+          
+          Arguments:
+            MIGRATION           	# REQUIRED The migration name (eg. `create_users`)
+          
+          Options:
+            --help, -h                      	# Print this help
+          
+          Examples:
 OUT
 
         output = [

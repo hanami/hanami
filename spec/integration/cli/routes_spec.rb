@@ -3,12 +3,12 @@ RSpec.describe "hanami routes", type: :cli do
     with_project do
       generate "app admin"
 
-      write "lib/ping.rb", <<-EOF
-class Ping
-  def call(env)
-    [200, {}, ["PONG"]]
-  end
-end
+      write "lib/ping.rb", <<~EOF
+        class Ping
+          def call(env)
+            [200, {}, ["PONG"]]
+          end
+        end
 EOF
 
       unshift "config/environment.rb", "require_relative '../lib/ping'"
@@ -27,18 +27,18 @@ EOF
 
   it 'prints help message' do
     with_project do
-      output = <<-OUT
-Command:
-  hanami routes
-
-Usage:
-  hanami routes
-
-Description:
-  Prints routes
-
-Options:
-  --help, -h                      	# Print this help
+      output = <<~OUT
+        Command:
+          hanami routes
+        
+        Usage:
+          hanami routes
+        
+        Description:
+          Prints routes
+        
+        Options:
+          --help, -h                      	# Print this help
 OUT
 
       run_command 'hanami routes --help', output

@@ -13,16 +13,16 @@ RSpec.describe "Application middleware stack", type: :cli do
       # Mount middleware
       replace "apps/web/application.rb", "# middleware.use", "middleware.use 'Web::Middleware::Runtime'\nmiddleware.use 'Web::Middleware::Custom', 'OK'\nmiddleware.use Rack::ETag"
 
-      rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      self.body = "OK"
-    end
-  end
-end
+      rewrite "apps/web/controllers/home/index.rb", <<~EOF
+        module Web::Controllers::Home
+          class Index
+            include Web::Action
+        
+            def call(params)
+              self.body = "OK"
+            end
+          end
+        end
 EOF
 
       server do
@@ -40,43 +40,43 @@ EOF
   private
 
   def generate_middleware # rubocop:disable Metrics/MethodLength
-    write "apps/web/middleware/runtime.rb", <<-EOF
-module Web
-  module Middleware
-    class Runtime
-      def initialize(app)
-        @app = app
+    write "apps/web/middleware/runtime.rb", <<~EOF
+      module Web
+        module Middleware
+          class Runtime
+            def initialize(app)
+              @app = app
+            end
+      
+            def call(env)
+              status, headers, body = @app.call(env)
+              headers["X-Runtime"]  = "1ms"
+      
+              [status, headers, body]
+            end
+          end
+        end
       end
-
-      def call(env)
-        status, headers, body = @app.call(env)
-        headers["X-Runtime"]  = "1ms"
-
-        [status, headers, body]
-      end
-    end
-  end
-end
 EOF
 
-    write "apps/web/middleware/custom.rb", <<-EOF
-module Web
-  module Middleware
-    class Custom
-      def initialize(app, value)
-        @app   = app
-        @value = value
+    write "apps/web/middleware/custom.rb", <<~EOF
+      module Web
+        module Middleware
+          class Custom
+            def initialize(app, value)
+              @app   = app
+              @value = value
+            end
+      
+            def call(env)
+              status, headers, body = @app.call(env)
+              headers["X-Custom"]   = @value
+      
+              [status, headers, body]
+            end
+          end
+        end
       end
-
-      def call(env)
-        status, headers, body = @app.call(env)
-        headers["X-Custom"]   = @value
-
-        [status, headers, body]
-      end
-    end
-  end
-end
 EOF
   end
 end
