@@ -153,7 +153,8 @@ module Hanami
         def generate_file(source, destination, context)
           files.write(
             destination,
-            render(source, context)
+            render(source, context),
+            overwrite: true
           )
         end
 
