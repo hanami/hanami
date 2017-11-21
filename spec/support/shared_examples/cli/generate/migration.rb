@@ -20,10 +20,10 @@ RSpec.shared_examples "a new migration" do
       expect(file).to_not be_nil, "Expected to find a migration matching: #{file}.\nFound: #{migrations.map(&:basename).join(' ')}"
 
       expect(file.to_s).to have_file_content <<-END
-Hanami::Model.migration do
-  change do
-  end
-end
+      Hanami::Model.migration do
+        change do
+        end
+      end
 END
     end
   end
