@@ -23,16 +23,16 @@ RSpec.shared_examples "a new model" do
       # lib/<project>/entities/<model>.rb
       #
       expect("lib/#{project}/entities/#{model}.rb").to have_file_content <<-END
-class #{class_name} < Hanami::Entity
-end
+      class #{class_name} < Hanami::Entity
+      end
 END
 
       #
       # lib/<project>/repositories/<model>_repository.rb
       #
       expect("lib/#{project}/repositories/#{model}_repository.rb").to have_file_content <<-END
-class #{class_name}Repository < Hanami::Repository
-end
+      class #{class_name}Repository < Hanami::Repository
+      end
 END
 
 
@@ -46,38 +46,38 @@ END
       expect(file).to_not be_nil, "Expected to find a migration matching: create_#{table_name}.\nFound: #{migrations.map(&:basename).join(' ')}"
             
       expect(file.to_s).to have_file_content <<-END
-Hanami::Model.migration do
-  change do
-    create_table :#{table_name} do
-      primary_key :id
+      Hanami::Model.migration do
+        change do
+          create_table :#{table_name} do
+            primary_key :id
 
-      column :created_at, DateTime, null: false
-      column :updated_at, DateTime, null: false
-    end
-  end
-end
+            column :created_at, DateTime, null: false
+            column :updated_at, DateTime, null: false
+          end
+        end
+      end
 END
 
       #
       # spec/<project>/entities/<model>_spec.rb
       #
       expect("spec/#{project}/entities/#{model}_spec.rb").to have_file_content <<-END
-require 'spec_helper'
+      require 'spec_helper'
 
-describe #{class_name} do
-  # place your tests here
-end
+      describe #{class_name} do
+        # place your tests here
+      end
 END
 
       #
       # spec/<project>/repositories/<model>_repository_spec.rb
       #
       expect("spec/#{project}/repositories/#{model}_repository_spec.rb").to have_file_content <<-END
-require 'spec_helper'
+      require 'spec_helper'
 
-describe #{class_name}Repository do
-  # place your tests here
-end
+      describe #{class_name}Repository do
+        # place your tests here
+      end
 END
     end
   end
