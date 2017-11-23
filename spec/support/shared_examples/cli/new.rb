@@ -46,8 +46,8 @@ RSpec.shared_examples "a new project" do
       # lib/<project>.rb
       #
       expect("lib/#{project}.rb").to have_file_content <<-END
-module #{project_module}
-end
+      module #{project_module}
+      end
 END
 
       #
@@ -84,9 +84,9 @@ END
       # .gitignore
       #
       expect(".gitignore").to have_file_content <<-END
-/db/*.sqlite
-/public/assets*
-/tmp
+      /db/*.sqlite
+      /public/assets*
+      /tmp
 END
     end
   end
