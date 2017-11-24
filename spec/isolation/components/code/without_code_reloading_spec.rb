@@ -26,7 +26,6 @@ EOF
         expect(defined?(Mailers::Welcome)).to eq('constant')
 
         rewrite "lib/bookshelf/entities/user.rb", <<-EOF
-
           class User < Hanami::Entity
             def upcase_name
               name.upcase
@@ -35,7 +34,6 @@ EOF
 EOF
 
         rewrite "lib/bookshelf/repositories/user_repository.rb", <<-EOF
-
           class UserRepository < Hanami::Repository
             def create_with_name
               create(name: 'l')
@@ -44,7 +42,6 @@ EOF
 EOF
 
         rewrite "lib/bookshelf/mailers/welcome.rb", <<-EOF
-
           class Mailers::Welcome
             include Hanami::Mailer
 
