@@ -4,7 +4,6 @@ RSpec.describe "Components: code_reloading", type: :cli do
       it "is false" do
         with_project("code_reloading", exclude_gems: ['shotgun']) do
           write "script/components", <<-EOF
-
           require "\#{__dir__}/../config/environment"
           Hanami::Components.resolved('environment', Hanami::Environment.new(code_reloading: true))
           Hanami::Components.resolve('code_reloading')
