@@ -10,7 +10,7 @@ gem 'i18n'
 
 gem 'hanami-utils',       '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/utils.git',       branch: 'unstable'
 gem 'hanami-validations', '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/validations.git', branch: 'unstable'
-gem 'hanami-router',      '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/router.git',      branch: 'feature/scope'
+gem 'hanami-router',      '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/router.git',      branch: 'unstable'
 gem 'hanami-controller',  '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/controller.git',  branch: 'unstable'
 gem 'hanami-view',        '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/view.git',        branch: 'unstable'
 gem 'hanami-model',       '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/model.git',       branch: 'unstable'
