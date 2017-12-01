@@ -8,16 +8,16 @@ end
 
 gem 'i18n'
 
-gem 'hanami-utils',       '~> 1.1', require: false, git: 'https://github.com/hanami/utils.git',       branch: '1.1.x'
-gem 'hanami-validations', '~> 1.1', require: false, git: 'https://github.com/hanami/validations.git', branch: '1.1.x'
-gem 'hanami-router',      '~> 1.1', require: false, git: 'https://github.com/hanami/router.git',      branch: '1.1.x'
-gem 'hanami-controller',  '~> 1.1', require: false, git: 'https://github.com/hanami/controller.git',  branch: '1.1.x'
-gem 'hanami-view',        '~> 1.1', require: false, git: 'https://github.com/hanami/view.git',        branch: '1.1.x'
-gem 'hanami-model',       '~> 1.1', require: false, git: 'https://github.com/hanami/model.git',       branch: '1.1.x'
-gem 'hanami-helpers',     '~> 1.1', require: false, git: 'https://github.com/hanami/helpers.git',     branch: '1.1.x'
-gem 'hanami-mailer',      '~> 1.1', require: false, git: 'https://github.com/hanami/mailer.git',      branch: '1.1.x'
-gem 'hanami-assets',      '~> 1.1', require: false, git: 'https://github.com/hanami/assets.git',      branch: '1.1.x'
-gem 'hanami-cli',         '~> 0.1', require: false, git: 'https://github.com/hanami/cli.git',         branch: '0.1.x'
+gem 'hanami-utils',       '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/utils.git',       branch: 'unstable'
+gem 'hanami-validations', '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/validations.git', branch: 'unstable'
+gem 'hanami-router',      '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/router.git',      branch: 'feature/scope'
+gem 'hanami-controller',  '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/controller.git',  branch: 'unstable'
+gem 'hanami-view',        '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/view.git',        branch: 'unstable'
+gem 'hanami-model',       '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/model.git',       branch: 'unstable'
+gem 'hanami-helpers',     '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/helpers.git',     branch: 'unstable'
+gem 'hanami-mailer',      '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/mailer.git',      branch: 'unstable'
+gem 'hanami-assets',      '2.0.0.alpha1', require: false, git: 'https://github.com/hanami/assets.git',      branch: 'unstable'
+gem 'hanami-cli',         '1.0.0.alpha1', require: false, git: 'https://github.com/hanami/cli.git',         branch: 'unstable'
 
 platforms :ruby do
   gem 'sqlite3'

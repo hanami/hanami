@@ -1,6 +1,7 @@
 require 'rack'
 require 'rack/builder'
 require 'hanami/router'
+require 'hanami/renderer'
 require 'hanami/components'
 require 'hanami/common_logger'
 
@@ -23,11 +24,11 @@ module Hanami
       Components.resolve('apps')
 
       @builder = Rack::Builder.new
-      @routes  = Hanami::Router.new
+      @renderer = Renderer.new
 
       mount(configuration)
       middleware(environment)
-      builder.run(routes)
+      builder.run(app)
     end
 
     # Implements Rack SPEC
@@ -52,11 +53,23 @@ module Hanami
     # @api private
     attr_reader :routes
 
+    # @since x.x.x
+    # @api private
+    attr_reader :renderer
+
     # @since 0.9.0
     # @api private
     def mount(configuration)
-      configuration.mounted.each do |klass, app|
-        routes.mount(klass, at: app.path_prefix)
+      @routes = Hanami::Router.new do
+        configuration.mounted.each do |klass, app|
+          if klass.ancestors.include?(Hanami::Application)
+            namespace = Utils::String.namespace(klass.name)
+            namespace = Utils::Class.load!("#{namespace}::Controllers")
+            scope(app.path_prefix, namespace: namespace, &klass.configuration.routes)
+          else
+            mount(klass, at: app.path_prefix)
+          end
+        end
       end
     end
 
@@ -70,7 +83,16 @@ module Hanami
         builder.use middleware
       end
 
+      unless Hanami.env?(:test) || routes.defined?
+        require 'hanami/welcome'
+        builder.use Hanami::Welcome
+      end
+
       builder.use Rack::MethodOverride
+    end
+
+    def app
+      @app ||= ->(env) { renderer.render(env, routes.call(env)) }
     end
   end
 end

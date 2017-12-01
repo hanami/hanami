@@ -17,7 +17,7 @@ require "\#{__dir__}/../config/environment"
 Hanami::Components.resolve('mailer.configuration')
 
 configuration = Hanami::Components['mailer.configuration']
-puts "mailer.configuration.delivery_method: \#{configuration.delivery_method.first.inspect}"
+puts "mailer.configuration.delivery_method: \#{configuration.delivery_method.inspect}"
 EOF
 
         bundle_exec "ruby script/components"

@@ -1,5 +1,5 @@
 RSpec.describe "force SSL", type: :cli do
-  it "forces SSL" do
+  xit "forces SSL" do
     project = "bookshelf_force_ssl"
 
     with_project(project, server: :puma) do

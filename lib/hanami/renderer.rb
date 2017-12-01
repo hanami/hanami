@@ -3,11 +3,11 @@ require 'hanami/views/default'
 require 'hanami/views/null_view'
 
 module Hanami
-  # Rendering policy
+  # Renderer
   #
-  # @since 0.1.0
+  # @since x.x.x
   # @api private
-  class RenderingPolicy
+  class Renderer
     # @api private
     STATUS  = 0
     # @api private
@@ -25,12 +25,8 @@ module Hanami
     # @api private
     RENDERABLE_FORMATS = [:all, :html].freeze
 
-    # @api private
-    def initialize(configuration)
-      @controller_pattern = %r{#{ configuration.controller_pattern.gsub(/\%\{(controller|action)\}/) { "(?<#{ $1 }>(.*))" } }}
-      @view_pattern       = configuration.view_pattern
-      @namespace          = configuration.namespace
-      @templates          = configuration.templates
+    def initialize
+      @root = Hanami.root
     end
 
     # @api private
@@ -65,7 +61,7 @@ module Hanami
     # @api private
     def _render_status_page(action, response)
       if render_status_page?(action, response)
-        Hanami::Views::Default.render(@templates, response[STATUS], response: response, format: :html)
+        Hanami::Views::Default.render(@root, response[STATUS], response: response, format: :html)
       end
     end
 
@@ -81,9 +77,12 @@ module Hanami
 
     # @api private
     def view_for(action, response)
+      # FIXME: set in the container registry the action/view associations
       view = if response[BODY].respond_to?(:empty?) && response[BODY].empty?
-        captures = @controller_pattern.match(action.class.name)
-        Utils::Class.load(@view_pattern % { controller: captures[:controller], action: captures[:action] }, @namespace)
+        tokens = action.class.name.split("::")
+        tokens[1] = "Views"
+
+        Utils::Class.load(tokens.join("::"))
       end
 
       view || Views::NullView.new

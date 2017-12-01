@@ -1,5 +1,5 @@
 RSpec.describe "Mailer", type: :cli do
-  it "use a mailer" do
+  xit "use a mailer" do
     with_project do
       generate "mailer welcome"
       write "lib/bookshelf/mailers/default_user.rb", <<-EOF
@@ -12,8 +12,8 @@ module Mailers
 end
 EOF
 
-      replace "config/environment.rb", "delivery :test", <<-EOF
-    delivery :test
+      replace "config/environment.rb", "config.delivery_method = :test", <<-EOF
+    config.delivery_method = :test
 
     prepare do
       include Mailers::DefaultUser

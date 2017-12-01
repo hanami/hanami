@@ -461,11 +461,11 @@ Hanami.configure do
     schema     'db/schema.sql'
   end
 
-  mailer do
-    root 'lib/#{project}/mailers'
+  mailer do |config|
+    config.root = 'lib/#{project}/mailers'
 
     # See http://hanamirb.org/guides/mailers/delivery
-    delivery :test
+    config.delivery_method = :test
   end
 
   environment :development do
@@ -476,8 +476,8 @@ Hanami.configure do
   environment :production do
     logger level: :info, formatter: :json, filter: []
 
-    mailer do
-      delivery :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
+    mailer do |config|
+      config.delivery_method = :smtp, { address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT'] }
     end
   end
 end

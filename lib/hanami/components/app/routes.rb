@@ -34,14 +34,13 @@ module Hanami
         # @api private
         def self.application_routes(app) # rubocop:disable Metrics/MethodLength
           config      = app.configuration
-          namespace   = app.namespace
+          namespace   = app.namespace.const_get("Controllers")
 
-          resolver    = Hanami::Routing::EndpointResolver.new(pattern: config.controller_pattern, namespace: namespace)
           default_app = Hanami::Routing::Default.new
 
           Hanami::Router.new(
-            resolver:    resolver,
-            default_app: default_app,
+            namespace:   namespace,
+            not_found:   default_app,
             parsers:     config.body_parsers,
             scheme:      config.scheme,
             host:        config.host,

@@ -2,7 +2,7 @@ require 'hanami/components/routes_inspector'
 
 RSpec.describe Hanami::Components::RoutesInspector, type: :cli do
   describe "#inspect" do
-    it "returns printable routes" do
+    xit "returns printable routes" do
       with_project do
         generate "app admin"
         generate "action web home#index"

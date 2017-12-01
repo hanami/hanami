@@ -26,7 +26,7 @@ RSpec.describe "Sessions", type: :cli do
     end
   end
 
-  it "preserves data across requests" do
+  xit "preserves data across requests" do
     with_project do
       prepare
 
@@ -49,7 +49,7 @@ RSpec.describe "Sessions", type: :cli do
     end
   end
 
-  it "clears the session" do
+  xit "clears the session" do
     with_project do
       prepare
 

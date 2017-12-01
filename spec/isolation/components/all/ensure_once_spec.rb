@@ -13,7 +13,7 @@ RSpec.describe "Components: all", type: :cli do
       web_app_config       = Web::Application.configuration
       admin_configuration  = Hanami::Components['admin.configuration']
       admin_app_config     = Admin::Application.configuration
-      mailer_configuration = Hanami::Mailer.configuration
+      mailer_configuration = Hanami::Components['mailer.configuration']
 
       # Simulate accidental double trigger
       Hanami::Components.resolve('all')

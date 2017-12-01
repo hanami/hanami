@@ -81,8 +81,8 @@ module Hanami
           # @since 1.1.0
           # @api private
           def assert_valid_route_http_method!(context)
-            unless Hanami::Routing::Route::VALID_HTTP_VERBS.include?(context.http_method.upcase) # rubocop:disable Style/GuardClause
-              warn "`#{context.http_method.upcase}' is not a valid HTTP method. Please use one of: #{Hanami::Routing::Route::VALID_HTTP_VERBS.map { |verb| "`#{verb}'" }.join(' ')}"
+            unless Hanami::Routing.http_verbs.include?(context.http_method.downcase) # rubocop:disable Style/GuardClause
+              warn "`#{context.http_method.upcase}' is not a valid HTTP method. Please use one of: #{Hanami::Routing.http_verbs.map { |verb| "`#{verb.upcase}'" }.join(' ')}"
               exit(1)
             end
           end

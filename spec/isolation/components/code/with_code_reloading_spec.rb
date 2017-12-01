@@ -42,12 +42,12 @@ end
 EOF
 
         rewrite "lib/bookshelf/mailers/welcome.rb", <<-EOF
-class Mailers::Welcome
-  include Hanami::Mailer
-
-  from    '<from>'
-  to      '<to>'
-  subject 'Ciao'
+module Mailers
+  class Welcome < Hanami::Mailer
+    from    '<from>'
+    to      '<to>'
+    subject 'Ciao'
+  end
 end
 EOF
         Hanami.boot # this resolves `code` again AND configures Hanami::Model so we can connect to the db

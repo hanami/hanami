@@ -188,14 +188,14 @@ END
 
       it "fails with missing argument" do
         with_project('bookshelf_generate_action_missing_method') do
-          output = "`' is not a valid HTTP method. Please use one of: `GET' `POST' `PUT' `DELETE' `HEAD' `OPTIONS' `TRACE' `PATCH' `OPTIONS' `LINK' `UNLINK'"
+          output = "`' is not a valid HTTP method. Please use one of: `GET' `POST' `DELETE' `PUT' `PATCH' `TRACE' `OPTIONS' `LINK' `UNLINK'"
           run_command "hanami generate action web books#create --method=", output, exit_status: 1
         end
       end
 
       it "fails with unknown argument" do
         with_project('bookshelf_generate_action_uknown_method') do
-          output = "`FOO' is not a valid HTTP method. Please use one of: `GET' `POST' `PUT' `DELETE' `HEAD' `OPTIONS' `TRACE' `PATCH' `OPTIONS' `LINK' `UNLINK'"
+          output = "`FOO' is not a valid HTTP method. Please use one of: `GET' `POST' `DELETE' `PUT' `PATCH' `TRACE' `OPTIONS' `LINK' `UNLINK'"
           run_command "hanami generate action web books#create --method=FOO", output, exit_status: 1
         end
       end

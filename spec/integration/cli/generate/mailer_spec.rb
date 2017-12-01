@@ -15,12 +15,12 @@ RSpec.describe "hanami generate", type: :cli do
           # lib/bookshelf_generate_mailer/mailers/welcome.rb
           #
           expect('lib/bookshelf_generate_mailer/mailers/welcome.rb').to have_file_content <<-END
-class Mailers::Welcome
-  include Hanami::Mailer
-
-  from    '<from>'
-  to      '<to>'
-  subject 'Hello'
+module Mailers
+  class Welcome < Hanami::Mailer
+    from    '<from>'
+    to      '<to>'
+    subject 'Hello'
+  end
 end
 END
 
@@ -76,12 +76,12 @@ END
         run_command "hanami generate mailer welcome --from=\"'mail@example.com'\" --to=\"'user@example.com'\" --subject=\"'Let\'s start'\"", output
 
         expect('lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb').to have_file_content <<-END
-class Mailers::Welcome
-  include Hanami::Mailer
-
-  from    'mail@example.com'
-  to      'user@example.com'
-  subject 'Let\'s start'
+module Mailers
+  class Welcome < Hanami::Mailer
+    from    'mail@example.com'
+    to      'user@example.com'
+    subject 'Let\'s start'
+  end
 end
 END
       end
@@ -99,12 +99,12 @@ END
         run_command "hanami generate mailer welcome --from='\"mail@example.com\"' --to='\"user@example.com\"' --subject='\"Come on \"Folks\"\"'", output
 
         expect('lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb').to have_file_content <<-END
-class Mailers::Welcome
-  include Hanami::Mailer
-
-  from    'mail@example.com'
-  to      'user@example.com'
-  subject 'Come on \"Folks\"'
+module Mailers
+  class Welcome < Hanami::Mailer
+    from    'mail@example.com'
+    to      'user@example.com'
+    subject 'Come on \"Folks\"'
+  end
 end
 END
       end
@@ -122,12 +122,12 @@ END
         run_command "hanami generate mailer welcome --from=mail@example.com --to=user@example.com --subject=Welcome", output
 
         expect('lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb').to have_file_content <<-END
-class Mailers::Welcome
-  include Hanami::Mailer
-
-  from    'mail@example.com'
-  to      'user@example.com'
-  subject 'Welcome'
+module Mailers
+  class Welcome < Hanami::Mailer
+    from    'mail@example.com'
+    to      'user@example.com'
+    subject 'Welcome'
+  end
 end
 END
       end

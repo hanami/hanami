@@ -1,5 +1,5 @@
 RSpec.describe "hanami routes", type: :cli do
-  it "prints application routes" do
+  xit "prints application routes" do
     with_project do
       generate "app admin"
 

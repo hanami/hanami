@@ -4,7 +4,6 @@ require 'hanami/application_name'
 require 'hanami/application_namespace'
 require 'hanami/application_configuration'
 require 'hanami/environment_application_configurations'
-require 'hanami/rendering_policy'
 
 module Hanami
   # A full stack Hanami application
@@ -149,24 +148,8 @@ module Hanami
     # @since 0.1.0
     # @api private
     def initialize
-      @renderer   = RenderingPolicy.new(configuration)
+      @renderer   = :renderer
       @middleware = configuration.middleware
-    end
-
-    # Process a request.
-    # This method makes Hanami applications compatible with the Rack protocol.
-    #
-    # @param env [Hash] a Rack env
-    #
-    # @return [Array] a serialized Rack response
-    #
-    # @since 0.1.0
-    #
-    # @see http://rack.github.io
-    # @see Hanami::RenderingPolicy#render
-    # @see Hanami::Application#middleware
-    def call(env)
-      renderer.render(env, middleware.call(env))
     end
 
     private

@@ -125,7 +125,7 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
-gem 'hanami-model', '~> 1.1'
+gem 'hanami-model', '2.0.0.alpha1'
 
 gem 'sqlite3'
 
@@ -156,7 +156,7 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
-gem 'hanami-model', '~> 1.1'
+gem 'hanami-model', '2.0.0.alpha1'
 
 gem 'jdbc-sqlite3'
 
@@ -199,7 +199,7 @@ END
 require 'bundler/setup'
 require 'hanami/setup'
 require 'hanami/model'
-require_relative '../lib/#{project}'
+require_relative '../lib/bookshelf'
 require_relative '../apps/web/application'
 
 Hanami.configure do
@@ -212,9 +212,9 @@ Hanami.configure do
     # Available options:
     #
     #  * SQL adapter
-    #    adapter :sql, 'sqlite://db/#{project}_development.sqlite3'
-    #    adapter :sql, 'postgresql://localhost/#{project}_development'
-    #    adapter :sql, 'mysql://localhost/#{project}_development'
+    #    adapter :sql, 'sqlite://db/bookshelf_development.sqlite3'
+    #    adapter :sql, 'postgresql://localhost/bookshelf_development'
+    #    adapter :sql, 'mysql://localhost/bookshelf_development'
     #
     adapter :sql, ENV['DATABASE_URL']
 
@@ -225,11 +225,11 @@ Hanami.configure do
     schema     'db/schema.sql'
   end
 
-  mailer do
-    root 'lib/#{project}/mailers'
+  mailer do |config|
+    config.root = 'lib/bookshelf/mailers'
 
     # See http://hanamirb.org/guides/mailers/delivery
-    delivery :test
+    config.delivery_method = :test
   end
 
   environment :development do
@@ -240,8 +240,8 @@ Hanami.configure do
   environment :production do
     logger level: :info, formatter: :json, filter: []
 
-    mailer do
-      delivery :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
+    mailer do |config|
+      config.delivery_method = :smtp, { address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT'] }
     end
   end
 end

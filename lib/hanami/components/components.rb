@@ -209,24 +209,13 @@ module Hanami
     register 'mailer.configuration' do
       prepare do
         require 'hanami/mailer'
-        require 'hanami/mailer/glue'
       end
 
       resolve do |configuration|
         unless configuration.mailer_settings.empty?
-          if Hanami.code_reloading? && !Hanami::Mailer.configuration.nil?
-            Hanami::Mailer.configuration = Hanami::Mailer.configuration.dup
+          configuration.mailer_settings.each_with_object(Hanami::Mailer::Configuration.new) do |settings, config|
+            config.with(&settings)
           end
-
-          configuration.mailer_settings.each do |settings|
-            Hanami::Mailer.configure(&settings)
-            Hanami::Mailer.configuration.mailers.each do |mailer|
-              mailer.configuration = Hanami::Mailer.configuration.duplicate
-              Hanami::Mailer.configuration.copy!(mailer)
-            end
-          end
-
-          Hanami::Mailer.configuration
         end
       end
     end
@@ -243,8 +232,8 @@ module Hanami
       requires 'mailer.configuration'
 
       resolve do
-        if Components['mailer.configuration']
-          Hanami::Mailer.load!
+        if config = Components['mailer.configuration'] # rubocop:disable Lint/AssignmentInCondition
+          config.load!
           true
         end
       end
