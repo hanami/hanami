@@ -24,13 +24,13 @@ module Hanami
     SUCCESSFUL_STATUSES = (200..201).freeze
     # @api private
     RENDERABLE_FORMATS = [:all, :html].freeze
+    # @api private
+    ERROR_STATUS = 500
 
     # @api private
     def initialize(configuration)
       @controller_pattern = %r{#{ configuration.controller_pattern.gsub(/\%\{(controller|action)\}/) { "(?<#{ $1 }>(.*))" } }}
-      @view_pattern       = configuration.view_pattern
-      @namespace          = configuration.namespace
-      @templates          = configuration.templates
+      @configuration = configuration
     end
 
     # @api private
@@ -56,16 +56,19 @@ module Hanami
         view_for(action, response).render(
           action.exposures
         )
-      rescue => e
+      rescue StandardError => e
         env[RACK_EXCEPTION] = e
-        raise e
+        raise e unless @configuration.handle_exceptions
+
+        response[STATUS] = ERROR_STATUS
+        false
       end
     end
 
     # @api private
     def _render_status_page(action, response)
       if render_status_page?(action, response)
-        Hanami::Views::Default.render(@templates, response[STATUS], response: response, format: :html)
+        Hanami::Views::Default.render(@configuration.templates, response[STATUS], response: response, format: :html)
       end
     end
 
@@ -83,7 +86,7 @@ module Hanami
     def view_for(action, response)
       view = if response[BODY].respond_to?(:empty?) && response[BODY].empty?
         captures = @controller_pattern.match(action.class.name)
-        Utils::Class.load(@view_pattern % { controller: captures[:controller], action: captures[:action] }, @namespace)
+        Utils::Class.load(@configuration.view_pattern % { controller: captures[:controller], action: captures[:action] }, @configuration.namespace)
       end
 
       view || Views::NullView.new
