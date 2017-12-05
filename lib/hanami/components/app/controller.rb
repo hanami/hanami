@@ -26,7 +26,8 @@ module Hanami
         # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/MethodLength
         def self.resolve(app)
-          config = app.configuration
+          namespace = app.namespace
+          config    = app.configuration
 
           configuration = Hanami::Controller::Configuration.new do |c|
             c.handle_exceptions = config.handle_exceptions
@@ -48,6 +49,8 @@ module Hanami
               c.cookies config.cookies.default_options
             end
           end
+
+          namespace.const_set("Controllers", Module.new {})
 
           # unless namespace.const_defined?('Controller', false)
           #   controller = Hanami::Controller.duplicate(namespace) do

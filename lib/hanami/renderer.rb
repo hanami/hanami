@@ -31,26 +31,25 @@ module Hanami
 
     # @api private
     def render(env, response)
-      body = _render(env, response)
-
-      response[BODY] = Array(body) unless body.nil? || body.respond_to?(:each)
+      response.body = _render(env, response)
       response
     end
 
     private
+
     # @api private
     def _render(env, response)
-      if action = renderable?(env)
-        _render_action(action, env, response) ||
-          _render_status_page(action, response)
-      end
+      return unless response.renderable?
+
+      _render_action(env, response) ||
+        _render_status_page(response)
     end
 
     # @api private
-    def _render_action(action, env, response)
+    def _render_action(env, response)
       begin
-        view_for(action, response).render(
-          action.exposures
+        view_for(response).render(
+          response.exposures
         )
       rescue => e
         env[RACK_EXCEPTION] = e
@@ -59,27 +58,22 @@ module Hanami
     end
 
     # @api private
-    def _render_status_page(action, response)
-      if render_status_page?(action, response)
-        Hanami::Views::Default.render(@root, response[STATUS], response: response, format: :html)
-      end
+    def _render_status_page(response)
+      return unless render_status_page?(response)
+
+      Hanami::Views::Default.render(@root, response.status, response: response, format: :html)
     end
 
     # @api private
-    def renderable?(env)
-      ((action = env.delete(HANAMI_ACTION)) && action.renderable?) and action
+    def render_status_page?(response)
+      RENDERABLE_FORMATS.include?(response.format) && !SUCCESSFUL_STATUSES.include?(response.status)
     end
 
     # @api private
-    def render_status_page?(action, response)
-      RENDERABLE_FORMATS.include?(action.format) && !SUCCESSFUL_STATUSES.include?(response[STATUS])
-    end
-
-    # @api private
-    def view_for(action, response)
+    def view_for(response)
       # FIXME: set in the container registry the action/view associations
-      view = if response[BODY].respond_to?(:empty?) && response[BODY].empty?
-        tokens = action.class.name.split("::")
+      view = if response.body.respond_to?(:empty?) && response.body.empty?
+        tokens = response.action.split("::")
         tokens[1] = "Views"
 
         Utils::Class.load(tokens.join("::"))
