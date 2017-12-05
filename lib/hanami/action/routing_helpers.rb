@@ -1,7 +1,7 @@
 require 'hanami/utils/string'
 
 module Hanami
-  module Action
+  class Action
     # Routing helper for full stack Hanami web applications.
     #
     # For a given application called <tt>Web::Application</tt>, at runtime

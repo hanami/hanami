@@ -335,7 +335,7 @@ module Hanami
     # @api private
     register 'app' do
       run do |app|
-        ['app.configuration', 'app.frameworks', 'app.code', 'app.routes', 'app.finalizer'].each do |c|
+        ['app.configuration', 'app.frameworks', 'app.code', 'app.finalizer'].each do |c|
           component(c).call(app)
         end
 
@@ -422,20 +422,6 @@ module Hanami
       end
     end
 
-    # Load the routes for a single Hanami application in the project
-    #
-    # @since 0.9.0
-    # @api private
-    register 'app.routes' do
-      prepare do
-        require 'hanami/components/app/routes'
-      end
-
-      run do |app|
-        Components::App::Routes.resolve(app)
-      end
-    end
-
     # Finalize a single Hanami application in the project
     #
     # @since 0.9.0
@@ -445,9 +431,9 @@ module Hanami
         config    = app.configuration
         namespace = app.namespace
 
-        config.middleware.load!
+        # FIXME: is this still needed?
+        # config.middleware.load!
 
-        namespace.module_eval %(#{namespace}::Controller.load!)
         namespace.module_eval %(#{namespace}::View.load!)
         namespace.module_eval %(#{namespace}::Assets.load!)
       end
