@@ -20,16 +20,22 @@ RSpec.describe "hanami generate", type: :cli do
           module Web::Controllers::Authors
             class Index
               include Web::Action
-          
-                  #
-                  # apps/web/views/authors/index.rb
-                  #
-                  expect('apps/web/views/authors/index.rb').to have_file_content <<~END
-                    module Web::Views::Authors
-                      class Index
-                        include Web::View
-                      end
-                    end
+
+              def call(params)
+              end
+            end
+          end
+        END
+
+        #
+        # apps/web/views/authors/index.rb
+        #
+        expect('apps/web/views/authors/index.rb').to have_file_content <<~END
+          module Web::Views::Authors
+            class Index
+              include Web::View
+            end
+          end
         END
 
         #
@@ -59,7 +65,7 @@ RSpec.describe "hanami generate", type: :cli do
           module Web::Controllers::Api::Authors
             class Index
               include Web::Action
-          
+
               def call(params)
               end
             end
@@ -153,7 +159,7 @@ OUT
             module Web::Controllers::Status
               class Check
                 include Web::Action
-            
+
                 def call(params)
                   self.body = 'OK'
                 end
@@ -207,8 +213,7 @@ OUT
           #
           # apps/web/templates/books/index.html.erb
           #
-          expect('apps/web/templates/books/index.html.erb').to have_file_content <<-END
-END
+          expect('apps/web/templates/books/index.html.erb').to have_file_content('')
 
           #
           # spec/web/views/books/index_spec.rb
@@ -230,9 +235,7 @@ END
           #
           # apps/web/templates/books/index.html.haml
           #
-          expect('apps/web/templates/books/index.html.haml').to have_file_content <<-END
-END
-
+          expect('apps/web/templates/books/index.html.haml').to have_file_content('')
           #
           # spec/web/views/books/index_spec.rb
           #
@@ -253,8 +256,7 @@ END
           #
           # apps/web/templates/books/index.html.slim
           #
-          expect('apps/web/templates/books/index.html.slim').to have_file_content <<-END
-END
+          expect('apps/web/templates/books/index.html.slim').to have_file_content('')
 
           #
           # spec/web/views/books/index_spec.rb
@@ -279,11 +281,11 @@ END
           #
           expect('spec/web/controllers/books/index_spec.rb').to have_file_content <<~END
             require_relative '../../../spec_helper'
-            
+
             describe Web::Controllers::Books::Index do
               let(:action) { Web::Controllers::Books::Index.new }
               let(:params) { Hash[] }
-            
+
               it 'is successful' do
                 response = action.call(params)
                 response[0].must_equal 200
@@ -296,13 +298,13 @@ END
           #
           expect('spec/web/views/books/index_spec.rb').to have_file_content <<~END
             require_relative '../../../spec_helper'
-            
+
             describe Web::Views::Books::Index do
               let(:exposures) { Hash[format: :html] }
               let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }
               let(:view)      { Web::Views::Books::Index.new(template, exposures) }
               let(:rendered)  { view.render }
-            
+
               it 'exposes #format' do
                 view.format.must_equal exposures.fetch(:format)
               end
@@ -329,7 +331,7 @@ END
             RSpec.describe Web::Controllers::Books::Index, type: :action do
               let(:action) { described_class.new }
               let(:params) { Hash[] }
-            
+
               it 'is successful' do
                 response = action.call(params)
                 expect(response[0]).to eq 200
@@ -346,7 +348,7 @@ END
               let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }
               let(:view)      { described_class.new(template, exposures) }
               let(:rendered)  { view.render }
-            
+
               it 'exposes #format' do
                 expect(view.format).to eq exposures.fetch(:format)
               end
@@ -361,23 +363,23 @@ END
         output = <<~OUT
           Command:
             hanami generate action
-          
+
           Usage:
             hanami generate action APP ACTION
-          
+
           Description:
             Generate an action for app
-          
+
           Arguments:
             APP                 	# REQUIRED The application name (eg. `web`)
             ACTION              	# REQUIRED The action name (eg. `home#index`)
-          
+
           Options:
             --url=VALUE                     	# The action URL
             --method=VALUE                  	# The action HTTP method
             --[no-]skip-view                	# Skip view and template, default: false
             --help, -h                      	# Print this help
-          
+
           Examples:
             hanami generate action web home#index                    # Basic usage
             hanami generate action admin home#index                  # Generate for `admin` app
