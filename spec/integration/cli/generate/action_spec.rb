@@ -21,21 +21,15 @@ RSpec.describe "hanami generate", type: :cli do
             class Index
               include Web::Action
           
-              def call(params)
-              end
-            end
-          end
-        END
-
-        #
-        # apps/web/views/authors/index.rb
-        #
-        expect('apps/web/views/authors/index.rb').to have_file_content <<~END
-          module Web::Views::Authors
-            class Index
-              include Web::View
-            end
-          end
+                  #
+                  # apps/web/views/authors/index.rb
+                  #
+                  expect('apps/web/views/authors/index.rb').to have_file_content <<~END
+                    module Web::Views::Authors
+                      class Index
+                        include Web::View
+                      end
+                    end
         END
 
         #
@@ -304,16 +298,13 @@ END
             require_relative '../../../spec_helper'
             
             describe Web::Views::Books::Index do
-              let(:exposures) { Hash[foo: 'bar'] }
+              let(:exposures) { Hash[format: :html] }
               let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }
               let(:view)      { Web::Views::Books::Index.new(template, exposures) }
               let(:rendered)  { view.render }
             
-              it 'exposes #foo' do
-                skip 'This is an auto-generated test. Edit it and add your own tests.'
-            
-                # Example
-                view.foo.must_equal exposures.fetch(:foo)
+              it 'exposes #format' do
+                view.format.must_equal exposures.fetch(:format)
               end
             end
           END
@@ -351,16 +342,13 @@ END
           #
           expect('spec/web/views/books/index_spec.rb').to have_file_content <<~END
             RSpec.describe Web::Views::Books::Index, type: :view do
-              let(:exposures) { Hash[foo: 'bar'] }
+              let(:exposures) { Hash[format: :html] }
               let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }
               let(:view)      { described_class.new(template, exposures) }
               let(:rendered)  { view.render }
             
-              it 'exposes #foo' do
-                pending 'This is an auto-generated test. Edit it and add your own tests.'
-            
-                # Example
-                expect(view.foo).to eq exposures.fetch(:foo)
+              it 'exposes #format' do
+                expect(view.format).to eq exposures.fetch(:format)
               end
             end
           END
