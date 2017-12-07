@@ -22,24 +22,24 @@ RSpec.describe "hanami generate", type: :cli do
 
     xit 'prints help message' do
       with_project do
-        banner = <<-OUT
-Command:
-  hanami generate secret
-
-Usage:
-  hanami generate secret [APP]
-
-Description:
-  Generate session secret
-
-Arguments:
-  APP                 	# The application name (eg. `web`)
-
-Options:
-  --help, -h                      	# Print this help
-
-Examples:
-OUT
+        banner = <<~OUT
+          Command:
+            hanami generate secret
+          
+          Usage:
+            hanami generate secret [APP]
+          
+          Description:
+            Generate session secret
+          
+          Arguments:
+            APP                 	# The application name (eg. `web`)
+          
+          Options:
+            --help, -h                      	# Print this help
+          
+          Examples:
+        OUT
 
         output = [
           banner,

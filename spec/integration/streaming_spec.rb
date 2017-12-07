@@ -10,20 +10,20 @@ RSpec.describe "Streaming", type: :cli do
       replace "apps/web/application.rb", "# middleware.use", "middleware.use ::Rack::Chunked"
       replace "apps/web/application.rb", "controller.prepare do", "controller.format text: 'text/plain'\ncontroller.prepare do"
 
-      rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      self.format = :text
-      self.body = Enumerator.new do |y|
-        %w(one two three).each { |s| y << s }
-      end
-    end
-  end
-end
-EOF
+      rewrite "apps/web/controllers/home/index.rb", <<~EOF
+        module Web::Controllers::Home
+          class Index
+            include Web::Action
+        
+            def call(params)
+              self.format = :text
+              self.body = Enumerator.new do |y|
+                %w(one two three).each { |s| y << s }
+              end
+            end
+          end
+        end
+      EOF
 
       server do
         get '/', {}, 'HTTP_VERSION' => 'HTTP/1.1'
