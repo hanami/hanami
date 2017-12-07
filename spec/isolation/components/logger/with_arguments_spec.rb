@@ -12,7 +12,7 @@ RSpec.describe "Components: logger", type: :cli do
         10.times do
           Hanami.logger.debug 'hello'
         end
-EOF
+      EOF
 
       bundle_exec "ruby script/components"
 

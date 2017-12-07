@@ -56,6 +56,6 @@ RSpec.describe "handle exceptions", type: :cli do
           end
         end
       end
-EOF
+    EOF
   end
 end

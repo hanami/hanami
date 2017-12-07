@@ -17,7 +17,7 @@ RSpec.describe Hanami::Middleware, type: :cli do
           end
           
           class Application < Hanami::Application
-END
+        END
 
         replace "apps/web/application.rb", "configure do", <<~END
           configure do
@@ -37,7 +37,7 @@ END
             middleware.prepend Web::RackApp, &block1   # this is a duplicate and it shouldn't be included
             middleware.prepend Web::RackApp, &block2   # this is a duplicate and it shouldn't be included
             middleware.prepend Web::RackApp, &block3
-END
+        END
 
         require Pathname.new(Dir.pwd).join("config", "environment")
         Hanami::Components.resolve('all')

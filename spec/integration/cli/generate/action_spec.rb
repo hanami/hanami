@@ -25,7 +25,7 @@ RSpec.describe "hanami generate", type: :cli do
               end
             end
           end
-END
+        END
 
         #
         # apps/web/views/authors/index.rb
@@ -36,7 +36,7 @@ END
               include Web::View
             end
           end
-END
+        END
 
         #
         # apps/web/config/routes.rb
@@ -70,7 +70,7 @@ END
               end
             end
           end
-END
+        END
 
         #
         # apps/web/views/api/authors/index.rb
@@ -81,7 +81,7 @@ END
               include Web::View
             end
           end
-END
+        END
 
         #
         # apps/web/config/routes.rb
@@ -95,7 +95,7 @@ END
         output = <<~OUT
           ERROR: "hanami generate action" was called with no arguments
           Usage: "hanami generate action APP ACTION"
-OUT
+        OUT
         run_command "hanami generate action", output, exit_status: 1
       end
     end
@@ -105,7 +105,7 @@ OUT
         output = <<~OUT
           ERROR: "hanami generate action" was called with arguments ["home#index"]
           Usage: "hanami generate action APP ACTION"
-OUT
+        OUT
 
         run_command "hanami generate action home#index", output, exit_status: 1
       end
@@ -165,7 +165,7 @@ OUT
                 end
               end
             end
-END
+          END
         end
       end
     end
@@ -295,7 +295,7 @@ END
                 response[0].must_equal 200
               end
             end
-END
+          END
 
           #
           # spec/web/views/books/index_spec.rb
@@ -316,7 +316,7 @@ END
                 view.foo.must_equal exposures.fetch(:foo)
               end
             end
-END
+          END
         end
       end
     end # minitest
@@ -344,7 +344,7 @@ END
                 expect(response[0]).to eq 200
               end
             end
-END
+          END
 
           #
           # spec/web/views/books/index_spec.rb
@@ -363,7 +363,7 @@ END
                 expect(view.foo).to eq exposures.fetch(:foo)
               end
             end
-END
+          END
         end
       end
     end # rspec
@@ -396,7 +396,7 @@ END
             hanami generate action web home#index --url=/            # Specify URL
             hanami generate action web sessions#destroy --method=GET # Specify HTTP method
             hanami generate action web books#create --skip-view      # Skip view and template
-OUT
+        OUT
 
         run_command 'hanami generate action --help', output
       end

@@ -22,7 +22,7 @@ RSpec.describe "hanami destroy", type: :cli do
         output = <<~OUT
           ERROR: "hanami destroy migration" was called with no arguments
           Usage: "hanami destroy migration MIGRATION"
-OUT
+        OUT
         run_command "hanami destroy migration", output, exit_status: 1
       end
     end
@@ -31,7 +31,7 @@ OUT
       with_project do
         output = <<~OUT
           cannot find `create_unknowns'. Please have a look at `db/migrations' directory to find an existing migration
-OUT
+        OUT
         run_command "hanami destroy migration create_unknowns", output, exit_status: 1
       end
     end
@@ -55,7 +55,7 @@ OUT
             --help, -h                      	# Print this help
           
           Examples:
-OUT
+        OUT
         output = [
           banner,
           %r{  hanami destroy migration create_users # Destroy `db/migrations/[\d]{14}_create_users.rb`}

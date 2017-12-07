@@ -8,7 +8,7 @@ RSpec.describe "hanami destroy", type: :cli do
           hanami destroy mailer MAILER                         # Destroy a mailer
           hanami destroy migration MIGRATION                   # Destroy a migration
           hanami destroy model MODEL                           # Destroy a model
-OUT
+      OUT
 
       run_command "hanami destroy", output, exit_status: 1
     end

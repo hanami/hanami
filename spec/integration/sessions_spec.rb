@@ -87,7 +87,7 @@ RSpec.describe "Sessions", type: :cli do
           execute "INSERT INTO users (name) VALUES('Luca')"
         end
       end
-EOF
+    EOF
 
     hanami "db prepare"
   end
@@ -113,7 +113,7 @@ EOF
           end
         end
       end
-EOF
+    EOF
 
     rewrite "apps/web/templates/home/index.html.erb", <<~EOF
       <h1>Bookshelf</h1>
@@ -124,7 +124,7 @@ EOF
         Welcome, <%= current_user.name %>
         <%= link_to "Sign out", "/signout" %>
       <% end %>
-EOF
+    EOF
   end
 
   def generate_signin
@@ -144,7 +144,7 @@ EOF
           end
         end
       %>
-EOF
+    EOF
   end
 
   def generate_signin_create_action
@@ -160,7 +160,7 @@ EOF
           end
         end
       end
-EOF
+    EOF
   end
 
   def generate_signout
@@ -177,7 +177,7 @@ EOF
           end
         end
       end
-EOF
+    EOF
   end
 
   def given_signedin_user # rubocop:disable Metrics/AbcSize

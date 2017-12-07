@@ -29,7 +29,7 @@ RSpec.describe "hanami db", type: :cli do
           
           Options:
             --help, -h                      	# Print this help
-OUT
+        OUT
 
         run_command "hanami db console --help", output
       end

@@ -23,7 +23,7 @@ RSpec.describe "Application middleware stack", type: :cli do
             end
           end
         end
-EOF
+      EOF
 
       server do
         get '/'
@@ -57,7 +57,7 @@ EOF
           end
         end
       end
-EOF
+    EOF
 
     write "apps/web/middleware/custom.rb", <<~EOF
       module Web
@@ -77,6 +77,6 @@ EOF
           end
         end
       end
-EOF
+    EOF
   end
 end

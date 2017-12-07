@@ -78,7 +78,7 @@ RSpec.describe "hanami generate", type: :cli do
                 <%= yield %>
               </body>
             </html>
-END
+          END
           #
           # spec/admin/views/application_layout_spec.rb
           #
@@ -109,7 +109,7 @@ END
                 = favicon
               %body
                 = yield
- END
+          END
 
           #
           # spec/admin/views/application_layout_spec.rb
@@ -142,7 +142,7 @@ END
                 = favicon
               body
                 = yield
-END
+          END
 
           #
           # spec/admin/views/application_layout_spec.rb
@@ -174,7 +174,7 @@ END
           Examples:
             hanami generate app admin                              # Generate `admin` app
             hanami generate app api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
-OUT
+        OUT
 
         run_command 'hanami generate app --help', output
       end

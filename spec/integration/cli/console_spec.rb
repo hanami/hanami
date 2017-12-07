@@ -48,7 +48,7 @@ RSpec.describe "hanami console", type: :cli do
             attribute :secret, Types::String
             attribute :digest, Types::String
           end
-EOF
+        EOF
         console do |input, _, _|
           input.puts("AccessToken.new(id: '1', secret: 'shh', digest: 'def')")
           input.puts("exit")
@@ -92,7 +92,7 @@ EOF
         Examples:
           hanami console              # Uses the bundled engine
           hanami console --engine=pry # Force to use Pry
-OUT
+      OUT
 
       run_command "hanami console --help", output
     end

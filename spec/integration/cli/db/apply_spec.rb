@@ -18,7 +18,7 @@ RSpec.describe "hanami db", type: :cli do
           CREATE TABLE `users` (`id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `name` varchar(255), `age` integer);
           INSERT INTO "schema_migrations" VALUES('#{versions.first}_create_users.rb');
           INSERT INTO "schema_migrations" VALUES('#{versions.last}_add_age_to_users.rb');
-SQL
+        SQL
 
         expect(migrations.children).to be_empty
       end
@@ -38,7 +38,7 @@ SQL
           
           Options:
             --help, -h                      	# Print this help
-OUT
+        OUT
 
         run_command "hanami db apply --help", output
       end

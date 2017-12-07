@@ -9,7 +9,7 @@ RSpec.describe "hanami routes", type: :cli do
             [200, {}, ["PONG"]]
           end
         end
-EOF
+      EOF
 
       unshift "config/environment.rb", "require_relative '../lib/ping'"
       replace "config/environment.rb", "Hanami.configure do", "Hanami.configure do\nmount Ping, at: '/ping'"
@@ -39,7 +39,7 @@ EOF
         
         Options:
           --help, -h                      	# Print this help
-OUT
+      OUT
 
       run_command 'hanami routes --help', output
     end

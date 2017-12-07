@@ -6,7 +6,7 @@ RSpec.describe "Hanami.code_reloading?", type: :cli do
           require "\#{__dir__}/../config/environment"
           Hanami.boot
           puts "code reloading: \#{Hanami.code_reloading?}"
-EOF
+        EOF
         bundle_exec "ruby script/components"
 
         expect(out).to include("code reloading: false")

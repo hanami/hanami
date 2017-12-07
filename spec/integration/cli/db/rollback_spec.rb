@@ -85,7 +85,7 @@ RSpec.describe "hanami db", type: :cli do
           Examples:
             hanami db rollback   # Rollbacks latest migration
             hanami db rollback 2 # Rollbacks last two migrations
-OUT
+        OUT
         run_command 'hanami db rollback --help', output
       end
     end

@@ -22,7 +22,7 @@ RSpec.describe "hanami generate", type: :cli do
               to      '<to>'
               subject 'Hello'
             end
-END
+          END
 
           expect('lib/bookshelf_generate_mailer/mailers/templates/welcome.txt.erb').to have_file_content ''
           expect('lib/bookshelf_generate_mailer/mailers/templates/welcome.html.erb').to have_file_content ''
@@ -43,7 +43,7 @@ END
                 mail = Mailers::Welcome.deliver
               end
             end
-END
+          END
         end
       end
 
@@ -59,7 +59,7 @@ END
                 mail = Mailers::Welcome.deliver
               end
             end
-END
+          END
         end
       end
     end
@@ -83,7 +83,7 @@ END
             to      'user@example.com'
             subject 'Let\'s start'
           end
-END
+        END
       end
     end
 
@@ -106,7 +106,7 @@ END
             to      'user@example.com'
             subject 'Come on \"Folks\"'
           end
-END
+        END
       end
     end
 
@@ -129,7 +129,7 @@ END
             to      'user@example.com'
             subject 'Welcome'
           end
-END
+        END
       end
     end
 
@@ -138,7 +138,7 @@ END
         output = <<~OUT
           ERROR: "hanami generate mailer" was called with no arguments
           Usage: "hanami generate mailer MAILER"
-OUT
+        OUT
 
         run_command "hanami generate mailer", output, exit_status: 1
       end
@@ -170,7 +170,7 @@ OUT
             hanami generate mailer welcome --from="noreply@example.com"            # Generate with default `from` value
             hanami generate mailer announcement --to="users@example.com"           # Generate with default `to` value
             hanami generate mailer forgot_password --subject="Your password reset" # Generate with default `subject`
-OUT
+        OUT
 
         run_command 'hanami generate mailer --help', output
       end

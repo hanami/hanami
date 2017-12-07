@@ -8,7 +8,7 @@ RSpec.describe "Components: code_reloading", type: :cli do
             Hanami::Components.resolved('environment', Hanami::Environment.new(code_reloading: true))
             Hanami::Components.resolve('code_reloading')
             puts Hanami::Components['code_reloading'].class
-EOF
+          EOF
 
           RSpec::Support::Bundler.with_clean_env do
             bundle_exec "ruby script/components"

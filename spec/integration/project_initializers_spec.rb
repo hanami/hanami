@@ -4,13 +4,13 @@ RSpec.describe "Project initializers", type: :cli do
       write "config/locales/en.yml", <<~EOF
         en:
           greeting: "Welcome stranger"
-EOF
+      EOF
 
       write "config/initializers/i18n.rb", <<~EOF
         require 'i18n'
         I18n.load_path = Dir['config/locales/*.yml']
         I18n.backend.load_translations
-EOF
+      EOF
 
       generate "action web home#index --url=/"
       rewrite "apps/web/views/home/index.rb", <<~EOF
@@ -23,11 +23,11 @@ EOF
             end
           end
         end
-EOF
+      EOF
 
       rewrite "apps/web/templates/home/index.html.erb", <<~EOF
         <h1><%= greeting%></h1>
-EOF
+      EOF
       server do
         get '/'
 

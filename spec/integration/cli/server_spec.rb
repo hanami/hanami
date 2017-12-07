@@ -44,7 +44,7 @@ RSpec.describe 'hanami server', type: :cli do
         server do
           write "apps/web/assets/javascripts/application.js", <<~EOF
             console.log('test');
-EOF
+          EOF
           visit "/assets/application.js"
           expect(page).to have_content("console.log('test');")
         end
@@ -71,10 +71,10 @@ EOF
               end
             end
           end
-EOF
+        EOF
         rewrite  "apps/web/templates/books/show.html.erb", <<~EOF
           <h1><%= book.title %></h1>
-EOF
+        EOF
 
         server do
           visit "/books/1"
@@ -176,7 +176,7 @@ EOF
               end
             end
           end
-EOF
+        EOF
 
         RSpec::Support::Env['HANAMI_ENV']   = env = 'production'
         RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
@@ -233,7 +233,7 @@ EOF
 
           rewrite "apps/web/templates/home/index.html.erb", <<~EOF
             <h1>Hello, World!</h1>
-EOF
+          EOF
 
           visit "/"
           expect(page).to have_title("Web")
@@ -260,11 +260,11 @@ EOF
                 end
               end
             end
-EOF
+          EOF
 
           rewrite "apps/web/templates/home/index.html.erb", <<~EOF
             <%= greeting %>
-EOF
+          EOF
 
           visit "/"
           expect(page).to have_title("Web")
@@ -291,7 +291,7 @@ EOF
                 end
               end
             end
-EOF
+          EOF
 
           visit "/"
           expect(page).to have_content("Hi!")
@@ -317,7 +317,7 @@ EOF
               execute "INSERT INTO users (name) VALUES('MG')"
             end
           end
-EOF
+        EOF
 
         rewrite "lib/#{project_name}/repositories/user_repository.rb", <<~EOF
           class UserRepository < Hanami::Repository
@@ -325,7 +325,7 @@ EOF
               all
             end
           end
-EOF
+        EOF
 
         hanami "db prepare"
 
@@ -342,7 +342,7 @@ EOF
               end
             end
           end
-EOF
+        EOF
 
         server do
           # STEP 3: visit the page
@@ -357,7 +357,7 @@ EOF
                 all.reverse
               end
             end
-EOF
+          EOF
           visit "/users"
 
           expect(page).to have_content("MG, L")
@@ -370,14 +370,14 @@ EOF
         server do
           write "apps/web/assets/stylesheets/style.css", <<~EOF
             body { background-color: #fff; }
-EOF
+          EOF
 
           visit "/assets/style.css"
           expect(page).to have_content("#fff")
 
           rewrite "apps/web/assets/stylesheets/style.css", <<~EOF
             body { background-color: #333; }
-EOF
+          EOF
 
           visit "/assets/style.css"
           expect(page).to have_content("#333")
@@ -418,7 +418,7 @@ EOF
             attribute :secret, Types::String
             attribute :digest, Types::String
           end
-EOF
+        EOF
         generate "action web access_tokens#show --url=/access_tokens/:id"
         rewrite  "apps/web/controllers/access_tokens/show.rb", <<~EOF
           module Web::Controllers::AccessTokens
@@ -431,10 +431,10 @@ EOF
               end
             end
           end
-EOF
+        EOF
         rewrite  "apps/web/templates/access_tokens/show.html.erb", <<~EOF
           <h1><%= access_token.secret %></h1>
-EOF
+        EOF
 
         server do
           visit "/access_tokens/1"
@@ -487,7 +487,7 @@ EOF
           hanami server --host=0.0.0.0      # Bind to a host
           hanami server --port=2306         # Bind to a port
           hanami server --no-code-reloading # Disable code reloading
-OUT
+      OUT
 
       run_command 'hanami server --help', output
     end
@@ -527,7 +527,7 @@ EOL
               end
             end
           end
-EOF
+        EOF
         generate "action admin home#index --url=/"
 
         rewrite "apps/admin/controllers/home/index.rb", <<~EOF
@@ -540,7 +540,7 @@ EOF
               end
             end
           end
-EOF
+        EOF
 
         RSpec::Support::Env['HANAMI_APPS'] = 'web'
 

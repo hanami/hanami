@@ -13,7 +13,7 @@ RSpec.describe "Hanami.boot", type: :cli do
               end
             end
           end
-EOF
+        EOF
         hanami "db prepare"
 
         write "script/components", <<~EOF
@@ -34,7 +34,7 @@ EOF
           
           puts "admin configuration: \#{admin_configuration.object_id == Hanami::Components['admin.configuration'].object_id}"
           puts "web configuration: \#{web_configuration.object_id == Hanami::Components['web.configuration'].object_id}"
-EOF
+        EOF
 
         bundle_exec "ruby script/components"
 

@@ -71,7 +71,7 @@ RSpec.describe "hanami destroy", type: :cli do
         output = <<~OUT
           ERROR: "hanami destroy app" was called with no arguments
           Usage: "hanami destroy app APP"
-OUT
+        OUT
         run_command "hanami destroy app", output, exit_status: 1
       end
     end
@@ -80,7 +80,7 @@ OUT
       with_project do
         output = <<~OUT
           `unknown' is not a valid APP. Please specify one of: `web'
-OUT
+        OUT
         run_command "hanami destroy app unknown", output, exit_status: 1
       end
     end
@@ -105,7 +105,7 @@ OUT
           
           Examples:
             hanami destroy app admin # Destroy `admin` app
-OUT
+        OUT
 
         run_command 'hanami destroy app --help', output
       end

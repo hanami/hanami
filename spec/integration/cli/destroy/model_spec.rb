@@ -50,7 +50,7 @@ RSpec.describe "hanami destroy", type: :cli do
         output = <<~OUT
           ERROR: "hanami destroy model" was called with no arguments
           Usage: "hanami destroy model MODEL"
-OUT
+        OUT
 
         run_command "hanami destroy model", output, exit_status: 1
       end
@@ -66,7 +66,7 @@ OUT
             `hanami destroy model` will destroy an entity along with repository and \n  corresponding tests
           
             > $ hanami destroy model car
-OUT
+        OUT
 
         run_command 'hanami destroy model --help', output
       end
@@ -76,7 +76,7 @@ OUT
       with_project do
         output = <<~OUT
           cannot find `unknown' model. Please have a look at `lib/bookshelf/entities' directory to find an existing model.
-OUT
+        OUT
 
         run_command "hanami destroy model unknown", output, exit_status: 1
       end
@@ -102,7 +102,7 @@ OUT
           
           Examples:
             hanami destroy model user # Destroy `User` entity and `UserRepository` repository
-OUT
+        OUT
 
         run_command 'hanami destroy model --help', output
       end

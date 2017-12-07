@@ -4,7 +4,7 @@ RSpec.describe "hanami assets", type: :cli do
       output = <<~OUT
         Commands:
           hanami assets precompile              # Precompile assets for deployment
-OUT
+      OUT
 
       run_command "hanami assets", output, exit_status: 1
     end

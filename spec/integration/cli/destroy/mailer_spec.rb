@@ -27,7 +27,7 @@ RSpec.describe "hanami destroy", type: :cli do
         output = <<~OUT
           ERROR: "hanami generate mailer" was called with no arguments
           Usage: "hanami generate mailer MAILER"
-OUT
+        OUT
 
         run_command "hanami generate mailer", output, exit_status: 1
       end
@@ -37,7 +37,7 @@ OUT
       with_project do
         output = <<~OUT
           cannot find `unknown' mailer. Please have a look at `lib/bookshelf/mailers' directory to find an existing mailer.
-OUT
+        OUT
 
         run_command "hanami destroy mailer unknown", output, exit_status: 1
       end
@@ -63,7 +63,7 @@ OUT
           
           Examples:
             hanami destroy mailer welcome # Destroy `WelcomeMailer` mailer
-OUT
+        OUT
 
         run_command 'hanami destroy mailer --help', output
       end

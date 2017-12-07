@@ -8,7 +8,7 @@ RSpec.describe "assets", type: :cli do
 
         write "apps/web/assets/javascripts/application.css", <<~EOF
           body { font: Helvetica; }
-EOF
+        EOF
         rewrite "apps/web/templates/application.html.erb", <<~EOF
           <!DOCTYPE html>
           <html>
@@ -21,7 +21,7 @@ EOF
               <%= yield %>
             </body>
           </html>
-EOF
+        EOF
 
         replace "apps/web/application.rb", "subresource_integrity :sha256", "subresource_integrity :sha256, :sha512"
 

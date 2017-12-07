@@ -10,7 +10,7 @@ RSpec.describe "Mailer", type: :cli do
             end
           end
         end
-EOF
+      EOF
 
       replace "config/environment.rb", "delivery :test", <<-EOF
     delivery :test

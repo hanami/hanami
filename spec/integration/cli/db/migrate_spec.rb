@@ -98,7 +98,7 @@ RSpec.describe "hanami db", type: :cli do
           
           Examples:
             hanami db migrate                # Migrate to the last version
-OUT
+        OUT
 
         output = [
           banner,

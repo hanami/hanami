@@ -18,10 +18,10 @@ RSpec.describe 'hanami assets', type: :cli do
           class Application
             constructor: () ->
               @init = true
-EOF
+        EOF
         write "apps/web/assets/stylesheets/_colors.scss", <<~EOF
           $background-color: #f5f5f5;
-EOF
+        EOF
 
         write "apps/web/assets/stylesheets/application.css.scss", <<~EOF
           @import 'colors';
@@ -29,7 +29,7 @@ EOF
           body {
             background-color: $background-color;
           }
-EOF
+        EOF
         #
         # Admin assets
         #
@@ -37,7 +37,7 @@ EOF
         write "apps/admin/assets/javascripts/dashboard.js.coffee", <<~EOF
           class Dashboard
             constructor: (@data) ->
-EOF
+        EOF
 
         #
         # Precompile
@@ -68,7 +68,7 @@ EOF
         #
         expect("public/assets/application-adb4104884aadde9abfef0bd98ac461e.css").to have_file_content <<~EOF
           body {background-color: #f5f5f5}
-EOF
+        EOF
 
         expect("public/assets/application-bb8f10498d83d401db238549409dc4c5.js").to have_file_content \
 """
@@ -83,7 +83,7 @@ return Application;})();}).call(this);
         #
         expect("public/assets/application.css").to have_file_content <<~EOF
           body {background-color: #f5f5f5}
-EOF
+        EOF
 
         expect("public/assets/application.js").to have_file_content \
 """
@@ -138,7 +138,7 @@ return Dashboard;})();}).call(this);
           Examples:
             hanami assets precompile                       # Basic usage
             hanami assets precompile HANAMI_ENV=production # Precompile assets for production environment
-OUT
+        OUT
 
         run_command "hanami assets precompile --help", output
       end

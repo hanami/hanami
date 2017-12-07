@@ -21,7 +21,7 @@ RSpec.describe "Rake: default task", type: :cli do
               expect(described_class.new.all.to_a).to eq([])
             end
           end
-EOF
+        EOF
 
         bundle_exec "rake"
 

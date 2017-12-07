@@ -29,7 +29,7 @@ RSpec.describe "hanami new", type: :cli do
                 <%= yield %>
               </body>
             </html>
-END
+          END
         end
       end
     end # erb
@@ -60,7 +60,7 @@ END
                 = favicon
               %body
                 = yield
-END
+          END
         end
       end
     end # haml
@@ -92,7 +92,7 @@ END
                 = favicon
               body
                 = yield
-END
+          END
         end
       end
     end # slim

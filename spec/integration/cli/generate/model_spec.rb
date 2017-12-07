@@ -32,7 +32,7 @@ RSpec.describe "hanami generate", type: :cli do
           output = <<~END
             ERROR: "hanami generate model" was called with no arguments
             Usage: "hanami generate model MODEL"
-END
+          END
           run_command "hanami generate model", output, exit_status: 1
         end
       end
@@ -115,7 +115,7 @@ END
             class #{class_name}Repository < Hanami::Repository
               self.relation = :#{relation_name}
             end
-END
+          END
 
           migration = Pathname.new('db').join('migrations').children.find do |child|
             child.to_s.include?("create_#{relation_name}")
@@ -132,7 +132,7 @@ END
                 end
               end
             end
-END
+          END
         end
       end
 
@@ -152,7 +152,7 @@ END
             class SheepRepository < Hanami::Repository
               self.relation = :#{relation_name}
             end
-END
+          END
 
           migration = Pathname.new('db').join('migrations').children.find do |child|
             child.to_s.include?("create_#{relation_name}")
@@ -169,7 +169,7 @@ END
                 end
               end
             end
-END
+          END
         end
       end
 
@@ -203,7 +203,7 @@ END
             describe #{class_name} do
               # place your tests here
             end
-END
+          END
 
           #
           # spec/<project>/repositories/<model>_repository_spec.rb
@@ -214,7 +214,7 @@ END
             describe #{class_name}Repository do
               # place your tests here
             end
-END
+          END
         end
       end
     end # minitest
@@ -240,7 +240,7 @@ END
             RSpec.describe #{class_name}, type: :entity do
               # place your tests here
             end
-END
+          END
 
           #
           # spec/<project>/repositories/<model>_repository_spec.rb
@@ -249,7 +249,7 @@ END
             RSpec.describe BookRepository, type: :repository do
               # place your tests here
             end
-END
+          END
         end
       end
     end # rspec
@@ -278,7 +278,7 @@ END
             hanami generate model user                     # Generate `User` entity, `UserRepository` repository, and the migration
             hanami generate model user --skip-migration    # Generate `User` entity and `UserRepository` repository
             hanami generate model user --relation=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
-OUT
+        OUT
 
         run_command 'hanami generate model --help', output
       end

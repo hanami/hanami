@@ -59,7 +59,7 @@ OUT
         project=#{project}
         test=minitest
         template=erb
-END
+      END
 
       #
       # .env.development
@@ -114,7 +114,7 @@ END
         ```
         
         Explore Hanami [guides](http://hanamirb.org/guides/), [API docs](http://docs.hanamirb.org/#{Hanami::VERSION}/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
-END
+      END
 
       #
       # Gemfile
@@ -147,7 +147,7 @@ END
           group :production do
             # gem 'puma'
           end
-END
+        END
       end
 
       if Platform.match?(engine: :jruby)
@@ -172,7 +172,7 @@ END
           group :production do
             # gem 'puma'
           end
-END
+        END
       end
 
       #
@@ -182,7 +182,7 @@ END
         require './config/environment'
         
         run Hanami.app
-END
+      END
 
       #
       # config/boot.rb
@@ -190,7 +190,7 @@ END
       expect('config/boot.rb').to have_file_content <<~END
         require_relative './environment'
         Hanami.boot
-END
+      END
 
       #
       # config/environment.rb
@@ -245,7 +245,7 @@ END
             end
           end
         end
-END
+      END
 
       project_module = Hanami::Utils::String.new(project).classify
       #
@@ -254,7 +254,7 @@ END
       expect("lib/#{project}.rb").to have_file_content <<~END
         module #{project_module}
         end
-END
+      END
 
       #
       # public/.gitkeep
@@ -317,7 +317,7 @@ END
         
         task default: :test
         task spec: :test
-END
+      END
 
       #
       # spec/spec_helper.rb
@@ -330,7 +330,7 @@ END
         require 'minitest/autorun'
         
         Hanami.boot
-END
+      END
 
       #
       # spec/features_helper.rb
@@ -347,7 +347,7 @@ END
         class MiniTest::Spec
           include Capybara::DSL
         end
-END
+      END
 
       #
       # .gitignore
@@ -356,7 +356,7 @@ END
         /db/*.sqlite
         /public/assets*
         /tmp
-END
+      END
 
       #
       # apps/web/application.rb
@@ -688,7 +688,7 @@ END
             end
           end
         end
-END
+      END
 
       #
       # apps/web/config/routes.rb
@@ -699,7 +699,7 @@ END
         #
         # Example:
         # get '/hello', to: ->(env) { [200, {}, ['Hello from Hanami!']] }
-END
+      END
 
       #
       # apps/web/views/application_layout.rb
@@ -712,7 +712,7 @@ END
             end
           end
         end
-END
+      END
 
       #
       # apps/web/templates/application.html.erb
@@ -728,7 +728,7 @@ END
             <%= yield %>
           </body>
         </html>
-END
+      END
 
       #
       # apps/web/assets/favicon.ico
@@ -825,7 +825,7 @@ END
         hanami new bookshelf --database=postgres # Setup Postgres database
         hanami new bookshelf --template=slim     # Setup Slim template engine
         hanami new bookshelf --hanami-head       # Use Hanami HEAD
-OUT
+    OUT
 
     run_command 'hanami new --help', output
   end

@@ -9,7 +9,7 @@ RSpec.describe "hanami generate", type: :cli do
           hanami generate migration MIGRATION                   # Generate a migration
           hanami generate model MODEL                           # Generate a model
           hanami generate secret [APP]                          # Generate session secret
-OUT
+      OUT
 
       run_command "hanami generate", output, exit_status: 1
     end

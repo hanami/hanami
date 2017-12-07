@@ -11,7 +11,7 @@ RSpec.describe "assets", type: :cli do
           
           body
             font: 100% $font-family
-EOF
+        EOF
         rewrite "apps/web/templates/application.html.erb", <<~EOF
           <!DOCTYPE html>
           <html>
@@ -24,7 +24,7 @@ EOF
               <%= yield %>
             </body>
           </html>
-EOF
+        EOF
 
         server do
           visit '/'
@@ -54,7 +54,7 @@ EOF
 
         write "apps/web/assets/javascripts/application.js", <<~EOF
           console.log('test');
-EOF
+        EOF
 
         hanami "assets precompile"
 

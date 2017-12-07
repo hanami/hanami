@@ -25,7 +25,7 @@ RSpec.describe "HTTP HEAD", type: :cli do
             end
           end
         end
-EOF
+      EOF
 
       server do
         head '/'
@@ -49,7 +49,7 @@ EOF
             end
           end
         end
-EOF
+      EOF
 
       server do
         head '/'
@@ -74,7 +74,7 @@ EOF
             end
           end
         end
-EOF
+      EOF
 
       server do
         head '/'

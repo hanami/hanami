@@ -18,7 +18,7 @@ RSpec.describe "Components: mailer.configuration", type: :cli do
           
           configuration = Hanami::Components['mailer.configuration']
           puts "mailer.configuration.delivery_method: \#{configuration.delivery_method.first.inspect}"
-EOF
+        EOF
 
         bundle_exec "ruby script/components"
 

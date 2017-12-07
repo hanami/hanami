@@ -74,7 +74,7 @@ RSpec.describe "hanami destroy", type: :cli do
         output = <<~OUT
           ERROR: "hanami destroy action" was called with no arguments
           Usage: "hanami destroy action APP ACTION"
-OUT
+        OUT
 
         run_command "hanami destroy action", output, exit_status: 1
       end
@@ -85,7 +85,7 @@ OUT
         output = <<~OUT
           ERROR: "hanami destroy action" was called with arguments ["home#index"]
           Usage: "hanami destroy action APP ACTION"
-OUT
+        OUT
 
         run_command "hanami destroy action home#index", output, exit_status: 1
       end
@@ -104,7 +104,7 @@ OUT
         output = <<~OUT
           cannot find `home#index' in `web' application.
           please run `hanami routes' to know the existing actions.
-OUT
+        OUT
 
         run_command "hanami destroy action web home#index", output, exit_status: 1
       end
@@ -132,7 +132,7 @@ OUT
           Examples:
             hanami destroy action web home#index    # Basic usage
             hanami destroy action admin users#index # Destroy from `admin` app
-OUT
+        OUT
 
         run_command 'hanami destroy action --help', output
       end

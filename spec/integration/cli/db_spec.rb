@@ -11,7 +11,7 @@ RSpec.describe "hanami db", type: :cli do
           hanami db prepare                         # Drop, create, and migrate the database (only for development/test)
           hanami db rollback [STEPS]                # Rollback migrations
           hanami db version                         # Print the current migrated version
-OUT
+      OUT
 
       run_command "hanami db", output, exit_status: 1
     end

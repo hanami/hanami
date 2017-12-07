@@ -16,7 +16,7 @@ RSpec.describe 'Routing helpers', type: :cli do
             end
           end
         end
-EOF
+      EOF
 
       server do
         visit "/"
@@ -43,11 +43,11 @@ EOF
             end
           end
         end
-EOF
+      EOF
       rewrite "apps/web/templates/books/index.html.erb", <<~EOF
         <h1>Books</h1>
         <h2><a href="<%= featured_book_path %>">Featured Book</a></h2>
-EOF
+      EOF
 
       server do
         visit "/books"

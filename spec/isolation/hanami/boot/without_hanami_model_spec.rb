@@ -29,7 +29,7 @@ RSpec.describe "Hanami.boot", type: :cli do
           
           puts "Admin::Views: \#{defined?(Admin::Views)}"
           puts "Web::Views: \#{defined?(Web::Views)}"
-EOF
+        EOF
 
         bundle_exec "ruby script/components"
 

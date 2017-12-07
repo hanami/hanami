@@ -28,7 +28,7 @@ RSpec.describe "hanami new", type: :cli do
             require 'minitest/autorun'
             
             Hanami.boot
-END
+          END
 
           #
           # spec/features_helper.rb
@@ -45,7 +45,7 @@ END
             class MiniTest::Spec
               include Capybara::DSL
             end
-END
+          END
 
           #
           # spec/<app>/views/application_layout_spec.rb
@@ -62,7 +62,7 @@ END
                 rendered.must_include('Web')
               end
             end
-END
+          END
         end
       end
     end # minitest
@@ -92,7 +92,7 @@ END
           expect(".rspec").to have_file_content <<~END
             --color
             --require spec_helper
-END
+          END
 
           #
           # spec/spec_helper.rb
@@ -201,7 +201,7 @@ END
               Kernel.srand config.seed
             =end
             end
-END
+          END
 
           #
           # spec/features_helper.rb
@@ -219,7 +219,7 @@ END
               config.include Capybara::DSL,           feature: true
               config.include Capybara::RSpecMatchers, feature: true
             end
-END
+          END
 
           #
           # spec/support/capybara.rb
@@ -233,7 +233,7 @@ END
                 end
               end
             end
-END
+          END
 
           #
           # spec/<app>/views/application_layout_spec.rb
@@ -250,7 +250,7 @@ END
                 expect(rendered).to include('Web')
               end
             end
-END
+          END
 
 
         end

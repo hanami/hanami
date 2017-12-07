@@ -39,7 +39,7 @@ RSpec.describe "hanami generate", type: :cli do
             --help, -h                      	# Print this help
           
           Examples:
-OUT
+        OUT
 
         output = [
           banner,

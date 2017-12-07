@@ -12,7 +12,7 @@ RSpec.describe "Components: code", type: :cli do
               end
             end
           end
-EOF
+        EOF
         hanami "db prepare"
 
         hanami "generate mailer welcome"
@@ -31,7 +31,7 @@ EOF
               name.upcase
             end
           end
-EOF
+        EOF
 
         rewrite "lib/bookshelf/repositories/user_repository.rb", <<~EOF
           class UserRepository < Hanami::Repository
@@ -39,7 +39,7 @@ EOF
               create(name: 'l')
             end
           end
-EOF
+        EOF
 
         rewrite "lib/bookshelf/mailers/welcome.rb", <<~EOF
           class Mailers::Welcome
@@ -49,7 +49,7 @@ EOF
             to      '<to>'
             subject 'Ciao'
           end
-EOF
+        EOF
         Hanami.boot # this resolves `code` again AND configures Hanami::Model so we can connect to the db
 
         user = UserRepository.new.create_with_name

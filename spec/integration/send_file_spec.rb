@@ -13,7 +13,7 @@ RSpec.describe "Send file", type: :cli do
             end
           end
         end
-EOF
+      EOF
 
       server do
         get '/'
@@ -37,7 +37,7 @@ EOF
             end
           end
         end
-EOF
+      EOF
 
       server do
         get '/'

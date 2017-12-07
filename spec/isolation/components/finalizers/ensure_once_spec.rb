@@ -15,7 +15,7 @@ RSpec.describe "Components: finalizers", type: :cli do
         end
         
         Counter.increment!
-EOF
+      EOF
 
       require Pathname.new(Dir.pwd).join("config", "environment")
       Hanami::Components.resolve('finalizers')

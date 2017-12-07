@@ -13,7 +13,7 @@ RSpec.describe "Hanami.boot", type: :cli do
               end
             end
           end
-EOF
+        EOF
         hanami "db prepare"
 
         require Pathname.new(Dir.pwd).join("config", "environment")

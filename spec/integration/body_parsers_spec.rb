@@ -39,7 +39,7 @@ RSpec.describe "body parsers", type: :cli do
           end
         end
       end
-EOF
+    EOF
   end
 
   def enable_json_body_parser

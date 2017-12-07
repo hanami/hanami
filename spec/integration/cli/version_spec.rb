@@ -38,7 +38,7 @@ RSpec.describe 'hanami version', type: :cli do
           
           Options:
             --help, -h                      	# Print this help
-OUT
+        OUT
 
         run_command 'hanami version --help', output
       end
@@ -75,7 +75,7 @@ OUT
         
         Options:
           --help, -h                      	# Print this help
-OUT
+      OUT
 
       run_command 'hanami version --help', output
     end

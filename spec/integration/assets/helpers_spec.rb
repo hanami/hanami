@@ -17,7 +17,7 @@ RSpec.describe "assets", type: :cli do
               <%= javascript 'application' %>
             </body>
           </html>
-EOF
+        EOF
 
         rewrite "apps/web/templates/home/index.html.erb", <<~EOF
           <%= image('application.jpg') %>
@@ -29,7 +29,7 @@ EOF
             source src: view.asset_path('movie.ogg'), type: 'video/ogg'
           end
           %>
-EOF
+        EOF
 
         server do
           visit '/'

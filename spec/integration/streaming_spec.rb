@@ -23,7 +23,7 @@ RSpec.describe "Streaming", type: :cli do
             end
           end
         end
-EOF
+      EOF
 
       server do
         get '/', {}, 'HTTP_VERSION' => 'HTTP/1.1'

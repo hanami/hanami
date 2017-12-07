@@ -30,7 +30,7 @@ RSpec.describe "hanami generate", type: :cli do
           output = <<~END
             ERROR: "hanami generate migration" was called with no arguments
             Usage: "hanami generate migration MIGRATION"
-END
+          END
           run_command "hanami generate migration", output, exit_status: 1
         end
       end
@@ -55,7 +55,7 @@ END
             --help, -h                      	# Print this help
           
           Examples:
-OUT
+        OUT
 
         output = [
           banner,

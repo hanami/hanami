@@ -6,7 +6,7 @@ RSpec.describe "assets", type: :cli do
 
         write "apps/web/assets/javascripts/application.css", <<~EOF
           body { color: #333 };
-EOF
+        EOF
         rewrite "apps/web/templates/application.html.erb", <<~EOF
           <!DOCTYPE html>
           <html>
@@ -19,7 +19,7 @@ EOF
               <%= yield %>
             </body>
           </html>
-EOF
+        EOF
 
         replace_last "apps/web/application.rb", "# scheme 'https'",           "scheme 'https'"
         replace      "apps/web/application.rb", "# host   'cdn.example.org'", "host   'cdn.example.org'"
