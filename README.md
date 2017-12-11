@@ -91,7 +91,7 @@ If you want to test Hanami's HEAD to try a new feature or to test a bug fix, her
 ```
 git clone https://github.com/hanami/hanami.git
 cd hanami && bundle
-bundle exec hanami new --hanami-head=true bookshelf
+bundle exec hanami new --hanami-head bookshelf
 cd bookshelf
 vim Gemfile # edit with: gem 'hanami', path: '..'
 bundle
