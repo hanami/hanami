@@ -11,17 +11,17 @@ RSpec.describe "Rake: default task", type: :cli do
 
         generate 'mailer bookshelf'
 
-        write "spec/bookshelf/repositories/book_repository_spec.rb", <<-EOF
-RSpec.describe BookRepository do
-  before do
-    described_class.new.clear
-  end
-
-  it 'finds all the records' do
-    expect(described_class.new.all.to_a).to eq([])
-  end
-end
-EOF
+        write "spec/bookshelf/repositories/book_repository_spec.rb", <<~EOF
+          RSpec.describe BookRepository do
+            before do
+              described_class.new.clear
+            end
+          
+            it 'finds all the records' do
+              expect(described_class.new.all.to_a).to eq([])
+            end
+          end
+        EOF
 
         bundle_exec "rake"
 

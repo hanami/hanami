@@ -4,22 +4,22 @@ RSpec.describe "assets", type: :cli do
       with_project do
         generate "action web home#index --url=/"
 
-        write "apps/web/assets/javascripts/application.css", <<-EOF
-body { color: #333 };
-EOF
-        rewrite "apps/web/templates/application.html.erb", <<-EOF
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Web</title>
-    <%= favicon %>
-    <%= stylesheet 'application' %>
-  </head>
-  <body>
-    <%= yield %>
-  </body>
-</html>
-EOF
+        write "apps/web/assets/javascripts/application.css", <<~EOF
+          body { color: #333 };
+        EOF
+        rewrite "apps/web/templates/application.html.erb", <<~EOF
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Web</title>
+              <%= favicon %>
+              <%= stylesheet 'application' %>
+            </head>
+            <body>
+              <%= yield %>
+            </body>
+          </html>
+        EOF
 
         replace_last "apps/web/application.rb", "# scheme 'https'",           "scheme 'https'"
         replace      "apps/web/application.rb", "# host   'cdn.example.org'", "host   'cdn.example.org'"
