@@ -61,13 +61,14 @@ EOF
 
         generate "action web books#show --url=/books/:id"
         rewrite  "apps/web/controllers/books/show.rb", <<-EOF
-module Web::Controllers::Books
-  class Show
-    include Web::Action
-    expose :book
-
-    def call(params)
-      @book = BookRepository.new.find(params[:id]) or halt(404)
+module Web
+  module Controllers
+    module Books
+      class Show < Hanami::Action
+        def call(req, res)
+          res[:book] = BookRepository.new.find(req.params[:id]) or halt(404)
+        end
+      end
     end
   end
 end
@@ -167,12 +168,14 @@ EOF
         generate "action web home#index --url=/"
 
         rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      self.body = Hanami.env
+module Web
+  module Controllers
+    module Home
+      class Index < Hanami::Action
+        def call(*, res)
+          res.body = Hanami.env
+        end
+      end
     end
   end
 end
@@ -282,12 +285,14 @@ EOF
           generate "action web home#index --url=/"
 
           rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      self.body = "Hi!"
+module Web
+  module Controllers
+    module Home
+      class Index < Hanami::Action
+        def call(*, res)
+          res.body = "Hi!"
+        end
+      end
     end
   end
 end
@@ -333,12 +338,14 @@ EOF
         generate "action web users#index --url=/users"
 
         rewrite "apps/web/controllers/users/index.rb", <<-EOF
-module Web::Controllers::Users
-  class Index
-    include Web::Action
-
-    def call(params)
-      self.body = UserRepository.new.listing.map(&:name).join(", ")
+module Web
+  module Controllers
+    module Users
+      class Index < Hanami::Action
+        def call(*, res)
+          res.body = UserRepository.new.listing.map(&:name).join(", ")
+        end
+      end
     end
   end
 end
@@ -421,13 +428,14 @@ end
 EOF
         generate "action web access_tokens#show --url=/access_tokens/:id"
         rewrite  "apps/web/controllers/access_tokens/show.rb", <<-EOF
-module Web::Controllers::AccessTokens
-  class Show
-    include Web::Action
-    expose :access_token
-
-    def call(params)
-      @access_token = AccessToken.new(id: '1', secret: 'shh', digest: 'abc')
+module Web
+  module Controllers
+    module AccessTokens
+      class Show < Hanami::Action
+        def call(*, res)
+          res[:access_token] = AccessToken.new(id: '1', secret: 'shh', digest: 'abc')
+        end
+      end
     end
   end
 end
@@ -518,12 +526,14 @@ EOL
         generate "action web home#index --url=/"
 
         rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      self.body = "app: web"
+module Web
+  module Controllers
+    module Home
+      class Index < Hanami::Action
+        def call(*, res)
+          res.body = "app: web"
+        end
+      end
     end
   end
 end
@@ -531,12 +541,14 @@ EOF
         generate "action admin home#index --url=/"
 
         rewrite "apps/admin/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Admin::Action
-
-    def call(params)
-      self.body = "app: admin"
+module Admin
+  module Controllers
+    module Home
+      class Index < Hanami::Action
+        def call(*, res)
+          res.body = "app: admin"
+        end
+      end
     end
   end
 end

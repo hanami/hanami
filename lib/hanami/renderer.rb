@@ -31,7 +31,8 @@ module Hanami
 
     # @api private
     def render(env, response)
-      response.body = _render(env, response)
+      body          = _render(env, response)
+      response.body = body unless body.nil?
       response
     end
 
