@@ -46,13 +46,16 @@ RSpec.describe "handle exceptions", type: :cli do
     generate "action web books#show --url=/books/:id"
 
     rewrite "apps/web/controllers/books/show.rb", <<-EOF
-module Web::Controllers::Books
-  class Show
-    include Web::Action
-    handle_exception ArgumentError => 400
+module Web
+  module Controllers
+    module Books
+      class Show < Hanami::Action
+        handle_exception ArgumentError => 400
 
-    def call(params)
-      raise ArgumentError.new("oh nooooo")
+        def call(*)
+          raise ArgumentError.new("oh nooooo")
+        end
+      end
     end
   end
 end

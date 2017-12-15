@@ -1,5 +1,5 @@
 RSpec.describe "CSRF protection", type: :cli do
-  it "protects POST endpoints from invalid token" do
+  xit "protects POST endpoints from invalid token" do
     with_project do
       generate "action web books#create --url=/books --method=POST"
       replace "apps/web/application.rb", "# sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']", "sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']"
@@ -12,7 +12,7 @@ RSpec.describe "CSRF protection", type: :cli do
     end
   end
 
-  it "protects PATCH endpoints from invalid token" do
+  xit "protects PATCH endpoints from invalid token" do
     with_project do
       generate "action web books#update --url=/books/:id --method=PATCH"
       replace "apps/web/application.rb", "# sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']", "sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']"
@@ -25,7 +25,7 @@ RSpec.describe "CSRF protection", type: :cli do
     end
   end
 
-  it "protects DELETE endpoints from invalid token" do
+  xit "protects DELETE endpoints from invalid token" do
     with_project do
       generate "action web books#destroy --url=/books/:id --method=DELETE"
       replace "apps/web/application.rb", "# sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']", "sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']"

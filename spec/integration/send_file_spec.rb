@@ -4,12 +4,14 @@ RSpec.describe "Send file", type: :cli do
       write "public/static.txt", "Static file"
       generate "action web home#index --url=/"
       rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      send_file "static.txt"
+module Web
+  module Controllers
+    module Home
+      class Index < Hanami::Action
+        def call(*, res)
+          res.send_file "static.txt"
+        end
+      end
     end
   end
 end
@@ -28,12 +30,14 @@ EOF
     with_project do
       generate "action web home#index --url=/"
       rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      send_file __FILE__
+module Web
+  module Controllers
+    module Home
+      class Index < Hanami::Action
+        def call(*, res)
+          res.send_file __FILE__
+        end
+      end
     end
   end
 end

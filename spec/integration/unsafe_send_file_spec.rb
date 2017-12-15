@@ -4,12 +4,14 @@ RSpec.describe "Unsafe send file", type: :cli do
       write "public/static.txt", "Static file"
       generate "action web home#index --url=/"
       rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      unsafe_send_file "public/static.txt"
+module Web
+  module Controllers
+    module Home
+      class Index < Hanami::Action
+        def call(*, res)
+          res.unsafe_send_file "public/static.txt"
+        end
+      end
     end
   end
 end
@@ -28,12 +30,14 @@ EOF
     with_project do
       generate "action web home#index --url=/"
       rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      unsafe_send_file __FILE__
+module Web
+  module Controllers
+    module Home
+      class Index < Hanami::Action
+        def call(*, res)
+          res.unsafe_send_file __FILE__
+        end
+      end
     end
   end
 end
@@ -43,7 +47,7 @@ EOF
         get '/'
 
         expect(last_response.status).to eq(200)
-        expect(last_response.body).to   include("Web::Controllers::Home")
+        expect(last_response.body).to   include("class Index < Hanami::Action")
       end
     end
   end

@@ -40,10 +40,11 @@ module Hanami
     # @since 0.1.0
     # @api private
     def initialize(namespace, configurations, path_prefix, env: Environment.new)
-      @namespace      = namespace
-      @configurations = configurations
-      @path_prefix    = path_prefix
-      @env            = env
+      @namespace         = namespace
+      @configurations    = configurations
+      @path_prefix       = path_prefix
+      @env               = env
+      @handle_exceptions = true
 
       evaluate_configurations!
     end
