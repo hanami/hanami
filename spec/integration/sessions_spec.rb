@@ -103,13 +103,14 @@ EOF
     replace "apps/web/config/routes.rb", "home#index", 'root to: "home#index"'
 
     rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
-    expose :current_user
-
-    def call(params)
-      @current_user = UserRepository.new.find(session[:user_id])
+module Web
+  module Controllers
+    module Home
+      class Index < Hanami::Action
+        def call(req, res)
+          res[:current_user] = UserRepository.new.find(req.session[:user_id])
+        end
+      end
     end
   end
 end
@@ -150,13 +151,15 @@ EOF
   def generate_signin_create_action
     generate "action web sessions#create --url=/signin --method=POST"
     rewrite "apps/web/controllers/sessions/create.rb", <<-EOF
-module Web::Controllers::Sessions
-  class Create
-    include Web::Action
-
-    def call(params)
-      session[:user_id] = UserRepository.new.first.id
-      redirect_to routes.root_url
+module Web
+  module Controllers
+    module Sessions
+      class Create < Hanami::Action
+        def call(*, res)
+          res.session[:user_id] = UserRepository.new.first.id
+          res.redirect_to routes.root_url
+        end
+      end
     end
   end
 end
@@ -167,13 +170,15 @@ EOF
     generate "action web sessions#destroy --url=/signout --method=GET"
 
     rewrite "apps/web/controllers/sessions/destroy.rb", <<-EOF
-module Web::Controllers::Sessions
-  class Destroy
-    include Web::Action
-
-    def call(params)
-      session[:user_id] = nil
-      redirect_to routes.root_url
+module Web
+  module Controllers
+    module Sessions
+      class Destroy < Hanami::Action
+        def call(*, res)
+          res.session[:user_id] = nil
+          res.redirect_to routes.root_url
+        end
+      end
     end
   end
 end

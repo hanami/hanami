@@ -5,7 +5,6 @@ RSpec.describe "Components: app.controller", type: :cli do
       Hanami::Components.resolve('apps') # the component under test can't be resolved directly
 
       expect(Hanami::Components['web.controller']).to be_kind_of(Hanami::Controller::Configuration)
-      expect(defined?(Web::Action)).to                eq("constant")
     end
   end
 end

@@ -1,8 +1,10 @@
-module <%= app.classify %>::Controllers::<%= classified_controller_name %>
-  class <%= action.classify %>
-    include <%= app.classify %>::Action
-
-    def call(params)
+module <%= app.classify %>
+  module Controllers
+    module <%= classified_controller_name %>
+      class <%= action.classify %> < Hanami::Action
+        def call(req, res)
+        end
+      end
     end
   end
 end

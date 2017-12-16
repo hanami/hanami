@@ -65,7 +65,8 @@ module Hanami
           if klass.ancestors.include?(Hanami::Application)
             namespace = Utils::String.namespace(klass.name)
             namespace = Utils::Class.load!("#{namespace}::Controllers")
-            scope(app.path_prefix, namespace: namespace, &klass.configuration.routes)
+            configuration = Components["#{app.app_name}.controller"]
+            scope(app.path_prefix, namespace: namespace, configuration: configuration, &klass.configuration.routes)
           else
             mount(klass, at: app.path_prefix)
           end

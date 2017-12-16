@@ -14,9 +14,7 @@ module Hanami
       CONTENT_TYPE = 'Content-Type'.freeze
 
       # @api private
-      class NullAction
-        include Hanami::Action
-
+      class NullAction < Hanami::Action
         # @api private
         def call(env)
         end

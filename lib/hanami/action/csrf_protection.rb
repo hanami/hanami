@@ -2,7 +2,7 @@ require 'securerandom'
 
 module Hanami
   # @api private
-  module Action
+  class Action
     # Invalid CSRF Token
     #
     # @since 0.4.0
