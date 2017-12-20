@@ -35,20 +35,20 @@ RSpec.describe "hanami console", type: :cli do
 
     it "starts console without hanami-model" do
       project_without_hanami_model("bookshelf", gems: ['dry-struct'], console: :irb) do
-        write "lib/entities/access_token.rb", <<~EOF
-          require 'dry-struct'
-          require 'securerandom'
-          
-          module Types
-            include Dry::Types.module
-          end
-          
-          class AccessToken < Dry::Struct
-            attribute :id,     Types::String.default { SecureRandom.uuid }
-            attribute :secret, Types::String
-            attribute :digest, Types::String
-          end
-        EOF
+        write "lib/entities/access_token.rb", <<-EOF
+require 'dry-struct'
+require 'securerandom'
+
+module Types
+  include Dry::Types.module
+end
+
+class AccessToken < Dry::Struct
+  attribute :id,     Types::String.default { SecureRandom.uuid }
+  attribute :secret, Types::String
+  attribute :digest, Types::String
+end
+EOF
         console do |input, _, _|
           input.puts("AccessToken.new(id: '1', secret: 'shh', digest: 'def')")
           input.puts("exit")
@@ -75,24 +75,24 @@ RSpec.describe "hanami console", type: :cli do
 
   it "prints help message" do
     with_project do
-      output = <<~OUT
-        Command:
-          hanami console
-        
-        Usage:
-          hanami console
-        
-        Description:
-          Starts Hanami console
-        
-        Options:
-          --engine=VALUE                  	# Force a specific console engine: (pry/ripl/irb)
-          --help, -h                      	# Print this help
-        
-        Examples:
-          hanami console              # Uses the bundled engine
-          hanami console --engine=pry # Force to use Pry
-      OUT
+      output = <<-OUT
+Command:
+  hanami console
+
+Usage:
+  hanami console
+
+Description:
+  Starts Hanami console
+
+Options:
+  --engine=VALUE                  	# Force a specific console engine: (pry/ripl/irb)
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami console              # Uses the bundled engine
+  hanami console --engine=pry # Force to use Pry
+OUT
 
       run_command "hanami console --help", output
     end

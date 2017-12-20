@@ -76,18 +76,18 @@ RSpec.describe "Sessions", type: :cli do
 
   def generate_user # rubocop:disable Metrics/MethodLength
     generate_model     "user"
-    generate_migration "create_users", <<~EOF
-      Hanami::Model.migration do
-        change do
-          create_table :users do
-            primary_key :id
-            column :name, String
-          end
-      
-          execute "INSERT INTO users (name) VALUES('Luca')"
-        end
-      end
-    EOF
+    generate_migration "create_users", <<-EOF
+Hanami::Model.migration do
+  change do
+    create_table :users do
+      primary_key :id
+      column :name, String
+    end
+
+    execute "INSERT INTO users (name) VALUES('Luca')"
+  end
+end
+EOF
 
     hanami "db prepare"
   end
@@ -102,29 +102,29 @@ RSpec.describe "Sessions", type: :cli do
     generate "action web home#index --url=/"
     replace "apps/web/config/routes.rb", "home#index", 'root to: "home#index"'
 
-    rewrite "apps/web/controllers/home/index.rb", <<~EOF
-      module Web::Controllers::Home
-        class Index
-          include Web::Action
-          expose :current_user
-      
-          def call(params)
-            @current_user = UserRepository.new.find(session[:user_id])
-          end
-        end
-      end
-    EOF
+    rewrite "apps/web/controllers/home/index.rb", <<-EOF
+module Web::Controllers::Home
+  class Index
+    include Web::Action
+    expose :current_user
 
-    rewrite "apps/web/templates/home/index.html.erb", <<~EOF
-      <h1>Bookshelf</h1>
-      
-      <% if current_user.nil? %>
-        <%= link_to "Sign in", "/signin" %>
-      <% else %>
-        Welcome, <%= current_user.name %>
-        <%= link_to "Sign out", "/signout" %>
-      <% end %>
-    EOF
+    def call(params)
+      @current_user = UserRepository.new.find(session[:user_id])
+    end
+  end
+end
+EOF
+
+    rewrite "apps/web/templates/home/index.html.erb", <<-EOF
+<h1>Bookshelf</h1>
+
+<% if current_user.nil? %>
+  <%= link_to "Sign in", "/signin" %>
+<% else %>
+  Welcome, <%= current_user.name %>
+  <%= link_to "Sign out", "/signout" %>
+<% end %>
+EOF
   end
 
   def generate_signin
@@ -134,50 +134,50 @@ RSpec.describe "Sessions", type: :cli do
 
   def generate_signin_new_action
     generate "action web sessions#new --url=/signin --method=GET"
-    rewrite "apps/web/templates/sessions/new.html.erb", <<~EOF
-      <h1>Sign in</h1>
-      
-      <%=
-        form_for :signin, "/signin", id: "signin-form" do
-          div do
-            button "Sign in"
-          end
-        end
-      %>
-    EOF
+    rewrite "apps/web/templates/sessions/new.html.erb", <<-EOF
+<h1>Sign in</h1>
+
+<%=
+  form_for :signin, "/signin", id: "signin-form" do
+    div do
+      button "Sign in"
+    end
+  end
+%>
+EOF
   end
 
   def generate_signin_create_action
     generate "action web sessions#create --url=/signin --method=POST"
-    rewrite "apps/web/controllers/sessions/create.rb", <<~EOF
-      module Web::Controllers::Sessions
-        class Create
-          include Web::Action
-      
-          def call(params)
-            session[:user_id] = UserRepository.new.first.id
-            redirect_to routes.root_url
-          end
-        end
-      end
-    EOF
+    rewrite "apps/web/controllers/sessions/create.rb", <<-EOF
+module Web::Controllers::Sessions
+  class Create
+    include Web::Action
+
+    def call(params)
+      session[:user_id] = UserRepository.new.first.id
+      redirect_to routes.root_url
+    end
+  end
+end
+EOF
   end
 
   def generate_signout
     generate "action web sessions#destroy --url=/signout --method=GET"
 
-    rewrite "apps/web/controllers/sessions/destroy.rb", <<~EOF
-      module Web::Controllers::Sessions
-        class Destroy
-          include Web::Action
-      
-          def call(params)
-            session[:user_id] = nil
-            redirect_to routes.root_url
-          end
-        end
-      end
-    EOF
+    rewrite "apps/web/controllers/sessions/destroy.rb", <<-EOF
+module Web::Controllers::Sessions
+  class Destroy
+    include Web::Action
+
+    def call(params)
+      session[:user_id] = nil
+      redirect_to routes.root_url
+    end
+  end
+end
+EOF
   end
 
   def given_signedin_user # rubocop:disable Metrics/AbcSize

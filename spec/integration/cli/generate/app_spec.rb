@@ -67,18 +67,18 @@ RSpec.describe "hanami generate", type: :cli do
           #
           # apps/admin/templates/application.html.erb
           #
-          expect("apps/admin/templates/application.html.erb").to have_file_content <<~END
-            <!DOCTYPE html>
-            <html>
-              <head>
-                <title>#{app_name}</title>
-                <%= favicon %>
-              </head>
-              <body>
-                <%= yield %>
-              </body>
-            </html>
-          END
+          expect("apps/admin/templates/application.html.erb").to have_file_content <<-END
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>#{app_name}</title>
+    <%= favicon %>
+  </head>
+  <body>
+    <%= yield %>
+  </body>
+</html>
+END
           #
           # spec/admin/views/application_layout_spec.rb
           #
@@ -101,15 +101,15 @@ RSpec.describe "hanami generate", type: :cli do
           #
           # apps/admin/templates/application.html.haml
           #
-          expect("apps/admin/templates/application.html.haml").to have_file_content <<~END
-            !!!
-            %html
-              %head
-                %title #{app_name}
-                = favicon
-              %body
-                = yield
-          END
+          expect("apps/admin/templates/application.html.haml").to have_file_content <<-END
+!!!
+%html
+  %head
+    %title #{app_name}
+    = favicon
+  %body
+    = yield
+ END
 
           #
           # spec/admin/views/application_layout_spec.rb
@@ -133,16 +133,16 @@ RSpec.describe "hanami generate", type: :cli do
           #
           # apps/admin/templates/application.html.slim
           #
-          expect("apps/admin/templates/application.html.slim").to have_file_content <<~END
-            doctype html
-            html
-              head
-                title
-                  | #{app_name}
-                = favicon
-              body
-                = yield
-          END
+          expect("apps/admin/templates/application.html.slim").to have_file_content <<-END
+doctype html
+html
+  head
+    title
+      | #{app_name}
+    = favicon
+  body
+    = yield
+END
 
           #
           # spec/admin/views/application_layout_spec.rb
@@ -154,27 +154,27 @@ RSpec.describe "hanami generate", type: :cli do
 
     it 'prints help message' do
       with_project do
-        output = <<~OUT
-          Command:
-            hanami generate app
-          
-          Usage:
-            hanami generate app APP
-          
-          Description:
-            Generate an app
-          
-          Arguments:
-            APP                 	# REQUIRED The application name (eg. `web`)
-          
-          Options:
-            --application-base-url=VALUE    	# The app base URL (eg. `/api/v1`)
-            --help, -h                      	# Print this help
-          
-          Examples:
-            hanami generate app admin                              # Generate `admin` app
-            hanami generate app api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
-        OUT
+        output = <<-OUT
+Command:
+  hanami generate app
+
+Usage:
+  hanami generate app APP
+
+Description:
+  Generate an app
+
+Arguments:
+  APP                 	# REQUIRED The application name (eg. `web`)
+
+Options:
+  --application-base-url=VALUE    	# The app base URL (eg. `/api/v1`)
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami generate app admin                              # Generate `admin` app
+  hanami generate app api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
+OUT
 
         run_command 'hanami generate app --help', output
       end

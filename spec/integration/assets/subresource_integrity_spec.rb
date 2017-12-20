@@ -6,22 +6,22 @@ RSpec.describe "assets", type: :cli do
       with_project do
         generate "action web home#index --url=/"
 
-        write "apps/web/assets/javascripts/application.css", <<~EOF
-          body { font: Helvetica; }
-        EOF
-        rewrite "apps/web/templates/application.html.erb", <<~EOF
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <title>Web</title>
-              <%= favicon %>
-              <%= stylesheet 'application' %>
-            </head>
-            <body>
-              <%= yield %>
-            </body>
-          </html>
-        EOF
+        write "apps/web/assets/javascripts/application.css", <<-EOF
+body { font: Helvetica; }
+EOF
+        rewrite "apps/web/templates/application.html.erb", <<-EOF
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web</title>
+    <%= favicon %>
+    <%= stylesheet 'application' %>
+  </head>
+  <body>
+    <%= yield %>
+  </body>
+</html>
+EOF
 
         replace "apps/web/application.rb", "subresource_integrity :sha256", "subresource_integrity :sha256, :sha512"
 

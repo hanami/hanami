@@ -7,8 +7,6 @@ AllCops:
     - "vendor/**/*"
     - "spec/support/**/*"
     - "**/*.gemspec"
-Style/IndentHeredoc:
-  Enabled: true
 Style/MixinGrouping:
   Exclude:
     - "spec/support/**/*"
