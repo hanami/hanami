@@ -14,30 +14,30 @@ RSpec.describe 'hanami assets', type: :cli do
         #
         # Web assets
         #
-        write "apps/web/assets/javascripts/application.js.coffee", <<~EOF
-          class Application
-            constructor: () ->
-              @init = true
-        EOF
-        write "apps/web/assets/stylesheets/_colors.scss", <<~EOF
-          $background-color: #f5f5f5;
-        EOF
+        write "apps/web/assets/javascripts/application.js.coffee", <<-EOF
+class Application
+  constructor: () ->
+    @init = true
+EOF
+        write "apps/web/assets/stylesheets/_colors.scss", <<-EOF
+$background-color: #f5f5f5;
+EOF
 
-        write "apps/web/assets/stylesheets/application.css.scss", <<~EOF
-          @import 'colors';
-          
-          body {
-            background-color: $background-color;
-          }
-        EOF
+        write "apps/web/assets/stylesheets/application.css.scss", <<-EOF
+@import 'colors';
+
+body {
+  background-color: $background-color;
+}
+EOF
         #
         # Admin assets
         #
         generate "app admin"
-        write "apps/admin/assets/javascripts/dashboard.js.coffee", <<~EOF
-          class Dashboard
-            constructor: (@data) ->
-        EOF
+        write "apps/admin/assets/javascripts/dashboard.js.coffee", <<-EOF
+class Dashboard
+  constructor: (@data) ->
+EOF
 
         #
         # Precompile
@@ -66,9 +66,9 @@ RSpec.describe 'hanami assets', type: :cli do
         #
         # Verify web assets (w/ checksum)
         #
-        expect("public/assets/application-adb4104884aadde9abfef0bd98ac461e.css").to have_file_content <<~EOF
-          body {background-color: #f5f5f5}
-        EOF
+        expect("public/assets/application-adb4104884aadde9abfef0bd98ac461e.css").to have_file_content <<-EOF
+body {background-color: #f5f5f5}
+EOF
 
         expect("public/assets/application-bb8f10498d83d401db238549409dc4c5.js").to have_file_content \
 """
@@ -81,9 +81,9 @@ return Application;})();}).call(this);
         #
         # Verify web assets (w/o checksum)
         #
-        expect("public/assets/application.css").to have_file_content <<~EOF
-          body {background-color: #f5f5f5}
-        EOF
+        expect("public/assets/application.css").to have_file_content <<-EOF
+body {background-color: #f5f5f5}
+EOF
 
         expect("public/assets/application.js").to have_file_content \
 """
@@ -122,23 +122,23 @@ return Dashboard;})();}).call(this);
 
     it "prints help message" do
       with_project do
-        output = <<~OUT
-          Command:
-            hanami assets precompile
-          
-          Usage:
-            hanami assets precompile
-          
-          Description:
-            Precompile assets for deployment
-          
-          Options:
-            --help, -h                      	# Print this help
-          
-          Examples:
-            hanami assets precompile                       # Basic usage
-            hanami assets precompile HANAMI_ENV=production # Precompile assets for production environment
-        OUT
+        output = <<-OUT
+Command:
+  hanami assets precompile
+
+Usage:
+  hanami assets precompile
+
+Description:
+  Precompile assets for deployment
+
+Options:
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami assets precompile                       # Basic usage
+  hanami assets precompile HANAMI_ENV=production # Precompile assets for production environment
+OUT
 
         run_command "hanami assets precompile --help", output
       end
