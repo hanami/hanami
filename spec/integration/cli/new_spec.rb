@@ -238,6 +238,8 @@ Hanami.configure do
   end
 
   environment :production do
+    handle_exceptions true
+
     logger level: :info, formatter: :json, filter: []
 
     mailer do |config|
@@ -386,12 +388,6 @@ module Web
         'controllers',
         'views'
       ]
-
-      # Handle exceptions with HTTP statuses (true) or don't catch them (false).
-      # Defaults to true.
-      # See: http://www.rubydoc.info/gems/hanami-controller/#Exceptions_management
-      #
-      # handle_exceptions true
 
       ##
       # HTTP
@@ -641,16 +637,12 @@ module Web
     # DEVELOPMENT
     #
     configure :development do
-      # Don't handle exceptions, render the stack trace
-      handle_exceptions false
     end
 
     ##
     # TEST
     #
     configure :test do
-      # Don't handle exceptions, render the stack trace
-      handle_exceptions false
     end
 
     ##

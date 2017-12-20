@@ -30,38 +30,42 @@ module Hanami
     end
 
     # @api private
-    def render(env, response)
-      body          = _render(env, response)
+    def render(response)
+      body          = _render(response)
       response.body = body unless body.nil?
+      response
+    end
+
+    def render_error(response)
+      # FIXME: move status pages at the project level.
+      response.body = [Hanami::Views::Default.render(@root, response.status, response: response, format: :html)]
       response
     end
 
     private
 
     # @api private
-    def _render(env, response)
+    def _render(response)
       return unless response.renderable?
 
-      _render_action(env, response) ||
+      _render_action(response) ||
         _render_status_page(response)
     end
 
     # @api private
-    def _render_action(env, response)
-      begin
-        view_for(response).render(
-          response.exposures
-        )
-      rescue => e
-        env[RACK_EXCEPTION] = e
-        raise e
-      end
+    def _render_action(response)
+      view_for(response).render(
+        response.exposures
+      )
     end
 
     # @api private
     def _render_status_page(response)
+      # FIXME: this won't work for custom defined MIME Types.
+      # We should move the registration at the project level and pass down the configuration.
       return unless render_status_page?(response)
 
+      # FIXME: move status pages at the project level.
       Hanami::Views::Default.render(@root, response.status, response: response, format: :html)
     end
 
