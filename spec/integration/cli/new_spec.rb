@@ -130,6 +130,9 @@ gem 'hanami-model', '~> 1.1'
 gem 'sqlite3'
 
 group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
+
   # Code reloading
   # See: http://hanamirb.org/guides/projects/code-reloading
   gem 'shotgun'
@@ -180,6 +183,11 @@ END
       #
       expect('config.ru').to have_file_content <<-END
 require './config/environment'
+
+if defined?(BetterErrors)
+  use BetterErrors::Middleware
+  BetterErrors.application_root = __dir__
+end
 
 run Hanami.app
 END
