@@ -6,25 +6,25 @@ RSpec.describe "assets", type: :cli do
       with_project(project, gems: ['sass']) do
         generate "action web home#index --url=/"
 
-        write "apps/web/assets/javascripts/application.css.sass", <<~EOF
-          $font-family: Helvetica, sans-serif
-          
-          body
-            font: 100% $font-family
-        EOF
-        rewrite "apps/web/templates/application.html.erb", <<~EOF
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <title>Web</title>
-              <%= favicon %>
-              <%= stylesheet 'application' %>
-            </head>
-            <body>
-              <%= yield %>
-            </body>
-          </html>
-        EOF
+        write "apps/web/assets/javascripts/application.css.sass", <<-EOF
+$font-family: Helvetica, sans-serif
+
+body
+  font: 100% $font-family
+EOF
+        rewrite "apps/web/templates/application.html.erb", <<-EOF
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web</title>
+    <%= favicon %>
+    <%= stylesheet 'application' %>
+  </head>
+  <body>
+    <%= yield %>
+  </body>
+</html>
+EOF
 
         server do
           visit '/'
@@ -52,9 +52,9 @@ RSpec.describe "assets", type: :cli do
           "namespace :library { get '/', to: 'home#index' }"
         )
 
-        write "apps/web/assets/javascripts/application.js", <<~EOF
-          console.log('test');
-        EOF
+        write "apps/web/assets/javascripts/application.js", <<-EOF
+console.log('test');
+EOF
 
         hanami "assets precompile"
 

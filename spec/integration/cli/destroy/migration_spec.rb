@@ -19,43 +19,43 @@ RSpec.describe "hanami destroy", type: :cli do
 
     it "fails with missing argument" do
       with_project do
-        output = <<~OUT
-          ERROR: "hanami destroy migration" was called with no arguments
-          Usage: "hanami destroy migration MIGRATION"
-        OUT
+        output = <<-OUT
+ERROR: "hanami destroy migration" was called with no arguments
+Usage: "hanami destroy migration MIGRATION"
+OUT
         run_command "hanami destroy migration", output, exit_status: 1
       end
     end
 
     it "fails with unknown migration" do
       with_project do
-        output = <<~OUT
-          cannot find `create_unknowns'. Please have a look at `db/migrations' directory to find an existing migration
-        OUT
+        output = <<-OUT
+cannot find `create_unknowns'. Please have a look at `db/migrations' directory to find an existing migration
+OUT
         run_command "hanami destroy migration create_unknowns", output, exit_status: 1
       end
     end
 
     it 'prints help message' do
       with_project do
-        banner = <<~OUT
-          Command:
-            hanami destroy migration
-          
-          Usage:
-            hanami destroy migration MIGRATION
-          
-          Description:
-            Destroy a migration
-          
-          Arguments:
-            MIGRATION           	# REQUIRED The migration name (eg. `create_users`)
-          
-          Options:
-            --help, -h                      	# Print this help
-          
-          Examples:
-        OUT
+        banner = <<-OUT
+Command:
+  hanami destroy migration
+
+Usage:
+  hanami destroy migration MIGRATION
+
+Description:
+  Destroy a migration
+
+Arguments:
+  MIGRATION           	# REQUIRED The migration name (eg. `create_users`)
+
+Options:
+  --help, -h                      	# Print this help
+
+Examples:
+OUT
         output = [
           banner,
           %r{  hanami destroy migration create_users # Destroy `db/migrations/[\d]{14}_create_users.rb`}

@@ -71,10 +71,10 @@ RSpec.describe "hanami destroy", type: :cli do
 
     it "fails with missing arguments" do
       with_project do
-        output = <<~OUT
-          ERROR: "hanami destroy action" was called with no arguments
-          Usage: "hanami destroy action APP ACTION"
-        OUT
+        output = <<-OUT
+ERROR: "hanami destroy action" was called with no arguments
+Usage: "hanami destroy action APP ACTION"
+OUT
 
         run_command "hanami destroy action", output, exit_status: 1
       end
@@ -82,10 +82,10 @@ RSpec.describe "hanami destroy", type: :cli do
 
     it "fails with missing app" do
       with_project('bookshelf_generate_action_without_app') do
-        output = <<~OUT
-          ERROR: "hanami destroy action" was called with arguments ["home#index"]
-          Usage: "hanami destroy action APP ACTION"
-        OUT
+        output = <<-OUT
+ERROR: "hanami destroy action" was called with arguments ["home#index"]
+Usage: "hanami destroy action APP ACTION"
+OUT
 
         run_command "hanami destroy action home#index", output, exit_status: 1
       end
@@ -101,10 +101,10 @@ RSpec.describe "hanami destroy", type: :cli do
 
     it "fails with unknown action" do
       with_project('bookshelf_generate_action_with_unknown_action') do
-        output = <<~OUT
-          cannot find `home#index' in `web' application.
-          please run `hanami routes' to know the existing actions.
-        OUT
+        output = <<-OUT
+cannot find `home#index' in `web' application.
+please run `hanami routes' to know the existing actions.
+OUT
 
         run_command "hanami destroy action web home#index", output, exit_status: 1
       end
@@ -112,27 +112,27 @@ RSpec.describe "hanami destroy", type: :cli do
 
     it 'prints help message' do
       with_project do
-        output = <<~OUT
-          Command:
-            hanami destroy action
-          
-          Usage:
-            hanami destroy action APP ACTION
-          
-          Description:
-            Destroy an action from app
-          
-          Arguments:
-            APP                 	# REQUIRED The application name (eg. `web`)
-            ACTION              	# REQUIRED The action name (eg. `home#index`)
-          
-          Options:
-            --help, -h                      	# Print this help
-          
-          Examples:
-            hanami destroy action web home#index    # Basic usage
-            hanami destroy action admin users#index # Destroy from `admin` app
-        OUT
+        output = <<-OUT
+Command:
+  hanami destroy action
+
+Usage:
+  hanami destroy action APP ACTION
+
+Description:
+  Destroy an action from app
+
+Arguments:
+  APP                 	# REQUIRED The application name (eg. `web`)
+  ACTION              	# REQUIRED The action name (eg. `home#index`)
+
+Options:
+  --help, -h                      	# Print this help
+
+Examples:
+  hanami destroy action web home#index    # Basic usage
+  hanami destroy action admin users#index # Destroy from `admin` app
+OUT
 
         run_command 'hanami destroy action --help', output
       end

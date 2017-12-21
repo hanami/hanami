@@ -28,18 +28,18 @@ RSpec.describe "body parsers", type: :cli do
   def generate_action
     generate "action web books#create --url=/books --method=POST"
 
-    rewrite "apps/web/controllers/books/create.rb", <<~EOF
-      require 'hanami/utils/json'
-      module Web::Controllers::Books
-        class Create
-          include Web::Action
-      
-          def call(params)
-            self.body = Hanami::Utils::Json.generate(params.to_hash)
-          end
-        end
-      end
-    EOF
+    rewrite "apps/web/controllers/books/create.rb", <<-EOF
+require 'hanami/utils/json'
+module Web::Controllers::Books
+  class Create
+    include Web::Action
+
+    def call(params)
+      self.body = Hanami::Utils::Json.generate(params.to_hash)
+    end
+  end
+end
+EOF
   end
 
   def enable_json_body_parser
