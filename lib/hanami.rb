@@ -77,6 +77,15 @@ module Hanami
     end
   end
 
+  # Configure a plugin
+  #
+  # @see Hanami.configure
+  #
+  # @since 1.2.0
+  def self.plugin(&blk)
+    configuration.instance_eval(&blk)
+  end
+
   # Boot your Hanami project
   #
   # NOTE: In case this is invoked many times, it guarantees that the boot
