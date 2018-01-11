@@ -1,5 +1,7 @@
+<% unless options.fetch(:api) %>
 require 'hanami/helpers'
 require 'hanami/assets'
+<% end %>
 
 module <%= app.classify %>
   class Application < Hanami::Application
