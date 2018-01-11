@@ -34,14 +34,14 @@ module Hanami
 
             generate_app(context)
             generate_routes(context)
-            generate_layout(context) 
+            generate_layout(context)
             generate_template(context)
             generate_favicon(context)
 
             create_controllers_directory(context)
-            create_assets_images_directory(context) 
-            create_assets_javascripts_directory(context) 
-            create_assets_stylesheets_directory(context) 
+            create_assets_images_directory(context)
+            create_assets_javascripts_directory(context)
+            create_assets_stylesheets_directory(context)
 
             create_spec_features_directory(context)
             create_spec_controllers_directory(context)
