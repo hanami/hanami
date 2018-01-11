@@ -18,10 +18,16 @@ module <%= app.classify %>
       #
       # When you add new directories, remember to add them here.
       #
+      <% if options.fetch(:api) %>
+      load_paths << [
+        'controllers'
+      ]
+      <% else %>
       load_paths << [
         'controllers',
         'views'
       ]
+      <% end %>
 
       # Handle exceptions with HTTP statuses (true) or don't catch them (false).
       # Defaults to true.
@@ -110,6 +116,7 @@ module <%= app.classify %>
       #
       # force_ssl true
 
+      <% unless options.fetch(:api) %>
       ##
       # TEMPLATES
       #
@@ -159,6 +166,7 @@ module <%= app.classify %>
           'assets'
         ]
       end
+      <% end %>
 
       ##
       # SECURITY
@@ -263,6 +271,7 @@ module <%= app.classify %>
         # before :authenticate!    # run an authentication before callback
       end
 
+      <% unless options.fetch(:api) %>
       # Configure the code that will yield each time <%= app.classify %>::View is included
       # This is useful for sharing common functionality
       #
@@ -271,6 +280,7 @@ module <%= app.classify %>
         include Hanami::Helpers
         include <%= app.classify %>::Assets::Helpers
       end
+      <% end %>
     end
 
     ##
@@ -297,6 +307,7 @@ module <%= app.classify %>
       # host   'example.org'
       # port   443
 
+      <% unless options.fetch(:api) %>
       assets do
         # Don't compile static assets in production mode (eg. Sass, ES6)
         #
@@ -321,6 +332,7 @@ module <%= app.classify %>
         # See: http://hanamirb.org/guides/assets/content-delivery-network/#subresource-integrity
         subresource_integrity :sha256
       end
+      <% end %>
     end
   end
 end
