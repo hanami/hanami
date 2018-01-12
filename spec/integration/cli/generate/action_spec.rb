@@ -45,6 +45,38 @@ END
       end
     end
 
+    it "generates action over existing file" do
+      with_project('bookshelf_generate_action_over_existing') do
+        write 'apps/web/controllers/authors/index.rb', <<-END
+module Web::Controllers::Authors
+  class Index
+    include Web::Action
+
+    def call(params)
+      # Adding a comment here...
+      # So we can check to make sure this file is replaced properly
+    end
+  end
+end
+END
+        run_command "hanami generate action web authors#index"
+
+        #
+        # apps/web/controllers/authors/index.rb
+        #
+        expect('apps/web/controllers/authors/index.rb').to have_file_content <<-END
+module Web::Controllers::Authors
+  class Index
+    include Web::Action
+
+    def call(params)
+    end
+  end
+end
+END
+      end
+    end
+
     it "generates namespaced action" do
       with_project('bookshelf_generate_action') do
         output = [
