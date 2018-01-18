@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class <%= model.classify %>Repository < Hanami::Repository
 <%- if override_relation_name -%>
   self.relation = :<%= relation %>
