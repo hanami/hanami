@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe <%= app.classify %>::Views::<%= classified_controller_name %>::<%= action.classify %>, type: :view do
   let(:exposures) { Hash[format: :html] }
   let(:template)  { Hanami::View::Template.new('<%= template %>') }
