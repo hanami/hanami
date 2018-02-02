@@ -1,8 +1,3 @@
 require './config/environment'
 
-if defined?(BetterErrors)
-  use BetterErrors::Middleware
-  BetterErrors.application_root = __dir__
-end
-
 run Hanami.app
