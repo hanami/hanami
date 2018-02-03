@@ -26,7 +26,7 @@ module Hanami
       @routes  = Hanami::Router.new
 
       mount(configuration)
-      middleware(environment)
+      middleware(configuration, environment)
       builder.run(routes)
     end
 
@@ -62,9 +62,13 @@ module Hanami
 
     # @since 0.9.0
     # @api private
-    def middleware(environment)
+    def middleware(configuration, environment)
       builder.use Hanami::CommonLogger, Hanami.logger unless Hanami.logger.nil?
       builder.use Rack::ContentLength
+
+      configuration.middleware.each do |m, args, blk|
+        builder.use(m, *args, &blk)
+      end
 
       if middleware = environment.static_assets_middleware # rubocop:disable Lint/AssignmentInCondition
         builder.use middleware
