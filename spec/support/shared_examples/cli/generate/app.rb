@@ -434,8 +434,8 @@ require 'bundler/setup'
 require 'hanami/setup'
 require 'hanami/model'
 require_relative '../lib/#{project}'
-require_relative '../apps/#{app}/application'
 require_relative '../apps/web/application'
+require_relative '../apps/#{app}/application'
 
 Hanami.configure do
   mount #{app_name}::Application, at: '/#{app}'

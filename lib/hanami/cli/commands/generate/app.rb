@@ -191,11 +191,12 @@ module Hanami
             content     = "require_relative '../apps/#{context.app}/application'"
             destination = project.environment(context)
 
-            files.inject_line_before(
-              destination,
-              /require_relative '\.\.\/apps\/.*\/application'/,
-              content
-            )
+            lib_regex = /require_relative '\.\.\/lib\/.*'/
+            app_regex = /require_relative '\.\.\/apps\/.*\/application'/
+
+            regex = File.read(destination)[app_regex] ? app_regex : lib_regex
+
+            files.inject_line_after(destination, regex, content)
             say(:insert, destination)
           end
 
