@@ -28,6 +28,8 @@ module Hanami
       mount(configuration)
       middleware(configuration, environment)
       builder.run(routes)
+
+      @app = builder.to_app
     end
 
     # Implements Rack SPEC
@@ -39,10 +41,14 @@ module Hanami
     # @since 0.9.0
     # @api private
     def call(env)
-      builder.call(env)
+      app.call(env)
     end
 
     private
+
+    # @since x.x.x
+    # @api private
+    attr_reader :app
 
     # @since 0.9.0
     # @api private
