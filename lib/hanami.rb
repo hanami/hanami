@@ -21,6 +21,7 @@ module Hanami
   # @api private
   # @since 0.9.0
   @_mutex = Mutex.new
+  @_plugins = Concurrent::Array.new
 
   # Configure Hanami project
   #
@@ -81,9 +82,33 @@ module Hanami
   #
   # @see Hanami.configure
   #
-  # @since 1.2.0
+  # @since x.x.x
   def self.plugin(&blk)
-    configuration.instance_eval(&blk)
+    @_plugins << blk
+  end
+
+  # Plugins registry
+  #
+  # NOTE: We can't use `Components` registry.
+  #
+  # Plugins are loaded when Bundler requires `Gemfile` gems.
+  # During this phase the `Components` that we can resolve are erased by the
+  # first incoming request in development.
+  # They are erased by a workaround that we had to put in place in `Hanami.boot`.
+  # This workaround is `Components.release` and it was introduced because
+  # `shotgun` failed to reload components, so we have to release for each
+  # incoming request.
+  # After the `Components` registry is cleared up, Hanami is able to resolve all
+  # the components from scratch.
+  #
+  # When we'll switch to `hanami-reloader` for development, we can remove
+  # `Components.release` and we'll be able to store plugins in `Components` and
+  # remove `Hanami.plugins` as well.
+  #
+  # @since x.x.x
+  # @api private
+  def self.plugins
+    @_plugins
   end
 
   # Boot your Hanami project

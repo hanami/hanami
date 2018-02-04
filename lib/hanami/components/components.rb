@@ -323,7 +323,7 @@ module Hanami
     # @since 0.9.0
     # @api private
     register 'finalizers' do
-      requires 'finalizers.initializers'
+      requires 'plugins', 'finalizers.initializers'
 
       resolve { true }
     end
@@ -337,6 +337,18 @@ module Hanami
         Hanami::Utils.require!(
           Hanami.root.join('config', 'initializers')
         )
+      end
+    end
+
+    # Load plugins
+    #
+    # @since x.x.x
+    # @api private
+    register 'plugins' do
+      resolve do |configuration|
+        Hanami.plugins.each do |plugin_configuration|
+          configuration.instance_eval(&plugin_configuration)
+        end
       end
     end
 
