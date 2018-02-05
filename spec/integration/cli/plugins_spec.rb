@@ -1,6 +1,6 @@
 require "pathname"
 
-RSpec.describe "CLI plugins", type: :cli do
+RSpec.describe "CLI plugins", type: :integration do
   it "includes its commands in CLI output" do
     with_project do
       bundle_exec "hanami"

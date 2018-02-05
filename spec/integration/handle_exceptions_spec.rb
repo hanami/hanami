@@ -1,4 +1,4 @@
-RSpec.describe "handle exceptions", type: :cli do
+RSpec.describe "handle exceptions", type: :integration do
   it "doesn't handle exceptions in development mode" do
     with_project do
       generate_action

@@ -1,4 +1,4 @@
-RSpec.describe "Components: apps.assets.configurations", type: :cli do
+RSpec.describe "Components: apps.assets.configurations", type: :integration do
   it "ensures to load components once" do
     with_project do
       require Pathname.new(Dir.pwd).join("config", "environment")

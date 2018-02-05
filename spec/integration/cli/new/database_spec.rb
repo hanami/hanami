@@ -1,4 +1,4 @@
-RSpec.describe "hanami new", type: :cli do
+RSpec.describe "hanami new", type: :integration do
   describe "--database" do
     context "postgres" do
       it "generates project" do

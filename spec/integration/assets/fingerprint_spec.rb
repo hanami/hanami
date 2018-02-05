@@ -1,4 +1,4 @@
-RSpec.describe "assets", type: :cli do
+RSpec.describe "assets", type: :integration do
   describe "fingerprint mode" do
     it "servers assets with fingerprint url" do
       with_project do

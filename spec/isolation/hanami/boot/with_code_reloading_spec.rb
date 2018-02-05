@@ -1,4 +1,4 @@
-RSpec.describe "Hanami.boot", type: :cli do
+RSpec.describe "Hanami.boot", type: :integration do
   context "with code reloading" do
     it "reloads configurations" do
       with_project do

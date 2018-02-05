@@ -1,4 +1,4 @@
-RSpec.describe "Components: code", type: :cli do
+RSpec.describe "Components: code", type: :integration do
   describe "with code reloading" do
     it "reloads code under lib/" do
       with_project do

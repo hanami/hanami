@@ -1,4 +1,4 @@
-RSpec.describe "Unsafe send file", type: :cli do
+RSpec.describe "Unsafe send file", type: :integration do
   it "sends file from the public directory" do
     with_project do
       write "public/static.txt", "Static file"

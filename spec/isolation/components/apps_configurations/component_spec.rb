@@ -1,4 +1,4 @@
-RSpec.describe "Components: apps.configurations", type: :cli do
+RSpec.describe "Components: apps.configurations", type: :integration do
   it "loads all configurations for each hanami applications in the project" do
     with_project do
       generate "app admin"

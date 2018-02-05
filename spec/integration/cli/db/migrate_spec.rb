@@ -1,4 +1,4 @@
-RSpec.describe "hanami db", type: :cli do
+RSpec.describe "hanami db", type: :integration do
   describe "migrate" do
     it "migrates database" do
       project = "bookshelf_db_migrate"

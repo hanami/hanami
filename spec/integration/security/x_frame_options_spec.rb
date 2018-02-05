@@ -1,4 +1,4 @@
-RSpec.describe "X-Frame-Options header", type: :cli do
+RSpec.describe "X-Frame-Options header", type: :integration do
   it "returns default value" do
     with_project do
       generate "action web home#index --url=/"

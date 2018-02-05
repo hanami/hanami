@@ -1,4 +1,4 @@
-RSpec.describe "Components: app.code", type: :cli do
+RSpec.describe "Components: app.code", type: :integration do
   it "loads a single Hanami application's code" do
     with_project do
       generate "action web home#index"

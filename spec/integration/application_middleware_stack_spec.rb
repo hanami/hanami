@@ -1,4 +1,4 @@
-RSpec.describe "Application middleware stack", type: :cli do
+RSpec.describe "Application middleware stack", type: :integration do
   it "mounts Rack middleware" do
     with_project do
       generate "action web home#index --url=/"

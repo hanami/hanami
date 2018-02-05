@@ -1,4 +1,4 @@
-RSpec.describe "hanami console", type: :cli do
+RSpec.describe "hanami console", type: :integration do
   context "irb" do
     it "starts console" do
       project_name = "bookshelf_console_irb"

@@ -1,4 +1,4 @@
-RSpec.describe "Components: all", type: :cli do
+RSpec.describe "Components: all", type: :integration do
   it "loads all" do
     with_project do
       generate "app admin"

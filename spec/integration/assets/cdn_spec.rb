@@ -1,4 +1,4 @@
-RSpec.describe "assets", type: :cli do
+RSpec.describe "assets", type: :integration do
   describe "CDN mode" do
     it "servers assets with CDN url" do
       with_project do

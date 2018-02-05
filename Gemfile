@@ -35,25 +35,16 @@ gem 'ripl', require: false
 gem 'puma',    require: false
 gem 'unicorn', require: false, platforms: :ruby
 
-# `hanami server` integration tests (web pages)
-gem 'capybara', require: false
-
 if RUBY_DESCRIPTION =~ /linux/
   gem 'therubyracer', require: false, platforms: :ruby
   gem 'therubyrhino', require: false, platforms: :jruby
 end
 
-gem 'poltergeist', require: false
-
 # `hanami assets` integration tests
 gem 'sass',          require: false
 gem 'coffee-script', require: false
-
-# HTTP tests
-gem 'excon', require: false
 
 gem 'dotenv',    '~> 2.0', require: false
 gem 'shotgun',   '~> 0.9', require: false
 
 gem 'hanami-devtools', require: false, git: 'https://github.com/hanami/devtools.git'
-gem 'coveralls',       require: false

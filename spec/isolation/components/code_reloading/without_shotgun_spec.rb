@@ -1,4 +1,4 @@
-RSpec.describe "Components: code_reloading", type: :cli do
+RSpec.describe "Components: code_reloading", type: :integration do
   context "without shotgun" do
     context "with code reloading disabled" do
       it "is false" do

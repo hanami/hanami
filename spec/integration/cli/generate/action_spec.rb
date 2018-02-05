@@ -1,4 +1,4 @@
-RSpec.describe "hanami generate", type: :cli do
+RSpec.describe "hanami generate", type: :integration do
   describe "action" do
     it "generates action" do
       with_project('bookshelf_generate_action') do

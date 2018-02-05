@@ -1,4 +1,4 @@
-RSpec.describe "Project initializers", type: :cli do
+RSpec.describe "Project initializers", type: :integration do
   it "mounts Rack middleware" do
     with_project("project_initializers", gems: ['i18n']) do
       write "config/locales/en.yml", <<-EOF

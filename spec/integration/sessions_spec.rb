@@ -1,4 +1,4 @@
-RSpec.describe "Sessions", type: :cli do
+RSpec.describe "Sessions", type: :integration do
   it "shows welcome page" do
     with_project do
       server do

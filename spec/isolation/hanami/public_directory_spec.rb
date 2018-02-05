@@ -1,4 +1,4 @@
-RSpec.describe "Hanami.public_directory", type: :cli do
+RSpec.describe "Hanami.public_directory", type: :integration do
   it "returns project public directory" do
     with_project do
       require Pathname.new(Dir.pwd).join("config", "environment")
