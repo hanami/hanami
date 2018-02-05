@@ -1,4 +1,4 @@
-RSpec.describe "Components: mailer.configuration", type: :cli do
+RSpec.describe "Components: mailer.configuration", type: :integration do
   context "without mailer configuration" do
     it "doesn't resolve mailer configuration" do
       with_project do

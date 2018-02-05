@@ -1,4 +1,4 @@
-RSpec.describe "force SSL", type: :cli do
+RSpec.describe "force SSL", type: :integration do
   it "forces SSL" do
     project = "bookshelf_force_ssl"
 

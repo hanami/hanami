@@ -1,4 +1,4 @@
-RSpec.describe "assets", type: :cli do
+RSpec.describe "assets", type: :integration do
   describe "helpers" do
     it "renders assets tags" do
       with_project do

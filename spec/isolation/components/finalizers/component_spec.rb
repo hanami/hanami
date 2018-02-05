@@ -1,4 +1,4 @@
-RSpec.describe "Components: finalizers", type: :cli do
+RSpec.describe "Components: finalizers", type: :integration do
   it "finalizes project" do
     with_project do
       require Pathname.new(Dir.pwd).join("config", "environment")

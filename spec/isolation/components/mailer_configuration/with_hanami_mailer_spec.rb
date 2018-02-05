@@ -1,4 +1,4 @@
-RSpec.describe "Components: mailer.configuration", type: :cli do
+RSpec.describe "Components: mailer.configuration", type: :integration do
   context "with hanami-mailer" do
     it "resolves mailer configuration" do
       with_project do

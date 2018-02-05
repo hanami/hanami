@@ -1,4 +1,4 @@
-RSpec.describe "Rake: default task", type: :cli do
+RSpec.describe "Rake: default task", type: :integration do
   context "with RSpec" do
     it "runs tests" do
       with_project("bookshelf", test: "rspec") do

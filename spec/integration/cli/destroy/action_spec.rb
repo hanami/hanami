@@ -1,4 +1,4 @@
-RSpec.describe "hanami destroy", type: :cli do
+RSpec.describe "hanami destroy", type: :integration do
   describe "action" do
     it "destroys action" do
       with_project do

@@ -1,4 +1,4 @@
-RSpec.describe 'hanami server', type: :cli do
+RSpec.describe 'hanami server', type: :integration do
   context "without routes" do
     it "shows welcome page" do
       with_project do

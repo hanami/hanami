@@ -1,4 +1,4 @@
-RSpec.describe "hanami new", type: :cli do
+RSpec.describe "hanami new", type: :integration do
   describe "--hanami-head" do
     it "generates project" do
       project = 'bookshelf_hanami_head'

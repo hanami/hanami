@@ -1,4 +1,4 @@
-RSpec.describe "Components: finalizers", type: :cli do
+RSpec.describe "Components: finalizers", type: :integration do
   it "ensures to load components once" do
     with_project do
       write "config/initializers/counter.rb", <<-EOF

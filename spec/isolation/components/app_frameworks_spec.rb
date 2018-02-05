@@ -1,4 +1,4 @@
-RSpec.describe "Components: app.frameworks", type: :cli do
+RSpec.describe "Components: app.frameworks", type: :integration do
   it "loads a single Hanami application's frameworks" do
     with_project do
       require Pathname.new(Dir.pwd).join("config", "environment")

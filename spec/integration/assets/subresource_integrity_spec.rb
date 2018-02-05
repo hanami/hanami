@@ -1,6 +1,6 @@
 require 'json'
 
-RSpec.describe "assets", type: :cli do
+RSpec.describe "assets", type: :integration do
   describe "subresource integrity" do
     it "precompiles assets with checksums calculated with given algorithms" do
       with_project do

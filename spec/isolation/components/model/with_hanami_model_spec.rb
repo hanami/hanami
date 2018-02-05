@@ -1,4 +1,4 @@
-RSpec.describe "Components: model", type: :cli do
+RSpec.describe "Components: model", type: :integration do
   context "with hanami-model" do
     it "resolves model" do
       with_project do

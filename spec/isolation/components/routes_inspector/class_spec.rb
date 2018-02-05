@@ -1,6 +1,6 @@
 require 'hanami/components/routes_inspector'
 
-RSpec.describe Hanami::Components::RoutesInspector, type: :cli do
+RSpec.describe Hanami::Components::RoutesInspector, type: :integration do
   describe "#inspect" do
     it "returns printable routes" do
       with_project do

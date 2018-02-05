@@ -1,4 +1,4 @@
-RSpec.describe "Project middleware", type: :cli do
+RSpec.describe "Project middleware", type: :integration do
   it "mounts Rack middleware" do
     with_project do
       generate_middleware
