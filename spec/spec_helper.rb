@@ -8,6 +8,7 @@ RSpec.configure do |config|
   end
 
   config.before :suite do
+    require "hanami/devtools/integration"
     Pathname.new(Dir.pwd).join("tmp").mkpath
   end
 
@@ -25,7 +26,6 @@ end
 
 require 'hanami'
 require 'hanami/utils/file_list'
-require "hanami/devtools/integration"
 
 Hanami::Utils::FileList["./spec/support/**/*.rb"].each do |file|
   next if file.include?("hanami-plugin")
