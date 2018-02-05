@@ -47,4 +47,4 @@ gem 'coffee-script', require: false
 gem 'dotenv',    '~> 2.0', require: false
 gem 'shotgun',   '~> 0.9', require: false
 
-gem 'hanami-devtools', require: false, git: 'https://github.com/hanami/devtools.git', branch: 'integration-tools'
+gem 'hanami-devtools', require: false, git: 'https://github.com/hanami/devtools.git'
