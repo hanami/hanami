@@ -25,6 +25,7 @@ end
 
 require 'hanami'
 require 'hanami/utils/file_list'
+require "hanami/devtools/integration"
 
 Hanami::Utils::FileList["./spec/support/**/*.rb"].each do |file|
   next if file.include?("hanami-plugin")
