@@ -452,7 +452,7 @@ Hanami.configure do
     #    adapter :sql, 'postgresql://localhost/#{project}_development'
     #    adapter :sql, 'mysql://localhost/#{project}_development'
     #
-    adapter :sql, ENV['DATABASE_URL']
+    adapter :sql, ENV.fetch('DATABASE_URL')
 
     ##
     # Migrations
@@ -477,7 +477,7 @@ Hanami.configure do
     logger level: :info, formatter: :json, filter: []
 
     mailer do
-      delivery :smtp, address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT']
+      delivery :smtp, address: ENV.fetch('SMTP_HOST'), port: ENV.fetch('SMTP_PORT')
     end
   end
 end
