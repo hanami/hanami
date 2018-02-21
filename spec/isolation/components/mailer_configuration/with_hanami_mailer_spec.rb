@@ -20,6 +20,11 @@ configuration = Hanami::Components['mailer.configuration']
 puts "mailer.configuration.delivery_method: \#{configuration.delivery_method.first.inspect}"
 EOF
 
+        write ".env.production", <<-EOF
+SMTP_HOST=localhost
+SMTP_PORT=25
+EOF
+
         bundle_exec "ruby script/components"
 
         expect(out).to include("mailer.configuration.delivery_method: :smtp")
