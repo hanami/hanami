@@ -11,10 +11,12 @@ module Hanami
 
           argument :app, required: true, desc: "The application name (eg. `web`)"
           option :application_base_url, desc: "The app base URL (eg. `/api/v1`)"
+          option :api, type: :boolean, default: false, desc: "The application API mode"
 
           example [
             "admin                              # Generate `admin` app",
-            "api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`"
+            "api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`",
+            "api --api"                         # Generate `api` app without assets, templates and views
           ]
 
           # @since 1.1.0
@@ -88,6 +90,8 @@ module Hanami
           # @since 1.1.0
           # @api private
           def generate_layout(context)
+            return if api?(context)
+
             source      = templates.find("layout.erb")
             destination = project.app_layout(context)
 
@@ -98,6 +102,8 @@ module Hanami
           # @since 1.1.0
           # @api private
           def generate_template(context)
+            return if api?(context)
+
             source      = templates.find("template.#{context.template}.erb")
             destination = project.app_template(context)
 
@@ -108,6 +114,8 @@ module Hanami
           # @since 1.1.0
           # @api private
           def generate_favicon(context)
+            return if api?(context)
+
             source      = templates.find("favicon.ico")
             destination = project.app_favicon(context)
 
@@ -128,6 +136,8 @@ module Hanami
           # @since 1.1.0
           # @api private
           def create_assets_images_directory(context)
+            return if api?(context)
+
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.images(context))
 
@@ -138,6 +148,8 @@ module Hanami
           # @since 1.1.0
           # @api private
           def create_assets_javascripts_directory(context)
+            return if api?(context)
+
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.javascripts(context))
 
@@ -148,6 +160,8 @@ module Hanami
           # @since 1.1.0
           # @api private
           def create_assets_stylesheets_directory(context)
+            return if api?(context)
+
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.stylesheets(context))
 
@@ -178,6 +192,8 @@ module Hanami
           # @since 1.1.0
           # @api private
           def generate_layout_spec(context)
+            return if api?(context)
+
             source      = templates.find("layout_spec.#{context.options.fetch(:test)}.erb")
             destination = project.app_layout_spec(context)
 
@@ -223,6 +239,11 @@ module Hanami
 
             files.append(destination, content)
             say(:append, destination)
+          end
+
+          # @api private
+          def api?(context)
+            context.options.fetch(:api, false)
           end
         end
       end
