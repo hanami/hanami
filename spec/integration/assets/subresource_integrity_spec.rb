@@ -31,6 +31,8 @@ EOF
         RSpec::Support::Env['HANAMI_ENV'] = 'production'
         # FIXME: database connection shouldn't be required for `assets precompile`
         RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+        RSpec::Support::Env['SMTP_HOST'] = 'localhost'
+        RSpec::Support::Env['SMTP_PORT'] = '25'
 
         hanami "assets precompile"
 
