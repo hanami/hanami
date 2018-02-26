@@ -102,6 +102,31 @@ module Hanami
       settings.fetch_or_store(:middleware, Configuration::Middleware.new)
     end
 
+    # Setup Early Hints feature
+    #
+    # @since x.x.x
+    #
+    # @example Enable for all the environments
+    #   # config/environment.rb
+    #   Hanami.configure do
+    #     early_hints true
+    #   end
+    #
+    # @example Enable only for production
+    #   # config/environment.rb
+    #   Hanami.configure do
+    #     environment :production do
+    #       early_hints true
+    #     end
+    #   end
+    def early_hints(value = nil)
+      if value.nil?
+        settings.fetch(:early_hints, false)
+      else
+        settings[:early_hints] = value
+      end
+    end
+
     # @since 0.9.0
     # @api private
     def apps
