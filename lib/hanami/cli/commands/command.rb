@@ -6,6 +6,7 @@ require 'hanami/cli/commands/project'
 require 'hanami/cli/commands/templates'
 require 'concurrent'
 require 'hanami/utils/files'
+require 'hanami/utils/shell_code'
 require 'erb'
 
 module Hanami
@@ -123,9 +124,13 @@ module Hanami
           end
         end
 
-        # @since 1.1.0
+        # @since x.x.x
         # @api private
-        SAY_FORMATTER = "%<operation>12s  %<path>s\n".freeze
+        COLUMN_WIDTH = 12
+
+        # @since x.x.x
+        # @api private
+        EXTRA_COLORIZE_WIDTH = 9
 
         # @since 1.1.0
         # @api private
@@ -160,7 +165,35 @@ module Hanami
         # @since 1.1.0
         # @api private
         def say(operation, path)
-          out.puts(SAY_FORMATTER % { operation: operation, path: path }) # rubocop:disable Style/FormatString
+          out.puts(_format_say(operation, path))
+        end
+
+        # @since x.x.x
+        # @api private
+        def _format_say(operation, path)
+        [
+          _colorize_operation(operation),
+          path
+        ].join("  ")
+        end
+
+        # @since x.x.x
+        # @api private
+        def _colorize_operation(operation)
+          case operation
+          when :create
+            _colorize_and_justify(operation, :green)
+          when :remove
+            _colorize_and_justify(operation, :red)
+          when :insert
+            _colorize_and_justify(operation, :blue)
+          when :append
+            _colorize_and_justify(operation, :cyan)
+          when :run
+            _colorize_and_justify(operation, :magenta)
+          else
+            operation.to_s.rjust(COLUMN_WIDTH)
+          end
         end
 
         # @since 1.1.0
@@ -173,6 +206,15 @@ module Hanami
         # @api private
         def requirements
           Hanami::Components
+        end
+
+        # @since x.x.x
+        # @api private
+        def _colorize_and_justify(operation, color)
+          # Colorize adds 9 characters. They're not visible but Ruby doesn't
+          # know that, so we have to compensate.
+          Hanami::Utils::ShellCode.colorize(operation, color: color)
+                                  .rjust(COLUMN_WIDTH + EXTRA_COLORIZE_WIDTH)
         end
       end
     end
