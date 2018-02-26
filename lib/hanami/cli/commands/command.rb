@@ -132,6 +132,16 @@ module Hanami
         # @api private
         EXTRA_COLORIZE_WIDTH = 9
 
+        # @since x.x.x
+        # @api private
+        OPERATION_COLORS = Hash[
+          create: :green,
+          remove: :red,
+          insert: :blue,
+          append: :cyan,
+          run:    :magenta,
+        ].freeze
+
         # @since 1.1.0
         # @api private
         attr_reader :out
@@ -180,17 +190,8 @@ module Hanami
         # @since x.x.x
         # @api private
         def _colorize_operation(operation)
-          case operation
-          when :create
-            _colorize_and_justify(operation, :green)
-          when :remove
-            _colorize_and_justify(operation, :red)
-          when :insert
-            _colorize_and_justify(operation, :blue)
-          when :append
-            _colorize_and_justify(operation, :cyan)
-          when :run
-            _colorize_and_justify(operation, :magenta)
+          if OPERATION_COLORS.key?(operation)
+            _colorize_and_justify(operation)
           else
             operation.to_s.rjust(COLUMN_WIDTH)
           end
@@ -210,7 +211,8 @@ module Hanami
 
         # @since x.x.x
         # @api private
-        def _colorize_and_justify(operation, color)
+        def _colorize_and_justify(operation)
+          color = OPERATION_COLORS.fetch(operation)
           # Colorize adds 9 characters. They're not visible but Ruby doesn't
           # know that, so we have to compensate.
           Hanami::Utils::ShellCode.colorize(operation, color: color)
