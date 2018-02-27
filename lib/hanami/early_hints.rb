@@ -19,7 +19,7 @@ module Hanami
       # @since x.x.x
       # @api private
       def initialize
-        super("Current Ruby server doesn't support Early Hints.\nPlease make sure to use Puma with Early Hints enabled.")
+        super("Current Ruby server doesn't support Early Hints.\nPlease make sure to use a web server with Early Hints enabled (only Puma for now).")
       end
     end
 

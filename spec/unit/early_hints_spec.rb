@@ -26,7 +26,7 @@ RSpec.describe Hanami::EarlyHints do
 
   let(:assets) do
     (1..23).each_with_object({}) do |i, memo|
-      memo["/assets/stylesheet-#{i}.css"] = { as: "stylesheet", crossorigin: true }
+      memo["/assets/stylesheet-#{i}.css"] = { as: "style", crossorigin: true }
     end
   end
 
@@ -55,7 +55,7 @@ RSpec.describe Hanami::EarlyHints do
           links = early_hints.links
           expect(links.count).to be(3) # (23 / Hanami::EarlyHints::BATCH_SIZE) + 1 == 3
 
-          expect(links.first).to include(%(</assets/stylesheet-1.css>; rel=preload; as=stylesheet; crossorigin))
+          expect(links.first).to include(%(</assets/stylesheet-1.css>; rel=preload; as=style; crossorigin))
         end
 
         context "with broken implementation" do
@@ -88,7 +88,7 @@ RSpec.describe Hanami::EarlyHints do
         it "raises informative error" do
           expect do
             subject.call(env)
-          end.to raise_error(Hanami::EarlyHints::NotSupportedByServerError, "Current Ruby server doesn't support Early Hints.\nPlease make sure to use Puma with Early Hints enabled.")
+          end.to raise_error(Hanami::EarlyHints::NotSupportedByServerError, "Current Ruby server doesn't support Early Hints.\nPlease make sure to use a web server with Early Hints enabled (only Puma for now).")
         end
       end
 
