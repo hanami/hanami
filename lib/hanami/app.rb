@@ -68,6 +68,9 @@ module Hanami
 
     # @since 0.9.0
     # @api private
+    #
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def middleware(configuration, environment)
       builder.use Hanami::CommonLogger, Hanami.logger unless Hanami.logger.nil?
       builder.use Rack::ContentLength
@@ -76,11 +79,18 @@ module Hanami
         builder.use(m, *args, &blk)
       end
 
+      if configuration.early_hints
+        require 'hanami/early_hints'
+        builder.use Hanami::EarlyHints
+      end
+
       if middleware = environment.static_assets_middleware # rubocop:disable Lint/AssignmentInCondition
         builder.use middleware
       end
 
       builder.use Rack::MethodOverride
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
   end
 end
