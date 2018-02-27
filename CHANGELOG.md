@@ -1,6 +1,14 @@
 # Hanami
 The web, with simplicity.
 
+## v1.1.1 - 2018-02-27
+### Added
+- [Luca Guidi] Official support for Ruby MRI 2.5+
+
+### Fixed
+- [Alfonso Uceda] Fixed regression for mailer generator: when using options like `--from` and `--to` the generated Ruby code isn't valid as it was missing string quotes.
+- [Luca Guidi] Generate tests for views including `:format` in `exposures`. This fixes view unit tests when the associated template renders a partial.
+
 ## v1.1.0 - 2017-10-25
 ### Fixed
 - [Luca Guidi] Ensure `hanami db rollback` steps to be a positive integer

@@ -25,9 +25,9 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(mailer:, **options)
-            from    = options.fetch(:from,    DEFAULT_FROM)
-            to      = options.fetch(:to,      DEFAULT_TO)
-            subject = options.fetch(:subject, DEFAULT_SUBJECT)
+            from    = clean_option(options.fetch(:from,    DEFAULT_FROM))
+            to      = clean_option(options.fetch(:to,      DEFAULT_TO))
+            subject = clean_option(options.fetch(:subject, DEFAULT_SUBJECT))
             context = Context.new(mailer: mailer, test: options.fetch(:test), from: from, to: to, subject: subject, options: options)
 
             generate_mailer(context)
@@ -40,15 +40,19 @@ module Hanami
 
           # @since 1.1.0
           # @api private
-          DEFAULT_FROM = "'<from>'".freeze
+          DEFAULT_FROM = "<from>".freeze
 
           # @since 1.1.0
           # @api private
-          DEFAULT_TO = "'<to>'".freeze
+          DEFAULT_TO = "<to>".freeze
 
           # @since 1.1.0
           # @api private
-          DEFAULT_SUBJECT = "'Hello'".freeze
+          DEFAULT_SUBJECT = "Hello".freeze
+
+          # @sice x.x.x
+          # @api private
+          QUOTES_REGEX = /^("|')|("|')$/
 
           # @since 1.1.0
           # @api private
@@ -86,6 +90,12 @@ module Hanami
 
             files.touch(destination)
             say(:create, destination)
+          end
+
+          # @since x.x.x
+          # @api private
+          def clean_option(option)
+            option.gsub(QUOTES_REGEX, '')
           end
         end
       end

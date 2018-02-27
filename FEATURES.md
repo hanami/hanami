@@ -3,7 +3,9 @@
 
 ## Features
 
-## v1.1.0 (unreleased)
+## v1.1.1 - 2018-02-27
+
+## v1.1.0 - 2017-10-25
 
 - One-To-Many association (aka `belongs_to`)
 - One-To-One association (aka `has_one`)
