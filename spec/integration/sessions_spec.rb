@@ -64,6 +64,52 @@ RSpec.describe "Sessions", type: :integration do
     end
   end
 
+  context "when sessions aren't enabled" do
+    it "raises error when trying to use `session'" do
+      with_project do
+        generate "action web home#index --url=/"
+
+        rewrite "apps/web/controllers/home/index.rb", <<-EOF
+module Web::Controllers::Home
+  class Index
+    include Web::Action
+
+    def call(params)
+      self.body = session[:foo]
+    end
+  end
+end
+EOF
+        server do
+          visit "/"
+          expect(page).to have_content("To use `session', please enable sessions for the current app.")
+        end
+      end
+    end
+
+    it "raises error when trying to use `flash'" do
+      with_project do
+        generate "action web home#index --url=/"
+
+        rewrite "apps/web/controllers/home/index.rb", <<-EOF
+module Web::Controllers::Home
+  class Index
+    include Web::Action
+
+    def call(params)
+      self.body = flash[:notice]
+    end
+  end
+end
+EOF
+        server do
+          visit "/"
+          expect(page).to have_content("To use `flash', please enable sessions for the current app.")
+        end
+      end
+    end
+  end
+
   private
 
   def prepare
