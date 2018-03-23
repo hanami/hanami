@@ -1,6 +1,18 @@
 # Hanami
 The web, with simplicity.
 
+## v1.2.0.beta2 - 2018-03-23
+### Fixed
+- [Luca Guidi] Raise meaningful error message when trying to access `session` or `flash` with disabled sessions
+- [Pistos] Print stack trace to standard output when a CLI command raises an error
+
+## v1.2.0.beta1 - 2018-02-28
+### Added
+- [Luca Guidi] HTTP/2 Early Hints
+
+### Fixed
+- [Alfonso Uceda] Render custom template if an exception is raised from a view or template
+
 ## v1.1.1 - 2018-02-27
 ### Added
 - [Luca Guidi] Official support for Ruby MRI 2.5+
