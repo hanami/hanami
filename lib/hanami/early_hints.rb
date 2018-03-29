@@ -10,20 +10,20 @@ module Hanami
   #
   # @see https://tools.ietf.org/html/draft-ietf-httpbis-early-hints-05
   #
-  # @since x.x.x
+  # @since 1.2.0
   # @api private
   class EarlyHints
-    # @since x.x.x
+    # @since 1.2.0
     # @api private
     class NotSupportedByServerError < ::StandardError
-      # @since x.x.x
+      # @since 1.2.0
       # @api private
       def initialize
         super("Current Ruby server doesn't support Early Hints.\nPlease make sure to use a web server with Early Hints enabled (only Puma for now).")
       end
     end
 
-    # @since x.x.x
+    # @since 1.2.0
     # @api private
     def initialize(app)
       @app = app
@@ -36,7 +36,7 @@ module Hanami
     # @raise [Hanami::EarlyHints::NotSupportedByServerError] if the current Ruby
     #   server doesn't support Early Hints
     #
-    # @since x.x.x
+    # @since 1.2.0
     # @api private
     def call(env)
       @app.call(env).tap do
@@ -59,7 +59,7 @@ module Hanami
     #   2. Response #2: 10 assets
     #   3. Response #3: 3 assets
     #
-    # @since x.x.x
+    # @since 1.2.0
     # @api private
     BATCH_SIZE = 10
 
@@ -67,7 +67,7 @@ module Hanami
     # inject an object into the Rack env to send multiple Early Hints (103)
     # responses.
     #
-    # @since x.x.x
+    # @since 1.2.0
     # @api private
     #
     # @see https://github.com/puma/puma/pull/1403
@@ -80,7 +80,7 @@ module Hanami
     #
     # NOTE: if changing this key here, it MUST be changed into `hanami-assets` as well
     #
-    # @since x.x.x
+    # @since 1.2.0
     # @api private
     CACHE_KEY = :__hanami_assets
 
@@ -92,7 +92,7 @@ module Hanami
     # @raise [Hanami::EarlyHints::NotSupportedByServerError] if the current Ruby
     #   server doesn't support Early Hints
     #
-    # @since x.x.x
+    # @since 1.2.0
     # @api private
     def send_early_hints(env)
       return if Thread.current[CACHE_KEY].nil?
@@ -117,7 +117,7 @@ module Hanami
     # @raise [Hanami::EarlyHints::NotSupportedByServerError] if the current Ruby
     #   server doesn't support Early Hints
     #
-    # @since x.x.x
+    # @since 1.2.0
     # @api private
     def send_early_hints_response(env, link)
       env[RACK_EARLY_HINTS_ENV_KEY].call("Link" => link)

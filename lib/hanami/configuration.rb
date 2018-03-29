@@ -97,14 +97,21 @@ module Hanami
       settings.fetch_or_store(:mounted, {})
     end
 
-    # @since x.x.x
+    # @since 1.2.0
+    #
+    # @example
+    #   # config/environment.rb
+    #   # ...
+    #   Hanami.configure do
+    #     middleware.use MyRackMiddleware
+    #   end
     def middleware
       settings.fetch_or_store(:middleware, Configuration::Middleware.new)
     end
 
     # Setup Early Hints feature
     #
-    # @since x.x.x
+    # @since 1.2.0
     #
     # @example Enable for all the environments
     #   # config/environment.rb

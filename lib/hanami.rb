@@ -82,7 +82,7 @@ module Hanami
   #
   # @see Hanami.configure
   #
-  # @since x.x.x
+  # @since 1.2.0
   def self.plugin(&blk)
     @_plugins << blk
   end
@@ -105,7 +105,7 @@ module Hanami
   # `Components.release` and we'll be able to store plugins in `Components` and
   # remove `Hanami.plugins` as well.
   #
-  # @since x.x.x
+  # @since 1.2.0
   # @api private
   def self.plugins
     @_plugins

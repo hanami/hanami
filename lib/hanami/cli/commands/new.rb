@@ -299,7 +299,7 @@ module Hanami
             application_name: options.fetch(:application_name),
             application_base_url: options.fetch(:application_base_url),
             hanami_head: options.fetch(:hanami_head),
-            hanami_model_version: '1.2.0.beta2',
+            hanami_model_version: '1.2.0.rc1',
             code_reloading: code_reloading?,
             hanami_version: hanami_version,
             project_module: Utils::String.classify(project),

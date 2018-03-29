@@ -4,8 +4,10 @@ module Hanami
   # @api private
   class Configuration
     # Middleware configuration
+    # @since 1.2.0
     class Middleware
       # @api private
+      # @since 1.2.0
       def initialize
         @middleware = Concurrent::Array.new
       end
@@ -16,7 +18,7 @@ module Hanami
       # @param args [Array<Object>] an optional set of options
       # @param blk [Proc] an optional block to pass to the middleware
       #
-      # @since x.x.x
+      # @since 1.2.0
       #
       # @example
       #   # config/environment.rb
@@ -29,6 +31,7 @@ module Hanami
       end
 
       # @api private
+      # @since 1.2.0
       def each(&blk)
         @middleware.each(&blk)
       end

@@ -1,6 +1,8 @@
 # Hanami
 The web, with simplicity.
 
+## v1.2.0.rc1 - 2018-03-30
+
 ## v1.2.0.beta2 - 2018-03-23
 ### Fixed
 - [Luca Guidi] Raise meaningful error message when trying to access `session` or `flash` with disabled sessions
