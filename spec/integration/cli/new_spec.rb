@@ -132,7 +132,7 @@ gem 'sqlite3'
 group :development do
   # Code reloading
   # See: http://hanamirb.org/guides/projects/code-reloading
-  gem 'shotgun'
+  gem 'shotgun', platforms: :ruby
 
   gem 'hanami-webconsole'
 end
