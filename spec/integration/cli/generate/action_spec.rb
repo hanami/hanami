@@ -90,6 +90,17 @@ END
       end
     end
 
+    it "generates non-RESTful actions" do
+      with_project do
+        run_command "hanami generate action web sessions#sign_out"
+
+        #
+        # apps/web/config/routes.rb
+        #
+        expect('apps/web/config/routes.rb').to have_file_content(%r{get '/sessions/sign_out', to: 'sessions#sign_out'})
+      end
+    end
+
     it "fails with missing arguments" do
       with_project('bookshelf_generate_action_without_args') do
         output = <<-OUT
