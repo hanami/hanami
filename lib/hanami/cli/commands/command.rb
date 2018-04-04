@@ -6,6 +6,7 @@ require 'hanami/cli/commands/project'
 require 'hanami/cli/commands/templates'
 require 'concurrent'
 require 'hanami/utils/files'
+require 'hanami/utils/shell_code'
 require 'erb'
 
 module Hanami
@@ -123,9 +124,23 @@ module Hanami
           end
         end
 
-        # @since 1.1.0
+        # @since x.x.x
         # @api private
-        SAY_FORMATTER = "%<operation>12s  %<path>s\n".freeze
+        COLUMN_WIDTH = 12
+
+        # @since x.x.x
+        # @api private
+        EXTRA_COLORIZE_WIDTH = 9
+
+        # @since x.x.x
+        # @api private
+        OPERATION_COLORS = Hash[
+          create: :green,
+          remove: :red,
+          insert: :blue,
+          append: :cyan,
+          run:    :magenta,
+        ].freeze
 
         # @since 1.1.0
         # @api private
@@ -160,7 +175,26 @@ module Hanami
         # @since 1.1.0
         # @api private
         def say(operation, path)
-          out.puts(SAY_FORMATTER % { operation: operation, path: path }) # rubocop:disable Style/FormatString
+          out.puts(_format_say(operation, path))
+        end
+
+        # @since x.x.x
+        # @api private
+        def _format_say(operation, path)
+        [
+          _colorize_operation(operation),
+          path
+        ].join("  ")
+        end
+
+        # @since x.x.x
+        # @api private
+        def _colorize_operation(operation)
+          if OPERATION_COLORS.key?(operation)
+            _colorize_and_justify(operation)
+          else
+            operation.to_s.rjust(COLUMN_WIDTH)
+          end
         end
 
         # @since 1.1.0
@@ -173,6 +207,16 @@ module Hanami
         # @api private
         def requirements
           Hanami::Components
+        end
+
+        # @since x.x.x
+        # @api private
+        def _colorize_and_justify(operation)
+          color = OPERATION_COLORS.fetch(operation)
+          # Colorize adds 9 characters. They're not visible but Ruby doesn't
+          # know that, so we have to compensate.
+          Hanami::Utils::ShellCode.colorize(operation, color: color)
+                                  .rjust(COLUMN_WIDTH + EXTRA_COLORIZE_WIDTH)
         end
       end
     end

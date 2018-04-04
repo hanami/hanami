@@ -3,12 +3,12 @@ RSpec.describe "hanami generate", type: :cli do
     it "generates action" do
       with_project('bookshelf_generate_action') do
         output = [
-          "create  spec/web/controllers/authors/index_spec.rb",
-          "create  apps/web/controllers/authors/index.rb",
-          "create  apps/web/views/authors/index.rb",
-          "create  apps/web/templates/authors/index.html.erb",
-          "create  spec/web/views/authors/index_spec.rb",
-          "insert  apps/web/config/routes.rb"
+          "\e[32mcreate\e[0m  spec/web/controllers/authors/index_spec.rb",
+          "\e[32mcreate\e[0m  apps/web/controllers/authors/index.rb",
+          "\e[32mcreate\e[0m  apps/web/views/authors/index.rb",
+          "\e[32mcreate\e[0m  apps/web/templates/authors/index.html.erb",
+          "\e[32mcreate\e[0m  spec/web/views/authors/index_spec.rb",
+          "\e[34minsert\e[0m  apps/web/config/routes.rb"
         ]
 
         run_command "hanami generate action web authors#index", output
