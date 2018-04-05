@@ -1,6 +1,10 @@
 # Hanami
 The web, with simplicity.
 
+## v1.2.0.rc2 - 2018-04-06
+### Fixed
+- [Kelsey Judson] Ensure to not reload code under `lib/` when `shotgun` isn't bundled
+
 ## v1.2.0.rc1 - 2018-03-30
 
 ## v1.2.0.beta2 - 2018-03-23
