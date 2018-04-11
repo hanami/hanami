@@ -1,4 +1,4 @@
-RSpec.describe 'Routing helpers', type: :cli do
+RSpec.describe 'Routing helpers', type: :integration do
   it "uses routing helpers within action" do
     with_project do
       generate "action web home#index --url=/"

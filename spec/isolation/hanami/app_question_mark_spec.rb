@@ -1,4 +1,4 @@
-RSpec.describe "Hanami.app?", type: :cli do
+RSpec.describe "Hanami.app?", type: :integration do
   before { ENV.delete('HANAMI_APPS') }
 
   context 'when HANAMI_APPS is missing' do

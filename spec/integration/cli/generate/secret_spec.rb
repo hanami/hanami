@@ -1,4 +1,4 @@
-RSpec.describe "hanami generate", type: :cli do
+RSpec.describe "hanami generate", type: :integration do
   describe "secret" do
     context "without application name" do
       it "prints secret" do

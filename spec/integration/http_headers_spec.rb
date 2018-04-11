@@ -1,4 +1,4 @@
-RSpec.describe "HTTP headers", type: :cli do
+RSpec.describe "HTTP headers", type: :integration do
   it "returns HTTP headers" do
     with_project do
       generate "action web home#index --url=/"

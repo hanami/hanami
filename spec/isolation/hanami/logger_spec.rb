@@ -1,4 +1,4 @@
-RSpec.describe "Hanami.logger", type: :cli do
+RSpec.describe "Hanami.logger", type: :integration do
   it "returns logger instance" do
     with_project do
       require Pathname.new(Dir.pwd).join("config", "boot")

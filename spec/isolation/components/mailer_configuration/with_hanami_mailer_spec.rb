@@ -1,4 +1,4 @@
-RSpec.describe "Components: mailer.configuration", type: :cli do
+RSpec.describe "Components: mailer.configuration", type: :integration do
   context "with hanami-mailer" do
     it "resolves mailer configuration" do
       with_project do
@@ -18,6 +18,11 @@ Hanami::Components.resolve('mailer.configuration')
 
 configuration = Hanami::Components['mailer.configuration']
 puts "mailer.configuration.delivery_method: \#{configuration.delivery_method.first.inspect}"
+EOF
+
+        write ".env.production", <<-EOF
+SMTP_HOST=localhost
+SMTP_PORT=25
 EOF
 
         bundle_exec "ruby script/components"

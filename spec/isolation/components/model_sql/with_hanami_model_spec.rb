@@ -1,4 +1,4 @@
-RSpec.describe "Components: model.sql", type: :cli do
+RSpec.describe "Components: model.sql", type: :integration do
   context "with hanami-model" do
     it "resolves model configuration" do
       with_project do

@@ -1,4 +1,4 @@
-RSpec.describe "hanami db", type: :cli do
+RSpec.describe "hanami db", type: :integration do
   describe "console" do
     it "starts database console" do
       with_project do

@@ -1,6 +1,6 @@
 require 'json'
 
-RSpec.describe "assets", type: :cli do
+RSpec.describe "assets", type: :integration do
   describe "subresource integrity" do
     it "precompiles assets with checksums calculated with given algorithms" do
       with_project do
@@ -31,6 +31,8 @@ EOF
         RSpec::Support::Env['HANAMI_ENV'] = 'production'
         # FIXME: database connection shouldn't be required for `assets precompile`
         RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+        RSpec::Support::Env['SMTP_HOST'] = 'localhost'
+        RSpec::Support::Env['SMTP_PORT'] = '25'
 
         hanami "assets precompile"
 

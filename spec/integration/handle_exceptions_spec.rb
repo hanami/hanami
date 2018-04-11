@@ -1,4 +1,4 @@
-RSpec.describe "handle exceptions", type: :cli do
+RSpec.describe "handle exceptions", type: :integration do
   it "doesn't handle exceptions in development mode" do
     with_project do
       generate_action
@@ -29,9 +29,7 @@ RSpec.describe "handle exceptions", type: :cli do
     it "it returns the expected status" do
       with_project do
         generate_action
-
-        RSpec::Support::Env['HANAMI_ENV']   = 'production'
-        RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+        setup_production_env
 
         server do
           get '/books/1'
@@ -54,8 +52,7 @@ RSpec.describe "handle exceptions", type: :cli do
             This is a custom template for 500 error
           EOF
 
-          RSpec::Support::Env['HANAMI_ENV']   = 'production'
-          RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+          setup_production_env
 
           server do
             get '/books/1'
@@ -74,8 +71,7 @@ RSpec.describe "handle exceptions", type: :cli do
             <%= raise ArgumentError.new("oh nooooo") %>
           EOF
 
-          RSpec::Support::Env['HANAMI_ENV']   = 'production'
-          RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+          setup_production_env
 
           server do
             get '/books/1'
@@ -99,8 +95,7 @@ RSpec.describe "handle exceptions", type: :cli do
             This is a custom template for 500 error
           EOF
 
-          RSpec::Support::Env['HANAMI_ENV']   = 'production'
-          RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+          setup_production_env
 
           server do
             get '/books/1'
@@ -138,8 +133,7 @@ RSpec.describe "handle exceptions", type: :cli do
             This is a custom template for 500 error
           EOF
 
-          RSpec::Support::Env['HANAMI_ENV']   = 'production'
-          RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+          setup_production_env
 
           server do
             get '/books/1'
@@ -170,8 +164,7 @@ RSpec.describe "handle exceptions", type: :cli do
             <%= header %>
           EOF
 
-          RSpec::Support::Env['HANAMI_ENV']   = 'production'
-          RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+          setup_production_env
 
           server do
             get '/books/1'
@@ -207,8 +200,7 @@ RSpec.describe "handle exceptions", type: :cli do
             This is a custom template for 500 error
           EOF
 
-          RSpec::Support::Env['HANAMI_ENV']   = 'production'
-          RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+          setup_production_env
 
           server do
             get '/books/1'
@@ -239,5 +231,12 @@ module Web::Controllers::Books
   end
 end
 EOF
+  end
+
+  def setup_production_env
+    RSpec::Support::Env['HANAMI_ENV']   = 'production'
+    RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+    RSpec::Support::Env['SMTP_HOST']    = 'localhost'
+    RSpec::Support::Env['SMTP_PORT']    = '25'
   end
 end

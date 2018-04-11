@@ -134,4 +134,4 @@ Released under MIT License.
 
 This project was formerly known as Lotus (`lotusrb`).
 
-Copyright © 2014-2017 Luca Guidi.
+Copyright © 2014-2018 Luca Guidi.

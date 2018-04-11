@@ -200,17 +200,19 @@ module Hanami
           # @since 1.1.0
           # @api private
           RESOURCEFUL_ROUTE_URL_SUFFIXES = {
-            'show'    => '/:id',
-            'update'  => '/:id',
-            'destroy' => '/:id',
+            'index'   => '',
             'new'     => '/new',
-            'edit'    => '/:id/edit'
+            'create'  => '',
+            'edit'    => '/:id/edit',
+            'update'  => '/:id',
+            'show'    => '/:id',
+            'destroy' => '/:id'
           }.freeze
 
           # @since 1.1.0
           # @api private
           def route_resourceful_url_suffix(context)
-            RESOURCEFUL_ROUTE_URL_SUFFIXES.fetch(context.action) { "" }
+            RESOURCEFUL_ROUTE_URL_SUFFIXES.fetch(context.action) { "/#{context.action}" }
           end
 
           # @since 1.1.0

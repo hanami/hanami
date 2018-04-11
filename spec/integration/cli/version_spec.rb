@@ -1,4 +1,4 @@
-RSpec.describe 'hanami version', type: :cli do
+RSpec.describe 'hanami version', type: :integration do
   context "within a project" do
     it 'prints current version' do
       with_project do

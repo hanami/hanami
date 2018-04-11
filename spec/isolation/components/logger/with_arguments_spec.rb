@@ -1,4 +1,4 @@
-RSpec.describe "Components: logger", type: :cli do
+RSpec.describe "Components: logger", type: :integration do
   it "accepts arbitrary arguments" do
     with_project do
       count = 5

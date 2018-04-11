@@ -1,6 +1,6 @@
 require 'pathname'
 
-RSpec.describe "hanami destroy", type: :cli do
+RSpec.describe "hanami destroy", type: :integration do
   describe "model" do
     it "destroys model" do
       with_project do

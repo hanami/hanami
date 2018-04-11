@@ -1,4 +1,4 @@
-RSpec.describe "Hanami.root", type: :cli do
+RSpec.describe "Hanami.root", type: :integration do
   it "returns project root" do
     with_project do
       require Pathname.new(Dir.pwd).join("config", "environment")

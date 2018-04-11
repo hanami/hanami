@@ -1,4 +1,4 @@
-RSpec.describe "Hanami.code_reloading?", type: :cli do
+RSpec.describe "Hanami.code_reloading?", type: :integration do
   context "without shotgun" do
     it "returns false" do
       with_project("bookshelf", exclude_gems: ["shotgun"]) do

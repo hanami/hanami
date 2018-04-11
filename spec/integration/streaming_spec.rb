@@ -1,4 +1,4 @@
-RSpec.describe "Streaming", type: :cli do
+RSpec.describe "Streaming", type: :integration do
   xit "streams the body" do
     with_project do
       generate "action web home#index --url=/"

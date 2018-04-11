@@ -1,4 +1,4 @@
-RSpec.describe "Hanami.code_reloading?", type: :cli do
+RSpec.describe "Hanami.code_reloading?", type: :integration do
   context "with shotgun" do
     it "returns true" do
       with_project do

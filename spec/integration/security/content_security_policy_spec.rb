@@ -1,4 +1,4 @@
-RSpec.describe "Content-Security-Policy header", type: :cli do
+RSpec.describe "Content-Security-Policy header", type: :integration do
   it "returns default value" do
     with_project do
       generate "action web home#index --url=/"

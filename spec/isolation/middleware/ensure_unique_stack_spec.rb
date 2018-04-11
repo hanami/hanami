@@ -1,4 +1,4 @@
-RSpec.describe Hanami::Middleware, type: :cli do
+RSpec.describe Hanami::Middleware, type: :integration do
   describe "#load!" do
     it "loads the middleware stack without duplicates" do
       with_project do

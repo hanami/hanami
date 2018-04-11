@@ -1,6 +1,6 @@
 require 'json'
 
-RSpec.describe 'hanami assets', type: :cli do
+RSpec.describe 'hanami assets', type: :integration do
   describe 'precompile' do
     it "precompiles assets" do
       gems = ['sass', 'coffee-script']
