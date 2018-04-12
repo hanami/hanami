@@ -49,9 +49,10 @@ module Hanami
     def _urls(root)
       return [] unless root.exist?
 
-      asset_files = Dir.chdir(root) do
-        Dir['**/*'].select { |path| File.file? path }
-      end
+      search = root.join('**/*')
+      asset_files = Pathname.glob(search).
+        select(&:file?).
+        map { |path| path.relative_path_from(root) }
       Hash[asset_files.map { |entry| ["#{URL_PREFIX}#{entry}", entry] }]
     end
   end
