@@ -1,4 +1,4 @@
-RSpec.describe "Rake: environment", type: :cli do
+RSpec.describe "Rake: environment", type: :integration do
   it "loads the project" do
     with_project do
       generate_migrations

@@ -1,4 +1,4 @@
-RSpec.describe "Sessions", type: :cli do
+RSpec.describe "Sessions", type: :integration do
   it "shows welcome page" do
     with_project do
       server do
@@ -60,6 +60,50 @@ RSpec.describe "Sessions", type: :cli do
 
         expect(current_path).to eq('/')
         expect(page).to_not have_content("Welcome, Luca")
+      end
+    end
+  end
+
+  context "when sessions aren't enabled" do
+    # TODO: verify if this behavior is still required for 2.0
+    xit "raises error when trying to use `session'" do
+      with_project do
+        generate "action web home#index --url=/"
+
+        rewrite "apps/web/controllers/home/index.rb", <<-EOF
+module Web::Controllers::Home
+  class Index < Hanami::Action
+    def call(_req, res)
+      res.body = req.session[:foo]
+    end
+  end
+end
+EOF
+        server do
+          visit "/"
+          expect(page).to have_content("To use `session', please enable sessions for the current app.")
+        end
+      end
+    end
+
+    # TODO: verify if this behavior is still required for 2.0
+    xit "raises error when trying to use `flash'" do
+      with_project do
+        generate "action web home#index --url=/"
+
+        rewrite "apps/web/controllers/home/index.rb", <<-EOF
+module Web::Controllers::Home
+  class Index < Hanami::Action
+    def call(_req, res)
+      res.body = res.flash[:notice]
+    end
+  end
+end
+EOF
+        server do
+          visit "/"
+          expect(page).to have_content("To use `flash', please enable sessions for the current app.")
+        end
       end
     end
   end

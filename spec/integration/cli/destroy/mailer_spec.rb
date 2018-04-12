@@ -1,4 +1,4 @@
-RSpec.describe "hanami destroy", type: :cli do
+RSpec.describe "hanami destroy", type: :integration do
   describe 'mailer' do
     context 'destroy a mailer' do
       let(:output) do

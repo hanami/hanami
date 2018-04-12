@@ -1,4 +1,4 @@
-RSpec.describe "assets", type: :cli do
+RSpec.describe "assets", type: :integration do
   describe "serve" do
     it "compiles and serves assets in development mode" do
       project = "bookshelf_serve_assets"

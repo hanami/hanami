@@ -1,4 +1,4 @@
-RSpec.describe "hanami assets", type: :cli do
+RSpec.describe "hanami assets", type: :integration do
   it "prints subcommands" do
     with_project do
       output = <<-OUT

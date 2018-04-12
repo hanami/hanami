@@ -1,4 +1,4 @@
-RSpec.describe "Components: logger", type: :cli do
+RSpec.describe "Components: logger", type: :integration do
   let(:project_name) { "bookshelf" }
 
   it "setups Hanami project's logger" do

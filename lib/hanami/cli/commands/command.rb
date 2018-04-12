@@ -85,6 +85,7 @@ module Hanami
             super(options)
           rescue StandardError => e
             warn e.message
+            warn e.backtrace.join("\n\t")
             exit(1)
           end
         end

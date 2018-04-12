@@ -1,4 +1,4 @@
-RSpec.describe "Hanami.environment", type: :cli do
+RSpec.describe "Hanami.environment", type: :integration do
   context "with resolved component" do
     it "returns Hanami::Environment" do
       with_project do

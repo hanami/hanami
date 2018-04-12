@@ -30,7 +30,7 @@ module Hanami
           config    = app.configuration
 
           configuration = Hanami::Controller::Configuration.new do |c|
-            c.public_directory  = Hanami.public_directory
+            c.public_directory = Hanami.public_directory
 
             c.default_request_format  = config.default_request_format
             c.default_response_format = config.default_response_format

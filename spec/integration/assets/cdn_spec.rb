@@ -1,4 +1,4 @@
-RSpec.describe "assets", type: :cli do
+RSpec.describe "assets", type: :integration do
   describe "CDN mode" do
     it "servers assets with CDN url" do
       with_project do
@@ -30,6 +30,9 @@ EOF
         #
         RSpec::Support::Env['HANAMI_ENV']   = 'production'
         RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+        RSpec::Support::Env['SMTP_HOST']    = 'localhost'
+        RSpec::Support::Env['SMTP_PORT']    = '25'
+
         hanami "assets precompile"
 
         server do

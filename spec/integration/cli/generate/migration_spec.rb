@@ -1,4 +1,4 @@
-RSpec.describe "hanami generate", type: :cli do
+RSpec.describe "hanami generate", type: :integration do
   describe "migration" do
     context "with migration name" do
       it_behaves_like "a new migration" do

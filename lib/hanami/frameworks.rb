@@ -7,3 +7,9 @@ require 'hanami/action/glue'
 require 'hanami/action/csrf_protection'
 require 'hanami/mailer'
 require 'hanami/assets'
+
+Hanami::Controller::MissingSessionError.class_eval do
+  def initialize(session_method)
+    super("To use `#{session_method}', please enable sessions for the current app.")
+  end
+end

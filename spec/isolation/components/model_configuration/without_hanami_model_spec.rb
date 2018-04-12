@@ -1,4 +1,4 @@
-RSpec.describe "Components: model.configuration", type: :cli do
+RSpec.describe "Components: model.configuration", type: :integration do
   context "without hanami-model" do
     it "is nil" do
       project_without_hanami_model do

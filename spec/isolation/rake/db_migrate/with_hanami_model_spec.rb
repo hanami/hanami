@@ -1,4 +1,4 @@
-RSpec.describe "Rake: db:migrate", type: :cli do
+RSpec.describe "Rake: db:migrate", type: :integration do
   context "with hanami-model" do
     it "migrates" do
       project = "bookshelf_rake_db_migrate"

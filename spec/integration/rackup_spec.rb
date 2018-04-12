@@ -1,4 +1,4 @@
-RSpec.describe 'rackup', type: :cli do
+RSpec.describe 'rackup', type: :integration do
   it "serves contents from database" do
     with_project do
       setup_model

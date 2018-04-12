@@ -1,4 +1,4 @@
-RSpec.describe "exceptions handling", type: :cli do
+RSpec.describe "exceptions handling", type: :integration do
   context "handled exceptions" do
     it "handles exceptions in development mode" do
       with_project do
@@ -34,6 +34,8 @@ RSpec.describe "exceptions handling", type: :cli do
 
         RSpec::Support::Env['HANAMI_ENV']   = 'production'
         RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+        RSpec::Support::Env['SMTP_HOST']    = 'localhost'
+        RSpec::Support::Env['SMTP_PORT']    = '25'
 
         server do
           get '/books/1'
@@ -86,7 +88,8 @@ RSpec.describe "exceptions handling", type: :cli do
           get '/books/1'
 
           expect(last_response.status).to eq(500)
-          expect(last_response.body).to include("ArgumentError: oh nooooo")
+          expect(last_response.body).to include("ArgumentError at /books/1")
+          expect(last_response.body).to include("oh nooooo")
         end
       end
     end
@@ -110,6 +113,8 @@ RSpec.describe "exceptions handling", type: :cli do
       before do
         RSpec::Support::Env['HANAMI_ENV']   = 'production'
         RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+        RSpec::Support::Env['SMTP_HOST']    = 'localhost'
+        RSpec::Support::Env['SMTP_PORT']    = '25'
       end
 
       it "handles action exceptions" do

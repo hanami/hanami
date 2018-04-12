@@ -1,4 +1,4 @@
-RSpec.describe "Components: logger", type: :cli do
+RSpec.describe "Components: logger", type: :integration do
   it "allows custom loggers" do
     with_project do
       replace 'config/environment.rb', 'logger ', "logger ::Logger.new(STDOUT)"

@@ -1,4 +1,4 @@
-RSpec.describe "Hanami.boot", type: :cli do
+RSpec.describe "Hanami.boot", type: :integration do
   context "with hanami-model" do
     it "boots all the project's components" do
       with_project do

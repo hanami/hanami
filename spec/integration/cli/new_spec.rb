@@ -1,4 +1,4 @@
-RSpec.describe 'hanami new', type: :cli do
+RSpec.describe 'hanami new', type: :integration do
   it 'generates vanilla project' do
     project = 'bookshelf'
     output  = <<-OUT
@@ -125,14 +125,15 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
-gem 'hanami-model', '2.0.0.alpha1'
+gem 'hanami-model', '~> 2.0.alpha'
 
 gem 'sqlite3'
 
 group :development do
   # Code reloading
   # See: http://hanamirb.org/guides/projects/code-reloading
-  gem 'shotgun'
+  gem 'shotgun', platforms: :ruby
+  gem 'hanami-webconsole'
 end
 
 group :test, :development do
@@ -156,7 +157,7 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'hanami',       '#{Hanami::Version.gem_requirement}'
-gem 'hanami-model', '2.0.0.alpha1'
+gem 'hanami-model', '~> 2.0.alpha'
 
 gem 'jdbc-sqlite3'
 
@@ -216,7 +217,7 @@ Hanami.configure do
     #    adapter :sql, 'postgresql://localhost/bookshelf_development'
     #    adapter :sql, 'mysql://localhost/bookshelf_development'
     #
-    adapter :sql, ENV['DATABASE_URL']
+    adapter :sql, ENV.fetch('DATABASE_URL')
 
     ##
     # Migrations
@@ -243,7 +244,7 @@ Hanami.configure do
     logger level: :info, formatter: :json, filter: []
 
     mailer do |config|
-      config.delivery_method = :smtp, { address: ENV['SMTP_HOST'], port: ENV['SMTP_PORT'] }
+      config.delivery_method = :smtp, { address: ENV.fetch('SMTP_HOST'), port: ENV.fetch('SMTP_PORT') }
     end
   end
 end

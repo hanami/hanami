@@ -76,13 +76,15 @@ We have a [Code of Conduct](http://hanamirb.org/community/#code-of-conduct) to h
 In general, we expect **you** to be **nice** with other people.
 Our hope is for a great software and a great Community.
 
-## Contributing
+## Contributing [![Open Source Helpers](https://www.codetriage.com/hanami/hanami/badges/users.svg)](https://www.codetriage.com/hanami/hanami)
 
 1. Fork it ( https://github.com/hanami/hanami/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+In addition to contributing code, you can help to triage issues. This can include reproducing bug reports, or asking for vital information such as version numbers or reproduction instructions. If you would like to start triaging issues, one easy way to get started is to [subscribe to hanami on CodeTriage](https://www.codetriage.com/hanami/hanami).
 
 ### How To Use Hanami HEAD
 
@@ -91,7 +93,7 @@ If you want to test Hanami's HEAD to try a new feature or to test a bug fix, her
 ```
 git clone https://github.com/hanami/hanami.git
 cd hanami && bundle
-bundle exec hanami new --hanami-head=true bookshelf
+bundle exec hanami new bookshelf --hanami-head
 cd bookshelf
 vim Gemfile # edit with: gem 'hanami', path: '..'
 bundle
@@ -132,4 +134,4 @@ Released under MIT License.
 
 This project was formerly known as Lotus (`lotusrb`).
 
-Copyright © 2014-2017 Luca Guidi.
+Copyright © 2014-2018 Luca Guidi.
