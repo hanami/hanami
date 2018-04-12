@@ -1,4 +1,4 @@
-RSpec.describe "body parsers", type: :cli do
+RSpec.describe "body parsers", type: :integration do
   xit "parses JSON payload for non-GET requests" do
     with_project do
       generate_action

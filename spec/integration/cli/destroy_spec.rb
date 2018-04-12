@@ -1,4 +1,4 @@
-RSpec.describe "hanami destroy", type: :cli do
+RSpec.describe "hanami destroy", type: :integration do
   it "prints subcommands" do
     with_project do
       output = <<-OUT

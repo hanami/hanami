@@ -1,4 +1,4 @@
-RSpec.describe "Components: apps", type: :cli do
+RSpec.describe "Components: apps", type: :integration do
   it "ensures to load components once" do
     with_project do
       generate "app admin"

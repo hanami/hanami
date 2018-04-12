@@ -1,4 +1,4 @@
-RSpec.describe "hanami generate", type: :cli do
+RSpec.describe "hanami generate", type: :integration do
   describe 'mailer' do
     context 'generates a new mailer' do
       let(:output) do

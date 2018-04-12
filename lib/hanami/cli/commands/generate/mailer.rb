@@ -50,7 +50,7 @@ module Hanami
           # @api private
           DEFAULT_SUBJECT = "Hello".freeze
 
-          # @sice x.x.x
+          # @since 1.1.1
           # @api private
           QUOTES_REGEX = /^("|')|("|')$/
 
@@ -92,7 +92,7 @@ module Hanami
             say(:create, destination)
           end
 
-          # @since x.x.x
+          # @since 1.1.1
           # @api private
           def clean_option(option)
             option.gsub(QUOTES_REGEX, '')

@@ -1,4 +1,4 @@
-RSpec.describe "Components: app.configuration", type: :cli do
+RSpec.describe "Components: app.configuration", type: :integration do
   it "loads a single Hanami application's configuration within the project" do
     with_project do
       require Pathname.new(Dir.pwd).join("config", "environment")

@@ -1,4 +1,4 @@
-RSpec.describe "hanami db", type: :cli do
+RSpec.describe "hanami db", type: :integration do
   describe "apply" do
     it "migrates, dumps structure, deletes migrations" do
       with_project do

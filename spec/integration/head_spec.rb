@@ -1,4 +1,4 @@
-RSpec.describe "HTTP HEAD", type: :cli do
+RSpec.describe "HTTP HEAD", type: :integration do
   it "returns empty body for HEAD requests" do
     with_project do
       generate "action web home#index --url=/"

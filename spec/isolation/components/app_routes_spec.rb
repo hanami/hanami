@@ -1,4 +1,4 @@
-RSpec.describe "Components: app.routes", type: :cli do
+RSpec.describe "Components: app.routes", type: :integration do
   it "loads a single Hanami application's routes" do
     with_project do
       require Pathname.new(Dir.pwd).join("config", "environment")

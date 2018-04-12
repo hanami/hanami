@@ -1,4 +1,4 @@
-RSpec.describe "Rake: assets:precompile", type: :cli do
+RSpec.describe "Rake: assets:precompile", type: :integration do
   it "precompiles assets" do
     with_project do
       bundle_exec "rake assets:precompile"

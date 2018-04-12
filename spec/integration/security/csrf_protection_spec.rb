@@ -1,4 +1,4 @@
-RSpec.describe "CSRF protection", type: :cli do
+RSpec.describe "CSRF protection", type: :integration do
   xit "protects POST endpoints from invalid token" do
     with_project do
       generate "action web books#create --url=/books --method=POST"

@@ -1,4 +1,4 @@
-RSpec.describe "Mailer", type: :cli do
+RSpec.describe "Mailer", type: :integration do
   xit "use a mailer" do
     with_project do
       generate "mailer welcome"

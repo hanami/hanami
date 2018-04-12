@@ -1,4 +1,4 @@
-RSpec.describe "hanami routes", type: :cli do
+RSpec.describe "hanami routes", type: :integration do
   xit "prints application routes" do
     with_project do
       generate "app admin"

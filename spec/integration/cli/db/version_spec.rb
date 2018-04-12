@@ -1,4 +1,4 @@
-RSpec.describe "hanami db", type: :cli do
+RSpec.describe "hanami db", type: :integration do
   describe "version" do
     it "prints database version" do
       with_project do

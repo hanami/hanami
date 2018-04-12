@@ -1,6 +1,36 @@
 # Hanami
 The web, with simplicity.
 
+## v1.3.0.beta1 (unreleased)
+
+## v1.2.0 - 2018-04-11
+
+## v1.2.0.rc2 - 2018-04-06
+### Fixed
+- [Kelsey Judson] Ensure to not reload code under `lib/` when `shotgun` isn't bundled
+
+## v1.2.0.rc1 - 2018-03-30
+
+## v1.2.0.beta2 - 2018-03-23
+### Fixed
+- [Luca Guidi] Raise meaningful error message when trying to access `session` or `flash` with disabled sessions
+- [Pistos] Print stack trace to standard output when a CLI command raises an error
+
+## v1.2.0.beta1 - 2018-02-28
+### Added
+- [Luca Guidi] HTTP/2 Early Hints
+
+### Fixed
+- [Alfonso Uceda] Render custom template if an exception is raised from a view or template
+
+## v1.1.1 - 2018-02-27
+### Added
+- [Luca Guidi] Official support for Ruby MRI 2.5+
+
+### Fixed
+- [Alfonso Uceda] Fixed regression for mailer generator: when using options like `--from` and `--to` the generated Ruby code isn't valid as it was missing string quotes.
+- [Luca Guidi] Generate tests for views including `:format` in `exposures`. This fixes view unit tests when the associated template renders a partial.
+
 ## v1.1.0 - 2017-10-25
 ### Fixed
 - [Luca Guidi] Ensure `hanami db rollback` steps to be a positive integer

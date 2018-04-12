@@ -1,4 +1,4 @@
-RSpec.describe "Hanami.boot", type: :cli do
+RSpec.describe "Hanami.boot", type: :integration do
   context "without code reloading" do
     it "doesn't reloads configurations" do
       with_project("bookshelf", exclude_gems: ["shotgun"]) do

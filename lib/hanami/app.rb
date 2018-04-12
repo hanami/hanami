@@ -27,8 +27,10 @@ module Hanami
       @renderer = Renderer.new
 
       mount(configuration)
-      middleware(environment)
-      builder.run(app)
+      middleware(configuration, environment)
+      builder.run(inner_app)
+
+      @app = builder.to_app
     end
 
     # Implements Rack SPEC
@@ -40,10 +42,14 @@ module Hanami
     # @since 0.9.0
     # @api private
     def call(env)
-      builder.call(env)
+      app.call(env)
     end
 
     private
+
+    # @since 1.2.0
+    # @api private
+    attr_reader :app
 
     # @since 0.9.0
     # @api private
@@ -59,6 +65,9 @@ module Hanami
 
     # @since 0.9.0
     # @api private
+    #
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def mount(configuration)
       @routes = Hanami::Router.new do
         configuration.mounted.each do |klass, app|
@@ -73,12 +82,26 @@ module Hanami
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     # @since 0.9.0
     # @api private
-    def middleware(environment)
+    #
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
+    def middleware(configuration, environment)
       builder.use Hanami::CommonLogger, Hanami.logger unless Hanami.logger.nil?
       builder.use Rack::ContentLength
+
+      configuration.middleware.each do |m, args, blk|
+        builder.use(m, *args, &blk)
+      end
+
+      if configuration.early_hints
+        require 'hanami/early_hints'
+        builder.use Hanami::EarlyHints
+      end
 
       if middleware = environment.static_assets_middleware # rubocop:disable Lint/AssignmentInCondition
         builder.use middleware
@@ -91,9 +114,11 @@ module Hanami
 
       builder.use Rack::MethodOverride
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
-    def app
-      @app ||= ->(env) { renderer.render(env, routes.call(env)) }
+    def inner_app
+      @inner_app ||= ->(env) { renderer.render(env, routes.call(env)) }
     end
   end
 end

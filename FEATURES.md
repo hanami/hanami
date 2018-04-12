@@ -3,6 +3,21 @@
 
 ## Features
 
+## v1.3.0 (unreleased)
+
+## v1.2.0 - 2018-04-11
+
+- HTTP/2 Early Hints
+- Unobtrusive JavaScript (UJS) (via `hanami-ujs` gem)
+- Interactive console for development error page (via `hanami-webconsole` gem)
+- CLI: register callbacks for `hanami` commands (`Hanami::CLI.after("db migrate", MyCallback.new)` or `Hanami::CLI.after("db migrate") { ... }`)
+- Project level Rack middleware stack (`Hanami.configure { middleware.use MyRackMiddlewre }`)
+- Plugins can hook into project configuration (`Hanami.plugin { middleware.use AnotherRackMiddleware }`)
+- Custom repository commands
+- Coloured logging
+
+## v1.1.1 - 2018-02-27
+
 ## v1.1.0 - 2017-10-25
 
 - One-To-Many association (aka `belongs_to`)

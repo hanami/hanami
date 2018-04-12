@@ -1,6 +1,6 @@
 require 'hanami/utils/string'
 
-RSpec.describe "hanami generate", type: :cli do
+RSpec.describe "hanami generate", type: :integration do
   describe "app" do
     context "with app name" do
       it_behaves_like "a new app" do

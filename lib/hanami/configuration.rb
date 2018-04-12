@@ -1,5 +1,4 @@
 require 'concurrent'
-require 'delegate'
 require 'hanami/application'
 require 'hanami/utils/class'
 require 'hanami/utils/string'
@@ -7,17 +6,8 @@ require 'hanami/utils/string'
 module Hanami
   # @api private
   class Configuration
-    # @api private
-    class App < SimpleDelegator
-      # @api private
-      attr_reader :path_prefix
-
-      # @api private
-      def initialize(app, path_prefix)
-        super(app)
-        @path_prefix = path_prefix
-      end
-    end
+    require "hanami/configuration/app"
+    require "hanami/configuration/middleware"
 
     # @api private
     def initialize(&blk)
@@ -105,6 +95,43 @@ module Hanami
     # @api private
     def mounted
       settings.fetch_or_store(:mounted, {})
+    end
+
+    # @since 1.2.0
+    #
+    # @example
+    #   # config/environment.rb
+    #   # ...
+    #   Hanami.configure do
+    #     middleware.use MyRackMiddleware
+    #   end
+    def middleware
+      settings.fetch_or_store(:middleware, Configuration::Middleware.new)
+    end
+
+    # Setup Early Hints feature
+    #
+    # @since 1.2.0
+    #
+    # @example Enable for all the environments
+    #   # config/environment.rb
+    #   Hanami.configure do
+    #     early_hints true
+    #   end
+    #
+    # @example Enable only for production
+    #   # config/environment.rb
+    #   Hanami.configure do
+    #     environment :production do
+    #       early_hints true
+    #     end
+    #   end
+    def early_hints(value = nil)
+      if value.nil?
+        settings.fetch(:early_hints, false)
+      else
+        settings[:early_hints] = value
+      end
     end
 
     # @since 0.9.0

@@ -30,7 +30,8 @@ module Hanami
           config    = app.configuration
 
           configuration = Hanami::Controller::Configuration.new do |c|
-            c.handle_exceptions = config.handle_exceptions
+            # FIXME: remove all the references of `handle_exceptions` from `ApplicationConfiguration`
+            # c.handle_exceptions = config.handle_exceptions
             c.public_directory  = Hanami.public_directory
 
             c.default_request_format  = config.default_request_format
