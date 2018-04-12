@@ -40,6 +40,8 @@ Hanami.configure do
   end
 
   environment :production do
+    handle_exceptions true
+
     logger level: :info, formatter: :json, filter: []
 
     mailer do |config|

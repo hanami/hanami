@@ -16,11 +16,9 @@ EOL
       generate "action web home#index --url=/"
       rewrite "apps/web/controllers/home/index.rb", <<-EOF
 module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      self.body = "OK"
+  class Index < Hanami::Action
+    def call(_req, res)
+      res.body = "OK"
     end
   end
 end

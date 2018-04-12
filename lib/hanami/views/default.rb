@@ -18,7 +18,12 @@ module Hanami
 
       # @api private
       def title
-        "#{response[0]} - #{response[2].first || Http::Status.message_for(response[0])}"
+        "#{response.status} - #{body}"
+      end
+
+      def body
+        (response.body && response.body.first) ||
+          Http::Status.message_for(response.status)
       end
 
       # @api private

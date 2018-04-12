@@ -142,6 +142,14 @@ module Hanami
       end
     end
 
+    def handle_exceptions(value = nil)
+      if value.nil?
+        settings.fetch(:handle_exceptions, false)
+      else
+        settings[:handle_exceptions] = value
+      end
+    end
+
     # Configure logger
     #
     # @since 1.0.0

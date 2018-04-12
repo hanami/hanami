@@ -65,17 +65,16 @@ RSpec.describe "Sessions", type: :integration do
   end
 
   context "when sessions aren't enabled" do
-    it "raises error when trying to use `session'" do
+    # TODO: verify if this behavior is still required for 2.0
+    xit "raises error when trying to use `session'" do
       with_project do
         generate "action web home#index --url=/"
 
         rewrite "apps/web/controllers/home/index.rb", <<-EOF
 module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      self.body = session[:foo]
+  class Index < Hanami::Action
+    def call(_req, res)
+      res.body = req.session[:foo]
     end
   end
 end
@@ -87,17 +86,16 @@ EOF
       end
     end
 
-    it "raises error when trying to use `flash'" do
+    # TODO: verify if this behavior is still required for 2.0
+    xit "raises error when trying to use `flash'" do
       with_project do
         generate "action web home#index --url=/"
 
         rewrite "apps/web/controllers/home/index.rb", <<-EOF
 module Web::Controllers::Home
-  class Index
-    include Web::Action
-
-    def call(params)
-      self.body = flash[:notice]
+  class Index < Hanami::Action
+    def call(_req, res)
+      res.body = res.flash[:notice]
     end
   end
 end
