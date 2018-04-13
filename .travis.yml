@@ -10,7 +10,6 @@ before_install:
 script:
   - './script/ci'
 rvm:
-  - 2.3.4
   - 2.4.2
   - 2.5.0
   - jruby-9.1.13.0

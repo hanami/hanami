@@ -56,7 +56,7 @@ EOF
       input.puts("exit")
     end
 
-    expect(out).to include("\n1")
+    expect(out).to include("\n=> 1")
   end
 
   def prepare_database(env: nil)
