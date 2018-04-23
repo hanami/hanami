@@ -56,7 +56,8 @@ module Hanami
       return unless defined?(Dotenv::Parser)
 
       contents = ::File.open(path, "rb:bom|utf-8", &:read)
-      parsed   = Dotenv::Parser.call(contents)
+      is_load  = false
+      parsed   = Dotenv::Parser.call(contents, is_load)
 
       parsed.each do |k, v|
         next if @env.has_key?(k)
