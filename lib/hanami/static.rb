@@ -1,4 +1,6 @@
-require 'rack/static'
+# frozen_string_literal: true
+
+require "rack/static"
 
 module Hanami
   # Serve static assets in deployment environments (production, staging) where
@@ -30,11 +32,11 @@ module Hanami
 
     # @since 0.8.0
     # @api private
-    HEADER_RULES = [[:all, { 'Cache-Control' => "public, max-age=#{MAX_AGE}" }]].freeze
+    HEADER_RULES = [[:all, { "Cache-Control" => "public, max-age=#{MAX_AGE}" }]].freeze
 
     # @since 0.8.0
     # @api private
-    URL_PREFIX = '/'.freeze
+    URL_PREFIX = "/"
 
     # @since 0.6.0
     # @api private
@@ -49,11 +51,13 @@ module Hanami
     def _urls(root)
       return [] unless root.exist?
 
-      search = root.join('**/*')
-      asset_files = Pathname.glob(search).
-        select(&:file?).
-        map { |path| path.relative_path_from(root) }
-      Hash[asset_files.map { |entry| ["#{URL_PREFIX}#{entry}", entry] }]
+      asset_files = Pathname.glob(root.join("**", "*"))
+                            .select(&:file?)
+
+      asset_files.each_with_object({}) do |path, result|
+        path = path.relative_path_from(root)
+        result["#{URL_PREFIX}#{path}"] = path
+      end
     end
   end
 end
