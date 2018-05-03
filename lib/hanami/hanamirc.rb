@@ -29,7 +29,7 @@ module Hanami
     # @api private
     #
     # @see Hanami::Hanamirc#default_options
-    DEFAULT_TEST_SUITE = 'minitest'.freeze
+    DEFAULT_TEST_SUITE = 'rspec'.freeze
 
     # Test suite key for writing the hanamirc file
     #

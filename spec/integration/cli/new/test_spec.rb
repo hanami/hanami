@@ -259,7 +259,7 @@ END
 
     context "missing" do
       it "returns error" do
-        output = "`' is not a valid test framework. Please use one of: `minitest', `rspec'"
+        output = "`' is not a valid test framework. Please use one of: `rspec', `minitest'"
 
         run_command "hanami new bookshelf --test=", output, exit_status: 1
       end
@@ -267,7 +267,7 @@ END
 
     context "unknown" do
       it "returns error" do
-        output = "`foo' is not a valid test framework. Please use one of: `minitest', `rspec'"
+        output = "`foo' is not a valid test framework. Please use one of: `rspec', `minitest'"
 
         run_command "hanami new bookshelf --test=foo", output, exit_status: 1
       end
