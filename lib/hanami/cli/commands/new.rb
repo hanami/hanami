@@ -550,13 +550,6 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def generate_file(source, destination, context)
-          super
-          say(:create, destination)
-        end
-
-        # @since 1.1.0
-        # @api private
         class App < Commands::Generate::App
           requirements.clear
 

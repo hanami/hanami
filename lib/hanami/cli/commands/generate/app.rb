@@ -72,7 +72,6 @@ module Hanami
             destination = project.app_application(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -82,7 +81,6 @@ module Hanami
             destination = project.app_routes(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -92,7 +90,6 @@ module Hanami
             destination = project.app_layout(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -102,7 +99,6 @@ module Hanami
             destination = project.app_template(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -122,7 +118,6 @@ module Hanami
             destination = project.keep(project.controllers(context))
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -132,7 +127,6 @@ module Hanami
             destination = project.keep(project.images(context))
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -142,7 +136,6 @@ module Hanami
             destination = project.keep(project.javascripts(context))
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -152,7 +145,6 @@ module Hanami
             destination = project.keep(project.stylesheets(context))
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -162,7 +154,6 @@ module Hanami
             destination = project.keep(project.features_spec(context))
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -172,7 +163,6 @@ module Hanami
             destination = project.keep(project.controllers_spec(context))
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -182,7 +172,6 @@ module Hanami
             destination = project.app_layout_spec(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0

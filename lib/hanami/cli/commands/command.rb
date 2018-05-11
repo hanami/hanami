@@ -127,7 +127,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def generate_file(source, destination, context)
-          generator.generate_file(source, destination, context)
+          generator.create(source, destination, context)
         end
 
         # @since 1.1.0

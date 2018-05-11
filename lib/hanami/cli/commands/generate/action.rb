@@ -98,7 +98,6 @@ module Hanami
             destination = project.action(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -110,7 +109,6 @@ module Hanami
             destination = project.view(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -130,7 +128,6 @@ module Hanami
             destination = project.action_spec(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -142,7 +139,6 @@ module Hanami
             destination = project.view_spec(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0

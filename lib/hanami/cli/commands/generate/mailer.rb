@@ -61,7 +61,6 @@ module Hanami
             destination = project.mailer(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -71,7 +70,6 @@ module Hanami
             destination = project.mailer_spec(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0

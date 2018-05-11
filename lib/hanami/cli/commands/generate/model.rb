@@ -52,7 +52,6 @@ module Hanami
             destination = project.entity(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -62,7 +61,6 @@ module Hanami
             destination = project.repository(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -74,7 +72,6 @@ module Hanami
             destination = project.migration(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -84,7 +81,6 @@ module Hanami
             destination = project.entity_spec(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0
@@ -94,7 +90,6 @@ module Hanami
             destination = project.repository_spec(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
 
           # @since 1.1.0

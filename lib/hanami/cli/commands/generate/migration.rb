@@ -32,7 +32,6 @@ module Hanami
             destination = project.migration(context)
 
             generate_file(source, destination, context)
-            say(:create, destination)
           end
         end
       end
