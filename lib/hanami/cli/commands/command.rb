@@ -104,28 +104,6 @@ module Hanami
 
         private
 
-        # Template renderer
-        #
-        # @since 1.1.0
-        # @api private
-        class Renderer
-          # @since 1.1.0
-          # @api private
-          TRIM_MODE = "-".freeze
-
-          # @since 1.1.0
-          # @api private
-          def initialize
-            freeze
-          end
-
-          # @since 1.1.0
-          # @api private
-          def call(template, context)
-            ::ERB.new(template, nil, TRIM_MODE).result(context)
-          end
-        end
-
         # @since 1.1.0
         # @api private
         SAY_FORMATTER = "%<operation>12s  %<path>s\n".freeze
@@ -145,15 +123,6 @@ module Hanami
         # @since x.x.x
         # @api private
         attr_reader :generator
-
-        # @since 1.1.0
-        # @api private
-        def render(path, context)
-          template = File.read(path)
-          renderer = Renderer.new
-
-          renderer.call(template, context.binding)
-        end
 
         # @since 1.1.0
         # @api private
