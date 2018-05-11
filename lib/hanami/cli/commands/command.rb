@@ -106,10 +106,6 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        SAY_FORMATTER = "%<operation>12s  %<path>s\n".freeze
-
-        # @since 1.1.0
-        # @api private
         attr_reader :out
 
         # @since 1.1.0
@@ -123,12 +119,6 @@ module Hanami
         # @since x.x.x
         # @api private
         attr_reader :generator
-
-        # @since 1.1.0
-        # @api private
-        def say(operation, path)
-          out.puts(SAY_FORMATTER % { operation: operation, path: path }) # rubocop:disable Style/FormatString
-        end
 
         # @since 1.1.0
         # @api private
