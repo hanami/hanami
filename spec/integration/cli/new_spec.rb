@@ -27,7 +27,7 @@ RSpec.describe 'hanami new', type: :integration do
       create  spec/features_helper.rb
       create  db/schema.sql
       create  .gitignore
-         run  git init . from "."
+         run  git init .
       create  apps/web/application.rb
       create  apps/web/config/routes.rb
       create  apps/web/views/application_layout.rb

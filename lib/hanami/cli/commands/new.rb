@@ -508,8 +508,7 @@ module Hanami
         def init_git
           return if git_dir_present?
 
-          say(:run, "git init . from \".\"")
-          system("git init #{Shellwords.escape(target)}", out: File::NULL)
+          generator.execute("git init #{Shellwords.escape(target)}", out: File::NULL)
         end
 
         # @since 1.1.0

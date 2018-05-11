@@ -17,7 +17,7 @@ gem 'hanami-model',       '~> 1.3.beta', require: false, git: 'https://github.co
 gem 'hanami-helpers',     '~> 1.3.beta', require: false, git: 'https://github.com/hanami/helpers.git',     branch: 'develop'
 gem 'hanami-mailer',      '~> 1.3.beta', require: false, git: 'https://github.com/hanami/mailer.git',      branch: 'develop'
 gem 'hanami-assets',      '~> 1.3.beta', require: false, git: 'https://github.com/hanami/assets.git',      branch: 'develop'
-gem 'hanami-cli',         '~> 0.3.beta', require: false, git: 'https://github.com/hanami/cli.git',         branch: 'develop'
+gem 'hanami-cli',         '~> 0.3.beta', require: false, git: 'https://github.com/hanami/cli.git',         branch: 'extract-generator-from-hanami-gem' # FIXME: change once this branch is merged
 
 platforms :ruby do
   gem 'sqlite3'
