@@ -97,7 +97,7 @@ module Hanami
                           end
             destination = project.action(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -108,7 +108,7 @@ module Hanami
             source      = templates.find("view.erb")
             destination = project.view(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -127,7 +127,7 @@ module Hanami
             source      = templates.find("action_spec.#{context.test}.erb")
             destination = project.action_spec(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -138,7 +138,7 @@ module Hanami
             source      = templates.find("view_spec.#{context.test}.erb")
             destination = project.view_spec(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0

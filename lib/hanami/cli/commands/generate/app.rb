@@ -71,7 +71,7 @@ module Hanami
             source      = templates.find("application.erb")
             destination = project.app_application(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -80,7 +80,7 @@ module Hanami
             source      = templates.find("routes.erb")
             destination = project.app_routes(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -89,7 +89,7 @@ module Hanami
             source      = templates.find("layout.erb")
             destination = project.app_layout(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -98,7 +98,7 @@ module Hanami
             source      = templates.find("template.#{context.template}.erb")
             destination = project.app_template(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -117,7 +117,7 @@ module Hanami
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.controllers(context))
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -126,7 +126,7 @@ module Hanami
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.images(context))
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -135,7 +135,7 @@ module Hanami
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.javascripts(context))
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -144,7 +144,7 @@ module Hanami
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.stylesheets(context))
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -153,7 +153,7 @@ module Hanami
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.features_spec(context))
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -162,7 +162,7 @@ module Hanami
             source      = templates.find("gitkeep.erb")
             destination = project.keep(project.controllers_spec(context))
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -171,7 +171,7 @@ module Hanami
             source      = templates.find("layout_spec.#{context.options.fetch(:test)}.erb")
             destination = project.app_layout_spec(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0

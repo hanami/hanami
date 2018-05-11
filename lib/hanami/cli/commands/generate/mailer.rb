@@ -60,7 +60,7 @@ module Hanami
             source      = templates.find("mailer.erb")
             destination = project.mailer(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -69,7 +69,7 @@ module Hanami
             source      = templates.find("mailer_spec.#{context.test}.erb")
             destination = project.mailer_spec(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0

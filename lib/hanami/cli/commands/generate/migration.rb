@@ -31,7 +31,7 @@ module Hanami
             source      = templates.find("migration.erb")
             destination = project.migration(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
         end
       end

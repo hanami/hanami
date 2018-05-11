@@ -51,7 +51,7 @@ module Hanami
             source      = templates.find("entity.erb")
             destination = project.entity(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -60,7 +60,7 @@ module Hanami
             source      = templates.find("repository.erb")
             destination = project.repository(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -71,7 +71,7 @@ module Hanami
             source      = templates.find("migration.erb")
             destination = project.migration(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -80,7 +80,7 @@ module Hanami
             source      = templates.find("entity_spec.#{context.test}.erb")
             destination = project.entity_spec(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0
@@ -89,7 +89,7 @@ module Hanami
             source      = templates.find("repository_spec.#{context.test}.erb")
             destination = project.repository_spec(context)
 
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
 
           # @since 1.1.0

@@ -344,39 +344,39 @@ module Hanami
         def generate_application_templates(context)
           source      = templates.find("hanamirc.erb")
           destination = project.hanamirc(context)
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           source      = templates.find(".env.development.erb")
           destination = project.env(context, "development")
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           source      = templates.find(".env.test.erb")
           destination = project.env(context, "test")
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           source      = templates.find("README.md.erb")
           destination = project.readme(context)
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           source      = templates.find("Gemfile.erb")
           destination = project.gemfile(context)
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           source      = templates.find("config.ru.erb")
           destination = project.config_ru(context)
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           source      = templates.find("config", "boot.erb")
           destination = project.boot(context)
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           source      = templates.find("config", "environment.erb")
           destination = project.environment(context)
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           source      = templates.find("lib", "project.erb")
           destination = project.project(context)
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
         end
         # rubocop:enable Metrics/MethodLength
         # rubocop:enable Metrics/AbcSize
@@ -387,34 +387,34 @@ module Hanami
           source = templates.find(".gitkeep.erb")
 
           destination = project.keep(project.public_directory(context))
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           destination = project.keep(project.initializers(context))
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           destination = project.keep(project.entities(context))
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           destination = project.keep(project.repositories(context))
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           destination = project.keep(project.mailers(context))
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           destination = project.keep(project.mailers_templates(context))
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           destination = project.keep(project.entities_spec(context))
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           destination = project.keep(project.repositories_spec(context))
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           destination = project.keep(project.mailers_spec(context))
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           destination = project.keep(project.support_spec(context))
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
 
           if context.database_config.sql? # rubocop:disable Style/ConditionalAssignment
             destination = project.keep(project.migrations(context))
@@ -422,7 +422,7 @@ module Hanami
             destination = project.keep(project.db(context))
           end
 
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
         end
         # rubocop:enable Metrics/MethodLength
         # rubocop:enable Metrics/AbcSize
@@ -434,35 +434,35 @@ module Hanami
           if context.test_framework.rspec?
             source      = templates.find("rspec", "Rakefile.erb")
             destination = project.rakefile(context)
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
 
             source      = templates.find("rspec", "rspec.erb")
             destination = project.dotrspec(context)
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
 
             source      = templates.find("rspec", "spec_helper.erb")
             destination = project.spec_helper(context)
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
 
             source      = templates.find("rspec", "features_helper.erb")
             destination = project.features_helper(context)
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
 
             source      = templates.find("rspec", "capybara.erb")
             destination = project.capybara(context)
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           else # minitest (default)
             source      = templates.find("minitest", "Rakefile.erb")
             destination = project.rakefile(context)
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
 
             source      = templates.find("minitest", "spec_helper.erb")
             destination = project.spec_helper(context)
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
 
             source      = templates.find("minitest", "features_helper.erb")
             destination = project.features_helper(context)
-            generate_file(source, destination, context)
+            generator.create(source, destination, context)
           end
         end
         # rubocop:enable Style/IdenticalConditionalBranches
@@ -476,7 +476,7 @@ module Hanami
 
           source      = templates.find("schema.sql.erb")
           destination = project.db_schema(context)
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
         end
 
         # @since 1.1.0
@@ -488,7 +488,7 @@ module Hanami
           source      = templates.find(source)
           destination = project.gitignore(context)
 
-          generate_file(source, destination, context)
+          generator.create(source, destination, context)
         end
 
         # @since 1.1.0

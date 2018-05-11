@@ -126,12 +126,6 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def generate_file(source, destination, context)
-          generator.create(source, destination, context)
-        end
-
-        # @since 1.1.0
-        # @api private
         def say(operation, path)
           out.puts(SAY_FORMATTER % { operation: operation, path: path }) # rubocop:disable Style/FormatString
         end
