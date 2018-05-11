@@ -69,18 +69,16 @@ module Hanami
           # @since 1.1.0
           # @api private
           def remove_route(context)
-            content     = %r{#{context.action_name}}
-            destination = project.app_routes(context)
+            content = %r{#{context.action_name}}
+            path    = project.app_routes(context)
 
             begin
-              files.remove_line(destination, content)
+              generator.remove_line(path, content)
             rescue ArgumentError
               warn "cannot find `#{context.action_name}' in `#{context.app}' application."
               warn "please run `hanami routes' to know the existing actions."
               exit(1)
             end
-
-            say(:subtract, destination)
           end
 
           # @since 1.1.0

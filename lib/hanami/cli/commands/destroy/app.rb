@@ -50,41 +50,37 @@ module Hanami
           # @since 1.1.0
           # @api private
           def remove_test_http_session_secret(context)
-            content     = "#{context.app.upcase}_SESSIONS_SECRET"
-            destination = project.env(context, "test")
+            content = "#{context.app.upcase}_SESSIONS_SECRET"
+            path    = project.env(context, "test")
 
-            files.remove_line(destination, content)
-            say(:subtract, destination)
+            generator.remove_line(path, content)
           end
 
           # @since 1.1.0
           # @api private
           def remove_development_http_session_secret(context)
-            content     = "#{context.app.upcase}_SESSIONS_SECRET"
-            destination = project.env(context, "development")
+            content = "#{context.app.upcase}_SESSIONS_SECRET"
+            path    = project.env(context, "development")
 
-            files.remove_line(destination, content)
-            say(:subtract, destination)
+            generator.remove_line(path, content)
           end
 
           # @since 1.1.0
           # @api private
           def remove_mount_app(context)
-            content     = "mount #{context.app.classify}::Application"
-            destination = project.environment(context)
+            content = "mount #{context.app.classify}::Application"
+            path    = project.environment(context)
 
-            files.remove_line(destination, content)
-            say(:subtract, destination)
+            generator.remove_line(path, content)
           end
 
           # @since 1.1.0
           # @api private
           def remove_require_app(context)
-            content     = "require_relative '../apps/#{context.app}/application'"
-            destination = project.environment(context)
+            content = "require_relative '../apps/#{context.app}/application'"
+            path    = project.environment(context)
 
-            files.remove_line(destination, content)
-            say(:subtract, destination)
+            generator.remove_line(path, content)
           end
 
           # @since 1.1.0
