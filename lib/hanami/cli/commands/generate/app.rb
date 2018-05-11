@@ -176,21 +176,19 @@ module Hanami
           # @since 1.1.0
           # @api private
           def inject_require_app(context)
-            content     = "require_relative '../apps/#{context.app}/application'"
-            destination = project.environment(context)
+            content = "require_relative '../apps/#{context.app}/application'"
+            path    = project.environment(context)
 
-            files.inject_line_after(destination, /require_relative '\.\.\/lib\/.*'/, content)
-            say(:insert, destination)
+            generator.insert(path, content, after: /require_relative '\.\.\/lib\/.*'/)
           end
 
           # @since 1.1.0
           # @api private
           def inject_mount_app(context)
-            content     = "  mount #{context.app.classify}::Application, at: '#{context.base_url}'"
-            destination = project.environment(context)
+            content = "  mount #{context.app.classify}::Application, at: '#{context.base_url}'"
+            path    = project.environment(context)
 
-            files.inject_line_after(destination, /Hanami.configure do/, content)
-            say(:insert, destination)
+            generator.insert(path, content, after: /Hanami.configure do/)
           end
 
           # @since 1.1.0
