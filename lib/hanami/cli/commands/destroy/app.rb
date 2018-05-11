@@ -93,36 +93,31 @@ module Hanami
             destination = project.public_app_assets(context)
             return unless files.directory?(destination)
 
-            files.delete_directory(destination)
-            say(:remove, destination)
+            generator.delete_directory(destination)
           end
 
           # @since 1.1.0
           # @api private
           def destroy_assets_manifest(context)
-            destination = project.assets_manifest(context)
-            return unless files.exist?(destination)
+            path = project.assets_manifest(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path, allow_missing: true)
           end
 
           # @since 1.1.0
           # @api private
           def recursively_destroy_specs(context)
-            destination = project.app_spec(context)
+            path = project.app_spec(context)
 
-            files.delete_directory(destination)
-            say(:remove, destination)
+            generator.delete_directory(path)
           end
 
           # @since 1.1.0
           # @api private
           def recursively_destroy_app(context)
-            destination = project.app(context)
+            path = project.app(context)
 
-            files.delete_directory(destination)
-            say(:remove, destination)
+            generator.delete_directory(path)
           end
 
           # @since 1.1.0

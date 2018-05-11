@@ -45,37 +45,33 @@ module Hanami
           # @since 1.1.0
           # @api private
           def destroy_repository_spec(context)
-            destination = project.repository_spec(context)
+            path = project.repository_spec(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path)
           end
 
           # @since 1.1.0
           # @api private
           def destroy_entity_spec(context)
-            destination = project.entity_spec(context)
+            path = project.entity_spec(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path)
           end
 
           # @since 1.1.0
           # @api private
           def destroy_repository(context)
-            destination = project.repository(context)
+            path = project.repository(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path)
           end
 
           # @since 1.1.0
           # @api private
           def destroy_entity(context)
-            destination = project.entity(context)
+            path = project.entity(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path)
           end
         end
       end

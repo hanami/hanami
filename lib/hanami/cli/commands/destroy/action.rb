@@ -86,49 +86,42 @@ module Hanami
           # @since 1.1.0
           # @api private
           def destroy_view_spec(context)
-            destination = project.view_spec(context)
-            return unless files.exist?(destination)
+            path = project.view_spec(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path, allow_missing: true)
           end
 
           # @since 1.1.0
           # @api private
           def destroy_action_spec(context)
-            destination = project.action_spec(context)
+            path = project.action_spec(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path)
           end
 
           # @since 1.1.0
           # @api private
           def destroy_templates(context)
-            destinations = project.templates(context)
-            destinations.each do |destination|
-              files.delete(destination)
-              say(:remove, destination)
+            template_paths = project.templates(context)
+            template_paths.each do |template_path|
+              generator.delete(template_path)
             end
           end
 
           # @since 1.1.0
           # @api private
           def destroy_view(context)
-            destination = project.view(context)
-            return unless files.exist?(destination)
+            path = project.view(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path, allow_missing: true)
           end
 
           # @since 1.1.0
           # @api private
           def destroy_action(context)
-            destination = project.action(context)
+            path = project.action(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path)
           end
         end
       end

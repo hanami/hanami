@@ -41,8 +41,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def destroy_migration(context)
-            files.delete(context.destination)
-            say(:remove, context.destination)
+            generator.delete(context.destination)
           end
         end
       end

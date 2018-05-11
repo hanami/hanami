@@ -43,29 +43,26 @@ module Hanami
           # @since 1.1.0
           # @api private
           def destroy_mailer_spec(context)
-            destination = project.mailer_spec(context)
+            path = project.mailer_spec(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path)
           end
 
           # @since 1.1.0
           # @api private
           def destroy_templates(context)
-            destinations = project.mailer_templates(context)
-            destinations.each do |destination|
-              files.delete(destination)
-              say(:remove, destination)
+            template_paths = project.mailer_templates(context)
+            template_paths.each do |template_path|
+              generator.delete(template_path)
             end
           end
 
           # @since 1.1.0
           # @api private
           def destroy_mailer(context)
-            destination = project.mailer(context)
+            path = project.mailer(context)
 
-            files.delete(destination)
-            say(:remove, destination)
+            generator.delete(path)
           end
         end
       end
