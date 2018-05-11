@@ -4,6 +4,7 @@ require 'hanami/components'
 require 'hanami/cli/command'
 require 'hanami/cli/commands/project'
 require 'hanami/cli/commands/templates'
+require 'hanami/cli/generator'
 require 'concurrent'
 require 'hanami/utils/files'
 require 'erb'
@@ -92,11 +93,12 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def initialize(command_name:, out: $stdout, files: Utils::Files)
+        def initialize(command_name:, out: $stdout, files: Utils::Files, generator: CLI::Generator.new)
           super(command_name: command_name)
 
           @out       = out
           @files     = files
+          @generator = generator
           @templates = Templates.new(self.class)
         end
 
@@ -140,6 +142,10 @@ module Hanami
         # @api private
         attr_reader :templates
 
+        # @since x.x.x
+        # @api private
+        attr_reader :generator
+
         # @since 1.1.0
         # @api private
         def render(path, context)
@@ -152,10 +158,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def generate_file(source, destination, context)
-          files.write(
-            destination,
-            render(source, context)
-          )
+          generator.generate_file(source, destination, context)
         end
 
         # @since 1.1.0
