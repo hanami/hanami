@@ -8,7 +8,7 @@ RSpec.describe "hanami generate", type: :integration do
           "create  apps/web/views/authors/index.rb",
           "create  apps/web/templates/authors/index.html.erb",
           "create  spec/web/views/authors/index_spec.rb",
-          "insert  apps/web/config/routes.rb"
+          "append  apps/web/config/routes.rb"
         ]
 
         run_command "hanami generate action web authors#index", output
@@ -53,7 +53,7 @@ END
           "create  apps/web/views/api/authors/index.rb",
           "create  apps/web/templates/api/authors/index.html.erb",
           "create  spec/web/views/api/authors/index_spec.rb",
-          "insert  apps/web/config/routes.rb"
+          "append  apps/web/config/routes.rb"
         ]
 
         run_command "hanami generate action web api/authors#index", output
@@ -134,7 +134,7 @@ OUT
       it "generates action" do
         with_project('bookshelf_generate_action_url') do
           output = [
-            "insert  apps/web/config/routes.rb"
+            "append  apps/web/config/routes.rb"
           ]
 
           run_command "hanami generate action web home#index --url=/", output
@@ -160,7 +160,7 @@ OUT
           run_command "hanami generate action web status#check --skip-view", <<-OUT
       create  apps/web/controllers/status/check.rb
       create  spec/web/controllers/status/check_spec.rb
-      insert  apps/web/config/routes.rb
+      append  apps/web/config/routes.rb
 OUT
 
           #
@@ -185,7 +185,7 @@ END
       it "generates action" do
         with_project('bookshelf_generate_action_method') do
           output = [
-            "insert  apps/web/config/routes.rb"
+            "append  apps/web/config/routes.rb"
           ]
 
           run_command "hanami generate action web books#create --method=POST", output

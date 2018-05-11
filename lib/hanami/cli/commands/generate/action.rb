@@ -143,11 +143,10 @@ module Hanami
           # @since 1.1.0
           # @api private
           def insert_route(context)
-            content     = "#{context.http_method} '#{route_url(context)}', to: '#{route_endpoint(context)}'".downcase
-            destination = project.app_routes(context)
+            content = "#{context.http_method} '#{route_url(context)}', to: '#{route_endpoint(context)}'".downcase
+            path    = project.app_routes(context)
 
-            files.append(destination, content)
-            say(:insert, destination)
+            generator.append(path, content)
           end
 
           # @since 1.1.0

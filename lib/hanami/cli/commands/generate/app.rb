@@ -194,21 +194,19 @@ module Hanami
           # @since 1.1.0
           # @api private
           def append_development_http_session_secret(context)
-            content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{project.app_sessions_secret}")
-            destination = project.env(context, "development")
+            content = %(#{context.app.upcase}_SESSIONS_SECRET="#{project.app_sessions_secret}")
+            path    = project.env(context, "development")
 
-            files.append(destination, content)
-            say(:append, destination)
+            generator.append(path, content)
           end
 
           # @since 1.1.0
           # @api private
           def append_test_http_session_secret(context)
-            content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{project.app_sessions_secret}")
-            destination = project.env(context, "test")
+            content = %(#{context.app.upcase}_SESSIONS_SECRET="#{project.app_sessions_secret}")
+            path    = project.env(context, "test")
 
-            files.append(destination, content)
-            say(:append, destination)
+            generator.append(path, content)
           end
         end
       end
