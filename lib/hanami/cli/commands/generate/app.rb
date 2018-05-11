@@ -107,8 +107,7 @@ module Hanami
             source      = templates.find("favicon.ico")
             destination = project.app_favicon(context)
 
-            files.cp(source, destination)
-            say(:create, destination)
+            generator.copy(source, destination)
           end
 
           # @since 1.1.0
