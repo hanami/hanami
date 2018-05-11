@@ -77,8 +77,7 @@ module Hanami
           def generate_text_template(context)
             destination = project.mailer_template(context, "txt")
 
-            files.touch(destination)
-            say(:create, destination)
+            generator.touch(destination)
           end
 
           # @since 1.1.0
@@ -86,8 +85,7 @@ module Hanami
           def generate_html_template(context)
             destination = project.mailer_template(context, "html")
 
-            files.touch(destination)
-            say(:create, destination)
+            generator.touch(destination)
           end
 
           # @since 1.1.1

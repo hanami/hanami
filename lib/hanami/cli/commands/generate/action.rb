@@ -117,8 +117,7 @@ module Hanami
             return if skip_view?(context)
             destination = project.template(context)
 
-            files.touch(destination)
-            say(:create, destination)
+            generator.touch(destination)
           end
 
           # @since 1.1.0
