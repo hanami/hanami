@@ -146,7 +146,7 @@ module Hanami
 
           # @since 1.1.0
           # @api private
-          VALID_FRAMEWORKS = [MINITEST, RSPEC].freeze
+          VALID_FRAMEWORKS = [RSPEC, MINITEST].freeze
 
           # @since 1.1.0
           # @api private
