@@ -1,9 +1,7 @@
-module <%= app.classify %>::Controllers::<%= classified_controller_name %>
-  class <%= action.classify %>
-    include <%= app.classify %>::Action
-
-    def call(params)
-      self.body = 'OK'
-    end
+module <%= app.classify %>
+  module Controllers
+<%= beginning_module_definition %>
+<%= action_class_definition %>
+<%= ending_module_definition %>
   end
 end
