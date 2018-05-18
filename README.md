@@ -2,7 +2,6 @@
 [![Build Status](https://secure.travis-ci.org/hanami/hanami.svg?branch=master)](http://travis-ci.org/hanami/hanami?branch=master)
 [![Coverage](https://coveralls.io/repos/hanami/hanami/badge.svg?branch=master)](https://coveralls.io/r/hanami/hanami)
 [![Code Climate](https://codeclimate.com/github/hanami/hanami.svg)](https://codeclimate.com/github/hanami/hanami)
-[![Dependencies](https://gemnasium.com/hanami/hanami.svg)](https://gemnasium.com/hanami/hanami)
 [![Inline docs](http://inch-ci.org/github/hanami/hanami.svg)](http://inch-ci.org/github/hanami/hanami)
 
 # Hanami :cherry_blossom:
