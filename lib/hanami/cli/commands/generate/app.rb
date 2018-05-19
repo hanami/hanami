@@ -191,12 +191,17 @@ module Hanami
             content     = "require_relative '../apps/#{context.app}/application'"
             destination = project.environment(context)
 
-            lib_regex = /require_relative '\.\.\/lib\/.*'/
-            app_regex = /require_relative '\.\.\/apps\/.*\/application'/
+            req_regex = /^\s*require .*$/
+            rel_regex = /^\s*require_relative .*$/
 
-            regex = File.read(destination)[app_regex] ? app_regex : lib_regex
-
-            files.inject_line_after(destination, regex, content)
+            case File.read(destination)
+            when rel_regex
+              files.inject_line_after_last(destination, rel_regex, content)
+            when req_regex
+              files.inject_line_after_last(destination, req_regex, content)
+            else
+              raise "No require found"
+            end
             say(:insert, destination)
           end
 
