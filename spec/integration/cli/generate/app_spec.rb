@@ -41,6 +41,7 @@ RSpec.describe "hanami generate", type: :integration do
           # config/environment.rb
           #
           expect("config/environment.rb").to have_file_content(%r{require_relative '../apps/#{app}/application'})
+          expect("config/environment.rb").to have_file_content(%r{require_relative "../apps/#{app}/application"})
           expect("config/environment.rb").to have_file_content(%r{mount #{app_name}::Application, at: '/api/v1'})
         end
       end
