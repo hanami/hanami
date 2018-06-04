@@ -282,14 +282,15 @@ module Hanami
         # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/MethodLength
         def call(project:, **options)
-          project         = Utils::String.underscore(project)
-          database_config = DatabaseConfig.new(options[:database], project)
+          project_name    = Utils::String.underscore(project)
+          project_name    = File.basename(Dir.pwd) if project == '.'
+          database_config = DatabaseConfig.new(options[:database], project_name)
           test_framework  = TestFramework.new(hanamirc, options[:test])
           template_engine = TemplateEngine.new(hanamirc, options[:template])
-          options[:project] = project
+          options[:project] = project_name
 
           context = Context.new(
-            project: project,
+            project: project_name,
             database: database_config.type,
             database_config_hash: database_config.to_hash,
             database_config: database_config,
@@ -302,7 +303,7 @@ module Hanami
             hanami_model_version: '~> 1.2',
             code_reloading: code_reloading?,
             hanami_version: hanami_version,
-            project_module: Utils::String.classify(project),
+            project_module: Utils::String.classify(project_name),
             options: options
           )
 
