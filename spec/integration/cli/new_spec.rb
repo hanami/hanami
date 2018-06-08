@@ -139,7 +139,7 @@ group :development do
 end
 
 group :test, :development do
-  gem 'dotenv', '~> 2.0'
+  gem 'dotenv', '~> 2.4'
 end
 
 group :test do
@@ -164,7 +164,7 @@ gem 'hanami-model', '~> 1.3.beta'
 gem 'jdbc-sqlite3'
 
 group :test, :development do
-  gem 'dotenv', '~> 2.0'
+  gem 'dotenv', '~> 2.4'
 end
 
 group :test do
