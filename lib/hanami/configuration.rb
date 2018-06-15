@@ -1,4 +1,5 @@
 require 'concurrent'
+require 'dry/inflector'
 require 'hanami/application'
 require 'hanami/utils/class'
 require 'hanami/utils/string'
@@ -186,6 +187,26 @@ module Hanami
       else
         settings[:logger] = options
       end
+    end
+
+    # Configure inflector
+    #
+    # @since x.x.x
+    #
+    # @param blk [Proc] the inflector rules
+    #
+    # @example
+    #   # config/environment.rb
+    #   # ...
+    #   Hanami.configure do
+    #     inflector do |rule|
+    #       rule.plural "virus", "viruses"
+    #     end
+    #
+    #     # ...
+    #   end
+    def inflector(&blk)
+      settings.fetch_or_store(:inflector, Dry::Inflector.new(&blk))
     end
 
     # Configure settings for the current environment

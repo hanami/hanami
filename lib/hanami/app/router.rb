@@ -10,7 +10,7 @@ module Hanami
     class Router < Hanami::Router
       # @param configuration [Hanami::Configuration] general configuration
       def initialize(configuration)
-        super() do
+        super(inflector: configuration.inflector) do
           configuration.mounted.each do |klass, app|
             if klass.ancestors.include?(Hanami::Application)
               namespace = Utils::String.namespace(klass.name)

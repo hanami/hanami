@@ -42,4 +42,21 @@ RSpec.describe "Hanami.configure" do
     config = Hanami.configuration.mailer_settings
     expect(config).to eq([mailer_configuration])
   end
+
+  describe 'inflector' do
+    it "holds inflector" do
+      expect(Hanami.configuration.inflector).to be_a_kind_of(Dry::Inflector)
+      expect(Hanami.configuration.inflector.pluralize("virus")).to eq("viri")
+    end
+
+    it "configures inflector rules" do
+      Hanami.configure do
+        inflector do |rule|
+          rule.plural "virus", "viruses"
+        end
+      end
+
+      expect(Hanami.configuration.inflector.pluralize("virus")).to eq("viruses")
+    end
+  end
 end

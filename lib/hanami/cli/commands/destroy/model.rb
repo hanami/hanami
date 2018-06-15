@@ -18,7 +18,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(model:, **options)
-            model   = Utils::String.transform(model, :underscore, :singularize)
+            model   = inflector.singularize(inflector.underscore(model))
             context = Context.new(model: model, options: options)
 
             assert_valid_model!(context)
@@ -76,6 +76,12 @@ module Hanami
 
             files.delete(destination)
             say(:remove, destination)
+          end
+
+          # @since x.x.x
+          # @api private
+          def inflector
+            Hanami.configuration.inflector
           end
         end
       end

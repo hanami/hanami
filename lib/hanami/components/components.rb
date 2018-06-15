@@ -112,6 +112,7 @@ module Hanami
         if Components['model.bundled']
           Hanami::Model.instance_variable_set(:@configuration, nil) if Hanami.code_reloading?
           Hanami::Model.configure(&configuration.model)
+          Hanami::Model.config.inflector(configuration.inflector)
           Hanami::Model.configuration
         end
       end
@@ -141,6 +142,7 @@ module Hanami
         if Components['model.bundled']
           Hanami::Model.configure(&configuration.model)
           Hanami::Model.config.migrations_logger(StringIO.new)
+          Hanami::Model.config.inflector(configuration.inflector)
           Hanami::Model.configuration
         end
       end

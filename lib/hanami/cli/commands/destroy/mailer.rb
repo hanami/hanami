@@ -17,7 +17,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(mailer:, **options)
-            mailer  = Utils::String.transform(mailer, :underscore, :singularize)
+            mailer  = inflector.singularize(inflector.underscore(mailer))
             context = Context.new(mailer: mailer, options: options)
 
             assert_valid_mailer!(context)
@@ -66,6 +66,12 @@ module Hanami
 
             files.delete(destination)
             say(:remove, destination)
+          end
+
+          # @since x.x.x
+          # @api private
+          def inflector
+            Hanami.configuration.inflector
           end
         end
       end
