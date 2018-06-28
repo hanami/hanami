@@ -34,11 +34,11 @@ module Hanami
             classified_controller_name = classified_controller(controller)
             http_method                = route_http_method(action, options)
             context                    = Context.new(app: app, controller: controller, classified_controller_name: classified_controller_name, action: action, test: options.fetch(:test), http_method: http_method, options: options)
-            context                    = context.with(template: project.template(context))
-            context                    = context.with(action_class_definition: action_class_definition(context))
-            context                    = context.with(view_class_definition: view_class_definition(context))
-            context                    = context.with(beginning_module_definition: beginning_module_definition(context))
-            context                    = context.with(ending_module_definition: ending_module_definition(context))
+            context                    = context.with(template: project.template(context),
+                                                      action_class_definition: action_class_definition(context),
+                                                      view_class_definition: view_class_definition(context),
+                                                      beginning_module_definition: beginning_module_definition(context),
+                                                      ending_module_definition: ending_module_definition(context))
 
             assert_valid_app!(context)
             assert_valid_route_url!(context)
