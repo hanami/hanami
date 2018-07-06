@@ -49,7 +49,6 @@ gem 'shotgun',   '~> 0.9', require: false
 
 gem 'hanami-devtools', require: false, git: 'https://github.com/hanami/devtools.git'
 gem 'hanami-webconsole', require: false, git: 'https://github.com/hanami/webconsole.git'
-gem 'semantic_logger'
 
 # https://github.com/hanami/hanami/issues/893
 gem 'builder'

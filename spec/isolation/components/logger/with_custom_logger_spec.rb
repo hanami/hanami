@@ -10,14 +10,14 @@ RSpec.describe "Components: logger", type: :integration do
     end
   end
 
-  it "allows loggers not base on ::Logger" do
+  it "allows loggers not based on ::Logger" do
     with_project do
-      replace 'config/environment.rb', 'logger ', "logger SemanticLogger['test']"
+      replace 'config/environment.rb', 'logger ', "logger SemanticLogger.new"
 
       require Pathname.new(Dir.pwd).join("config", "environment")
       Hanami::Components.resolve('logger')
 
-      expect(Hanami.logger.class).to eq(SemanticLogger::Logger)
+      expect(Hanami.logger.class).to eq(SemanticLogger)
     end
   end
 end
