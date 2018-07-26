@@ -29,7 +29,7 @@ module Hanami
 
       resolve do |configuration|
         if configuration.logger.is_a?(Array)
-          if configuration.logger.first.is_a?(::Logger)
+          if logger_interface?(configuration.logger.first)
             configuration.logger.first
           else
             Hanami::Logger.new(Hanami.environment.project_name, *configuration.logger)
