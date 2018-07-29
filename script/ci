@@ -11,7 +11,7 @@ teardown() {
 }
 
 run_unit_tests() {
-  bundle exec rake spec:coverage
+  bundle exec rake spec:unit
 }
 
 run_isolation_tests() {
@@ -45,16 +45,22 @@ run_tests() {
 
 run_test() {
   local test=$1
+  local hash="$(shasum "$test" | cut -b 1-40)"
 
   printf "\n\n\nRunning: $test\n"
-  COVERAGE=true bundle exec rspec $test
+  SIMPLECOV_COMMAND_NAME=$hash bundle exec rspec $test
+}
+
+upload_code_coverage() {
+  bundle exec rake codecov:upload
 }
 
 main() {
   setup &&
     run_unit_tests &&
     run_isolation_tests &&
-    run_integration_tests
+    run_integration_tests &&
+    upload_code_coverage
 }
 
 trap teardown EXIT
