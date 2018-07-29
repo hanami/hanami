@@ -27,7 +27,6 @@ These components are designed to be used independently or together in a Hanami a
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](https://badge.fury.io/rb/hanami)
 [![TravisCI](https://travis-ci.org/hanami/hanami.svg?branch=master)](https://travis-ci.org/hanami/hanami)
-[![CircleCI](https://circleci.com/gh/hanami/hanami/tree/master.svg?style=svg)](https://circleci.com/gh/hanami/hanami/tree/master)
 [![Test Coverage](https://codecov.io/gh/hanami/hanami/branch/master/graph/badge.svg)](https://codecov.io/gh/hanami/hanami)
 [![Depfu](https://badges.depfu.com/badges/ba000e0f69e6ef1c44cd3038caaa1841/overview.svg)](https://depfu.com/github/hanami/hanami?project=Bundler)
 [![Inline Docs](http://inch-ci.org/github/hanami/hanami.svg)](http://inch-ci.org/github/hanami/hanami)
