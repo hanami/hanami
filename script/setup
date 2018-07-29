@@ -14,12 +14,6 @@ cleanup() {
   ./script/teardown
 }
 
-remove_coverage() {
-  if [ -d coverage ]; then
-    rm -rf coverage
-  fi
-}
-
 bundle_package() {
   bundle package --all
   echo ""
@@ -69,7 +63,6 @@ generate_index() {
 main() {
   print_ruby_version &&
     cleanup &&
-    remove_coverage &&
     bundle_package &&
     install_hanami_frameworks &&
     install_hanami &&

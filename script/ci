@@ -3,11 +3,18 @@ set -euo pipefail
 IFS=$'\n\t'
 
 setup() {
-  ./script/setup
+  remove_coverage &&
+    ./script/setup
 }
 
 teardown() {
   ./script/teardown
+}
+
+remove_coverage() {
+  if [ -d coverage ]; then
+    rm -rf coverage
+  fi
 }
 
 run_unit_tests() {
