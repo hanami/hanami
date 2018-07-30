@@ -1,9 +1,3 @@
-[![Gem Version](https://badge.fury.io/rb/hanami.svg)](http://badge.fury.io/rb/hanami)
-[![Build Status](https://secure.travis-ci.org/hanami/hanami.svg?branch=master)](http://travis-ci.org/hanami/hanami?branch=master)
-[![Coverage](https://coveralls.io/repos/hanami/hanami/badge.svg?branch=master)](https://coveralls.io/r/hanami/hanami)
-[![Code Climate](https://codeclimate.com/github/hanami/hanami.svg)](https://codeclimate.com/github/hanami/hanami)
-[![Inline docs](http://inch-ci.org/github/hanami/hanami.svg)](http://inch-ci.org/github/hanami/hanami)
-
 # Hanami :cherry_blossom:
 
 The web, with simplicity.
@@ -29,7 +23,16 @@ which provides the glue that ties all the parts together:
 
 These components are designed to be used independently or together in a Hanami application.
 
+## Status
+
+[![Gem Version](https://badge.fury.io/rb/hanami.svg)](https://badge.fury.io/rb/hanami)
+[![TravisCI](https://travis-ci.org/hanami/hanami.svg?branch=master)](https://travis-ci.org/hanami/hanami)
+[![Test Coverage](https://codecov.io/gh/hanami/hanami/branch/master/graph/badge.svg)](https://codecov.io/gh/hanami/hanami)
+[![Depfu](https://badges.depfu.com/badges/ba000e0f69e6ef1c44cd3038caaa1841/overview.svg)](https://depfu.com/github/hanami/hanami?project=Bundler)
+[![Inline Docs](http://inch-ci.org/github/hanami/hanami.svg)](http://inch-ci.org/github/hanami/hanami)
+
 ## Installation
+
 __Hanami__ supports Ruby (MRI) 2.3+
 
 ```shell
