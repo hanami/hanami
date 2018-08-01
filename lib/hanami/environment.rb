@@ -487,10 +487,17 @@ module Hanami
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      dotenv = root.join(DEFAULT_DOTENV_ENV % environment)
-      return unless dotenv.exist?
+      default = root.join(DEFAULT_DOTENV_ENV % environment)
 
-      env.load!(dotenv)
+      dotenvs = [root.join("#{default}.local"), default].compact
+
+      dotenvs.each do |dotenv|
+        next unless dotenv.exist?
+
+        env.load!(dotenv)
+      end
+
+      nil
     end
 
     # @since 0.1.0

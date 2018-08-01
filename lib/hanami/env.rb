@@ -59,7 +59,7 @@ module Hanami
       parsed   = Dotenv::Parser.call(contents)
 
       parsed.each do |k, v|
-        next if @env.has_key?(k)
+        next if @env.key?(k)
 
         @env[k] = v
       end
