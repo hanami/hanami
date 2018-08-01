@@ -64,6 +64,7 @@ RSpec.describe "hanami new", type: :integration do
           expect(".gitignore").to have_file_content <<-END
 /public/assets*
 /tmp
+.env.*.local
           END
         end
       end

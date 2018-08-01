@@ -87,6 +87,7 @@ END
 /db/*.sqlite
 /public/assets*
 /tmp
+.env.*.local
 END
     end
   end
