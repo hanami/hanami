@@ -1,7 +1,16 @@
 # Hanami
 The web, with simplicity.
 
-## v1.3.0.beta1 (unreleased)
+## v1.3.0.beta1 - 2018-08-08
+### Added
+- [Sean Collins] Generate new projects with RSpec as default testing framework
+- [Alfonso Uceda] Generate actions/views/mailers with nested module/class definition
+
+### Fixed
+- [Anton Davydov] Make possible to pass extra settings for custom logger instances (eg. `logger SemanticLogger.new, :foo, :bar`)
+
+### Fixed
+- [John Downey] Don't use thread unsafe `Dir.chdir` to serve static assets
 
 ## v1.2.0 - 2018-04-11
 

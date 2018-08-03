@@ -56,7 +56,7 @@ module Hanami
 
           private
 
-          # @since x.x.x
+          # @since 1.3.0
           # @api private
           def beginning_module_definition(context)
             length = context.classified_controller_name.split("::").size
@@ -72,7 +72,7 @@ module Hanami
             beginning_module_definition
           end
 
-          # @since x.x.x
+          # @since 1.3.0
           # @api private
           def ending_module_definition(context)
             length = context.classified_controller_name.split("::").size
@@ -88,7 +88,7 @@ module Hanami
             ending_module_definition
           end
 
-          # @since x.x.x
+          # @since 1.3.0
           # @api private
           def action_class_definition(context)
             body_line_position = 4
@@ -105,7 +105,7 @@ module Hanami
             add_indentation_to_class_definition(context, view_class)
           end
 
-          # @since x.x.x
+          # @since 1.3.0
           # @api private
           def view_class_definition(context)
             view_class = [
@@ -117,7 +117,7 @@ module Hanami
             add_indentation_to_class_definition(context, view_class)
           end
 
-          # @since x.x.x
+          # @since 1.3.0
           # @api private
           def add_indentation_to_class_definition(context, view_content)
             length = context.classified_controller_name.split("::").size

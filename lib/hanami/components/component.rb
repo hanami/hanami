@@ -46,7 +46,7 @@ module Hanami
 
       private
 
-      # @since x.x.x
+      # @since 1.3.0
       # @api private
       #
       # @see Hanami::Component#logger_interface?
@@ -172,7 +172,7 @@ module Hanami
 
       # Check that instance has logger interfaces (#info, #warn and #debug)
       #
-      # @since x.x.x
+      # @since 1.3.0
       # @api private
       def logger_interface?(instance)
         LOGGER_METHODS.all? { |method| instance.respond_to?(method) }
