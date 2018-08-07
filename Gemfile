@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 gemspec
 
-unless ENV['TRAVIS']
+unless ENV['CI']
   gem 'byebug', require: false, platforms: :mri
   gem 'yard',   require: false
 end

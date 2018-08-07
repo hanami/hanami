@@ -282,7 +282,9 @@ module Hanami
         # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/MethodLength
         def call(project:, **options)
-          project         = Utils::String.underscore(project)
+          project_name = project
+          pwd = ::File.basename(Dir.pwd) if project == "."
+          project         = Utils::String.underscore(pwd || project)
           database_config = DatabaseConfig.new(options[:database], project)
           test_framework  = TestFramework.new(hanamirc, options[:test])
           template_engine = TemplateEngine.new(hanamirc, options[:template])
@@ -308,7 +310,7 @@ module Hanami
 
           assert_project_name!(context)
 
-          directory = project_directory(project)
+          directory = project_directory(project_name, project)
           files.mkdir(directory)
 
           Dir.chdir(directory) do
@@ -532,8 +534,9 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def project_directory(project)
-          @name == '.' ? '.' : project
+        def project_directory(project_name, project)
+          return Dir.pwd if project_name == '.'
+          project
         end
 
         # @since 1.1.0
