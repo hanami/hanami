@@ -786,6 +786,42 @@ END
     end
   end
 
+  context "with dot as project name" do
+    before do
+      root.mkpath
+    end
+
+    let(:root) { Pathname.new(Dir.pwd).join("tmp", "aruba", dir) }
+    let(:project) { "terrific_product" }
+    let(:dir) { "terrific product" }
+
+    it "generates project" do
+      cd(dir) do
+        run_command "hanami new ."
+      end
+
+      [
+        "create  lib/#{project}.rb",
+        "create  lib/#{project}/entities/.gitkeep",
+        "create  lib/#{project}/repositories/.gitkeep",
+        "create  lib/#{project}/mailers/.gitkeep",
+        "create  lib/#{project}/mailers/templates/.gitkeep",
+        "create  spec/#{project}/entities/.gitkeep",
+        "create  spec/#{project}/repositories/.gitkeep",
+        "create  spec/#{project}/mailers/.gitkeep"
+      ].each do |output|
+        expect(all_output).to match(/#{output}/)
+      end
+
+      within_project_directory(dir) do
+        #
+        # .hanamirc
+        #
+        expect('.hanamirc').to have_file_content %r{project=#{project}}
+      end
+    end
+  end
+
   context "with missing name" do
     it "fails" do
       output = <<-OUT
