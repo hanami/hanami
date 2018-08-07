@@ -56,7 +56,10 @@ module Hanami
                 end
               end
 
-              prepare { include Hanami::Action::RoutingHelpers }
+              prepare do
+                include Hanami::Action::RoutingHelpers
+                include Hanami::Action::ViewHelpers
+              end
 
               config.controller.__apply(self)
             end
