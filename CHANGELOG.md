@@ -8,6 +8,8 @@ The web, with simplicity.
 
 ### Fixed
 - [Anton Davydov] Make possible to pass extra settings for custom logger instances (eg. `logger SemanticLogger.new, :foo, :bar`)
+- [graywolf] Ensure `hanami generate app` to work without `require_relative` entries in `config/enviroment.rb`
+- [Makoto Tajitsu & Luca Guidi] Fixed regression for `hanami new .` that used to generate a broken project
 
 ### Fixed
 - [John Downey] Don't use thread unsafe `Dir.chdir` to serve static assets
