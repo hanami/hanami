@@ -45,6 +45,9 @@ module Hanami
     # @api private
     def _render(env, response)
       if action = renderable?(env)
+        # * _render_action will return nil if `self.body` not empty
+        # * _render_status_page will wrap defined `self.body` if status is not success
+        # ? how we can render custom body without wrapping it to status_page template?
         _render_action(action, env, response) ||
           _render_status_page(action, response)
       end
