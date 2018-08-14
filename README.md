@@ -44,7 +44,7 @@ cd bookshelf && bundle
 bundle exec hanami server # visit http://localhost:2300
 ```
 
-Please follow along with the [Getting Started guide](http://hanamirb.org/guides/getting-started).
+Please follow along with the [Getting Started guide](http://hanamirb.org/guides/1.2/getting-started).
 
 ## Donations
 
