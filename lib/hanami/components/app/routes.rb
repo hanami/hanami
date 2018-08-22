@@ -35,7 +35,7 @@ module Hanami
         # @api private
         def self.application_routes(app) # rubocop:disable Metrics/MethodLength
           config      = app.configuration
-          set_body_parser_middleware(config)
+          set_body_parser_middleware(config, config.body_parsers)
           namespace   = app.namespace
 
           resolver    = Hanami::Routing::EndpointResolver.new(pattern: config.controller_pattern, namespace: namespace)
@@ -55,9 +55,8 @@ module Hanami
 
         # @since x.x.x
         # @api private
-        def self.set_body_parser_middleware(config) # rubocop:disable Metrics/MethodLength
-          return unless config.body_parsers.any?
-          body_parsers = config.body_parsers
+        def self.set_body_parser_middleware(config, body_parsers)
+          return unless body_parsers.any?
           config.middleware.use Hanami::Middleware::BodyParser, body_parsers
         end
       end
