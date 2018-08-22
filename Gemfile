@@ -10,7 +10,7 @@ gem 'i18n'
 
 gem 'hanami-utils',       '~> 1.3.beta', require: false, git: 'https://github.com/hanami/utils.git',       branch: 'develop'
 gem 'hanami-validations', '~> 1.3.beta', require: false, git: 'https://github.com/hanami/validations.git', branch: 'develop'
-gem 'hanami-router',      '~> 1.3.beta', require: false, git: 'https://github.com/hanami/router.git',      branch: 'develop'
+gem 'hanami-router',      '~> 1.3.beta', require: false, git: 'https://github.com/hanami/router.git',      branch: 'change-middleware-to-be-a-class'
 gem 'hanami-controller',  '~> 1.3.beta', require: false, git: 'https://github.com/hanami/controller.git',  branch: 'develop'
 gem 'hanami-view',        '~> 1.3.beta', require: false, git: 'https://github.com/hanami/view.git',        branch: 'develop'
 gem 'hanami-model',       '~> 1.3.beta', require: false, git: 'https://github.com/hanami/model.git',       branch: 'develop'
