@@ -191,12 +191,12 @@ module Hanami
 
     # Rack middleware stack
     #
-    # @return [Hanami::Middleware] the middleware stack
+    # @return [Hanami::MiddlewareStack] the middleware stack
     #
     # @since 0.1.0
     # @api private
     #
-    # @see Hanami::Middleware
+    # @see Hanami::MiddlewareStack
     attr_reader :middleware
   end
 end
