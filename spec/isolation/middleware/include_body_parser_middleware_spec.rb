@@ -4,10 +4,10 @@ RSpec.describe Hanami::Middleware, type: :integration do
       with_project do
         generate "action web home#index"
 
-        replace "apps/web/application.rb", "configure do", <<-END
-configure do
-  body_parsers :json
-END
+        replace "apps/web/application.rb", "configure do", <<~END
+          configure do
+            body_parsers :json
+        END
 
         require Pathname.new(Dir.pwd).join("config", "environment")
         Hanami::Components.resolve('all')
