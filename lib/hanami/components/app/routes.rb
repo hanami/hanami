@@ -1,5 +1,6 @@
 require 'hanami/routes'
 require 'hanami/routing/default'
+require 'hanami/middleware/body_parser'
 
 module Hanami
   # @since 0.9.0
@@ -34,6 +35,7 @@ module Hanami
         # @api private
         def self.application_routes(app) # rubocop:disable Metrics/MethodLength
           config      = app.configuration
+          set_body_parser_middleware(config, config.body_parsers)
           namespace   = app.namespace
 
           resolver    = Hanami::Routing::EndpointResolver.new(pattern: config.controller_pattern, namespace: namespace)
@@ -42,7 +44,6 @@ module Hanami
           Hanami::Router.new(
             resolver:    resolver,
             default_app: default_app,
-            parsers:     config.body_parsers,
             scheme:      config.scheme,
             host:        config.host,
             port:        config.port,
@@ -50,6 +51,13 @@ module Hanami
             force_ssl:   config.force_ssl,
             &config.routes
           )
+        end
+
+        # @since x.x.x
+        # @api private
+        def self.set_body_parser_middleware(config, body_parsers)
+          return unless body_parsers.any?
+          config.middleware.use Hanami::Middleware::BodyParser, body_parsers
         end
       end
     end
