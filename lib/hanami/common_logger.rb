@@ -1,4 +1,5 @@
 require 'rack/common_logger'
+require 'hanami/utils/hash'
 
 module Hanami
   # Rack logger for Hanami.app
@@ -44,6 +45,14 @@ module Hanami
     # @api private
     FORM_HASH            = 'rack.request.form_hash'.freeze
 
+    # @since 1.3.0
+    # @api private
+    ROUTER_PARAMS        = 'router.params'.freeze
+
+    # @since 1.3.0
+    # @api private
+    BODY_PARSER_FALLBACK_KEY = '_'.freeze
+
     # @since 1.0.0
     # @api private
     #
@@ -73,11 +82,17 @@ module Hanami
         logger.info(msg)
       end
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
     # @since 1.1.0
     # @api private
     def extract_params(env)
-      (env[QUERY_HASH] || {}).merge(env[FORM_HASH] || {})
+      result = env.fetch(QUERY_HASH, {})
+      result.merge!(env.fetch(FORM_HASH, {}))
+      result.merge!(Utils::Hash.deep_stringify(env.fetch(ROUTER_PARAMS, {})))
+      result.delete(BODY_PARSER_FALLBACK_KEY)
+      result
     end
   end
 end

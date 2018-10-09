@@ -1,3 +1,5 @@
+require "json"
+
 RSpec.describe 'hanami server', type: :integration do
   context "without routes" do
     it "shows welcome page" do
@@ -89,7 +91,7 @@ EOF
     let(:project) { "bookshelf" }
 
     context "when enabled" do
-      it "logs request" do
+      it "logs GET requests" do
         with_project(project) do
           touch log
           replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
@@ -102,6 +104,63 @@ EOF
           content = contents(log)
           expect(content).to include("[#{project}] [INFO]")
           expect(content).to match(%r{HTTP/1.1 GET 200 (.*) /})
+        end
+      end
+
+      it "logs GET requests with query string" do
+        with_project(project) do
+          touch log
+          replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
+
+          run_command "hanami generate action web home#index --url=/", []
+
+          server do
+            visit "/?ping=pong"
+            expect(page).to have_title("Web")
+          end
+
+          content = contents(log)
+          expect(content).to include("[#{project}] [INFO]")
+          expect(content).to match(%({"ping"=>"pong"}))
+        end
+      end
+
+      it "logs non-GET requests with payload" do
+        with_project(project) do
+          touch log
+          replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
+
+          run_command "hanami generate action web books#create --method=POST", []
+
+          server do
+            post "/books", book: { title: "Functions" }
+          end
+
+          content = contents(log)
+          expect(content).to include("[#{project}] [INFO]")
+          expect(content).to match(%({"book"=>{"title"=>"Functions"}}))
+        end
+      end
+
+      it "logs non-GET requests from body parsers" do
+        with_project(project) do
+          touch log
+          replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
+          inject_line_after "config/environment.rb", "Hanami.configure", "require 'hanami/middleware/body_parser'\nmiddleware.use Hanami::Middleware::BodyParser, :json"
+
+          run_command "hanami generate action web books#create --method=POST", []
+          inject_line_after "apps/web/controllers/books/create.rb", "Action", "accept :json"
+          inject_line_after "apps/web/controllers/books/create.rb", "call", 'Hanami.logger.debug(request.env["CONTENT_TYPE"]);self.body = %({"status":"OK"})'
+
+          server do
+            post "/books", JSON.generate(book: { title: "Parsers" }), "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"
+          end
+
+          content = contents(log)
+          expect(content).to include("[#{project}] [INFO]")
+          expect(content).to include("POST 200")
+          expect(content).to include("application/json")
+          expect(content).to match(%({"book"=>{"title"=>"Parsers"}}))
         end
       end
     end
