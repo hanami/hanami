@@ -49,10 +49,6 @@ module Hanami
     # @api private
     ROUTER_PARAMS        = 'router.params'.freeze
 
-    # @since 1.3.0
-    # @api private
-    BODY_PARSER_FALLBACK_KEY = '_'.freeze
-
     # @since 1.0.0
     # @api private
     #
@@ -91,7 +87,6 @@ module Hanami
       result = env.fetch(QUERY_HASH, {})
       result.merge!(env.fetch(FORM_HASH, {}))
       result.merge!(Utils::Hash.deep_stringify(env.fetch(ROUTER_PARAMS, {})))
-      result.delete(BODY_PARSER_FALLBACK_KEY)
       result
     end
   end

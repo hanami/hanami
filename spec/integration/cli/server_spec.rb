@@ -149,18 +149,24 @@ EOF
           inject_line_after "config/environment.rb", "Hanami.configure", "require 'hanami/middleware/body_parser'\nmiddleware.use Hanami::Middleware::BodyParser, :json"
 
           run_command "hanami generate action web books#create --method=POST", []
-          inject_line_after "apps/web/controllers/books/create.rb", "Action", "accept :json"
           inject_line_after "apps/web/controllers/books/create.rb", "call", 'Hanami.logger.debug(request.env["CONTENT_TYPE"]);self.body = %({"status":"OK"})'
 
           server do
+            post "/books", book: { title: "Why we sleep" }
             post "/books", JSON.generate(book: { title: "Parsers" }), "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"
+            post "/books", JSON.generate(%w[this is cool]), "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"
           end
 
           content = contents(log)
           expect(content).to include("[#{project}] [INFO]")
           expect(content).to include("POST 200")
+
+          expect(content).to include("application/x-www-form-urlencoded")
+          expect(content).to include(%({"book"=>{"title"=>"Why we sleep"}}))
+
           expect(content).to include("application/json")
-          expect(content).to match(%({"book"=>{"title"=>"Parsers"}}))
+          expect(content).to include(%({"book"=>{"title"=>"Parsers"}}))
+          expect(content).to include(%({"_"=>["this", "is", "cool"]}))
         end
       end
     end
