@@ -112,7 +112,7 @@ END
           #
           # spec/admin/views/application_layout_spec.rb
           #
-          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.erb})
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{Admin::Views::ApplicationLayout})
         end
       end
     end # erb
@@ -144,7 +144,7 @@ END
           #
           # spec/admin/views/application_layout_spec.rb
           #
-          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.haml})
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{Admin::Views::ApplicationLayout})
         end
       end
     end # haml
@@ -177,7 +177,7 @@ END
           #
           # spec/admin/views/application_layout_spec.rb
           #
-          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.slim})
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{Admin::Views::ApplicationLayout})
         end
       end
     end # slim
