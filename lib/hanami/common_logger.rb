@@ -63,7 +63,7 @@ module Hanami
         verb:    env[REQUEST_METHOD],
         status:  status.to_s[0..3],
         ip:      env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
-        path:    env[SCRIPT_NAME] + env[PATH_INFO],
+        path:    env[SCRIPT_NAME] + env[PATH_INFO].to_s,
         length:  length,
         params:  extract_params(env),
         elapsed: now - began_at
