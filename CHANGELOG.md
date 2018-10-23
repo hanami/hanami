@@ -1,6 +1,14 @@
 # Hanami
 The web, with simplicity.
 
+## v1.3.0 - 2018-10-24
+### Added
+- [Luca Guidi] Automatically log body payload from body parsers
+
+### Fixed
+- [Luca Guidi] Generate correct syntax for layout unit tests
+- [Vladislav Yashin] Fix concatenation of `Pathname` and `String` in `Hanami::CommonLogger`
+
 ## v1.3.0.beta1 - 2018-08-08
 ### Added
 - [Sean Collins] Generate new projects with RSpec as default testing framework

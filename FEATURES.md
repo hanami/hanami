@@ -3,7 +3,14 @@
 
 ## Features
 
-## v1.3.0 (unreleased)
+## v1.3.0 - 2018-10-24
+
+- Default testing framework is RSpec
+- Introduced `Hanami::Middleware::BodyParser` Rack middleware
+- Log payload (body) for non-GET HTTP requests coming from body parsers
+- Added support for `reply_to` in mailers
+- Variadic arguments for `hanami-cli`
+- Array as argument or option for `hanami-cli`
 
 ## v1.2.0 - 2018-04-11
 
