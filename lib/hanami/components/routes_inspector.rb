@@ -51,7 +51,7 @@ module Hanami
       # @since 0.9.0
       # @api private
       def hanami_app?(klass)
-        klass.ancestors.include?(Hanami::Application)
+        klass <= Hanami::Application
       end
 
       # @since 0.9.0

@@ -6,12 +6,12 @@ module Hanami
   #
   # @since 0.1.0
   # @api private
-  class Middleware
+  class MiddlewareStack
     # Instantiate a middleware stack
     #
     # @param configuration [Hanami::ApplicationConfiguration] the application's configuration
     #
-    # @return [Hanami::Middleware] the new stack
+    # @return [Hanami::MiddlewareStack] the new stack
     #
     # @since 0.1.0
     # @api private
@@ -25,7 +25,7 @@ module Hanami
 
     # Load the middleware stack
     #
-    # @return [Hanami::Middleware] the loaded middleware stack
+    # @return [Hanami::MiddlewareStack] the loaded middleware stack
     #
     # @since 0.2.0
     # @api private
@@ -62,7 +62,7 @@ module Hanami
     #
     # @since 0.2.0
     #
-    # @see Hanami::Middleware#prepend
+    # @see Hanami::MiddlewareStack#prepend
     #
     # @example
     #   # apps/web/application.rb
@@ -89,7 +89,7 @@ module Hanami
     #
     # @since 0.6.0
     #
-    # @see Hanami::Middleware#use
+    # @see Hanami::MiddlewareStack#use
     #
     # @example
     #   # apps/web/application.rb

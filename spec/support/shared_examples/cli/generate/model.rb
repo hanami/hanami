@@ -62,9 +62,7 @@ END
       # spec/<project>/entities/<model>_spec.rb
       #
       expect("spec/#{project}/entities/#{model}_spec.rb").to have_file_content <<-END
-require_relative '../../spec_helper'
-
-describe #{class_name} do
+RSpec.describe #{class_name}, type: :entity do
   # place your tests here
 end
 END
@@ -73,9 +71,7 @@ END
       # spec/<project>/repositories/<model>_repository_spec.rb
       #
       expect("spec/#{project}/repositories/#{model}_repository_spec.rb").to have_file_content <<-END
-require_relative '../../spec_helper'
-
-describe #{class_name}Repository do
+RSpec.describe #{class_name}Repository, type: :repository do
   # place your tests here
 end
 END

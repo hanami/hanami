@@ -3,6 +3,8 @@
 
 ## Features
 
+## v1.3.0 (unreleased)
+
 ## v1.2.0 - 2018-04-11
 
 - HTTP/2 Early Hints

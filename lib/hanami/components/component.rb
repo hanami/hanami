@@ -46,6 +46,12 @@ module Hanami
 
       private
 
+      # @since 1.3.0
+      # @api private
+      #
+      # @see Hanami::Component#logger_interface?
+      LOGGER_METHODS = %i[info warn debug]
+
       # Component name
       #
       # @return [String]
@@ -162,6 +168,14 @@ module Hanami
       # @see Hanami::Components.resolved
       def resolved(name, value = nil, &blk)
         Components.resolved(name, value, &blk)
+      end
+
+      # Check that instance has logger interfaces (#info, #warn and #debug)
+      #
+      # @since 1.3.0
+      # @api private
+      def logger_interface?(instance)
+        LOGGER_METHODS.all? { |method| instance.respond_to?(method) }
       end
     end
   end

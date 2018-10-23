@@ -146,7 +146,7 @@ module Hanami
 
           # @since 1.1.0
           # @api private
-          VALID_FRAMEWORKS = [MINITEST, RSPEC].freeze
+          VALID_FRAMEWORKS = [RSPEC, MINITEST].freeze
 
           # @since 1.1.0
           # @api private
@@ -301,7 +301,7 @@ module Hanami
             application_name: options.fetch(:application_name),
             application_base_url: options.fetch(:application_base_url),
             hanami_head: options.fetch(:hanami_head),
-            hanami_model_version: '~> 1.2',
+            hanami_model_version: '~> 1.3.beta',
             code_reloading: code_reloading?,
             hanami_version: hanami_version,
             project_module: Utils::String.classify(project),
