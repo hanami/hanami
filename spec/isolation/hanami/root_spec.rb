@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami.root", type: :integration do
   it "returns project root" do
     with_project do

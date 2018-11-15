@@ -1,4 +1,5 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "hanami/plugin/version"
@@ -9,13 +10,13 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Luca Guidi"]
   spec.email         = ["me@lucaguidi.com"]
 
-  spec.summary       = %q{Hanami Plugin}
-  spec.description   = %q{Extend Hanami with super powers}
+  spec.summary       = "Hanami Plugin"
+  spec.description   = "Extend Hanami with super powers"
   spec.homepage      = "http://hanamirb.org"
 
-    spec.metadata["allowed_push_host"] = "http://fakegemserver.hanamirb.org"
+  spec.metadata["allowed_push_host"] = "http://fakegemserver.hanamirb.org"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
+  spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = "exe"

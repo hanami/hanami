@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Rake: environment", type: :integration do
   it "loads the project" do
     with_project do
@@ -5,11 +7,11 @@ RSpec.describe "Rake: environment", type: :integration do
       generate_model "author"
       hanami "db prepare"
 
-      append "Rakefile", <<-EOF
-task database_counts: :environment do
-puts "users: \#{AuthorRepository.new.all.count}"
-end
-EOF
+      append "Rakefile", <<~EOF
+        task database_counts: :environment do
+        puts "users: \#{AuthorRepository.new.all.count}"
+        end
+      EOF
 
       bundle_exec "rake database_counts"
 

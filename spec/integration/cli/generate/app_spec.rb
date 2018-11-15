@@ -1,4 +1,6 @@
-require 'hanami/utils/string'
+# frozen_string_literal: true
+
+require "hanami/utils/string"
 
 RSpec.describe "hanami generate", type: :integration do
   describe "app" do
@@ -28,7 +30,7 @@ RSpec.describe "hanami generate", type: :integration do
 
     context "without require_relative" do
       it "generates app" do
-        with_project('bookshelf_generate_app_without_require_relative') do
+        with_project("bookshelf_generate_app_without_require_relative") do
           app      = "no_req_relative"
           app_name = Hanami::Utils::String.new(app).classify
           output   = [
@@ -36,13 +38,13 @@ RSpec.describe "hanami generate", type: :integration do
           ]
 
           File.write(
-            'config/environment.rb',
+            "config/environment.rb",
             File
-              .read('config/environment.rb')
+              .read("config/environment.rb")
               .lines
               .reject { |l| l[/^require_relative '.*'\n$/] }
               .reject { |l| l[/^  mount Web::Application, at: '\/'\n$/] }
-              .join('')
+              .join("")
           )
 
           run_command "hanami generate app #{app}", output
@@ -58,7 +60,7 @@ RSpec.describe "hanami generate", type: :integration do
 
     context "--application-base-url" do
       it "generates app" do
-        with_project('bookshelf_generate_app_application_base_url') do
+        with_project("bookshelf_generate_app_application_base_url") do
           app      = "api"
           app_name = Hanami::Utils::String.new(app).classify
           output   = [
@@ -76,7 +78,7 @@ RSpec.describe "hanami generate", type: :integration do
       end
 
       it "fails with missing argument" do
-        with_project('bookshelf_generate_app_missing_application_base_url') do
+        with_project("bookshelf_generate_app_missing_application_base_url") do
           output = "`' is not a valid URL"
           run_command "hanami generate app foo --application-base-url=", output, exit_status: 1
         end
@@ -85,7 +87,7 @@ RSpec.describe "hanami generate", type: :integration do
 
     context "erb" do
       it "generates app" do
-        with_project('bookshelf_generate_app_erb', template: :erb) do
+        with_project("bookshelf_generate_app_erb", template: :erb) do
           app      = "admin"
           app_name = Hanami::Utils::String.new(app).classify
           output   = [
@@ -97,18 +99,18 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # apps/admin/templates/application.html.erb
           #
-          expect("apps/admin/templates/application.html.erb").to have_file_content <<-END
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>#{app_name}</title>
-    <%= favicon %>
-  </head>
-  <body>
-    <%= yield %>
-  </body>
-</html>
-END
+          expect("apps/admin/templates/application.html.erb").to have_file_content <<~END
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <title>#{app_name}</title>
+                <%= favicon %>
+              </head>
+              <body>
+                <%= yield %>
+              </body>
+            </html>
+          END
           #
           # spec/admin/views/application_layout_spec.rb
           #
@@ -119,7 +121,7 @@ END
 
     context "haml" do
       it "generates app" do
-        with_project('bookshelf_generate_app_haml', template: :haml) do
+        with_project("bookshelf_generate_app_haml", template: :haml) do
           app      = "admin"
           app_name = Hanami::Utils::String.new(app).classify
           output   = [
@@ -131,15 +133,15 @@ END
           #
           # apps/admin/templates/application.html.haml
           #
-          expect("apps/admin/templates/application.html.haml").to have_file_content <<-END
-!!!
-%html
-  %head
-    %title #{app_name}
-    = favicon
-  %body
-    = yield
- END
+          expect("apps/admin/templates/application.html.haml").to have_file_content <<~END
+            !!!
+            %html
+              %head
+                %title #{app_name}
+                = favicon
+              %body
+                = yield
+          END
 
           #
           # spec/admin/views/application_layout_spec.rb
@@ -151,7 +153,7 @@ END
 
     context "slim" do
       it "generates app" do
-        with_project('bookshelf_generate_app_slim', template: :slim) do
+        with_project("bookshelf_generate_app_slim", template: :slim) do
           app      = "admin"
           app_name = Hanami::Utils::String.new(app).classify
           output   = [
@@ -163,16 +165,16 @@ END
           #
           # apps/admin/templates/application.html.slim
           #
-          expect("apps/admin/templates/application.html.slim").to have_file_content <<-END
-doctype html
-html
-  head
-    title
-      | #{app_name}
-    = favicon
-  body
-    = yield
-END
+          expect("apps/admin/templates/application.html.slim").to have_file_content <<~END
+            doctype html
+            html
+              head
+                title
+                  | #{app_name}
+                = favicon
+              body
+                = yield
+          END
 
           #
           # spec/admin/views/application_layout_spec.rb
@@ -182,31 +184,31 @@ END
       end
     end # slim
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
-        output = <<-OUT
-Command:
-  hanami generate app
+        output = <<~OUT
+          Command:
+            hanami generate app
 
-Usage:
-  hanami generate app APP
+          Usage:
+            hanami generate app APP
 
-Description:
-  Generate an app
+          Description:
+            Generate an app
 
-Arguments:
-  APP                 	# REQUIRED The application name (eg. `web`)
+          Arguments:
+            APP                 	# REQUIRED The application name (eg. `web`)
 
-Options:
-  --application-base-url=VALUE    	# The app base URL (eg. `/api/v1`)
-  --help, -h                      	# Print this help
+          Options:
+            --application-base-url=VALUE    	# The app base URL (eg. `/api/v1`)
+            --help, -h                      	# Print this help
 
-Examples:
-  hanami generate app admin                              # Generate `admin` app
-  hanami generate app api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
-OUT
+          Examples:
+            hanami generate app admin                              # Generate `admin` app
+            hanami generate app api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
+        OUT
 
-        run_command 'hanami generate app --help', output
+        run_command "hanami generate app --help", output
       end
     end
   end # app

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami.code_reloading?", type: :integration do
   context "with shotgun" do
     it "returns true" do

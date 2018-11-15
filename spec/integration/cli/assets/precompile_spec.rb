@@ -1,52 +1,54 @@
-require 'json'
+# frozen_string_literal: true
 
-RSpec.describe 'hanami assets', type: :integration do
-  describe 'precompile' do
+require "json"
+
+RSpec.describe "hanami assets", type: :integration do
+  describe "precompile" do
     it "precompiles assets" do
-      gems = ['sass', 'coffee-script']
+      gems = ["sass", "coffee-script"]
 
       Platform.match do
-        os(:linux).engine(:ruby)  { gems.push('therubyracer') }
-        os(:linux).engine(:jruby) { gems.push('therubyrhino') }
+        os(:linux).engine(:ruby)  { gems.push("therubyracer") }
+        os(:linux).engine(:jruby) { gems.push("therubyrhino") }
       end
 
       with_project("bookshelf_assets_precompile", gems: gems) do
         #
         # Web assets
         #
-        write "apps/web/assets/javascripts/application.js.coffee", <<-EOF
-class Application
-  constructor: () ->
-    @init = true
-EOF
-        write "apps/web/assets/stylesheets/_colors.scss", <<-EOF
-$background-color: #f5f5f5;
-EOF
+        write "apps/web/assets/javascripts/application.js.coffee", <<~EOF
+          class Application
+            constructor: () ->
+              @init = true
+        EOF
+        write "apps/web/assets/stylesheets/_colors.scss", <<~EOF
+          $background-color: #f5f5f5;
+        EOF
 
-        write "apps/web/assets/stylesheets/application.css.scss", <<-EOF
-@import 'colors';
+        write "apps/web/assets/stylesheets/application.css.scss", <<~EOF
+          @import 'colors';
 
-body {
-  background-color: $background-color;
-}
-EOF
+          body {
+            background-color: $background-color;
+          }
+        EOF
         #
         # Admin assets
         #
         generate "app admin"
-        write "apps/admin/assets/javascripts/dashboard.js.coffee", <<-EOF
-class Dashboard
-  constructor: (@data) ->
-EOF
+        write "apps/admin/assets/javascripts/dashboard.js.coffee", <<~EOF
+          class Dashboard
+            constructor: (@data) ->
+        EOF
 
         #
         # Precompile
         #
-        RSpec::Support::Env['HANAMI_ENV'] = 'production'
+        RSpec::Support::Env["HANAMI_ENV"] = "production"
         hanami "assets precompile"
 
         # rubocop:disable Lint/ImplicitStringConcatenation
-        # rubocop:disable Style/FirstParameterIndentation
+        # rubocop:disable Layout/FirstParameterIndentation
 
         #
         # Verify manifest
@@ -66,9 +68,9 @@ EOF
         #
         # Verify web assets (w/ checksum)
         #
-        expect("public/assets/application-adb4104884aadde9abfef0bd98ac461e.css").to have_file_content <<-EOF
-body {background-color: #f5f5f5}
-EOF
+        expect("public/assets/application-adb4104884aadde9abfef0bd98ac461e.css").to have_file_content <<~EOF
+          body {background-color: #f5f5f5}
+        EOF
 
         expect("public/assets/application-bb8f10498d83d401db238549409dc4c5.js").to have_file_content \
 """
@@ -81,9 +83,9 @@ return Application;})();}).call(this);
         #
         # Verify web assets (w/o checksum)
         #
-        expect("public/assets/application.css").to have_file_content <<-EOF
-body {background-color: #f5f5f5}
-EOF
+        expect("public/assets/application.css").to have_file_content <<~EOF
+          body {background-color: #f5f5f5}
+        EOF
 
         expect("public/assets/application.js").to have_file_content \
 """
@@ -116,29 +118,29 @@ return Dashboard;})();}).call(this);
         expect("public/assets/admin/favicon.ico").to be_an_existing_file
 
         # rubocop:enable Lint/ImplicitStringConcatenation
-        # rubocop:enable Style/FirstParameterIndentation
+        # rubocop:enable Layout/FirstParameterIndentation
       end
     end
 
     it "prints help message" do
       with_project do
-        output = <<-OUT
-Command:
-  hanami assets precompile
+        output = <<~OUT
+          Command:
+            hanami assets precompile
 
-Usage:
-  hanami assets precompile
+          Usage:
+            hanami assets precompile
 
-Description:
-  Precompile assets for deployment
+          Description:
+            Precompile assets for deployment
 
-Options:
-  --help, -h                      	# Print this help
+          Options:
+            --help, -h                      	# Print this help
 
-Examples:
-  hanami assets precompile                       # Basic usage
-  hanami assets precompile HANAMI_ENV=production # Precompile assets for production environment
-OUT
+          Examples:
+            hanami assets precompile                       # Basic usage
+            hanami assets precompile HANAMI_ENV=production # Precompile assets for production environment
+        OUT
 
         run_command "hanami assets precompile --help", output
       end

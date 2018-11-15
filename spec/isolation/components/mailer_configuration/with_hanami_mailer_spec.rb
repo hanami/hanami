@@ -1,29 +1,31 @@
+# frozen_string_literal: true
+
 RSpec.describe "Components: mailer.configuration", type: :integration do
   context "with hanami-mailer" do
     it "resolves mailer configuration" do
       with_project do
         require Pathname.new(Dir.pwd).join("config", "environment")
-        Hanami::Components.resolve('mailer.configuration')
+        Hanami::Components.resolve("mailer.configuration")
 
-        expect(Hanami::Components['mailer.configuration']).to be_kind_of(Hanami::Mailer::Configuration)
+        expect(Hanami::Components["mailer.configuration"]).to be_kind_of(Hanami::Mailer::Configuration)
       end
     end
 
     it "resolves mailer configuration for current environment" do
       with_project do
         unshift "config/environment.rb", "ENV['HANAMI_ENV'] = 'production'"
-        write "script/components", <<-EOF
-require "\#{__dir__}/../config/environment"
-Hanami::Components.resolve('mailer.configuration')
+        write "script/components", <<~EOF
+          require "\#{__dir__}/../config/environment"
+          Hanami::Components.resolve('mailer.configuration')
 
-configuration = Hanami::Components['mailer.configuration']
-puts "mailer.configuration.delivery_method: \#{configuration.delivery_method.first.inspect}"
-EOF
+          configuration = Hanami::Components['mailer.configuration']
+          puts "mailer.configuration.delivery_method: \#{configuration.delivery_method.first.inspect}"
+        EOF
 
-        write ".env.production", <<-EOF
-SMTP_HOST=localhost
-SMTP_PORT=25
-EOF
+        write ".env.production", <<~EOF
+          SMTP_HOST=localhost
+          SMTP_PORT=25
+        EOF
 
         bundle_exec "ruby script/components"
 

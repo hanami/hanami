@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Rake: db:migrate", type: :integration do
   context "without hanami-model" do
     it "removes Rake task" do

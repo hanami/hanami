@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami.boot", type: :integration do
   context "with hanami-model" do
     it "boots all the project's components" do
@@ -8,19 +10,19 @@ RSpec.describe "Hanami.boot", type: :integration do
         expect(Hanami::Model).to receive(:disconnect)
         expect(Hanami.boot).to be(nil)
 
-        expect(Hanami::Components['all']).to  be(true)
-        expect(Hanami::Components['apps']).to be(true)
+        expect(Hanami::Components["all"]).to  be(true)
+        expect(Hanami::Components["apps"]).to be(true)
 
-        expect(Hanami::Components['model']).to               be(true)
-        expect(Hanami::Components['model.sql']).to           be(true)
-        expect(Hanami::Components['model.configuration']).to be_kind_of(Hanami::Model::Configuration)
-        expect(Hanami::Components['model.bundled']).to       be(true)
+        expect(Hanami::Components["model"]).to               be(true)
+        expect(Hanami::Components["model.sql"]).to           be(true)
+        expect(Hanami::Components["model.configuration"]).to be_kind_of(Hanami::Model::Configuration)
+        expect(Hanami::Components["model.bundled"]).to       be(true)
 
-        expect(Hanami::Components['admin']).to be(true)
-        expect(Hanami::Components['web']).to   be(true)
+        expect(Hanami::Components["admin"]).to be(true)
+        expect(Hanami::Components["web"]).to   be(true)
 
-        expect(Hanami::Components['admin.configuration']).to be_kind_of(Hanami::ApplicationConfiguration)
-        expect(Hanami::Components['web.configuration']).to   be_kind_of(Hanami::ApplicationConfiguration)
+        expect(Hanami::Components["admin.configuration"]).to be_kind_of(Hanami::ApplicationConfiguration)
+        expect(Hanami::Components["web.configuration"]).to   be_kind_of(Hanami::ApplicationConfiguration)
 
         expect(defined?(Hanami::Model)).to eq("constant")
 

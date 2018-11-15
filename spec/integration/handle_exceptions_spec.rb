@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 RSpec.describe "handle exceptions", type: :integration do
   it "doesn't handle exceptions in development mode" do
     with_project do
       generate_action
 
       server do
-        get '/books/1'
+        get "/books/1"
 
         expect(last_response.status).to eq(500)
       end
@@ -15,10 +17,10 @@ RSpec.describe "handle exceptions", type: :integration do
     with_project do
       generate_action
 
-      RSpec::Support::Env['HANAMI_ENV'] = 'test'
+      RSpec::Support::Env["HANAMI_ENV"] = "test"
 
       server do
-        get '/books/1'
+        get "/books/1"
 
         expect(last_response.status).to eq(500)
       end
@@ -32,7 +34,7 @@ RSpec.describe "handle exceptions", type: :integration do
         setup_production_env
 
         server do
-          get '/books/1'
+          get "/books/1"
 
           expect(last_response.status).to eq(400)
         end
@@ -55,7 +57,7 @@ RSpec.describe "handle exceptions", type: :integration do
           setup_production_env
 
           server do
-            get '/books/1'
+            get "/books/1"
 
             expect(last_response.status).to eq(500)
             expect(last_response.body).to eq("This is a custom template for 500 error\n")
@@ -74,7 +76,7 @@ RSpec.describe "handle exceptions", type: :integration do
           setup_production_env
 
           server do
-            get '/books/1'
+            get "/books/1"
 
             expect(last_response.status).to eq(500)
             expect(last_response.body).to include("<h2>500 - Internal Server Error</h2>")
@@ -98,7 +100,7 @@ RSpec.describe "handle exceptions", type: :integration do
           setup_production_env
 
           server do
-            get '/books/1'
+            get "/books/1"
 
             expect(last_response.status).to eq(500)
             expect(last_response.body).to_not include("This is a custom template for 500 error")
@@ -136,7 +138,7 @@ RSpec.describe "handle exceptions", type: :integration do
           setup_production_env
 
           server do
-            get '/books/1'
+            get "/books/1"
 
             expect(last_response.status).to eq(500)
             expect(last_response.body).to eq("This is a custom template for 500 error\n")
@@ -167,7 +169,7 @@ RSpec.describe "handle exceptions", type: :integration do
           setup_production_env
 
           server do
-            get '/books/1'
+            get "/books/1"
 
             expect(last_response.status).to eq(500)
             expect(last_response.body).to include("<h2>500 - Internal Server Error</h2>")
@@ -203,7 +205,7 @@ RSpec.describe "handle exceptions", type: :integration do
           setup_production_env
 
           server do
-            get '/books/1'
+            get "/books/1"
 
             expect(last_response.status).to eq(500)
             expect(last_response.body).to_not include("This is a custom template for 500 error")
@@ -216,27 +218,27 @@ RSpec.describe "handle exceptions", type: :integration do
 
   private
 
-  def generate_action # rubocop:disable Metrics/MethodLength
+  def generate_action
     generate "action web books#show --url=/books/:id"
 
-    rewrite "apps/web/controllers/books/show.rb", <<-EOF
-module Web::Controllers::Books
-  class Show
-    include Web::Action
-    handle_exception ArgumentError => 400
+    rewrite "apps/web/controllers/books/show.rb", <<~EOF
+      module Web::Controllers::Books
+        class Show
+          include Web::Action
+          handle_exception ArgumentError => 400
 
-    def call(params)
-      raise ArgumentError.new("oh nooooo")
-    end
-  end
-end
-EOF
+          def call(params)
+            raise ArgumentError.new("oh nooooo")
+          end
+        end
+      end
+    EOF
   end
 
   def setup_production_env
-    RSpec::Support::Env['HANAMI_ENV']   = 'production'
-    RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
-    RSpec::Support::Env['SMTP_HOST']    = 'localhost'
-    RSpec::Support::Env['SMTP_PORT']    = '25'
+    RSpec::Support::Env["HANAMI_ENV"]   = "production"
+    RSpec::Support::Env["DATABASE_URL"] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+    RSpec::Support::Env["SMTP_HOST"]    = "localhost"
+    RSpec::Support::Env["SMTP_PORT"]    = "25"
   end
 end

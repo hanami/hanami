@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Components: mailer.configuration", type: :integration do
   context "without mailer configuration" do
     it "doesn't resolve mailer configuration" do
@@ -6,9 +8,9 @@ RSpec.describe "Components: mailer.configuration", type: :integration do
         remove_block "config/environment.rb", "mailer do"
 
         require environment_file
-        Hanami::Components.resolve('mailer.configuration')
+        Hanami::Components.resolve("mailer.configuration")
 
-        expect(Hanami::Components['mailer.configuration']).to be(nil)
+        expect(Hanami::Components["mailer.configuration"]).to be(nil)
       end
     end
   end

@@ -4,17 +4,22 @@ IFS=$'\n\t'
 
 setup() {
   remove_coverage &&
-    ./script/setup
-}
-
-teardown() {
-  ./script/teardown
+    print_ruby_version
 }
 
 remove_coverage() {
   if [ -d coverage ]; then
     rm -rf coverage
   fi
+}
+
+print_ruby_version() {
+  echo "Using $(ruby -v)"
+  echo
+}
+
+run_code_quality_checks() {
+  bundle exec rubocop .
 }
 
 run_unit_tests() {
@@ -65,11 +70,8 @@ upload_code_coverage() {
 main() {
   setup &&
     run_unit_tests &&
-    run_isolation_tests &&
-    run_integration_tests &&
+    run_code_quality_checks &&
     upload_code_coverage
 }
-
-trap teardown EXIT
 
 main

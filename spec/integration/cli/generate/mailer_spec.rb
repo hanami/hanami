@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami generate", type: :integration do
-  describe 'mailer' do
-    context 'generates a new mailer' do
+  describe "mailer" do
+    context "generates a new mailer" do
       let(:output) do
         ["create  lib/bookshelf_generate_mailer/mailers/welcome.rb",
          "create  spec/bookshelf_generate_mailer/mailers/welcome_spec.rb",
@@ -8,13 +10,13 @@ RSpec.describe "hanami generate", type: :integration do
          "create  lib/bookshelf_generate_mailer/mailers/templates/welcome.html.erb"]
       end
 
-      it 'generate the mailer files' do
-        with_project('bookshelf_generate_mailer', test: 'rspec') do
+      it "generate the mailer files" do
+        with_project("bookshelf_generate_mailer", test: "rspec") do
           run_command "hanami generate mailer welcome", output
           #
           # lib/bookshelf_generate_mailer/mailers/welcome.rb
           #
-          expect('lib/bookshelf_generate_mailer/mailers/welcome.rb').to have_file_content <<~END
+          expect("lib/bookshelf_generate_mailer/mailers/welcome.rb").to have_file_content <<~END
             module Mailers
               class Welcome
                 include Hanami::Mailer
@@ -26,18 +28,18 @@ RSpec.describe "hanami generate", type: :integration do
             end
           END
 
-          expect('lib/bookshelf_generate_mailer/mailers/templates/welcome.txt.erb').to have_file_content ''
-          expect('lib/bookshelf_generate_mailer/mailers/templates/welcome.html.erb').to have_file_content ''
+          expect("lib/bookshelf_generate_mailer/mailers/templates/welcome.txt.erb").to have_file_content ""
+          expect("lib/bookshelf_generate_mailer/mailers/templates/welcome.html.erb").to have_file_content ""
         end
       end
 
-      it 'generates a proper minitest file' do
-        with_project('bookshelf_generate_mailer', test: 'minitest') do
+      it "generates a proper minitest file" do
+        with_project("bookshelf_generate_mailer", test: "minitest") do
           run_command "hanami generate mailer welcome", output
           #
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
           #
-          expect('spec/bookshelf_generate_mailer/mailers/welcome_spec.rb').to have_file_content <<~END
+          expect("spec/bookshelf_generate_mailer/mailers/welcome_spec.rb").to have_file_content <<~END
             require_relative '../../spec_helper'
 
             describe Mailers::Welcome do
@@ -49,13 +51,13 @@ RSpec.describe "hanami generate", type: :integration do
         end
       end
 
-      it 'generates a proper RSpec file' do
-        with_project('bookshelf_generate_mailer', test: 'rspec') do
+      it "generates a proper RSpec file" do
+        with_project("bookshelf_generate_mailer", test: "rspec") do
           run_command "hanami generate mailer welcome", output
           #
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
           #
-          expect('spec/bookshelf_generate_mailer/mailers/welcome_spec.rb').to have_file_content <<~END
+          expect("spec/bookshelf_generate_mailer/mailers/welcome_spec.rb").to have_file_content <<~END
             RSpec.describe Mailers::Welcome, type: :mailer do
               it 'delivers email' do
                 mail = Mailers::Welcome.deliver
@@ -66,8 +68,8 @@ RSpec.describe "hanami generate", type: :integration do
       end
     end
 
-    it 'generates mailer with options from, to and subject with single quotes' do
-      with_project('bookshelf_generate_mailer_with_options') do
+    it "generates mailer with options from, to and subject with single quotes" do
+      with_project("bookshelf_generate_mailer_with_options") do
         output = [
           "create  spec/bookshelf_generate_mailer_with_options/mailers/welcome_spec.rb",
           "create  lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb",
@@ -77,7 +79,7 @@ RSpec.describe "hanami generate", type: :integration do
 
         run_command "hanami generate mailer welcome --from=\"'mail@example.com'\" --to=\"'user@example.com'\" --subject=\"'Let\'s start'\"", output
 
-        expect('lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb').to have_file_content <<~END
+        expect("lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb").to have_file_content <<~END
           module Mailers
             class Welcome
               include Hanami::Mailer
@@ -91,8 +93,8 @@ RSpec.describe "hanami generate", type: :integration do
       end
     end
 
-    it 'generates mailer with options from, to and subject with double quotes' do
-      with_project('bookshelf_generate_mailer_with_options') do
+    it "generates mailer with options from, to and subject with double quotes" do
+      with_project("bookshelf_generate_mailer_with_options") do
         output = [
           "create  spec/bookshelf_generate_mailer_with_options/mailers/welcome_spec.rb",
           "create  lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb",
@@ -102,7 +104,7 @@ RSpec.describe "hanami generate", type: :integration do
 
         run_command "hanami generate mailer welcome --from='\"mail@example.com\"' --to='\"user@example.com\"' --subject='\"Come on \"Folks\"\"'", output
 
-        expect('lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb').to have_file_content <<~END
+        expect("lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb").to have_file_content <<~END
           module Mailers
             class Welcome
               include Hanami::Mailer
@@ -116,8 +118,8 @@ RSpec.describe "hanami generate", type: :integration do
       end
     end
 
-    it 'generates mailer with options from, to and subject without quotes' do
-      with_project('bookshelf_generate_mailer_with_options') do
+    it "generates mailer with options from, to and subject without quotes" do
+      with_project("bookshelf_generate_mailer_with_options") do
         output = [
           "create  spec/bookshelf_generate_mailer_with_options/mailers/welcome_spec.rb",
           "create  lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb",
@@ -127,7 +129,7 @@ RSpec.describe "hanami generate", type: :integration do
 
         run_command "hanami generate mailer welcome --from=mail@example.com --to=user@example.com --subject=Welcome", output
 
-        expect('lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb').to have_file_content <<~END
+        expect("lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb").to have_file_content <<~END
           module Mailers
             class Welcome
               include Hanami::Mailer
@@ -142,7 +144,7 @@ RSpec.describe "hanami generate", type: :integration do
     end
 
     it "fails with missing arguments" do
-      with_project('bookshelf_generate_mailer_without_args') do
+      with_project("bookshelf_generate_mailer_without_args") do
         output = <<~OUT
           ERROR: "hanami generate mailer" was called with no arguments
           Usage: "hanami generate mailer MAILER"
@@ -152,7 +154,7 @@ RSpec.describe "hanami generate", type: :integration do
       end
     end
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
         output = <<~OUT
           Command:
@@ -180,7 +182,7 @@ RSpec.describe "hanami generate", type: :integration do
             hanami generate mailer forgot_password --subject="Your password reset" # Generate with default `subject`
         OUT
 
-        run_command 'hanami generate mailer --help', output
+        run_command "hanami generate mailer --help", output
       end
     end
   end

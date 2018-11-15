@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami.plugin" do
   it "configures plugin" do
     application = double("app")

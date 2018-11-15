@@ -1,9 +1,11 @@
-require 'hanami/utils/string'
+# frozen_string_literal: true
+
+require "hanami/utils/string"
 
 RSpec.shared_examples "a new project" do
   let(:project) { Hanami::Utils::String.new(input).underscore.to_s }
 
-  it 'generates vanilla project' do
+  it "generates vanilla project" do
     run_command "hanami new #{input}"
 
     [
@@ -23,32 +25,32 @@ RSpec.shared_examples "a new project" do
       #
       # .hanamirc
       #
-      expect('.hanamirc').to have_file_content %r{project=#{project}}
+      expect(".hanamirc").to have_file_content %r{project=#{project}}
 
       #
       # .env.development
       #
-      expect('.env.development').to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_development.sqlite"})
+      expect(".env.development").to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_development.sqlite"})
 
       #
       # .env.test
       #
-      expect('.env.test').to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_test.sqlite"})
+      expect(".env.test").to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_test.sqlite"})
 
       #
       # config/environment.rb
       #
-      expect('config/environment.rb').to have_file_content %r{require_relative '../lib/#{project}'}
+      expect("config/environment.rb").to have_file_content %r{require_relative '../lib/#{project}'}
 
       project_module = Hanami::Utils::String.new(project).classify
 
       #
       # lib/<project>.rb
       #
-      expect("lib/#{project}.rb").to have_file_content <<-END
-module #{project_module}
-end
-END
+      expect("lib/#{project}.rb").to have_file_content <<~END
+        module #{project_module}
+        end
+      END
 
       #
       # lib/<project>/entities/.gitkeep
@@ -83,11 +85,11 @@ END
       #
       # .gitignore
       #
-      expect(".gitignore").to have_file_content <<-END
-/db/*.sqlite
-/public/assets*
-/tmp
-END
+      expect(".gitignore").to have_file_content <<~END
+        /db/*.sqlite
+        /public/assets*
+        /tmp
+      END
     end
   end
 end

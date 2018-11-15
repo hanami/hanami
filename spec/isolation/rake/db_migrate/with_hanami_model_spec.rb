@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Rake: db:migrate", type: :integration do
   context "with hanami-model" do
     it "migrates" do

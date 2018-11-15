@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami.environment", type: :integration do
   context "without resolved component" do
     it "returns Hanami::Environment" do

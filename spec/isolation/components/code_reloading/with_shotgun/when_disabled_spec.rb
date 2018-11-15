@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 RSpec.describe "Components: code_reloading", type: :integration do
   context "with shotgun" do
     context "with code reloading disabled" do
       it "is false" do
         with_project do
           require Pathname.new(Dir.pwd).join("config", "environment")
-          Hanami::Components.resolved('environment', Hanami::Environment.new(code_reloading: false))
-          Hanami::Components.resolve('code_reloading')
+          Hanami::Components.resolved("environment", Hanami::Environment.new(code_reloading: false))
+          Hanami::Components.resolve("code_reloading")
 
-          expect(Hanami::Components['code_reloading']).to be(false)
+          expect(Hanami::Components["code_reloading"]).to be(false)
         end
       end
     end

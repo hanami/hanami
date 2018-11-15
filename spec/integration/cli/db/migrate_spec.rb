@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami db", type: :integration do
   describe "migrate" do
     it "migrates database" do
@@ -78,34 +80,34 @@ RSpec.describe "hanami db", type: :integration do
       end
     end
 
-    xit 'prints help message' do
+    xit "prints help message" do
       with_project do
-        banner = <<-OUT
-Command:
-  hanami db migrate
+        banner = <<~OUT
+          Command:
+            hanami db migrate
 
-Usage:
-  hanami db migrate [VERSION]
+          Usage:
+            hanami db migrate [VERSION]
 
-Description:
-  Migrate the database
+          Description:
+            Migrate the database
 
-Arguments:
-  VERSION             	# The target version of the migration (see `hanami db version`)
+          Arguments:
+            VERSION             	# The target version of the migration (see `hanami db version`)
 
-Options:
-  --help, -h                      	# Print this help
+          Options:
+            --help, -h                      	# Print this help
 
-Examples:
-  hanami db migrate                # Migrate to the last version
-OUT
+          Examples:
+            hanami db migrate                # Migrate to the last version
+        OUT
 
         output = [
           banner,
           %r{  hanami db migrate [\d]{14} # Migrate to a specific version}
         ]
 
-        run_command 'hanami db drop --help', output
+        run_command "hanami db drop --help", output
       end
     end
   end

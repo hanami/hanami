@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami.logger", type: :integration do
   it "returns logger instance" do
     with_project do

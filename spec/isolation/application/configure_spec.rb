@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Hanami::Application do
   subject { UnitTesting::Application }
 

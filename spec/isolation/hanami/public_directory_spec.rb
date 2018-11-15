@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami.public_directory", type: :integration do
   it "returns project public directory" do
     with_project do

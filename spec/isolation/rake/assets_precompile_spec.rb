@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Rake: assets:precompile", type: :integration do
   it "precompiles assets" do
     with_project do

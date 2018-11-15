@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami new", type: :integration do
   describe "--template" do
     context "erb" do
       it "generates project" do
-        project = 'bookshelf_erb'
+        project = "bookshelf_erb"
         output  = [
           "create  apps/web/templates/application.html.erb"
         ]
@@ -13,30 +15,30 @@ RSpec.describe "hanami new", type: :integration do
           #
           # .hanamirc
           #
-          expect('.hanamirc').to have_file_content(%r{template=erb})
+          expect(".hanamirc").to have_file_content(%r{template=erb})
 
           #
           # apps/web/templates/application.html.erb
           #
-          expect("apps/web/templates/application.html.erb").to have_file_content <<-END
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Web</title>
-    <%= favicon %>
-  </head>
-  <body>
-    <%= yield %>
-  </body>
-</html>
-END
+          expect("apps/web/templates/application.html.erb").to have_file_content <<~END
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <title>Web</title>
+                <%= favicon %>
+              </head>
+              <body>
+                <%= yield %>
+              </body>
+            </html>
+          END
         end
       end
     end # erb
 
     context "haml" do
       it "generates project" do
-        project = 'bookshelf_erb'
+        project = "bookshelf_erb"
         output  = [
           "create  apps/web/templates/application.html.haml"
         ]
@@ -47,27 +49,27 @@ END
           #
           # .hanamirc
           #
-          expect('.hanamirc').to have_file_content(%r{template=haml})
+          expect(".hanamirc").to have_file_content(%r{template=haml})
 
           #
           # apps/web/templates/application.html.haml
           #
-          expect("apps/web/templates/application.html.haml").to have_file_content <<-END
-!!!
-%html
-  %head
-    %title Web
-    = favicon
-  %body
-    = yield
-END
+          expect("apps/web/templates/application.html.haml").to have_file_content <<~END
+            !!!
+            %html
+              %head
+                %title Web
+                = favicon
+              %body
+                = yield
+          END
         end
       end
     end # haml
 
     context "slim" do
       it "generates project" do
-        project = 'bookshelf_erb'
+        project = "bookshelf_erb"
         output  = [
           "create  apps/web/templates/application.html.slim"
         ]
@@ -78,21 +80,21 @@ END
           #
           # .hanamirc
           #
-          expect('.hanamirc').to have_file_content(%r{template=slim})
+          expect(".hanamirc").to have_file_content(%r{template=slim})
 
           #
           # apps/web/templates/application.html.slim
           #
-          expect("apps/web/templates/application.html.slim").to have_file_content <<-END
-doctype html
-html
-  head
-    title
-      | Web
-    = favicon
-  body
-    = yield
-END
+          expect("apps/web/templates/application.html.slim").to have_file_content <<~END
+            doctype html
+            html
+              head
+                title
+                  | Web
+                = favicon
+              body
+                = yield
+          END
         end
       end
     end # slim

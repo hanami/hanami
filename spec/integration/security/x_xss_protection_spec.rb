@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 RSpec.describe "X-XSS-Protection header", type: :integration do
   it "returns default value" do
     with_project do
       generate "action web home#index --url=/"
 
       server do
-        get '/'
+        get "/"
 
         expect(last_response.status).to                      eq(200)
         expect(last_response.headers["X-XSS-Protection"]).to eq("1; mode=block")
@@ -19,7 +21,7 @@ RSpec.describe "X-XSS-Protection header", type: :integration do
       replace "apps/web/application.rb", "security.x_xss_protection '1; mode=block'", "security.x_xss_protection '0'"
 
       server do
-        get '/'
+        get "/"
 
         expect(last_response.status).to                      eq(200)
         expect(last_response.headers["X-XSS-Protection"]).to eq("0")
@@ -34,7 +36,7 @@ RSpec.describe "X-XSS-Protection header", type: :integration do
       replace "apps/web/application.rb", "security.x_xss_protection '1; mode=block'", ""
 
       server do
-        get '/'
+        get "/"
 
         expect(last_response.status).to      eq(200)
         expect(last_response.headers).to_not have_key("X-XSS-Protection")

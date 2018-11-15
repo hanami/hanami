@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami.configure" do
   before do
     application   = app
@@ -5,20 +7,20 @@ RSpec.describe "Hanami.configure" do
     mailer_config = mailer_configuration
 
     Hanami.configure do
-      mount application, at: '/'
+      mount application, at: "/"
       model(&model_config)
       mailer(&mailer_config)
     end
   end
 
-  let(:app) { double('app') }
+  let(:app) { double("app") }
 
   let(:model_configuration) do
     lambda do
-      adapter :sql, uri: 'file://path/to/db.sqlite'
+      adapter :sql, uri: "file://path/to/db.sqlite"
 
-      migrations 'db/migrations'
-      schema     'db/schema.sql'
+      migrations "db/migrations"
+      schema     "db/schema.sql"
     end
   end
 
@@ -30,7 +32,7 @@ RSpec.describe "Hanami.configure" do
 
   it "setups apps" do
     mounted = Hanami.configuration.mounted
-    expect(mounted[app]).to eq(Hanami::Configuration::App.new(app, '/'))
+    expect(mounted[app]).to eq(Hanami::Configuration::App.new(app, "/"))
   end
 
   it "holds model configuration" do

@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
-require 'bundler'
-require 'hanami/cli/commands'
+# frozen_string_literal: true
+
+require "bundler"
+require "hanami/cli/commands"
 
 Bundler.require(:plugins) if File.exist?(ENV["BUNDLE_GEMFILE"] || "Gemfile")
 Hanami::CLI.new(Hanami::CLI::Commands).call

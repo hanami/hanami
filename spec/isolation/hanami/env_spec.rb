@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami.env", type: :integration do
   it "returns current env" do
     with_project do

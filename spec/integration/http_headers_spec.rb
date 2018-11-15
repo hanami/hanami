@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 RSpec.describe "HTTP headers", type: :integration do
   it "returns HTTP headers" do
     with_project do
       generate "action web home#index --url=/"
 
       server do
-        get '/'
+        get "/"
 
         expect(last_response.status).to       eq(200)
         expect(last_response.headers.keys).to eq(

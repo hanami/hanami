@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Hanami.app", type: :integration do
   it "returns app instance" do
     with_project do
