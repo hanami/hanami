@@ -47,7 +47,7 @@ cd bookshelf && bundle
 bundle exec hanami server # visit http://localhost:2300
 ```
 
-Please follow along with the [Getting Started guide](http://hanamirb.org/guides/1.2/getting-started/).
+Please follow along with the [Getting Started guide](https://guides.hanamirb.org/getting-started/).
 
 ## Donations
 
@@ -63,7 +63,8 @@ You can give back to Open Source, by supporting Hanami development via a [donati
 
 * Home page: http://hanamirb.org
 * Community: http://hanamirb.org/community
-* Guides: http://hanamirb.org/guides
+* Guides: https://guides.hanamirb.org
+* Snippets: https://snippets.hanamirb.org
 * Mailing List: http://hanamirb.org/mailing-list
 * API Doc: http://rdoc.info/gems/hanami
 * Bugs/Issues: https://github.com/hanami/hanami/issues
