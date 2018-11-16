@@ -27,4 +27,30 @@ module Hanami
       @_application = app unless app.name.nil?
     end
   end
+
+  def self.app
+    @_mutex.synchronize do
+      raise "Hanami.app not configured" unless defined?(@_app)
+
+      @_app
+    end
+  end
+
+  def self.app=(app)
+    @_mutex.synchronize do
+      raise "Hanami.app already configured" if defined?(@_app)
+
+      @_app = app
+    end
+  end
+
+  def self.boot
+    @_mutex.synchronize do
+      raise "Hanami application already booted" if defined?(@_booted)
+
+      @_booted = true
+    end
+
+    self.app = application.new
+  end
 end
