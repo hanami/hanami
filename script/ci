@@ -70,6 +70,7 @@ upload_code_coverage() {
 main() {
   setup &&
     run_unit_tests &&
+    run_isolation_tests &&
     run_code_quality_checks &&
     upload_code_coverage
 }

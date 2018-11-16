@@ -8,4 +8,23 @@
 module Hanami
   require "hanami/version"
   require "hanami/frameworks"
+  require "hanami/application"
+
+  @_mutex = Mutex.new
+
+  def self.application
+    @_mutex.synchronize do
+      raise "Hanami application not configured" unless defined?(@_application)
+
+      @_application
+    end
+  end
+
+  def self.application=(app)
+    @_mutex.synchronize do
+      raise "Hanami application already configured" if defined?(@_application)
+
+      @_application = app unless app.name.nil?
+    end
+  end
 end
