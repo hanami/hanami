@@ -4,7 +4,8 @@ IFS=$'\n\t'
 
 setup() {
   remove_coverage &&
-    print_ruby_version
+    print_ruby_version &&
+    install_gems
 }
 
 remove_coverage() {
@@ -16,6 +17,10 @@ remove_coverage() {
 print_ruby_version() {
   echo "Using $(ruby -v)"
   echo
+}
+
+install_gems() {
+  bundle install
 }
 
 run_code_quality_checks() {
