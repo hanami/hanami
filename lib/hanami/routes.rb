@@ -8,5 +8,9 @@ module Hanami
     def initialize(&blk)
       @blk = blk
     end
+
+    def to_proc
+      @blk
+    end
   end
 end

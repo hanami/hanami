@@ -2,6 +2,7 @@
 
 require "hanami/configuration"
 require "hanami/routes"
+require "hanami/router"
 
 module Hanami
   # Hanami application
@@ -17,6 +18,7 @@ module Hanami
           @_configuration = Hanami::Configuration.new
 
           extend ClassMethods
+          include InstanceMethods
         end
 
         Hanami.application = app
@@ -43,6 +45,15 @@ module Hanami
             @_routes = Routes.new(&blk)
           end
         end
+      end
+    end
+
+    # Instance method interface
+    #
+    # @since 2.0.0
+    module InstanceMethods
+      def initialize(routes: self.class.routes)
+        @router = Hanami::Router.new(&routes)
       end
     end
   end

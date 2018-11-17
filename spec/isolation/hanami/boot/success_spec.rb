@@ -5,6 +5,24 @@ module Bookshelf
   end
 end
 
+Hanami.application.routes do
+  mount :web, at: "/" do
+    root to: "home#index"
+  end
+end
+
+module Web
+  class Action < Hanami::Action
+  end
+
+  module Actions
+    module Home
+      class Index < Web::Action
+      end
+    end
+  end
+end
+
 RSpec.describe Hanami do
   describe ".boot" do
     it "assigns Hanami.app" do
