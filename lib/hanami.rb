@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "pathname"
+
 # A complete web framework for Ruby
 #
 # @since 0.1.0
@@ -8,6 +10,7 @@
 module Hanami
   require "hanami/version"
   require "hanami/frameworks"
+  require "hanami/container"
   require "hanami/application"
 
   @_mutex = Mutex.new
@@ -44,6 +47,10 @@ module Hanami
     end
   end
 
+  def self.root
+    Pathname.new(Dir.pwd)
+  end
+
   def self.boot
     @_mutex.synchronize do
       raise "Hanami application already booted" if defined?(@_booted)
@@ -51,6 +58,7 @@ module Hanami
       @_booted = true
     end
 
+    Container.finalize!
     self.app = application.new
   end
 end
