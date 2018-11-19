@@ -52,12 +52,18 @@ module Hanami
     #
     # @since 2.0.0
     module InstanceMethods
-      def initialize(routes: self.class.routes)
-        @router = Hanami::Router.new(&routes)
+      def initialize(configuration: self.class.configuration, routes: self.class.routes)
+        @app = Rack::Builder.new do
+          configuration.middleware.each do |m, *args|
+            use m, *args
+          end
+
+          run Hanami::Router.new(&routes)
+        end
       end
 
       def call(env)
-        @router.call(env)
+        @app.call(env)
       end
     end
   end
