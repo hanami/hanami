@@ -54,7 +54,7 @@ module Hanami
     module InstanceMethods
       def initialize(configuration: self.class.configuration, routes: self.class.routes)
         @app = Rack::Builder.new do
-          configuration.middleware.each do |m, *args|
+          configuration.for_each_middleware do |m, *args|
             use m, *args
           end
 

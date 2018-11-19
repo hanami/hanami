@@ -7,7 +7,7 @@ RSpec.describe Hanami::Application do
       subject = app.config.middleware
 
       expect(subject).to be_kind_of(Hanami::Configuration::Middleware)
-      expect(subject.each {}.count).to be(0)
+      expect(subject.stack.count).to be(0)
     end
 
     it "returns set value" do
@@ -17,7 +17,7 @@ RSpec.describe Hanami::Application do
       subject = app.config.middleware
 
       expect(subject).to be_kind_of(Hanami::Configuration::Middleware)
-      expect(subject.each {}.count).to be(1)
+      expect(subject.stack.count).to be(1)
     end
   end
 end

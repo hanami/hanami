@@ -37,6 +37,13 @@ module Hanami
       settings.fetch(:middleware)
     end
 
+    def for_each_middleware(&blk)
+      stack = middleware.stack.dup
+      stack += sessions.middleware if sessions.enabled?
+
+      stack.each(&blk)
+    end
+
     protected
 
     def middleware=(value)
