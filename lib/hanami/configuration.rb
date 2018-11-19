@@ -8,11 +8,13 @@ module Hanami
   # @since 2.0.0
   class Configuration
     require "hanami/configuration/sessions"
+    require "hanami/configuration/middleware"
 
     def initialize
       @settings = Concurrent::Hash.new
       self.routes = DEFAULT_ROUTES
       self.sessions = DEFAULT_SESSIONS
+      self.middleware = Middleware.new
     end
 
     def routes=(value)
@@ -29,6 +31,16 @@ module Hanami
 
     def sessions
       settings.fetch(:sessions)
+    end
+
+    def middleware
+      settings.fetch(:middleware)
+    end
+
+    protected
+
+    def middleware=(value)
+      settings[:middleware] = value
     end
 
     private
