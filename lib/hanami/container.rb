@@ -8,6 +8,7 @@ module Hanami
     def self.finalize!
       root = Hanami.root
       $LOAD_PATH.unshift root.join("lib")
+      Hanami::Utils.require!(root.join("lib", "**", "*.rb"))
 
       require root.join("config", "environment").to_s
       Hanami::Utils.require!(root.join("apps", "**", "*.rb"))
