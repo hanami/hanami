@@ -7,12 +7,14 @@ module Hanami
   #
   # @since 2.0.0
   class Configuration
+    require "hanami/configuration/cookies"
     require "hanami/configuration/sessions"
     require "hanami/configuration/middleware"
 
     def initialize
       @settings = Concurrent::Hash.new
       self.routes = DEFAULT_ROUTES
+      self.cookies = DEFAULT_COOKIES
       self.sessions = DEFAULT_SESSIONS
       self.middleware = Middleware.new
     end
@@ -23,6 +25,14 @@ module Hanami
 
     def routes
       settings.fetch(:routes)
+    end
+
+    def cookies=(options)
+      settings[:cookies] = Cookies.new(options)
+    end
+
+    def cookies
+      settings.fetch(:cookies)
     end
 
     def sessions=(*args)
@@ -54,6 +64,9 @@ module Hanami
 
     DEFAULT_ROUTES = File.join("config", "routes")
     private_constant :DEFAULT_ROUTES
+
+    DEFAULT_COOKIES = Cookies.null
+    private_constant :DEFAULT_COOKIES
 
     DEFAULT_SESSIONS = Sessions.null
     private_constant :DEFAULT_SESSIONS
