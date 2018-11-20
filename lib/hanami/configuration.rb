@@ -10,6 +10,7 @@ module Hanami
     require "hanami/configuration/cookies"
     require "hanami/configuration/sessions"
     require "hanami/configuration/middleware"
+    require "hanami/configuration/security"
 
     def initialize
       @settings = Concurrent::Hash.new
@@ -17,6 +18,7 @@ module Hanami
       self.cookies = DEFAULT_COOKIES
       self.sessions = DEFAULT_SESSIONS
       self.middleware = Middleware.new
+      self.security = Security.new
     end
 
     def routes=(value)
@@ -45,6 +47,14 @@ module Hanami
 
     def middleware
       settings.fetch(:middleware)
+    end
+
+    def security=(value)
+      settings[:security] = value
+    end
+
+    def security
+      settings.fetch(:security)
     end
 
     def for_each_middleware(&blk)
