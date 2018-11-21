@@ -20,6 +20,7 @@ module Hanami
       Hanami::Utils.require!(root.join("lib", "**", "*.rb"))
 
       require root.join("config", "environment").to_s
+      require root.join("config", "action").to_s
       Hanami::Utils.require!(root.join("apps", "**", "*.rb"))
       require root.join("config", "routes").to_s
     end
