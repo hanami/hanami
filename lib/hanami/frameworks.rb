@@ -10,7 +10,10 @@ require "hanami/utils/class"
 #
 # @since 0.1.0
 module Hanami
-  Router.class_eval do
+  # Hanami::Router enhancements
+  #
+  # @since 2.0.0
+  class Router
     def mount(app, at:, host: nil, **args, &blk)
       super unless app.is_a?(Symbol)
 
