@@ -44,15 +44,6 @@ module Hanami
       end
     end
 
-    boot(:code) do |c|
-      init do
-        use :root
-        use :environment
-
-        Hanami::Utils.require!(c[:root].join("apps", "**", "*.rb"))
-      end
-    end
-
     boot(:routes) do |c|
       init do
         require c[:root].join("config", "routes").to_s
@@ -65,10 +56,20 @@ module Hanami
 
     boot(:apps) do |c|
       start do
-        use :code
         use :routes
 
         register(:apps, c[:routes].apps)
+      end
+    end
+
+    boot(:code) do |c|
+      init do
+        use :root
+        use :environment
+        use :apps
+
+        apps = c[:apps].join(",")
+        Hanami::Utils.require!(c[:root].join("apps", "{#{apps}}", "**", "*.rb"))
       end
     end
   end
