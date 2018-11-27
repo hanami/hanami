@@ -14,15 +14,15 @@ module Hanami
   #
   # @since 2.0.0
   class Router
-    def mount(app, at:, host: nil, **args, &blk)
-      super unless app.is_a?(Symbol)
+    # rubocop:disable Metrics/ParameterLists
+    def mount(app, at:, host: nil, container: Hanami::Container, **args, &blk)
+      super(app, at: at, host: host, **args, &blk) unless app.is_a?(Symbol)
 
-      # TODO: this behavior should be centralized in a container
-      namespace = Hanami::Utils::String.classify(app)
-      namespace = Hanami::Utils::Class.load!("#{namespace}::Actions")
-      configuration = Hanami::Controller::Configuration.new
+      namespace     = container["apps.#{app}.actions.namespace"]
+      configuration = container["apps.#{app}.actions.configuration"]
 
       scope(at, namespace: namespace, configuration: configuration, &blk)
     end
+    # rubocop:enable Metrics/ParameterLists
   end
 end

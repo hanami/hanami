@@ -40,7 +40,14 @@ module Hanami
         use :root
 
         require c[:root].join("config", "environment").to_s
-        require c[:root].join("config", "action").to_s
+      end
+    end
+
+    boot(:configuration) do
+      start do
+        use :environment
+
+        register(:configuration, Hanami.application.configuration)
       end
     end
 
@@ -62,11 +69,33 @@ module Hanami
       end
     end
 
+    boot(:actions) do |c|
+      init do
+        use :configuration
+        use :apps
+
+        c[:apps].each do |app|
+          require c[:root].join("apps", app.to_s, "action")
+
+          namespace = Utils::String.classify("#{app}::Actions")
+          namespace = Utils::Class.load!(namespace)
+          # action    = Utils::Class.load!("#{namespace}::Action")
+          configuration = Controller::Configuration.new
+          configuration.cookies = c[:configuration].cookies.options
+          configuration.default_headers = c[:configuration].security.to_hash
+
+          register(:"apps.#{app}.actions.namespace", namespace)
+          register(:"apps.#{app}.actions.configuration", configuration)
+        end
+      end
+    end
+
     boot(:code) do |c|
       init do
         use :root
         use :environment
         use :apps
+        use :actions
 
         apps = c[:apps].join(",")
         Hanami::Utils.require!(c[:root].join("apps", "{#{apps}}", "**", "*.rb"))
