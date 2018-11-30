@@ -9,7 +9,7 @@ end
 gem 'i18n'
 
 gem 'hanami-utils',       '~> 1.3', require: false, git: 'https://github.com/hanami/utils.git',       branch: 'master'
-gem 'hanami-validations', '~> 1.3', require: false, git: 'https://github.com/hanami/validations.git', branch: 'master'
+gem 'hanami-validations', '~> 1.3', require: false, git: 'https://github.com/WojciechKo/validations.git', branch: 'update-dry-validation'
 gem 'hanami-router',      '~> 1.3', require: false, git: 'https://github.com/hanami/router.git',      branch: 'master'
 gem 'hanami-controller',  '~> 1.3', require: false, git: 'https://github.com/hanami/controller.git',  branch: 'master'
 gem 'hanami-view',        '~> 1.3', require: false, git: 'https://github.com/hanami/view.git',        branch: 'master'
