@@ -566,11 +566,6 @@ module Web
       #
       # body_parsers :json
 
-      # When it's true and the router receives a non-encrypted request (http),
-      # it redirects to the secure equivalent (https). Disabled by default.
-      #
-      # force_ssl true
-
       ##
       # TEMPLATES
       #
