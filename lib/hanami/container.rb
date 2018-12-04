@@ -80,9 +80,12 @@ module Hanami
           namespace = Utils::String.classify("#{app}::Actions")
           namespace = Utils::Class.load!(namespace)
           # action    = Utils::Class.load!("#{namespace}::Action")
-          configuration = Controller::Configuration.new
-          configuration.cookies = c[:configuration].cookies.options
-          configuration.default_headers = c[:configuration].security.to_hash
+          configuration = Controller::Configuration.new do |config|
+            config.cookies                 = c[:configuration].cookies.options
+            config.default_headers         = c[:configuration].security.to_hash
+            config.default_request_format  = c[:configuration].default_request_format
+            config.default_response_format = c[:configuration].default_response_format
+          end
 
           register(:"apps.#{app}.actions.namespace", namespace)
           register(:"apps.#{app}.actions.configuration", configuration)

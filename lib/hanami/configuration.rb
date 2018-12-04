@@ -14,11 +14,16 @@ module Hanami
 
     def initialize
       @settings = Concurrent::Hash.new
-      self.routes = DEFAULT_ROUTES
-      self.cookies = DEFAULT_COOKIES
+
+      self.routes   = DEFAULT_ROUTES
+      self.cookies  = DEFAULT_COOKIES
       self.sessions = DEFAULT_SESSIONS
+
+      self.default_request_format  = DEFAULT_REQUEST_FORMAT
+      self.default_response_format = DEFAULT_RESPONSE_FORMAT
+
       self.middleware = Middleware.new
-      self.security = Security.new
+      self.security   = Security.new
     end
 
     def routes=(value)
@@ -43,6 +48,22 @@ module Hanami
 
     def sessions
       settings.fetch(:sessions)
+    end
+
+    def default_request_format=(value)
+      settings[:default_request_format] = value
+    end
+
+    def default_request_format
+      settings.fetch(:default_request_format)
+    end
+
+    def default_response_format=(value)
+      settings[:default_response_format] = value
+    end
+
+    def default_response_format
+      settings.fetch(:default_response_format)
     end
 
     def middleware
@@ -80,6 +101,12 @@ module Hanami
 
     DEFAULT_SESSIONS = Sessions.null
     private_constant :DEFAULT_SESSIONS
+
+    DEFAULT_REQUEST_FORMAT = :html
+    private_constant :DEFAULT_REQUEST_FORMAT
+
+    DEFAULT_RESPONSE_FORMAT = :html
+    private_constant :DEFAULT_RESPONSE_FORMAT
 
     attr_reader :settings
   end
