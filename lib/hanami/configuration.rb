@@ -3,6 +3,7 @@
 require "uri"
 require "concurrent/hash"
 require "concurrent/array"
+require "dry/inflector"
 
 module Hanami
   # Hanami application configuration
@@ -35,6 +36,8 @@ module Hanami
 
       self.middleware = Middleware.new
       self.security   = Security.new
+
+      self.inflections = Dry::Inflector.new
     end
     # rubocop:enable Metrics/MethodLength
 
@@ -126,13 +129,22 @@ module Hanami
       settings.fetch(:security)
     end
 
+    def inflections(&blk)
+      if blk.nil?
+        settings.fetch(:inflections)
+      else
+        settings[:inflections] = Dry::Inflector.new(&blk)
+      end
+    end
+
     def to_router
       bu = base_url
 
       {
         scheme: bu.scheme,
         host: bu.host,
-        port: bu.port
+        port: bu.port,
+        inflector: inflections
       }
     end
 
@@ -155,6 +167,10 @@ module Hanami
 
     def middleware=(value)
       settings[:middleware] = value
+    end
+
+    def inflections=(value)
+      settings[:inflections] = value
     end
 
     private
