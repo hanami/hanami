@@ -51,6 +51,15 @@ module Hanami
     Pathname.new(Dir.pwd)
   end
 
+  def self.env
+    # TODO: make this to work
+    :development
+  end
+
+  def self.logger
+    Container[:logger]
+  end
+
   def self.boot
     @_mutex.synchronize do
       raise "Hanami application already booted" if defined?(@_booted)

@@ -15,7 +15,7 @@ module Hanami
       @_mutex.synchronize do
         app.class_eval do
           @_mutex         = Mutex.new
-          @_configuration = Hanami::Configuration.new
+          @_configuration = Hanami::Configuration.new(env: Hanami.env)
 
           extend ClassMethods
           include InstanceMethods
@@ -58,7 +58,7 @@ module Hanami
             use m, *args
           end
 
-          run Hanami::Router.new(&routes)
+          run Hanami::Router.new(**configuration.to_router, &routes)
         end
       end
 

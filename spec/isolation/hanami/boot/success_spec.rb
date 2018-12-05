@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "hanami/logger"
+
 module Bookshelf
   class Application < Hanami::Application
   end
@@ -25,13 +27,15 @@ end
 
 RSpec.describe Hanami do
   describe ".boot" do
-    it "assigns Hanami.app" do
+    it "assigns Hanami.app and .logger" do
       expect(Hanami::Container).to receive(:finalize!)
       expect(Hanami::Container).to receive(:[]).with("apps.web.actions.namespace").and_return(Web::Actions)
       expect(Hanami::Container).to receive(:[]).with("apps.web.actions.configuration").and_return(Hanami::Controller::Configuration.new)
+      expect(Hanami::Container).to receive(:[]).with(:logger).and_return(Hanami::Logger.new)
 
       Hanami.boot
       expect(Hanami.app).to be_kind_of(Hanami::Application)
+      expect(Hanami.logger).to be_kind_of(Hanami::Logger)
     end
   end
 end

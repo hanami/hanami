@@ -47,7 +47,18 @@ module Hanami
       start do
         use :environment
 
-        register(:configuration, Hanami.application.configuration)
+        register(:configuration, Hanami.application.configuration.finalize)
+      end
+    end
+
+    boot(:logger) do |c|
+      init do
+        require "hanami/logger"
+      end
+
+      start do
+        use :configuration
+        register(:logger, Hanami::Logger.new(c[:configuration].logger))
       end
     end
 
