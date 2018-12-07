@@ -14,9 +14,9 @@ module Hanami
         option :server,    desc: "Force a server engine (eg, webrick, puma, thin, etc..)"
         option :host,      desc: "The host address to bind to"
         option :port,      desc: "The port to run the server on", aliases: ["-p"]
-        option :debug,     desc: "Turn on debug output"
-        option :warn,      desc: "Turn on warnings"
-        option :daemonize, desc: "Daemonize the server"
+        option :debug,     desc: "Turn on debug output", type: :boolean
+        option :warn,      desc: "Turn on warnings", type: :boolean
+        option :daemonize, desc: "Daemonize the server", type: :boolean
         option :pid,       desc: "Path to write a pid file after daemonize"
 
         example [
@@ -28,9 +28,65 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def call(*)
+        def call(**args)
+          require "hanami"
+          require "hanami/container"
           require "hanami/server"
-          Hanami::Server.new.start
+
+          options = parse_arguments(args)
+          Hanami::Server.new(options).start
+        end
+
+        private
+
+        DEFAULT_CONFIG = "config.ru"
+        private_constant :DEFAULT_CONFIG
+
+        DEFAULT_HOST = "0.0.0.0"
+        private_constant :DEFAULT_HOST
+
+        DEFAULT_PORT = "2300"
+        private_constant :DEFAULT_PORT
+
+        OPTIONAL_SETTINGS = %i[
+          server
+          debug
+          warn
+          daemonize
+          pid
+        ].freeze
+
+        # rubocop:disable Metrics/MethodLength
+        def parse_arguments(args)
+          Hanami::Container.start(:env)
+
+          result = {
+            config: DEFAULT_CONFIG,
+            Host: host(args),
+            Port: port(args),
+            AccessLog: []
+          }
+
+          OPTIONAL_SETTINGS.each do |setting|
+            next unless args.key?(setting)
+
+            result[setting] = args.fetch(setting)
+          end
+
+          result
+        end
+        # rubocop:enable Metrics/MethodLength
+
+        def host(args)
+          args.fetch(:host) do
+            ENV.fetch("HANAMI_HOST", DEFAULT_HOST)
+          end
+        end
+
+        def port(args)
+          args.fetch(:port) do
+            ENV.fetch("HANAMI_PORT", DEFAULT_PORT)
+          end
         end
       end
     end
