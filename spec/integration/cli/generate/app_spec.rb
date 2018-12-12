@@ -71,8 +71,34 @@ RSpec.describe "hanami generate", type: :integration do
           # config/environment.rb
           #
           expect("config/environment.rb").to have_file_content(%r{require_relative '../apps/#{app}/application'})
-          expect("config/environment.rb").to have_file_content(%r{require_relative "../apps/#{app}/application"})
           expect("config/environment.rb").to have_file_content(%r{mount #{app_name}::Application, at: '/api/v1'})
+        end
+      end
+    end
+
+    context "require with double quotes (instead of single)" do
+      it "generates app" do
+        with_project('bookshelf_generate_app_with_double_quotes') do
+          app      = "api"
+          app_name = Hanami::Utils::String.new(app).classify
+          output   = [
+            "insert  config/environment.rb"
+          ]
+
+          File.write(
+            'config/environment.rb',
+            File.read('config/environment.rb').gsub(
+              %{require_relative '../apps/web/application'},
+              %{require_relative "../apps/web/application"}
+            )
+          )
+
+          run_command "hanami generate app #{app}", output
+
+          #
+          # config/environment.rb
+          #
+          expect("config/environment.rb").to have_file_content(%r{require_relative '../apps/#{app}/application'})
         end
       end
 
