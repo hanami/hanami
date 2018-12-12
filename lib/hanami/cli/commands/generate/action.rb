@@ -34,7 +34,11 @@ module Hanami
             classified_controller_name = classified_controller(controller)
             http_method                = route_http_method(action, options)
             context                    = Context.new(app: app, controller: controller, classified_controller_name: classified_controller_name, action: action, test: options.fetch(:test), http_method: http_method, options: options)
-            context                    = context.with(template: project.template(context))
+            context                    = context.with(template: project.template(context),
+                                                      action_class_definition: action_class_definition(context),
+                                                      view_class_definition: view_class_definition(context),
+                                                      beginning_module_definition: beginning_module_definition(context),
+                                                      ending_module_definition: ending_module_definition(context))
 
             assert_valid_app!(context)
             assert_valid_route_url!(context)
@@ -51,6 +55,82 @@ module Hanami
           # rubocop:enable Metrics/AbcSize
 
           private
+
+          # @since 1.3.0
+          # @api private
+          def beginning_module_definition(context)
+            length = context.classified_controller_name.split("::").size
+            first_indentation = " " * 4
+            indentation = first_indentation
+            beginning_module_definition = ""
+
+            context.classified_controller_name.split("::").each_with_index do |module_name, index|
+              beginning_module_definition += "module #{module_name}".prepend(indentation)
+              beginning_module_definition += "\n" unless length == index + 1
+              indentation += "  "
+            end
+            beginning_module_definition
+          end
+
+          # @since 1.3.0
+          # @api private
+          def ending_module_definition(context)
+            length = context.classified_controller_name.split("::").size
+            first_indentation = " " * 4
+            indentation = first_indentation + "  " * (length - 1)
+            ending_module_definition = ""
+
+            context.classified_controller_name.split("::").each_with_index do |_, index|
+              ending_module_definition += "end".prepend(indentation)
+              ending_module_definition += "\n" unless length == index + 1
+              indentation = " " * (indentation.size - 2)
+            end
+            ending_module_definition
+          end
+
+          # @since 1.3.0
+          # @api private
+          def action_class_definition(context)
+            body_line_position = 4
+            view_class = [
+              "class #{context.action.classify}",
+              "  include #{context.app.classify}::Action",
+              "",
+              "  def call(params)",
+              "  end",
+              "end"
+            ]
+            view_class.insert(body_line_position, "    self.body = 'OK'") if skip_view?(context)
+
+            add_indentation_to_class_definition(context, view_class)
+          end
+
+          # @since 1.3.0
+          # @api private
+          def view_class_definition(context)
+            view_class = [
+              "class #{context.action.classify}",
+              "  include #{context.app.classify}::View",
+              "end"
+            ]
+
+            add_indentation_to_class_definition(context, view_class)
+          end
+
+          # @since 1.3.0
+          # @api private
+          def add_indentation_to_class_definition(context, view_content)
+            length = context.classified_controller_name.split("::").size
+            first_indentation = " " * 4
+            indentation = first_indentation + " " * length * 2
+
+            content = ""
+            view_content.each do |line|
+              next content += "\n" if line.empty?
+              content += "#{line}\n".prepend(indentation)
+            end
+            content.chomp
+          end
 
           # @since 1.1.0
           # @api private

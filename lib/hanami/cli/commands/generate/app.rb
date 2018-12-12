@@ -191,7 +191,17 @@ module Hanami
             content     = "require_relative '../apps/#{context.app}/application'"
             destination = project.environment(context)
 
-            files.inject_line_after(destination, /require_relative '|"\.\.\/lib\/.*'|"/, content)
+            req_regex = /^\s*require .*$/
+            rel_regex = /^\s*require_relative .*$/
+
+            case File.read(destination)
+            when rel_regex
+              files.inject_line_after_last(destination, rel_regex, content)
+            when req_regex
+              files.inject_line_after_last(destination, req_regex, content)
+            else
+              raise "No require found"
+            end
             say(:insert, destination)
           end
 
@@ -208,18 +218,20 @@ module Hanami
           # @since 1.1.0
           # @api private
           def append_development_http_session_secret(context)
-            content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{project.app_sessions_secret}")
-            destination = project.env(context, "development")
-
-            files.append(destination, content)
-            say(:append, destination)
+            append_env_to_http_session_secret(context, "development")
           end
 
           # @since 1.1.0
           # @api private
           def append_test_http_session_secret(context)
+            append_env_to_http_session_secret(context, "test")
+          end
+
+          private
+
+          def append_env_to_http_session_secret(context, env)
             content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{project.app_sessions_secret}")
-            destination = project.env(context, "test")
+            destination = project.env(context, env)
 
             files.append(destination, content)
             say(:append, destination)

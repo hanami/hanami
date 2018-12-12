@@ -54,9 +54,8 @@ END
 require "spec_helper"
 
 describe Web::Views::ApplicationLayout do
-  let(:layout)   { Web::Views::ApplicationLayout.new(template, {}) }
+  let(:layout)   { Web::Views::ApplicationLayout.new({ format: :html }, "contents") }
   let(:rendered) { layout.render }
-  let(:template) { Hanami::View::Template.new('apps/web/templates/application.html.erb') }
 
   it 'contains application name' do
     rendered.must_include('Web')
@@ -242,9 +241,8 @@ END
 require "spec_helper"
 
 RSpec.describe Web::Views::ApplicationLayout, type: :view do
-  let(:layout)   { Web::Views::ApplicationLayout.new(template, {}) }
+  let(:layout)   { Web::Views::ApplicationLayout.new({ format: :html }, "contents") }
   let(:rendered) { layout.render }
-  let(:template) { Hanami::View::Template.new('apps/web/templates/application.html.erb') }
 
   it 'contains application name' do
     expect(rendered).to include('Web')
@@ -259,7 +257,7 @@ END
 
     context "missing" do
       it "returns error" do
-        output = "`' is not a valid test framework. Please use one of: `minitest', `rspec'"
+        output = "`' is not a valid test framework. Please use one of: `rspec', `minitest'"
 
         run_command "hanami new bookshelf --test=", output, exit_status: 1
       end
@@ -267,7 +265,7 @@ END
 
     context "unknown" do
       it "returns error" do
-        output = "`foo' is not a valid test framework. Please use one of: `minitest', `rspec'"
+        output = "`foo' is not a valid test framework. Please use one of: `rspec', `minitest'"
 
         run_command "hanami new bookshelf --test=foo", output, exit_status: 1
       end

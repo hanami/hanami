@@ -1,6 +1,27 @@
 # Hanami
 The web, with simplicity.
 
+## v1.3.0 - 2018-10-24
+### Added
+- [Luca Guidi] Automatically log body payload from body parsers
+
+### Fixed
+- [Luca Guidi] Generate correct syntax for layout unit tests
+- [Vladislav Yashin] Fix concatenation of `Pathname` and `String` in `Hanami::CommonLogger`
+
+## v1.3.0.beta1 - 2018-08-08
+### Added
+- [Sean Collins] Generate new projects with RSpec as default testing framework
+- [Alfonso Uceda] Generate actions/views/mailers with nested module/class definition
+
+### Fixed
+- [Anton Davydov] Make possible to pass extra settings for custom logger instances (eg. `logger SemanticLogger.new, :foo, :bar`)
+- [graywolf] Ensure `hanami generate app` to work without `require_relative` entries in `config/enviroment.rb`
+- [Makoto Tajitsu & Luca Guidi] Fixed regression for `hanami new .` that used to generate a broken project
+
+### Fixed
+- [John Downey] Don't use thread unsafe `Dir.chdir` to serve static assets
+
 ## v1.2.0 - 2018-04-11
 
 ## v1.2.0.rc2 - 2018-04-06

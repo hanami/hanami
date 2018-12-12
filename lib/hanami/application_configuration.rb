@@ -1,6 +1,6 @@
 require 'hanami/utils/kernel'
 require 'hanami/environment'
-require 'hanami/middleware'
+require 'hanami/middleware_stack'
 require 'hanami/config/cookies'
 require 'hanami/config/framework_configuration'
 require 'hanami/config/load_paths'
@@ -670,7 +670,7 @@ module Hanami
     # @since 0.2.0
     #
     # @see http://rdoc.info/gems/rack/Rack/Static
-    # @see Hanami::Middleware#use
+    # @see Hanami::MiddlewareStack#use
     #
     # @example
     #   require 'hanami'
@@ -684,7 +684,7 @@ module Hanami
     #     end
     #   end
     def middleware
-      @middleware ||= Hanami::Middleware.new(self)
+      @middleware ||= Hanami::MiddlewareStack.new(self)
     end
 
     # Adapter configuration.

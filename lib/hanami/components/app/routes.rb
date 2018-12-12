@@ -39,17 +39,19 @@ module Hanami
           resolver    = Hanami::Routing::EndpointResolver.new(pattern: config.controller_pattern, namespace: namespace)
           default_app = Hanami::Routing::Default.new
 
-          Hanami::Router.new(
+          options = {
             resolver:    resolver,
             default_app: default_app,
-            parsers:     config.body_parsers,
             scheme:      config.scheme,
             host:        config.host,
             port:        config.port,
             prefix:      config.path_prefix,
-            force_ssl:   config.force_ssl,
-            &config.routes
-          )
+            force_ssl:   config.force_ssl
+          }
+
+          options[:parsers] = config.body_parsers if config.body_parsers.any?
+
+          Hanami::Router.new(options, &config.routes)
         end
       end
     end
