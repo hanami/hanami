@@ -35,18 +35,14 @@ module Hanami
       end
     end
 
-    boot(:environment) do |c|
+    boot(:configuration) do |c|
       init do
         use :root
 
-        require c[:root].join("config", "environment").to_s
+        require c[:root].join("config", "application").to_s
       end
-    end
 
-    boot(:configuration) do
       start do
-        use :environment
-
         register(:configuration, Hanami.application.configuration.finalize)
       end
     end
@@ -107,7 +103,7 @@ module Hanami
     boot(:code) do |c|
       init do
         use :root
-        use :environment
+        use :configuration
         use :apps
         use :actions
 
