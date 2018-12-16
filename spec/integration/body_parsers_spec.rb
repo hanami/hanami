@@ -43,6 +43,6 @@ EOF
   end
 
   def enable_json_body_parser
-    replace "apps/web/application.rb", "# body_parsers :json", "body_parsers :json"
+    inject_line_after "apps/web/application.rb", "configure do", "body_parsers :json"
   end
 end
