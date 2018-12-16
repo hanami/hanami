@@ -5,7 +5,7 @@ RSpec.describe "Hanami.configure" do
     mailer_config = mailer_configuration
 
     Hanami.configure do
-      mount application, at: '/'
+      mount application, at: '/', host: 'hanamirb.org'
       model(&model_config)
       mailer(&mailer_config)
     end
@@ -30,7 +30,7 @@ RSpec.describe "Hanami.configure" do
 
   it "setups apps" do
     mounted = Hanami.configuration.mounted
-    expect(mounted[app]).to eq(Hanami::Configuration::App.new(app, '/'))
+    expect(mounted[app]).to eq(Hanami::Configuration::App.new(app, at: '/', host: 'hanamirb.org'))
   end
 
   it "holds model configuration" do
