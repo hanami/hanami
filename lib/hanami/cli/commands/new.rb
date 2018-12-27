@@ -146,7 +146,7 @@ module Hanami
 
           # @since 1.1.0
           # @api private
-          VALID_FRAMEWORKS = [MINITEST, RSPEC].freeze
+          VALID_FRAMEWORKS = [RSPEC, MINITEST].freeze
 
           # @since 1.1.0
           # @api private
@@ -282,7 +282,9 @@ module Hanami
         # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/MethodLength
         def call(project:, **options)
-          project         = Utils::String.underscore(project)
+          project_name = project
+          pwd = ::File.basename(Dir.pwd) if project == "."
+          project         = Utils::String.underscore(pwd || project)
           database_config = DatabaseConfig.new(options[:database], project)
           test_framework  = TestFramework.new(hanamirc, options[:test])
           template_engine = TemplateEngine.new(hanamirc, options[:template])
@@ -299,7 +301,7 @@ module Hanami
             application_name: options.fetch(:application_name),
             application_base_url: options.fetch(:application_base_url),
             hanami_head: options.fetch(:hanami_head),
-            hanami_model_version: '~> 1.3.beta',
+            hanami_model_version: '~> 1.3',
             code_reloading: code_reloading?,
             hanami_version: hanami_version,
             project_module: Utils::String.classify(project),
@@ -308,7 +310,7 @@ module Hanami
 
           assert_project_name!(context)
 
-          directory = project_directory(project)
+          directory = project_directory(project_name, project)
           files.mkdir(directory)
 
           Dir.chdir(directory) do
@@ -531,8 +533,9 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def project_directory(project)
-          @name == '.' ? '.' : project
+        def project_directory(project_name, project)
+          return Dir.pwd if project_name == '.'
+          project
         end
 
         # @since 1.1.0

@@ -26,6 +26,36 @@ RSpec.describe "hanami generate", type: :integration do
       end
     end
 
+    context "without require_relative" do
+      it "generates app" do
+        with_project('bookshelf_generate_app_without_require_relative') do
+          app      = "no_req_relative"
+          app_name = Hanami::Utils::String.new(app).classify
+          output   = [
+            "insert  config/environment.rb"
+          ]
+
+          File.write(
+            'config/environment.rb',
+            File
+              .read('config/environment.rb')
+              .lines
+              .reject { |l| l[/^require_relative '.*'\n$/] }
+              .reject { |l| l[/^  mount Web::Application, at: '\/'\n$/] }
+              .join('')
+          )
+
+          run_command "hanami generate app #{app}", output
+
+          #
+          # config/environment.rb
+          #
+          expect("config/environment.rb").to have_file_content(%r{require_relative '../apps/#{app}/application'})
+          expect("config/environment.rb").to have_file_content(%r{mount #{app_name}::Application, at: '/no_req_relative'})
+        end
+      end
+    end
+
     context "--application-base-url" do
       it "generates app" do
         with_project('bookshelf_generate_app_application_base_url') do
@@ -82,7 +112,7 @@ END
           #
           # spec/admin/views/application_layout_spec.rb
           #
-          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.erb})
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{Admin::Views::ApplicationLayout})
         end
       end
     end # erb
@@ -114,7 +144,7 @@ END
           #
           # spec/admin/views/application_layout_spec.rb
           #
-          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.haml})
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{Admin::Views::ApplicationLayout})
         end
       end
     end # haml
@@ -147,7 +177,7 @@ END
           #
           # spec/admin/views/application_layout_spec.rb
           #
-          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{apps/admin/templates/application.html.slim})
+          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{Admin::Views::ApplicationLayout})
         end
       end
     end # slim

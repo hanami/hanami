@@ -138,7 +138,7 @@ module Hanami
     # @api private
     def apps
       mounted.each_pair do |klass, app|
-        yield(app) if klass.ancestors.include?(Hanami::Application)
+        yield(app) if klass <= Hanami::Application
       end
     end
 

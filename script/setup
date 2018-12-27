@@ -5,6 +5,11 @@ IFS=$'\n\t'
 declare pwd=$PWD
 declare cache="$pwd/vendor/cache"
 
+print_ruby_version() {
+  echo "Using $(ruby -v)"
+  echo
+}
+
 cleanup() {
   ./script/teardown
 }
@@ -56,7 +61,8 @@ generate_index() {
 }
 
 main() {
-  cleanup &&
+  print_ruby_version &&
+    cleanup &&
     bundle_package &&
     install_hanami_frameworks &&
     install_hanami &&
