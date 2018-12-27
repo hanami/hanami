@@ -188,14 +188,18 @@ module Hanami
           # @since 1.1.0
           # @api private
           def inject_require_app(context)
-            content     = "require_relative '../apps/#{context.app}/application'"
             destination = project.environment(context)
 
-            req_regex = /^\s*require(_relative)? .*$/
+            single_quote_regex = /^\s*require(_relative)? '.*'$/
+            double_quote_regex = /^\s*require(_relative)? ".*"$/
 
             case File.read(destination)
-            when req_regex
-              files.inject_line_after_last(destination, req_regex, content)
+            when single_quote_regex
+              content = "require_relative '../apps/#{context.app}/application'"
+              files.inject_line_after_last(destination, single_quote_regex, content)
+            when double_quote_regex
+              content = %(require_relative "../apps/#{context.app}/application")
+              files.inject_line_after_last(destination, double_quote_regex, content)
             else
               raise "No require found"
             end

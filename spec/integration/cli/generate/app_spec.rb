@@ -87,10 +87,7 @@ RSpec.describe "hanami generate", type: :integration do
 
           File.write(
             'config/environment.rb',
-            File.read('config/environment.rb').gsub(
-              %{require_relative '../apps/web/application'},
-              %{require_relative "../apps/web/application"}
-            )
+            File.read('config/environment.rb').gsub(%('), %("))
           )
 
           run_command "hanami generate app #{app}", output
@@ -98,7 +95,7 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # config/environment.rb
           #
-          expect("config/environment.rb").to have_file_content(%r{require_relative '../apps/#{app}/application'})
+          expect("config/environment.rb").to have_file_content(%r{require_relative "../apps/#{app}/application"})
         end
       end
 
