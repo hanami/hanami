@@ -191,12 +191,9 @@ module Hanami
             content     = "require_relative '../apps/#{context.app}/application'"
             destination = project.environment(context)
 
-            req_regex = /^\s*require .*$/
-            rel_regex = /^\s*require_relative .*$/
+            req_regex = /^\s*require(_relative)? .*$/
 
             case File.read(destination)
-            when rel_regex
-              files.inject_line_after_last(destination, rel_regex, content)
             when req_regex
               files.inject_line_after_last(destination, req_regex, content)
             else
