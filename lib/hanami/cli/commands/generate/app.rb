@@ -184,9 +184,9 @@ module Hanami
 
             case File.read(path)
             when rel_regex
-              generator.insert(path, content, after: rel_regex)
+              generator.insert_after_last(path, content, after: rel_regex)
             when req_regex
-              generator.insert(path, content, after: req_regex)
+              generator.insert_after_last(path, content, after: req_regex)
             else
               raise "No require found"
             end
@@ -198,7 +198,7 @@ module Hanami
             content = "  mount #{context.app.classify}::Application, at: '#{context.base_url}'"
             path    = project.environment(context)
 
-            generator.insert(path, content, after: /Hanami.configure do/)
+            generator.insert_after_first(path, content, after: /Hanami.configure do/)
           end
 
           # @since 1.1.0
