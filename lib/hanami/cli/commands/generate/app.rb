@@ -182,15 +182,14 @@ module Hanami
             req_regex = /^\s*require .*$/
             rel_regex = /^\s*require_relative .*$/
 
-            case File.read(destination)
+            case File.read(path)
             when rel_regex
-              files.inject_line_after_last(destination, rel_regex, content)
+              generator.insert(path, content, after: rel_regex)
             when req_regex
-              files.inject_line_after_last(destination, req_regex, content)
+              generator.insert(path, content, after: req_regex)
             else
               raise "No require found"
             end
-            say(:insert, destination)
           end
 
           # @since 1.1.0

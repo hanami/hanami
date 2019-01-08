@@ -180,7 +180,7 @@ RSpec.describe "hanami generate", type: :integration do
           output = [
             "create  apps/web/controllers/status/check.rb",
             "create  spec/web/controllers/status/check_spec.rb",
-            "insert  apps/web/config/routes.rb"
+            "append  apps/web/config/routes.rb"
           ]
           run_command "hanami generate action web status#check --skip-view", output
 
@@ -210,7 +210,7 @@ RSpec.describe "hanami generate", type: :integration do
           output = [
             "create  apps/web/controllers/api/authors/index.rb",
             "create  spec/web/controllers/api/authors/index_spec.rb",
-            "insert  apps/web/config/routes.rb"
+            "append  apps/web/config/routes.rb"
           ]
           run_command "hanami generate action web api/authors#index --skip-view", output
 
