@@ -216,8 +216,8 @@ module Hanami
           private
 
           def append_env_to_http_session_secret(context, env)
-            content     = %(#{context.app.upcase}_SESSIONS_SECRET="#{project.app_sessions_secret}")
-            destination = project.env(context, env)
+            content = %(#{context.app.upcase}_SESSIONS_SECRET="#{project.app_sessions_secret}")
+            path = project.env(context, env)
 
             generator.append(path, content)
           end
