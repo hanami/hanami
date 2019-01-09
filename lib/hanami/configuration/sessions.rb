@@ -16,10 +16,10 @@ module Hanami
       attr_reader :storage, :options
 
       def initialize(*args)
-        args = Array(args.dup).flatten
+        storage, options, = Array(args.dup).flatten
 
-        @storage = args.shift
-        @options = args.shift || {}
+        @storage = storage
+        @options = options || {}
       end
 
       def enabled?
