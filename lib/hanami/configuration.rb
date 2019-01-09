@@ -137,7 +137,7 @@ module Hanami
       end
     end
 
-    def to_router
+    def router_settings
       bu = base_url
 
       {

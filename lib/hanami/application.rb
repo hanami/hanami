@@ -58,7 +58,7 @@ module Hanami
             use m, *args
           end
 
-          run Hanami::Router.new(**configuration.to_router, &routes)
+          run Hanami::Router.new(**configuration.router_settings, &routes)
         end
       end
 
