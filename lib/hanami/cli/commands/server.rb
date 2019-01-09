@@ -56,26 +56,18 @@ module Hanami
           pid
         ].freeze
 
-        # rubocop:disable Metrics/MethodLength
         def parse_arguments(args)
           Hanami::Container.start(:env)
 
-          result = {
+          {
             config: DEFAULT_CONFIG,
             Host: host(args),
             Port: port(args),
             AccessLog: []
-          }
-
-          OPTIONAL_SETTINGS.each do |setting|
-            next unless args.key?(setting)
-
-            result[setting] = args.fetch(setting)
-          end
-
-          result
+          }.merge(
+            args.slice(*OPTIONAL_SETTINGS)
+          )
         end
-        # rubocop:enable Metrics/MethodLength
 
         def host(args)
           args.fetch(:host) do
