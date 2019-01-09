@@ -22,11 +22,11 @@ module Hanami
       @settings = Concurrent::Hash.new
 
       self.env = env
-      self.environments = DEFAULT_ENVIRONMENTS.dup
+      self.environments = DEFAULT_ENVIRONMENTS.clone
 
       self.base_url = DEFAULT_BASE_URL
 
-      self.logger   = DEFAULT_LOGGER.dup
+      self.logger   = DEFAULT_LOGGER.clone
       self.routes   = DEFAULT_ROUTES
       self.cookies  = DEFAULT_COOKIES
       self.sessions = DEFAULT_SESSIONS
