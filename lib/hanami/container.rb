@@ -86,7 +86,7 @@ module Hanami
 
           namespace = Utils::String.classify("#{app}::Actions")
           namespace = Utils::Class.load!(namespace)
-          # action    = Utils::Class.load!("#{namespace}::Action")
+
           configuration = Controller::Configuration.new do |config|
             config.cookies                 = c[:configuration].cookies.options
             config.default_headers         = c[:configuration].security.to_hash
