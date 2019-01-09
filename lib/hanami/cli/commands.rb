@@ -24,7 +24,7 @@ module Hanami
     #       module CLI
     #         module Commands
     #           class Generate < Hanami::CLI::Command
-    #             desc "Generate Webpack config"
+    #             desc "Generate Webpack configuration"
     #
     #             def call(*)
     #               # ...
