@@ -17,7 +17,7 @@ gem 'hanami-model',       '~> 1.3', require: false, git: 'https://github.com/han
 gem 'hanami-helpers',     '~> 1.3', require: false, git: 'https://github.com/hanami/helpers.git',     branch: 'develop'
 gem 'hanami-mailer',      '~> 1.3', require: false, git: 'https://github.com/hanami/mailer.git',      branch: 'develop'
 gem 'hanami-assets',      '~> 1.3', require: false, git: 'https://github.com/hanami/assets.git',      branch: 'develop'
-gem 'hanami-cli',         '~> 0.3', require: false, git: 'https://github.com/hanami/cli.git',         branch: 'develop'
+gem 'hanami-cli',         '~> 0.3', require: false, git: 'https://github.com/hanami/cli.git',         branch: 'extract-generator-from-hanami-gem' # TODO: remove once hanami/cli#38 is merged
 
 platforms :ruby do
   gem 'sqlite3'
