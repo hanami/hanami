@@ -551,8 +551,7 @@ module Hanami
           # @api private
           def initialize(*)
             super
-            @templates = Templates.new(templates_root_dir)
-            @generator = Generator.new(out: out, files: files, templates: @templates)
+            @generator = Generator.new(out: out, files: files, root_dir: templates_root_dir)
           end
         end
       end
