@@ -48,19 +48,17 @@ module Hanami
           # @since 1.1.0
           # @api private
           def generate_entity(context)
-            source      = templates.find("entity.erb")
             destination = project.entity(context)
 
-            generator.create(source, destination, context)
+            generator.create("entity.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def generate_repository(context)
-            source      = templates.find("repository.erb")
             destination = project.repository(context)
 
-            generator.create(source, destination, context)
+            generator.create("repository.erb", destination, context)
           end
 
           # @since 1.1.0
@@ -68,16 +66,15 @@ module Hanami
           def generate_migration(context)
             return if skip_migration?(context)
 
-            source      = templates.find("migration.erb")
             destination = project.migration(context)
 
-            generator.create(source, destination, context)
+            generator.create("migration.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def generate_entity_spec(context)
-            source      = templates.find("entity_spec.#{context.test}.erb")
+            source      = "entity_spec.#{context.test}.erb"
             destination = project.entity_spec(context)
 
             generator.create(source, destination, context)
@@ -86,7 +83,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def generate_repository_spec(context)
-            source      = templates.find("repository_spec.#{context.test}.erb")
+            source      = "repository_spec.#{context.test}.erb"
             destination = project.repository_spec(context)
 
             generator.create(source, destination, context)
