@@ -502,7 +502,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def generate_app(context)
-          Hanami::CLI::Commands::New::App.new(command_name: "generate app", out: @out, files: @files).call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
+          Hanami::CLI::Commands::New::App.new(command_name: "generate app", out: @out, files: @files, generator: @generator).call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
         end
 
         # @since 1.1.0
@@ -560,6 +560,7 @@ module Hanami
           def initialize(*)
             super
             @templates = Templates.new(self.class.superclass)
+            @generator = Generator.new(out: out, files: files, templates: @templates)
           end
         end
       end
