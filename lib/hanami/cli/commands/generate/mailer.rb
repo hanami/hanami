@@ -57,16 +57,15 @@ module Hanami
           # @since 1.1.0
           # @api private
           def generate_mailer(context)
-            source      = templates.find("mailer.erb")
             destination = project.mailer(context)
 
-            generator.create(source, destination, context)
+            generator.create("mailer.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def generate_mailer_spec(context)
-            source      = templates.find("mailer_spec.#{context.test}.erb")
+            source      = "mailer_spec.#{context.test}.erb"
             destination = project.mailer_spec(context)
 
             generator.create(source, destination, context)
