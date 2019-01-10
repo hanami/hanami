@@ -344,39 +344,33 @@ module Hanami
         # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/MethodLength
         def generate_application_templates(context)
-          source      = templates.find("hanamirc.erb")
           destination = project.hanamirc(context)
-          generator.create(source, destination, context)
+          generator.create("hanamirc.erb", destination, context)
 
-          source      = templates.find(".env.development.erb")
           destination = project.env(context, "development")
-          generator.create(source, destination, context)
+          generator.create(".env.development.erb", destination, context)
 
-          source      = templates.find(".env.test.erb")
           destination = project.env(context, "test")
-          generator.create(source, destination, context)
+          generator.create(".env.test.erb", destination, context)
 
-          source      = templates.find("README.md.erb")
           destination = project.readme(context)
-          generator.create(source, destination, context)
+          generator.create("README.md.erb", destination, context)
 
-          source      = templates.find("Gemfile.erb")
           destination = project.gemfile(context)
-          generator.create(source, destination, context)
+          generator.create("Gemfile.erb", destination, context)
 
-          source      = templates.find("config.ru.erb")
           destination = project.config_ru(context)
-          generator.create(source, destination, context)
+          generator.create("config.ru.erb", destination, context)
 
-          source      = templates.find("config", "boot.erb")
+          source      = File.join("config", "boot.erb")
           destination = project.boot(context)
           generator.create(source, destination, context)
 
-          source      = templates.find("config", "environment.erb")
+          source      = File.join("config", "environment.erb")
           destination = project.environment(context)
           generator.create(source, destination, context)
 
-          source      = templates.find("lib", "project.erb")
+          source      = File.join("lib", "project.erb")
           destination = project.project(context)
           generator.create(source, destination, context)
         end
@@ -386,7 +380,7 @@ module Hanami
         # rubocop:disable Metrics/AbcSize
         # rubocop:disable Metrics/MethodLength
         def generate_empty_directories(context)
-          source = templates.find(".gitkeep.erb")
+          source = ".gitkeep.erb"
 
           destination = project.keep(project.public_directory(context))
           generator.create(source, destination, context)
@@ -434,35 +428,35 @@ module Hanami
         # rubocop:disable Style/IdenticalConditionalBranches
         def generate_test_templates(context)
           if context.test_framework.rspec?
-            source      = templates.find("rspec", "Rakefile.erb")
+            source      = File.join("rspec", "Rakefile.erb")
             destination = project.rakefile(context)
             generator.create(source, destination, context)
 
-            source      = templates.find("rspec", "rspec.erb")
+            source      = File.join("rspec", "rspec.erb")
             destination = project.dotrspec(context)
             generator.create(source, destination, context)
 
-            source      = templates.find("rspec", "spec_helper.erb")
+            source      = File.join("rspec", "spec_helper.erb")
             destination = project.spec_helper(context)
             generator.create(source, destination, context)
 
-            source      = templates.find("rspec", "features_helper.erb")
+            source      = File.join("rspec", "features_helper.erb")
             destination = project.features_helper(context)
             generator.create(source, destination, context)
 
-            source      = templates.find("rspec", "capybara.erb")
+            source      = File.join("rspec", "capybara.erb")
             destination = project.capybara(context)
             generator.create(source, destination, context)
           else # minitest (default)
-            source      = templates.find("minitest", "Rakefile.erb")
+            source      = File.join("minitest", "Rakefile.erb")
             destination = project.rakefile(context)
             generator.create(source, destination, context)
 
-            source      = templates.find("minitest", "spec_helper.erb")
+            source      = File.join("minitest", "spec_helper.erb")
             destination = project.spec_helper(context)
             generator.create(source, destination, context)
 
-            source      = templates.find("minitest", "features_helper.erb")
+            source      = File.join("minitest", "features_helper.erb")
             destination = project.features_helper(context)
             generator.create(source, destination, context)
           end
@@ -476,9 +470,8 @@ module Hanami
         def generate_sql_templates(context)
           return unless context.database_config.sql?
 
-          source      = templates.find("schema.sql.erb")
           destination = project.db_schema(context)
-          generator.create(source, destination, context)
+          generator.create("schema.sql.erb", destination, context)
         end
 
         # @since 1.1.0
@@ -487,7 +480,6 @@ module Hanami
           return if git_dir_present?
 
           source      = context.database_config.sqlite? ? 'gitignore_with_sqlite.erb' : 'gitignore.erb'
-          source      = templates.find(source)
           destination = project.gitignore(context)
 
           generator.create(source, destination, context)
