@@ -171,9 +171,9 @@ module Hanami
           # @api private
           def generate_action(context)
             source      = if skip_view?(context)
-                            templates.find("action_without_view.erb")
+                            "action_without_view.erb"
                           else
-                            templates.find("action.erb")
+                            "action.erb"
                           end
             destination = project.action(context)
 
@@ -185,10 +185,9 @@ module Hanami
           def generate_view(context)
             return if skip_view?(context)
 
-            source      = templates.find("view.erb")
             destination = project.view(context)
 
-            generator.create(source, destination, context)
+            generator.create("view.erb", destination, context)
           end
 
           # @since 1.1.0
@@ -203,7 +202,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def generate_action_spec(context)
-            source      = templates.find("action_spec.#{context.test}.erb")
+            source      = "action_spec.#{context.test}.erb"
             destination = project.action_spec(context)
 
             generator.create(source, destination, context)
@@ -214,7 +213,7 @@ module Hanami
           def generate_view_spec(context)
             return if skip_view?(context)
 
-            source      = templates.find("view_spec.#{context.test}.erb")
+            source      = "view_spec.#{context.test}.erb"
             destination = project.view_spec(context)
 
             generator.create(source, destination, context)
