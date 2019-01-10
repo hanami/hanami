@@ -68,106 +68,95 @@ module Hanami
           # @since 1.1.0
           # @api private
           def generate_app(context)
-            source      = templates.find("application.erb")
             destination = project.app_application(context)
 
-            generator.create(source, destination, context)
+            generator.create("application.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def generate_routes(context)
-            source      = templates.find("routes.erb")
             destination = project.app_routes(context)
 
-            generator.create(source, destination, context)
+            generator.create("routes.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def generate_layout(context)
-            source      = templates.find("layout.erb")
             destination = project.app_layout(context)
 
-            generator.create(source, destination, context)
+            generator.create("layout.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def generate_template(context)
-            source      = templates.find("template.#{context.template}.erb")
             destination = project.app_template(context)
 
-            generator.create(source, destination, context)
+            generator.create("template.#{context.template}.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def generate_favicon(context)
-            source      = templates.find("favicon.ico")
             destination = project.app_favicon(context)
 
-            generator.copy(source, destination)
+            generator.copy("favicon.ico", destination)
           end
 
           # @since 1.1.0
           # @api private
           def create_controllers_directory(context)
-            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.controllers(context))
 
-            generator.create(source, destination, context)
+            generator.create("gitkeep.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def create_assets_images_directory(context)
-            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.images(context))
 
-            generator.create(source, destination, context)
+            generator.create("gitkeep.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def create_assets_javascripts_directory(context)
-            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.javascripts(context))
 
-            generator.create(source, destination, context)
+            generator.create("gitkeep.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def create_assets_stylesheets_directory(context)
-            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.stylesheets(context))
 
-            generator.create(source, destination, context)
+            generator.create("gitkeep.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def create_spec_features_directory(context)
-            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.features_spec(context))
 
-            generator.create(source, destination, context)
+            generator.create("gitkeep.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def create_spec_controllers_directory(context)
-            source      = templates.find("gitkeep.erb")
             destination = project.keep(project.controllers_spec(context))
 
-            generator.create(source, destination, context)
+            generator.create("gitkeep.erb", destination, context)
           end
 
           # @since 1.1.0
           # @api private
           def generate_layout_spec(context)
-            source      = templates.find("layout_spec.#{context.options.fetch(:test)}.erb")
+            source      = "layout_spec.#{context.options.fetch(:test)}.erb"
             destination = project.app_layout_spec(context)
 
             generator.create(source, destination, context)
