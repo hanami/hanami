@@ -105,8 +105,8 @@ module Hanami
         # @since x.x.x
         # @api private
         def default_generator
-          root_dir = Pathname.new(File.join(__dir__, command_name.split(" ")))
-          Generator.new(out: out, files: files, root_dir: root_dir)
+          templates_dir = Pathname.new(File.join(__dir__, command_name.split(" ")))
+          Generator.new(out: out, files: files, templates_dir: templates_dir)
         end
 
         # @since 1.1.0
