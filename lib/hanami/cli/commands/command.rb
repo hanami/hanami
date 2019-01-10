@@ -93,13 +93,13 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def initialize(command_name:, out: $stdout, files: Utils::Files, generator: CLI::Generator.new)
+        def initialize(command_name:, out: $stdout, files: Utils::Files, generator: nil)
           super(command_name: command_name)
 
           @out       = out
           @files     = files
-          @generator = generator
           @templates = Templates.new(self.class)
+          @generator = generator || Generator.new(templates: @templates)
         end
 
         private
