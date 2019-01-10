@@ -28,10 +28,9 @@ module Hanami
           # @since 1.1.0
           # @api private
           def generate_migration(context)
-            source      = templates.find("migration.erb")
             destination = project.migration(context)
 
-            generator.create(source, destination, context)
+            generator.create("migration.erb", destination, context)
           end
         end
       end
