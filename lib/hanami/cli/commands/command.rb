@@ -3,7 +3,7 @@ require 'hanami/environment'
 require 'hanami/components'
 require 'hanami/cli/command'
 require 'hanami/cli/commands/project'
-require 'hanami/cli/commands/templates'
+require 'hanami/cli/templates'
 require 'hanami/cli/generator'
 require 'concurrent'
 require 'hanami/utils/files'
@@ -98,11 +98,15 @@ module Hanami
 
           @out       = out
           @files     = files
-          @templates = Templates.new(self.class)
+          @templates = Templates.new(templates_root_dir)
           @generator = generator || Generator.new(templates: @templates)
         end
 
         private
+
+        def templates_root_dir
+          Pathname.new(File.join(__dir__, command_name.split(" ")))
+        end
 
         # @since 1.1.0
         # @api private
