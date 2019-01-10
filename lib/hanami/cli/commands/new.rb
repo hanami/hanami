@@ -494,7 +494,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def generate_app(context)
-          Hanami::CLI::Commands::New::App.new(command_name: "generate app", out: @out, files: @files, generator: @generator).call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
+          Hanami::CLI::Commands::Generate::App.new(command_name: "generate app", out: @out, files: @files).call(app: context.application_name, application_base_url: context.application_base_url, **context.options)
         end
 
         # @since 1.1.0
@@ -540,19 +540,6 @@ module Hanami
         # @api private
         def hanami_version
           Hanami::Version.gem_requirement
-        end
-
-        # @since 1.1.0
-        # @api private
-        class App < Commands::Generate::App
-          requirements.clear
-
-          # @since 1.1.0
-          # @api private
-          def initialize(*)
-            super
-            @generator = Generator.new(out: out, files: files, root_dir: templates_root_dir)
-          end
         end
       end
     end
