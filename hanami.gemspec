@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "hanami-cli",        "~> 1.0.alpha"
   spec.add_dependency "dry-system",        "~> 0.10"
   spec.add_dependency "dry-inflector",     "~> 0.1", ">= 0.1.2"
-  spec.add_dependency "bundler",           "~> 1.16"
+  spec.add_dependency "bundler",           ">= 1.16", "< 3"
 
   spec.add_development_dependency "rspec",     "~>  3.8"
   spec.add_development_dependency "rack-test", "~> 1.1"

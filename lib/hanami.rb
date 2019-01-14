@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "pathname"
-
 # A complete web framework for Ruby
 #
 # @since 0.1.0
@@ -48,7 +46,7 @@ module Hanami
   end
 
   def self.root
-    Pathname.new(Dir.pwd)
+    Container.root
   end
 
   def self.env

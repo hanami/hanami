@@ -1,45 +1,38 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
+require "pathname"
 
 module Hanami
   # Hanami private IoC
   #
   # @since 2.0.0
   class Container < Dry::System::Container
-    boot(:root) do
-      start do
-        register(:root, Hanami.root)
-      end
+    configure do |config|
+      config.root = Pathname.new(Dir.pwd)
     end
 
     boot(:env) do |c|
       init do
-        use :root
-
         begin
           require "dotenv"
         rescue LoadError # rubocop:disable Lint/HandleExceptions
         end
 
-        Dotenv.load(c[:root].join(".env")) if defined?(Dotenv)
+        Dotenv.load(c.root.join(".env")) if defined?(Dotenv)
       end
     end
 
     boot(:lib) do |c|
       init do
-        use :root
-
-        $LOAD_PATH.unshift root.join("lib")
-        Hanami::Utils.require!(c[:root].join("lib", "**", "*.rb"))
+        $LOAD_PATH.unshift c.root.join("lib")
+        Hanami::Utils.require!(c.root.join("lib", "**", "*.rb"))
       end
     end
 
     boot(:configuration) do |c|
       init do
-        use :root
-
-        require c[:root].join("config", "application").to_s
+        require c.root.join("config", "application").to_s
       end
 
       start do
@@ -60,7 +53,7 @@ module Hanami
 
     boot(:routes) do |c|
       init do
-        require c[:root].join("config", "routes").to_s
+        require c.root.join("config", "routes").to_s
       end
 
       start do
@@ -82,7 +75,7 @@ module Hanami
         use :apps
 
         c[:apps].each do |app|
-          require c[:root].join("apps", app.to_s, "action")
+          require c.root.join("apps", app.to_s, "action")
 
           namespace = Utils::String.classify("#{app}::Actions")
           namespace = Utils::Class.load!(namespace)
@@ -102,13 +95,12 @@ module Hanami
 
     boot(:code) do |c|
       init do
-        use :root
         use :configuration
         use :apps
         use :actions
 
         apps = c[:apps].join(",")
-        Hanami::Utils.require!(c[:root].join("apps", "{#{apps}}", "**", "*.rb"))
+        Hanami::Utils.require!(c.root.join("apps", "{#{apps}}", "**", "*.rb"))
       end
     end
   end
