@@ -1,6 +1,16 @@
 # Hanami
 The web, with simplicity.
 
+## v1.3.1 - 2019-01-17
+### Added
+- [Luca Guidi] Official support for Ruby: MRI 2.6
+- [Luca Guidi] Support `bundler` 2.0+
+
+### Fixed
+- [Aidan Coyle] Remove from app generator support for deprecated `force_ssl` setting
+- [Alessandro Caporrini] Remove from app generator support for deprecated `body_parsers` setting
+- [Daphne Rouw & Sean Collins] Make app generator to work when code in `config/enviroment.rb` uses double quotes
+
 ## v1.3.0 - 2018-10-24
 ### Added
 - [Luca Guidi] Automatically log body payload from body parsers
