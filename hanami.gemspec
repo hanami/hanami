@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'hanami-assets',      '~> 1.3'
   spec.add_dependency 'hanami-cli',         '~> 0.3'
   spec.add_dependency 'concurrent-ruby',    '~> 1.0'
-  spec.add_dependency 'bundler'
+  spec.add_dependency 'bundler',            '>= 1.6', '< 3'
 
   spec.add_development_dependency 'rspec',     '~>  3.7'
   spec.add_development_dependency 'rack-test', '~> 1.1'
