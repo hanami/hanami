@@ -25,10 +25,5 @@ module Hanami
       mw["development"].concat([::Rack::ShowExceptions, ::Rack::Lint])
       mw
     end
-
-    def start
-      Hanami.boot
-      super
-    end
   end
 end
