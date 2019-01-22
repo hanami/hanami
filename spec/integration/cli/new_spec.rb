@@ -115,7 +115,7 @@ How to prepare (create and migrate) DB for `development` and `test` environments
 % HANAMI_ENV=test bundle exec hanami db prepare
 ```
 
-Explore Hanami [guides](http://hanamirb.org/guides/), [API docs](http://docs.hanamirb.org/#{Hanami::VERSION}/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
+Explore Hanami [guides](https://guides.hanamirb.org/), [API docs](http://docs.hanamirb.org/#{Hanami::VERSION}/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
 END
 
       #
@@ -133,7 +133,7 @@ gem 'sqlite3'
 
 group :development do
   # Code reloading
-  # See: http://hanamirb.org/guides/projects/code-reloading
+  # See: https://guides.hanamirb.org/projects/code-reloading
   gem 'shotgun', platforms: :ruby
   gem 'hanami-webconsole'
 end
@@ -231,12 +231,12 @@ Hanami.configure do
   mailer do
     root 'lib/#{project}/mailers'
 
-    # See http://hanamirb.org/guides/mailers/delivery
+    # See https://guides.hanamirb.org/mailers/delivery
     delivery :test
   end
 
   environment :development do
-    # See: http://hanamirb.org/guides/projects/logging
+    # See: https://guides.hanamirb.org/projects/logging
     logger level: :debug
   end
 
@@ -583,7 +583,7 @@ module Web
         #   * :yui
         #   * :closure
         #
-        # See: http://hanamirb.org/guides/assets/compressors
+        # See: https://guides.hanamirb.org/assets/compressors
         #
         # In order to skip JavaScript compression comment the following line
         javascript_compressor :builtin
@@ -596,7 +596,7 @@ module Web
         #   * :yui
         #   * :sass
         #
-        # See: http://hanamirb.org/guides/assets/compressors
+        # See: https://guides.hanamirb.org/assets/compressors
         #
         # In order to skip stylesheet compression comment the following line
         stylesheet_compressor :builtin
@@ -753,12 +753,12 @@ module Web
 
         # Use fingerprint file name for asset paths
         #
-        # See: http://hanamirb.org/guides/assets/overview
+        # See: https://guides.hanamirb.org/assets/overview
         fingerprint true
 
         # Content Delivery Network (CDN)
         #
-        # See: http://hanamirb.org/guides/assets/content-delivery-network
+        # See: https://guides.hanamirb.org/assets/content-delivery-network
         #
         # scheme 'https'
         # host   'cdn.example.org'
@@ -766,7 +766,7 @@ module Web
 
         # Subresource Integrity
         #
-        # See: http://hanamirb.org/guides/assets/content-delivery-network/#subresource-integrity
+        # See: https://guides.hanamirb.org/assets/content-delivery-network/#subresource-integrity
         subresource_integrity :sha256
       end
     end
@@ -779,7 +779,7 @@ END
       #
       expect("apps/web/config/routes.rb").to have_file_content <<-END
 # Configure your routes here
-# See: http://hanamirb.org/guides/routing/overview/
+# See: https://guides.hanamirb.org/routing/overview
 #
 # Example:
 # get '/hello', to: ->(env) { [200, {}, ['Hello from Hanami!']] }

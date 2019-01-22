@@ -158,7 +158,7 @@ module #{app_name}
         #   * :yui
         #   * :closure
         #
-        # See: http://hanamirb.org/guides/assets/compressors
+        # See: https://guides.hanamirb.org/assets/compressors
         #
         # In order to skip JavaScript compression comment the following line
         javascript_compressor :builtin
@@ -171,7 +171,7 @@ module #{app_name}
         #   * :yui
         #   * :sass
         #
-        # See: http://hanamirb.org/guides/assets/compressors
+        # See: https://guides.hanamirb.org/assets/compressors
         #
         # In order to skip stylesheet compression comment the following line
         stylesheet_compressor :builtin
@@ -328,12 +328,12 @@ module #{app_name}
 
         # Use fingerprint file name for asset paths
         #
-        # See: http://hanamirb.org/guides/assets/overview
+        # See: https://guides.hanamirb.org/assets/overview
         fingerprint true
 
         # Content Delivery Network (CDN)
         #
-        # See: http://hanamirb.org/guides/assets/content-delivery-network
+        # See: https://guides.hanamirb.org/assets/content-delivery-network
         #
         # scheme 'https'
         # host   'cdn.example.org'
@@ -341,7 +341,7 @@ module #{app_name}
 
         # Subresource Integrity
         #
-        # See: http://hanamirb.org/guides/assets/content-delivery-network/#subresource-integrity
+        # See: https://guides.hanamirb.org/assets/content-delivery-network/#subresource-integrity
         subresource_integrity :sha256
       end
     end
@@ -354,7 +354,7 @@ END
       #
       expect("apps/#{app}/config/routes.rb").to have_file_content <<-END
 # Configure your routes here
-# See: http://hanamirb.org/guides/routing/overview/
+# See: https://guides.hanamirb.org/routing/overview
 #
 # Example:
 # get '/hello', to: ->(env) { [200, {}, ['Hello from Hanami!']] }
@@ -451,12 +451,12 @@ Hanami.configure do
   mailer do
     root 'lib/#{project}/mailers'
 
-    # See http://hanamirb.org/guides/mailers/delivery
+    # See https://guides.hanamirb.org/mailers/delivery
     delivery :test
   end
 
   environment :development do
-    # See: http://hanamirb.org/guides/projects/logging
+    # See: https://guides.hanamirb.org/projects/logging
     logger level: :debug
   end
 
