@@ -7,7 +7,7 @@ module Bookshelf
   end
 end
 
-Hanami.application.routes do
+Hanami.application_class.routes do
   mount :web, at: "/" do
     root to: "home#index"
   end
@@ -27,7 +27,7 @@ end
 
 RSpec.describe Hanami do
   describe ".boot" do
-    it "assigns Hanami.app, .root, and .logger" do
+    it "assigns Hanami.application, .root, and .logger" do
       expect(Hanami::Container).to receive(:finalize!)
       expect(Hanami::Container).to receive(:[]).with("apps.web.actions.namespace").and_return(Web::Actions)
       expect(Hanami::Container).to receive(:[]).with("apps.web.actions.configuration").and_return(Hanami::Controller::Configuration.new)
@@ -35,6 +35,7 @@ RSpec.describe Hanami do
 
       Hanami.boot
       expect(Hanami.app).to be_kind_of(Hanami::Application)
+      expect(Hanami.application).to be_kind_of(Hanami::Application)
       expect(Hanami.root).to eq(Pathname.new(Dir.pwd))
       expect(Hanami.logger).to be_kind_of(Hanami::Logger)
     end

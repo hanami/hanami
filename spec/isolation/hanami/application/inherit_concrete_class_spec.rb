@@ -8,7 +8,7 @@ end
 RSpec.describe Hanami do
   describe ".application" do
     it "it assign when concrete class inherits Hanami::Application" do
-      expect(Hanami.application).to eq(Bookshelf::Application)
+      expect(Hanami.application_class).to eq(Bookshelf::Application)
     end
   end
 end
