@@ -1,6 +1,10 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha1 - 2018-01-30
+### Changed
+- [Luca Guidi] Drop support for Ruby: MRI 2.3, and 2.4.
+
 ## v1.3.0 - 2018-10-24
 ### Added
 - [Luca Guidi] Automatically log body payload from body parsers

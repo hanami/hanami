@@ -33,7 +33,7 @@ These components are designed to be used independently or together in a Hanami a
 
 ## Installation
 
-__Hanami__ supports Ruby (MRI) 2.3+
+__Hanami__ supports Ruby (MRI) 2.5+
 
 ```shell
 gem install hanami
@@ -137,4 +137,4 @@ Released under MIT License.
 
 This project was formerly known as Lotus (`lotusrb`).
 
-Copyright © 2014-2018 Luca Guidi.
+Copyright © 2014-2019 Luca Guidi.
