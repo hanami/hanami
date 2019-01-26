@@ -89,7 +89,7 @@ module Hanami
             destination = project.public_app_assets(context)
             return unless files.directory?(destination)
 
-            generator.delete_directory(destination)
+            generator.delete_directory(destination, allow_missing: true)
           end
 
           # @since 1.1.0
@@ -105,7 +105,7 @@ module Hanami
           def recursively_destroy_specs(context)
             path = project.app_spec(context)
 
-            generator.delete_directory(path)
+            generator.delete_directory(path, allow_missing: true)
           end
 
           # @since 1.1.0
@@ -113,7 +113,7 @@ module Hanami
           def recursively_destroy_app(context)
             path = project.app(context)
 
-            generator.delete_directory(path)
+            generator.delete_directory(path, allow_missing: true)
           end
 
           # @since 1.1.0
