@@ -30,12 +30,12 @@ Hanami.configure do
   mailer do
     root 'lib/<%= project %>/mailers'
 
-    # See http://hanamirb.org/guides/mailers/delivery
+    # See https://guides.hanamirb.org/mailers/delivery
     delivery :test
   end
 
   environment :development do
-    # See: http://hanamirb.org/guides/projects/logging
+    # See: https://guides.hanamirb.org/projects/logging
     logger level: :debug
   end
 
