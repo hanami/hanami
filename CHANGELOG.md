@@ -1,7 +1,7 @@
 # Hanami
 The web, with simplicity.
 
-## v2.0.0.alpha1 - 2018-01-30
+## v2.0.0.alpha1 - 2019-01-30
 ### Changed
 - [Luca Guidi] Drop support for Ruby: MRI 2.3, and 2.4.
 
