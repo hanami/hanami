@@ -21,7 +21,7 @@ module Hanami
     #
     # @since 0.8.0
     def middleware
-      mw = Hash.new { |e, m| e[m] = [] }
+      mw = ::Hash.new { |e, m| e[m] = [] }
       mw["development"].concat([::Rack::ShowExceptions, ::Rack::Lint])
       mw
     end
