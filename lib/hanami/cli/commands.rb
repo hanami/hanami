@@ -57,6 +57,7 @@ module Hanami
     module Commands
       extend Hanami::CLI::Registry
 
+      require "hanami/cli/commands/command"
       require "hanami/cli/commands/server"
     end
   end

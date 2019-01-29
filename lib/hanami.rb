@@ -50,8 +50,11 @@ module Hanami
   end
 
   def self.env
-    # TODO: make this to work
-    :development
+    (ENV["HANAMI_ENV"] || "development").to_sym
+  end
+
+  def self.env?(*names)
+    names.map(&:to_sym).include?(env)
   end
 
   def self.logger
@@ -67,5 +70,9 @@ module Hanami
 
     Container.finalize!
     self.app = application.new
+  end
+
+  def self.bundler_groups
+    [:plugins]
   end
 end
