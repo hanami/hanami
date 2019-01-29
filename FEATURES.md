@@ -3,6 +3,8 @@
 
 ## Features
 
+## v2.0.0.alpha1 - 2019-01-30
+
 ## v1.3.0 - 2018-10-24
 
 - Default testing framework is RSpec
