@@ -11,9 +11,9 @@ module Hanami
   class Application
     @_mutex = Mutex.new
 
-    def self.inherited(app)
+    def self.inherited(app_class)
       @_mutex.synchronize do
-        app.class_eval do
+        app_class.class_eval do
           @_mutex         = Mutex.new
           @_configuration = Hanami::Configuration.new(env: Hanami.env)
 
@@ -21,7 +21,7 @@ module Hanami
           include InstanceMethods
         end
 
-        Hanami.application = app
+        Hanami.application_class = app_class
       end
     end
 
@@ -38,7 +38,7 @@ module Hanami
       def routes(&blk)
         @_mutex.synchronize do
           if blk.nil?
-            raise "Hanami.application.routes not configured" unless defined?(@_routes)
+            raise "Hanami.application_class.routes not configured" unless defined?(@_routes)
 
             @_routes
           else

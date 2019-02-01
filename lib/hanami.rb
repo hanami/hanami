@@ -13,36 +13,40 @@ module Hanami
 
   @_mutex = Mutex.new
 
+  def self.application_class
+    @_mutex.synchronize do
+      raise "Hanami.application_class not configured" unless defined?(@_application_class)
+
+      @_application_class
+    end
+  end
+
+  def self.application_class=(klass)
+    @_mutex.synchronize do
+      raise "Hanami.application_class already configured" if defined?(@_application_class)
+
+      @_application_class = klass unless klass.name.nil?
+    end
+  end
+
   def self.application
     @_mutex.synchronize do
-      raise "Hanami application not configured" unless defined?(@_application)
+      raise "Hanami.application not configured" unless defined?(@_application)
 
       @_application
     end
   end
 
-  def self.application=(app)
+  def self.application=(application)
     @_mutex.synchronize do
-      raise "Hanami application already configured" if defined?(@_application)
+      raise "Hanami.application already configured" if defined?(@_application)
 
-      @_application = app unless app.name.nil?
+      @_application = application
     end
   end
 
-  def self.app
-    @_mutex.synchronize do
-      raise "Hanami.app not configured" unless defined?(@_app)
-
-      @_app
-    end
-  end
-
-  def self.app=(app)
-    @_mutex.synchronize do
-      raise "Hanami.app already configured" if defined?(@_app)
-
-      @_app = app
-    end
+  class << self
+    alias_method :app, :application
   end
 
   def self.root
@@ -69,7 +73,7 @@ module Hanami
     end
 
     Container.finalize!
-    self.app = application.new
+    self.application = application_class.new
   end
 
   def self.bundler_groups

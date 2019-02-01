@@ -36,7 +36,7 @@ module Hanami
       end
 
       start do
-        register(:configuration, Hanami.application.configuration.finalize)
+        register(:configuration, Hanami.application_class.configuration.finalize)
       end
     end
 
@@ -57,7 +57,7 @@ module Hanami
       end
 
       start do
-        register(:routes, Hanami.application.routes)
+        register(:routes, Hanami.application_class.routes)
       end
     end
 
