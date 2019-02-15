@@ -46,7 +46,7 @@ module Hanami
   end
 
   class << self
-    alias_method :app, :application
+    alias app application
   end
 
   def self.root
