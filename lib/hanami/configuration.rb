@@ -4,6 +4,7 @@ require "uri"
 require "concurrent/hash"
 require "concurrent/array"
 require "dry/inflector"
+require "hanami/routing/endpoint/finder"
 
 module Hanami
   # Hanami application configuration
@@ -144,7 +145,8 @@ module Hanami
         scheme: bu.scheme,
         host: bu.host,
         port: bu.port,
-        inflector: inflections
+        inflector: inflections,
+        endpoint_resolver: Routing::Endpoint::Finder.new
       }
     end
 

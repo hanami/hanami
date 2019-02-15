@@ -18,10 +18,9 @@ module Hanami
     def mount(app, at:, host: nil, container: Hanami::Container, **args, &blk)
       super(app, at: at, host: host, **args, &blk) unless app.is_a?(Symbol)
 
-      namespace     = container["apps.#{app}.actions.namespace"]
-      configuration = container["apps.#{app}.actions.configuration"]
-
-      scope(at, namespace: namespace, configuration: configuration, &blk)
+      # FIXME: extract this key pattern into a proper object
+      namespace = container["apps.#{app}.actions.namespace"]
+      scope(at, namespace: namespace, configuration: nil, &blk)
     end
     # rubocop:enable Metrics/ParameterLists
   end

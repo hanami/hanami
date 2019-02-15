@@ -30,7 +30,6 @@ RSpec.describe Hanami do
     it "assigns Hanami.application, .root, and .logger" do
       expect(Hanami::Container).to receive(:finalize!)
       expect(Hanami::Container).to receive(:[]).with("apps.web.actions.namespace").and_return(Web::Actions)
-      expect(Hanami::Container).to receive(:[]).with("apps.web.actions.configuration").and_return(Hanami::Controller::Configuration.new)
       expect(Hanami::Container).to receive(:[]).with(:logger).and_return(Hanami::Logger.new)
 
       Hanami.boot

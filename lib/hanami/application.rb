@@ -3,6 +3,7 @@
 require "hanami/configuration"
 require "hanami/routes"
 require "hanami/router"
+require "hanami/renderer"
 
 module Hanami
   # Hanami application
@@ -58,7 +59,7 @@ module Hanami
             use m, *args
           end
 
-          run Hanami::Router.new(**configuration.router_settings, &routes)
+          run Renderer.new(Hanami::Router.new(**configuration.router_settings, &routes))
         end
       end
 
