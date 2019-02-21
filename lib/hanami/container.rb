@@ -104,7 +104,7 @@ module Hanami
       end
     end
 
-    boot(:views) do |c|
+    boot(:views) do |c| # rubocop:disable Metrics/BlockLength
       init do
         use :configuration
         use :apps
@@ -116,7 +116,12 @@ module Hanami
 
           superclass = Utils::String.classify("#{app}::View")
           superclass = Utils::Class.load!(superclass)
-          superclass.config.paths = [c.root.join("apps", app.to_s, "templates").to_s]
+
+          templates = [c.root.join("apps", app.to_s, "templates").to_s]
+          superclass.config.paths = templates
+          superclass.config.layouts_dir = templates
+
+          superclass.config.layout = "application"
 
           namespace = nil
 

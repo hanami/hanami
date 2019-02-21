@@ -41,7 +41,6 @@ module Hanami
       end
 
       def configure(view, namespace)
-        # view.config.layout = "application"
         view.config.template = template_name(view, namespace)
       end
 
