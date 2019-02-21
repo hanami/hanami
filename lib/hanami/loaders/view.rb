@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/system/loader"
+require "hanami/utils/string"
 
 module Hanami
   module Loaders
@@ -13,13 +14,13 @@ module Hanami
         @inflector = inflector
       end
 
-      def call(app, path, _configuration)
+      def call(app, path, _configuration, namespace)
         ::Kernel.require(path)
 
         view = constant(app, path)
         return unless view?(view)
 
-        configure(view)
+        configure(view, namespace)
         view.new
       end
 
@@ -39,8 +40,14 @@ module Hanami
         path.sub(/(.*)#{app}/, app.to_s).sub(".rb", "")
       end
 
-      def configure(view)
-        view.config.template = "home/index"
+      def configure(view, namespace)
+        # view.config.layout = "application"
+        view.config.template = template_name(view, namespace)
+      end
+
+      def template_name(view, namespace)
+        tokens = Utils::String.transform(view.name, [:sub, /#{namespace}::/, ""], [:split, /::/])
+        tokens.map { |token| Utils::String.underscore(token) }.join("/")
       end
     end
   end
