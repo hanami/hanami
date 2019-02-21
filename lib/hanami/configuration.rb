@@ -146,7 +146,9 @@ module Hanami
         host: bu.host,
         port: bu.port,
         inflector: inflections,
-        endpoint_resolver: Routing::Endpoint::Finder.new
+        endpoint_resolver: Routing::Endpoint::Finder.new,
+        not_found: ->(env) { Hanami::Action::Response.build(404, env) },
+        not_allowed: ->(env) { Hanami::Action::Response.build(405, env) }
       }
     end
 
