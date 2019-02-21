@@ -118,21 +118,23 @@ module Hanami
           superclass = Utils::Class.load!(superclass)
           superclass.config.paths = [c.root.join("apps", app.to_s, "templates").to_s]
 
-          # FIXME: use actual configuration from hanami-view
-          configuration = :config
-
-          Hanami::Utils::FileList[c.root, "apps", app.to_s, "views", "**", "*.rb"].each do |path|
-            view = loader.call(app, path, configuration)
-            register(:"apps.#{view.name}", view) unless view.nil?
-          end
+          namespace = nil
 
           begin
             namespace = Utils::String.classify("#{app}::Views")
             namespace = Utils::Class.load!(namespace)
 
-            register(:"apps.#{app}.actions.namespace", namespace)
+            register(:"apps.#{app}.views.namespace", namespace)
           rescue LoadError, NameError # rubocop:disable Lint/HandleExceptions
             # FIXME: This loading mechanism should respect missing views to support API apps.
+          end
+
+          # FIXME: use actual configuration from hanami-view
+          configuration = :config
+
+          Hanami::Utils::FileList[c.root, "apps", app.to_s, "views", "**", "*.rb"].each do |path|
+            view = loader.call(app, path, configuration, namespace)
+            register(:"apps.#{view.name}", view) unless view.nil?
           end
         end
       end
