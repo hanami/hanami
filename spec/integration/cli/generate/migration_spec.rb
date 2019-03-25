@@ -31,7 +31,7 @@ RSpec.describe "hanami generate", type: :integration do
 ERROR: "hanami generate migration" was called with no arguments
 Usage: "hanami generate migration MIGRATION"
 END
-          run_command "hanami generate migration", output, exit_status: 1
+          run_cmd "hanami generate migration", output, exit_status: 1
         end
       end
     end
@@ -62,7 +62,7 @@ OUT
           %r{  hanami generate migration create_users # Generate `db/migrations/[\d]{14}_create_users.rb`},
         ]
 
-        run_command 'hanami generate migration --help', output
+        run_cmd 'hanami generate migration --help', output
       end
     end
   end # migration

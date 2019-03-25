@@ -140,7 +140,7 @@ Examples:
   hanami assets precompile HANAMI_ENV=production # Precompile assets for production environment
 OUT
 
-        run_command "hanami assets precompile --help", output
+        run_cmd "hanami assets precompile --help", output
       end
     end
   end

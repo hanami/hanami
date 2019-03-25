@@ -20,7 +20,7 @@ RSpec.describe "CLI plugins", type: :integration do
     project = 'bookshelf_without_gemfile'
 
     with_system_tmp_directory do
-      run_command_with_clean_env "hanami new #{project}"
+      run_cmd_with_clean_env "hanami new #{project}"
       destination = Pathname.new(Dir.pwd).join(project)
 
       expect(destination).to exist

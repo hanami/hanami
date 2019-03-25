@@ -29,7 +29,7 @@ Options:
   --help, -h                      	# Print this help
 OUT
 
-        run_command 'hanami db version --help', output
+        run_cmd 'hanami db version --help', output
       end
     end
   end

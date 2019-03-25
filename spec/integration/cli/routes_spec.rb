@@ -41,7 +41,7 @@ Options:
   --help, -h                      	# Print this help
 OUT
 
-      run_command 'hanami routes --help', output
+      run_cmd 'hanami routes --help', output
     end
   end
 end

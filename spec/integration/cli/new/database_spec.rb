@@ -8,7 +8,7 @@ RSpec.describe "hanami new", type: :integration do
           "create  db/schema.sql"
         ]
 
-        run_command "hanami new #{project} --database=postgres", output
+        run_cmd "hanami new #{project} --database=postgres", output
 
         within_project_directory(project) do
           #
@@ -77,7 +77,7 @@ RSpec.describe "hanami new", type: :integration do
           "create  db/schema.sql"
         ]
 
-        run_command "hanami new #{project} --database=sqlite", output
+        run_cmd "hanami new #{project} --database=sqlite", output
 
         within_project_directory(project) do
           #
@@ -147,7 +147,7 @@ RSpec.describe "hanami new", type: :integration do
           "create  db/schema.sql"
         ]
 
-        run_command "hanami new #{project} --database=mysql", output
+        run_cmd "hanami new #{project} --database=mysql", output
 
         within_project_directory(project) do
           #
@@ -212,7 +212,7 @@ RSpec.describe "hanami new", type: :integration do
       it "returns error" do
         output = "`' is not a valid database engine"
 
-        run_command "hanami new bookshelf --database=", output, exit_status: 1
+        run_cmd "hanami new bookshelf --database=", output, exit_status: 1
       end
     end # missing
 
@@ -220,7 +220,7 @@ RSpec.describe "hanami new", type: :integration do
       it "returns error" do
         output = "`foo' is not a valid database engine"
 
-        run_command "hanami new bookshelf --database=foo", output, exit_status: 1
+        run_cmd "hanami new bookshelf --database=foo", output, exit_status: 1
       end
     end # unknown
   end # database
