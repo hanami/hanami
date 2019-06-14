@@ -52,7 +52,12 @@ module Hanami
     #
     # @since 0.2.0
     # @api private
-    DEFAULT_DOTENV_ENV = '.env.%s'.freeze
+    DEFAULT_DOTENV_ENV_FILES = [
+      '.env.%{environment}.local'.freeze,
+      '.env.local'.freeze,
+      '.env.%{environment}'.freeze,
+      '.env'.freeze
+    ].freeze
 
     # Default configuration directory under application root
     #
@@ -487,10 +492,11 @@ module Hanami
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      dotenv = root.join(DEFAULT_DOTENV_ENV % environment)
-      return unless dotenv.exist?
-
-      env.load!(dotenv)
+      DEFAULT_DOTENV_ENV_FILES.each do |filename_format|
+        next if filename_format == '.env.local' && environment == 'test'
+        path = root.join(filename_format % { environment: environment })
+        env.load!(path) if path.exist?
+      end
     end
 
     # @since 0.1.0
