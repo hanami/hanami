@@ -1,14 +1,14 @@
 require "pathname"
 
 RSpec.describe "CLI plugins", type: :integration do
-  it "includes its commands in CLI output" do
+  xit "includes its commands in CLI output" do
     with_project do
       bundle_exec "hanami"
       expect(out).to include("hanami plugin [SUBCOMMAND]")
     end
   end
 
-  it "executes command from plugin" do
+  xit "executes command from plugin" do
     with_project do
       bundle_exec "hanami plugin version"
       expect(out).to include("v0.1.0")
