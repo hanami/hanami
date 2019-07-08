@@ -4,7 +4,7 @@ group: build
 
 steps:
 - name: install
-  image: hanami/ruby-2.6-db
+  image: hanami/ruby-2.6-full
   docker:
     stdin_open: true
     tty: true
@@ -19,7 +19,7 @@ steps:
   - bundle install --jobs=3 --retry=3
 
 - name: unit
-  image: hanami/ruby-2.6-db
+  image: hanami/ruby-2.6-full
   docker:
     stdin_open: true
     tty: true
@@ -32,7 +32,7 @@ steps:
   - COVERAGE=true bundle exec rake spec:unit
 
 - name: isolation
-  image: hanami/ruby-2.6-db
+  image: hanami/ruby-2.6-full
   docker:
     stdin_open: true
     tty: true
@@ -46,7 +46,7 @@ steps:
   - ./script/test isolation
 
 - name: integration
-  image: hanami/ruby-2.6-db
+  image: hanami/ruby-2.6-full
   docker:
     stdin_open: true
     tty: true
@@ -60,7 +60,7 @@ steps:
   - ./script/test integration
 
 - name: quality
-  image: hanami/ruby-2.6-db
+  image: hanami/ruby-2.6-full
   docker:
     stdin_open: true
     tty: true
