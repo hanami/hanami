@@ -9,7 +9,7 @@ run_tests() {
 
   for test in $(find $root -name '*_spec.rb')
   do
-    run_test $type $root $test
+    run_test $root $test
 
     if [ $? -ne 0 ]; then
       local exit_code=$?
