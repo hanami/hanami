@@ -20,27 +20,6 @@ run_tests() {
 }
 
 run_test() {
-  local type=$1
-  local root=$2
-  local test=$3
-
-  if [[ "$type" == "isolation" ]]; then
-    run_isolation_test $root $test
-  elif [[ "$type" == "integration" ]]; then
-    run_integration_test $root $test
-  fi
-}
-
-run_isolation_test() {
-  local root=$1
-  local test=$2
-  local hash="$(shasum "$test" | cut -b 1-40)"
-
-  printf "\n\n\nRunning: $test\n"
-  SIMPLECOV_COMMAND_NAME=$hash ruby $test --options $root/.rspec
-}
-
-run_integration_test() {
   local root=$1
   local test=$2
   local hash="$(shasum "$test" | cut -b 1-40)"
