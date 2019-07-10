@@ -48,7 +48,8 @@ module Hanami
     # @api private
     RACK_ENV_DEPLOYMENT = 'deployment'.freeze
 
-    # Default `.env` per environment file name
+    # Default `.env` files that are loaded. The entries are ordered from highest
+    # to lowest priority.
     #
     # @since 0.2.0
     # @api private
@@ -137,9 +138,8 @@ module Hanami
     # located under the config directory. All the settings in those files will
     # be exported as `ENV` variables.
     #
-    # Master .env file is ignored to suggest clear separation of environment
-    # configurations and discourage putting sensitive information into source
-    # control.
+    # This table: https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
+    # has more info on the priority of the .env files.
     #
     # The format of those `.env.<environment>` files follows UNIX and UNIX-like
     # operating system environment variable declaration format and compatible
