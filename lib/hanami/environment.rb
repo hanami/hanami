@@ -52,7 +52,7 @@ module Hanami
     #
     # @since 0.2.0
     # @api private
-    DEFAULT_DOTENV_ENV_FILES = [
+    DEFAULT_DOTENV_ENV_PATTERNS = [
       '.env.%{environment}.local'.freeze,
       '.env.local'.freeze,
       '.env.%{environment}'.freeze,
@@ -492,7 +492,7 @@ module Hanami
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      DEFAULT_DOTENV_ENV_FILES.each do |filename_format|
+      DEFAULT_DOTENV_ENV_PATTERNS.each do |filename_format|
         next if filename_format == '.env.local' && environment == 'test'
         path = root.join(filename_format % { environment: environment })
         env.load!(path) if path.exist?
