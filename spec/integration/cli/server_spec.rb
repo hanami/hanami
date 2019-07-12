@@ -11,7 +11,7 @@ RSpec.describe 'hanami server', type: :integration do
 
           expect(page).to have_content("The web, with simplicity.")
           expect(page).to have_content("Hanami is Open Source Software for MVC web development with Ruby.")
-          expect(page).to have_content("bundle exec hanami generate action web home#index --url=/")
+          expect(page).to have_content("bundle exec hanami generate action web 'home#index' --url=/")
         end
       end
     end
@@ -23,7 +23,7 @@ RSpec.describe 'hanami server', type: :integration do
         server do
           visit "/admin"
 
-          expect(page).to have_content("bundle exec hanami generate action admin home#index --url=/")
+          expect(page).to have_content("bundle exec hanami generate action admin 'home#index' --url=/")
         end
       end
     end
