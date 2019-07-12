@@ -11,7 +11,7 @@ RSpec.describe "hanami destroy", type: :integration do
           "remove  #{migration}"
         ]
 
-        run_command "hanami destroy migration create_users", output
+        run_cmd "hanami destroy migration create_users", output
 
         expect(migration).to_not be_an_existing_file
       end
@@ -23,7 +23,7 @@ RSpec.describe "hanami destroy", type: :integration do
 ERROR: "hanami destroy migration" was called with no arguments
 Usage: "hanami destroy migration MIGRATION"
 OUT
-        run_command "hanami destroy migration", output, exit_status: 1
+        run_cmd "hanami destroy migration", output, exit_status: 1
       end
     end
 
@@ -32,7 +32,7 @@ OUT
         output = <<-OUT
 cannot find `create_unknowns'. Please have a look at `db/migrations' directory to find an existing migration
 OUT
-        run_command "hanami destroy migration create_unknowns", output, exit_status: 1
+        run_cmd "hanami destroy migration create_unknowns", output, exit_status: 1
       end
     end
 
@@ -61,7 +61,7 @@ OUT
           %r{  hanami destroy migration create_users # Destroy `db/migrations/[\d]{14}_create_users.rb`}
         ]
 
-        run_command 'hanami destroy migration --help', output
+        run_cmd 'hanami destroy migration --help', output
       end
     end
   end # migration

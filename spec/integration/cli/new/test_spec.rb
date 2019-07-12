@@ -9,7 +9,7 @@ RSpec.describe "hanami new", type: :integration do
           "create  spec/web/views/application_layout_spec.rb"
         ]
 
-        run_command "hanami new #{project} --test=minitest", output
+        run_cmd "hanami new #{project} --test=minitest", output
 
         within_project_directory(project) do
           #
@@ -77,7 +77,7 @@ END
           "create  spec/web/views/application_layout_spec.rb"
         ]
 
-        run_command "hanami new #{project} --test=rspec", output
+        run_cmd "hanami new #{project} --test=rspec", output
 
         within_project_directory(project) do
           #
@@ -259,7 +259,7 @@ END
       it "returns error" do
         output = "`' is not a valid test framework. Please use one of: `rspec', `minitest'"
 
-        run_command "hanami new bookshelf --test=", output, exit_status: 1
+        run_cmd "hanami new bookshelf --test=", output, exit_status: 1
       end
     end # missing
 
@@ -267,7 +267,7 @@ END
       it "returns error" do
         output = "`foo' is not a valid test framework. Please use one of: `rspec', `minitest'"
 
-        run_command "hanami new bookshelf --test=foo", output, exit_status: 1
+        run_cmd "hanami new bookshelf --test=foo", output, exit_status: 1
       end
     end # unknown
   end # test

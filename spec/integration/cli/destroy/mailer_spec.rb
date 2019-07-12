@@ -12,7 +12,7 @@ RSpec.describe "hanami destroy", type: :integration do
         with_project('bookshelf_generate_mailer', test: 'rspec') do
           generate "mailer welcome"
 
-          run_command "hanami destroy mailer welcome", output
+          run_cmd "hanami destroy mailer welcome", output
 
           expect('spec/bookshelf_generate_mailer/mailers/welcome_spec.rb').to_not           be_an_existing_file
           expect('lib/bookshelf_generate_mailer/mailers/templates/welcome.html.erb').to_not be_an_existing_file
@@ -29,7 +29,7 @@ ERROR: "hanami generate mailer" was called with no arguments
 Usage: "hanami generate mailer MAILER"
 OUT
 
-        run_command "hanami generate mailer", output, exit_status: 1
+        run_cmd "hanami generate mailer", output, exit_status: 1
       end
     end
 
@@ -39,7 +39,7 @@ OUT
 cannot find `unknown' mailer. Please have a look at `lib/bookshelf/mailers' directory to find an existing mailer.
 OUT
 
-        run_command "hanami destroy mailer unknown", output, exit_status: 1
+        run_cmd "hanami destroy mailer unknown", output, exit_status: 1
       end
     end
 
@@ -65,7 +65,7 @@ Examples:
   hanami destroy mailer welcome # Destroy `WelcomeMailer` mailer
 OUT
 
-        run_command 'hanami destroy mailer --help', output
+        run_cmd 'hanami destroy mailer --help', output
       end
     end
   end

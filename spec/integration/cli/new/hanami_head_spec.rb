@@ -3,7 +3,7 @@ RSpec.describe "hanami new", type: :integration do
     it "generates project" do
       project = 'bookshelf_hanami_head'
 
-      run_command "hanami new #{project} --hanami-head"
+      run_cmd "hanami new #{project} --hanami-head"
 
       within_project_directory(project) do
         #

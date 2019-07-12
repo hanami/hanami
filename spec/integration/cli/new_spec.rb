@@ -48,11 +48,11 @@ RSpec.describe 'hanami new', type: :integration do
       append  .env.test
 OUT
 
-    run_command "hanami new #{project}", output
+    run_cmd "hanami new #{project}", output
 
     within_project_directory(project) do
       # Assert it's an initialized Git repository
-      run_command "git status", "On branch master"
+      run_cmd "git status", "On branch master"
 
       #
       # .hanamirc
@@ -880,7 +880,7 @@ END
 
     it "generates project" do
       cd(dir) do
-        run_command "hanami new ."
+        run_cmd "hanami new ."
       end
 
       [
@@ -912,7 +912,7 @@ ERROR: "hanami new" was called with no arguments
 Usage: "hanami new PROJECT"
       OUT
 
-      run_command "hanami new", output, exit_status: 1
+      run_cmd "hanami new", output, exit_status: 1
     end
   end
 
@@ -947,6 +947,6 @@ Examples:
   hanami new bookshelf --hanami-head       # Use Hanami HEAD
 OUT
 
-    run_command 'hanami new --help', output
+    run_cmd 'hanami new --help', output
   end
 end

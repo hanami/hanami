@@ -17,7 +17,7 @@ RSpec.shared_examples "a new model" do
         "create  spec/#{project}/repositories/#{model}_repository_spec.rb"
       ]
 
-      run_command "hanami generate model #{input}", output
+      run_cmd "hanami generate model #{input}", output
 
       #
       # lib/<project>/entities/<model>.rb

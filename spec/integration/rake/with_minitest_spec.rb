@@ -1,6 +1,6 @@
 RSpec.describe "Rake: default task", type: :integration do
   context "with Minitest" do
-    it "runs tests" do
+    xit "runs tests" do
       with_project("bookshelf", test: "minitest") do
         setup_model
 

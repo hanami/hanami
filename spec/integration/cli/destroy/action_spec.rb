@@ -12,7 +12,7 @@ RSpec.describe "hanami destroy", type: :integration do
           "remove  spec/web/controllers/books/index_spec.rb"
         ]
 
-        run_command "hanami destroy action web books#index", output
+        run_cmd "hanami destroy action web books#index", output
 
         expect('spec/web/controllers/books/index_spec.rb').to_not be_an_existing_file
         expect('apps/web/controllers/books/index.rb').to_not      be_an_existing_file
@@ -36,7 +36,7 @@ RSpec.describe "hanami destroy", type: :integration do
           "remove  spec/web/controllers/api/books/index_spec.rb"
         ]
 
-        run_command "hanami destroy action web api/books#index", output
+        run_cmd "hanami destroy action web api/books#index", output
 
         expect('spec/web/controllers/api/books/index_spec.rb').to_not be_an_existing_file
         expect('apps/web/controllers/api/books/index.rb').to_not      be_an_existing_file
@@ -57,7 +57,7 @@ RSpec.describe "hanami destroy", type: :integration do
           "remove  spec/web/controllers/home/ping_spec.rb"
         ]
 
-        run_command "hanami destroy action web home#ping", output
+        run_cmd "hanami destroy action web home#ping", output
 
         expect('spec/web/controllers/home/ping_spec.rb').to_not be_an_existing_file
         expect('apps/web/controllers/home/ping.rb').to_not      be_an_existing_file
@@ -76,7 +76,7 @@ ERROR: "hanami destroy action" was called with no arguments
 Usage: "hanami destroy action APP ACTION"
 OUT
 
-        run_command "hanami destroy action", output, exit_status: 1
+        run_cmd "hanami destroy action", output, exit_status: 1
       end
     end
 
@@ -87,7 +87,7 @@ ERROR: "hanami destroy action" was called with arguments ["home#index"]
 Usage: "hanami destroy action APP ACTION"
 OUT
 
-        run_command "hanami destroy action home#index", output, exit_status: 1
+        run_cmd "hanami destroy action home#index", output, exit_status: 1
       end
     end
 
@@ -95,7 +95,7 @@ OUT
       with_project('bookshelf_generate_action_with_unknown_app') do
         output = "`foo' is not a valid APP. Please specify one of: `web'"
 
-        run_command "hanami destroy action foo home#index", output, exit_status: 1
+        run_cmd "hanami destroy action foo home#index", output, exit_status: 1
       end
     end
 
@@ -106,7 +106,7 @@ cannot find `home#index' in `web' application.
 please run `hanami routes' to know the existing actions.
 OUT
 
-        run_command "hanami destroy action web home#index", output, exit_status: 1
+        run_cmd "hanami destroy action web home#index", output, exit_status: 1
       end
     end
 
@@ -134,7 +134,7 @@ Examples:
   hanami destroy action admin users#index # Destroy from `admin` app
 OUT
 
-        run_command 'hanami destroy action --help', output
+        run_cmd 'hanami destroy action --help', output
       end
     end
   end # action

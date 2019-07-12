@@ -28,7 +28,7 @@ RSpec.shared_examples "a new app" do
       append  .env.test
 OUT
 
-      run_command "hanami generate app #{input}", output
+      run_cmd "hanami generate app #{input}", output
 
       #
       # apps/<app>/application.rb

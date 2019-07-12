@@ -4,7 +4,7 @@ RSpec.shared_examples "a new project" do
   let(:project) { Hanami::Utils::String.new(input).underscore.to_s }
 
   it 'generates vanilla project' do
-    run_command "hanami new #{input}"
+    run_cmd "hanami new #{input}"
 
     [
       "create  lib/#{project}.rb",

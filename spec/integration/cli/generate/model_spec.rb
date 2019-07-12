@@ -33,7 +33,7 @@ RSpec.describe "hanami generate", type: :integration do
 ERROR: "hanami generate model" was called with no arguments
 Usage: "hanami generate model MODEL"
 END
-          run_command "hanami generate model", output, exit_status: 1
+          run_cmd "hanami generate model", output, exit_status: 1
         end
       end
     end
@@ -45,7 +45,7 @@ END
           directory  = Pathname.new("db").join("migrations")
           FileUtils.rm_rf(directory)
 
-          run_command "hanami generate model #{model_name}"
+          run_cmd "hanami generate model #{model_name}"
           expect(directory).to be_directory
 
           migration = directory.children.find do |m|
@@ -63,7 +63,7 @@ END
         table_name = "users"
         project = "bookshelf_generate_model_skip_migration"
         with_project(project) do
-          run_command "hanami generate model #{model_name} --skip-migration"
+          run_cmd "hanami generate model #{model_name} --skip-migration"
           #
           # db/migrations/<timestamp>_create_<models>.rb
           #
@@ -81,7 +81,7 @@ END
         table_name = "accounts"
         project = "bookshelf_generate_model_skip_migration"
         with_project(project) do
-          run_command "hanami generate model #{model_name} --skip-migration --relation=#{table_name}"
+          run_cmd "hanami generate model #{model_name} --skip-migration --relation=#{table_name}"
           #
           # db/migrations/<timestamp>_create_<models>.rb
           #
@@ -109,7 +109,7 @@ END
             /create  db\/migrations\/(\d+)_create_#{relation_name}.rb/
           ]
 
-          run_command "hanami generate model #{model_name} --relation=#{relation_name}", output
+          run_cmd "hanami generate model #{model_name} --relation=#{relation_name}", output
 
           expect("lib/#{project}/repositories/#{model_name}_repository.rb").to have_file_content <<-END
 class #{class_name}Repository < Hanami::Repository
@@ -146,7 +146,7 @@ END
             /create  db\/migrations\/(\d+)_create_#{relation_name}.rb/
           ]
 
-          run_command "hanami generate model #{model} --relation=BlackSheeps", output
+          run_cmd "hanami generate model #{model} --relation=BlackSheeps", output
 
           expect("lib/#{project}/repositories/sheep_repository.rb").to have_file_content <<-END
 class SheepRepository < Hanami::Repository
@@ -175,7 +175,7 @@ END
 
       it "returns error for blank option" do
         with_project(project) do
-          run_command "hanami generate model #{model_name} --relation=", "`' is not a valid relation name", exit_status: 1
+          run_cmd "hanami generate model #{model_name} --relation=", "`' is not a valid relation name", exit_status: 1
         end
       end
     end
@@ -192,7 +192,7 @@ END
             "create  spec/#{project}/repositories/#{model}_repository_spec.rb"
           ]
 
-          run_command "hanami generate model #{model}", output
+          run_cmd "hanami generate model #{model}", output
 
           #
           # spec/<project>/entities/<model>_spec.rb
@@ -231,7 +231,7 @@ END
             "create  spec/#{project}/repositories/#{model}_repository_spec.rb"
           ]
 
-          run_command "hanami generate model #{model}", output
+          run_cmd "hanami generate model #{model}", output
 
           #
           # spec/<project>/entities/<model>_spec.rb
@@ -280,7 +280,7 @@ Examples:
   hanami generate model user --relation=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
 OUT
 
-        run_command 'hanami generate model --help', output
+        run_cmd 'hanami generate model --help', output
       end
     end
   end # model
