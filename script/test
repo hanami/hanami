@@ -1,0 +1,36 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+run_tests() {
+  local type=$1
+  local pwd=$PWD
+  local root="$pwd/spec/$type"
+
+  for test in $(find $root -name '*_spec.rb')
+  do
+    run_test $root $test
+
+    if [ $? -ne 0 ]; then
+      local exit_code=$?
+      echo "Failing test: $test"
+      exit $exit_code
+    fi
+  done
+}
+
+run_test() {
+  local root=$1
+  local test=$2
+  local hash="$(shasum "$test" | cut -b 1-40)"
+
+  printf "\n\n\nRunning: $test\n"
+  SIMPLECOV_COMMAND_NAME=$hash bundle exec rspec $test
+}
+
+main() {
+  local type=$1
+  run_tests $type
+}
+
+main $1

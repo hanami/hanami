@@ -13,7 +13,7 @@ Commands:
   hanami db version                         # Print the current migrated version
 OUT
 
-      run_command "hanami db", output, exit_status: 1
+      run_cmd "hanami db", output, exit_status: 1
     end
   end
 end

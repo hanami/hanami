@@ -7,7 +7,7 @@ RSpec.describe "hanami new", type: :integration do
           "create  apps/web/templates/application.html.erb"
         ]
 
-        run_command "hanami new #{project} --template=erb", output
+        run_cmd "hanami new #{project} --template=erb", output
 
         within_project_directory(project) do
           #
@@ -41,7 +41,7 @@ END
           "create  apps/web/templates/application.html.haml"
         ]
 
-        run_command "hanami new #{project} --template=haml", output
+        run_cmd "hanami new #{project} --template=haml", output
 
         within_project_directory(project) do
           #
@@ -72,7 +72,7 @@ END
           "create  apps/web/templates/application.html.slim"
         ]
 
-        run_command "hanami new #{project} --template=slim", output
+        run_cmd "hanami new #{project} --template=slim", output
 
         within_project_directory(project) do
           #
@@ -101,7 +101,7 @@ END
       it "returns error" do
         output = "`' is not a valid template engine. Please use one of: `erb', `haml', `slim'"
 
-        run_command "hanami new bookshelf --template=", output, exit_status: 1
+        run_cmd "hanami new bookshelf --template=", output, exit_status: 1
       end
     end # missing
 
@@ -109,7 +109,7 @@ END
       it "returns error" do
         output = "`foo' is not a valid template engine. Please use one of: `erb', `haml', `slim'"
 
-        run_command "hanami new bookshelf --template=foo", output, exit_status: 1
+        run_cmd "hanami new bookshelf --template=foo", output, exit_status: 1
       end
     end # unknown
   end # template

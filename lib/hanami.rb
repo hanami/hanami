@@ -264,7 +264,7 @@ module Hanami
   # @since 1.0.0
   # @api private
   #
-  # @see http://hanamirb.org/guides/projects/code-reloading/
+  # @see https://guides.hanamirb.org/projects/code-reloading
   def self.code_reloading?
     environment
     Components.resolve('code_reloading')

@@ -105,7 +105,7 @@ OUT
           %r{  hanami db migrate [\d]{14} # Migrate to a specific version}
         ]
 
-        run_command 'hanami db drop --help', output
+        run_cmd 'hanami db drop --help', output
       end
     end
   end

@@ -7,7 +7,7 @@ RSpec.shared_examples "a new migration" do
     project = "bookshelf_generate_migration_#{Random.rand(100_000_000)}"
 
     with_project(project) do
-      run_command "hanami generate migration #{input}", migration
+      run_cmd "hanami generate migration #{input}", migration
 
       #
       # db/migrations/<timestamp>_<migration>.rb
