@@ -1,6 +1,14 @@
 # Hanami
 The web, with simplicity.
 
+## v1.3.2 - 2019-07-26
+### Added
+- [Luca Guidi] Support both `hanami-validations` 1 and 2
+
+### Fixed
+- [Wisnu Adi Nurcahyo] Ensure `hanami generate` syntax for Welcome page is compatible with ZSH
+- [Luca Guidi] Don't let `hanami` to crash when called without `bundle exec`
+
 ## v1.3.1 - 2019-01-18
 ### Added
 - [Luca Guidi] Official support for Ruby: MRI 2.6
