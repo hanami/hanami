@@ -41,7 +41,7 @@ if RUBY_DESCRIPTION =~ /linux/
 end
 
 # `hanami assets` integration tests
-gem 'sass',          require: false
+gem 'sassc',         require: false
 gem 'coffee-script', require: false
 
 gem 'dotenv',    '~> 2.4', require: false
