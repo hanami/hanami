@@ -22,8 +22,6 @@ RSpec.describe "mount applications", type: :integration do
         server do
           # Web
           visit "/"
-          require "byebug"
-          byebug
           expect(page).to have_content("bundle exec hanami generate action web 'home#index' --url=/")
 
           # Admin
