@@ -48,7 +48,7 @@ RSpec.describe "hanami db", type: :integration do
         hanami "db migrate"
 
         output = "the number of steps must be a positive integer (you entered `quindici')."
-        run_command "hanami db rollback quindici", output, exit_status: 1
+        run_cmd "hanami db rollback quindici", output, exit_status: 1
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe "hanami db", type: :integration do
         hanami "db migrate"
 
         output = "the number of steps must be a positive integer (you entered `0')."
-        run_command "hanami db rollback 0", output, exit_status: 1
+        run_cmd "hanami db rollback 0", output, exit_status: 1
       end
     end
 
@@ -86,7 +86,7 @@ Examples:
   hanami db rollback   # Rollbacks latest migration
   hanami db rollback 2 # Rollbacks last two migrations
 OUT
-        run_command 'hanami db rollback --help', output
+        run_cmd 'hanami db rollback --help', output
       end
     end
   end

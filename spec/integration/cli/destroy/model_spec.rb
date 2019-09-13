@@ -14,7 +14,7 @@ RSpec.describe "hanami destroy", type: :integration do
           "remove  lib/bookshelf/entities/user.rb"
         ]
 
-        run_command "hanami destroy model user", output
+        run_cmd "hanami destroy model user", output
 
         expect(migration).to be_an_existing_file
 
@@ -41,7 +41,7 @@ RSpec.describe "hanami destroy", type: :integration do
           "remove  lib/bookshelf/entities/user.rb"
         ]
 
-        run_command "hanami destroy model user", output
+        run_cmd "hanami destroy model user", output
       end
     end
 
@@ -52,7 +52,7 @@ ERROR: "hanami destroy model" was called with no arguments
 Usage: "hanami destroy model MODEL"
 OUT
 
-        run_command "hanami destroy model", output, exit_status: 1
+        run_cmd "hanami destroy model", output, exit_status: 1
       end
     end
 
@@ -68,7 +68,7 @@ Description:
   > $ hanami destroy model car
 OUT
 
-        run_command 'hanami destroy model --help', output
+        run_cmd 'hanami destroy model --help', output
       end
     end
 
@@ -78,7 +78,7 @@ OUT
 cannot find `unknown' model. Please have a look at `lib/bookshelf/entities' directory to find an existing model.
 OUT
 
-        run_command "hanami destroy model unknown", output, exit_status: 1
+        run_cmd "hanami destroy model unknown", output, exit_status: 1
       end
     end
 
@@ -104,7 +104,7 @@ Examples:
   hanami destroy model user # Destroy `User` entity and `UserRepository` repository
 OUT
 
-        run_command 'hanami destroy model --help', output
+        run_cmd 'hanami destroy model --help', output
       end
     end
   end # model

@@ -147,7 +147,7 @@ module Hanami
     #
     # @since 0.8.0
     #
-    # @see http://hanamirb.org/guides/routing/testing
+    # @see https://guides.hanamirb.org/routing/testing
     #
     # @example Path Generation
     #   # spec/web/routes_spec.rb

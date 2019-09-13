@@ -6,7 +6,7 @@ Commands:
   hanami assets precompile              # Precompile assets for deployment
 OUT
 
-      run_command "hanami assets", output, exit_status: 1
+      run_cmd "hanami assets", output, exit_status: 1
     end
   end
 end

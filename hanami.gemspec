@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.metadata['allowed_push_host'] = 'https://rubygems.org'
 
   spec.add_dependency 'hanami-utils',       '~> 1.3'
-  spec.add_dependency 'hanami-validations', '~> 1.3'
+  spec.add_dependency 'hanami-validations', '>= 1.3', '< 3'
   spec.add_dependency 'hanami-router',      '~> 1.3'
   spec.add_dependency 'hanami-controller',  '~> 1.3'
   spec.add_dependency 'hanami-view',        '~> 1.3'
@@ -31,10 +31,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'hanami-assets',      '~> 1.3'
   spec.add_dependency 'hanami-cli',         '~> 0.3'
   spec.add_dependency 'concurrent-ruby',    '~> 1.0'
-  spec.add_dependency 'bundler'
+  spec.add_dependency 'bundler',            '>= 1.6', '< 3'
 
-  spec.add_development_dependency 'rspec',     '~>  3.7'
+  spec.add_development_dependency 'rspec',     '~> 3.7'
   spec.add_development_dependency 'rack-test', '~> 1.1'
-  spec.add_development_dependency 'aruba',     '~>  0.14'
+  spec.add_development_dependency 'aruba',     '~> 0.14'
   spec.add_development_dependency 'rake',      '~> 12.0'
 end

@@ -11,7 +11,7 @@ RSpec.describe 'hanami server', type: :integration do
 
           expect(page).to have_content("The web, with simplicity.")
           expect(page).to have_content("Hanami is Open Source Software for MVC web development with Ruby.")
-          expect(page).to have_content("bundle exec hanami generate action web home#index --url=/")
+          expect(page).to have_content("bundle exec hanami generate action web 'home#index' --url=/")
         end
       end
     end
@@ -23,7 +23,7 @@ RSpec.describe 'hanami server', type: :integration do
         server do
           visit "/admin"
 
-          expect(page).to have_content("bundle exec hanami generate action admin home#index --url=/")
+          expect(page).to have_content("bundle exec hanami generate action admin 'home#index' --url=/")
         end
       end
     end
@@ -112,7 +112,7 @@ EOF
           touch log
           replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
 
-          run_command "hanami generate action web home#index --url=/", []
+          run_cmd "hanami generate action web home#index --url=/", []
 
           server do
             visit "/?ping=pong"
@@ -130,7 +130,7 @@ EOF
           touch log
           replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
 
-          run_command "hanami generate action web books#create --method=POST", []
+          run_cmd "hanami generate action web books#create --method=POST", []
 
           server do
             post "/books", book: { title: "Functions" }
@@ -148,7 +148,7 @@ EOF
           replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
           inject_line_after "config/environment.rb", "Hanami.configure", "require 'hanami/middleware/body_parser'\nmiddleware.use Hanami::Middleware::BodyParser, :json"
 
-          run_command "hanami generate action web books#create --method=POST", []
+          run_cmd "hanami generate action web books#create --method=POST", []
           inject_line_after "apps/web/controllers/books/create.rb", "call", 'Hanami.logger.debug(request.env["CONTENT_TYPE"]);self.body = %({"status":"OK"})'
 
           server do
@@ -556,7 +556,7 @@ Examples:
   hanami server --no-code-reloading # Disable code reloading
 OUT
 
-      run_command 'hanami server --help', output
+      run_cmd 'hanami server --help', output
     end
   end
 

@@ -1,6 +1,24 @@
 # Hanami
 The web, with simplicity.
 
+## v1.3.2 - 2019-07-26
+### Added
+- [Luca Guidi] Support both `hanami-validations` 1 and 2
+
+### Fixed
+- [Wisnu Adi Nurcahyo] Ensure `hanami generate` syntax for Welcome page is compatible with ZSH
+- [Luca Guidi] Don't let `hanami` to crash when called without `bundle exec`
+
+## v1.3.1 - 2019-01-18
+### Added
+- [Luca Guidi] Official support for Ruby: MRI 2.6
+- [Luca Guidi] Support `bundler` 2.0+
+
+### Fixed
+- [Aidan Coyle] Remove from app generator support for deprecated `force_ssl` setting
+- [Alessandro Caporrini] Remove from app generator support for deprecated `body_parsers` setting
+- [Daphne Rouw & Sean Collins] Make app generator to work when code in `config/enviroment.rb` uses double quotes
+
 ## v1.3.0 - 2018-10-24
 ### Added
 - [Luca Guidi] Automatically log body payload from body parsers

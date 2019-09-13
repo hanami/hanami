@@ -3,7 +3,7 @@ require 'json'
 RSpec.describe 'hanami assets', type: :integration do
   describe 'precompile' do
     it "precompiles assets" do
-      gems = ['sass', 'coffee-script']
+      gems = ['sassc', 'coffee-script']
 
       Platform.match do
         os(:linux).engine(:ruby)  { gems.push('therubyracer') }
@@ -140,7 +140,7 @@ Examples:
   hanami assets precompile HANAMI_ENV=production # Precompile assets for production environment
 OUT
 
-        run_command "hanami assets precompile --help", output
+        run_cmd "hanami assets precompile --help", output
       end
     end
   end

@@ -1,0 +1,349 @@
+kind: pipeline
+name: ruby-2-6
+group: build
+
+steps:
+- name: install
+  image: hanami/ruby-2.6-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    path: /usr/local/bundle
+  commands:
+  - ruby -v
+  - gem install bundler
+  - bundle install --jobs=3 --retry=3
+
+- name: unit
+  image: hanami/ruby-2.6-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    path: /usr/local/bundle
+  commands:
+  - COVERAGE=true bundle exec rake spec:unit
+
+- name: isolation
+  image: hanami/ruby-2.6-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - ./script/test isolation
+
+- name: integration
+  image: hanami/ruby-2.6-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - ./script/test integration
+
+- name: quality
+  image: hanami/ruby-2.6-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+    CODECOV_TOKEN:
+      from_secret: codecov
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - CI=true bundle exec rake codecov:upload
+
+volumes:
+- name: bundle
+  temp: {}
+
+---
+kind: pipeline
+name: ruby-2-5
+group: build
+
+steps:
+- name: install
+  image: hanami/ruby-2.5-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    path: /usr/local/bundle
+  commands:
+  - ruby -v
+  - gem install bundler
+  - bundle install --jobs=3 --retry=3
+
+- name: unit
+  image: hanami/ruby-2.5-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    path: /usr/local/bundle
+  commands:
+  - COVERAGE=true bundle exec rake spec:unit
+
+- name: isolation
+  image: hanami/ruby-2.5-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - ./script/test isolation
+
+- name: integration
+  image: hanami/ruby-2.5-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - ./script/test integration
+
+- name: quality
+  image: hanami/ruby-2.5-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+    CODECOV_TOKEN:
+      from_secret: codecov
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - CI=true bundle exec rake codecov:upload
+
+volumes:
+- name: bundle
+  temp: {}
+
+---
+kind: pipeline
+name: ruby-2-4
+group: build
+
+steps:
+- name: install
+  image: hanami/ruby-2.4-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    path: /usr/local/bundle
+  commands:
+  - ruby -v
+  - gem install bundler
+  - bundle install --jobs=3 --retry=3
+
+- name: unit
+  image: hanami/ruby-2.4-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    path: /usr/local/bundle
+  commands:
+  - COVERAGE=true bundle exec rake spec:unit
+
+- name: isolation
+  image: hanami/ruby-2.4-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - ./script/test isolation
+
+- name: integration
+  image: hanami/ruby-2.4-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - ./script/test integration
+
+- name: quality
+  image: hanami/ruby-2.4-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+    CODECOV_TOKEN:
+      from_secret: codecov
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - CI=true bundle exec rake codecov:upload
+
+volumes:
+- name: bundle
+  temp: {}
+
+---
+kind: pipeline
+name: ruby-2-3
+group: build
+
+steps:
+- name: install
+  image: hanami/ruby-2.3-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    path: /usr/local/bundle
+  commands:
+  - ruby -v
+  - gem install bundler
+  - bundle install --jobs=3 --retry=3
+
+- name: unit
+  image: hanami/ruby-2.3-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    path: /usr/local/bundle
+  commands:
+  - COVERAGE=true bundle exec rake spec:unit
+
+- name: isolation
+  image: hanami/ruby-2.3-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - ./script/test isolation
+
+- name: integration
+  image: hanami/ruby-2.3-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - ./script/test integration
+
+- name: quality
+  image: hanami/ruby-2.3-full
+  docker:
+    stdin_open: true
+    tty: true
+  environment:
+    CI: true
+    CODECOV_TOKEN:
+      from_secret: codecov
+  volumes:
+  - name: bundle
+    # path: /drone/src/vendor/cache
+    path: /usr/local/bundle
+  commands:
+  - CI=true bundle exec rake codecov:upload
+
+volumes:
+- name: bundle
+  temp: {}
+
+---
+kind: pipeline
+name: slack
+group: build
+
+clone:
+  disable: true
+
+depends_on:
+  - ruby-2-3
+
+steps:
+- name: slack
+  image: plugins/slack
+  settings:
+    link_names: true
+    webhook:
+      from_secret: slack
+      channel: dev
+  when:
+    event:
+    - push

@@ -78,7 +78,7 @@ module Hanami
     #     mailer do
     #       root 'lib/bookshelf/mailers'
     #
-    #       # See http://hanamirb.org/guides/mailers/delivery
+    #       # See https://guides.hanamirb.org/mailers/delivery
     #       delivery :test
     #     end
     #
@@ -154,7 +154,7 @@ module Hanami
     # @see Hanami.logger
     # @see Hanami::Logger
     #
-    # @see http://hanamirb.org/guides/projects/logging/
+    # @see https://guides.hanamirb.org/projects/logging
     #
     # @example Basic Usage
     #   # config/environment.rb

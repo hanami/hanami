@@ -31,7 +31,7 @@ Options:
   --help, -h                      	# Print this help
 OUT
 
-        run_command "hanami db console --help", output
+        run_cmd "hanami db console --help", output
       end
     end
   end
