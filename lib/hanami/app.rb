@@ -62,9 +62,7 @@ module Hanami
     # @api private
     def mount(configuration)
       configuration.mounted.each do |klass, app|
-        # TODO: think if this line is in the correct place
-        host = [app.host, Components['environment'].host].compact.join('.') if Components['environment'].host != 'localhost'
-        routes.mount(klass, at: app.path_prefix, host: host)
+        routes.mount(klass, at: app.path_prefix, host: app.host)
       end
     end
 

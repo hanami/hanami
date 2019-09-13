@@ -28,6 +28,8 @@ module Hanami
     #   # config/environment.rb
     #   # ...
     #   Hanami.configure do
+    #     mount Beta::Application, at: '/', host: 'beta.bookshelf.com'
+    #     mount Admin::Application, at: '/api'
     #     mount Web::Application, at: '/'
     #
     #     # ...
