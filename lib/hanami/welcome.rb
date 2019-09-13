@@ -14,6 +14,7 @@ module Hanami
     # @api private
     def call(env)
       @request_path = env['REQUEST_PATH'] || ''
+      @request_host = env['HTTP_HOST'] || ''
       @body = [ERB.new(@root.join('welcome.html.erb').read).result(binding)]
 
       [200, {}, @body]
@@ -29,7 +30,11 @@ module Hanami
     # @api private
     def application_class
       Hanami.configuration.apps do |app|
-        return app if @request_path.include?(app.path_prefix)
+        if app.host.nil?
+          return app if @request_path.include?(app.path_prefix)
+        else
+          return app if @request_host == app.host
+        end
       end
     end
   end
