@@ -48,11 +48,17 @@ module Hanami
     # @api private
     RACK_ENV_DEPLOYMENT = 'deployment'.freeze
 
-    # Default `.env` per environment file name
+    # Default `.env` files that are loaded. The entries are ordered from highest
+    # to lowest priority.
     #
     # @since 0.2.0
     # @api private
-    DEFAULT_DOTENV_ENV = '.env.%s'.freeze
+    DEFAULT_DOTENV_ENV_PATTERNS = [
+      '.env.%{environment}.local'.freeze,
+      '.env.local'.freeze,
+      '.env.%{environment}'.freeze,
+      '.env'.freeze
+    ].freeze
 
     # Default configuration directory under application root
     #
@@ -132,9 +138,8 @@ module Hanami
     # located under the config directory. All the settings in those files will
     # be exported as `ENV` variables.
     #
-    # Master .env file is ignored to suggest clear separation of environment
-    # configurations and discourage putting sensitive information into source
-    # control.
+    # This table: https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
+    # has more info on the priority of the .env files.
     #
     # The format of those `.env.<environment>` files follows UNIX and UNIX-like
     # operating system environment variable declaration format and compatible
@@ -487,10 +492,11 @@ module Hanami
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      dotenv = root.join(DEFAULT_DOTENV_ENV % environment)
-      return unless dotenv.exist?
-
-      env.load!(dotenv)
+      DEFAULT_DOTENV_ENV_PATTERNS.each do |filename_format|
+        next if filename_format == '.env.local' && environment == 'test'
+        path = root.join(filename_format % { environment: environment })
+        env.load!(path) if path.exist?
+      end
     end
 
     # @since 0.1.0

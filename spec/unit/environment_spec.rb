@@ -20,21 +20,27 @@ RSpec.describe Hanami::Environment do
   end
 
   describe "#initialize" do
-    context "global .env" do
-      it "doesn't set env vars from .env" do
-        with_directory('spec/support/fixtures') do
+    context 'when environment is test' do
+      let(:env) { Hash['HANAMI_ENV' => 'test'] }
+
+      it 'does not set env variables from .env.local' do
+
+        with_directory('spec/support/fixtures/dotenv') do
           described_class.new(env: env)
 
-          expect(env['FOO']).to be_nil # see spec/support/fixtures/.env
+          expect(env['GLOBAL_ENV_LOCAL']).to eq(nil)
         end
       end
+    end
 
-      it "doesn't sets port" do
-        with_directory('spec/support/fixtures') do
-          subject = described_class.new(env: env)
+    context 'when environment is not test' do
+      let(:env) { Hash['HANAMI_ENV' => 'development'] }
 
-          # returns default instead the value from spec/support/fixtures/.env
-          expect(subject.port).to eq(2300)
+      it 'loads environment variables from .env.local' do
+        with_directory('spec/support/fixtures/dotenv') do
+          described_class.new(env: env)
+
+          expect(env['GLOBAL_ENV_LOCAL']).to eq('true')
         end
       end
     end
@@ -48,6 +54,14 @@ RSpec.describe Hanami::Environment do
 
           expect(env['BAZ']).to eq('yes')
           expect(env['WAT']).to eq('true')
+        end
+      end
+
+      it 'sets env variables from env specific .local files with highest priority' do
+        with_directory('spec/support/fixtures/dotenv') do
+          env = Hash['HANAMI_ENV' => 'development']
+          described_class.new(env: env)
+          expect(env['LOADED_ENV_FILE']).to eq('.env.development.local')
         end
       end
 
