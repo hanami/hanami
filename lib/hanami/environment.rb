@@ -36,6 +36,12 @@ module Hanami
     # @api private
     DEFAULT_ENV    = 'development'.freeze
 
+    # Test environment
+    #
+    # @since 1.3.3
+    # @api private
+    TEST_ENV = 'test'.freeze
+
     # Production environment
     #
     # @since 0.6.0
@@ -48,14 +54,18 @@ module Hanami
     # @api private
     RACK_ENV_DEPLOYMENT = 'deployment'.freeze
 
+    # @since 1.3.3
+    # @api private
+    DOTENV_LOCAL_FILE = '.env.local'.freeze
+
     # Default `.env` files that are loaded. The entries are ordered from highest
     # to lowest priority.
     #
-    # @since 0.2.0
+    # @since 1.3.3
     # @api private
-    DEFAULT_DOTENV_ENV_PATTERNS = [
+    DOTENV_FILES = [
       '.env.%{environment}.local'.freeze,
-      '.env.local'.freeze,
+      DOTENV_LOCAL_FILE,
       '.env.%{environment}'.freeze,
       '.env'.freeze
     ].freeze
@@ -492,9 +502,11 @@ module Hanami
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      DEFAULT_DOTENV_ENV_PATTERNS.each do |filename_format|
-        next if filename_format == '.env.local' && environment == 'test'
-        path = root.join(filename_format % { environment: environment })
+      DOTENV_FILES.each do |filename_format|
+        file = filename_format % { environment: environment }
+        next unless dotenv_applicable?(file)
+
+        path = root.join(file)
         env.load!(path) if path.exist?
       end
     end
@@ -514,6 +526,16 @@ module Hanami
       else
         env[RACK_ENV]
       end
+    end
+
+    # @api private
+    # @since 1.3.3
+    #
+    # @see https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
+    def dotenv_applicable?(file)
+      return false if file == DOTENV_LOCAL_FILE && environment == TEST_ENV
+
+      true
     end
   end
 end
