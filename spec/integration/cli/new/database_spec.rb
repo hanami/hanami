@@ -136,6 +136,8 @@ RSpec.describe "hanami new", type: :integration do
 /db/*.sqlite
 /public/assets*
 /tmp
+.env.local
+.env.*.local
           END
         end
       end
@@ -205,6 +207,8 @@ RSpec.describe "hanami new", type: :integration do
           expect(".gitignore").to have_file_content <<-END
 /public/assets*
 /tmp
+.env.local
+.env.*.local
           END
         end
       end
