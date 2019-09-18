@@ -37,6 +37,10 @@ module Hanami
     # @api private
     RACK_ERRORS          = 'rack.errors'.freeze
 
+    # @since 1.3.3
+    # @api private
+    RACK_EXCEPTION       = 'rack.exception'.freeze
+
     # @since 1.1.0
     # @api private
     QUERY_HASH           = 'rack.request.query_hash'.freeze
@@ -69,13 +73,15 @@ module Hanami
         elapsed: now - began_at
       ]
 
+      add_exception_info!(msg, env[RACK_EXCEPTION]) if env[RACK_EXCEPTION]
+
       logger = @logger || env[RACK_ERRORS]
       # Standard library logger doesn't support write but it supports << which actually
       # calls to write on the log device without formatting
       if logger.respond_to?(:write)
         logger.write(msg)
       else
-        logger.info(msg)
+        env[RACK_EXCEPTION] ? logger.error(msg) : logger.info(msg)
       end
     end
     # rubocop:enable Metrics/MethodLength
@@ -88,6 +94,17 @@ module Hanami
       result.merge!(env.fetch(FORM_HASH, {}))
       result.merge!(Utils::Hash.deep_stringify(env.fetch(ROUTER_PARAMS, {})))
       result
+    end
+
+    # @since 1.3.3
+    # @api private
+    def add_exception_info!(msg, exception)
+      exception_info = Hash[
+        message: exception.message,
+        backtrace: exception.backtrace,
+        error: exception.class
+      ]
+      msg.merge!(exception_info)
     end
   end
 end

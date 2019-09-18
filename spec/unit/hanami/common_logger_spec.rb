@@ -6,8 +6,11 @@ RSpec.describe Hanami::CommonLogger do
 
   describe "#call" do
     let(:app) do
+      exception = StandardError.new("Exception")
+      exception.set_backtrace(['backtrace/path/1', 'backtrace/path/2'])
       app = lambda do |env|
         env["rack.errors"] = device
+        env["rack.exception"] = exception
         env["PATH_INFO"] = Pathname.new("logo.png")
         [200, {}, ["OK"]]
       end
@@ -24,6 +27,16 @@ RSpec.describe Hanami::CommonLogger do
 
         device.rewind
         expect(device.read).to include(%(:path=>"logo.png"))
+      end
+    end
+
+    context "when rack.exception is present" do
+      it "populates exception info" do
+        get "/"
+
+        device.rewind
+        exception_info = %(:message=>"Exception", :backtrace=>["backtrace/path/1", "backtrace/path/2"], :error=>StandardError)
+        expect(device.read).to include(exception_info)
       end
     end
   end
