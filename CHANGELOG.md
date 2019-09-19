@@ -1,6 +1,13 @@
 # Hanami
 The web, with simplicity.
 
+## v1.3.3 - 2019-09-20
+### Added
+- [Gray Manley] Standardize file loading for `.env` files (see: https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use)
+
+### Fixed
+- [Alfonso Uceda & Luca Guidi] Ensure to use `:host` option when mounting an application in main router (e.g. `mount Beta::Application.new, at: "/", host: "beta.hanami.test"`)
+
 ## v1.3.2 - 2019-07-26
 ### Added
 - [Luca Guidi] Support both `hanami-validations` 1 and 2

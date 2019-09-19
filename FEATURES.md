@@ -3,6 +3,10 @@
 
 ## Features
 
+## v1.3.3 - 2019-09-20
+
+- Standardize file loading for `.env` files (see: https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use)
+
 ## v1.3.2 - 2019-07-26
 
 ## v1.3.1 - 2019-01-18
