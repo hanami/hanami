@@ -62,7 +62,7 @@ module Hanami
     # @api private
     def mount(configuration)
       configuration.mounted.each do |klass, app|
-        routes.mount(klass, at: app.path_prefix)
+        routes.mount(klass, at: app.path_prefix, host: app.host)
       end
     end
 

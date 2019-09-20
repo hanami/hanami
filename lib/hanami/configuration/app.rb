@@ -7,11 +7,14 @@ module Hanami
     class App < SimpleDelegator
       # @api private
       attr_reader :path_prefix
+      # @api private
+      attr_reader :host
 
       # @api private
-      def initialize(app, path_prefix)
+      def initialize(app, options = {})
         super(app)
-        @path_prefix = path_prefix
+        @path_prefix = options[:at]
+        @host = options[:host]
       end
     end
   end

@@ -20,6 +20,7 @@ module Hanami
     # @param app [#call] an application compatible with Rack SPEC
     # @param options [Hash] a set of options
     # @option :at [String] options the mount point
+    # @option :host [String] options the mount point
     #
     # @since 0.9.0
     #
@@ -27,12 +28,14 @@ module Hanami
     #   # config/environment.rb
     #   # ...
     #   Hanami.configure do
+    #     mount Beta::Application, at: '/', host: 'beta.bookshelf.com'
+    #     mount Admin::Application, at: '/api'
     #     mount Web::Application, at: '/'
     #
     #     # ...
     #   end
     def mount(app, options)
-      mounted[app] = App.new(app, options.fetch(:at))
+      mounted[app] = App.new(app, options)
     end
 
     # Configure database

@@ -36,6 +36,12 @@ module Hanami
     # @api private
     DEFAULT_ENV    = 'development'.freeze
 
+    # Test environment
+    #
+    # @since 1.3.3
+    # @api private
+    TEST_ENV = 'test'.freeze
+
     # Production environment
     #
     # @since 0.6.0
@@ -48,11 +54,21 @@ module Hanami
     # @api private
     RACK_ENV_DEPLOYMENT = 'deployment'.freeze
 
-    # Default `.env` per environment file name
-    #
-    # @since 0.2.0
+    # @since 1.3.3
     # @api private
-    DEFAULT_DOTENV_ENV = '.env.%s'.freeze
+    DOTENV_LOCAL_FILE = '.env.local'.freeze
+
+    # Default `.env` files that are loaded. The entries are ordered from highest
+    # to lowest priority.
+    #
+    # @since 1.3.3
+    # @api private
+    DOTENV_FILES = [
+      '.env.%{environment}.local'.freeze,
+      DOTENV_LOCAL_FILE,
+      '.env.%{environment}'.freeze,
+      '.env'.freeze
+    ].freeze
 
     # Default configuration directory under application root
     #
@@ -132,9 +148,8 @@ module Hanami
     # located under the config directory. All the settings in those files will
     # be exported as `ENV` variables.
     #
-    # Master .env file is ignored to suggest clear separation of environment
-    # configurations and discourage putting sensitive information into source
-    # control.
+    # This table: https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
+    # has more info on the priority of the .env files.
     #
     # The format of those `.env.<environment>` files follows UNIX and UNIX-like
     # operating system environment variable declaration format and compatible
@@ -487,10 +502,13 @@ module Hanami
     # @since 0.2.0
     # @api private
     def set_application_env_vars!
-      dotenv = root.join(DEFAULT_DOTENV_ENV % environment)
-      return unless dotenv.exist?
+      DOTENV_FILES.each do |filename_format|
+        file = filename_format % { environment: environment }
+        next unless dotenv_applicable?(file)
 
-      env.load!(dotenv)
+        path = root.join(file)
+        env.load!(path) if path.exist?
+      end
     end
 
     # @since 0.1.0
@@ -508,6 +526,16 @@ module Hanami
       else
         env[RACK_ENV]
       end
+    end
+
+    # @api private
+    # @since 1.3.3
+    #
+    # @see https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
+    def dotenv_applicable?(file)
+      return false if file == DOTENV_LOCAL_FILE && environment == TEST_ENV
+
+      true
     end
   end
 end
