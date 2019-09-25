@@ -7,27 +7,12 @@
 # @see http://hanamirb.org
 module Hanami
   require "hanami/version"
-  require "hanami/frameworks"
-  require "hanami/container"
+  # require "hanami/frameworks"
+  require "hanami/container" # TODO: get rid of this
   require "hanami/application"
+  require "hanami/slice"
 
   @_mutex = Mutex.new
-
-  def self.application_class
-    @_mutex.synchronize do
-      raise "Hanami.application_class not configured" unless defined?(@_application_class)
-
-      @_application_class
-    end
-  end
-
-  def self.application_class=(klass)
-    @_mutex.synchronize do
-      raise "Hanami.application_class already configured" if defined?(@_application_class)
-
-      @_application_class = klass unless klass.name.nil?
-    end
-  end
 
   def self.application
     @_mutex.synchronize do
@@ -37,9 +22,15 @@ module Hanami
     end
   end
 
+  def self.application?
+    defined?(@_application) && @_application
+  end
+
   def self.application=(application)
     @_mutex.synchronize do
-      raise "Hanami.application already configured" if defined?(@_application)
+      # Maybe just warn here?
+
+      # raise "Hanami.application already configured" if defined?(@_application)
 
       @_application = application
     end
@@ -65,16 +56,17 @@ module Hanami
     Container[:logger]
   end
 
-  def self.boot
-    @_mutex.synchronize do
-      raise "Hanami application already booted" if defined?(@_booted)
+  # WIP — this could just be removed given we have it in Application now?
+  # def self.boot
+  #   @_mutex.synchronize do
+  #     raise "Hanami application already booted" if defined?(@_booted)
 
-      @_booted = true
-    end
+  #     @_booted = true
+  #   end
 
-    Container.finalize!
-    self.application = application_class.new
-  end
+  #   Container.finalize!
+  #   # self.application = application_class.new
+  # end
 
   def self.bundler_groups
     [:plugins]
