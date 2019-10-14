@@ -1,136 +1,187 @@
 # frozen_string_literal: true
 
-require_relative "../hanami"
 require "hanami/configuration"
-require "hanami/routes"
-require "hanami/router"
-
-# These are all for the new Application
-require "dry/inflector"
-require "dry/monitor" # from dry-web, TODO: remove
-require "dry/system/container"
-require "dry/system/components"
+require "pathname"
+require "rack"
+require_relative "application/container"
+require_relative "slice"
+require_relative "web/router"
 
 module Hanami
-  class Application < Dry::System::Container
-    setting :inflector, Dry::Inflector.new, reader: true
-    setting :slices_dir, "slices"
-
-    use :env, inferrer: -> { ENV.fetch("RACK_ENV", "development").to_sym }
-    use :logging
-    use :notifications
-    use :monitoring
-
+  class Application
     @_mutex = Mutex.new
 
-    # From old application
+    class << self
+      def inherited(klass)
+        @_mutex.synchronize do
+          klass.class_eval do
+            @_mutex         = Mutex.new
+            @_configuration = Hanami::Configuration.new(env: Hanami.env)
+
+            extend ClassMethods
+            include InstanceMethods
+          end
+
+          Hanami.application_class = klass
+        end
+      end
+    end
+
     module ClassMethods
       def configuration
         @_configuration
       end
 
-      # FIXME: I had to remove this alias since `.config` is used by
-      # Dry::System::Container's own dry-configurable-provided settings
-      #
-      # alias config configuration
-    end
+      alias_method :config, :configuration
 
-    def self.inherited(app_class)
-      super
+      def container
+        @_container ||= define_container
+      end
 
-      # This block is from the previous version of Hanami::Application. Need to
-      # work out just how exactly to nicely merge it into the new structure
-      @_mutex.synchronize do
-        app_class.class_eval do
-          # @_mutex         = Mutex.new
+      def slices
+        @_slices ||= Dir[File.join(slices_path, "*")]
+          .select(&File.method(:directory?))
+          .map(&method(:load_slice))
+      end
 
-          # Is this a problem given we'll be setting this before the subclass
-          # gets a chance to perhaps change its own env?
-          #
-          # OK, this is actually a problem, since accessing the config and
-          # results in Dry::Configurable::AlreadyDefinedConfig errors when we
-          # try and add more settings later
-          # @_configuration = Hanami::Configuration.new(env: app_class.config.env)
+      alias_method :load_slices, :slices
 
-          # Hard-code this for now, just to get out of the situation
-          @_configuration = Hanami::Configuration.new(env: :development)
+      # Delegate some methods to container:
+      def boot(*args, &block)
+        container.boot(*args, &block)
+      end
+      def [](*args)
+        container.[](*args)
+      end
 
-          extend ClassMethods
-          # include InstanceMethods
+      def boot!(&block)
+        container.configure do; end # force after configure hook
+
+        container.finalize!(&block)
+
+        slices.each do |slice|
+          slice.boot!
         end
 
-        Hanami.application = app_class
+        self
       end
 
-      app_class.after :configure do
-        register_inflector
-        load_paths! "lib"
+      def routes(&block)
+        @_mutex.synchronize do
+          if block.nil?
+            raise "Hanami.application_class.routes not configured" unless defined?(@_routes)
+
+            @_routes
+          else
+            @_routes = block
+          end
+        end
+      end
+
+      # TODO move somewhere more central
+      MODULE_DELIMITER = "::"
+
+      def application_module
+        inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
+      end
+
+      def application_name
+        inflector.underscore(application_module.to_s)
+      end
+
+      def root
+        # TODO: do we need anything more sophisticated than this? This is how
+        # Dry::System::Container determines its root by default, anyway.
+        Dir.pwd
+      end
+
+      def inflector
+        # TODO: might be good if we provided access as `config.inflector` too
+        config.inflections
+      end
+
+      private
+
+      def define_container
+        # TODO: raise error if constant already defined?
+
+        Class.new(Container).tap do |container|
+          container.configure do |config|
+            config.auto_register = "lib/#{application_name}" # TODO: get from config somehow?
+            config.default_namespace = application_name
+          end
+
+          # Any other config to pass in?
+
+          const_set :Container, container
+          application_module.const_set :Import, container.injector
+        end
+      end
+
+      def slices_path
+        File.join(root, config.slices_dir)
+      end
+
+      def load_slice(slice_path)
+        slice_name = Pathname(slice_path).relative_path_from(slices_path).to_s
+
+        slice_module = Module.new
+        config.slices_namespace.const_set inflector.camelize(slice_name), slice_module
+
+        slice = Slice.new(
+          self,
+          namespace: slice_module,
+          root: Pathname(slice_path).realpath.to_s,
+        )
+        slice_module.const_set :Slice, slice
+
+        slice
       end
     end
 
-    def self.slices
-      @slices ||= load_slices
-    end
+    module InstanceMethods
+      # TODO: work out which params signature is actually better...
 
-    def self.load_slices
-      @slices ||= slice_paths
-        .map(&method(:load_slice))
-        .compact
-        .to_h
-    end
+      # def initialize(
+      #   configuration: self.class.configuration,
+      #   container: self.class.container,
+      #   slices: self.class.slices,
+      #   routes: self.class.routes
+      # )
+      def initialize(application = self.class)
+        application.boot!
 
-    # We can't call this `.boot` because it is the name used for registering
-    # bootable components (I plan to change this)
-    def self.boot!
-      return self if booted?
+        resolver = application.config.endpoint_resolver.new(
+          container: application,
+          namespace: application.config.action_key_namespace,
+        )
 
-      finalize! freeze: false
+        router = Web::Router.new(
+          application: application,
+          endpoint_resolver: resolver,
+          &application.routes
+        )
 
-      load_slices
-      slices.values.each(&:boot!)
+        # TODO: pass in configuration.router_settings somewhere
 
-      @booted = true
+        @app = Rack::Builder.new do
+          use application[:rack_monitor]
 
-      freeze
-      self
-    end
+          # TODO: need to work out best way forward re: handling middlewares.
+          # Declaring middlewares directly in routes is IMO the most flexible
+          # option, but perhaps we might want to retain the idea of middleware
+          # defined in the config, somehow?
+          router.middlewares.each do |(*middleware, block)|
+            use(*middleware, &block)
+          end
 
-    def self.booted?
-      @booted.equal?(true)
-    end
+          run router
+        end
+      end
 
-    MODULE_DELIMITER = "::"
-
-    def self.module
-      inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
-    end
-
-    private
-
-    def self.slice_paths
-      Dir[File.join(config.root, config.slices_dir, "*")]
-    end
-
-    def self.load_slice(base_path)
-      base_path = Pathname(base_path)
-      full_defn_path = Dir["#{base_path}/system/**/slice.rb"].first
-
-      return unless full_defn_path
-
-      require full_defn_path
-
-      const_path = Pathname(full_defn_path)
-        .relative_path_from(base_path.join("system")).to_s
-        .yield_self { |path| path.sub(/#{File.extname(path)}$/, "") }
-
-      const = inflector.constantize(inflector.camelize(const_path))
-
-      [File.basename(base_path).to_sym, const]
-    end
-
-    def self.register_inflector
-      return self if key?(:inflector)
-      register :inflector, inflector
+      def call(env)
+        @app.call(env)
+      end
     end
   end
 end

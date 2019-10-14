@@ -5,88 +5,77 @@ require "pathname"
 require_relative "../hanami"
 
 module Hanami
-  class Slice < Dry::System::Container
-    use :env, inferrer: -> { ENV.fetch("RACK_ENV", "development").to_sym }
+  class Slice
+    attr_reader :application, :namespace, :root
 
-    def self.inherited(klass)
-      super
-
-      if klass.superclass == Hanami::Slice
-        raise "Hanami.application not configured yet" unless Hanami.application? # FIXME
-
-        app = Hanami.application
-
-        klass.instance_variable_set :@application, app
-
-        klass.config.env = app.env
-        klass.config.name = klass.slice_name.to_sym
-        klass.config.auto_register = [File.join("lib", klass.slice_namespace_path)]
-        klass.config.default_namespace = klass.slice_namespace_identifier_prefix
-
-        slice_path = File.join(app.config.root, app.config.slices_dir, klass.slice_name)
-        if File.directory?(slice_path)
-          klass.config.root = slice_path if File.directory?(slice_path)
-          klass.load_paths! "lib"
-
-          if File.directory?(File.join(klass.config.root, klass.config.system_dir))
-            klass.load_paths! klass.config.system_dir
-          end
-        end
-
-        klass.import application: app
-      end
+    def initialize(application, namespace: nil, root: nil, container: nil)
+      @application = application
+      @namespace = namespace
+      @root = root
+      @container = container || define_container # TODO: better here, or lazily?
     end
 
-    def self.import_slice(*slices)
-      @slice_imports ||= []
-      @slice_imports += slices
-      @slice_imports.uniq!
-      self
+    def name
+      return unless namespace
+
+      @name ||= inflector.underscore(namespace.to_s).split("/").last.to_sym
     end
 
-    def self.application
-      @application
+    def container
+      @container ||= define_container
     end
 
-    def self.boot!
-      finalize!
+    def [](*args)
+      container.[](*args)
     end
 
-    def self.finalize!(*)
-      return self if finalized?
+    def boot!
+      container.configure do; end # force after configure hook
 
-      # Force `after :configure` hooks to run
-      configure do; end
+      # TODO: run finalize blocks somehow supplied by config?
+      container.finalize!
+    end
 
-      super do
-        Array(@slice_imports).each do |slice|
-          import slice => application.slices.fetch(slice)
-        end
-      end
+    class Container < Dry::System::Container
+      use :env
+
+      # TODO: work out if we want any more custom logic here?
     end
 
     private
 
-    MODULE_DELIMITER = "::"
+    def define_container
+      container = Class.new(Container)
+      container.config.env = Hanami.env
+      container.config.name = name
 
-    def self.slice_namespace
-      inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
+      if root && File.directory?(root)
+        container.config.root = root
+
+        container.config.auto_register = ["lib/#{namespace_path}"]
+        container.config.default_namespace = namespace_path.gsub("/", ".")
+
+        # TODO: add system_dir to load paths?
+        container.load_paths! "lib"
+      end
+
+      # TODO: is this the right spot to be donig this?
+      container.import application: application.container
+
+      if namespace
+        namespace.const_set :Container, container
+        namespace.const_set :Import, container.injector
+      end
+
+      container
     end
 
-    def self.slice_namespace_path
-      inflector.underscore(slice_namespace.to_s)
+    def namespace_path
+      @namespace_path ||= inflector.underscore(namespace.to_s)
     end
 
-    def self.slice_namespace_identifier_prefix
-      slice_namespace_path.gsub("/", ".")
-    end
-
-    def self.slice_name
-      inflector.underscore(slice_namespace.to_s.split(MODULE_DELIMITER).last)
-    end
-
-    def self.inflector
-      application[:inflector]
+    def inflector
+      application.inflector
     end
   end
 end

@@ -61,6 +61,42 @@ module Hanami
       settings.fetch(:env)
     end
 
+    def slices_dir=(dir)
+      settings[:slices_dir] = dir
+    end
+
+    def slices_dir
+      settings.fetch(:slices_dir) { "slices" }
+    end
+
+    def slices_namespace=(namespace)
+      settings[:slices_namespace] = namespace
+    end
+
+    def slices_namespace
+      settings.fetch(:slices_namespace) { Object }
+    end
+
+    # TODO: move into a "routing" namespace
+    def endpoint_resolver=(resolver)
+      settings[:endpoint_resolver] = resolver
+    end
+
+    def endpoint_resolver
+      settings.fetch(:endpoint_resolver) {
+        require_relative "web/endpoint_resolver"
+        Web::EndpointResolver
+      }
+    end
+
+    def action_key_namespace=(namespace)
+      settings[:action_key_namespace] = namespace
+    end
+
+    def action_key_namespace
+      settings.fetch(:action_key_namespace) { "web.actions" }
+    end
+
     def base_url=(value)
       settings[:base_url] = URI.parse(value)
     end

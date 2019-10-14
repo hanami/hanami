@@ -7,12 +7,16 @@
 # @see http://hanamirb.org
 module Hanami
   require "hanami/version"
-  # require "hanami/frameworks"
-  require "hanami/container" # TODO: get rid of this
   require "hanami/application"
   require "hanami/slice"
 
   @_mutex = Mutex.new
+
+  # TODO: we're going to need to work out better names for these
+  # application/application_class methods, since the application_class is
+  # actually the entirety of the application (it's bootable, etc., and anything
+  # that _doesn't_ require a web interface, like the CLI, will be using that
+  # instead)
 
   def self.application
     @_mutex.synchronize do
@@ -22,17 +26,27 @@ module Hanami
     end
   end
 
-  def self.application?
-    defined?(@_application) && @_application
+  def self.application_class
+    @_mutex.synchronize do
+      raise "Hanami.application_class not configured" unless defined?(@_application_class)
+
+      @_application_class
+    end
   end
 
   def self.application=(application)
     @_mutex.synchronize do
-      # Maybe just warn here?
-
-      # raise "Hanami.application already configured" if defined?(@_application)
+      raise "Hanami.application already configured" if defined?(@_application)
 
       @_application = application
+    end
+  end
+
+  def self.application_class=(klass)
+    @_mutex.synchronize do
+      raise "Hanami.application already configured" if defined?(@_application)
+
+      @_application_class = klass
     end
   end
 

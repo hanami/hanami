@@ -5,8 +5,8 @@ module Hanami
     module Plugins
       class SliceReaders < Module
         def initialize(ctx)
-          ctx.application.slices.each do |name, slice|
-            define_method(name) do
+          ctx.application.slices.each do |slice|
+            define_method(slice.name) do
               SliceDelegator.new(slice)
             end
           end

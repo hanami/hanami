@@ -8,7 +8,7 @@ module Hanami
       class CLI < Hanami::CLI
         attr_reader :application
 
-        def initialize(application: Hanami.application, commands: Commands)
+        def initialize(application: Hanami.application_class, commands: Commands)
           super(commands)
           @application = application
         end

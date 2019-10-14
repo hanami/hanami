@@ -9,26 +9,17 @@ module Hanami
         end
       end
 
-      attr_reader :application
       attr_reader :container
       attr_reader :base_namespace
 
-      def initialize(application:, container: application, namespace:)
-        @application = application
+      def initialize(container:, namespace:)
         @container = container
         @base_namespace = namespace
       end
 
-      def sliced(name)
-        # TODO: formalize this
-        raise "Slices can only be mounted from top-level application" unless application.respond_to?(:slices)
-
-        slice = application.slices[name]
-        return unless slice
-
+      def with_container(new_container)
         self.class.new(
-          application: application,
-          container: slice,
+          container: new_container,
           namespace: base_namespace,
         )
       end

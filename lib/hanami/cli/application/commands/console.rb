@@ -44,7 +44,7 @@ module Hanami
           end
 
           def prompt_prefix
-            "#{inflector.underscore(application.config.name)}[#{application.env}]"
+            "#{inflector.underscore(application.application_name)}[#{application.config.env}]"
           end
         end
 

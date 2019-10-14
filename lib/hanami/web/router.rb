@@ -16,6 +16,7 @@ module Hanami
 
         super(**options, &nil)
         instance_exec(application, &block) if block
+
         freeze overridden: true
       end
 
@@ -37,15 +38,23 @@ module Hanami
       end
 
       def mount(app, at:, host: nil, &block)
-        if app.is_a?(Symbol) && (sliced_resolver = @endpoint_resolver.sliced(app))
-          sliced_router = self.class.new(
-            application: @application.slices[app],
+        if app.is_a?(Symbol)
+          # TODO: I wonder if this is the actual behaviour we want...
+          raise "Slices can only be mounted from top-level application" unless @application.respond_to?(:slices)
+
+          # TODO: store slices in a way that's more efficient for lookup
+          slice = @application.slices.detect { |slice| slice.name == app }
+
+          raise "Slice +#{app}+ not found" unless slice
+
+          slice_router = self.class.new(
+            application: slice,
             **@options,
-            endpoint_resolver: sliced_resolver,
+            endpoint_resolver: @endpoint_resolver.with_container(slice),
             &block
           )
 
-          super(sliced_router, at: at, host: host)
+          super(slice_router, at: at, host: host)
         else
           super(app, at: at, host: host)
         end
