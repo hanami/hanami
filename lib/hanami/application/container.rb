@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/inflector"
 require "dry/monitor" # from dry-web, TODO: remove
 require "dry/monitor/rack/middleware"
 require "dry/system/container"
@@ -12,8 +11,6 @@ module Hanami
   class Application
     class Container < Dry::System::Container
       # TODO: pass settings in from Hanami::Application.config when setting up container
-      setting :inflector, Dry::Inflector.new, reader: true
-
       setting :web do
         setting :logging do
           setting :filter_params, %w[_csrf password password_confirmation]
@@ -26,8 +23,6 @@ module Hanami
       use :monitoring
 
       after :configure do
-        register_inflector
-
         register_rack_monitor
         attach_rack_logger
 
@@ -36,11 +31,6 @@ module Hanami
 
       class << self
         private
-
-        def register_inflector
-          return self if key?(:inflector)
-          register :inflector, inflector
-        end
 
         def register_rack_monitor
           return self if key?(:rack_monitor)
@@ -58,7 +48,6 @@ module Hanami
         end
       end
     end
-
 
     # Hanami private IoC
     #

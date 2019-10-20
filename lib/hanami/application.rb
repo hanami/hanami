@@ -111,6 +111,8 @@ module Hanami
             config.default_namespace = application_name
           end
 
+          container.register :inflector, inflector
+
           # Any other config to pass in?
 
           const_set :Container, container
