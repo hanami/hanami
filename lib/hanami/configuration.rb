@@ -30,6 +30,7 @@ module Hanami
       self.routes   = DEFAULT_ROUTES
       self.cookies  = DEFAULT_COOKIES
       self.sessions = DEFAULT_SESSIONS
+      self.logging_filter_params = DEFAULT_LOGGING_FILTER_PARAMS
 
       self.default_request_format  = DEFAULT_REQUEST_FORMAT
       self.default_response_format = DEFAULT_RESPONSE_FORMAT
@@ -95,6 +96,17 @@ module Hanami
 
     def action_key_namespace
       settings.fetch(:action_key_namespace) { "web.actions" }
+    end
+
+    # TODO: need a better name for this, or to namespace it, e.g. web.logging.filter_params
+    DEFAULT_LOGGING_FILTER_PARAMS = %w[_csrf password password_confirmation].freeze
+
+    def logging_filter_params=(params)
+      settings[:logging_filter_params] = params
+    end
+
+    def logging_filter_params
+      settings[:logging_filter_params]
     end
 
     def base_url=(value)

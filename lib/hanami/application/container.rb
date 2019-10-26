@@ -1,58 +1,14 @@
 # frozen_string_literal: true
 
-require "dry/monitor" # from dry-web, TODO: remove
-require "dry/monitor/rack/middleware"
 require "dry/system/container"
-require "dry/system/components"
 require "pathname"
-require_relative "../web/rack_logger"
 
 module Hanami
   class Application
-    class Container < Dry::System::Container
-      # TODO: pass settings in from Hanami::Application.config when setting up container
-      setting :web do
-        setting :logging do
-          setting :filter_params, %w[_csrf password password_confirmation]
-        end
-      end
-
-      use :env, inferrer: -> { ENV.fetch("RACK_ENV", "development").to_sym }
-      use :logging
-      use :notifications
-      use :monitoring
-
-      after :configure do
-        register_rack_monitor
-        attach_rack_logger
-
-        load_paths! "lib"
-      end
-
-      class << self
-        private
-
-        def register_rack_monitor
-          return self if key?(:rack_monitor)
-          register :rack_monitor, Dry::Monitor::Rack::Middleware.new(self[:notifications])
-          self
-        end
-
-        def attach_rack_logger
-          Web::RackLogger.new(
-            self[:logger],
-            filter_params: config.web.logging.filter_params,
-          ).attach(self[:rack_monitor])
-
-          self
-        end
-      end
-    end
-
     # Hanami private IoC
     #
     # @since 2.0.0
-    class OldContainer < Dry::System::Container
+    class Container < Dry::System::Container
       configure do |config|
         config.root = Pathname.new(Dir.pwd)
       end

@@ -64,7 +64,7 @@ module Hanami
 
       if namespace
         namespace.const_set :Container, container
-        namespace.const_set :Import, container.injector
+        namespace.const_set :Deps, container.injector
       end
 
       container

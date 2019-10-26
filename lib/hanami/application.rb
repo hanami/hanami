@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
+require "dry/monitor"
+require "dry/monitor/rack/middleware"
+require "dry/system/container"
+require "dry/system/components"
 require "hanami/configuration"
 require "pathname"
 require "rack"
-require_relative "application/container"
 require_relative "slice"
+require_relative "web/rack_logger"
 require_relative "web/router"
 
 module Hanami
@@ -34,17 +38,26 @@ module Hanami
 
       alias_method :config, :configuration
 
+      def init
+        @container = prepare_container
+        @deps_module = prepare_deps_module
+        @slices = load_slices
+      end
+
       def container
-        @_container ||= define_container
+        raise "Application not init'ed" unless defined?(@container)
+        @container
+      end
+
+      def deps
+        raise "Application not init'ed" unless defined?(@deps_module)
+        @deps_module
       end
 
       def slices
-        @_slices ||= Dir[File.join(slices_path, "*")]
-          .select(&File.method(:directory?))
-          .map(&method(:load_slice))
+        raise "Application not init'ed" unless defined?(@slices)
+        @slices
       end
-
-      alias_method :load_slices, :slices
 
       # Delegate some methods to container:
       def boot(*args, &block)
@@ -55,6 +68,8 @@ module Hanami
       end
 
       def boot!(&block)
+        init
+
         container.configure do; end # force after configure hook
 
         container.finalize!(&block)
@@ -102,22 +117,77 @@ module Hanami
 
       private
 
-      def define_container
-        # TODO: raise error if constant already defined?
-
-        Class.new(Container).tap do |container|
-          container.configure do |config|
-            config.auto_register = "lib/#{application_name}" # TODO: get from config somehow?
-            config.default_namespace = application_name
-          end
-
-          container.register :inflector, inflector
-
-          # Any other config to pass in?
-
-          const_set :Container, container
-          application_module.const_set :Import, container.injector
+      def prepare_container
+        define_container.tap do |container|
+          configure_container container
         end
+      end
+
+      def prepare_deps_module
+        define_deps_module
+      end
+
+      def define_container
+        begin
+          require "#{application_name}/container"
+          application_module.const_get :Container
+        rescue LoadError, NameError
+          Class.new(Dry::System::Container).tap do |container|
+            application_module.const_set :Container, container
+          end
+        end
+      end
+
+      def configure_container(container)
+        container.use :env, inferrer: -> { Hanami.env }
+        container.use :logging
+        container.use :notifications
+        container.use :monitoring
+
+        container.configure do |config|
+          config.auto_register = "lib/#{application_name}" # TODO: get from config somehow?
+          config.default_namespace = application_name
+        end
+
+        container.load_paths! "lib"
+
+        unless container.key?(:inflector)
+          container.register :inflector, inflector
+        end
+
+        unless container.key?(:rack_monitor)
+          container.register :rack_monitor, Dry::Monitor::Rack::Middleware.new(container[:notifications])
+        end
+
+        unless container.key?(:rack_logger)
+          container.register :rack_logger, Web::RackLogger.new(
+            container[:logger],
+            filter_params: configuration.logging_filter_params,
+          )
+        end
+
+        container[:rack_logger].attach container[:rack_monitor]
+
+        # Any other config to pass in?
+
+        container
+      end
+
+      def define_deps_module
+        begin
+          require "#{application_name}/deps"
+          application_module.const_get :Deps
+        rescue LoadError, NameError
+          deps = container.injector
+          application_module.const_set :Deps, deps
+          deps
+        end
+      end
+
+      def load_slices
+        Dir[File.join(slices_path, "*")]
+          .select(&File.method(:directory?))
+          .map(&method(:load_slice))
       end
 
       def slices_path
