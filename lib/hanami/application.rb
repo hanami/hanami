@@ -230,10 +230,12 @@ module Hanami
         @app = Rack::Builder.new do
           use application[:rack_monitor]
 
-          # TODO: need to work out best way forward re: handling middlewares.
-          # Declaring middlewares directly in routes is IMO the most flexible
-          # option, but perhaps we might want to retain the idea of middleware
-          # defined in the config, somehow?
+          # Apply middleware from configuration
+          application.config.for_each_middleware do |m, *args, block|
+            use(m, *args, &block)
+          end
+
+          # Apply middleware definined inline in routes
           router.middlewares.each do |(*middleware, block)|
             use(*middleware, &block)
           end

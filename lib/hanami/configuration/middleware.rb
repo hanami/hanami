@@ -10,8 +10,8 @@ module Hanami
         @stack = []
       end
 
-      def use(middleware, *args)
-        stack.push([middleware, *args])
+      def use(middleware, *args, &block)
+        stack.push([middleware, *args, block])
       end
 
       attr_reader :stack
