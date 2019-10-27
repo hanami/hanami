@@ -223,10 +223,9 @@ module Hanami
         router = Web::Router.new(
           application: application,
           endpoint_resolver: resolver,
+          **application.configuration.router_settings,
           &application.routes
         )
-
-        # TODO: pass in configuration.router_settings somewhere
 
         @app = Rack::Builder.new do
           use application[:rack_monitor]
