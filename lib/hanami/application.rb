@@ -212,14 +212,6 @@ module Hanami
     end
 
     module InstanceMethods
-      # TODO: work out which params signature is actually better...
-
-      # def initialize(
-      #   configuration: self.class.configuration,
-      #   container: self.class.container,
-      #   slices: self.class.slices,
-      #   routes: self.class.routes
-      # )
       def initialize(application = self.class)
         application.boot!
 
