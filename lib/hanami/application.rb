@@ -39,9 +39,13 @@ module Hanami
       alias_method :config, :configuration
 
       def init
+        return self if inited?
+
         @container = prepare_container
         @deps_module = prepare_deps_module
         @slices = load_slices
+        @inited = true
+        self
       end
 
       def container
@@ -59,15 +63,29 @@ module Hanami
         @slices
       end
 
-      # Delegate some methods to container:
-      def boot(*args, &block)
+      def register_bootable(*args, &block)
         container.boot(*args, &block)
       end
+
+      def init_bootable(*args)
+        container.init(*args)
+      end
+
+      def start_bootable(*args)
+        container.start(*args)
+      end
+
       def [](*args)
         container.[](*args)
       end
 
-      def boot!(&block)
+      def resolve(*args)
+        container.resolve(*args)
+      end
+
+      def boot(&block)
+        return self if booted?
+
         init
 
         container.configure do; end # force after configure hook
@@ -75,9 +93,10 @@ module Hanami
         container.finalize!(&block)
 
         slices.each do |slice|
-          slice.boot!
+          slice.boot
         end
 
+        @booted = true
         self
       end
 
@@ -116,6 +135,14 @@ module Hanami
       end
 
       private
+
+      def inited?
+        !!@inited
+      end
+
+      def booted?
+        !!@booted
+      end
 
       def prepare_container
         define_container.tap do |container|
@@ -213,7 +240,7 @@ module Hanami
 
     module InstanceMethods
       def initialize(application = self.class)
-        application.boot!
+        application.boot
 
         resolver = application.config.endpoint_resolver.new(
           container: application,

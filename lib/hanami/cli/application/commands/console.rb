@@ -22,7 +22,7 @@ module Hanami
           def call(**)
             measure "#{prompt_prefix} booted in" do
               out.puts "=> starting #{prompt_prefix} console"
-              application.boot!
+              application.boot
             end
 
             start_repl

@@ -25,11 +25,27 @@ module Hanami
       @container ||= define_container
     end
 
+    def register_bootable(*args, &block)
+      container.boot(*args, &block)
+    end
+
+    def init_bootable(*args)
+      container.init(*args)
+    end
+
+    def start_bootable(*args)
+      container.start(*args)
+    end
+
     def [](*args)
       container.[](*args)
     end
 
-    def boot!
+    def resolve(*args)
+      container.resolve(*args)
+    end
+
+    def boot
       container.configure do; end # force after configure hook
 
       # TODO: run finalize blocks somehow supplied by config?
