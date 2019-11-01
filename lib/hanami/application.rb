@@ -41,6 +41,8 @@ module Hanami
       def init
         return self if inited?
 
+        configuration.finalize
+
         @container = prepare_container
         @deps_module = prepare_deps_module
         @slices = load_slices
