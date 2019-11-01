@@ -167,7 +167,6 @@ module Hanami
 
       def configure_container(container)
         container.use :env, inferrer: -> { Hanami.env }
-        container.use :logging
         container.use :notifications
         container.use :monitoring
 
@@ -180,6 +179,11 @@ module Hanami
 
         unless container.key?(:inflector)
           container.register :inflector, inflector
+        end
+
+        unless container.key?(:logger)
+          require "hanami/logger"
+          container.register :logger, Hanami::Logger.new(configuration.logger)
         end
 
         unless container.key?(:rack_monitor)
