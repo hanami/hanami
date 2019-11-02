@@ -26,7 +26,7 @@ module Hanami
             include InstanceMethods
           end
 
-          Hanami.application_class = klass
+          Hanami.application = klass
         end
       end
     end
@@ -105,7 +105,7 @@ module Hanami
       def routes(&block)
         @_mutex.synchronize do
           if block.nil?
-            raise "Hanami.application_class.routes not configured" unless defined?(@_routes)
+            raise "Hanami.application.routes not configured" unless defined?(@_routes)
 
             @_routes
           else
