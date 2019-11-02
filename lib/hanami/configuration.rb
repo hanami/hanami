@@ -95,7 +95,7 @@ module Hanami
     end
 
     def action_key_namespace
-      settings.fetch(:action_key_namespace) { "web.actions" }
+      settings.fetch(:action_key_namespace) { "actions" }
     end
 
     # TODO: need a better name for this, or to namespace it, e.g. web.logging.filter_params
