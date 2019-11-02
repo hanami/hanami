@@ -114,8 +114,8 @@ module Hanami
         end
       end
 
-      # TODO move somewhere more central
       MODULE_DELIMITER = "::"
+      private_constant :MODULE_DELIMITER
 
       def application_module
         inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
