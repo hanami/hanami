@@ -268,7 +268,7 @@ module Hanami
           use application[:rack_monitor]
 
           # Apply middleware from configuration
-          application.config.for_each_middleware do |m, *args, block|
+          application.config.for_each_middleware do |m, *args, &block|
             use(m, *args, &block)
           end
 
