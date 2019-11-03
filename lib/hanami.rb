@@ -56,6 +56,10 @@ module Hanami
     application[:logger]
   end
 
+  def self.init
+    application.init
+  end
+
   def self.boot
     if defined?(@_app)
       @_app
