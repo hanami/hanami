@@ -47,13 +47,13 @@ module Hanami
       def resolve_string_identifier(name, namespace = nil, configuration = nil)
         identifier = [base_namespace, namespace, name].compact.join(".").gsub("#", ".")
 
-        container[identifier].yield_self { |endpoint|
-          if configuration && endpoint.class < Hanami::Action
-            endpoint.with(configuration: configuration)
-          else
-            endpoint
-          end
-        }
+        endpoint = container[identifier]
+
+        if configuration && endpoint.respond_to?(:with)
+          endpoint.with(configuration: configuration)
+        else
+          endpoint
+        end
       end
     end
   end
