@@ -44,7 +44,7 @@ module Hanami
 
       private
 
-      def resolve_string_identifier(name, namespace, configuration)
+      def resolve_string_identifier(name, namespace = nil, configuration = nil)
         identifier = [base_namespace, namespace, name].compact.join(".").gsub("#", ".")
 
         container[identifier].yield_self { |endpoint|
