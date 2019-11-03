@@ -254,7 +254,7 @@ module Hanami
         )
 
         router = Web::Router.new(
-          application: application,
+          context: application,
           endpoint_resolver: resolver,
           **application.configuration.router_settings,
           &application.routes
