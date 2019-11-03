@@ -52,6 +52,10 @@ module Hanami
     names.map(&:to_sym).include?(env)
   end
 
+  def self.logger
+    application[:logger]
+  end
+
   def self.boot
     if defined?(@_app)
       @_app
