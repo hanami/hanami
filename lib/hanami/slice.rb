@@ -56,16 +56,11 @@ module Hanami
       container.finalize!
     end
 
-    class Container < Dry::System::Container
-      use :env
-
-      # TODO: work out if we want any more custom logic here?
-    end
-
     private
 
     def define_container
-      container = Class.new(Container)
+      container = Class.new(Dry::System::Container)
+      container.use :env
       container.config.env = Hanami.env
       container.config.name = name
 
