@@ -45,7 +45,7 @@ module Hanami
       private
 
       def resolve_string_identifier(name, namespace, configuration)
-        identifier = [base_namespace, namespace, name].compact.join(".")
+        identifier = [base_namespace, namespace, name].compact.join(".").gsub("#", ".")
 
         container[identifier].yield_self { |endpoint|
           if configuration && endpoint.class < Hanami::Action
