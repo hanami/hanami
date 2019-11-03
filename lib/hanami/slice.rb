@@ -61,7 +61,7 @@ module Hanami
     def define_container
       container = Class.new(Dry::System::Container)
       container.use :env
-      container.config.env = Hanami.env
+      container.config.env = application.container.config.env
       container.config.name = name
 
       if root && File.directory?(root)
@@ -70,11 +70,10 @@ module Hanami
         container.config.auto_register = ["lib/#{namespace_path}"]
         container.config.default_namespace = namespace_path.gsub("/", ".")
 
-        # TODO: add system_dir to load paths?
         container.load_paths! "lib"
       end
 
-      # TODO: is this the right spot to be donig this?
+      # FIXME: is this the right spot to be donig this?
       container.import application: application.container
 
       if namespace
