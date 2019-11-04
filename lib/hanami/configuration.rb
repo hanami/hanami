@@ -85,8 +85,8 @@ module Hanami
 
     def endpoint_resolver
       settings.fetch(:endpoint_resolver) {
-        require_relative "web/endpoint_resolver"
-        Web::EndpointResolver
+        require_relative "application/endpoint_resolver"
+        Application::EndpointResolver
       }
     end
 

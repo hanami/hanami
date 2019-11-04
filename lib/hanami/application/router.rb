@@ -3,7 +3,7 @@
 require "hanami/router"
 
 module Hanami
-  module Web
+  class Application
     class Router < Hanami::Router
       def initialize(**options, &block)
         @options = options

@@ -8,8 +8,8 @@ require "hanami/configuration"
 require "pathname"
 require "rack"
 require_relative "slice"
+require_relative "application/router"
 require_relative "web/rack_logger"
-require_relative "web/router"
 
 module Hanami
   class Application
@@ -257,7 +257,7 @@ module Hanami
           namespace: application.config.action_key_namespace,
         )
 
-        router = Web::Router.new(
+        router = Application::Router.new(
           context: application,
           endpoint_resolver: resolver,
           **application.configuration.router_settings,

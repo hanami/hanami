@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Hanami
-  module Web
+  class Application
     class EndpointResolver
       class NotCallableEndpointError < StandardError
         def initialize(endpoint)
