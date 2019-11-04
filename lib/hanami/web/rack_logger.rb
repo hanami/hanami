@@ -2,6 +2,7 @@
 
 require "json"
 require "rack/request"
+require "hanami/utils/hash"
 
 module Hanami
   module Web
@@ -25,22 +26,15 @@ module Hanami
       end
 
       def log_request(env, status, time)
-        request = Rack::Request.new(env)
-
-        params = request.GET
-        params = params.merge(Hash(request.POST))
-
-        # TODO: support both roda and hanami params
-        json_params = Hash(request.get_header("roda.json_params"))
-        params = params.merge(json_params)
-
         data = {
-          method: request.request_method,
-          path: request.path,
-          for: request.get_header("REMOTE_ADDR"),
+          http: env[HTTP_VERSION],
+          verb: env[REQUEST_METHOD],
           status: status,
-          duration: time,
-          params: filter(params),
+          ip: env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
+          path: env[SCRIPT_NAME] + env[PATH_INFO].to_s,
+          length: extract_content_length(env),
+          params: extract_params(env),
+          elapsed: time,
         }
 
         logger.info JSON.generate(data)
@@ -52,6 +46,30 @@ module Hanami
       end
 
       private
+
+      HTTP_VERSION         = 'HTTP_VERSION'
+      REQUEST_METHOD       = 'REQUEST_METHOD'
+      HTTP_X_FORWARDED_FOR = 'HTTP_X_FORWARDED_FOR'
+      REMOTE_ADDR          = 'REMOTE_ADDR'
+      SCRIPT_NAME          = 'SCRIPT_NAME'
+      PATH_INFO            = 'PATH_INFO'
+      RACK_ERRORS          = 'rack.errors'
+      QUERY_HASH           = 'rack.request.query_hash'
+      FORM_HASH            = 'rack.request.form_hash'
+      ROUTER_PARAMS        = 'router.params'
+      CONTENT_LENGTH       = 'Content-Length'
+
+      def extract_content_length(env)
+        value = env[CONTENT_LENGTH]
+        !value || value.to_s == '0' ? '-' : value
+      end
+
+      def extract_params(env)
+        result = env.fetch(QUERY_HASH, {})
+        result.merge!(env.fetch(FORM_HASH, {}))
+        result.merge!(Hanami::Utils::Hash.deep_stringify(env.fetch(ROUTER_PARAMS, {})))
+        result
+      end
 
       FILTERED = "[FILTERED]"
 
