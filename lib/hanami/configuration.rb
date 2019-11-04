@@ -39,6 +39,8 @@ module Hanami
       self.security   = Security.new
 
       self.inflections = Dry::Inflector.new
+
+      self.router_endpoint_container_key_namespace = DEFAULT_ROUTER_ENDPOINT_CONTAINER_KEY_NAMESPACE
     end
     # rubocop:enable Metrics/MethodLength
 
@@ -76,14 +78,6 @@ module Hanami
 
     def slices_namespace
       settings.fetch(:slices_namespace) { Object }
-    end
-
-    def action_key_namespace=(namespace)
-      settings[:action_key_namespace] = namespace
-    end
-
-    def action_key_namespace
-      settings.fetch(:action_key_namespace) { "actions" }
     end
 
     def base_url=(value)
@@ -192,6 +186,14 @@ module Hanami
       }
     end
 
+    def router_endpoint_container_key_namespace=(namespace)
+      settings[:router_endpoint_container_key_namespace] = namespace
+    end
+
+    def router_endpoint_container_key_namespace
+      settings.fetch(:router_endpoint_container_key_namespace) { "actions" }
+    end
+
     def for_each_middleware(&blk)
       stack = middleware.stack.dup
       stack += sessions.middleware if sessions.enabled?
@@ -245,6 +247,9 @@ module Hanami
 
     DEFAULT_RESPONSE_FORMAT = :html
     private_constant :DEFAULT_RESPONSE_FORMAT
+
+    DEFAULT_ROUTER_ENDPOINT_CONTAINER_KEY_NAMESPACE = "actions"
+    private_constant :DEFAULT_ROUTER_ENDPOINT_CONTAINER_KEY_NAMESPACE
 
     attr_reader :settings
   end

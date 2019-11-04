@@ -253,7 +253,7 @@ module Hanami
 
         resolver = application.config.router_endpoint_resolver.new(
           container: application,
-          namespace: application.config.action_key_namespace,
+          namespace: application.config.router_endpoint_container_key_namespace,
         )
 
         router = Application::Router.new(
