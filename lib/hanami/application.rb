@@ -174,7 +174,6 @@ module Hanami
       def configure_container(container)
         container.use :env, inferrer: -> { Hanami.env }
         container.use :notifications
-        container.use :monitoring
 
         container.configure do |config|
           config.auto_register = "lib/#{application_name}" # TODO: get from config somehow?
