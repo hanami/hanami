@@ -198,7 +198,7 @@ module Hanami
         unless container.key?(:rack_logger)
           container.register :rack_logger, Web::RackLogger.new(
             container[:logger],
-            filter_params: configuration.logging_filter_params,
+            filter_params: configuration.rack_logger_filter_params,
           )
         end
 

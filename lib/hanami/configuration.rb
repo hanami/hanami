@@ -27,10 +27,10 @@ module Hanami
       self.base_url = DEFAULT_BASE_URL
 
       self.logger   = DEFAULT_LOGGER.clone
+      self.rack_logger_filter_params = DEFAULT_RACK_LOGGER_FILTER_PARAMS.clone
       self.routes   = DEFAULT_ROUTES
       self.cookies  = DEFAULT_COOKIES
       self.sessions = DEFAULT_SESSIONS
-      self.logging_filter_params = DEFAULT_LOGGING_FILTER_PARAMS
 
       self.default_request_format  = DEFAULT_REQUEST_FORMAT
       self.default_response_format = DEFAULT_RESPONSE_FORMAT
@@ -98,17 +98,6 @@ module Hanami
       settings.fetch(:action_key_namespace) { "actions" }
     end
 
-    # TODO: need a better name for this, or to namespace it, e.g. web.logging.filter_params
-    DEFAULT_LOGGING_FILTER_PARAMS = %w[_csrf password password_confirmation].freeze
-
-    def logging_filter_params=(params)
-      settings[:logging_filter_params] = params
-    end
-
-    def logging_filter_params
-      settings[:logging_filter_params]
-    end
-
     def base_url=(value)
       settings[:base_url] = URI.parse(value)
     end
@@ -123,6 +112,14 @@ module Hanami
 
     def logger
       settings.fetch(:logger)
+    end
+
+    def rack_logger_filter_params=(params)
+      settings[:rack_logger_filter_params] = params
+    end
+
+    def rack_logger_filter_params
+      settings[:rack_logger_filter_params]
     end
 
     def routes=(value)
@@ -231,6 +228,9 @@ module Hanami
 
     DEFAULT_LOGGER = { level: :debug }.freeze
     private_constant :DEFAULT_LOGGER
+
+    DEFAULT_RACK_LOGGER_FILTER_PARAMS = %w[_csrf password password_confirmation].freeze
+    private_constant :DEFAULT_RACK_LOGGER_FILTER_PARAMS
 
     DEFAULT_ROUTES = File.join("config", "routes")
     private_constant :DEFAULT_ROUTES
