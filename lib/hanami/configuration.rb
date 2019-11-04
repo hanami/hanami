@@ -78,18 +78,6 @@ module Hanami
       settings.fetch(:slices_namespace) { Object }
     end
 
-    # TODO: move into a "routing" namespace
-    def endpoint_resolver=(resolver)
-      settings[:endpoint_resolver] = resolver
-    end
-
-    def endpoint_resolver
-      settings.fetch(:endpoint_resolver) {
-        require_relative "application/endpoint_resolver"
-        Application::EndpointResolver
-      }
-    end
-
     def action_key_namespace=(namespace)
       settings[:action_key_namespace] = namespace
     end
@@ -190,6 +178,17 @@ module Hanami
         host: bu.host,
         port: bu.port,
         inflector: inflections
+      }
+    end
+
+    def router_endpoint_resolver=(resolver)
+      settings[:router_endpoint_resolver] = resolver
+    end
+
+    def router_endpoint_resolver
+      settings.fetch(:router_endpoint_resolver) {
+        require_relative "application/endpoint_resolver"
+        Application::EndpointResolver
       }
     end
 

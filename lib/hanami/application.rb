@@ -251,7 +251,7 @@ module Hanami
       def initialize(application = self.class)
         application.boot
 
-        resolver = application.config.endpoint_resolver.new(
+        resolver = application.config.router_endpoint_resolver.new(
           container: application,
           namespace: application.config.action_key_namespace,
         )
