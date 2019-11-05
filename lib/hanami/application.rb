@@ -7,6 +7,7 @@ require "hanami/configuration"
 require "pathname"
 require "rack"
 require_relative "slice"
+require_relative "web/rack_logger"
 
 module Hanami
   class Application
@@ -239,7 +240,6 @@ module Hanami
     module InstanceMethods
       def initialize(application = self.class)
         require_relative "application/router"
-        require_relative "web/rack_logger"
 
         application.boot
 
