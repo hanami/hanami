@@ -42,7 +42,7 @@ module Hanami
     end
 
     def [](*args)
-      container.[](*args)
+      container[*args]
     end
 
     def resolve(*args)
