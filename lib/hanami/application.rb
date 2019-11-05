@@ -127,9 +127,7 @@ module Hanami
       end
 
       def root
-        # TODO: do we need anything more sophisticated than this? This is how
-        # Dry::System::Container determines its root by default, anyway.
-        Dir.pwd
+        configuration.root
       end
 
       def inflector

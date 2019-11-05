@@ -24,6 +24,8 @@ module Hanami
       self.env = env
       self.environments = DEFAULT_ENVIRONMENTS.clone
 
+      self.root = Dir.pwd
+
       self.base_url = DEFAULT_BASE_URL
 
       self.logger   = DEFAULT_LOGGER.clone
@@ -62,6 +64,14 @@ module Hanami
 
     def env
       settings.fetch(:env)
+    end
+
+    def root=(root)
+      settings[:root] = root
+    end
+
+    def root
+      settings.fetch(:root)
     end
 
     def slices_dir=(dir)
