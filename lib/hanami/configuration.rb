@@ -164,6 +164,8 @@ module Hanami
       end
     end
 
+    alias_method :inflector, :inflections
+
     def router_settings
       bu = base_url
 

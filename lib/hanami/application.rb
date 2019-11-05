@@ -133,8 +133,7 @@ module Hanami
       end
 
       def inflector
-        # TODO: might be good if we provided access as `config.inflector` too
-        config.inflections
+        configuration.inflector
       end
 
       private
