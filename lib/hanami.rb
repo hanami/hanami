@@ -59,11 +59,13 @@ module Hanami
     application.init
   end
 
-  def self.boot
+  def self.boot(web_app: true)
     if defined?(@_app)
       @_app
     else
-      @_app = application.new
+      application.boot
+
+      @_app = application.new if web_app
     end
   end
 
