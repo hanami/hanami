@@ -3,7 +3,6 @@
 require "dry/monitor"
 require "dry/monitor/rack/middleware"
 require "dry/system/container"
-require "dry/system/components"
 require "hanami/configuration"
 require "pathname"
 require "rack"
