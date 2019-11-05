@@ -25,6 +25,7 @@ module Hanami
       self.environments = DEFAULT_ENVIRONMENTS.clone
 
       self.root = Dir.pwd
+      self.slices_dir = DEFAULT_SLICES_DIR
 
       self.base_url = DEFAULT_BASE_URL
 
@@ -79,7 +80,7 @@ module Hanami
     end
 
     def slices_dir
-      settings.fetch(:slices_dir) { "slices" }
+      settings.fetch(:slices_dir)
     end
 
     def slices_namespace=(namespace)
@@ -235,6 +236,9 @@ module Hanami
 
     DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
     private_constant :DEFAULT_ENVIRONMENTS
+
+    DEFAULT_SLICES_DIR = "slices"
+    private_constant :DEFAULT_SLICES_DIR
 
     DEFAULT_BASE_URL = "http://0.0.0.0:2300"
     private_constant :DEFAULT_BASE_URL
