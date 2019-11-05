@@ -121,12 +121,12 @@ module Hanami
       MODULE_DELIMITER = "::"
       private_constant :MODULE_DELIMITER
 
-      def application_module
+      def application_namespace
         inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
       end
 
       def application_name
-        inflector.underscore(application_module.to_s)
+        inflector.underscore(application_namespace).to_sym
       end
 
       def root
@@ -163,10 +163,10 @@ module Hanami
       def define_container
         begin
           require "#{application_name}/container"
-          application_module.const_get :Container
+          application_namespace.const_get :Container
         rescue LoadError, NameError
           Class.new(Dry::System::Container).tap do |container|
-            application_module.const_set :Container, container
+            application_namespace.const_set :Container, container
           end
         end
       end
@@ -212,10 +212,10 @@ module Hanami
       def define_deps_module
         begin
           require "#{application_name}/deps"
-          application_module.const_get :Deps
+          application_namespace.const_get :Deps
         rescue LoadError, NameError
           deps = container.injector
-          application_module.const_set :Deps, deps
+          application_namespace.const_set :Deps, deps
           deps
         end
       end
