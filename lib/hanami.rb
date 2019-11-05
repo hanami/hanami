@@ -8,7 +8,6 @@
 module Hanami
   require "hanami/version"
   require "hanami/application"
-  require "hanami/slice"
 
   @_mutex = Mutex.new
 
