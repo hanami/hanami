@@ -165,9 +165,7 @@ module Hanami
           require "#{application_name}/container"
           application_namespace.const_get :Container
         rescue LoadError, NameError
-          Class.new(Dry::System::Container).tap do |container|
-            application_namespace.const_set :Container, container
-          end
+          application_namespace.const_set :Container, Class.new(Dry::System::Container)
         end
       end
 
@@ -214,9 +212,7 @@ module Hanami
           require "#{application_name}/deps"
           application_namespace.const_get :Deps
         rescue LoadError, NameError
-          deps = container.injector
-          application_namespace.const_set :Deps, deps
-          deps
+          application_namespace.const_set :Deps, container.injector
         end
       end
 
@@ -241,9 +237,8 @@ module Hanami
           namespace: slice_module,
           root: Pathname(slice_path).realpath.to_s,
         )
-        slice_module.const_set :Slice, slice
 
-        slice
+        slice_module.const_set :Slice, slice
       end
     end
 
