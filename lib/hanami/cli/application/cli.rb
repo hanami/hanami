@@ -1,5 +1,4 @@
 require "hanami/cli"
-# require "hamami" # OK?
 require_relative "commands"
 
 module Hanami
