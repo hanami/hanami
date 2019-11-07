@@ -200,8 +200,6 @@ module Hanami
 
         container[:rack_logger].attach container[:rack_monitor]
 
-        # Any other config to pass in?
-
         container
       end
 
