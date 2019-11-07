@@ -44,6 +44,9 @@ module Hanami
         @container = prepare_container
         @deps_module = prepare_deps_module
         @slices = load_slices
+
+        load_routes
+
         @inited = true
         self
       end
@@ -234,6 +237,12 @@ module Hanami
         )
 
         slice_module.const_set :Slice, slice
+      end
+
+      def load_routes
+        begin
+          require File.join(configuration.root, configuration.routes)
+        rescue LoadError; end
       end
     end
 

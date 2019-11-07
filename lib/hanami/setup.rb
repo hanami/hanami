@@ -4,8 +4,6 @@ require "bundler/setup"
 require "hanami"
 
 begin
-  root = Dir.pwd
-  require File.join(root, "config/application")
-  require File.join(root, "config/routes")
+  require File.join(Dir.pwd, "config/application")
 rescue LoadError; end
 
