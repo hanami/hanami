@@ -171,10 +171,9 @@ module Hanami
         container.use :env, inferrer: -> { Hanami.env }
         container.use :notifications
 
-        container.configure do |config|
-          config.auto_register = "lib/#{application_name}" # TODO: get from config somehow?
-          config.default_namespace = application_name
-        end
+        container.config.root = configuration.root
+        container.config.auto_register = "lib/#{application_name}" # TODO: get from config somehow?
+        container.config.default_namespace = application_name
 
         container.load_paths! "lib"
 
