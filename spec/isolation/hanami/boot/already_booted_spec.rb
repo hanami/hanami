@@ -5,7 +5,7 @@ module Bookshelf
   end
 end
 
-Hanami.application_class.routes do
+Hanami.application.routes do
 end
 
 RSpec.describe Hanami do

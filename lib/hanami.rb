@@ -19,11 +19,11 @@ module Hanami
     end
   end
 
-  def self.application=(application)
+  def self.application=(klass)
     @_mutex.synchronize do
       raise "Hanami.application already configured" if defined?(@_application)
 
-      @_application = application
+      @_application = klass unless klass.name.nil?
     end
   end
 
