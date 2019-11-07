@@ -19,12 +19,12 @@ module Hanami
           @application = application
         end
 
-        # TODO: inject application's own inflector
         def with_application(application)
           self.class.new(
             command_name: @command_name,
             application: application,
             out: out,
+            inflector: application.inflector,
             files: files,
           )
         end
@@ -36,6 +36,7 @@ module Hanami
             command_name: klass.name,
             application: application,
             out: out,
+            inflector: application.inflector,
             files: files,
           ).call(*args)
         end

@@ -14,7 +14,6 @@ module Hanami
       attr_reader :inflector
       attr_reader :files
 
-      # TODO: consider injecting `out, files` from level of Snowpack::CLI?
       def initialize(
         command_name:,
         out: $stdout,
