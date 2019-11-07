@@ -95,8 +95,6 @@ module Hanami
 
         init
 
-        container.configure do; end # force after configure hook
-
         container.finalize!(&block)
 
         slices.each do |slice|
@@ -174,6 +172,8 @@ module Hanami
         container.config.root = configuration.root
         container.config.auto_register = "lib/#{application_name}" # TODO: get from config somehow?
         container.config.default_namespace = application_name
+
+        container.configure do; end # force after configure hook
 
         container.load_paths! "lib"
 

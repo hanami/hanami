@@ -50,8 +50,6 @@ module Hanami
     end
 
     def boot
-      container.configure do; end # force after configure hook
-
       # TODO: run finalize blocks somehow supplied by config?
       container.finalize!
     end
@@ -72,6 +70,8 @@ module Hanami
 
         container.load_paths! "lib"
       end
+
+      container.configure do; end # force after configure hook
 
       # FIXME: is this the right spot to be donig this?
       container.import application: application.container
