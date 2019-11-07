@@ -37,6 +37,10 @@ module Hanami
       container.start(*args)
     end
 
+    def key?(*args)
+      container.key?(*args)
+    end
+
     def keys
       container.keys
     end
