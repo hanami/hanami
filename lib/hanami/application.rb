@@ -73,6 +73,10 @@ module Hanami
         slices[name.to_sym] = slice
       end
 
+      def register(*args, &block)
+        container.register(*args, &block)
+      end
+
       def register_bootable(*args, &block)
         container.boot(*args, &block)
       end

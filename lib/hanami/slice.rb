@@ -25,6 +25,10 @@ module Hanami
       @container ||= define_container
     end
 
+    def register(*args, &block)
+      container.register(*args, &block)
+    end
+
     def register_bootable(*args, &block)
       container.boot(*args, &block)
     end
