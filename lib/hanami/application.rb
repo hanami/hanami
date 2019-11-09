@@ -43,8 +43,8 @@ module Hanami
 
         @container = prepare_container
         @deps_module = prepare_deps_module
-        @slices = load_slices
 
+        load_slices
         load_routes
 
         @inited = true
@@ -62,8 +62,15 @@ module Hanami
       end
 
       def slices
-        raise "Application not init'ed" unless defined?(@slices)
-        @slices
+        @slices ||= {}
+      end
+
+      def register_slice(name, **slice_args)
+        raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
+
+        slice = Slice.new(self, **slice_args)
+        slice.namespace.const_set :Slice, slice if slice.namespace
+        slices[name.to_sym] = slice
       end
 
       def register_bootable(*args, &block)
@@ -101,7 +108,7 @@ module Hanami
 
         container.finalize!(&block)
 
-        slices.each do |slice|
+        slices.values.each do |slice|
           slice.boot
         end
 
@@ -218,7 +225,7 @@ module Hanami
       def load_slices
         Dir[File.join(slices_path, "*")]
           .select(&File.method(:directory?))
-          .map(&method(:load_slice))
+          .each(&method(:load_slice))
       end
 
       def slices_path
@@ -226,18 +233,18 @@ module Hanami
       end
 
       def load_slice(slice_path)
-        slice_name = Pathname(slice_path).relative_path_from(slices_path).to_s
+        slice_path = Pathname(slice_path)
+
+        slice_name = slice_path.relative_path_from(slices_path).to_s
 
         slice_module = Module.new
         config.slices_namespace.const_set inflector.camelize(slice_name), slice_module
 
-        slice = Slice.new(
-          self,
+        register_slice(
+          slice_name,
           namespace: slice_module,
-          root: Pathname(slice_path).realpath.to_s,
+          root: slice_path.realpath.to_s
         )
-
-        slice_module.const_set :Slice, slice
       end
 
       def load_routes

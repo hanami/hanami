@@ -16,7 +16,7 @@ module Hanami
           raise "Slices can only be mounted from top-level of routes" unless @context.respond_to?(:slices)
 
           # TODO: store slices in a way that's more efficient for lookup
-          slice = @context.slices.detect { |slice| slice.name == app }
+          slice = @context.slices[app]
 
           # TODO: real exception class
           raise "Slice +#{app}+ not found" unless slice
