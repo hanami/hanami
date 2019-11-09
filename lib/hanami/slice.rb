@@ -58,8 +58,10 @@ module Hanami
     end
 
     def boot
-      # TODO: run finalize blocks somehow supplied by config?
-      container.finalize!
+      container.finalize! do
+        container.config.env = application.container.config.env
+        container.import application: application.container
+      end
     end
 
     private
@@ -67,7 +69,7 @@ module Hanami
     def define_container
       container = Class.new(Dry::System::Container)
       container.use :env
-      container.config.env = application.container.config.env
+
       container.config.name = name
 
       if root && File.directory?(root)
@@ -80,9 +82,6 @@ module Hanami
       end
 
       container.configure do; end # force after configure hook
-
-      # FIXME: is this the right spot to be donig this?
-      container.import application: application.container
 
       if namespace
         namespace.const_set :Container, container
