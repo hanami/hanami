@@ -40,8 +40,12 @@ Hanami.application.routes do
 end
 
 RSpec.describe "Slice imports" do
-  specify "Importing a slice from another using config" do
+  specify "Slices import application; importing a slice from another using config" do
     Hanami.boot
+
+    expect(Admin::Slice["application.logger"]).to eql Bookshelf::Application["logger"]
+
+    expect(Admin::Slice.keys).to include("search.index_entity")
 
     expect(Admin::Slice["create_book"]).to be_an Admin::CreateBook
     expect(Admin::Slice["create_book"].index_entity).to be_a Search::IndexEntity

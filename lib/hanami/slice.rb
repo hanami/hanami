@@ -16,6 +16,8 @@ module Hanami
     end
 
     def init
+      container.import application: application.container
+
       if (slice_block = application.configuration.slices[name])
         instance_eval(&slice_block)
       end
@@ -24,7 +26,6 @@ module Hanami
     def boot
       container.finalize! do
         container.config.env = application.container.config.env
-        container.import application: application.container
       end
     end
 
