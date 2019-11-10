@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# require_relative "plugins/relation_readers"
 require_relative "plugins/slice_readers"
 
 module Hanami
