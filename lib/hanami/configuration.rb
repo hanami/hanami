@@ -26,6 +26,7 @@ module Hanami
 
       self.root = Dir.pwd
       self.slices_dir = DEFAULT_SLICES_DIR
+      settings[:slices] = {}
 
       self.base_url = DEFAULT_BASE_URL
 
@@ -89,6 +90,14 @@ module Hanami
 
     def slices_namespace
       settings.fetch(:slices_namespace) { Object }
+    end
+
+    def slice(slice_name, &block)
+      settings[:slices][slice_name] = block
+    end
+
+    def slices
+      settings[:slices]
     end
 
     def base_url=(value)

@@ -2,27 +2,40 @@
 
 require "dry/system/container"
 require "pathname"
-require_relative "../hanami"
 
 module Hanami
   class Slice
-    attr_reader :application, :namespace, :root
+    attr_reader :application, :name, :namespace, :root
 
-    def initialize(application, namespace: nil, root: nil, container: nil)
+    def initialize(application, name:, namespace: nil, root: nil, container: nil)
       @application = application
+      @name = name
       @namespace = namespace
       @root = root
-      @container = container || define_container # TODO: better here, or lazily?
+      @container = container || define_container
     end
 
-    def name
-      return unless namespace
+    def init
+      if (slice_block = application.configuration.slices[name])
+        instance_eval(&slice_block)
+      end
+    end
 
-      @name ||= inflector.underscore(namespace.to_s).split("/").last.to_sym
+    def boot
+      container.finalize! do
+        container.config.env = application.container.config.env
+        container.import application: application.container
+      end
     end
 
     def container
       @container ||= define_container
+    end
+
+    def import(*slice_names)
+      slice_names.each do |slice_name|
+        container.import slice_name.to_sym => application.slices.fetch(slice_name.to_sym).container
+      end
     end
 
     def register(*args, &block)
@@ -55,13 +68,6 @@ module Hanami
 
     def resolve(*args)
       container.resolve(*args)
-    end
-
-    def boot
-      container.finalize! do
-        container.config.env = application.container.config.env
-        container.import application: application.container
-      end
     end
 
     private

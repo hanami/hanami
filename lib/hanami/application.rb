@@ -45,6 +45,9 @@ module Hanami
         @deps_module = prepare_deps_module
 
         load_slices
+        slices.values.each(&:init)
+        slices.freeze
+
         load_routes
 
         @inited = true
@@ -68,7 +71,7 @@ module Hanami
       def register_slice(name, **slice_args)
         raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
 
-        slice = Slice.new(self, **slice_args)
+        slice = Slice.new(self, name: name, **slice_args)
         slice.namespace.const_set :Slice, slice if slice.namespace
         slices[name.to_sym] = slice
       end
