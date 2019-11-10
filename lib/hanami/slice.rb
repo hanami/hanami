@@ -27,6 +27,13 @@ module Hanami
       container.finalize! do
         container.config.env = application.container.config.env
       end
+
+      @booted = true
+      self
+    end
+
+    def booted?
+      !!@booted
     end
 
     def container
@@ -34,6 +41,8 @@ module Hanami
     end
 
     def import(*slice_names)
+      raise "Cannot import after booting" if booted?
+
       slice_names.each do |slice_name|
         container.import slice_name.to_sym => application.slices.fetch(slice_name.to_sym).container
       end
