@@ -10,6 +10,8 @@ module Hanami
         def initialize(application: Hanami.application, commands: Commands)
           super(commands)
           @application = application
+
+          application.init
         end
 
         private
