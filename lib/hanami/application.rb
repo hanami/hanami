@@ -188,7 +188,7 @@ module Hanami
         container.use :notifications
 
         container.config.root = configuration.root
-        container.config.auto_register = "lib/#{application_name}" # TODO: get from config somehow?
+        container.config.auto_register = "lib/#{application_name}"
         container.config.default_namespace = application_name
 
         container.configure do; end # force after configure hook
