@@ -287,11 +287,6 @@ module Hanami
             use(m, *args, &block)
           end
 
-          # Apply middleware definined inline in routes
-          router.middlewares.each do |(*middleware, block)|
-            use(*middleware, &block)
-          end
-
           run router
         end
       end

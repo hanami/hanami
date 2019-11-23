@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
 require "hanami/router"
+require "rack"
 
 module Hanami
   class Application
     class Router < Hanami::Router
       def initialize(**options, &block)
         @options = options
+        @middlewares = []
         super
+        @rack_app = build_rack_app
+      end
+
+      def use(*args, &block)
+        @middlewares << (args << block)
       end
 
       def mount(app, at:, host: nil, &block)
@@ -31,6 +38,28 @@ module Hanami
           super(slice_router, at: at, host: host)
         else
           super(app, at: at, host: host)
+        end
+      end
+
+      alias_method :call_router, :call
+      private :call_router
+
+      def call(env)
+        @rack_app.call(env)
+      end
+
+      private
+
+      def build_rack_app
+        middlewares = @middlewares
+        app = method(:call_router)
+
+        Rack::Builder.new do
+          middlewares.each do |(*middleware, block)|
+            use(*middleware, &block)
+          end
+
+          run app
         end
       end
     end
