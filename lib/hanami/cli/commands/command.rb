@@ -72,9 +72,9 @@ module Hanami
           def call(**options)
             # FIXME: merge ENV vars (like HANAMI_ENV) into **options
             super(options)
-          rescue StandardError => e
-            warn e.message
-            warn e.backtrace.join("\n\t")
+          rescue StandardError => exception
+            warn exception.message
+            warn exception.backtrace.join("\n\t")
             exit(1)
           end
         end

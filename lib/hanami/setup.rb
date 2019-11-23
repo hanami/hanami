@@ -5,5 +5,5 @@ require "hanami"
 
 begin
   require File.join(Dir.pwd, "config/application")
-rescue LoadError; end
-
+rescue LoadError # rubocop:disable Lint/HandleExceptions
+end

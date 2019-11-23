@@ -17,7 +17,7 @@ module Hanami
     require "hanami/configuration/middleware"
     require "hanami/configuration/security"
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def initialize(env:)
       @settings = Concurrent::Hash.new
 
@@ -46,7 +46,7 @@ module Hanami
 
       self.router_endpoint_container_key_namespace = DEFAULT_ROUTER_ENDPOINT_CONTAINER_KEY_NAMESPACE
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def finalize
       environment_for(env).each do |blk|
@@ -184,7 +184,7 @@ module Hanami
       end
     end
 
-    alias_method :inflector, :inflections
+    alias inflector inflections
 
     def router_settings
       bu = base_url
@@ -202,10 +202,10 @@ module Hanami
     end
 
     def router_endpoint_resolver
-      settings.fetch(:router_endpoint_resolver) {
+      settings.fetch(:router_endpoint_resolver) do
         require_relative "application/endpoint_resolver"
         Application::EndpointResolver
-      }
+      end
     end
 
     def router_endpoint_container_key_namespace=(namespace)

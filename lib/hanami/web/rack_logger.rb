@@ -6,6 +6,7 @@ require "hanami/utils/hash"
 
 module Hanami
   module Web
+    # Rack logger for Hanami applications
     class RackLogger
       attr_reader :logger
       attr_reader :filter_params
@@ -25,6 +26,7 @@ module Hanami
         end
       end
 
+      # rubocop:disable Metrics/MethodLength
       def log_request(env, status, time)
         data = {
           http: env[HTTP_VERSION],
@@ -39,29 +41,30 @@ module Hanami
 
         logger.info JSON.generate(data)
       end
+      # rubocop:enable Metrics/MethodLength
 
-      def log_exception(e)
-        logger.error e.message
-        logger.error (e.backtrace).join("\n")
+      def log_exception(exception)
+        logger.error exception.message
+        logger.error exception.backtrace.join("\n")
       end
 
       private
 
-      HTTP_VERSION         = 'HTTP_VERSION'
-      REQUEST_METHOD       = 'REQUEST_METHOD'
-      HTTP_X_FORWARDED_FOR = 'HTTP_X_FORWARDED_FOR'
-      REMOTE_ADDR          = 'REMOTE_ADDR'
-      SCRIPT_NAME          = 'SCRIPT_NAME'
-      PATH_INFO            = 'PATH_INFO'
-      RACK_ERRORS          = 'rack.errors'
-      QUERY_HASH           = 'rack.request.query_hash'
-      FORM_HASH            = 'rack.request.form_hash'
-      ROUTER_PARAMS        = 'router.params'
-      CONTENT_LENGTH       = 'Content-Length'
+      HTTP_VERSION = "HTTP_VERSION"
+      REQUEST_METHOD = "REQUEST_METHOD"
+      HTTP_X_FORWARDED_FOR = "HTTP_X_FORWARDED_FOR"
+      REMOTE_ADDR = "REMOTE_ADDR"
+      SCRIPT_NAME = "SCRIPT_NAME"
+      PATH_INFO = "PATH_INFO"
+      RACK_ERRORS = "rack.errors"
+      QUERY_HASH = "rack.request.query_hash"
+      FORM_HASH = "rack.request.form_hash"
+      ROUTER_PARAMS = "router.params"
+      CONTENT_LENGTH = "Content-Length"
 
       def extract_content_length(env)
         value = env[CONTENT_LENGTH]
-        !value || value.to_s == '0' ? '-' : value
+        !value || value.to_s == "0" ? "-" : value
       end
 
       def extract_params(env)
@@ -73,6 +76,7 @@ module Hanami
 
       FILTERED = "[FILTERED]"
 
+      # rubocop:disable Metrics/MethodLength
       def filter(params)
         params.each_with_object({}) do |(k, v), h|
           if filter_params.include?(k)
@@ -86,6 +90,7 @@ module Hanami
           end
         end
       end
+      # rubocop:enable Metrics/MethodLength
     end
   end
 end

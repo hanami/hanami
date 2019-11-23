@@ -5,7 +5,7 @@ require "json"
 RSpec.describe "hanami assets", type: :integration do
   describe "precompile" do
     it "precompiles assets" do
-      gems = ["sass", "coffee-script"]
+      gems = %w[sass coffee-script]
 
       Platform.match do
         os(:linux).engine(:ruby)  { gems.push("therubyracer") }
@@ -48,7 +48,7 @@ RSpec.describe "hanami assets", type: :integration do
         hanami "assets precompile"
 
         # rubocop:disable Lint/ImplicitStringConcatenation
-        # rubocop:disable Layout/FirstParameterIndentation
+        # rubocop:disable Layout/IndentFirstArgument
 
         #
         # Verify manifest
@@ -118,7 +118,7 @@ return Dashboard;})();}).call(this);
         expect("public/assets/admin/favicon.ico").to be_an_existing_file
 
         # rubocop:enable Lint/ImplicitStringConcatenation
-        # rubocop:enable Layout/FirstParameterIndentation
+        # rubocop:enable Layout/IndentFirstArgument
       end
     end
 

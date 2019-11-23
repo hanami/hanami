@@ -7,15 +7,17 @@ require "hanami/console/context"
 module Hanami
   class CLI
     module Application
-      module Commands
+      module Commands # rubocop:disable Style/Documentation
+        # Hanami application `console` CLI command
         class Console < Command
-          REPL = begin
-            require 'pry'
-            Pry
-          rescue LoadError
-            require 'irb'
-            IRB
-          end
+          REPL =
+            begin
+              require "pry"
+              Pry
+            rescue LoadError
+              require "irb"
+              IRB
+            end
 
           desc "Open interactive console"
 

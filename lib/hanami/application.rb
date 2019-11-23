@@ -10,6 +10,9 @@ require_relative "slice"
 require_relative "web/rack_logger"
 
 module Hanami
+  # Hanami application class
+  #
+  # @since 2.0.0
   class Application
     @_mutex = Mutex.new
 
@@ -29,12 +32,15 @@ module Hanami
       end
     end
 
+    # Application class interface
+    #
+    # rubocop:disable Metrics/ModuleLength
     module ClassMethods
       def configuration
         @_configuration
       end
 
-      alias_method :config, :configuration
+      alias config configuration
 
       def init
         return self if inited?
@@ -56,11 +62,13 @@ module Hanami
 
       def container
         raise "Application not init'ed" unless defined?(@container)
+
         @container
       end
 
       def deps
         raise "Application not init'ed" unless defined?(@deps_module)
+
         @deps_module
       end
 
@@ -72,7 +80,7 @@ module Hanami
         raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
 
         slice = Slice.new(self, name: name, **slice_args)
-        slice.namespace.const_set :Slice, slice if slice.namespace
+        slice.namespace.const_set :Slice, slice if slice.namespace # rubocop:disable Style/SafeNavigation
         slices[name.to_sym] = slice
       end
 
@@ -115,9 +123,7 @@ module Hanami
 
         container.finalize!(&block)
 
-        slices.values.each do |slice|
-          slice.boot
-        end
+        slices.values.each(&:boot)
 
         @booted = true
         self
@@ -157,11 +163,11 @@ module Hanami
       private
 
       def inited?
-        !!@inited
+        !!@inited # rubocop:disable Style/DoubleNegation
       end
 
       def booted?
-        !!@booted
+        !!@booted # rubocop:disable Style/DoubleNegation
       end
 
       def prepare_container
@@ -175,14 +181,13 @@ module Hanami
       end
 
       def define_container
-        begin
-          require "#{application_name}/container"
-          application_namespace.const_get :Container
-        rescue LoadError, NameError
-          application_namespace.const_set :Container, Class.new(Dry::System::Container)
-        end
+        require "#{application_name}/container"
+        application_namespace.const_get :Container
+      rescue LoadError, NameError
+        application_namespace.const_set :Container, Class.new(Dry::System::Container)
       end
 
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def configure_container(container)
         container.use :env, inferrer: -> { Hanami.env }
         container.use :notifications
@@ -191,10 +196,12 @@ module Hanami
         container.config.auto_register = "lib/#{application_name}"
         container.config.default_namespace = application_name
 
-        container.configure do; end # force after configure hook
+        # For after configure hook to run
+        container.configure do; end # rubocop:disable Style/BlockDelimiters
 
         container.load_paths! "lib"
 
+        # rubocop:disable Style/IfUnlessModifier
         unless container.key?(:inflector)
           container.register :inflector, inflector
         end
@@ -214,19 +221,19 @@ module Hanami
             filter_params: configuration.rack_logger_filter_params,
           )
         end
+        # rubocop:enable Style/IfUnlessModifier
 
         container[:rack_logger].attach container[:rack_monitor]
 
         container
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def define_deps_module
-        begin
-          require "#{application_name}/deps"
-          application_namespace.const_get :Deps
-        rescue LoadError, NameError
-          application_namespace.const_set :Deps, container.injector
-        end
+        require "#{application_name}/deps"
+        application_namespace.const_get :Deps
+      rescue LoadError, NameError
+        application_namespace.const_set :Deps, container.injector
       end
 
       def load_slices
@@ -239,6 +246,7 @@ module Hanami
         File.join(root, config.slices_dir)
       end
 
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def load_slice(slice_path)
         slice_path = Pathname(slice_path)
 
@@ -246,13 +254,9 @@ module Hanami
         slice_const_name = inflector.camelize(slice_name)
 
         if config.slices_namespace.const_defined?(slice_const_name)
-          const = config.slices_namespace.const_get(slice_const_name)
+          slice_module = config.slices_namespace.const_get(slice_const_name)
 
-          if const.is_a?(Module)
-            slice_module = const
-          else
-            raise "cannot use slice +#{slice_const_name}+ since it is not a module"
-          end
+          raise "Cannot use slice +#{slice_const_name}+ since it is not a module" unless slice_module.is_a?(Module)
         else
           slice_module = Module.new
           config.slices_namespace.const_set inflector.camelize(slice_name), slice_module
@@ -264,15 +268,18 @@ module Hanami
           root: slice_path.realpath.to_s
         )
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def load_routes
-        begin
-          require File.join(configuration.root, configuration.routes)
-        rescue LoadError; end
+        require File.join(configuration.root, configuration.routes)
+      rescue LoadError # rubocop:disable Lint/HandleExceptions
       end
     end
+    # rubocop:enable Metrics/ModuleLength
 
+    # Application instance interface
     module InstanceMethods
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def initialize(application = self.class)
         require_relative "application/router"
 
@@ -301,6 +308,7 @@ module Hanami
           run router
         end
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def call(env)
         @app.call(env)

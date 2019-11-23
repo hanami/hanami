@@ -4,6 +4,9 @@ require "dry/system/container"
 require "pathname"
 
 module Hanami
+  # Distinct area of concern within an Hanami application
+  #
+  # @since 2.0.0
   class Slice
     attr_reader :application, :name, :namespace, :root
 
@@ -18,9 +21,8 @@ module Hanami
     def init
       container.import application: application.container
 
-      if (slice_block = application.configuration.slices[name])
-        instance_eval(&slice_block)
-      end
+      slice_block = application.configuration.slices[name]
+      instance_eval(&slice_block) if slice_block
     end
 
     def boot
@@ -32,9 +34,11 @@ module Hanami
       self
     end
 
+    # rubocop:disable Style/DoubleNegation
     def booted?
       !!@booted
     end
+    # rubocop:enable Style/DoubleNegation
 
     def container
       @container ||= define_container
@@ -82,6 +86,7 @@ module Hanami
 
     private
 
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def define_container
       container = Class.new(Dry::System::Container)
       container.use :env
@@ -92,12 +97,13 @@ module Hanami
         container.config.root = root
 
         container.config.auto_register = ["lib/#{namespace_path}"]
-        container.config.default_namespace = namespace_path.gsub("/", ".")
+        container.config.default_namespace = namespace_path.tr("/", ".")
 
         container.load_paths! "lib"
       end
 
-      container.configure do; end # force after configure hook
+      # For after configure hook to run
+      container.configure do; end # rubocop:disable Style/BlockDelimiters
 
       if namespace
         namespace.const_set :Container, container
@@ -106,6 +112,7 @@ module Hanami
 
       container
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def namespace_path
       @namespace_path ||= inflector.underscore(namespace.to_s)

@@ -5,6 +5,8 @@ require "rack"
 
 module Hanami
   class Application
+    # Hanami application router
+    # @since 2.0.0
     class Router < Hanami::Router
       def initialize(**options, &block)
         @options = options
@@ -17,6 +19,7 @@ module Hanami
         @middlewares << (args << block)
       end
 
+      # rubocop:disable Metrics/MethodLength
       def mount(app, at:, host: nil, &block)
         if app.is_a?(Symbol)
           # TODO: I wonder if this is the actual behaviour we want...
@@ -40,9 +43,10 @@ module Hanami
           super(app, at: at, host: host)
         end
       end
+      # rubocop:enable Metrics/MethodLength
 
-      alias_method :call_router, :call
-      private :call_router
+      alias call_router call
+      private :call_router # rubocop:disable Style/AccessModifierDeclarations
 
       def call(env)
         @rack_app.call(env)

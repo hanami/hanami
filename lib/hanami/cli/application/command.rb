@@ -5,6 +5,7 @@ require_relative "../base_command"
 module Hanami
   class CLI
     module Application
+      # Hanami application CLI command (intended to run inside application directory)
       class Command < BaseCommand
         def self.inherited(klass)
           super
@@ -39,14 +40,6 @@ module Hanami
             inflector: application.inflector,
             files: files,
           ).call(*args)
-        end
-
-        def measure(desc, &block)
-          start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-          block.call
-          stop = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-
-          out.puts "=> #{desc} in #{(stop - start).round(1)}s"
         end
       end
     end

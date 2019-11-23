@@ -6,3 +6,7 @@ Naming/HeredocDelimiterNaming:
   Enabled: false
 Style/CommentedKeyword:
   Enabled: false
+Style/TrailingCommaInArguments:
+  Enabled: false
+Style/TrailingCommaInHashLiteral:
+  Enabled: false

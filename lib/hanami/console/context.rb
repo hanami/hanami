@@ -4,6 +4,10 @@ require_relative "plugins/slice_readers"
 
 module Hanami
   module Console
+    # Hanami application console context
+    #
+    # @api private
+    # @since 2.0.0
     class Context < SimpleDelegator
       attr_reader :application
 

@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require "hanami/cli"
 require_relative "commands"
 
 module Hanami
   class CLI
     module Application
+      # Hanami application CLI
       class CLI < Hanami::CLI
         attr_reader :application
 

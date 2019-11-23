@@ -3,6 +3,8 @@
 module Hanami
   module Console
     module Plugins
+      # @api private
+      # @since 2.0.0
       class SliceReaders < Module
         def initialize(ctx)
           ctx.application.slices.each do |(name, slice)|
@@ -12,6 +14,8 @@ module Hanami
           end
         end
 
+        # @api private
+        # @since 2.0.0
         class SliceDelegator < SimpleDelegator
           def method_missing(name, *args, &block)
             if args.empty? && key?(name)

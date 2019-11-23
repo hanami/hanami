@@ -11,10 +11,10 @@ module Bookshelf
 end
 
 module Search; end
-search_slice = Hanami.application.register_slice :search, namespace: Search
+_search_slice = Hanami.application.register_slice :search, namespace: Search
 
 module Admin; end
-admin_slice = Hanami.application.register_slice :admin, namespace: Admin
+_admin_slice = Hanami.application.register_slice :admin, namespace: Admin
 
 module Admin
   class CreateBook

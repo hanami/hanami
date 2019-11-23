@@ -2,7 +2,11 @@
 
 module Hanami
   class Application
+    # Hanami application router endpoint resolver
+    #
+    # @since 2.0.0
     class EndpointResolver
+      # @api private
       class NotCallableEndpointError < StandardError
         def initialize(endpoint)
           super("#{endpoint.inspect} isn't compatible with Rack. Please make sure it implements #call.")
@@ -24,6 +28,7 @@ module Hanami
         )
       end
 
+      # rubocop:disable Metrics/MethodLength
       def call(name, namespace = nil, configuration = nil)
         endpoint =
           case name
@@ -35,17 +40,18 @@ module Hanami
             name
           end
 
-        unless endpoint.respond_to?(:call)
+        unless endpoint.respond_to?(:call) # rubocop:disable Style/IfUnlessModifier
           raise NotCallableEndpointError.new(endpoint)
         end
 
         endpoint
       end
+      # rubocop:enable Metrics/MethodLength
 
       private
 
       def resolve_string_identifier(name, namespace = nil, configuration = nil)
-        identifier = [base_namespace, namespace, name].compact.join(".").gsub("#", ".")
+        identifier = [base_namespace, namespace, name].compact.join(".").tr("#", ".")
 
         endpoint = container[identifier]
 

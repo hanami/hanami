@@ -6,9 +6,7 @@ require "hanami/utils/files"
 
 module Hanami
   class CLI
-    # This should really be named `Command`, but I'm temporarily using a
-    # different name to make it easier to drop this in without having to mess
-    # with existing code
+    # Base class for Hanami application CLI commands
     class BaseCommand < Hanami::CLI::Command
       attr_reader :out
       attr_reader :inflector
@@ -38,9 +36,9 @@ module Hanami
         ).call(*args)
       end
 
-      def measure(desc, &block)
+      def measure(desc)
         start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-        block.call
+        yield
         stop = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
         out.puts "=> #{desc} in #{(stop - start).round(1)}s"
