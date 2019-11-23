@@ -243,9 +243,20 @@ module Hanami
         slice_path = Pathname(slice_path)
 
         slice_name = slice_path.relative_path_from(slices_path).to_s
+        slice_const_name = inflector.camelize(slice_name)
 
-        slice_module = Module.new
-        config.slices_namespace.const_set inflector.camelize(slice_name), slice_module
+        if config.slices_namespace.const_defined?(slice_const_name)
+          const = config.slices_namespace.const_get(slice_const_name)
+
+          if const.is_a?(Module)
+            slice_module = const
+          else
+            raise "cannot use slice +#{slice_const_name}+ since it is not a module"
+          end
+        else
+          slice_module = Module.new
+          config.slices_namespace.const_set inflector.camelize(slice_name), slice_module
+        end
 
         register_slice(
           slice_name,
