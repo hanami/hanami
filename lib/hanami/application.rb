@@ -250,7 +250,7 @@ module Hanami
       def load_slice(slice_path)
         slice_path = Pathname(slice_path)
 
-        slice_name = slice_path.relative_path_from(slices_path).to_s
+        slice_name = slice_path.relative_path_from(Pathname(slices_path)).to_s
         slice_const_name = inflector.camelize(slice_name)
 
         if config.slices_namespace.const_defined?(slice_const_name)
