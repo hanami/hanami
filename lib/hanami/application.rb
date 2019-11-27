@@ -60,6 +60,10 @@ module Hanami
         self
       end
 
+      def inited?
+        !!@inited # rubocop:disable Style/DoubleNegation
+      end
+
       def container
         raise "Application not init'ed" unless defined?(@container)
 
@@ -129,6 +133,10 @@ module Hanami
         self
       end
 
+      def booted?
+        !!@booted # rubocop:disable Style/DoubleNegation
+      end
+
       def routes(&block)
         @_mutex.synchronize do
           if block.nil?
@@ -161,14 +169,6 @@ module Hanami
       end
 
       private
-
-      def inited?
-        !!@inited # rubocop:disable Style/DoubleNegation
-      end
-
-      def booted?
-        !!@booted # rubocop:disable Style/DoubleNegation
-      end
 
       def prepare_container
         define_container.tap do |container|

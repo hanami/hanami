@@ -12,7 +12,7 @@ module Hanami
 
     def initialize(application, name:, namespace: nil, root: nil, container: nil)
       @application = application
-      @name = name
+      @name = name.to_sym
       @namespace = namespace
       @root = root
       @container = container || define_container

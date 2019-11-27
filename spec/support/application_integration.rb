@@ -12,7 +12,7 @@ module TestNamespace
 end
 
 RSpec.shared_context "Application integration" do
-  let(:application_modules) { %i[TestApp Admin Main] }
+  let(:application_modules) { %i[TestApp Admin Main Search] }
 end
 
 RSpec.configure do |config|
