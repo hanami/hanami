@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Container auto-injection (aka \"Deps\") mixin", :application_integration do
+  # rubocop:disable Metrics/MethodLength
   def with_application
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
@@ -40,6 +41,7 @@ RSpec.describe "Container auto-injection (aka \"Deps\") mixin", :application_int
       yield
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   specify "Dependencies are auto-injected in a booted application" do
     with_application do
