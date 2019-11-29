@@ -13,7 +13,7 @@ RSpec.describe Hanami do
           class Application < Hanami::Application
           end
         end
-      end.to raise_error("Hanami.application_class already configured")
+      end.to raise_error("Hanami.application already configured")
     end
   end
 end

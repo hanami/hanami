@@ -7,27 +7,9 @@
 # @see http://hanamirb.org
 module Hanami
   require "hanami/version"
-  require "hanami/frameworks"
-  require "hanami/container"
   require "hanami/application"
 
   @_mutex = Mutex.new
-
-  def self.application_class
-    @_mutex.synchronize do
-      raise "Hanami.application_class not configured" unless defined?(@_application_class)
-
-      @_application_class
-    end
-  end
-
-  def self.application_class=(klass)
-    @_mutex.synchronize do
-      raise "Hanami.application_class already configured" if defined?(@_application_class)
-
-      @_application_class = klass unless klass.name.nil?
-    end
-  end
 
   def self.application
     @_mutex.synchronize do
@@ -37,20 +19,28 @@ module Hanami
     end
   end
 
-  def self.application=(application)
+  def self.application=(klass)
     @_mutex.synchronize do
       raise "Hanami.application already configured" if defined?(@_application)
 
-      @_application = application
+      @_application = klass unless klass.name.nil?
     end
   end
 
-  class << self
-    alias app application
+  def self.app
+    @_mutex.synchronize do
+      raise "Hanami.app not configured" unless defined?(@_app)
+
+      @_app
+    end
   end
 
-  def self.root
-    Container.root
+  def self.app=(app)
+    @_mutex.synchronize do
+      raise "Hanami.app already configured" if defined?(@_app)
+
+      @_app = app
+    end
   end
 
   def self.env
@@ -62,18 +52,21 @@ module Hanami
   end
 
   def self.logger
-    Container[:logger]
+    application[:logger]
   end
 
-  def self.boot
-    @_mutex.synchronize do
-      raise "Hanami application already booted" if defined?(@_booted)
+  def self.init
+    application.init
+  end
 
-      @_booted = true
+  def self.boot(web: true)
+    if defined?(@_app)
+      @_app
+    else
+      application.boot
+
+      @_app = application.new if web
     end
-
-    Container.finalize!
-    self.application = application_class.new
   end
 
   def self.bundler_groups
