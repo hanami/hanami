@@ -49,7 +49,11 @@ module Hanami
       private :call_router # rubocop:disable Style/AccessModifierDeclarations
 
       def call(env)
-        @rack_app.call(env)
+        # FIXME: The to_a is here to ensure we return a proper rack-conformant
+        # 3-element array (which our rack_monitor middleware needs), because
+        # sometimes we get an Hanami::Action::Response object instead. This
+        # should not really be necessary.
+        @rack_app.call(env).to_a
       end
 
       private
