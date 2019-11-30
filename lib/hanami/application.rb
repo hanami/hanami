@@ -8,6 +8,7 @@ require "pathname"
 require "rack"
 require_relative "slice"
 require_relative "web/rack_logger"
+require_relative "application/settings"
 
 module Hanami
   # Hanami application class
@@ -46,6 +47,8 @@ module Hanami
         return self if inited?
 
         configuration.finalize
+
+        load_settings
 
         @container = prepare_container
         @deps_module = prepare_deps_module
@@ -135,6 +138,22 @@ module Hanami
 
       def booted?
         !!@booted # rubocop:disable Style/DoubleNegation
+      end
+
+      def settings(&block)
+        @_mutex.synchronize do
+          if block.nil?
+            raise "Hanami.application.settings not configured" unless defined?(@_settings)
+
+            @_settings
+          else
+            @_settings = Application::Settings.build(
+              configuration.settings_loader,
+              configuration.settings_loader_options,
+              &block
+            )
+          end
+        end
       end
 
       def routes(&block)
@@ -273,6 +292,12 @@ module Hanami
       def load_routes
         require File.join(configuration.root, configuration.routes)
       rescue LoadError # rubocop:disable Lint/HandleExceptions
+      end
+
+      def load_settings
+        begin
+          require File.join(configuration.root, configuration.settings_path)
+        rescue LoadError; end
       end
     end
     # rubocop:enable Metrics/ModuleLength
