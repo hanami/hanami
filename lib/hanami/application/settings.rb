@@ -31,7 +31,11 @@ module Hanami
         end
 
         def call(settings_definition)
-          Dotenv.load if defined?(Dotenv)
+          begin
+            require "dotenv"
+            Dotenv.load
+          rescue LoadError
+          end
 
           settings_klass = Class.new
 
