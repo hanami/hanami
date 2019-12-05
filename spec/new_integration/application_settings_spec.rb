@@ -15,16 +15,19 @@ RSpec.describe "Application settings", :application_integration do
       write "config/settings.rb", <<~RUBY
         Hanami.application.settings do
           setting :database_url
+          setting :redis_url
         end
       RUBY
 
       write ".env", <<~RUBY
         DATABASE_URL=postgres://localhost/test_app_development
+        REDIS_URL=redis://localhost:6379
       RUBY
 
       require "hanami/init"
 
       expect(Hanami.application.settings.database_url).to eq "postgres://localhost/test_app_development"
+      expect(Hanami.application.settings.redis_url).to eq "redis://localhost:6379"
     end
   end
 end
