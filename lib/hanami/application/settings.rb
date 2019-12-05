@@ -40,7 +40,7 @@ module Hanami
           settings_klass = Class.new
 
           settings_definition.keys.each do |key|
-            settings_klass.class_eval "attr_reader :#{key}"
+            settings_klass.attr_reader key
           end
 
           settings = settings_klass.new
@@ -49,7 +49,7 @@ module Hanami
 
           settings_definition.settings.each do |(name, args)|
             begin
-              settings.instance_variable_set("@#{name}", fetch_setting(name, args))
+              settings.instance_variable_set(:"@#{name}", fetch_setting(name, args))
             rescue StandardError => e
               errors[name] = e
             end
