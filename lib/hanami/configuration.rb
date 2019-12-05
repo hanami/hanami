@@ -111,8 +111,8 @@ module Hanami
       settings.fetch(:settings_path)
     end
 
-    def settings_loader=(resolver)
-      settings[:settings_loader] = resolver
+    def settings_loader=(loader)
+      settings[:settings_loader] = loader
     end
 
     def settings_loader
