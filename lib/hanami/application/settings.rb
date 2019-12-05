@@ -38,10 +38,7 @@ module Hanami
           end
 
           settings_klass = Class.new
-
-          settings_definition.keys.each do |key|
-            settings_klass.attr_reader key
-          end
+          settings_klass.attr_reader(*settings_definition.keys)
 
           settings = settings_klass.new
 
