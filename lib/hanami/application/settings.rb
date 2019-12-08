@@ -1,9 +1,13 @@
+require "hanami/utils/basic_object"
+
 module Hanami
   class Application
-    class Settings
+    module Settings
       def self.build(loader, loader_options, &settings_definition)
         definition = Definition.new(&settings_definition)
-        loader.new(loader_options).call(definition)
+        settings = loader.new(loader_options).call(definition)
+
+        Struct[settings.keys].new(settings)
       end
 
       class Definition
@@ -30,45 +34,93 @@ module Hanami
           @options = options
         end
 
-        def call(settings_definition)
+        def call(definition)
+          load_dotenv
+
+          settings, errors = load_settings(definition)
+
+          if errors.any?
+            raise InvalidSettingsError, errors if errors.any?
+          else
+            settings
+          end
+        end
+
+        private
+
+        def load_dotenv
           begin
             require "dotenv"
             Dotenv.load
           rescue LoadError
           end
+        end
 
-          settings_klass = Class.new
-          settings_klass.attr_reader(*settings_definition.keys)
-
-          settings = settings_klass.new
-
-          errors = {}
-
-          settings_definition.settings.each do |(name, args)|
+        def load_settings(definition)
+          definition.settings.each_with_object([{}, {}]) { |(name, args), (settings, errors)|
             begin
-              settings.instance_variable_set(:"@#{name}", fetch_setting(name, args))
+              settings[name] = resolve_setting(name, args)
             rescue StandardError => e
               errors[name] = e
             end
-          end
-
-          raise InvalidSettingsError, errors unless errors.empty?
-
-          settings.freeze
+          }
         end
 
-        private
+        def resolve_setting(name, args)
+          value = ENV[name.to_s.upcase]
 
-        def fetch_setting(name, args)
-          env_key = name.to_s.upcase
-
-          return ENV[env_key] if args.none?
-
-          if args[0].is_a?(Hash)
-            raise "options are not supported by the default settings loader. Use a custom settings loader to handle options."
+          if args.none?
+            value
+          elsif args[0]&.respond_to?(:call)
+            args[0].(ENV[env])
           else
-            args[0].(ENV[env_key])
+            raise "Unsupported setting arguments: #{args.inspect}"
           end
+        end
+      end
+
+      class Struct < Hanami::Utils::BasicObject
+        class << self
+          def [](names)
+            Class.new(self) do
+              @setting_names = names
+              define_readers
+            end
+          end
+
+          private
+
+          def define_readers
+            @setting_names.each do |name|
+              define_method(name) do
+                @settings[name]
+              end unless reserved?(name)
+            end
+          end
+
+          def reserved?(name)
+            reserved_names.include?(name)
+          end
+
+          def reserved_names
+            @reserved_names ||= [
+              instance_methods(false),
+              superclass.instance_methods(false),
+              %i[class public_send],
+            ].reduce(:+)
+          end
+        end
+
+        def initialize(settings)
+          @settings = settings.freeze
+        end
+
+        def [](name)
+          @settings[name]
+        end
+
+        def to_h
+          @settings.to_h
         end
       end
 
