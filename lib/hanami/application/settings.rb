@@ -125,13 +125,16 @@ module Hanami
       end
 
       InvalidSettingsError = Class.new(StandardError) do
-        def initialize(setting_errors)
-          message = <<~STR
+        def initialize(errors)
+          @errors = errors
+        end
+
+        def message
+          <<~STR
             Could not initialize settings. The following settings were invalid:
 
-            #{setting_errors.map { |setting, message| "#{setting}: #{message}" }.join("\n")}
+            #{errors.map { |setting, message| "#{setting}: #{message}" }.join("\n")}
           STR
-          super(message)
         end
       end
     end
