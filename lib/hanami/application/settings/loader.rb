@@ -74,7 +74,7 @@ module Hanami
           if args.none?
             value
           elsif args[0]&.respond_to?(:call)
-            args[0].(ENV[env])
+            args[0].(value)
           else
             raise UnsupportedSettingArgumentError.new(name, args)
           end
