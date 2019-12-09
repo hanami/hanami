@@ -1,37 +1,32 @@
-require "hanami/utils/basic_object"
-
 module Hanami
   class Application
     module Settings
-      class Struct < Hanami::Utils::BasicObject
+      class Struct
         class << self
           def [](names)
             Class.new(self) do
               @setting_names = names
+
+              define_singleton_method(:setting_names) do
+                @setting_names
+              end
+
               define_readers
             end
+          end
+
+          def reserved?(name)
+            instance_methods.include?(name)
           end
 
           private
 
           def define_readers
-            @setting_names.each do |name|
+            setting_names.each do |name|
               define_method(name) do
                 @settings[name]
               end unless reserved?(name)
             end
-          end
-
-          def reserved?(name)
-            reserved_names.include?(name)
-          end
-
-          def reserved_names
-            @reserved_names ||= [
-              instance_methods(false),
-              superclass.instance_methods(false),
-              %i[class public_send],
-            ].reduce(:+)
           end
         end
 
@@ -40,7 +35,13 @@ module Hanami
         end
 
         def [](name)
-          @settings[name]
+          if !self.class.setting_names.include?(name)
+            raise ArgumentError, "Unknown setting +#{name}+"
+          elsif self.class.reserved?(name)
+            @settings[name]
+          else
+            public_send(name)
+          end
         end
 
         def to_h
