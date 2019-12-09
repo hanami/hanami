@@ -14,10 +14,6 @@ module Hanami
         def setting(name, *args)
           @settings << [name, args]
         end
-
-        def keys
-          @settings.map { |(name, _)| name }
-        end
       end
     end
   end
