@@ -1,7 +1,9 @@
+require "hanami/utils/basic_object"
+
 module Hanami
   class Application
     module Settings
-      class Definition
+      class Definition < Hanami::Utils::BasicObject
         attr_reader :settings
 
         def initialize(&block)
