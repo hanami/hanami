@@ -19,10 +19,10 @@ module Hanami
         def initialize(*)
         end
 
-        def call(definition)
+        def call(defined_settings)
           load_dotenv
 
-          settings, errors = load_settings(definition)
+          settings, errors = load_settings(defined_settings)
 
           if errors.any?
             raise InvalidSettingsError, errors if errors.any?
@@ -41,8 +41,8 @@ module Hanami
           end
         end
 
-        def load_settings(definition)
-          definition.settings.each_with_object([{}, {}]) { |(name, args), (settings, errors)|
+        def load_settings(defined_settings)
+          defined_settings.each_with_object([{}, {}]) { |(name, args), (settings, errors)|
             begin
               settings[name] = resolve_setting(name, args)
             rescue StandardError => e

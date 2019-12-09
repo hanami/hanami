@@ -6,7 +6,7 @@ module Hanami
     module Settings
       def self.build(loader, loader_options, &definition_block)
         definition = Definition.new(&definition_block)
-        settings = loader.new(**loader_options).call(definition)
+        settings = loader.new(**loader_options).call(definition.settings)
 
         Struct[settings.keys].new(settings)
       end
