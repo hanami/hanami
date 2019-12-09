@@ -36,7 +36,7 @@ module Hanami
         def load_dotenv
           begin
             require "dotenv"
-            Dotenv.load
+            Dotenv.load if defined?(Dotenv)
           rescue LoadError
           end
         end
