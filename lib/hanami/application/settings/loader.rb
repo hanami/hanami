@@ -7,11 +7,24 @@ module Hanami
             @errors = errors
           end
 
-          def message
-            <<~STR
+          def to_s
+            <<~STR.strip
               Could not initialize settings. The following settings were invalid:
 
-              #{errors.map { |setting, message| "#{setting}: #{message}" }.join("\n")}
+              #{@errors.map { |setting, message| "#{setting}: #{message}" }.join("\n")}
+            STR
+          end
+        end
+
+        UnsupportedSettingArgumentError = Class.new(StandardError) do
+          def initialize(setting_name, arguments)
+            @setting_name = setting_name
+            @arguments = arguments
+          end
+
+          def to_s
+            <<~STR.strip
+              Unsupported arguments #{@arguments.inspect} for setting +#{@setting_name}+
             STR
           end
         end
@@ -45,8 +58,12 @@ module Hanami
           defined_settings.each_with_object([{}, {}]) { |(name, args), (settings, errors)|
             begin
               settings[name] = resolve_setting(name, args)
-            rescue StandardError => e
-              errors[name] = e
+            rescue => e
+              if e.is_a?(UnsupportedSettingArgumentError)
+                raise e
+              else
+                errors[name] = e
+              end
             end
           }
         end
@@ -59,7 +76,7 @@ module Hanami
           elsif args[0]&.respond_to?(:call)
             args[0].(ENV[env])
           else
-            raise "Unsupported setting arguments: #{args.inspect}"
+            raise UnsupportedSettingArgumentError.new(name, args)
           end
         end
       end
