@@ -8,7 +8,7 @@ module Hanami
 
         def initialize(&block)
           @settings = []
-          instance_eval(&block)
+          instance_eval(&block) if block
         end
 
         def setting(name, *args)
