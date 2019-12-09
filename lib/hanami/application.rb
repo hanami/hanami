@@ -221,6 +221,10 @@ module Hanami
         container.configure do; end # rubocop:disable Style/BlockDelimiters
 
         # rubocop:disable Style/IfUnlessModifier
+        unless container.key?(:settings)
+          container.register :settings, settings
+        end
+
         unless container.key?(:inflector)
           container.register :inflector, inflector
         end

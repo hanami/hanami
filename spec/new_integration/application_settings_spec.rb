@@ -43,6 +43,8 @@ RSpec.describe "Application settings", :application_integration do
       expect(Hanami.application.settings.database_url).to eq "postgres://localhost/test_app_development"
       expect(Hanami.application.settings.redis_url).to eq "redis://localhost:6379"
       expect(Hanami.application.settings.feature_flag).to be true
+
+      expect(Hanami.application[:settings]).to eql Hanami.application.settings
     end
   end
 end
