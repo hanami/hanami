@@ -48,6 +48,8 @@ module Hanami
 
         configuration.finalize
 
+        $LOAD_PATH.unshift File.join(root, "lib")
+
         load_settings
 
         @container = prepare_container
@@ -217,8 +219,6 @@ module Hanami
 
         # For after configure hook to run
         container.configure do; end # rubocop:disable Style/BlockDelimiters
-
-        container.load_paths! "lib"
 
         # rubocop:disable Style/IfUnlessModifier
         unless container.key?(:inflector)

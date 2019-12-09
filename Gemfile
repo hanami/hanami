@@ -17,4 +17,5 @@ gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.
 
 group :test do
   gem "dotenv"
+  gem "dry-types"
 end
