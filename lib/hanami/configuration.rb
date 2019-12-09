@@ -117,7 +117,7 @@ module Hanami
 
     def settings_loader
       settings.fetch(:settings_loader) {
-        require_relative "application/settings"
+        require "hanami/application/settings/loader"
         settings[:settings_loader] = Application::Settings::Loader
       }
     end
