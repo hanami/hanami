@@ -20,7 +20,7 @@ bundle_package() {
 }
 
 install_hanami_frameworks() {
-  declare -a frameworks=(utils validations router helpers model view controller mailer assets cli webconsole)
+  declare -a frameworks=(utils validations router helpers model view controller mailer assets webconsole)
 
   for framework in "${frameworks[@]}"
   do
