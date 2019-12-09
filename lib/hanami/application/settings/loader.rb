@@ -25,7 +25,7 @@ module Hanami
           settings, errors = load_settings(defined_settings)
 
           if errors.any?
-            raise InvalidSettingsError, errors if errors.any?
+            raise InvalidSettingsError, errors
           else
             settings
           end
