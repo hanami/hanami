@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "hanami-utils",      "~> 2.0.alpha"
   spec.add_dependency "hanami-router",     "~> 2.0.alpha"
   spec.add_dependency "hanami-controller", "~> 2.0.alpha"
-  spec.add_dependency "hanami-cli",        "~> 1.0.alpha"
+  spec.add_dependency "dry-cli",           "~> 0.5"
   spec.add_dependency "dry-monitor"
   spec.add_dependency "dry-system",        "~> 0.10"
   spec.add_dependency "dry-inflector",     "~> 0.1", ">= 0.1.2"

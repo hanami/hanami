@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "hanami/cli"
+require "dry/cli"
 require "hanami/cli/application/command"
 require "hanami/console/context"
 

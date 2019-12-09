@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami"
-require "hanami/cli/command"
+require "dry/cli/command"
 require "concurrent"
 require "hanami/utils/files"
 require "erb"
@@ -15,7 +15,7 @@ module Hanami
       # Abstract command
       #
       # @since 1.1.0
-      class Command < Hanami::CLI::Command
+      class Command < Dry::CLI::Command
         # @since 1.1.0
         # @api private
         def self.inherited(component)
