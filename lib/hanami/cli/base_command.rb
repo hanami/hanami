@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require "dry/inflector"
-require "hanami/cli/command"
+require "dry/cli/command"
 require "hanami/utils/files"
 
 module Hanami
   class CLI
     # Base class for Hanami application CLI commands
-    class BaseCommand < Hanami::CLI::Command
+    class BaseCommand < Dry::CLI::Command
       attr_reader :out
       attr_reader :inflector
       attr_reader :files

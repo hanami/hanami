@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "hanami/cli"
+require "dry/cli"
 require_relative "commands"
 
 module Hanami
   class CLI
     module Application
       # Hanami application CLI
-      class CLI < Hanami::CLI
+      class CLI < Dry::CLI
         attr_reader :application
 
         def initialize(application: Hanami.application, commands: Commands)
