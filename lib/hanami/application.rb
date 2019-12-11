@@ -218,6 +218,8 @@ module Hanami
         # For after configure hook to run
         container.configure do; end # rubocop:disable Style/BlockDelimiters
 
+        container.load_paths! "lib"
+
         # rubocop:disable Style/IfUnlessModifier
         if settings && !container.key?(:settings)
           container.register :settings, settings
