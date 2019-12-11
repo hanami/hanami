@@ -145,9 +145,7 @@ module Hanami
       def settings(&block)
         @_mutex.synchronize do
           if block.nil?
-            raise "Hanami.application.settings not configured" unless defined?(@_settings)
-
-            @_settings
+            defined?(@_settings) and @_settings
           else
             @_settings = Application::Settings.build(
               configuration.settings_loader,
@@ -221,7 +219,7 @@ module Hanami
         container.configure do; end # rubocop:disable Style/BlockDelimiters
 
         # rubocop:disable Style/IfUnlessModifier
-        unless container.key?(:settings)
+        if settings && !container.key?(:settings)
           container.register :settings, settings
         end
 
