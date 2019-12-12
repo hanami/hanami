@@ -1,3 +1,5 @@
+require "dry/core/constants"
+
 module Hanami
   class Application
     module Settings
@@ -28,6 +30,8 @@ module Hanami
             STR
           end
         end
+
+        Undefined = Dry::Core::Constants::Undefined
 
         def initialize(*)
         end
@@ -69,7 +73,7 @@ module Hanami
         end
 
         def resolve_setting(name, args)
-          value = ENV[name.to_s.upcase]
+          value = ENV.fetch(name.to_s.upcase) { Undefined }
 
           if args.none?
             value
