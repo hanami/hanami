@@ -102,8 +102,8 @@ module Hanami
         container.load_paths! "lib"
       end
 
-      # For after configure hook to run
-      container.configure do; end # rubocop:disable Style/BlockDelimiters
+      # Force after configure hook to run
+      container.configure do; end
 
       if namespace
         namespace.const_set :Container, container

@@ -1,9 +1,14 @@
+# frozen_string_literal: true
+
 require "dry/core/constants"
 require_relative "settings/definition"
 require_relative "settings/struct"
 
 module Hanami
   class Application
+    # Application settings
+    #
+    # @since 2.0.0
     module Settings
       Undefined = Dry::Core::Constants::Undefined
 

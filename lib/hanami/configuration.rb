@@ -123,7 +123,7 @@ module Hanami
     end
 
     def settings_loader_options=(options)
-      settings[:settings_loader_options] = {}
+      settings[:settings_loader_options] = options
     end
 
     def settings_loader_options

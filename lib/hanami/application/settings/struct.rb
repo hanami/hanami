@@ -1,6 +1,16 @@
+# frozen_string_literal: true
+
 module Hanami
   class Application
     module Settings
+      # Application settings struct
+      #
+      # When the application loads settings, a struct subclass is created for
+      # the settings defined specifically for the application, then initialized
+      # with those settings and their values
+      #
+      # @since 2.0.0
+      # @api public
       class Struct
         class << self
           def [](names)
@@ -23,9 +33,11 @@ module Hanami
 
           def define_readers
             setting_names.each do |name|
+              next if reserved?(name)
+
               define_method(name) do
                 @settings[name]
-              end unless reserved?(name)
+              end
             end
           end
         end
@@ -35,9 +47,9 @@ module Hanami
         end
 
         def [](name)
-          if !self.class.setting_names.include?(name)
-            raise ArgumentError, "Unknown setting +#{name}+"
-          elsif self.class.reserved?(name)
+          raise ArgumentError, "Unknown setting +#{name}+" unless self.class.setting_names.include?(name)
+
+          if self.class.reserved?(name)
             @settings[name]
           else
             public_send(name)

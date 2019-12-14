@@ -43,7 +43,7 @@ module Hanami
 
       alias config configuration
 
-      def init
+      def init # rubocop:disable Metrics/AbcSize, Metrics/MethodLength:
         return self if inited?
 
         configuration.finalize
@@ -142,7 +142,7 @@ module Hanami
         !!@booted # rubocop:disable Style/DoubleNegation
       end
 
-      def settings(&block)
+      def settings(&block) # rubocop:disable Metrics/MethodLength
         @_mutex.synchronize do
           if block.nil?
             defined?(@_settings) and @_settings
@@ -206,7 +206,7 @@ module Hanami
         application_namespace.const_set :Container, Class.new(Dry::System::Container)
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
       def configure_container(container)
         container.use :env, inferrer: -> { Hanami.env }
         container.use :notifications
@@ -216,7 +216,7 @@ module Hanami
         container.config.default_namespace = application_name
 
         # For after configure hook to run
-        container.configure do; end # rubocop:disable Style/BlockDelimiters
+        container.configure do; end
 
         container.load_paths! "lib"
 
@@ -250,7 +250,7 @@ module Hanami
 
         container
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
 
       def define_deps_module
         require "#{application_name}/deps"
@@ -300,7 +300,7 @@ module Hanami
 
       def load_settings
         require File.join(configuration.root, configuration.settings_path)
-      rescue LoadError  # rubocop:disable Lint/HandleExceptions
+      rescue LoadError # rubocop:disable Lint/HandleExceptions
       end
     end
     # rubocop:enable Metrics/ModuleLength

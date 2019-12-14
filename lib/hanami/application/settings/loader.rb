@@ -1,6 +1,13 @@
+# frozen_string_literal: true
+
 module Hanami
   class Application
     module Settings
+      # Default application settings loader. Uses dotenv (if available) to load
+      # .env files and then loads settings from ENV.
+      #
+      # @since 2.0.0
+      # @api private
       class Loader
         InvalidSettingsError = Class.new(StandardError) do
           def initialize(errors)
@@ -37,32 +44,28 @@ module Hanami
 
           settings, errors = load_settings(defined_settings)
 
-          if errors.any?
-            raise InvalidSettingsError, errors
-          else
-            settings
-          end
+          raise InvalidSettingsError, errors if errors.any?
+
+          settings
         end
 
         private
 
         def load_dotenv
-          begin
-            require "dotenv"
-            Dotenv.load if defined?(Dotenv)
-          rescue LoadError
-          end
+          require "dotenv"
+          Dotenv.load if defined?(Dotenv)
+        rescue LoadError # rubocop:disable Lint/HandleExceptions
         end
 
-        def load_settings(defined_settings)
+        def load_settings(defined_settings) # rubocop:disable Metrics/MethodLength
           defined_settings.each_with_object([{}, {}]) { |(name, args), (settings, errors)|
             begin
               settings[name] = resolve_setting(name, args)
-            rescue => e
-              if e.is_a?(UnsupportedSettingArgumentError)
-                raise e
+            rescue => exception # rubocop:disable Style/RescueStandardError
+              if exception.is_a?(UnsupportedSettingArgumentError) # rubocop: disable Style/GuardClause
+                raise exception
               else
-                errors[name] = e
+                errors[name] = exception
               end
             end
           }
@@ -74,7 +77,7 @@ module Hanami
           if args.none?
             value
           elsif args[0]&.respond_to?(:call)
-            args[0].(value)
+            args[0].call(value)
           else
             raise UnsupportedSettingArgumentError.new(name, args)
           end

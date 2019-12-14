@@ -7,7 +7,7 @@ RSpec.describe Hanami::Application::Settings::Loader do
   subject(:loader) { described_class.new }
 
   describe "#call" do
-    subject(:loaded_settings) { loader.(defined_settings) }
+    subject(:loaded_settings) { loader.call(defined_settings) }
 
     let(:defined_settings) { [] }
 
@@ -70,7 +70,7 @@ RSpec.describe Hanami::Application::Settings::Loader do
       context "callable setting definition arguments provided" do
         let(:defined_settings) {
           [
-            [:database_url, [-> v { v.split("/").last }]],
+            [:database_url, [->(v) { v.split("/").last }]],
             [:redis_url, []],
           ]
         }
@@ -85,8 +85,8 @@ RSpec.describe Hanami::Application::Settings::Loader do
         context "callable definition arguments fail" do
           let(:defined_settings) {
             [
-              [:database_url, [-> v { raise "nope to database" }]],
-              [:redis_url, [-> v { raise "nope to redis" }]],
+              [:database_url, [->(_v) { raise "nope to database" }]],
+              [:redis_url, [->(_v) { raise "nope to redis" }]],
             ]
           }
 
