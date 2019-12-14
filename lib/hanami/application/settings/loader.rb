@@ -1,5 +1,3 @@
-require "dry/core/constants"
-
 module Hanami
   class Application
     module Settings
@@ -30,8 +28,6 @@ module Hanami
             STR
           end
         end
-
-        Undefined = Dry::Core::Constants::Undefined
 
         def initialize(*)
         end
