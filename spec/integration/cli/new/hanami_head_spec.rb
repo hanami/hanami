@@ -16,7 +16,6 @@ RSpec.describe "hanami new", type: :integration do
         expect('Gemfile').to have_file_content(%r{gem 'hanami-view',        require: false, git: 'https://github.com/hanami/view.git',        branch: 'develop'})
         expect('Gemfile').to have_file_content(%r{gem 'hanami-helpers',     require: false, git: 'https://github.com/hanami/helpers.git',     branch: 'develop'})
         expect('Gemfile').to have_file_content(%r{gem 'hanami-mailer',      require: false, git: 'https://github.com/hanami/mailer.git',      branch: 'develop'})
-        expect('Gemfile').to have_file_content(%r{gem 'hanami-cli',         require: false, git: 'https://github.com/hanami/cli.git',         branch: 'develop'})
         expect('Gemfile').to have_file_content(%r{gem 'hanami-assets',      require: false, git: 'https://github.com/hanami/assets.git',      branch: 'develop'})
         expect('Gemfile').to have_file_content(%r{gem 'hanami-model',       require: false, git: 'https://github.com/hanami/model.git',       branch: 'develop'})
         expect('Gemfile').to have_file_content(%r{gem 'hanami',                             git: 'https://github.com/hanami/hanami.git',      branch: 'develop'})

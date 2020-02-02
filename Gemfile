@@ -17,7 +17,6 @@ gem 'hanami-model',       '~> 1.3', require: false, git: 'https://github.com/han
 gem 'hanami-helpers',     '~> 1.3', require: false, git: 'https://github.com/hanami/helpers.git',     branch: 'master'
 gem 'hanami-mailer',      '~> 1.3', require: false, git: 'https://github.com/hanami/mailer.git',      branch: 'master'
 gem 'hanami-assets',      '~> 1.3', require: false, git: 'https://github.com/hanami/assets.git',      branch: 'master'
-gem 'hanami-cli',         '~> 0.3', require: false, git: 'https://github.com/hanami/cli.git',         branch: 'master'
 
 platforms :ruby do
   gem 'sqlite3'
