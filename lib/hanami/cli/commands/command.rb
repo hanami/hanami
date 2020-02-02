@@ -82,7 +82,7 @@ module Hanami
               options = environment.to_options.merge(options)
             end
 
-            super(options)
+            super(**options)
           rescue StandardError => e
             warn e.message
             warn e.backtrace.join("\n\t")
@@ -92,9 +92,7 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def initialize(command_name:, out: $stdout, files: Utils::Files)
-          super(command_name: command_name)
-
+        def initialize(out: $stdout, files: Utils::Files)
           @out       = out
           @files     = files
           @templates = Templates.new(self.class)
