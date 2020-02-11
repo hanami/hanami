@@ -31,6 +31,8 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
+      write "lib/test_app/.keep", ""
+
       write "slices/main/lib/main/actions/home.rb", <<~RUBY
         require "hanami/action"
 
