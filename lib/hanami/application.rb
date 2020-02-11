@@ -18,7 +18,7 @@ module Hanami
     @_mutex = Mutex.new
 
     class << self
-      def inherited(klass)
+      def inherited(klass) # rubocop:disable Metrics/MethodLength
         @_mutex.synchronize do
           klass.class_eval do
             @_mutex         = Mutex.new
@@ -29,6 +29,11 @@ module Hanami
           end
 
           Hanami.application = klass
+
+          # Prepare base load path and settings as early as possible, so
+          # settings can be applied to Hanami.application.configuration
+          klass.send :prepare_base_load_path
+          klass.send :load_settings
         end
       end
     end
@@ -43,14 +48,10 @@ module Hanami
 
       alias config configuration
 
-      def init # rubocop:disable Metrics/AbcSize, Metrics/MethodLength:
+      def init
         return self if inited?
 
         configuration.finalize
-
-        $LOAD_PATH.unshift File.join(root, "lib")
-
-        load_settings
 
         @container = prepare_container
         @deps_module = prepare_deps_module
@@ -188,6 +189,10 @@ module Hanami
       end
 
       private
+
+      def prepare_base_load_path
+        $LOAD_PATH.unshift File.join(root, "lib")
+      end
 
       def prepare_container
         define_container.tap do |container|
