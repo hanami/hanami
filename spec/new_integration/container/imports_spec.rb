@@ -47,6 +47,8 @@ RSpec.describe "Container imports", :application_integration do
         end
       RUBY
 
+      write "lib/test_app/.keep", ""
+
       write "slices/admin/lib/admin/test_op.rb", <<~RUBY
         module Admin
           class TestOp
