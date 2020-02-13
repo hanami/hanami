@@ -18,7 +18,7 @@ module Hanami
     @_mutex = Mutex.new
 
     class << self
-      def inherited(klass) # rubocop:disable Metrics/MethodLength
+      def inherited(klass)
         @_mutex.synchronize do
           klass.class_eval do
             @_mutex         = Mutex.new
@@ -29,11 +29,6 @@ module Hanami
           end
 
           Hanami.application = klass
-
-          # Prepare base load path and settings as early as possible, so
-          # settings can be applied to Hanami.application.configuration
-          klass.send :prepare_base_load_path
-          klass.send :load_settings
         end
       end
     end
@@ -48,10 +43,12 @@ module Hanami
 
       alias config configuration
 
-      def init
+      def init # rubocop:disable Metrics/MethodLength
         return self if inited?
 
         configuration.finalize
+
+        load_settings
 
         @container = prepare_container
         @deps_module = prepare_deps_module
@@ -144,16 +141,19 @@ module Hanami
       end
 
       def settings(&block) # rubocop:disable Metrics/MethodLength
-        @_mutex.synchronize do
-          if block.nil?
-            defined?(@_settings) and @_settings
-          else
-            @_settings = Application::Settings.build(
-              configuration.settings_loader,
-              configuration.settings_loader_options,
-              &block
-            )
-          end
+        if block
+          @_settings = Application::Settings.build(
+            configuration.settings_loader,
+            configuration.settings_loader_options,
+            &block
+          )
+        elsif instance_variable_defined?(:@_settings)
+          @_settings
+        else
+          # Load settings lazily so they can be used to configure the
+          # Hanami::Application subclass (before the application has inited)
+          load_settings
+          @_settings ||= nil
         end
       end
 
@@ -191,7 +191,8 @@ module Hanami
       private
 
       def prepare_base_load_path
-        $LOAD_PATH.unshift File.join(root, "lib")
+        base_path = File.join(root, "lib")
+        $LOAD_PATH.unshift base_path unless $LOAD_PATH.include?(base_path)
       end
 
       def prepare_container
@@ -304,6 +305,7 @@ module Hanami
       end
 
       def load_settings
+        prepare_base_load_path
         require File.join(configuration.root, configuration.settings_path)
       rescue LoadError # rubocop:disable Lint/HandleExceptions
       end
