@@ -28,6 +28,8 @@ module Hanami
             include InstanceMethods
           end
 
+          klass.send :prepare_base_load_path
+
           Hanami.application = klass
         end
       end
