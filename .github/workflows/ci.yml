@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    paths:
+      - ".github/workflows/ci.yml"
+      - "lib/**"
+      - "*.gemspec"
+      - "spec/**"
+      - "Rakefile"
+      - "Gemfile"
+      - ".rubocop.yml"
+  pull_request:
+    branches:
+      - master
+  create:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - "2.7"
+          - "2.6"
+          - "2.5"
+          - "jruby"
+        include:
+          - ruby: "2.6"
+            coverage: "true"
+    env:
+      COVERAGE: ${{matrix.coverage}}
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{matrix.ruby}}
+      - name: Install latest bundler
+        run: |
+          gem install bundler --no-document
+          bundle config set without 'tools benchmarks docs'
+      - name: Bundle install
+        run: bundle install --jobs 4 --retry 3
+      - name: Run all tests
+        run: script/ci
