@@ -3,7 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 uninstall_hanami_gems() {
-  declare -a frameworks=(hanami hanami-assets hanami-mailer hanami-controller hanami-view hanami-model hanami-helpers hanami-router hanami-validations hanami-cli hanami-webconsole hanami-utils)
+  declare -a frameworks=(hanami hanami-assets hanami-mailer hanami-controller hanami-view hanami-model hanami-helpers hanami-router hanami-validations hanami-webconsole hanami-utils)
 
   for framework in "${frameworks[@]}"
   do
