@@ -319,31 +319,29 @@ module Hanami
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def initialize(application = self.class)
         require_relative "application/router"
+        require "hanami/api/middleware"
 
         application.boot
 
         resolver = application.config.router_endpoint_resolver.new(
           container: application,
           namespace: application.config.router_endpoint_container_key_namespace,
+          inflector: application.inflector
         )
 
+        stack = Hanami::API::Middleware::Stack.new
+        # application.config.for_each_middleware do |m, *args, &block|
+        #   stack.use(m, *args, &block)
+        # end
+
         router = Application::Router.new(
-          context: application,
-          endpoint_resolver: resolver,
+          resolver: resolver,
+          stack: stack,
           **application.configuration.router_settings,
           &application.routes
         )
 
-        @app = Rack::Builder.new do
-          use application[:rack_monitor]
-
-          # Apply middleware from configuration
-          application.config.for_each_middleware do |m, *args, &block|
-            use(m, *args, &block)
-          end
-
-          run router
-        end
+        @app = stack.finalize(router)
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 

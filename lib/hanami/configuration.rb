@@ -217,13 +217,8 @@ module Hanami
     alias inflector inflections
 
     def router_settings
-      bu = base_url
-
       {
-        scheme: bu.scheme,
-        host: bu.host,
-        port: bu.port,
-        inflector: inflections
+        base_url: base_url
       }
     end
 
