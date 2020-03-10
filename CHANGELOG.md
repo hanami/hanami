@@ -386,7 +386,7 @@ The web, with simplicity.
 ## v0.3.0 - 2015-03-23
 ### Added
 - [Luca Guidi] Introduced action generator. Eg. `bundle exec lotus generate action web dashboard#index`
-- [Alfonso Uceda Pompa] Allow to specify default coookies options in application configuration. Eg. `cookies true, { domain: 'lotusrb.org' }`
+- [Alfonso Uceda Pompa] Allow to specify default cookies options in application configuration. Eg. `cookies true, { domain: 'lotusrb.org' }`
 - [Tom Kadwill] Include `Lotus::Helpers` in views.
 - [Linus Pettersson] Allow to specify `--database` CLI option when generate a new project. Eg. `lotus new bookshelf --database=postgresql`
 - [Linus Pettersson] Initialize a Git repository when generating a new project
