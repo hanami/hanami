@@ -24,7 +24,7 @@ The web, with simplicity.
 ### Fixed
 - [Aidan Coyle] Remove from app generator support for deprecated `force_ssl` setting
 - [Alessandro Caporrini] Remove from app generator support for deprecated `body_parsers` setting
-- [Daphne Rouw & Sean Collins] Make app generator to work when code in `config/enviroment.rb` uses double quotes
+- [Daphne Rouw & Sean Collins] Make app generator to work when code in `config/environment.rb` uses double quotes
 
 ## v1.3.0 - 2018-10-24
 ### Added
@@ -41,7 +41,7 @@ The web, with simplicity.
 
 ### Fixed
 - [Anton Davydov] Make possible to pass extra settings for custom logger instances (eg. `logger SemanticLogger.new, :foo, :bar`)
-- [graywolf] Ensure `hanami generate app` to work without `require_relative` entries in `config/enviroment.rb`
+- [graywolf] Ensure `hanami generate app` to work without `require_relative` entries in `config/environment.rb`
 - [Makoto Tajitsu & Luca Guidi] Fixed regression for `hanami new .` that used to generate a broken project
 
 ### Fixed
@@ -158,7 +158,7 @@ The web, with simplicity.
 - [Luca Guidi] Make compatible with Rack 2.0 only
 - [Luca Guidi] Removed `logger` settings from Hanami applications
 - [Luca Guidi] Removed logger for Hanami applications (eg `Web.logger`)
-- [Luca Guidi] Changed mailer syntax in `config/enviroment.rb`
+- [Luca Guidi] Changed mailer syntax in `config/environment.rb`
 
 ## v0.9.2 - 2016-12-19
 ## Added
