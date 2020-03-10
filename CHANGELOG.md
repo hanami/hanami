@@ -247,11 +247,11 @@ The web, with simplicity.
 
 ## v0.7.2 - 2016-02-09
 ### Fixed
-- [Alfonso Uceda Pompa] Fixed routing issue when static assets server tried to hijiack paths that are matching directories in public directory
+- [Alfonso Uceda Pompa] Fixed routing issue when static assets server tried to hijack paths that are matching directories in public directory
 
 ## v0.7.1 - 2016-02-05
 ### Fixed
-- [Anton Davydov] Fixed routing issue when static assets server tried to hijiack requests belonging to dynamic endpoints
+- [Anton Davydov] Fixed routing issue when static assets server tried to hijack requests belonging to dynamic endpoints
 - [Anatolii Didukh] Ensure to fallback to default engine for `hanami console`
 
 ## v0.7.0 - 2016-01-22
