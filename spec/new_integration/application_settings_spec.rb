@@ -142,4 +142,22 @@ RSpec.describe "Application settings", :application_integration do
       expect(Hanami.application.config.sessions.options).to eq(secret: "qwerty12345")
     end
   end
+
+  specify "Settings are altogether optional" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+          end
+        end
+      RUBY
+
+      require "hanami/init"
+
+      expect(Hanami.application.settings).to be_nil
+      expect { Hanami.application.container[:settings] }.to raise_error Dry::System::ComponentLoadError
+    end
+  end
 end
