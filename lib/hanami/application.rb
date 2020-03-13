@@ -8,6 +8,7 @@ require "pathname"
 require "rack"
 require_relative "slice"
 require_relative "web/rack_logger"
+require_relative "application/settings"
 
 module Hanami
   # Hanami application class
@@ -27,6 +28,8 @@ module Hanami
             include InstanceMethods
           end
 
+          klass.send :prepare_base_load_path
+
           Hanami.application = klass
         end
       end
@@ -42,10 +45,12 @@ module Hanami
 
       alias config configuration
 
-      def init
+      def init # rubocop:disable Metrics/MethodLength
         return self if inited?
 
         configuration.finalize
+
+        load_settings
 
         @container = prepare_container
         @deps_module = prepare_deps_module
@@ -137,6 +142,23 @@ module Hanami
         !!@booted # rubocop:disable Style/DoubleNegation
       end
 
+      def settings(&block) # rubocop:disable Metrics/MethodLength
+        if block
+          @_settings = Application::Settings.build(
+            configuration.settings_loader,
+            configuration.settings_loader_options,
+            &block
+          )
+        elsif instance_variable_defined?(:@_settings)
+          @_settings
+        else
+          # Load settings lazily so they can be used to configure the
+          # Hanami::Application subclass (before the application has inited)
+          load_settings
+          @_settings ||= nil
+        end
+      end
+
       def routes(&block)
         @_mutex.synchronize do
           if block.nil?
@@ -170,6 +192,11 @@ module Hanami
 
       private
 
+      def prepare_base_load_path
+        base_path = File.join(root, "lib")
+        $LOAD_PATH.unshift base_path unless $LOAD_PATH.include?(base_path)
+      end
+
       def prepare_container
         define_container.tap do |container|
           configure_container container
@@ -187,7 +214,7 @@ module Hanami
         application_namespace.const_set :Container, Class.new(Dry::System::Container)
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
       def configure_container(container)
         container.use :env, inferrer: -> { Hanami.env }
         container.use :notifications
@@ -197,11 +224,15 @@ module Hanami
         container.config.default_namespace = application_name
 
         # For after configure hook to run
-        container.configure do; end # rubocop:disable Style/BlockDelimiters
+        container.configure do; end
 
         container.load_paths! "lib"
 
         # rubocop:disable Style/IfUnlessModifier
+        if settings && !container.key?(:settings)
+          container.register :settings, settings
+        end
+
         unless container.key?(:inflector)
           container.register :inflector, inflector
         end
@@ -227,7 +258,7 @@ module Hanami
 
         container
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
 
       def define_deps_module
         require "#{application_name}/deps"
@@ -272,6 +303,12 @@ module Hanami
 
       def load_routes
         require File.join(configuration.root, configuration.routes)
+      rescue LoadError # rubocop:disable Lint/HandleExceptions
+      end
+
+      def load_settings
+        prepare_base_load_path
+        require File.join(configuration.root, configuration.settings_path)
       rescue LoadError # rubocop:disable Lint/HandleExceptions
       end
     end

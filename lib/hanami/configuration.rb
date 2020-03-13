@@ -28,6 +28,9 @@ module Hanami
       self.slices_dir = DEFAULT_SLICES_DIR
       settings[:slices] = {}
 
+      self.settings_path = DEFAULT_SETTINGS_PATH
+      self.settings_loader_options = {}
+
       self.base_url = DEFAULT_BASE_URL
 
       self.logger   = DEFAULT_LOGGER.clone
@@ -98,6 +101,33 @@ module Hanami
 
     def slices
       settings[:slices]
+    end
+
+    def settings_path=(value)
+      settings[:settings_path] = value
+    end
+
+    def settings_path
+      settings.fetch(:settings_path)
+    end
+
+    def settings_loader=(loader)
+      settings[:settings_loader] = loader
+    end
+
+    def settings_loader
+      settings.fetch(:settings_loader) {
+        require "hanami/application/settings/loader"
+        settings[:settings_loader] = Application::Settings::Loader
+      }
+    end
+
+    def settings_loader_options=(options)
+      settings[:settings_loader_options] = options
+    end
+
+    def settings_loader_options
+      settings[:settings_loader_options]
     end
 
     def base_url=(value)
@@ -260,6 +290,9 @@ module Hanami
 
     DEFAULT_ROUTES = File.join("config", "routes")
     private_constant :DEFAULT_ROUTES
+
+    DEFAULT_SETTINGS_PATH = File.join("config", "settings")
+    private_constant :DEFAULT_SETTINGS_PATH
 
     DEFAULT_COOKIES = Cookies.null
     private_constant :DEFAULT_COOKIES

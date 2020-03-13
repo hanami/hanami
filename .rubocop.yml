@@ -4,9 +4,13 @@ inherit_from:
   - https://raw.githubusercontent.com/hanami/devtools/master/.rubocop-unstable.yml
 Naming/HeredocDelimiterNaming:
   Enabled: false
+Style/BlockDelimiters:
+  Enabled: false
 Style/CommentedKeyword:
   Enabled: false
 Style/TrailingCommaInArguments:
+  Enabled: false
+Style/TrailingCommaInArrayLiteral:
   Enabled: false
 Style/TrailingCommaInHashLiteral:
   Enabled: false
