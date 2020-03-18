@@ -18,6 +18,14 @@ module Hanami
       @container = container || define_container
     end
 
+    def inflector
+      application.inflector
+    end
+
+    def namespace_path
+      @namespace_path ||= inflector.underscore(namespace.to_s)
+    end
+
     def init
       container.import application: application.container
 
@@ -113,13 +121,5 @@ module Hanami
       container
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-
-    def namespace_path
-      @namespace_path ||= inflector.underscore(namespace.to_s)
-    end
-
-    def inflector
-      application.inflector
-    end
   end
 end
