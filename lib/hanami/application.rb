@@ -330,9 +330,10 @@ module Hanami
         )
 
         stack = Hanami::API::Middleware::Stack.new
-        # application.config.for_each_middleware do |m, *args, &block|
-        #   stack.use(m, *args, &block)
-        # end
+        stack.use application[:rack_monitor], [] # FIXME: make Stack#use to accept one or multiple args
+        application.config.for_each_middleware do |m, *args, &block|
+          stack.use(m, *args, &block)
+        end
 
         router = Application::Router.new(
           resolver: resolver,
