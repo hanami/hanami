@@ -21,7 +21,9 @@ RSpec.describe "Hanami web app", :application_integration do
 
       write "config/routes.rb", <<~RUBY
         Hanami.application.routes do
-          root to: "home#index"
+          slice :main, at: "/" do
+            root to: "home#index"
+          end
 
           slice :admin, at: "/admin" do
             get "/dashboard", to: "dashboard#show"
@@ -31,10 +33,10 @@ RSpec.describe "Hanami web app", :application_integration do
 
       write "lib/test_app/.keep", ""
 
-      write "slices/default/lib/default/actions/home/index.rb", <<~RUBY
+      write "slices/main/lib/main/actions/home/index.rb", <<~RUBY
         require "hanami/action"
 
-        module Default
+        module Main
           module Actions
             module Home
               class Index < Hanami::Action
