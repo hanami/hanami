@@ -29,7 +29,7 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          def use(middleware, args, &blk)
+          def use(middleware, *args, &blk)
             @stack[@prefix].push([middleware, args, blk])
           end
 
