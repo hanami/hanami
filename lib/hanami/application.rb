@@ -319,7 +319,6 @@ module Hanami
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def initialize(application = self.class)
         require_relative "application/router"
-        require "hanami/api/middleware"
 
         application.boot
 
@@ -329,7 +328,7 @@ module Hanami
           inflector: application.inflector
         )
 
-        stack = Hanami::API::Middleware::Stack.new
+        stack = Hanami::Application::Router::Middleware::Stack.new
         stack.use application[:rack_monitor], [] # FIXME: make Stack#use to accept one or multiple args
         application.config.for_each_middleware do |m, *args, &block|
           stack.use(m, *args, &block)
