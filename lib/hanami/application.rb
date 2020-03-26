@@ -303,7 +303,7 @@ module Hanami
 
       def load_routes
         require File.join(configuration.root, configuration.routes)
-      rescue LoadError # rubocop:disable Lint/HandleExceptions
+      rescue LoadError # rubocop:disable Lint/SuppressedException
       end
 
       def load_settings

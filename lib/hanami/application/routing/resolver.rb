@@ -38,14 +38,14 @@ module Hanami
         # rubocop:disable Metrics/MethodLength
         def call(path, identifier)
           endpoint =
-          case identifier
-          when String
-            resolve_string_identifier(path, identifier)
-          when Class
-            identifier.respond_to?(:call) ? identifier : identifier.new
-          else
-            identifier
-          end
+            case identifier
+            when String
+              resolve_string_identifier(path, identifier)
+            when Class
+              identifier.respond_to?(:call) ? identifier : identifier.new
+            else
+              identifier
+            end
 
           unless endpoint.respond_to?(:call) # rubocop:disable Style/IfUnlessModifier
             raise NotCallableEndpointError.new(endpoint)
