@@ -34,7 +34,7 @@ module Hanami
       # @api private
       def scope(*args, &blk)
         @stack.with(args.first) do
-          super(*args, &blk)
+          super
         end
       end
 
