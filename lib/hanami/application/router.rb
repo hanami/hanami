@@ -32,9 +32,9 @@ module Hanami
 
       # @since 2.0.0
       # @api private
-      def scope(*args, **kwargs, &blk)
+      def scope(*args, &blk)
         @stack.with(args.first) do
-          super
+          super(*args, &blk)
         end
       end
 
