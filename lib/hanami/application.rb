@@ -322,13 +322,13 @@ module Hanami
 
         application.boot
 
-        resolver = application.config.router_endpoint_resolver.new(
+        resolver = application.config.router_resolver.new(
           container: application,
           namespace: application.config.router_endpoint_container_key_namespace,
           inflector: application.inflector
         )
 
-        stack = Hanami::Application::Router::Middleware::Stack.new
+        stack = Hanami::Application::Routing::Middleware::Stack.new
         stack.use application[:rack_monitor], [] # FIXME: make Stack#use to accept one or multiple args
         application.config.for_each_middleware do |m, *args, &block|
           stack.use(m, *args, &block)

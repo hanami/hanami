@@ -222,14 +222,14 @@ module Hanami
       }
     end
 
-    def router_endpoint_resolver=(resolver)
-      settings[:router_endpoint_resolver] = resolver
+    def router_resolver=(resolver)
+      settings[:router_resolver] = resolver
     end
 
-    def router_endpoint_resolver
-      settings.fetch(:router_endpoint_resolver) do
-        require_relative "application/endpoint_resolver"
-        Application::EndpointResolver
+    def router_resolver
+      settings.fetch(:router_resolver) do
+        require_relative "application/routing/resolver"
+        Application::Routing::Resolver
       end
     end
 
