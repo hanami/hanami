@@ -309,7 +309,7 @@ module Hanami
       def load_settings
         prepare_base_load_path
         require File.join(configuration.root, configuration.settings_path)
-      rescue LoadError # rubocop:disable Lint/HandleExceptions
+      rescue LoadError # rubocop:disable Lint/SuppressedException
       end
     end
     # rubocop:enable Metrics/ModuleLength

@@ -54,7 +54,7 @@ module Hanami
         def load_dotenv
           require "dotenv"
           Dotenv.load if defined?(Dotenv)
-        rescue LoadError # rubocop:disable Lint/HandleExceptions
+        rescue LoadError # rubocop:disable Lint/SuppressedException
         end
 
         def load_settings(defined_settings) # rubocop:disable Metrics/MethodLength
