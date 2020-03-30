@@ -12,7 +12,7 @@ module Hanami
         # @api private
         class NotCallableEndpointError < StandardError
           def initialize(endpoint)
-            super("#{endpoint.inspect} isn't compatible with Rack. Please make sure it implements #call.")
+            super("#{endpoint.inspect} is not compatible with Rack. Please make sure it implements #call.")
           end
         end
 
