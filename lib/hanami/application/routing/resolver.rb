@@ -7,7 +7,7 @@ module Hanami
       #
       # @since 2.0.0
       class Resolver
-        require "hanami/application/routing/resolver/trie"
+        require_relative "resolver/trie"
 
         # @api private
         class NotCallableEndpointError < StandardError
