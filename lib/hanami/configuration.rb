@@ -12,10 +12,11 @@ module Hanami
   #
   # rubocop:disable Metrics/ClassLength
   class Configuration
-    require "hanami/configuration/cookies"
-    require "hanami/configuration/sessions"
-    require "hanami/configuration/middleware"
-    require "hanami/configuration/security"
+    require_relative "configuration/cookies"
+    require_relative "configuration/sessions"
+    require_relative "configuration/middleware"
+    require_relative "configuration/security"
+    require_relative "configuration/views"
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def initialize(env:)
@@ -44,6 +45,7 @@ module Hanami
 
       self.middleware = Middleware.new
       self.security   = Security.new
+      self.views      = Views.new
 
       self.inflections = Dry::Inflector.new
 
@@ -198,6 +200,10 @@ module Hanami
       settings.fetch(:middleware)
     end
 
+    def views
+      settings.fetch(:views)
+    end
+
     def security=(value)
       settings[:security] = value
     end
@@ -265,6 +271,10 @@ module Hanami
 
     def middleware=(value)
       settings[:middleware] = value
+    end
+
+    def views=(value)
+      settings[:views] = value
     end
 
     def inflections=(value)
