@@ -296,7 +296,7 @@ module Hanami
         register_slice(
           slice_name,
           namespace: slice_module,
-          root: slice_path.realpath.to_s
+          root: slice_path.realpath
         )
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
