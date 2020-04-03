@@ -302,7 +302,7 @@ module Hanami
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def load_routes
-        require File.join(configuration.root, configuration.routes)
+        require File.join(configuration.root, configuration.router.routes)
       rescue LoadError # rubocop:disable Lint/SuppressedException
       end
 
@@ -322,7 +322,7 @@ module Hanami
 
         application.boot
 
-        resolver = application.config.router_resolver.new(
+        resolver = application.config.router.resolver.new(
           container: application,
           inflector: application.inflector
         )
@@ -336,7 +336,7 @@ module Hanami
         router = Application::Router.new(
           resolver: resolver,
           stack: stack,
-          **application.configuration.router_settings,
+          **application.configuration.router.options,
           &application.routes
         )
 

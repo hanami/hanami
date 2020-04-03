@@ -12,6 +12,7 @@ module Hanami
   #
   # rubocop:disable Metrics/ClassLength
   class Configuration
+    require "hanami/configuration/router"
     require "hanami/configuration/cookies"
     require "hanami/configuration/sessions"
     require "hanami/configuration/middleware"
@@ -35,13 +36,13 @@ module Hanami
 
       self.logger   = DEFAULT_LOGGER.clone
       self.rack_logger_filter_params = DEFAULT_RACK_LOGGER_FILTER_PARAMS.clone
-      self.routes   = DEFAULT_ROUTES
       self.cookies  = DEFAULT_COOKIES
       self.sessions = DEFAULT_SESSIONS
 
       self.default_request_format  = DEFAULT_REQUEST_FORMAT
       self.default_response_format = DEFAULT_RESPONSE_FORMAT
 
+      self.router     = Router.new(base_url)
       self.middleware = Middleware.new
       self.security   = Security.new
 
@@ -152,12 +153,12 @@ module Hanami
       settings[:rack_logger_filter_params]
     end
 
-    def routes=(value)
-      settings[:routes] = value
+    def router=(value)
+      settings[:router] = value
     end
 
-    def routes
-      settings.fetch(:routes)
+    def router
+      settings.fetch(:router)
     end
 
     def cookies=(options)
@@ -214,23 +215,6 @@ module Hanami
 
     alias inflector inflections
 
-    def router_settings
-      {
-        base_url: base_url
-      }
-    end
-
-    def router_resolver=(resolver)
-      settings[:router_resolver] = resolver
-    end
-
-    def router_resolver
-      settings.fetch(:router_resolver) do
-        require_relative "application/routing/resolver"
-        Application::Routing::Resolver
-      end
-    end
-
     def for_each_middleware(&blk)
       stack = middleware.stack.dup
       stack += sessions.middleware if sessions.enabled?
@@ -272,9 +256,6 @@ module Hanami
 
     DEFAULT_RACK_LOGGER_FILTER_PARAMS = %w[_csrf password password_confirmation].freeze
     private_constant :DEFAULT_RACK_LOGGER_FILTER_PARAMS
-
-    DEFAULT_ROUTES = File.join("config", "routes")
-    private_constant :DEFAULT_ROUTES
 
     DEFAULT_SETTINGS_PATH = File.join("config", "settings")
     private_constant :DEFAULT_SETTINGS_PATH
