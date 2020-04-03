@@ -323,7 +323,7 @@ module Hanami
         application.boot
 
         resolver = application.config.router.resolver.new(
-          container: application,
+          slices: application.slices,
           inflector: application.inflector
         )
 

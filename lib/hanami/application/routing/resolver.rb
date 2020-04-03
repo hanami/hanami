@@ -16,14 +16,10 @@ module Hanami
           end
         end
 
-        attr_reader :container
-        attr_reader :inflector
-        attr_reader :slices
-
-        def initialize(container:, inflector:, slices: Trie.new)
-          @container = container
-          @inflector = inflector
+        def initialize(slices:, inflector:)
           @slices = slices
+          @inflector = inflector
+          @slices_registry = Trie.new
         end
 
         # rubocop:disable Metrics/MethodLength
@@ -47,14 +43,18 @@ module Hanami
         # rubocop:enable Metrics/MethodLength
 
         def register_slice_at_path(name, path)
-          slices.add(path, name)
+          slices_registry.add(path, name)
         end
 
         private
 
+        attr_reader :slices
+        attr_reader :inflector
+        attr_reader :slices_registry
+
         def resolve_string_identifier(path, identifier)
-          slice_name = slices.find(path) or raise "missing slice for #{path.inspect} (#{identifier.inspect})"
-          slice = container.slices[slice_name]
+          slice_name = slices_registry.find(path) or raise "missing slice for #{path.inspect} (#{identifier.inspect})"
+          slice = slices[slice_name]
           action_key = "actions.#{identifier.gsub(/[#\/]/, '.')}"
 
           slice[action_key]
