@@ -10,9 +10,10 @@ module Hanami
     class Router < ::Hanami::Router
       # @since 2.0.0
       # @api private
-      def initialize(stack:, **kwargs, &blk)
+      def initialize(routes:, stack: Routing::Middleware::Stack.new, **kwargs, &blk)
         @stack = stack
-        super(**kwargs, &blk)
+        instance_eval(&blk)
+        super(**kwargs, &routes)
       end
 
       # @since 2.0.0
@@ -44,6 +45,12 @@ module Hanami
         @resolver.register_slice_at_path(name, path)
 
         scope(path, &blk)
+      end
+
+      def to_rack_app
+        return self if @stack.empty?
+
+        @stack.to_rack_app(self)
       end
     end
   end

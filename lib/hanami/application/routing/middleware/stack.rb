@@ -45,10 +45,7 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          def finalize(app) # rubocop:disable Metrics/MethodLength
-            uniq!
-            return app if @stack.empty?
-
+          def to_rack_app(app) # rubocop:disable Metrics/MethodLength
             s = self
 
             Rack::Builder.new do
@@ -61,13 +58,18 @@ module Hanami
 
                 run app
               end
-            end
+            end.to_app
+          end
+
+          # @since 2.0.0
+          # @api private
+          def empty?
+            @stack.empty?
           end
 
           # @since 2.0.0
           # @api private
           def each(&blk)
-            uniq!
             @stack.each(&blk)
           end
 
@@ -79,14 +81,6 @@ module Hanami
             else
               builder.map(prefix, &blk)
             end
-          end
-
-          private
-
-          # @since 2.0.0
-          # @api private
-          def uniq!
-            @stack.each_value(&:uniq!)
           end
         end
       end

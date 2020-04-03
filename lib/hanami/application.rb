@@ -327,20 +327,20 @@ module Hanami
           inflector: application.inflector
         )
 
-        stack = Hanami::Application::Routing::Middleware::Stack.new
-        stack.use application[:rack_monitor]
-        application.config.for_each_middleware do |m, *args, &block|
-          stack.use(m, *args, &block)
+        router = Application::Router.new(
+          routes: application.routes,
+          resolver: resolver,
+          **application.configuration.router.options,
+        ) do
+          # FIXME: enabling this line raises an exception that I cannot reproduce in dry-monitor
+          # use application[:rack_monitor]
+
+          application.config.for_each_middleware do |m, *args, &block|
+            use(m, *args, &block)
+          end
         end
 
-        router = Application::Router.new(
-          resolver: resolver,
-          stack: stack,
-          **application.configuration.router.options,
-          &application.routes
-        )
-
-        @app = stack.finalize(router)
+        @app = router.to_rack_app
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
