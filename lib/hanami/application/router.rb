@@ -41,7 +41,7 @@ module Hanami
       # @since 2.0.0
       def slice(name, at:, &blk)
         path = prefixed_path(at)
-        @resolver.register_slice(path, name)
+        @resolver.register_slice_at_path(name, path)
 
         scope(path, &blk)
       end

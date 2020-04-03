@@ -46,7 +46,7 @@ module Hanami
         end
         # rubocop:enable Metrics/MethodLength
 
-        def register_slice(path, name)
+        def register_slice_at_path(name, path)
           slices.add(path, name)
         end
 
