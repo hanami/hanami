@@ -324,7 +324,6 @@ module Hanami
 
         resolver = application.config.router_resolver.new(
           container: application,
-          namespace: application.config.router_endpoint_container_key_namespace,
           inflector: application.inflector
         )
 

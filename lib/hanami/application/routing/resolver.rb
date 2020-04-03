@@ -17,22 +17,13 @@ module Hanami
         end
 
         attr_reader :container
-        attr_reader :base_namespace
         attr_reader :inflector
         attr_reader :slices
 
-        def initialize(container:, namespace:, inflector:, slices: Trie.new)
+        def initialize(container:, inflector:, slices: Trie.new)
           @container = container
-          @base_namespace = namespace
           @inflector = inflector
           @slices = slices
-        end
-
-        def with_container(new_container)
-          self.class.new(
-            container: new_container,
-            namespace: base_namespace,
-          )
         end
 
         # rubocop:disable Metrics/MethodLength
