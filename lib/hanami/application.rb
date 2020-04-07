@@ -174,12 +174,16 @@ module Hanami
       MODULE_DELIMITER = "::"
       private_constant :MODULE_DELIMITER
 
-      def application_namespace
+      def namespace
         inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
       end
 
+      def namespace_path
+        inflector.underscore(namespace)
+      end
+
       def application_name
-        inflector.underscore(application_namespace).to_sym
+        inflector.underscore(namespace).to_sym
       end
 
       def root
@@ -209,9 +213,9 @@ module Hanami
 
       def define_container
         require "#{application_name}/container"
-        application_namespace.const_get :Container
+        namespace.const_get :Container
       rescue LoadError, NameError
-        application_namespace.const_set :Container, Class.new(Dry::System::Container)
+        namespace.const_set :Container, Class.new(Dry::System::Container)
       end
 
       # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
@@ -262,9 +266,9 @@ module Hanami
 
       def define_deps_module
         require "#{application_name}/deps"
-        application_namespace.const_get :Deps
+        namespace.const_get :Deps
       rescue LoadError, NameError
-        application_namespace.const_set :Deps, container.injector
+        namespace.const_set :Deps, container.injector
       end
 
       def load_slices
