@@ -7,13 +7,19 @@ before_install:
   - export PATH=$PWD/vendor/phantomjs/bin:$PATH
   - phantomjs --version
   - gem update --system # Required to install rainbow 2.2.1 https://github.com/sickill/rainbow/issues/44#issuecomment-274412027
+  - ./script/setup
+env:
+  - TEST_TYPE=unit
+  - TEST_TYPE=isolation
+  - TEST_TYPE=integration
 script:
-  - './script/ci'
+  - ./script/test $TEST_TYPE
 rvm:
-  - 2.3.8
-  - 2.4.5
-  - 2.5.3
-  - 2.6.0
+  - 2.7
+  - 2.6
+  - 2.5
+  - 2.4
+  - 2.3
 
 notifications:
   webhooks:
