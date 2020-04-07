@@ -47,6 +47,8 @@ module Hanami
         scope(path, &blk)
       end
 
+      # @since 2.0.0
+      # @api private
       def to_rack_app
         return self if @stack.empty?
 
