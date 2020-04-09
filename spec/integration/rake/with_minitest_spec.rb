@@ -46,14 +46,14 @@ RSpec.describe "Rake: default task", type: :integration do
   def generate_development_data
     migrate
 
-    console do |input, _, _|
+    console do |input, _, _| # rubocop:disable Lint/Debugger
       input.puts("BookRepository.new.create(title: 'Learn Hanami')")
       input.puts("exit")
     end
   end
 
   def assert_development_data
-    console do |input, _, _|
+    console do |input, _, _| # rubocop:disable Lint/Debugger
       input.puts("BookRepository.new.all.to_a.count")
       input.puts("exit")
     end

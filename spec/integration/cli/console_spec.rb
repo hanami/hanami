@@ -7,7 +7,7 @@ RSpec.describe "hanami console", type: :integration do
       with_project(project_name, console: :irb) do
         setup_model
 
-        console do |input, _, _|
+        console do |input, _, _| # rubocop:disable Lint/Debugger
           input.puts("Hanami::VERSION")
           input.puts("Web::Application")
           input.puts("Web.routes")
@@ -26,7 +26,7 @@ RSpec.describe "hanami console", type: :integration do
 
     it "starts console with --engine option" do
       with_project("bookshelf_console_irb", console: :irb) do
-        console(" --engine=irb") do |input, _, _|
+        console(" --engine=irb") do |input, _, _| # rubocop:disable Lint/Debugger
           input.puts("Hanami::VERSION")
           input.puts("exit")
         end
@@ -51,7 +51,7 @@ RSpec.describe "hanami console", type: :integration do
             attribute :digest, Types::String
           end
         EOF
-        console do |input, _, _|
+        console do |input, _, _| # rubocop:disable Lint/Debugger
           input.puts("AccessToken.new(id: '1', secret: 'shh', digest: 'def')")
           input.puts("exit")
         end

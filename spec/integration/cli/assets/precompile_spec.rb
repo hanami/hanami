@@ -48,7 +48,6 @@ RSpec.describe "hanami assets", type: :integration do
         hanami "assets precompile"
 
         # rubocop:disable Lint/ImplicitStringConcatenation
-        # rubocop:disable Layout/IndentFirstArgument
 
         #
         # Verify manifest
@@ -73,7 +72,7 @@ RSpec.describe "hanami assets", type: :integration do
         EOF
 
         expect("public/assets/application-bb8f10498d83d401db238549409dc4c5.js").to have_file_content \
-"""
+          """
 (function(){var Application;Application=(function(){function Application(){this.init=true;}
 return Application;})();}).call(this);
 """
@@ -88,7 +87,7 @@ return Application;})();}).call(this);
         EOF
 
         expect("public/assets/application.js").to have_file_content \
-"""
+          """
 (function(){var Application;Application=(function(){function Application(){this.init=true;}
 return Application;})();}).call(this);
 """
@@ -99,7 +98,7 @@ return Application;})();}).call(this);
         # Verify admin assets (w/ checksum)
         #
         expect("public/assets/admin/dashboard-39744f9626a70683b6c2d46305798883.js").to have_file_content \
-"""
+          """
 (function(){var Dashboard;Dashboard=(function(){function Dashboard(data){this.data=data;}
 return Dashboard;})();}).call(this);
 """
@@ -110,7 +109,7 @@ return Dashboard;})();}).call(this);
         # Verify admin assets (w/o checksum)
         #
         expect("public/assets/admin/dashboard.js").to have_file_content \
-"""
+          """
 (function(){var Dashboard;Dashboard=(function(){function Dashboard(data){this.data=data;}
 return Dashboard;})();}).call(this);
 """
@@ -118,7 +117,6 @@ return Dashboard;})();}).call(this);
         expect("public/assets/admin/favicon.ico").to be_an_existing_file
 
         # rubocop:enable Lint/ImplicitStringConcatenation
-        # rubocop:enable Layout/IndentFirstArgument
       end
     end
 

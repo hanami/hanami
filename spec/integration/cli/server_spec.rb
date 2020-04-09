@@ -58,7 +58,7 @@ RSpec.describe "hanami server", type: :integration do
     it "serves contents from database" do
       with_project do
         setup_model
-        console do |input, _, _|
+        console do |input, _, _| # rubocop:disable Lint/Debugger
           input.puts("BookRepository.new.create(title: 'Learn Hanami')")
           input.puts("exit")
         end

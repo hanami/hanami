@@ -302,14 +302,14 @@ module Hanami
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def load_routes
-        require File.join(configuration.root, configuration.routes)
-      rescue LoadError # rubocop:disable Lint/HandleExceptions
+        require File.join(configuration.root, configuration.router.routes)
+      rescue LoadError # rubocop:disable Lint/SuppressedException
       end
 
       def load_settings
         prepare_base_load_path
         require File.join(configuration.root, configuration.settings_path)
-      rescue LoadError # rubocop:disable Lint/HandleExceptions
+      rescue LoadError # rubocop:disable Lint/SuppressedException
       end
     end
     # rubocop:enable Metrics/ModuleLength
@@ -322,28 +322,24 @@ module Hanami
 
         application.boot
 
-        resolver = application.config.router_endpoint_resolver.new(
-          container: application,
-          namespace: application.config.router_endpoint_container_key_namespace,
+        resolver = application.config.router.resolver.new(
+          slices: application.slices,
+          inflector: application.inflector
         )
 
         router = Application::Router.new(
-          context: application,
-          endpoint_resolver: resolver,
-          **application.configuration.router_settings,
-          &application.routes
-        )
-
-        @app = Rack::Builder.new do
+          routes: application.routes,
+          resolver: resolver,
+          **application.configuration.router.options,
+        ) do
           use application[:rack_monitor]
 
-          # Apply middleware from configuration
           application.config.for_each_middleware do |m, *args, &block|
             use(m, *args, &block)
           end
-
-          run router
         end
+
+        @app = router.to_rack_app
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
