@@ -332,8 +332,7 @@ module Hanami
           resolver: resolver,
           **application.configuration.router.options,
         ) do
-          # FIXME: enabling this line raises an exception that I cannot reproduce in dry-monitor
-          # use application[:rack_monitor]
+          use application[:rack_monitor]
 
           application.config.for_each_middleware do |m, *args, &block|
             use(m, *args, &block)
