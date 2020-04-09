@@ -5,8 +5,8 @@ require "hanami/view"
 module Hanami
   class View
     class << self
-      def [](slice_name)
-        build_integrated_class(integration_target(slice_name))
+      def [](target)
+        build_integrated_class(integration_target(target))
       end
 
       private
