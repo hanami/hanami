@@ -32,7 +32,7 @@ module Hanami
           super(subclass)
 
           unless subclass.superclass == View
-            # Don't set template name for abstract "base" view classes
+            # Do not set template name for abstract "base" view classes
             subclass.config.template = template_name(subclass, target)
           end
         end
