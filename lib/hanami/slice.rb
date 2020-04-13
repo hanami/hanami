@@ -14,7 +14,7 @@ module Hanami
       @application = application
       @name = name.to_sym
       @namespace = namespace
-      @root = Pathname(root)
+      @root = root ? Pathname(root) : root
       @container = container || define_container
     end
 
