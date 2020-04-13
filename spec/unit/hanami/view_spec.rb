@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "hanami/view/extensions/application_view"
 
 RSpec.describe Hanami::View, "application view extension", :application_integration do

@@ -8,6 +8,8 @@ Style/BlockDelimiters:
   Enabled: false
 Style/CommentedKeyword:
   Enabled: false
+Style/LambdaCall:
+  Enabled: false
 Style/TrailingCommaInArguments:
   Enabled: false
 Style/TrailingCommaInArrayLiteral:

@@ -3,6 +3,8 @@
 require "hanami/view"
 
 module Hanami
+  # Application integration extensions to Hanami::View
+  # @since 2.0.0
   class View
     class << self
       def [](target)
@@ -19,29 +21,31 @@ module Hanami
         end
       end
 
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def build_integrated_class(target)
         application = Hanami.application
 
-        klass = Class.new(View) do
+        Class.new(View) do
           config.paths = [target.root.join(application.config.views.templates_path).to_s]
           config.layouts_dir = application.config.views.layouts_dir
           config.layout = application.config.views.default_layout
-        end
 
-        klass.define_singleton_method :inherited do |subclass|
-          super(subclass)
+          define_singleton_method :inherited do |subclass|
+            super(subclass)
 
-          unless subclass.superclass == View
-            # Do not set template name for abstract "base" view classes
-            subclass.config.template = template_name(subclass, target)
+            unless subclass.superclass == View
+              # Do not set template name for abstract "base" view classes
+              subclass.config.template = template_name(subclass, target)
+            end
           end
         end
-
-        klass
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def template_name(view_class, target)
-        target.inflector.underscore(view_class.name)
+        target
+          .inflector
+          .underscore(view_class.name)
           .sub(/^#{target.namespace_path}\//, "")
           .sub(/^#{Hanami.application.config.views.base_path}\//, "")
       end
