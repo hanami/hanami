@@ -29,7 +29,7 @@ module Hanami
       end
 
       def layouts_dir
-        options[:layouts_dir]
+        options[:layouts_dir] || "layouts"
       end
 
       def layouts_dir=(dir)
