@@ -31,7 +31,7 @@ RSpec.describe "Application views", :application_integration do
         end
       RUBY
 
-      write "slices/main/web/templates/application.html.slim", <<~SLIM
+      write "slices/main/web/templates/layouts/application.html.slim", <<~SLIM
         html
           body
             == yield
@@ -78,7 +78,7 @@ RSpec.describe "Application views", :application_integration do
         end
       RUBY
 
-      write "web/templates/application.html.slim", <<~SLIM
+      write "web/templates/layouts/application.html.slim", <<~SLIM
         html
           body
             == yield
