@@ -37,6 +37,9 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{matrix.ruby}}
+      - name: Install system deps
+        run: |
+          sudo apt-get install libsqlite3-dev -y
       - name: Install latest bundler
         run: |
           gem install bundler --no-document
