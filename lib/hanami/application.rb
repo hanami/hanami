@@ -9,6 +9,7 @@ require "rack"
 require_relative "slice"
 require_relative "web/rack_logger"
 require_relative "application/settings"
+require_relative "action/extensions/application_action"
 require_relative "view/extensions/application_view"
 
 module Hanami
