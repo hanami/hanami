@@ -20,10 +20,37 @@ RSpec.describe Hanami::Application::Settings::Loader do
           stub_const "Dotenv", dotenv
         end
 
-        it "requires and loads dotenv" do
+        it "requires and loads a range of dotenv files, specific to the current HANAMI_ENV" do
           loaded_settings
+
           expect(loader).to have_received(:require).with("dotenv").ordered
-          expect(dotenv).to have_received(:load).ordered
+          expect(dotenv).to have_received(:load).ordered.with(
+            ".env.development.local",
+            ".env.local",
+            ".env.development",
+            ".env"
+          )
+        end
+
+        context "HANAMI_ENV is 'test'" do
+          before do
+            @hanami_env = ENV["HANAMI_ENV"]
+            ENV["HANAMI_ENV"] = "test"
+          end
+
+          after do
+            ENV["HANAMI_ENV"] = @hanami_env
+          end
+
+          it "does not load .env.local (which is intended for non-test settings only)" do
+            loaded_settings
+
+            expect(dotenv).to have_received(:load).ordered.with(
+              ".env.test.local",
+              ".env.test",
+              ".env"
+            )
+          end
         end
       end
 
