@@ -28,7 +28,7 @@ module Hanami
       # @since 2.0.0
       # @api private
       def use(middleware, *args, &blk)
-        @stack.use(middleware, args, &blk)
+        @stack.use(middleware, *args, &blk)
       end
 
       # @since 2.0.0
