@@ -53,8 +53,17 @@ module Hanami
 
         def load_dotenv
           require "dotenv"
-          Dotenv.load if defined?(Dotenv)
+          Dotenv.load(*dotenv_files) if defined?(Dotenv)
         rescue LoadError # rubocop:disable Lint/SuppressedException
+        end
+
+        def dotenv_files
+          [
+            ".env.#{Hanami.env}.local",
+            (".env.local" unless Hanami.env?(:test)),
+            ".env.#{Hanami.env}",
+            ".env"
+          ].compact
         end
 
         def load_settings(defined_settings) # rubocop:disable Metrics/MethodLength

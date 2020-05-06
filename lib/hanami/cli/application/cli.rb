@@ -10,11 +10,9 @@ module Hanami
       class CLI < Hanami::CLI
         attr_reader :application
 
-        def initialize(application: Hanami.application, commands: Commands)
+        def initialize(application: nil, commands: Commands)
           super(commands)
           @application = application
-
-          application.init
         end
 
         private
@@ -24,7 +22,13 @@ module Hanami
           command, arguments = super
 
           if command.respond_to?(:with_application)
-            application.config.env = arguments[:env] if arguments[:env]
+            # Set HANAMI_ENV before the application inits to ensure all aspects
+            # of the boot process respect the provided env
+            ENV["HANAMI_ENV"] = arguments[:env] if arguments[:env]
+
+            require "hanami/init"
+            application = Hanami.application
+
             [command.with_application(application), arguments]
           else
             [command, arguments]
