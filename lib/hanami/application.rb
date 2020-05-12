@@ -195,6 +195,17 @@ module Hanami
         configuration.inflector
       end
 
+      # @api private
+      def component_provider(component)
+        # [Admin, Main, MyApp] or [MyApp::Admin, MyApp::Main, MyApp]
+        providers = slices.values + [self]
+
+        component_class = component.is_a?(Class) ? component : component.class
+        component_name = component_class.name
+
+        providers.detect { |provider| component_name.include?(provider.namespace.to_s) }
+      end
+
       private
 
       def prepare_base_load_path
