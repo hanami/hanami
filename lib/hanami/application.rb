@@ -94,12 +94,12 @@ module Hanami
         slices[name.to_sym] = slice
       end
 
-      def register(*args, &block)
-        container.register(*args, &block)
+      def register(*args, **opts, &block)
+        container.register(*args, **opts, &block)
       end
 
-      def register_bootable(*args, &block)
-        container.boot(*args, &block)
+      def register_bootable(*args, **opts, &block)
+        container.boot(*args, **opts, &block)
       end
 
       def init_bootable(*args)
@@ -244,7 +244,7 @@ module Hanami
 
         unless container.key?(:logger)
           require "hanami/logger"
-          container.register :logger, Hanami::Logger.new(configuration.logger)
+          container.register :logger, Hanami::Logger.new(**configuration.logger)
         end
 
         unless container.key?(:rack_monitor)

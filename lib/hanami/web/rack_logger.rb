@@ -17,8 +17,8 @@ module Hanami
       end
 
       def attach(rack_monitor)
-        rack_monitor.on :stop do |env:, status:, time:|
-          log_request env, status, time
+        rack_monitor.on :stop do |event|
+          log_request event[:env], event[:status], event[:time]
         end
 
         rack_monitor.on :error do |event|
