@@ -39,6 +39,12 @@ module Hanami
     #
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
+      def self.extended(klass)
+        klass.class_eval do
+          @inited = @booted = false
+        end
+      end
+
       def configuration
         @_configuration
       end
@@ -66,7 +72,7 @@ module Hanami
       end
 
       def inited?
-        !!@inited # rubocop:disable Style/DoubleNegation
+        @inited
       end
 
       def container
@@ -139,7 +145,7 @@ module Hanami
       end
 
       def booted?
-        !!@booted # rubocop:disable Style/DoubleNegation
+        @booted
       end
 
       def settings(&block) # rubocop:disable Metrics/MethodLength
@@ -196,6 +202,8 @@ module Hanami
 
       # @api private
       def component_provider(component)
+        raise "Hanami.application must be inited before detecting providers" unless inited?
+
         # [Admin, Main, MyApp] or [MyApp::Admin, MyApp::Main, MyApp]
         providers = slices.values + [self]
 

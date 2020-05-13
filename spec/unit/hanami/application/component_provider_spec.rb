@@ -15,6 +15,8 @@ RSpec.describe Hanami::Application, "#component_provider", :application_integrat
     end
 
     application.register_slice :main, namespace: Main
+
+    Hanami.init
   end
 
   context "component in slice namespace" do
