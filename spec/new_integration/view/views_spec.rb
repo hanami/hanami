@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe "Application views", :application_integration do
-  specify "Views provide configuration from their slice" do
+RSpec.describe "Hanami view integration", :application_integration do
+  specify "Views take their configuration from their slice in which they are defined" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -13,8 +13,10 @@ RSpec.describe "Application views", :application_integration do
       RUBY
 
       write "slices/main/lib/main/view.rb", <<~RUBY
+        require "hanami/view"
+
         module Main
-          class View < Hanami::View[:main]
+          class View < Hanami::View
           end
         end
       RUBY
@@ -48,7 +50,7 @@ RSpec.describe "Application views", :application_integration do
     end
   end
 
-  specify "Views can also provide configuration from the application" do
+  specify "Views can also take configuration from the application when defined in the top-level application module" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -60,8 +62,10 @@ RSpec.describe "Application views", :application_integration do
       RUBY
 
       write "lib/test_app/view.rb", <<~RUBY
+        require "hanami/view"
+
         module TestApp
-          class View < Hanami::View[Hanami.application]
+          class View < Hanami::View
           end
         end
       RUBY
