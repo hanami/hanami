@@ -34,7 +34,31 @@ module Hanami
 
           def start_repl
             context = Hanami::Console::Context.new(application)
-            REPL.start(context, prompt: [proc { default_prompt }, proc { indented_prompt }])
+
+            case REPL.name.to_sym
+            when :Pry
+              start_pry(context)
+            when :IRB
+              start_irb(context)
+            end
+          end
+
+          def start_pry(context)
+            # https://github.com/pry/pry/pull/1877
+            if Gem.loaded_specs["pry"].version >= Gem::Version.new("0.13.0")
+              Pry.prompt = Pry::Prompt.new(:hanami, "Hanami Console prompt.", prompt_procs)
+              Pry.start(context)
+            else
+              Pry.start(context, prompt_procs)
+            end
+          end
+
+          def start_irb(context)
+            IRB.start(context, prompt_procs)
+          end
+
+          def prompt_procs
+            [proc { default_prompt }, proc { indented_prompt }]
           end
 
           def default_prompt
