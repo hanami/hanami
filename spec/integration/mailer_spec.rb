@@ -22,7 +22,7 @@ RSpec.describe "Mailer", type: :integration do
     end
       EOF
 
-      console do |input, _, _| # rubocop:disable Lint/Debugger
+      console do |input, _, _|
         input.puts("Mailers::Welcome.new.user_name")
       end
 

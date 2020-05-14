@@ -4,7 +4,7 @@ RSpec.describe "rackup", type: :integration do
   it "serves contents from database" do
     with_project do
       setup_model
-      console do |input, _, _| # rubocop:disable Lint/Debugger
+      console do |input, _, _|
         input.puts("BookRepository.new.create(title: 'Learn Hanami')")
         input.puts("exit")
       end
