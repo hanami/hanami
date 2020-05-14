@@ -13,6 +13,7 @@ module Hanami
 
       private
 
+      # rubocop:disable Style/GuardClause
       def integration_target(target)
         if target.is_a?(Symbol)
           Hanami.application.slices[target] or raise "Unknown slice +#{target}+"
@@ -20,6 +21,7 @@ module Hanami
           target
         end
       end
+      # rubocop:enable Style/GuardClause
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def build_integrated_class(target)
