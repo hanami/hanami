@@ -31,6 +31,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.add_dependency "hanami-controller", "~> 2.0.alpha"
   spec.add_dependency "hanami-router",     "~> 2.0.alpha"
   spec.add_dependency "hanami-utils",      "~> 2.0.alpha"
+  spec.add_dependency "hanami-view",       "~> 2.0.alpha"
 
   spec.add_development_dependency "rspec",     "~>  3.8"
   spec.add_development_dependency "rack-test", "~> 1.1"
