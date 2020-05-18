@@ -9,7 +9,6 @@ require "rack"
 require_relative "slice"
 require_relative "web/rack_logger"
 require_relative "application/settings"
-require_relative "view/extensions/application_view"
 
 module Hanami
   # Hanami application class
@@ -40,6 +39,12 @@ module Hanami
     #
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
+      def self.extended(klass)
+        klass.class_eval do
+          @inited = @booted = false
+        end
+      end
+
       def configuration
         @_configuration
       end
@@ -67,7 +72,7 @@ module Hanami
       end
 
       def inited?
-        !!@inited # rubocop:disable Style/DoubleNegation
+        @inited
       end
 
       def container
@@ -140,7 +145,7 @@ module Hanami
       end
 
       def booted?
-        !!@booted # rubocop:disable Style/DoubleNegation
+        @booted
       end
 
       def settings(&block) # rubocop:disable Metrics/MethodLength
@@ -193,6 +198,19 @@ module Hanami
 
       def inflector
         configuration.inflector
+      end
+
+      # @api private
+      def component_provider(component)
+        raise "Hanami.application must be inited before detecting providers" unless inited?
+
+        # [Admin, Main, MyApp] or [MyApp::Admin, MyApp::Main, MyApp]
+        providers = slices.values + [self]
+
+        component_class = component.is_a?(Class) ? component : component.class
+        component_name = component_class.name
+
+        providers.detect { |provider| component_name.include?(provider.namespace.to_s) }
       end
 
       private
