@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami/cli"
+require 'ostruct'
 
 module Hanami
   # Hanami CLI
@@ -50,6 +51,36 @@ module Hanami
       Commands.register(name, command, aliases: aliases, &blk)
     end
 
+    # CLI command context
+    #
+    # @since 1.1.0
+    # @api private
+    class Context < OpenStruct
+      # @since 1.1.0
+      # @api private
+      def initialize(data)
+        data = data.each_with_object({}) do |(k, v), result|
+          v = Utils::String.new(v) if v.is_a?(::String)
+          result[k] = v
+        end
+
+        super(data)
+        freeze
+      end
+
+      # @since 1.1.0
+      # @api private
+      def with(data)
+        self.class.new(to_h.merge(data))
+      end
+
+      # @since 1.1.0
+      # @api private
+      def binding
+        super
+      end
+    end
+
     # CLI commands registry
     #
     # @since 1.1.0
@@ -59,6 +90,8 @@ module Hanami
 
       require "hanami/cli/commands/command"
       require "hanami/cli/commands/server"
+
+      require "hanami/cli/commands/new"
     end
   end
 end
