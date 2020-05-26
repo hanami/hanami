@@ -50,7 +50,7 @@ RSpec.describe "hanami new", type: :integration do
       append  .env.test
     OUT
 
-    run_command "hanami new #{project}", output
+    run_cmd "hanami new #{project}", output
 
     within_project_directory(project) do
       # Assert it's an initialized Git repository
