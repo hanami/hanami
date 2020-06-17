@@ -210,6 +210,8 @@ module Hanami
         component_class = component.is_a?(Class) ? component : component.class
         component_name = component_class.name
 
+        return unless component_name
+
         providers.detect { |provider| component_name.include?(provider.namespace.to_s) }
       end
 
