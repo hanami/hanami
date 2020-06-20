@@ -31,6 +31,7 @@ jobs:
             coverage: "true"
     env:
       COVERAGE: ${{matrix.coverage}}
+      CI: true
     steps:
       - uses: actions/checkout@v1
       - name: Set up Ruby
@@ -45,3 +46,8 @@ jobs:
         run: bundle install --jobs 4 --retry 3
       - name: Run all tests
         run: bundle exec rake
+      - name: Send test coverage report to codecov.io
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{secrets.COVERAGE_TOKEN}}
+          file: ./coverage/.resultset.json
