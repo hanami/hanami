@@ -44,4 +44,4 @@ jobs:
       - name: Bundle install
         run: bundle install --jobs 4 --retry 3
       - name: Run all tests
-        run: script/ci
+        run: bundle exec rake
