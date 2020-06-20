@@ -55,7 +55,7 @@ module Hanami
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
     def log(env, status, header, began_at)
-      now    = Time.now
+      now    = Rack::Utils.clock_time
       length = extract_content_length(header)
 
       msg = Hash[
