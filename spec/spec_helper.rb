@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "support/coverage" if ENV["COVERAGE"].eql?("true")
+
 require "hanami"
 require "hanami/utils/file_list"
 require "hanami/devtools/unit"
