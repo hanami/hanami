@@ -90,7 +90,7 @@ module Hanami
       result
     end
 
-    # Wrapper which uses Rack's monotonic class (used for began_at since Rack 2.1.0)
+    # Wrapper which uses Rack's monotonic clock_time (used for began_at since Rack 2.1.0)
     #
     # @since 1.3.4
     # @api private
