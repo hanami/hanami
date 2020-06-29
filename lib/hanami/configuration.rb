@@ -13,12 +13,15 @@ module Hanami
   #
   # rubocop:disable Metrics/ClassLength
   class Configuration
-    require_relative "configuration/router"
+    require_relative "configuration/actions"
     require_relative "configuration/cookies"
-    require_relative "configuration/sessions"
     require_relative "configuration/middleware"
+    require_relative "configuration/router"
     require_relative "configuration/security"
+    require_relative "configuration/sessions"
     require_relative "configuration/views"
+
+    attr_reader :actions
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def initialize(env:)
@@ -50,6 +53,8 @@ module Hanami
       self.views      = Views.new
 
       self.inflections = Dry::Inflector.new
+
+      @actions = Actions.new
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
