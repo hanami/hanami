@@ -19,5 +19,6 @@ gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.
 group :test do
   gem "dotenv"
   gem "dry-types"
+  gem "rubocop", "~> 0.86"
   gem "slim"
 end
