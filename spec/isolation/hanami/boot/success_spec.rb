@@ -8,6 +8,12 @@ module Bookshelf
   end
 end
 
+module Web
+end
+slice = Hanami.application.register_slice :web, namespace: Web
+
+Hanami.init
+
 Hanami.application.routes do
   mount :web, at: "/" do
     root to: "home#index"
@@ -25,8 +31,6 @@ module Web
     end
   end
 end
-
-slice = Hanami.application.register_slice :web, namespace: Web
 
 slice.register "actions.home.index" do
   Web::Actions::Home::Index.new
