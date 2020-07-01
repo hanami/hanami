@@ -8,6 +8,12 @@ module Bookshelf
 end
 
 module Web
+end
+Hanami.application.register_slice :web, namespace: Web
+
+Hanami.init
+
+module Web
   class Action < Hanami::Action
   end
 
