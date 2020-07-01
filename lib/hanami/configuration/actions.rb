@@ -9,35 +9,28 @@ module Hanami
       attr_reader :configuration
 
       def initialize
-        @configuration = nil
-
         begin
           require "hanami/action/configuration"
           @configuration = Hanami::Action::Configuration.new
         rescue LoadError => e
           raise e unless e.path == "hanami/action/configuration"
+          @configuration = nil
         end
 
-        apply_defaults if configuration
-      end
-
-      def settings
-        if configuration
-          configuration.class.settings
-        else
-          Set.new
-        end
+        configure_defaults
       end
 
       private
 
-      def apply_defaults
+      def configure_defaults
+        return unless configuration
+
         self.default_request_format = DEFAULT_REQUEST_FORMAT
         self.default_response_format = DEFAULT_RESPONSE_FORMAT
       end
 
       def method_missing(name, *args, &block)
-        if configuration && configuration.respond_to?(name)
+        if configuration&.respond_to?(name)
           configuration.public_send(name, *args, &block)
         else
           super
