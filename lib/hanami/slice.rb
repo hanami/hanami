@@ -42,11 +42,9 @@ module Hanami
       self
     end
 
-    # rubocop:disable Style/DoubleNegation
     def booted?
       !!@booted
     end
-    # rubocop:enable Style/DoubleNegation
 
     def container
       @container ||= define_container

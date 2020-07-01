@@ -108,7 +108,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(template, context)
-            ::ERB.new(template, nil, TRIM_MODE).result(context)
+            ::ERB.new(template, trim_mode: TRIM_MODE).result(context)
           end
         end
 
