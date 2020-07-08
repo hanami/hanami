@@ -1,47 +1,47 @@
 # frozen_string_literal: true
 
+require "dry/configurable"
+
 module Hanami
   class Configuration
     # Hanami configuration for views
     #
     # @since 2.0.0
     class Views
-      attr_reader :options
+      attr_reader :configuration
 
-      def initialize(options = {})
-        @options = options
+      def initialize
+        begin
+          require "hanami/view"
+          @configuration = Hanami::View.config.dup
+        rescue LoadError => e
+          raise e unless e.path == "hanami/view"
+          @configuration = nil
+        end
+
+        configure_defaults
       end
 
-      def base_path
-        options[:base_path] || "views"
+      private
+
+      def configure_defaults
+        return unless configuration
+
+        self.paths = ["web/templates"]
+        self.template_inference_base = "views"
+        self.layout = "application"
       end
 
-      def base_path=(path)
-        options[:base_path] = path
+      def method_missing(name, *args, &block)
+        if configuration&.respond_to?(name)
+          configuration.public_send(name, *args, &block)
+        else
+          super
+        end
       end
 
-      def templates_path
-        options[:templates_path] || "web/templates"
-      end
-
-      def templates_path=(path)
-        options[:templates_path] = path
-      end
-
-      def layouts_dir
-        options[:layouts_dir] || "layouts"
-      end
-
-      def layouts_dir=(dir)
-        options[:layouts_dir] = dir
-      end
-
-      def default_layout
-        options[:default_layout] || "application"
-      end
-
-      def default_layout=(name)
-        options[:default_layout] = name
+      def respond_to_missing?(name, _include_private = false)
+        configuration&.respond_to?(name) || super
       end
     end
   end
