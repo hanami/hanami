@@ -22,6 +22,7 @@ module Hanami
     require_relative "configuration/views"
 
     attr_reader :actions
+    attr_reader :views
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def initialize(env:)
@@ -47,11 +48,11 @@ module Hanami
       self.router     = Router.new(base_url)
       self.middleware = Middleware.new
       self.security   = Security.new
-      self.views      = Views.new
 
       self.inflections = Dry::Inflector.new
 
       @actions = Actions.new
+      @views = Views.new
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
@@ -186,10 +187,6 @@ module Hanami
       settings.fetch(:middleware)
     end
 
-    def views
-      settings.fetch(:views)
-    end
-
     def security=(value)
       settings[:security] = value
     end
@@ -227,10 +224,6 @@ module Hanami
 
     def middleware=(value)
       settings[:middleware] = value
-    end
-
-    def views=(value)
-      settings[:views] = value
     end
 
     def inflections=(value)
