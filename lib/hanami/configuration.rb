@@ -13,7 +13,6 @@ module Hanami
   #
   # rubocop:disable Metrics/ClassLength
   class Configuration
-    require_relative "configuration/actions"
     require_relative "configuration/cookies"
     require_relative "configuration/middleware"
     require_relative "configuration/router"
@@ -51,7 +50,15 @@ module Hanami
 
       self.inflections = Dry::Inflector.new
 
-      @actions = Actions.new
+      @actions = begin
+        require_path = "hanami/action/application_configuration"
+        require require_path
+        Hanami::Action::ApplicationConfiguration.new
+      rescue LoadError => e
+        raise e unless e.path == require_path
+        Object.new
+      end
+
       @views = Views.new
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
