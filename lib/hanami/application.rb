@@ -244,6 +244,7 @@ module Hanami
         container.use :env, inferrer: -> { Hanami.env }
         container.use :notifications
 
+        container.config.inflector = configuration.inflector
         container.config.root = configuration.root
         container.config.auto_register = "lib/#{application_name}"
         container.config.default_namespace = application_name

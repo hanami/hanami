@@ -1,27 +1,32 @@
 # frozen_string_literal: true
 
 RSpec.describe "Container auto-registration", :application_integration do
-  specify "Booted application auto-registers files in application and slice lib/ directories" do
+  specify "Auto-registering files in application and slice lib/ directories" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
 
         module TestApp
           class Application < Hanami::Application
+            config.inflector do |inflections|
+              inflections.acronym "NBA"
+            end
           end
         end
       RUBY
 
-      write "lib/test_app/test_op.rb", <<~RUBY
+      write "lib/test_app/operation.rb", <<~RUBY
         module TestApp
-          class TestOp
+          class Operation
           end
         end
       RUBY
 
-      write "slices/admin/lib/admin/test_op.rb", <<~RUBY
+      write "slices/admin/lib/admin/nba_jam/get_that_outta_here.rb", <<~RUBY
         module Admin
-          class TestOp
+          module NBAJam
+            class GetThatOuttaHere
+            end
           end
         end
       RUBY
@@ -29,8 +34,8 @@ RSpec.describe "Container auto-registration", :application_integration do
       require "hanami/setup"
       Hanami.boot web: false
 
-      expect(TestApp::Application["test_op"]).to be_a TestApp::TestOp
-      expect(Admin::Slice["test_op"]).to be_an Admin::TestOp
+      expect(TestApp::Application["operation"]).to be_a TestApp::Operation
+      expect(Admin::Slice["nba_jam.get_that_outta_here"]).to be_an Admin::NBAJam::GetThatOuttaHere
     end
   end
 
@@ -41,33 +46,38 @@ RSpec.describe "Container auto-registration", :application_integration do
 
         module TestApp
           class Application < Hanami::Application
+            config.inflector do |inflections|
+              inflections.acronym "NBA"
+            end
           end
         end
       RUBY
 
-      write "lib/test_app/test_op.rb", <<~RUBY
+      write "lib/test_app/operation.rb", <<~RUBY
         module TestApp
-          class TestOp
+          class Operation
           end
         end
       RUBY
 
-      write "slices/admin/lib/admin/test_op.rb", <<~RUBY
+      write "slices/admin/lib/admin/nba_jam/get_that_outta_here.rb", <<~RUBY
         module Admin
-          class TestOp
+          module NBAJam
+            class GetThatOuttaHere
+            end
           end
         end
       RUBY
 
       require "hanami/init"
 
-      expect(TestApp::Application.keys).not_to include("test_op")
-      expect(TestApp::Application["test_op"]).to be_a TestApp::TestOp
-      expect(TestApp::Application.keys).to include("test_op")
+      expect(TestApp::Application.keys).not_to include("operation")
+      expect(TestApp::Application["operation"]).to be_a TestApp::Operation
+      expect(TestApp::Application.keys).to include("operation")
 
-      expect(Admin::Slice.keys).not_to include("test_op")
-      expect(Admin::Slice["test_op"]).to be_an Admin::TestOp
-      expect(Admin::Slice.keys).to include("test_op")
+      expect(Admin::Slice.keys).not_to include("nba_jam.get_that_outta_here")
+      expect(Admin::Slice["nba_jam.get_that_outta_here"]).to be_an Admin::NBAJam::GetThatOuttaHere
+      expect(Admin::Slice.keys).to include("nba_jam.get_that_outta_here")
     end
   end
 end

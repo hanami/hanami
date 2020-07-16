@@ -100,6 +100,7 @@ module Hanami
       container.use :env
 
       container.config.name = name
+      container.config.inflector = application.configuration.inflector
 
       if root && File.directory?(root)
         container.config.root = root
