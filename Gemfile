@@ -8,6 +8,7 @@ unless ENV["CI"]
   gem "yard",   require: false
 end
 
+gem "dry-system", git: "https://github.com/dry-rb/dry-system.git", branch: "bootable-paths"
 gem "hanami-utils", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/utils.git", branch: "unstable"
 gem "hanami-router", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/router.git", branch: "unstable"
 gem "hanami-controller", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/controller.git", branch: "unstable"
