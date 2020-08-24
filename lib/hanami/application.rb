@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require "dry/monitor"
-require "dry/monitor/rack/middleware"
 require "dry/system/container"
 require "hanami/configuration"
 require "pathname"
 require "rack"
 require_relative "slice"
-require_relative "web/rack_logger"
 require_relative "application/settings"
 
 module Hanami
@@ -245,42 +242,16 @@ module Hanami
         container.use :notifications
 
         container.config.inflector = configuration.inflector
+
         container.config.root = configuration.root
+        container.config.bootable_dirs = ["config/boot", Pathname(__dir__).join("application/container/boot").realpath]
         container.config.auto_register = "lib/#{application_name}"
         container.config.default_namespace = application_name
 
-        # For after configure hook to run
+        # Force after configure hook to run
         container.configure do; end
 
         container.load_paths! "lib"
-
-        # rubocop:disable Style/IfUnlessModifier
-        if settings && !container.key?(:settings)
-          container.register :settings, settings
-        end
-
-        unless container.key?(:inflector)
-          container.register :inflector, inflector
-        end
-
-        unless container.key?(:logger)
-          require "hanami/logger"
-          container.register :logger, Hanami::Logger.new(**configuration.logger)
-        end
-
-        unless container.key?(:rack_monitor)
-          container.register :rack_monitor, Dry::Monitor::Rack::Middleware.new(container[:notifications])
-        end
-
-        unless container.key?(:rack_logger)
-          container.register :rack_logger, Web::RackLogger.new(
-            container[:logger],
-            filter_params: configuration.rack_logger_filter_params,
-          )
-        end
-        # rubocop:enable Style/IfUnlessModifier
-
-        container[:rack_logger].attach container[:rack_monitor]
 
         container
       end

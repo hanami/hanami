@@ -104,6 +104,7 @@ module Hanami
 
       if root && File.directory?(root)
         container.config.root = root
+        container.config.bootable_dirs = ["config/boot"]
 
         container.config.auto_register = ["lib/#{namespace_path}"]
         container.config.default_namespace = namespace_path.tr("/", ".")

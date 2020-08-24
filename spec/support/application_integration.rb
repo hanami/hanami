@@ -31,7 +31,7 @@ RSpec.configure do |config|
   config.after :each, :application_integration do
     $LOAD_PATH.replace(@load_paths)
     $LOADED_FEATURES.delete_if do |feature_path|
-      feature_path =~ %r{hanami/(setup|init|boot)}
+      feature_path =~ %r{hanami/(setup|init|boot|application/container/boot)}
     end
 
     application_modules.each do |app_module|

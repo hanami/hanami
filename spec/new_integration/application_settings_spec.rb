@@ -143,7 +143,7 @@ RSpec.describe "Application settings", :application_integration do
     end
   end
 
-  specify "Settings are altogether optional" do
+  specify "Settings are nil when not defined" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -157,7 +157,7 @@ RSpec.describe "Application settings", :application_integration do
       require "hanami/init"
 
       expect(Hanami.application.settings).to be_nil
-      expect { Hanami.application.container[:settings] }.to raise_error Dry::System::ComponentLoadError
+      expect(Hanami.application.container[:settings]).to be_nil
     end
   end
 end
