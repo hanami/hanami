@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Hanami.application.register_bootable :rack_monitor do |container|
   start do
     require "dry/monitor"
