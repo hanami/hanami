@@ -53,7 +53,7 @@ module Hanami
       @actions = begin
         require_path = "hanami/action/application_configuration"
         require require_path
-        Hanami::Action::ApplicationConfiguration.new
+        Hanami::Action::ApplicationConfiguration.new(self)
       rescue LoadError => e
         raise e unless e.path == require_path
         Object.new
@@ -67,6 +67,10 @@ module Hanami
       environment_for(env).each do |blk|
         instance_eval(&blk)
       end
+
+      # Finalize nested configuration objects
+      actions.finalize!
+      views.finalize!
 
       self
     end
