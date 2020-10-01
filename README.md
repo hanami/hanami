@@ -10,17 +10,17 @@ It's made up of smaller, single-purpose libraries.
 This repository is for the full-stack framework,
 which provides the glue that ties all the parts together:
 
-* [**Hanami::Model**](https://github.com/hanami/model) - Persistence with entities, repositories and data mapper
-* [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
-* [**Hanami::Controller**](https://github.com/hanami/controller) - Full featured, fast and testable actions for Rack
-* [**Hanami::Validations**](https://github.com/hanami/validations) - Validations mixin for Ruby objects
-* [**Hanami::Router**](https://github.com/hanami/router) - Rack compatible HTTP router for Ruby
-* [**Hanami::Helpers**](https://github.com/hanami/helpers) - View helpers for Ruby applications
-* [**Hanami::Mailer**](https://github.com/hanami/mailer) - Mail for Ruby applications
-* [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby
-* [**Hanami::Utils**](https://github.com/hanami/utils) - Ruby core extensions and class utilities
-
-These components are designed to be used independently or together in a Hanami application.
+- [**Hanami::Model**](https://github.com/hanami/model) - Persistence with entities, repositories and data mapper
+- [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
+- [**Hanami::Controller**](https://github.com/hanami/controller) - Full featured, fast and testable actions for Rack
+- [**Hanami::Validations**](https://github.com/hanami/validations) - Validations mixin for Ruby objects
+- [**Hanami::Router**](https://github.com/hanami/router) - Rack compatible HTTP router for Ruby
+- [**Hanami::Helpers**](https://github.com/hanami/helpers) - View helpers for Ruby applications
+- [**Hanami::Mailer**](https://github.com/hanami/mailer) - Mail for Ruby applications
+- [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby
+- [**Hanami::Utils**](https://github.com/hanami/utils) - Ruby core extensions and class utilities
+- [**Regina Aprilia**](https://github.com/reginaaprilia/)
+  These components are designed to be used independently or together in a Hanami application.
 
 ## Status
 
@@ -32,7 +32,7 @@ These components are designed to be used independently or together in a Hanami a
 
 ## Installation
 
-__Hanami__ supports Ruby (MRI) 2.3+
+**Hanami** supports Ruby (MRI) 2.3+
 
 ```shell
 gem install hanami
@@ -54,22 +54,22 @@ You can give back to Open Source, by supporting Hanami development via a [donati
 
 ### Supporters
 
-  * [Trung Lê](https://github.com/joneslee85)
-  * [James Carlson](https://github.com/jxxcarlson)
-  * [Creditas](https://www.creditas.com.br/)
+- [Trung Lê](https://github.com/joneslee85)
+- [James Carlson](https://github.com/jxxcarlson)
+- [Creditas](https://www.creditas.com.br/)
 
 ## Contact
 
-* Home page: http://hanamirb.org
-* Community: http://hanamirb.org/community
-* Guides: https://guides.hanamirb.org
-* Snippets: https://snippets.hanamirb.org
-* Mailing List: http://hanamirb.org/mailing-list
-* API Doc: http://rdoc.info/gems/hanami
-* Bugs/Issues: https://github.com/hanami/hanami/issues
-* Stack Overflow: http://stackoverflow.com/questions/tagged/hanami
-* Forum: https://discourse.hanamirb.org
-* **Chat**: http://chat.hanamirb.org
+- Home page: http://hanamirb.org
+- Community: http://hanamirb.org/community
+- Guides: https://guides.hanamirb.org
+- Snippets: https://snippets.hanamirb.org
+- Mailing List: http://hanamirb.org/mailing-list
+- API Doc: http://rdoc.info/gems/hanami
+- Bugs/Issues: https://github.com/hanami/hanami/issues
+- Stack Overflow: http://stackoverflow.com/questions/tagged/hanami
+- Forum: https://discourse.hanamirb.org
+- **Chat**: http://chat.hanamirb.org
 
 ## Community
 
@@ -103,10 +103,10 @@ bundle
 
 ### Development Requirements
 
-  * Ruby 2.3+ / JRuby 9.1.5.0+
-  * Bundler
-  * [PhantomJS](http://phantomjs.org/download.html)
-  * Node.js (MacOS)
+- Ruby 2.3+ / JRuby 9.1.5.0+
+- Bundler
+- [PhantomJS](http://phantomjs.org/download.html)
+- Node.js (MacOS)
 
 ### Testing
 
@@ -128,7 +128,7 @@ To run all the tests, please use:
 
 ## Versioning
 
-__Hanami__ uses [Semantic Versioning 2.0.0](http://semver.org)
+**Hanami** uses [Semantic Versioning 2.0.0](http://semver.org)
 
 ## Copyright
 
