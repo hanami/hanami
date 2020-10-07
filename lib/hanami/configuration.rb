@@ -68,6 +68,10 @@ module Hanami
         instance_eval(&blk)
       end
 
+      # Finalize nested configuration
+      actions.finalize!
+      views.finalize!
+
       self
     end
 
