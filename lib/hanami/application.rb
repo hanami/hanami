@@ -236,7 +236,7 @@ module Hanami
         namespace.const_set :Container, Class.new(Dry::System::Container)
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def configure_container(container)
         container.use :env, inferrer: -> { Hanami.env }
         container.use :notifications
@@ -255,7 +255,7 @@ module Hanami
 
         container
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def define_deps_module
         require "#{application_name}/deps"
