@@ -18,7 +18,6 @@ module Hanami
     require_relative "configuration/router"
     require_relative "configuration/security"
     require_relative "configuration/sessions"
-    require_relative "configuration/views"
 
     attr_reader :actions
     attr_reader :views
@@ -59,7 +58,14 @@ module Hanami
         Object.new
       end
 
-      @views = Views.new
+      @views = begin
+        require_path = "hanami/view/application_configuration"
+        require require_path
+        Hanami::View::ApplicationConfiguration.new
+      rescue LoadError => e
+        raise e unless e.path == require_path
+        Object.new
+      end
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 

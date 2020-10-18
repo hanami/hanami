@@ -12,7 +12,7 @@ gem "hanami-utils", "~> 2.0.alpha", require: false, git: "https://github.com/han
 gem "hanami-router", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/router.git", branch: "unstable"
 gem "hanami-controller", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/controller.git", branch: "unstable"
 gem "hanami-cli", "~> 1.0.alpha", require: false, git: "https://github.com/hanami/cli.git", branch: "unstable"
-gem "hanami-view", "~> 2.0.alpha", git: "https://github.com/hanami/view.git", branch: "master"
+gem "hanami-view", "~> 2.0.alpha", git: "https://github.com/hanami/view.git", branch: "configure-application-views-with-inflector"
 
 gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.git"
 
