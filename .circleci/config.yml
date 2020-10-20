@@ -6,22 +6,22 @@ version: 2
 jobs:
   "ruby-2.7":
     docker:
-       - image: hanami/ruby-2.7-full
-         environment:
-           DB: sqlite
+      - image: hanami/ruby-2.7-full
+        environment:
+          DB: sqlite
     working_directory: ~/hanami
     steps:
       - checkout
-      # Download and cache dependencies
+        # Download and cache dependencies
       - restore_cache:
-          keys:
+        keys:
           - v1-dependencies-{{ checksum "Gemfile.lock" }}
-          # fallback to using the latest cache if no exact match is found
+            # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
       - run:
-        name: install dependencies
-        command: |
-          bundle install --jobs=4 --retry=3 --path vendor/bundle
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
       - save_cache:
           paths:
             - ./vendor/bundle
