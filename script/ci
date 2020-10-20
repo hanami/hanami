@@ -63,11 +63,11 @@ upload_code_coverage() {
 }
 
 main() {
-  setup &&
-    run_unit_tests &&
-    run_isolation_tests &&
-    run_integration_tests &&
-    upload_code_coverage
+  setup
+  run_unit_tests
+  run_isolation_tests
+  run_integration_tests
+  upload_code_coverage
 }
 
 trap teardown EXIT
