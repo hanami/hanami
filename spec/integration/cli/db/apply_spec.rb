@@ -10,15 +10,14 @@ RSpec.describe "hanami db", type: :integration do
         expect(out).to include(versions.last.to_s)
 
         db         = Pathname.new('db')
-        schema     = db.join('schema.sql').to_s
+        schema     = db.join('schema.sql')
         migrations = db.join('migrations')
+        contents   = File.read(schema)
 
-        expect(schema).to have_file_content <<-SQL
-CREATE TABLE `schema_migrations` (`filename` varchar(255) NOT NULL PRIMARY KEY);
-CREATE TABLE `users` (`id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `name` varchar(255), `age` integer);
-INSERT INTO "schema_migrations" VALUES('#{versions.first}_create_users.rb');
-INSERT INTO "schema_migrations" VALUES('#{versions.last}_add_age_to_users.rb');
-SQL
+        expect(contents).to include(%(CREATE TABLE `schema_migrations` (`filename` varchar(255) NOT NULL PRIMARY KEY);))
+        expect(contents).to include(%(CREATE TABLE `users` (`id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `name` varchar(255), `age` integer);))
+        expect(contents).to include(%(INSERT INTO schema_migrations VALUES('#{versions.first}_create_users.rb');))
+        expect(contents).to include(%(INSERT INTO schema_migrations VALUES('#{versions.last}_add_age_to_users.rb');))
 
         expect(migrations.children).to be_empty
       end
@@ -34,15 +33,14 @@ SQL
         expect(out).to include(versions.last.to_s)
 
         db         = Pathname.new('db')
-        schema     = db.join('schema.sql').to_s
+        schema     = db.join('schema.sql')
         migrations = db.join('migrations')
+        contents   = File.read(schema)
 
-        expect(schema).to have_file_content <<-SQL
-CREATE TABLE `schema_migrations` (`filename` varchar(255) NOT NULL PRIMARY KEY);
-CREATE TABLE `users` (`id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `name` varchar(255), `age` integer);
-INSERT INTO "schema_migrations" VALUES('#{versions.first}_create_users.rb');
-INSERT INTO "schema_migrations" VALUES('#{versions.last}_add_age_to_users.rb');
-SQL
+        expect(contents).to include(%(CREATE TABLE `schema_migrations` (`filename` varchar(255) NOT NULL PRIMARY KEY);))
+        expect(contents).to include(%(CREATE TABLE `users` (`id` integer NOT NULL PRIMARY KEY AUTOINCREMENT, `name` varchar(255), `age` integer);))
+        expect(contents).to include(%(INSERT INTO schema_migrations VALUES('#{versions.first}_create_users.rb');))
+        expect(contents).to include(%(INSERT INTO schema_migrations VALUES('#{versions.last}_add_age_to_users.rb');))
 
         expect(migrations.children).to be_empty
       end
