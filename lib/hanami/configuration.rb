@@ -13,7 +13,6 @@ module Hanami
   #
   # rubocop:disable Metrics/ClassLength
   class Configuration
-    require_relative "configuration/cookies"
     require_relative "configuration/middleware"
     require_relative "configuration/router"
     require_relative "configuration/security"
@@ -41,7 +40,6 @@ module Hanami
 
       self.logger   = DEFAULT_LOGGER.clone
       self.rack_logger_filter_params = DEFAULT_RACK_LOGGER_FILTER_PARAMS.clone
-      self.cookies  = DEFAULT_COOKIES
       self.sessions = DEFAULT_SESSIONS
 
       self.router     = Router.new(base_url)
@@ -178,14 +176,6 @@ module Hanami
       settings.fetch(:router)
     end
 
-    def cookies=(options)
-      settings[:cookies] = Cookies.new(options)
-    end
-
-    def cookies
-      settings.fetch(:cookies)
-    end
-
     def sessions=(*args)
       settings[:sessions] = Sessions.new(args)
     end
@@ -260,9 +250,6 @@ module Hanami
 
     DEFAULT_SETTINGS_PATH = File.join("config", "settings")
     private_constant :DEFAULT_SETTINGS_PATH
-
-    DEFAULT_COOKIES = Cookies.null
-    private_constant :DEFAULT_COOKIES
 
     DEFAULT_SESSIONS = Sessions.null
     private_constant :DEFAULT_SESSIONS
