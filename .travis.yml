@@ -3,10 +3,10 @@ sudo: false
 cache: bundler
 install: true
 script:
-  - './script/ci'
+  - bundle exec rake
 rvm:
-  - 2.5
   - 2.6
+  - 2.7
   - ruby-head
 
 matrix:
