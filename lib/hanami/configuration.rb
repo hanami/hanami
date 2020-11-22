@@ -16,7 +16,6 @@ module Hanami
     require_relative "configuration/cookies"
     require_relative "configuration/middleware"
     require_relative "configuration/router"
-    require_relative "configuration/security"
     require_relative "configuration/sessions"
 
     attr_reader :actions
@@ -45,7 +44,6 @@ module Hanami
 
       self.router     = Router.new(base_url)
       self.middleware = Middleware.new
-      self.security   = Security.new
 
       self.inflections = Dry::Inflector.new
 
@@ -202,14 +200,6 @@ module Hanami
 
     def middleware
       settings.fetch(:middleware)
-    end
-
-    def security=(value)
-      settings[:security] = value
-    end
-
-    def security
-      settings.fetch(:security)
     end
 
     def inflections(&blk)
