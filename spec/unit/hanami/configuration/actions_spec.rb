@@ -24,6 +24,11 @@ RSpec.describe Hanami::Configuration, "#actions" do
 
       allow_any_instance_of(described_class)
         .to receive(:require)
+        .with(anything)
+        .and_call_original
+
+      allow_any_instance_of(described_class)
+        .to receive(:require)
         .with("hanami/action/application_configuration")
         .and_raise load_error
     end
