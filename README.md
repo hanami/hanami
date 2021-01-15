@@ -25,7 +25,7 @@ These components are designed to be used independently or together in a Hanami a
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](https://badge.fury.io/rb/hanami)
-[![TravisCI](https://travis-ci.org/hanami/hanami.svg?branch=master)](https://travis-ci.org/hanami/hanami)
+[![CI](https://github.com/hanami/hanami/workflows/ci/badge.svg?branch=master)](https://github.com/hanami/hanami/actions?query=workflow%3Aci+branch%3Amaster)
 [![Test Coverage](https://codecov.io/gh/hanami/hanami/branch/master/graph/badge.svg)](https://codecov.io/gh/hanami/hanami)
 [![Depfu](https://badges.depfu.com/badges/ba000e0f69e6ef1c44cd3038caaa1841/overview.svg)](https://depfu.com/github/hanami/hanami?project=Bundler)
 [![Inline Docs](http://inch-ci.org/github/hanami/hanami.svg)](http://inch-ci.org/github/hanami/hanami)
@@ -136,4 +136,4 @@ Released under MIT License.
 
 This project was formerly known as Lotus (`lotusrb`).
 
-Copyright © 2014-2019 Luca Guidi.
+Copyright © 2014-2021 Luca Guidi.
