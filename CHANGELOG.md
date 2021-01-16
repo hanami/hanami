@@ -1,6 +1,21 @@
 # Hanami
 The web, with simplicity.
 
+## v1.3.3 - 2019-09-20
+### Added
+- [Gray Manley] Standardize file loading for `.env` files (see: https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use)
+
+### Fixed
+- [Alfonso Uceda & Luca Guidi] Ensure to use `:host` option when mounting an application in main router (e.g. `mount Beta::Application.new, at: "/", host: "beta.hanami.test"`)
+
+## v1.3.2 - 2019-07-26
+### Added
+- [Luca Guidi] Support both `hanami-validations` 1 and 2
+
+### Fixed
+- [Wisnu Adi Nurcahyo] Ensure `hanami generate` syntax for Welcome page is compatible with ZSH
+- [Luca Guidi] Don't let `hanami` to crash when called without `bundle exec`
+
 ## v1.3.1 - 2019-01-18
 ### Added
 - [Luca Guidi] Official support for Ruby: MRI 2.6
@@ -9,7 +24,7 @@ The web, with simplicity.
 ### Fixed
 - [Aidan Coyle] Remove from app generator support for deprecated `force_ssl` setting
 - [Alessandro Caporrini] Remove from app generator support for deprecated `body_parsers` setting
-- [Daphne Rouw & Sean Collins] Make app generator to work when code in `config/enviroment.rb` uses double quotes
+- [Daphne Rouw & Sean Collins] Make app generator to work when code in `config/environment.rb` uses double quotes
 
 ## v1.3.0 - 2018-10-24
 ### Added
@@ -26,7 +41,7 @@ The web, with simplicity.
 
 ### Fixed
 - [Anton Davydov] Make possible to pass extra settings for custom logger instances (eg. `logger SemanticLogger.new, :foo, :bar`)
-- [graywolf] Ensure `hanami generate app` to work without `require_relative` entries in `config/enviroment.rb`
+- [graywolf] Ensure `hanami generate app` to work without `require_relative` entries in `config/environment.rb`
 - [Makoto Tajitsu & Luca Guidi] Fixed regression for `hanami new .` that used to generate a broken project
 
 ### Fixed
@@ -143,7 +158,7 @@ The web, with simplicity.
 - [Luca Guidi] Make compatible with Rack 2.0 only
 - [Luca Guidi] Removed `logger` settings from Hanami applications
 - [Luca Guidi] Removed logger for Hanami applications (eg `Web.logger`)
-- [Luca Guidi] Changed mailer syntax in `config/enviroment.rb`
+- [Luca Guidi] Changed mailer syntax in `config/environment.rb`
 
 ## v0.9.2 - 2016-12-19
 ## Added
@@ -232,11 +247,11 @@ The web, with simplicity.
 
 ## v0.7.2 - 2016-02-09
 ### Fixed
-- [Alfonso Uceda Pompa] Fixed routing issue when static assets server tried to hijiack paths that are matching directories in public directory
+- [Alfonso Uceda Pompa] Fixed routing issue when static assets server tried to hijack paths that are matching directories in public directory
 
 ## v0.7.1 - 2016-02-05
 ### Fixed
-- [Anton Davydov] Fixed routing issue when static assets server tried to hijiack requests belonging to dynamic endpoints
+- [Anton Davydov] Fixed routing issue when static assets server tried to hijack requests belonging to dynamic endpoints
 - [Anatolii Didukh] Ensure to fallback to default engine for `hanami console`
 
 ## v0.7.0 - 2016-01-22
@@ -371,7 +386,7 @@ The web, with simplicity.
 ## v0.3.0 - 2015-03-23
 ### Added
 - [Luca Guidi] Introduced action generator. Eg. `bundle exec lotus generate action web dashboard#index`
-- [Alfonso Uceda Pompa] Allow to specify default coookies options in application configuration. Eg. `cookies true, { domain: 'lotusrb.org' }`
+- [Alfonso Uceda Pompa] Allow to specify default cookies options in application configuration. Eg. `cookies true, { domain: 'lotusrb.org' }`
 - [Tom Kadwill] Include `Lotus::Helpers` in views.
 - [Linus Pettersson] Allow to specify `--database` CLI option when generate a new project. Eg. `lotus new bookshelf --database=postgresql`
 - [Linus Pettersson] Initialize a Git repository when generating a new project

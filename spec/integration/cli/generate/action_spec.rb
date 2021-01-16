@@ -262,7 +262,7 @@ RSpec.describe "hanami generate", type: :integration do
       end
 
       it "fails with unknown argument" do
-        with_project('bookshelf_generate_action_uknown_method') do
+        with_project('bookshelf_generate_action_unknown_method') do
           output = "`FOO' is not a valid HTTP method. Please use one of: `GET' `POST' `PUT' `DELETE' `HEAD' `OPTIONS' `TRACE' `PATCH' `OPTIONS' `LINK' `UNLINK'"
           run_cmd "hanami generate action web books#create --method=FOO", output, exit_status: 1
         end

@@ -8,7 +8,7 @@ module Hanami
     # @since 0.9.0
     # @api private
     module App
-      # hanami-router configuration for a sigle Hanami application in the project.
+      # hanami-router configuration for a single Hanami application in the project.
       #
       # @since 0.9.0
       # @api private

@@ -1,4 +1,4 @@
-require 'hanami/cli'
+require 'dry/cli'
 require 'ostruct'
 
 module Hanami
@@ -54,7 +54,7 @@ module Hanami
     # @since 1.1.0
     # @api private
     module Commands
-      extend Hanami::CLI::Registry
+      extend Dry::CLI::Registry
 
       # CLI command context
       #

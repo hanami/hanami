@@ -12,7 +12,7 @@ gem 'hanami-utils',       '~> 1.3', require: false, git: 'https://github.com/han
 gem 'hanami-validations', '~> 1.3', require: false, git: 'https://github.com/hanami/validations.git', branch: 'develop'
 gem 'hanami-router',      '~> 1.3', require: false, git: 'https://github.com/hanami/router.git',      branch: 'develop'
 gem 'hanami-controller',  '~> 1.3', require: false, git: 'https://github.com/hanami/controller.git',  branch: 'develop'
-gem 'hanami-view',        '~> 1.3', require: false, git: 'https://github.com/hanami/view.git',        branch: 'develop'
+gem 'hanami-view',        '~> 1.3', require: false, git: 'https://github.com/hanami/view.git',        branch: '1.x-master'
 gem 'hanami-model',       '~> 1.3', require: false, git: 'https://github.com/hanami/model.git',       branch: 'develop'
 gem 'hanami-helpers',     '~> 1.3', require: false, git: 'https://github.com/hanami/helpers.git',     branch: 'develop'
 gem 'hanami-mailer',      '~> 1.3', require: false, git: 'https://github.com/hanami/mailer.git',      branch: 'develop'
@@ -41,7 +41,7 @@ if RUBY_DESCRIPTION =~ /linux/
 end
 
 # `hanami assets` integration tests
-gem 'sass',          require: false
+gem 'sassc',         require: false
 gem 'coffee-script', require: false
 
 gem 'dotenv',    '~> 2.4', require: false
