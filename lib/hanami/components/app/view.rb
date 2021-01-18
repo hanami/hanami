@@ -5,7 +5,7 @@ module Hanami
     # @since 0.9.0
     # @api private
     module App
-      # hanami-view configuration for a sigle Hanami application in the project.
+      # hanami-view configuration for a single Hanami application in the project.
       #
       # @since 0.9.0
       # @api private

@@ -26,7 +26,7 @@
 - Unobtrusive JavaScript (UJS) (via `hanami-ujs` gem)
 - Interactive console for development error page (via `hanami-webconsole` gem)
 - CLI: register callbacks for `hanami` commands (`Hanami::CLI.after("db migrate", MyCallback.new)` or `Hanami::CLI.after("db migrate") { ... }`)
-- Project level Rack middleware stack (`Hanami.configure { middleware.use MyRackMiddlewre }`)
+- Project level Rack middleware stack (`Hanami.configure { middleware.use MyRackMiddleware }`)
 - Plugins can hook into project configuration (`Hanami.plugin { middleware.use AnotherRackMiddleware }`)
 - Custom repository commands
 - Coloured logging

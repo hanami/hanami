@@ -3,7 +3,7 @@
 module Hanami
   # HTTP/2 Early Hints Rack middleware
   #
-  # It sends extra responses **before** the main reponse is sent.
+  # It sends extra responses **before** the main response is sent.
   # These extra responses are HTTP/2 Early Hints (103).
   # They specify the web assets (javascripts, stylesheets, etc..) to be "pushed",
   # so modern browsers pre-fetch them in parallel with the main HTTP response.
