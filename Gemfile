@@ -14,7 +14,7 @@ gem "hanami-controller", "~> 2.0.alpha", require: false, git: "https://github.co
 gem "hanami-cli", "~> 1.0.alpha", require: false, git: "https://github.com/hanami/cli.git", branch: "unstable"
 gem "hanami-view", "~> 2.0.alpha", git: "https://github.com/hanami/view.git", branch: "master"
 
-gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.git"
+gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.git", branch: "unstable"
 
 group :test do
   gem "dotenv"
