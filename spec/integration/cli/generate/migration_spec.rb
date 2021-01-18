@@ -28,12 +28,13 @@ RSpec.describe "hanami generate", type: :integration do
 
     context "with missing argument" do
       it "fails" do
-        with_project("bookshelf_generate_migration_missing_arguments") do
-          output = <<~END
-            ERROR: "hanami generate migration" was called with no arguments
-            Usage: "hanami generate migration MIGRATION"
-          END
-          run_command "hanami generate migration", output, exit_status: 1
+        with_project('bookshelf_generate_migration_missing_arguments') do
+          output = <<-END
+ERROR: "hanami generate migration" was called with no arguments
+Usage: "hanami generate migration MIGRATION"
+END
+
+          run_cmd "hanami generate migration", output, exit_status: 1
         end
       end
     end
@@ -64,7 +65,7 @@ RSpec.describe "hanami generate", type: :integration do
           %r{  hanami generate migration create_users # Generate `db/migrations/[\d]{14}_create_users.rb`}
         ]
 
-        run_command "hanami generate migration --help", output
+        run_cmd 'hanami generate migration --help', output
       end
     end
   end # migration

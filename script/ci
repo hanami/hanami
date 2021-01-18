@@ -3,9 +3,9 @@ set -euo pipefail
 IFS=$'\n\t'
 
 setup() {
-  remove_coverage &&
-    print_ruby_version &&
-    install_gems
+  remove_coverage
+  print_ruby_version
+  install_gems
 }
 
 remove_coverage() {
@@ -73,11 +73,11 @@ upload_code_coverage() {
 }
 
 main() {
-  setup &&
-    run_unit_tests &&
-    run_isolation_tests &&
-    run_code_quality_checks &&
-    upload_code_coverage
+  setup
+  run_unit_tests
+  run_isolation_tests
+  run_integration_tests
+  upload_code_coverage
 }
 
 main

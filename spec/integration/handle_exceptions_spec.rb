@@ -104,7 +104,7 @@ RSpec.describe "handle exceptions", type: :integration do
 
             expect(last_response.status).to eq(500)
             expect(last_response.body).to_not include("This is a custom template for 500 error")
-            expect(last_response.body).to include("<h1>Boot Error</h1><p>Something went wrong while loading")
+            expect(last_response.body).to include("Error from custom template")
           end
         end
       end
@@ -209,7 +209,7 @@ RSpec.describe "handle exceptions", type: :integration do
 
             expect(last_response.status).to eq(500)
             expect(last_response.body).to_not include("This is a custom template for 500 error")
-            expect(last_response.body).to include("<h1>Boot Error</h1><p>Something went wrong while loading")
+            expect(last_response.body).to include("Error from custom template")
           end
         end
       end

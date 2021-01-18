@@ -1,6 +1,6 @@
 name: ci
 
-on:
+"on":
   push:
     paths:
       - ".github/workflows/ci.yml"
@@ -24,14 +24,12 @@ jobs:
         ruby:
           - "2.7"
           - "2.6"
-        include:
-          - ruby: "2.7"
-            coverage: "true"
-    env:
-      COVERAGE: ${{matrix.coverage}}
-      CI: true
+          - "2.5"
+          - "2.4"
     steps:
       - uses: actions/checkout@v1
+      - name: Install package dependencies
+        run: "[ -e $APT_DEPS ] || sudo apt-get install -y --no-install-recommends $APT_DEPS"
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -39,13 +37,7 @@ jobs:
       - name: Install latest bundler
         run: |
           gem install bundler --no-document
-          bundle config set without 'tools benchmarks docs'
       - name: Bundle install
         run: bundle install --jobs 4 --retry 3
       - name: Run all tests
-        run: bundle exec rake
-      - name: Send test coverage report to codecov.io
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{secrets.COVERAGE_TOKEN}}
-          file: ./coverage/.resultset.json
+        run: script/ci

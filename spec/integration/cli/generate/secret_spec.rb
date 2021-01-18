@@ -49,7 +49,7 @@ RSpec.describe "hanami generate", type: :integration do
           %r{  hanami generate secret web # Prints session secret (eg. `WEB_SESSIONS_SECRET=[\w]{64}`)}
         ]
 
-        run_command "hanami generate secret --help", output
+        run_cmd 'hanami generate secret --help', output
       end
     end
   end # secret

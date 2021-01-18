@@ -43,7 +43,7 @@ RSpec.describe "hanami db", type: :integration do
             --help, -h                      	# Print this help
         OUT
 
-        run_command "hanami db create --help", output
+        run_cmd 'hanami db create --help', output
       end
     end
   end

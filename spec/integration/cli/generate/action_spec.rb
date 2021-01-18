@@ -13,7 +13,7 @@ RSpec.describe "hanami generate", type: :integration do
           "insert  apps/web/config/routes.rb"
         ]
 
-        run_command "hanami generate action web authors#index", output
+        run_cmd "hanami generate action web authors#index", output
 
         #
         # apps/web/controllers/authors/index.rb
@@ -66,7 +66,7 @@ RSpec.describe "hanami generate", type: :integration do
           "insert  apps/web/config/routes.rb"
         ]
 
-        run_command "hanami generate action web api/authors#index", output
+        run_cmd "hanami generate action web api/authors#index", output
 
         #
         # apps/web/controllers/api/authors/index.rb
@@ -114,7 +114,7 @@ RSpec.describe "hanami generate", type: :integration do
 
     it "generates non-RESTful actions" do
       with_project do
-        run_command "hanami generate action web sessions#sign_out"
+        run_cmd "hanami generate action web sessions#sign_out"
 
         #
         # apps/web/config/routes.rb
@@ -129,7 +129,7 @@ RSpec.describe "hanami generate", type: :integration do
           ERROR: "hanami generate action" was called with no arguments
           Usage: "hanami generate action APP ACTION"
         OUT
-        run_command "hanami generate action", output, exit_status: 1
+        run_cmd "hanami generate action", output, exit_status: 1
       end
     end
 
@@ -140,7 +140,7 @@ RSpec.describe "hanami generate", type: :integration do
           Usage: "hanami generate action APP ACTION"
         OUT
 
-        run_command "hanami generate action home#index", output, exit_status: 1
+        run_cmd "hanami generate action home#index", output, exit_status: 1
       end
     end
 
@@ -148,7 +148,7 @@ RSpec.describe "hanami generate", type: :integration do
       with_project("bookshelf_generate_action_with_unknown_app") do
         output = "`foo' is not a valid APP. Please specify one of: `web'"
 
-        run_command "hanami generate action foo home#index", output, exit_status: 1
+        run_cmd "hanami generate action foo home#index", output, exit_status: 1
       end
     end
 
@@ -159,7 +159,7 @@ RSpec.describe "hanami generate", type: :integration do
             "insert  apps/web/config/routes.rb"
           ]
 
-          run_command "hanami generate action web home#index --url=/", output
+          run_cmd "hanami generate action web home#index --url=/", output
 
           #
           # apps/web/config/routes.rb
@@ -171,7 +171,7 @@ RSpec.describe "hanami generate", type: :integration do
       it "fails with missing argument" do
         with_project("bookshelf_generate_action_missing_url") do
           output = "`' is not a valid URL"
-          run_command "hanami generate action web books#create --url=", output, exit_status: 1
+          run_cmd "hanami generate action web books#create --url=", output, exit_status: 1
         end
       end
     end
@@ -184,7 +184,7 @@ RSpec.describe "hanami generate", type: :integration do
             "create  spec/web/controllers/status/check_spec.rb",
             "insert  apps/web/config/routes.rb"
           ]
-          run_command "hanami generate action web status#check --skip-view", output
+          run_cmd "hanami generate action web status#check --skip-view", output
 
           #
           # apps/web/controllers/status/check.rb
@@ -214,7 +214,7 @@ RSpec.describe "hanami generate", type: :integration do
             "create  spec/web/controllers/api/authors/index_spec.rb",
             "insert  apps/web/config/routes.rb"
           ]
-          run_command "hanami generate action web api/authors#index --skip-view", output
+          run_cmd "hanami generate action web api/authors#index --skip-view", output
 
           #
           # apps/web/controllers/status/check.rb
@@ -247,7 +247,7 @@ RSpec.describe "hanami generate", type: :integration do
             "insert  apps/web/config/routes.rb"
           ]
 
-          run_command "hanami generate action web books#create --method=POST", output
+          run_cmd "hanami generate action web books#create --method=POST", output
 
           #
           # apps/web/config/routes.rb
@@ -259,14 +259,14 @@ RSpec.describe "hanami generate", type: :integration do
       it "fails with missing argument" do
         with_project("bookshelf_generate_action_missing_method") do
           output = "`' is not a valid HTTP method. Please use one of: `GET' `POST' `PUT' `DELETE' `HEAD' `OPTIONS' `TRACE' `PATCH' `OPTIONS' `LINK' `UNLINK'"
-          run_command "hanami generate action web books#create --method=", output, exit_status: 1
+          run_cmd "hanami generate action web books#create --method=", output, exit_status: 1
         end
       end
 
       it "fails with unknown argument" do
-        with_project("bookshelf_generate_action_uknown_method") do
+        with_project('bookshelf_generate_action_unknown_method') do
           output = "`FOO' is not a valid HTTP method. Please use one of: `GET' `POST' `PUT' `DELETE' `HEAD' `OPTIONS' `TRACE' `PATCH' `OPTIONS' `LINK' `UNLINK'"
-          run_command "hanami generate action web books#create --method=FOO", output, exit_status: 1
+          run_cmd "hanami generate action web books#create --method=FOO", output, exit_status: 1
         end
       end
     end
@@ -278,7 +278,7 @@ RSpec.describe "hanami generate", type: :integration do
             "create  apps/web/templates/books/index.html.erb"
           ]
 
-          run_command "hanami generate action web books#index", output
+          run_cmd "hanami generate action web books#index", output
 
           #
           # apps/web/templates/books/index.html.erb
@@ -301,7 +301,7 @@ RSpec.describe "hanami generate", type: :integration do
             "create  apps/web/templates/books/index.html.haml"
           ]
 
-          run_command "hanami generate action web books#index", output
+          run_cmd "hanami generate action web books#index", output
 
           #
           # apps/web/templates/books/index.html.haml
@@ -324,7 +324,7 @@ RSpec.describe "hanami generate", type: :integration do
             "create  apps/web/templates/books/index.html.slim"
           ]
 
-          run_command "hanami generate action web books#index", output
+          run_cmd "hanami generate action web books#index", output
 
           #
           # apps/web/templates/books/index.html.slim
@@ -348,7 +348,7 @@ RSpec.describe "hanami generate", type: :integration do
             "create  spec/web/views/books/index_spec.rb"
           ]
 
-          run_command "hanami generate action web books#index", output
+          run_cmd "hanami generate action web books#index", output
 
           #
           # spec/web/controllers/books/index_spec.rb
@@ -396,7 +396,7 @@ RSpec.describe "hanami generate", type: :integration do
             "create  spec/web/views/books/index_spec.rb"
           ]
 
-          run_command "hanami generate action web books#index", output
+          run_cmd "hanami generate action web books#index", output
 
           #
           # spec/web/controllers/books/index_spec.rb
@@ -462,7 +462,7 @@ RSpec.describe "hanami generate", type: :integration do
             hanami generate action web books#create --skip-view      # Skip view and template
         OUT
 
-        run_command "hanami generate action --help", output
+        run_cmd 'hanami generate action --help', output
       end
     end
   end # action

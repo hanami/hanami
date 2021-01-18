@@ -5,6 +5,14 @@
 
 ## v2.0.0.alpha1 - 2019-01-30
 
+## v1.3.3 - 2019-09-20
+
+- Standardize file loading for `.env` files (see: https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use)
+
+## v1.3.2 - 2019-07-26
+
+## v1.3.1 - 2019-01-18
+
 ## v1.3.0 - 2018-10-24
 
 - Default testing framework is RSpec
@@ -20,7 +28,7 @@
 - Unobtrusive JavaScript (UJS) (via `hanami-ujs` gem)
 - Interactive console for development error page (via `hanami-webconsole` gem)
 - CLI: register callbacks for `hanami` commands (`Hanami::CLI.after("db migrate", MyCallback.new)` or `Hanami::CLI.after("db migrate") { ... }`)
-- Project level Rack middleware stack (`Hanami.configure { middleware.use MyRackMiddlewre }`)
+- Project level Rack middleware stack (`Hanami.configure { middleware.use MyRackMiddleware }`)
 - Plugins can hook into project configuration (`Hanami.plugin { middleware.use AnotherRackMiddleware }`)
 - Custom repository commands
 - Coloured logging

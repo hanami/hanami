@@ -64,14 +64,14 @@ RSpec.describe "hanami console", type: :integration do
   xit "returns error when known engine isn't bundled" do
     with_project("bookshelf_console_irb", console: :irb) do
       output = "Missing gem for `pry' console engine. Please make sure to add it to `Gemfile'."
-      run_command "hanami console --engine=pry", output, exit_status: 1
+      run_cmd "hanami console --engine=pry", output, exit_status: 1
     end
   end
 
   it "returns error when unknown engine is requested" do
     with_project("bookshelf_console_irb", console: :irb) do
       output = "Unknown console engine: `foo'."
-      run_command "hanami console --engine=foo", output, exit_status: 1
+      run_cmd "hanami console --engine=foo", output, exit_status: 1
     end
   end
 
@@ -96,7 +96,7 @@ RSpec.describe "hanami console", type: :integration do
           hanami console --engine=pry # Force to use Pry
       OUT
 
-      run_command "hanami console --help", output
+      run_cmd "hanami console --help", output
     end
   end
 

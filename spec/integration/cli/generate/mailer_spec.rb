@@ -10,9 +10,9 @@ RSpec.describe "hanami generate", type: :integration do
          "create  lib/bookshelf_generate_mailer/mailers/templates/welcome.html.erb"]
       end
 
-      it "generate the mailer files" do
-        with_project("bookshelf_generate_mailer", test: "rspec") do
-          run_command "hanami generate mailer welcome", output
+      it 'generate the mailer files' do
+        with_project('bookshelf_generate_mailer', test: 'rspec') do
+          run_cmd "hanami generate mailer welcome", output
           #
           # lib/bookshelf_generate_mailer/mailers/welcome.rb
           #
@@ -33,9 +33,9 @@ RSpec.describe "hanami generate", type: :integration do
         end
       end
 
-      it "generates a proper minitest file" do
-        with_project("bookshelf_generate_mailer", test: "minitest") do
-          run_command "hanami generate mailer welcome", output
+      it 'generates a proper minitest file' do
+        with_project('bookshelf_generate_mailer', test: 'minitest') do
+          run_cmd "hanami generate mailer welcome", output
           #
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
           #
@@ -51,9 +51,9 @@ RSpec.describe "hanami generate", type: :integration do
         end
       end
 
-      it "generates a proper RSpec file" do
-        with_project("bookshelf_generate_mailer", test: "rspec") do
-          run_command "hanami generate mailer welcome", output
+      it 'generates a proper RSpec file' do
+        with_project('bookshelf_generate_mailer', test: 'rspec') do
+          run_cmd "hanami generate mailer welcome", output
           #
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
           #
@@ -77,7 +77,7 @@ RSpec.describe "hanami generate", type: :integration do
           "create  lib/bookshelf_generate_mailer_with_options/mailers/templates/welcome.html.erb"
         ]
 
-        run_command "hanami generate mailer welcome --from=\"'mail@example.com'\" --to=\"'user@example.com'\" --subject=\"'Let\'s start'\"", output
+        run_cmd "hanami generate mailer welcome --from=\"'mail@example.com'\" --to=\"'user@example.com'\" --subject=\"'Let\'s start'\"", output
 
         expect("lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb").to have_file_content <<~END
           module Mailers
@@ -102,7 +102,7 @@ RSpec.describe "hanami generate", type: :integration do
           "create  lib/bookshelf_generate_mailer_with_options/mailers/templates/welcome.html.erb"
         ]
 
-        run_command "hanami generate mailer welcome --from='\"mail@example.com\"' --to='\"user@example.com\"' --subject='\"Come on \"Folks\"\"'", output
+        run_cmd "hanami generate mailer welcome --from='\"mail@example.com\"' --to='\"user@example.com\"' --subject='\"Come on \"Folks\"\"'", output
 
         expect("lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb").to have_file_content <<~END
           module Mailers
@@ -127,7 +127,7 @@ RSpec.describe "hanami generate", type: :integration do
           "create  lib/bookshelf_generate_mailer_with_options/mailers/templates/welcome.html.erb"
         ]
 
-        run_command "hanami generate mailer welcome --from=mail@example.com --to=user@example.com --subject=Welcome", output
+        run_cmd "hanami generate mailer welcome --from=mail@example.com --to=user@example.com --subject=Welcome", output
 
         expect("lib/bookshelf_generate_mailer_with_options/mailers/welcome.rb").to have_file_content <<~END
           module Mailers
@@ -150,7 +150,7 @@ RSpec.describe "hanami generate", type: :integration do
           Usage: "hanami generate mailer MAILER"
         OUT
 
-        run_command "hanami generate mailer", output, exit_status: 1
+        run_cmd "hanami generate mailer", output, exit_status: 1
       end
     end
 
@@ -182,7 +182,7 @@ RSpec.describe "hanami generate", type: :integration do
             hanami generate mailer forgot_password --subject="Your password reset" # Generate with default `subject`
         OUT
 
-        run_command "hanami generate mailer --help", output
+        run_cmd 'hanami generate mailer --help', output
       end
     end
   end

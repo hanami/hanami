@@ -5,7 +5,7 @@ RSpec.describe "assets", type: :integration do
     it "compiles and serves assets in development mode" do
       project = "bookshelf_serve_assets"
 
-      with_project(project, gems: ["sass"]) do
+      with_project(project, gems: ['sassc']) do
         generate "action web home#index --url=/"
 
         write "apps/web/assets/javascripts/application.css.sass", <<~EOF

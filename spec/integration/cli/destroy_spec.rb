@@ -12,7 +12,7 @@ RSpec.describe "hanami destroy", type: :integration do
           hanami destroy model MODEL                           # Destroy a model
       OUT
 
-      run_command "hanami destroy", output, exit_status: 1
+      run_cmd "hanami destroy", output, exit_status: 1
     end
   end
 end

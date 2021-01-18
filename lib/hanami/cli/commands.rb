@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require "hanami/cli"
+require "dry/cli"
+require "ostruct"
 
 module Hanami
   # Hanami CLI
@@ -55,7 +56,7 @@ module Hanami
     # @since 1.1.0
     # @api private
     module Commands
-      extend Hanami::CLI::Registry
+      extend Dry::CLI::Registry
 
       require "hanami/cli/commands/command"
       require "hanami/cli/commands/server"

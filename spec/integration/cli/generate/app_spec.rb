@@ -47,7 +47,7 @@ RSpec.describe "hanami generate", type: :integration do
               .join("")
           )
 
-          run_command "hanami generate app #{app}", output
+          run_cmd "hanami generate app #{app}", output
 
           #
           # config/environment.rb
@@ -67,7 +67,7 @@ RSpec.describe "hanami generate", type: :integration do
             "insert  config/environment.rb"
           ]
 
-          run_command "hanami generate app #{app} --application-base-url=/api/v1", output
+          run_cmd "hanami generate app #{app} --application-base-url=/api/v1", output
 
           #
           # config/environment.rb
@@ -80,7 +80,7 @@ RSpec.describe "hanami generate", type: :integration do
       it "fails with missing argument" do
         with_project("bookshelf_generate_app_missing_application_base_url") do
           output = "`' is not a valid URL"
-          run_command "hanami generate app foo --application-base-url=", output, exit_status: 1
+          run_cmd "hanami generate app foo --application-base-url=", output, exit_status: 1
         end
       end
     end
@@ -94,7 +94,7 @@ RSpec.describe "hanami generate", type: :integration do
             "create  apps/#{app}/templates/application.html.erb"
           ]
 
-          run_command "hanami generate app #{app}", output
+          run_cmd "hanami generate app #{app}", output
 
           #
           # apps/admin/templates/application.html.erb
@@ -128,7 +128,7 @@ RSpec.describe "hanami generate", type: :integration do
             "create  apps/#{app}/templates/application.html.haml"
           ]
 
-          run_command "hanami generate app #{app}", output
+          run_cmd "hanami generate app #{app}", output
 
           #
           # apps/admin/templates/application.html.haml
@@ -160,7 +160,7 @@ RSpec.describe "hanami generate", type: :integration do
             "create  apps/#{app}/templates/application.html.slim"
           ]
 
-          run_command "hanami generate app #{app}", output
+          run_cmd "hanami generate app #{app}", output
 
           #
           # apps/admin/templates/application.html.slim
@@ -208,7 +208,7 @@ RSpec.describe "hanami generate", type: :integration do
             hanami generate app api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
         OUT
 
-        run_command "hanami generate app --help", output
+        run_cmd 'hanami generate app --help', output
       end
     end
   end # app

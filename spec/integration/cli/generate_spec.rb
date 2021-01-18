@@ -13,7 +13,7 @@ RSpec.describe "hanami generate", type: :integration do
           hanami generate secret [APP]                          # Generate session secret
       OUT
 
-      run_command "hanami generate", output, exit_status: 1
+      run_cmd "hanami generate", output, exit_status: 1
     end
   end
 end

@@ -13,7 +13,7 @@ RSpec.describe "hanami server", type: :integration do
 
           expect(page).to have_content("The web, with simplicity.")
           expect(page).to have_content("Hanami is Open Source Software for MVC web development with Ruby.")
-          expect(page).to have_content("bundle exec hanami generate action web home#index --url=/")
+          expect(page).to have_content("bundle exec hanami generate action web 'home#index' --url=/")
         end
       end
     end
@@ -25,7 +25,7 @@ RSpec.describe "hanami server", type: :integration do
         server do
           visit "/admin"
 
-          expect(page).to have_content("bundle exec hanami generate action admin home#index --url=/")
+          expect(page).to have_content("bundle exec hanami generate action admin 'home#index' --url=/")
         end
       end
     end
@@ -114,7 +114,7 @@ RSpec.describe "hanami server", type: :integration do
           touch log
           replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
 
-          run_command "hanami generate action web home#index --url=/", []
+          run_cmd "hanami generate action web home#index --url=/", []
 
           server do
             visit "/?ping=pong"
@@ -132,7 +132,7 @@ RSpec.describe "hanami server", type: :integration do
           touch log
           replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
 
-          run_command "hanami generate action web books#create --method=POST", []
+          run_cmd "hanami generate action web books#create --method=POST", []
 
           server do
             post "/books", book: { title: "Functions" }
@@ -150,7 +150,7 @@ RSpec.describe "hanami server", type: :integration do
           replace "config/environment.rb", "logger level: :debug", %(logger level: :debug, stream: "#{log}")
           inject_line_after "config/environment.rb", "Hanami.configure", "require 'hanami/middleware/body_parser'\nmiddleware.use Hanami::Middleware::BodyParser, :json"
 
-          run_command "hanami generate action web books#create --method=POST", []
+          run_cmd "hanami generate action web books#create --method=POST", []
           inject_line_after "apps/web/controllers/books/create.rb", "call", 'Hanami.logger.debug(request.env["CONTENT_TYPE"]);self.body = %({"status":"OK"})'
 
           server do
@@ -529,36 +529,36 @@ RSpec.describe "hanami server", type: :integration do
 
   it "prints help message" do
     with_project do
-      output = <<~OUT
-        Command:
-          hanami server
+      output = <<-OUT
+Command:
+  hanami server
 
-        Usage:
-          hanami server
+Usage:
+  hanami server
 
-        Description:
-          Start Hanami server (only for development)
+Description:
+  Start Hanami server (only for development)
 
-        Options:
-          --server=VALUE                  	# Force a server engine (eg, webrick, puma, thin, etc..)
-          --host=VALUE                    	# The host address to bind to
-          --port=VALUE, -p VALUE          	# The port to run the server on
-          --debug=VALUE                   	# Turn on debug output
-          --warn=VALUE                    	# Turn on warnings
-          --daemonize=VALUE               	# Daemonize the server
-          --pid=VALUE                     	# Path to write a pid file after daemonize
-          --[no-]code-reloading           	# Code reloading, default: true
-          --help, -h                      	# Print this help
+Options:
+  --server=VALUE                  	# Force a server engine (eg, webrick, puma, thin, etc..)
+  --host=VALUE                    	# The host address to bind to
+  --port=VALUE, -p VALUE          	# The port to run the server on
+  --debug=VALUE                   	# Turn on debug output
+  --warn=VALUE                    	# Turn on warnings
+  --daemonize=VALUE               	# Daemonize the server
+  --pid=VALUE                     	# Path to write a pid file after daemonize
+  --[no-]code-reloading           	# Code reloading, default: true
+  --help, -h                      	# Print this help
 
-        Examples:
-          hanami server                     # Basic usage (it uses the bundled server engine)
-          hanami server --server=webrick    # Force `webrick` server engine
-          hanami server --host=0.0.0.0      # Bind to a host
-          hanami server --port=2306         # Bind to a port
-          hanami server --no-code-reloading # Disable code reloading
-      OUT
+Examples:
+  hanami server                     # Basic usage (it uses the bundled server engine)
+  hanami server --server=webrick    # Force `webrick` server engine
+  hanami server --host=0.0.0.0      # Bind to a host
+  hanami server --port=2306         # Bind to a port
+  hanami server --no-code-reloading # Disable code reloading
+OUT
 
-      run_command "hanami server --help", output
+      run_cmd 'hanami server --help', output
     end
   end
 

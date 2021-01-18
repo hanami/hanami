@@ -47,7 +47,7 @@ RSpec.describe "hanami db", type: :integration do
             --help, -h                      	# Print this help
         OUT
 
-        run_command "hanami db drop --help", output
+        run_cmd 'hanami db drop --help', output
       end
     end
   end

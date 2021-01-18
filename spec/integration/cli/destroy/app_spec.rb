@@ -15,7 +15,7 @@ RSpec.describe "hanami destroy", type: :integration do
           "remove  apps/admin"
         ]
 
-        run_command "hanami destroy app admin", output
+        run_cmd "hanami destroy app admin", output
 
         expect(".env.test").to_not        have_file_content(%r{ADMIN_SESSIONS_SECRET})
         expect(".env.development").to_not have_file_content(%r{ADMIN_SESSIONS_SECRET})
@@ -52,7 +52,7 @@ RSpec.describe "hanami destroy", type: :integration do
           "remove  apps/api"
         ]
 
-        run_command "hanami destroy app api", output
+        run_cmd "hanami destroy app api", output
 
         expect(".env.test").to_not        have_file_content(%r{API_SESSIONS_SECRET})
         expect(".env.development").to_not have_file_content(%r{API_SESSIONS_SECRET})
@@ -70,20 +70,22 @@ RSpec.describe "hanami destroy", type: :integration do
 
     it "fails with missing argument" do
       with_project do
-        output = <<~OUT
-          ERROR: "hanami destroy app" was called with no arguments
-          Usage: "hanami destroy app APP"
-        OUT
-        run_command "hanami destroy app", output, exit_status: 1
+        output = <<-OUT
+ERROR: "hanami destroy app" was called with no arguments
+Usage: "hanami destroy app APP"
+OUT
+
+        run_cmd "hanami destroy app", output, exit_status: 1
       end
     end
 
     it "fails with unknown app" do
       with_project do
-        output = <<~OUT
-          `unknown' is not a valid APP. Please specify one of: `web'
-        OUT
-        run_command "hanami destroy app unknown", output, exit_status: 1
+        output = <<-OUT
+`unknown' is not a valid APP. Please specify one of: `web'
+OUT
+
+        run_cmd "hanami destroy app unknown", output, exit_status: 1
       end
     end
 
@@ -109,7 +111,7 @@ RSpec.describe "hanami destroy", type: :integration do
             hanami destroy app admin # Destroy `admin` app
         OUT
 
-        run_command "hanami destroy app --help", output
+        run_cmd 'hanami destroy app --help', output
       end
     end
   end # app
