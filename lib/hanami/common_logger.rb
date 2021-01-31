@@ -55,7 +55,7 @@ module Hanami
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
     def log(env, status, header, began_at)
-      now    = Time.now
+      now    = Concurrent.monotonic_time
       length = extract_content_length(header)
 
       msg = Hash[
@@ -66,7 +66,7 @@ module Hanami
         path:    env[SCRIPT_NAME] + env[PATH_INFO].to_s,
         length:  length,
         params:  extract_params(env),
-        elapsed: now - began_at
+        elapsed: '%.4f' % (now - began_at)
       ]
 
       logger = @logger || env[RACK_ERRORS]
