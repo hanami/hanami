@@ -70,46 +70,22 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(**options)
-<<<<<<< HEAD
             # FIXME: merge ENV vars (like HANAMI_ENV) into **options
             super(options)
           rescue StandardError => exception
             warn exception.message
             warn exception.backtrace.join("\n\t")
-=======
-            if self.class.requirements.any?
-              environment = Hanami::Environment.new(options)
-              environment.require_project_environment
-
-              requirements.resolved('environment', environment)
-              requirements.resolve(self.class.requirements)
-
-              options = environment.to_options.merge(options)
-            end
-
-            super(**options)
-          rescue StandardError => e
-            warn e.message
-            warn e.backtrace.join("\n\t")
->>>>>>> develop
             exit(1)
           end
         end
 
         # @since 1.1.0
         # @api private
-<<<<<<< HEAD
         def initialize(command_name:, out: $stdout, files: Utils::Files)
           super(command_name: command_name)
 
           @out   = out
           @files = files
-=======
-        def initialize(out: $stdout, files: Utils::Files)
-          @out       = out
-          @files     = files
-          @templates = Templates.new(self.class)
->>>>>>> develop
         end
 
         private
