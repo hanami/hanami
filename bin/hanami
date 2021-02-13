@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "bundler"
-require "hanami/cli/commands"
+require "hanami/cli"
 
 ::Bundler.require(:plugins) if File.exist?(ENV["BUNDLE_GEMFILE"] || "Gemfile")
-Dry::CLI.new(Hanami::CLI::Commands).call
+Dry::CLI.new(Hanami::CLI).call
