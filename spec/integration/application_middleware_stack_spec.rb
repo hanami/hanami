@@ -13,7 +13,7 @@ RSpec.describe "Application middleware stack", type: :integration do
       unshift "apps/web/application.rb", "require 'rack/etag'"
 
       # Mount middleware
-      replace "apps/web/application.rb", "# middleware.use", "middleware.use 'Web::Middleware::Runtime'\nmiddleware.use 'Web::Middleware::Custom', 'OK'\nmiddleware.use Rack::ETag"
+      replace "apps/web/application.rb", "# middleware.use", "middleware.use 'Web::Middleware::Runtime'\nmiddleware.use('Web::Middleware::Custom', 'OK') { \"block output\" }\nmiddleware.use Rack::ETag"
 
       rewrite "apps/web/controllers/home/index.rb", <<~EOF
         module Web::Controllers::Home
@@ -33,8 +33,9 @@ RSpec.describe "Application middleware stack", type: :integration do
         expect(last_response.status).to               eq(200)
 
         expect(last_response.headers["X-Runtime"]).to eq("1ms")
-        expect(last_response.headers["X-Custom"]).to  eq("OK")
-        expect(last_response.headers["ETag"]).to_not  be_nil
+        expect(last_response.headers["X-Custom"]).to eq("OK")
+        expect(last_response.headers["X-Block-Output"]).to eq("block output")
+        expect(last_response.headers["ETag"]).to_not be_nil
       end
     end
   end
@@ -65,14 +66,16 @@ RSpec.describe "Application middleware stack", type: :integration do
       module Web
         module Middleware
           class Custom
-            def initialize(app, value)
+            def initialize(app, value, &block)
               @app   = app
               @value = value
+              @block_output = yield
             end
 
             def call(env)
               status, headers, body = @app.call(env)
-              headers["X-Custom"]   = @value
+              headers["X-Custom"] = @value
+              headers["X-Block-Output"] = @block_output
 
               [status, headers, body]
             end
