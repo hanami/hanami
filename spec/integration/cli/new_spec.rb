@@ -182,7 +182,7 @@ END
       # config.ru
       #
       expect('config.ru').to have_file_content <<-END
-require './config/environment'
+require_relative 'config/environment'
 
 run Hanami.app
 END
