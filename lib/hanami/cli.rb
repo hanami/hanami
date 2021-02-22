@@ -7,5 +7,6 @@ module Hanami
     extend Dry::CLI::Registry
 
     require_relative "./cli/version"
+    require_relative "./cli/new"
   end
 end
