@@ -53,6 +53,8 @@ module Hanami
             fs.write("config/application.rb", t("application.erb", context))
             fs.write("config/settings.rb", t("settings.erb", context))
             fs.write("config/routes.rb", t("routes.erb", context))
+
+            fs.write("lib/#{app}/types.rb", t("types.erb", context))
           end
 
           private

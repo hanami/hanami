@@ -1,0 +1,10 @@
+# auto_register: false
+# frozen_string_literal: true
+
+require "dry/types"
+
+module <%= classified_app_name %>
+  module Types
+    include Dry.Types
+  end
+end

@@ -111,6 +111,21 @@ RSpec.describe Hanami::CLI::New do
           end
         EXPECTED
         expect(fs.read("config/routes.rb")).to eq(routes)
+
+        # lib/bookshelf/types.rb
+        types = <<~EXPECTED
+          # auto_register: false
+          # frozen_string_literal: true
+
+          require "dry/types"
+
+          module #{inflector.classify(app)}
+            module Types
+              include Dry.Types
+            end
+          end
+        EXPECTED
+        expect(fs.read("lib/#{app}/types.rb")).to eq(types)
       end
     end
   end
