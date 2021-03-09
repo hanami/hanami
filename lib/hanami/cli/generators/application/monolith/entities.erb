@@ -1,0 +1,9 @@
+# auto_register: false
+# frozen_string_literal: true
+
+module <%= classified_app_name %>
+  module Entities
+  end
+end
+
+Dir[File.join(__dir__, "entities", "*.rb")].each(&method(:require))

@@ -54,6 +54,15 @@ module Hanami
             fs.write("config/settings.rb", t("settings.erb", context))
             fs.write("config/routes.rb", t("routes.erb", context))
 
+            fs.write("lib/#{app}/entities/.keep", t("keep.erb", context))
+            fs.write("lib/#{app}/persistence/relations/.keep", t("keep.erb", context))
+            fs.write("lib/#{app}/validation/contract.rb", t("validation_contract.erb", context))
+            fs.write("lib/#{app}/view/context.rb", t("view_context.erb", context))
+            fs.write("lib/#{app}/action.rb", t("action.erb", context))
+            fs.write("lib/#{app}/entities.rb", t("entities.erb", context))
+            fs.write("lib/#{app}/functions.rb", t("functions.erb", context))
+            fs.write("lib/#{app}/operation.rb", t("operation.erb", context))
+            fs.write("lib/#{app}/repository.rb", t("repository.erb", context))
             fs.write("lib/#{app}/types.rb", t("types.erb", context))
           end
 
