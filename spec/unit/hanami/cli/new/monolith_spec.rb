@@ -4,8 +4,9 @@ require "hanami/cli/new"
 
 RSpec.describe Hanami::CLI::New do
   context "architecture: monolith" do
-    subject { described_class.new(out: stdout, fs: fs, inflector: inflector) }
+    subject { described_class.new(bundler: bundler, out: stdout, fs: fs, inflector: inflector) }
 
+    let(:bundler) { instance_double(Hanami::Utils::Bundler, install!: true) }
     let(:stdout) { StringIO.new }
     let(:fs) { RSpec::Support::FileSystem.new }
     let(:inflector) { Dry::Inflector.new }
@@ -44,7 +45,7 @@ RSpec.describe Hanami::CLI::New do
           gem "hanami-router", "#{hanami_version}"
           gem "hanami-controller", "#{hanami_version}"
           gem "hanami-validations", "#{hanami_version}"
-          gem "hanami-view", "#{hanami_version}"
+          gem "hanami-view", git: "https://github.com/hanami/view.git", branch: "master"
           gem "hanami", "#{hanami_version}"
 
           gem "puma"

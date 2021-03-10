@@ -2,6 +2,8 @@
 
 require_relative "./command"
 require "hanami/cli/generators/application"
+require "hanami/utils/bundler"
+require "dry/cli/utils/files"
 
 module Hanami
   module CLI
@@ -17,6 +19,11 @@ module Hanami
       option :architecture, alias: "arch", default: DEFAULT_ARCHITECTURE,
                             values: ARCHITECTURES, desc: "The architecture"
 
+      def initialize(fs: Dry::CLI::Utils::Files.new, bundler: Utils::Bundler.new(fs: fs), **other)
+        @bundler = bundler
+        super(fs: fs, **other)
+      end
+
       def call(app:, architecture: DEFAULT_ARCHITECTURE, **)
         app = inflector.underscore(app)
 
@@ -25,10 +32,13 @@ module Hanami
         fs.mkdir(app)
         fs.chdir(app) do
           generator(architecture).call(app)
+          bundler.install!
         end
       end
 
       private
+
+      attr_reader :bundler
 
       def generator(architecture)
         raise ArgumentError.new("unknown architecture `#{architecture}'") unless ARCHITECTURES.include?(architecture)

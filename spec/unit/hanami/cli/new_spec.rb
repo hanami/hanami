@@ -3,7 +3,9 @@
 require "hanami/cli/new"
 
 RSpec.describe Hanami::CLI::New do
-  subject { described_class.new(out: stdout, fs: fs) }
+  subject { described_class.new(bundler: bundler, out: stdout, fs: fs) }
+
+  let(:bundler) { instance_double(Hanami::Utils::Bundler, install!: true) }
   let(:stdout) { StringIO.new }
   let(:fs) { RSpec::Support::FileSystem.new }
   let(:app) { "bookshelf" }
