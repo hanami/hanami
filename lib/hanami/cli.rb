@@ -8,5 +8,8 @@ module Hanami
 
     require_relative "./cli/version"
     require_relative "./cli/new"
+
+    register "version", Version, aliases: ["v", "-v", "--version"]
+    register "new", New
   end
 end
