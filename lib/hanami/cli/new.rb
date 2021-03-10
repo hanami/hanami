@@ -9,11 +9,15 @@ module Hanami
       ARCHITECTURES = %w[monolith micro].freeze
       private_constant :ARCHITECTURES
 
+      DEFAULT_ARCHITECTURE = ARCHITECTURES.first
+      private_constant :DEFAULT_ARCHITECTURE
+
       argument :app, required: true, desc: "The application name"
 
-      option :architecture, alias: "arch", default: "slices", values: ARCHITECTURES, desc: "The architecture"
+      option :architecture, alias: "arch", default: DEFAULT_ARCHITECTURE,
+                            values: ARCHITECTURES, desc: "The architecture"
 
-      def call(app:, architecture: ARCHITECTURES.first, **)
+      def call(app:, architecture: DEFAULT_ARCHITECTURE, **)
         app = inflector.underscore(app)
 
         out.puts "generating #{app}"
