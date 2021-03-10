@@ -112,6 +112,11 @@ RSpec.describe Hanami::CLI::New do
         EXPECTED
         expect(fs.read("config/routes.rb")).to eq(routes)
 
+        # lib/tasks/.keep
+        tasks_keep = <<~EXPECTED
+        EXPECTED
+        expect(fs.read("lib/tasks/.keep")).to eq(tasks_keep)
+
         # lib/bookshelf/entities/.keep
         entities_keep = <<~EXPECTED
         EXPECTED
