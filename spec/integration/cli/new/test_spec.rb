@@ -58,7 +58,7 @@ describe Web::Views::ApplicationLayout do
   let(:rendered) { layout.render }
 
   it 'contains application name' do
-    rendered.must_include('Web')
+    _(rendered).must_include('Web')
   end
 end
 END

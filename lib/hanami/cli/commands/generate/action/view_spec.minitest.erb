@@ -7,6 +7,6 @@ describe <%= app.classify %>::Views::<%= classified_controller_name %>::<%= acti
   let(:rendered)  { view.render }
 
   it 'exposes #format' do
-    view.format.must_equal exposures.fetch(:format)
+    _(view.format).must_equal exposures.fetch(:format)
   end
 end
