@@ -17,6 +17,7 @@ gem "hanami-view", "~> 2.0.alpha", git: "https://github.com/hanami/view.git", br
 
 gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.git", branch: "unstable"
 
+gem "dry-system", git: "https://github.com/dry-rb/dry-system.git", branch: "default-settings-for-component-dirs"
 gem "dry-configurable", git: "https://github.com/dry-rb/dry-configurable.git", branch: "master"
 
 group :test do

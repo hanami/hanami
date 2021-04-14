@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
+require "dry/system/loader/autoloading"
 require "pathname"
 
 module Hanami
@@ -103,6 +104,8 @@ module Hanami
         config.name = name
         config.inflector = application.configuration.inflector
 
+        config.component_dirs.loader = Dry::System::Loader::Autoloading
+
         if root&.directory?
           config.root = root
           config.bootable_dirs = ["config/boot"]
@@ -111,6 +114,8 @@ module Hanami
             config.component_dirs.add "lib" do |dir|
               dir.default_namespace = namespace_path.tr(File::SEPARATOR, config.namespace_separator)
             end
+
+            application.configuration.autoloader.push_dir(root.join("lib"))
           end
         end
       end
