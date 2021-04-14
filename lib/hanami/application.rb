@@ -63,6 +63,18 @@ module Hanami
         slices.values.each(&:init)
         slices.freeze
 
+        # TODO: put this shim somewhere useful
+        configuration.autoloader.inflector = Class.new {
+          def initialize(inflector)
+            @inflector = inflector
+          end
+
+          def camelize(basename, _abspath)
+            # Discard unused `_abspath` argument before calling our own inflector's
+            # `#camelize` (which takes only one argument)
+            @inflector.camelize(basename)
+          end
+        }.new(inflector)
         configuration.autoloader.setup
 
         load_routes
