@@ -115,7 +115,7 @@ module Hanami
               dir.default_namespace = namespace_path.tr(File::SEPARATOR, config.namespace_separator)
             end
 
-            application.configuration.autoloader.push_dir(root.join("lib"))
+            application.configuration.autoloader&.push_dir(root.join("lib"))
           end
         end
       end

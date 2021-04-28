@@ -64,8 +64,10 @@ module Hanami
         slices.values.each(&:init)
         slices.freeze
 
-        configuration.autoloader.inflector = Autoloader::InflectorAdapter.new(inflector)
-        configuration.autoloader.setup
+        if configuration.autoloader
+          configuration.autoloader.inflector = Autoloader::InflectorAdapter.new(inflector)
+          configuration.autoloader.setup
+        end
 
         load_routes
 
@@ -262,7 +264,7 @@ module Hanami
               dir.default_namespace = application_name.to_s
             end
 
-            configuration.autoloader.push_dir(root.join("lib"))
+            configuration.autoloader&.push_dir(root.join("lib"))
           end
         end
 
