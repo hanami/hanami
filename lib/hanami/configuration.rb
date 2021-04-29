@@ -85,7 +85,7 @@ module Hanami
     end
 
     def autoloader=(loader)
-      settings[:autoloader] = loader
+      settings[:autoloader] = loader || nil
     end
 
     def autoloader
