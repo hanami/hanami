@@ -257,7 +257,9 @@ module Hanami
             Pathname(__dir__).join("application/container/boot").realpath,
           ]
 
-          config.component_dirs.loader = Dry::System::Loader::Autoloading
+          if configuration.autoloader
+            config.component_dirs.loader = Dry::System::Loader::Autoloading
+          end
 
           if root.join("lib").directory?
             config.component_dirs.add "lib" do |dir|

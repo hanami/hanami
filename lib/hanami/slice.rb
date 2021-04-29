@@ -104,7 +104,9 @@ module Hanami
         config.name = name
         config.inflector = application.configuration.inflector
 
-        config.component_dirs.loader = Dry::System::Loader::Autoloading
+        if application.configuration.autoloader
+          config.component_dirs.loader = Dry::System::Loader::Autoloading
+        end
 
         if root&.directory?
           config.root = root
