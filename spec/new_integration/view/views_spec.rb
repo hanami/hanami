@@ -71,8 +71,6 @@ RSpec.describe "Hanami view integration", :application_integration do
       RUBY
 
       write "lib/test_app/views/test_view.rb", <<~RUBY
-        require "test_app/view"
-
         module TestApp
           module Views
             class TestView < TestApp::View
