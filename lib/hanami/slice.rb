@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
-require "dry/system/loader/autoloading"
 require "pathname"
 
 module Hanami
@@ -105,7 +104,9 @@ module Hanami
         config.inflector = application.configuration.inflector
 
         if application.configuration.autoloader
+          require "dry/system/loader/autoloading"
           config.component_dirs.loader = Dry::System::Loader::Autoloading
+          config.component_dirs.add_to_load_path = false
         end
 
         if root&.directory?

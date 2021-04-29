@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
-require "dry/system/loader/autoloading"
 require "hanami/configuration"
 require "pathname"
 require "rack"
@@ -258,7 +257,9 @@ module Hanami
           ]
 
           if configuration.autoloader
+            require "dry/system/loader/autoloading"
             config.component_dirs.loader = Dry::System::Loader::Autoloading
+            config.component_dirs.add_to_load_path = false
           end
 
           if root.join("lib").directory?
