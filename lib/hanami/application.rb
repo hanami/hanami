@@ -241,17 +241,21 @@ module Hanami
         container.use :env, inferrer: -> { Hanami.env }
         container.use :notifications
 
-        container.config.inflector = configuration.inflector
+        container.configure do |config|
+          config.inflector = configuration.inflector
 
-        container.config.root = configuration.root
-        container.config.bootable_dirs = ["config/boot", Pathname(__dir__).join("application/container/boot").realpath]
-        container.config.auto_register = "lib/#{application_name}"
-        container.config.default_namespace = application_name
+          config.root = configuration.root
+          config.bootable_dirs = [
+            "config/boot",
+            Pathname(__dir__).join("application/container/boot").realpath,
+          ]
 
-        # Force after configure hook to run
-        container.configure do; end
-
-        container.load_paths! "lib"
+          if root.join("lib").directory?
+            config.component_dirs.add "lib" do |dir|
+              dir.default_namespace = application_name.to_s
+            end
+          end
+        end
 
         container
       end

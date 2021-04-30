@@ -99,17 +99,20 @@ module Hanami
       container = Class.new(Dry::System::Container)
       container.use :env
 
-      container.config.name = name
-      container.config.inflector = application.configuration.inflector
+      container.configure do |config|
+        config.name = name
+        config.inflector = application.configuration.inflector
 
-      if root && File.directory?(root)
-        container.config.root = root
-        container.config.bootable_dirs = ["config/boot"]
+        if root&.directory?
+          config.root = root
+          config.bootable_dirs = ["config/boot"]
 
-        container.config.auto_register = ["lib/#{namespace_path}"]
-        container.config.default_namespace = namespace_path.tr("/", ".")
-
-        container.load_paths! "lib"
+          if root.join("lib").directory?
+            config.component_dirs.add "lib" do |dir|
+              dir.default_namespace = namespace_path.tr(File::SEPARATOR, config.namespace_separator)
+            end
+          end
+        end
       end
 
       # Force after configure hook to run
