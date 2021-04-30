@@ -5,6 +5,7 @@ require "hanami/configuration"
 require "pathname"
 require "rack"
 require_relative "slice"
+require_relative "application/autoloader/inflector_adapter"
 require_relative "application/settings"
 
 module Hanami
@@ -61,6 +62,11 @@ module Hanami
         load_slices
         slices.values.each(&:init)
         slices.freeze
+
+        if configuration.autoloader
+          configuration.autoloader.inflector = Autoloader::InflectorAdapter.new(inflector)
+          configuration.autoloader.setup
+        end
 
         load_routes
 
@@ -250,10 +256,18 @@ module Hanami
             Pathname(__dir__).join("application/container/boot").realpath,
           ]
 
+          if configuration.autoloader
+            require "dry/system/loader/autoloading"
+            config.component_dirs.loader = Dry::System::Loader::Autoloading
+            config.component_dirs.add_to_load_path = false
+          end
+
           if root.join("lib").directory?
             config.component_dirs.add "lib" do |dir|
               dir.default_namespace = application_name.to_s
             end
+
+            configuration.autoloader&.push_dir(root.join("lib"))
           end
         end
 

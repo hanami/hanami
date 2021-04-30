@@ -5,6 +5,7 @@ require "concurrent/hash"
 require "concurrent/array"
 require "dry/inflector"
 require "pathname"
+require "zeitwerk"
 
 module Hanami
   # Hanami application configuration
@@ -23,6 +24,8 @@ module Hanami
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def initialize(env:)
       @settings = Concurrent::Hash.new
+
+      self.autoloader = Zeitwerk::Loader.new
 
       self.env = env
       self.environments = DEFAULT_ENVIRONMENTS.clone
@@ -79,6 +82,14 @@ module Hanami
 
     def environment(name, &blk)
       environment_for(name).push(blk)
+    end
+
+    def autoloader=(loader)
+      settings[:autoloader] = loader || nil
+    end
+
+    def autoloader
+      settings.fetch(:autoloader)
     end
 
     def env=(value)

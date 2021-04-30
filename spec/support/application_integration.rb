@@ -2,6 +2,7 @@
 
 require "hanami/devtools/integration/files"
 require "hanami/devtools/integration/with_tmp_directory"
+require "zeitwerk"
 
 module TestNamespace
   def remove_constants
@@ -29,6 +30,13 @@ RSpec.configure do |config|
   end
 
   config.after :each, :application_integration do
+    # Tear down Zeitwerk (from zeitwerk's own test/support/loader_test)
+    Zeitwerk::Registry.loaders.each(&:unload)
+    Zeitwerk::Registry.loaders.clear
+    Zeitwerk::Registry.loaders_managing_gems.clear
+    Zeitwerk::ExplicitNamespace.cpaths.clear
+    Zeitwerk::ExplicitNamespace.tracer.disable
+
     $LOAD_PATH.replace(@load_paths)
     $LOADED_FEATURES.delete_if do |feature_path|
       feature_path =~ %r{hanami/(setup|init|boot|application/container/boot)}

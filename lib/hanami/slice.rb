@@ -103,6 +103,12 @@ module Hanami
         config.name = name
         config.inflector = application.configuration.inflector
 
+        if application.configuration.autoloader
+          require "dry/system/loader/autoloading"
+          config.component_dirs.loader = Dry::System::Loader::Autoloading
+          config.component_dirs.add_to_load_path = false
+        end
+
         if root&.directory?
           config.root = root
           config.bootable_dirs = ["config/boot"]
@@ -111,6 +117,8 @@ module Hanami
             config.component_dirs.add "lib" do |dir|
               dir.default_namespace = namespace_path.tr(File::SEPARATOR, config.namespace_separator)
             end
+
+            application.configuration.autoloader&.push_dir(root.join("lib"))
           end
         end
       end
