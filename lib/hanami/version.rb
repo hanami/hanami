@@ -6,7 +6,7 @@ module Hanami
   module Version
     # @since 0.9.0
     # @api private
-    VERSION = '1.3.3'.freeze
+    VERSION = '1.3.4'.freeze
 
     # @since 0.9.0
     # @api private
