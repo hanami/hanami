@@ -52,7 +52,7 @@ OUT
 
     within_project_directory(project) do
       # Assert it's an initialized Git repository
-      run_cmd "git status", "On branch master"
+      run_cmd "git status", default_git_branch
 
       #
       # .hanamirc
@@ -182,7 +182,7 @@ END
       # config.ru
       #
       expect('config.ru').to have_file_content <<-END
-require './config/environment'
+require_relative 'config/environment'
 
 run Hanami.app
 END
@@ -950,5 +950,19 @@ Examples:
 OUT
 
     run_cmd 'hanami new --help', output
+  end
+
+  private
+
+  def default_git_branch
+    result = `git config --list`.scan(/init\.defaultBranch\=[[:alpha:]]*/i).first
+
+    branch = if result.nil?
+               "(main|master)"
+             else
+               result.split("=").last
+             end
+
+    /On branch #{branch}/
   end
 end
