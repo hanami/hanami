@@ -74,8 +74,11 @@ module Hanami
       end
 
       # Finalize nested configuration
-      actions.finalize!
-      views.finalize!
+      #
+      # TODO: would be good to just create empty configurations for actions/views
+      #       instead of plain objects
+      actions.finalize! if actions.respond_to?(:finalize!)
+      views.finalize! if views.respond_to?(:finalize!)
 
       self
     end
