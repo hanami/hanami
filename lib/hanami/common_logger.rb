@@ -55,7 +55,7 @@ module Hanami
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
     def log(env, status, header, began_at)
-      now    = Time.now
+      now    = ElapsedTime.call
       length = extract_content_length(header)
 
       msg = Hash[
@@ -88,6 +88,22 @@ module Hanami
       result.merge!(env.fetch(FORM_HASH, {}))
       result.merge!(Utils::Hash.deep_stringify(env.fetch(ROUTER_PARAMS, {})))
       result
+    end
+
+    # Wrapper which uses Rack's monotonic clock_time (used for began_at since Rack 2.1.0)
+    #
+    # @since 1.3.4
+    # @api private
+    class ElapsedTime
+      @clock = if Gem::Version.new(Rack::RELEASE) >= Gem::Version.new('2.1.0')
+                 -> { Rack::Utils.clock_time }
+               else
+                 -> { Time.now }
+               end.freeze
+
+      def self.call
+        @clock.call
+      end
     end
   end
 end

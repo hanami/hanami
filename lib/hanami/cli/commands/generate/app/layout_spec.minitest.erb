@@ -5,6 +5,6 @@ describe <%= app.classify %>::Views::ApplicationLayout do
   let(:rendered) { layout.render }
 
   it 'contains application name' do
-    rendered.must_include('<%= app.classify %>')
+    _(rendered).must_include('<%= app.classify %>')
   end
 end

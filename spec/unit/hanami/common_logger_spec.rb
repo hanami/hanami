@@ -23,7 +23,9 @@ RSpec.describe Hanami::CommonLogger do
         get "/"
 
         device.rewind
-        expect(device.read).to include(%(:path=>"logo.png"))
+        read_device = device.read
+        expect(read_device).to include(%(:path=>"logo.png"))
+        expect(read_device).to include(%(:elapsed=>0.))
       end
     end
   end
