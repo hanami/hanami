@@ -23,16 +23,12 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
   spec.add_dependency "bundler",           ">= 1.16", "< 3"
-  spec.add_dependency "dry-cli",           "~> 0.6"
   spec.add_dependency "dry-core",          "~> 0.4"
   spec.add_dependency "dry-inflector",     "~> 0.1", ">= 0.1.2"
   spec.add_dependency "dry-monitor"
   spec.add_dependency "dry-system",        "~> 0.19", ">= 0.19.0"
   spec.add_dependency "hanami-cli",        "~> 2.0.alpha"
-  spec.add_dependency "hanami-controller", "~> 2.0.alpha"
-  spec.add_dependency "hanami-router",     "~> 2.0.alpha"
   spec.add_dependency "hanami-utils",      "~> 2.0.alpha"
-  spec.add_dependency "hanami-view",       "~> 2.0.alpha"
   spec.add_dependency "zeitwerk",          "~> 2.4"
 
   spec.add_development_dependency "rspec",     "~> 3.8"
