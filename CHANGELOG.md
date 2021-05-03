@@ -1,6 +1,39 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha2 - 2021-05-04
+### Added
+- [Luca Guidi] Official support for Ruby: MRI 3.0
+- [Tim Riley] Code autoloading via Zeitwerk
+- [Tim Riley] `Hanami::Application` subclasses have access to `dry-system` container via `.[]` (e.g. `Bookshelf::Application["foo"]` or `Hanami.application["foo"]`)
+- [Tim Riley] Introduced `Hanami::Application.register_bootable` to register custom components
+- [Tim Riley] Introduced `Hanami::Application.keys` to get the list of resolved components
+- [Tim Riley] Dynamically create an auto-injection mixin (e.g. `Bookshelf::Deps`)
+```ruby
+# frozen_string_literal: true
+
+module Bookshelf
+  class CreateThing
+    include Deps[service_client: "some_service.client"]
+
+    def call(attrs)
+      # Validate attrs, etc.
+      service_client.create(attrs)
+    end
+  end
+end
+```
+- [Tim Riley] Introduced application settings. They are accessible via `Hanami.application.settings` in `config/settings.rb`
+- [Tim Riley] Each application slice has its own `dry-system` container (e.g. `Admin::Slice["foo"]`)
+- [Tim Riley] Slice containers automatically import application container dependencies
+- [Tim Riley] Allow slice containers to be imported by other slice containers
+
+### Changed
+- [Luca Guidi] Drop support for Ruby: MRI 2.5
+- [Tim Riley] Removed `config.cookies` in favor of `config.actions.cookies`
+- [Tim Riley] Removed `config.sessions` in favor of `config.actions.sessions`
+- [Tim Riley] Removed `config.security` settings
+
 ## v2.0.0.alpha1 - 2019-01-30
 ### Added
 - [Luca Guidi] Implemented from scratch `hanami version`
