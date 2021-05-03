@@ -362,7 +362,7 @@ RSpec.describe "hanami generate", type: :integration do
 
               it 'is successful' do
                 response = action.call(params)
-                response[0].must_equal 200
+                _(response[0]).must_equal 200
               end
             end
           END
@@ -380,7 +380,7 @@ RSpec.describe "hanami generate", type: :integration do
               let(:rendered)  { view.render }
 
               it 'exposes #format' do
-                view.format.must_equal exposures.fetch(:format)
+                _(view.format).must_equal exposures.fetch(:format)
               end
             end
           END

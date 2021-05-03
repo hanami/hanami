@@ -50,6 +50,12 @@ end
 - [Luca Guidi] Removed `shotgun` and code reloading from the core. Code reloading is implemented by `hanami-reloader` gem.
 - [Luca Guidi] Removed support for `.hanamirc`
 
+## v1.3.4 - 2021-05-02
+### Fixed
+- [Slava Kardakov] Fix generated `config.ru` `require_relative` statement
+- [Armin] Fix `Hanami::CommonLogger` elapsed time compatibility with `rack` 2.1.0+
+- [Adam Daniels] Fix generated tests compatibility with `minitest` 6.0+
+
 ## v1.3.3 - 2019-09-20
 ### Added
 - [Gray Manley] Standardize file loading for `.env` files (see: https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use)
