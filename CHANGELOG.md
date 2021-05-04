@@ -5,27 +5,28 @@ The web, with simplicity.
 ### Added
 - [Luca Guidi] Official support for Ruby: MRI 3.0
 - [Tim Riley] Code autoloading via Zeitwerk
-- [Tim Riley] `Hanami::Application` subclasses have access to `dry-system` container via `.[]` (e.g. `Bookshelf::Application["foo"]` or `Hanami.application["foo"]`)
+- [Tim Riley] `Hanami::Application` subclasses generate and configure a `Dry::System::Container`, accessible via `.container` and `AppNamespace::Container`, with several common container methods available directly via the application subclass (e.g. `Bookshelf::Application["foo"]` or `Hanami.application["foo"]`)
 - [Tim Riley] Introduced `Hanami::Application.register_bootable` to register custom components
 - [Tim Riley] Introduced `Hanami::Application.keys` to get the list of resolved components
 - [Tim Riley] Dynamically create an auto-injection mixin (e.g. `Bookshelf::Deps`)
-```ruby
-# frozen_string_literal: true
+    ```ruby
+    # frozen_string_literal: true
 
-module Bookshelf
-  class CreateThing
-    include Deps[service_client: "some_service.client"]
+    module Bookshelf
+      class CreateThing
+        include Deps[service_client: "some_service.client"]
 
-    def call(attrs)
-      # Validate attrs, etc.
-      service_client.create(attrs)
+        def call(attrs)
+          # Validate attrs, etc.
+          service_client.create(attrs)
+        end
+      end
     end
-  end
-end
-```
+    ```
 - [Tim Riley] Introduced application settings. They are accessible via `Hanami.application.settings` in `config/settings.rb`
-- [Tim Riley] Each application slice has its own `dry-system` container (e.g. `Admin::Slice["foo"]`)
-- [Tim Riley] Slice containers automatically import application container dependencies
+- [Tim Riley] Introduced application slices to organise high-level application concerns. Slices are generated based on subdirectories of `slices/`, and map onto corresponding ruby module namespaces, e.g. `slices/main` -> `Main`, with the slice instance itself being `Main::Slice` (as well as being accessible via `Hanami.application.slices[:main]`)
+- [Tim Riley] Each slice generates and configures has its own `Dry::System::Container`, accessible via the slice instance (e.g. `Main::Slice.container`) as well as via its own constant (e.g. `Main::Container`)
+- [Tim Riley] Slice containers automatically import the application container, under the `"application"` namespace
 - [Tim Riley] Allow slice containers to be imported by other slice containers
 
 ### Changed
