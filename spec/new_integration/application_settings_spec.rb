@@ -9,7 +9,7 @@ RSpec.describe "Application settings", :application_integration do
     ENV.replace(@env)
   end
 
-  specify "Settings defined in config/settings.rb are loaded from .env and run through optional callable (type) objects" do
+  specify "Settings defined in config/settings.rb are loaded from .env" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -21,13 +21,16 @@ RSpec.describe "Application settings", :application_integration do
       RUBY
 
       write "config/settings.rb", <<~RUBY
+        require "hanami/application/settings"
         require "test_app/types"
 
-        Hanami.application.settings do
-          setting :database_url
-          setting :redis_url
-          setting :feature_flag, TestApp::Types::Params::Bool
-          setting :feature_flag_with_default, TestApp::Types::Params::Bool.optional.default(false)
+        module TestApp
+          class Settings < Hanami::Application::Settings
+            setting :database_url
+            setting :redis_url
+            setting :feature_flag, constructor: TestApp::Types::Params::Bool
+            setting :feature_flag_with_default, default: false, constructor: TestApp::Types::Params::Bool
+          end
         end
       RUBY
 
@@ -58,7 +61,7 @@ RSpec.describe "Application settings", :application_integration do
     end
   end
 
-  specify "Settings with values not matching type expectations will raise an error" do
+  specify "Errors raised from setting constructors are collected" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -70,11 +73,14 @@ RSpec.describe "Application settings", :application_integration do
       RUBY
 
       write "config/settings.rb", <<~RUBY
+        require "hanami/application/settings"
         require "test_app/types"
 
-        Hanami.application.settings do
-          setting :numeric_setting, TestApp::Types::Params::Integer
-          setting :feature_flag, TestApp::Types::Params::Bool
+        module TestApp
+          class Settings < Hanami::Application::Settings
+            setting :numeric_setting, constructor: TestApp::Types::Params::Integer
+            setting :feature_flag, constructor: TestApp::Types::Params::Bool
+          end
         end
       RUBY
 
@@ -93,13 +99,14 @@ RSpec.describe "Application settings", :application_integration do
         end
       RUBY
 
-      require "hanami/application/settings/loader" # for referencing the error class below
+      numeric_setting_error = "numeric_setting: invalid value for Integer"
+      feature_flag_error = "feature_flag: maybe cannot be coerced"
 
       expect {
         require "hanami/init"
       }.to raise_error(
-        Hanami::Application::Settings::Loader::InvalidSettingsError,
-        /(numeric_setting:.+invalid value for Integer).+(feature_flag: maybe cannot be coerced)/m
+        Hanami::Application::Settings::InvalidSettingsError,
+        /#{numeric_setting_error}.+#{feature_flag_error}|#{feature_flag_error}.+#{numeric_setting_error}/m
       )
     end
   end

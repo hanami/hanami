@@ -151,21 +151,8 @@ module Hanami
         @booted
       end
 
-      def settings(&block) # rubocop:disable Metrics/MethodLength
-        if block
-          @_settings = Application::Settings.build(
-            configuration.settings_loader,
-            configuration.settings_loader_options,
-            &block
-          )
-        elsif instance_variable_defined?(:@_settings)
-          @_settings
-        else
-          # Load settings lazily so they can be used to configure the
-          # Hanami::Application subclass (before the application has inited)
-          load_settings
-          @_settings ||= nil
-        end
+      def settings
+        @_settings ||= load_settings
       end
 
       def routes(&block)
@@ -185,6 +172,10 @@ module Hanami
 
       def namespace
         inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
+      end
+
+      def namespace_name
+        namespace.name
       end
 
       def namespace_path
@@ -324,7 +315,10 @@ module Hanami
       def load_settings
         prepare_base_load_path
         require File.join(configuration.root, configuration.settings_path)
-      rescue LoadError # rubocop:disable Lint/SuppressedException
+        settings_class = inflector.constantize([namespace_name, configuration.settings_class_name].join(MODULE_DELIMITER))
+        settings_class.new(configuration.settings_store)
+      rescue LoadError
+        Settings.new
       end
     end
     # rubocop:enable Metrics/ModuleLength
