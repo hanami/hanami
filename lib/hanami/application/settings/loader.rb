@@ -42,11 +42,11 @@ module Hanami
         def call(defined_settings)
           load_dotenv
 
-          settings, errors = load_settings(defined_settings)
+          errors = load_settings(defined_settings)
 
           raise InvalidSettingsError, errors if errors.any?
 
-          settings
+          Settings.config.values
         end
 
         private
@@ -67,14 +67,16 @@ module Hanami
         end
 
         def load_settings(defined_settings) # rubocop:disable Metrics/MethodLength
-          defined_settings.each_with_object([{}, {}]) { |(name, args), (settings, errors)|
+          defined_settings.reduce({}) { |errors, (name, args)|
             begin
-              settings[name] = resolve_setting(name, args)
+              value = resolve_setting(name, args)
+              Settings.setting(name, value)
+              errors
             rescue => exception # rubocop:disable Style/RescueStandardError
               if exception.is_a?(UnsupportedSettingArgumentError) # rubocop: disable Style/GuardClause
                 raise exception
               else
-                errors[name] = exception
+                errors.merge(name => exception)
               end
             end
           }
