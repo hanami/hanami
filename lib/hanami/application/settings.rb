@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/core/constants"
+require "dry/configurable"
 require_relative "settings/definition"
 require_relative "settings/struct"
 
@@ -10,6 +11,8 @@ module Hanami
     #
     # @since 2.0.0
     module Settings
+      extend Dry::Configurable
+
       Undefined = Dry::Core::Constants::Undefined
 
       def self.build(loader, loader_options, &definition_block)
