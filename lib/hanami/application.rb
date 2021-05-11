@@ -331,6 +331,8 @@ module Hanami
 
     # Application instance interface
     module InstanceMethods
+      attr_reader :url_helpers
+
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def initialize(application = self.class)
         require_relative "application/router"
@@ -349,10 +351,12 @@ module Hanami
         ) do
           use application[:rack_monitor]
 
-          application.config.for_each_middleware do |m, *args, &block|
-            use(m, *args, &block)
+          application.config.for_each_middleware do |middleware, *args, &block|
+            use(middleware, *args, &block)
           end
         end
+
+        @url_helpers = router.url_helpers
 
         @app = router.to_rack_app
       end
