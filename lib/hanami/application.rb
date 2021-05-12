@@ -153,17 +153,18 @@ module Hanami
 
       def settings(&block) # rubocop:disable Metrics/MethodLength
         if block
-          Application::Settings.build(
+          @_settings = Application::Settings.build(
             configuration.settings_loader,
             configuration.settings_loader_options,
             &block
           )
-        elsif Settings.config.values.any?
-          Settings.config
+        elsif instance_variable_defined?(:@_settings)
+          @_settings
         else
           # Load settings lazily so they can be used to configure the
           # Hanami::Application subclass (before the application has inited)
           load_settings
+          @_settings ||= nil
         end
       end
 
