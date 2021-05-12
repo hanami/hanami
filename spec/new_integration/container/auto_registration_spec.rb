@@ -8,7 +8,7 @@ RSpec.describe "Container auto-registration", :application_integration do
 
         module TestApp
           class Application < Hanami::Application
-            config.inflector do |inflections|
+            config.inflections do |inflections|
               inflections.acronym "NBA"
             end
           end
@@ -46,7 +46,7 @@ RSpec.describe "Container auto-registration", :application_integration do
 
         module TestApp
           class Application < Hanami::Application
-            config.inflector do |inflections|
+            config.inflections do |inflections|
               inflections.acronym "NBA"
             end
           end

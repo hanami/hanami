@@ -7,7 +7,7 @@ RSpec.describe "Application autoloader", :application_integration do
         module TestApp
           class Application < Hanami::Application
             # Use a custom inflection to ensure this is respected by the autoloader
-            config.inflector do |inflections|
+            config.inflections do |inflections|
               inflections.acronym "NBA"
             end
           end
