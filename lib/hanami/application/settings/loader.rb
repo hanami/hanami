@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "dry/core/constants"
+
 module Hanami
   class Application
     module Settings
@@ -23,30 +25,17 @@ module Hanami
           end
         end
 
-        UnsupportedSettingArgumentError = Class.new(StandardError) do
-          def initialize(setting_name, arguments)
-            @setting_name = setting_name
-            @arguments = arguments
-          end
-
-          def to_s
-            <<~STR.strip
-              Unsupported arguments #{@arguments.inspect} for setting +#{@setting_name}+
-            STR
-          end
-        end
-
         def initialize(*)
         end
 
-        def call(defined_settings)
+        def load(config)
           load_dotenv
 
-          errors = load_settings(defined_settings)
+          errors = load_settings!(config)
 
           raise InvalidSettingsError, errors if errors.any?
 
-          Settings.config.values
+          config
         end
 
         private
@@ -66,32 +55,14 @@ module Hanami
           ].compact
         end
 
-        def load_settings(defined_settings) # rubocop:disable Metrics/MethodLength
-          defined_settings.reduce({}) { |errors, (name, args)|
+        def load_settings!(config) # rubocop:disable Metrics/MethodLength
+          config._settings.map(&:name).each_with_object({}) { |name, errors|
             begin
-              value = resolve_setting(name, args)
-              Settings.setting(name, value)
-              errors
-            rescue => exception # rubocop:disable Style/RescueStandardError
-              if exception.is_a?(UnsupportedSettingArgumentError) # rubocop: disable Style/GuardClause
-                raise exception
-              else
-                errors.merge(name => exception)
-              end
+              config[name] = ENV.fetch(name.to_s.upcase) { Dry::Core::Constants::Undefined }
+            rescue => exception
+              errors[name] = exception
             end
           }
-        end
-
-        def resolve_setting(name, args)
-          value = ENV.fetch(name.to_s.upcase) { Undefined }
-
-          if args.none?
-            value
-          elsif args[0]&.respond_to?(:call)
-            args[0].call(value)
-          else
-            raise UnsupportedSettingArgumentError.new(name, args)
-          end
         end
       end
     end

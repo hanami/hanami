@@ -26,8 +26,8 @@ RSpec.describe "Application settings", :application_integration do
         Hanami.application.settings do
           setting :database_url
           setting :redis_url
-          setting :feature_flag, TestApp::Types::Params::Bool
-          setting :feature_flag_with_default, TestApp::Types::Params::Bool.optional.default(false)
+          setting :feature_flag, constructor: TestApp::Types::Params::Bool
+          setting :feature_flag_with_default, false, constructor: TestApp::Types::Params::Bool
         end
       RUBY
 
@@ -73,8 +73,8 @@ RSpec.describe "Application settings", :application_integration do
         require "test_app/types"
 
         Hanami.application.settings do
-          setting :numeric_setting, TestApp::Types::Params::Integer
-          setting :feature_flag, TestApp::Types::Params::Bool
+          setting :numeric_setting, constructor: TestApp::Types::Params::Integer
+          setting :feature_flag, constructor: TestApp::Types::Params::Bool
         end
       RUBY
 
