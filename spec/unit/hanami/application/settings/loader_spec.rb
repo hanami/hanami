@@ -6,10 +6,16 @@ require "dotenv"
 RSpec.describe Hanami::Application::Settings::Loader do
   subject(:loader) { described_class.new }
 
-  describe "#call" do
-    subject(:loaded_settings) { loader.call(defined_settings) }
+  def build_config(&block)
+    Class.new do
+      include Dry::Configurable
+    end.tap { |klass| klass.instance_eval(&block) if block_given? }.new.config
+  end
 
-    let(:defined_settings) { [] }
+  describe "#call" do
+    subject(:loaded_settings) { loader.load(config).to_h }
+
+    let(:config) { build_config }
 
     describe "loading dotenv" do
       context "dotenv available" do
@@ -83,10 +89,10 @@ RSpec.describe Hanami::Application::Settings::Loader do
       end
 
       context "no setting definition argument provided" do
-        let(:defined_settings) {
-          [
-            [:database_url, []]
-          ]
+        let(:config) {
+          build_config do
+            setting :database_url, []
+          end
         }
 
         it "returns hash of settings from ENV" do
@@ -95,11 +101,11 @@ RSpec.describe Hanami::Application::Settings::Loader do
       end
 
       context "callable setting definition arguments provided" do
-        let(:defined_settings) {
-          [
-            [:database_url, [->(v) { v.split("/").last }]],
-            [:redis_url, []],
-          ]
+        let(:config) {
+          build_config do
+            setting :database_url, constructor: ->(v) { v.split("/").last }
+            setting :redis_url, []
+          end
         }
 
         it "returns a hash of settings from ENV, with setting values passed through their callable arguments" do
@@ -110,11 +116,11 @@ RSpec.describe Hanami::Application::Settings::Loader do
         end
 
         context "callable definition arguments fail" do
-          let(:defined_settings) {
-            [
-              [:database_url, [->(_v) { raise "nope to database" }]],
-              [:redis_url, [->(_v) { raise "nope to redis" }]],
-            ]
+          let(:config) {
+            build_config do
+              setting :database_url, constructor: ->(_v) { raise "nope to database" }
+              setting :redis_url, constructor: ->(_v) { raise "nope to redis" }
+            end
           }
 
           it "raises an error for all failed settings" do
@@ -123,21 +129,6 @@ RSpec.describe Hanami::Application::Settings::Loader do
               /(database_url: nope to database).*(redis_url: nope to redis)/m,
             )
           end
-        end
-      end
-
-      context "unsupported setting definition argument provided" do
-        let(:defined_settings) {
-          [
-            [:database_url, ["unsupported"]],
-          ]
-        }
-
-        it "raises an error" do
-          expect { loaded_settings }.to raise_error(
-            described_class::UnsupportedSettingArgumentError,
-            'Unsupported arguments ["unsupported"] for setting +database_url+'
-          )
         end
       end
     end
