@@ -5,8 +5,10 @@ require "dry/core/constants"
 module Hanami
   class Application
     module Settings
-      # Default application settings loader. Uses dotenv (if available) to load
-      # .env files and then loads settings from ENV.
+      # Application settings loader.
+      #
+      # Fetches settings from store before delegating to the configuration
+      # class. Collects all errors and joins them into a single exception.
       #
       # @since 2.0.0
       # @api private
@@ -25,13 +27,8 @@ module Hanami
           end
         end
 
-        def initialize(*)
-        end
-
-        def load(config)
-          load_dotenv
-
-          errors = load_settings!(config)
+        def load(config, store)
+          errors = load_settings!(config, store)
 
           raise InvalidSettingsError, errors if errors.any?
 
@@ -40,29 +37,12 @@ module Hanami
 
         private
 
-        def load_dotenv
-          require "dotenv"
-          Dotenv.load(*dotenv_files) if defined?(Dotenv)
-        rescue LoadError # rubocop:disable Lint/SuppressedException
-        end
-
-        def dotenv_files
-          [
-            ".env.#{Hanami.env}.local",
-            (".env.local" unless Hanami.env?(:test)),
-            ".env.#{Hanami.env}",
-            ".env"
-          ].compact
-        end
-
-        def load_settings!(config) # rubocop:disable Metrics/MethodLength
-          config._settings.map(&:name).each_with_object({}) { |name, errors|
-            begin
-              config[name] = ENV.fetch(name.to_s.upcase) { Dry::Core::Constants::Undefined }
-            rescue => exception
-              errors[name] = exception
-            end
-          }
+        def load_settings!(config, store)
+          config._settings.map(&:name).each_with_object({}) do |name, errors|
+            config[name] = store.fetch(name) { Dry::Core::Constants::Undefined }
+          rescue => e # rubocop:disable Style/RescueStandardError
+            errors[name] = e
+          end
         end
       end
     end
