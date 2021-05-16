@@ -35,7 +35,6 @@ module Hanami
       settings[:slices] = {}
 
       self.settings_path = DEFAULT_SETTINGS_PATH
-      self.settings_loader_options = {}
 
       self.base_url = DEFAULT_BASE_URL
 
@@ -143,6 +142,17 @@ module Hanami
       settings.fetch(:settings_path)
     end
 
+    def settings_store=(store)
+      settings[:settings_store] = store
+    end
+
+    def settings_store
+      settings.fetch(:settings_store) {
+        require "hanami/application/settings/dotenv_store"
+        settings[:settings_store] = Application::Settings::DotenvStore.new.with_dotenv_loaded
+      }
+    end
+
     def settings_loader=(loader)
       settings[:settings_loader] = loader
     end
@@ -150,16 +160,8 @@ module Hanami
     def settings_loader
       settings.fetch(:settings_loader) {
         require "hanami/application/settings/loader"
-        settings[:settings_loader] = Application::Settings::Loader
+        settings[:settings_loader] = Application::Settings::Loader.new
       }
-    end
-
-    def settings_loader_options=(options)
-      settings[:settings_loader_options] = options
-    end
-
-    def settings_loader_options
-      settings[:settings_loader_options]
     end
 
     def base_url=(value)
