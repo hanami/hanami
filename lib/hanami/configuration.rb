@@ -120,7 +120,7 @@ module Hanami
       config.logger = Configuration::Logger.new(logger_instance)
     end
 
-    setting :settings_path, "config/settings"
+    setting :settings_path, File.join("config", "settings")
 
     setting :settings_class_name, "Settings"
 

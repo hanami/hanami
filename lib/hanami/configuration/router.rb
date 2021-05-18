@@ -22,7 +22,7 @@ module Hanami
         @base_configuration = base_configuration
       end
 
-      setting :routes_path, "config/routes"
+      setting :routes_path, File.join("config", "routes")
 
       setting :routes_class_name, "Routes"
 
