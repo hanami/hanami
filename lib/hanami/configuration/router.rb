@@ -12,13 +12,13 @@ module Hanami
     class Router
       include Dry::Configurable
 
+      # Base configuration is provided so router config can include the `base_url`
       attr_reader :base_configuration
       private :base_configuration
 
       # @api private
       # @since 2.0.0
       def initialize(base_configuration)
-        # Base configuration is provided so the router can access the `base_url`
         @base_configuration = base_configuration
       end
 
