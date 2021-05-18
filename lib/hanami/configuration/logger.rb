@@ -17,23 +17,20 @@ module Hanami
         self.instance = instance
       end
 
+      # Holds a user-supplied pre-initialized logger instance. This should be used in
+      # preference to the `logger_class` and `options`
       setting :instance
-
-      def instance
-        config.instance || build_logger
-      end
 
       setting :logger_class, Hanami::Logger
 
       setting :options, {level: :debug}
 
+      # Currently used for logging of Rack requests only.
+      #
+      # TODO: incorporate this into the standard logging some way or another
       setting :filter_params, %w[_csrf password password_confirmation].freeze
 
       private
-
-      def build_logger
-        logger_class.new(**options)
-      end
 
       def method_missing(name, *args, &block)
         if config.respond_to?(name)

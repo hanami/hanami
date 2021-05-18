@@ -57,49 +57,27 @@ RSpec.describe Hanami::Configuration do
     end
 
     describe "#instance" do
-      it "defaults to a new Hanami::Logger initialized with the default options" do
-        instance = config.logger.instance
-
-        expect(instance).to be_an_instance_of Hanami::Logger
-        expect(instance.level).to eq ::Logger::DEBUG
+      it "defaults to nil" do
+        expect(config.logger.instance).to be nil
       end
 
-      it "builds a new instance each time" do
-        expect(config.logger.instance).not_to be config.logger.instance
-      end
-
-      context "providing a prebuilt instance" do
-        let(:logger_instance) { Object.new }
-
-        before do
-          config.logger.instance = logger_instance
-        end
-
-        it "returns the given instance" do
-          expect(config.logger.instance).to be logger_instance
-        end
-
-        it "returns the given instance each time" do
-          expect(config.logger.instance).to be config.logger.instance
-        end
-      end
-    end
-
-    describe "#logger=" do
-      it "sets the instance" do
+      it "can be changed to a pre-initialized instance" do
         logger_instance = Object.new
 
-        expect { config.logger = logger_instance }
+        expect { config.logger.instance = logger_instance }
           .to change { config.logger.instance }
           .to logger_instance
       end
+    end
+  end
 
-      it "returns the given instance each time" do
-        logger_instance = Object.new
-        config.logger = logger_instance
+  describe "#logger=" do
+    it "sets the logger.instance" do
+      logger_instance = Object.new
 
-        expect(config.logger.instance).to be config.logger.instance
-      end
+      expect { config.logger = logger_instance }
+        .to change { config.logger.instance }
+        .to logger_instance
     end
   end
 end
