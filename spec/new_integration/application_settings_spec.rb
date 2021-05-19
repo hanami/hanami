@@ -27,7 +27,7 @@ RSpec.describe "Application settings", :application_integration do
           setting :database_url
           setting :redis_url
           setting :feature_flag, constructor: TestApp::Types::Params::Bool
-          setting :feature_flag_with_default, false, constructor: TestApp::Types::Params::Bool
+          setting :feature_flag_with_default, default: false, constructor: TestApp::Types::Params::Bool
         end
       RUBY
 
