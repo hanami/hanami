@@ -26,7 +26,7 @@ RSpec.describe Hanami::Application::Settings::Loader do
     context "when settings are defined" do
       it "uses values from the store when present" do
         config = build_config do
-          setting :database_url, "postgres://localhost/test_app_development"
+          setting :database_url, default: "postgres://localhost/test_app_development"
         end
         store = { database_url: "mysql://localhost/test_app_development" }.freeze
 
@@ -37,7 +37,7 @@ RSpec.describe Hanami::Application::Settings::Loader do
 
       it "uses defaults when values are not present in the store" do
         config = build_config do
-          setting :database_url, "postgres://localhost/test_app_development"
+          setting :database_url, default: "postgres://localhost/test_app_development"
         end
         store = {}.freeze
 
