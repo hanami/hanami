@@ -21,13 +21,11 @@ RSpec.describe "Application settings", :application_integration do
       RUBY
 
       write "config/settings.rb", <<~RUBY
-        require "test_app/types"
-
-        Hanami.application.settings do
+        Hanami.application.settings do |types|
           setting :database_url
           setting :redis_url
-          setting :feature_flag, constructor: TestApp::Types::Params::Bool
-          setting :feature_flag_with_default, default: false, constructor: TestApp::Types::Params::Bool
+          setting :feature_flag, constructor: types::Params::Bool
+          setting :feature_flag_with_default, default: false, constructor: types::Params::Bool
         end
       RUBY
 
@@ -35,16 +33,6 @@ RSpec.describe "Application settings", :application_integration do
         DATABASE_URL=postgres://localhost/test_app_development
         REDIS_URL=redis://localhost:6379
         FEATURE_FLAG=true
-      RUBY
-
-      write "lib/test_app/types.rb", <<~RUBY
-        require "dry/types"
-
-        module TestApp
-          module Types
-            include Dry.Types()
-          end
-        end
       RUBY
 
       require "hanami/init"
@@ -70,27 +58,15 @@ RSpec.describe "Application settings", :application_integration do
       RUBY
 
       write "config/settings.rb", <<~RUBY
-        require "test_app/types"
-
-        Hanami.application.settings do
-          setting :numeric_setting, constructor: TestApp::Types::Params::Integer
-          setting :feature_flag, constructor: TestApp::Types::Params::Bool
+        Hanami.application.settings do |types|
+          setting :numeric_setting, constructor: types::Params::Integer
+          setting :feature_flag, constructor: types::Params::Bool
         end
       RUBY
 
       write ".env", <<~RUBY
         NUMERIC_SETTING=hello
         FEATURE_FLAG=maybe
-      RUBY
-
-      write "lib/test_app/types.rb", <<~RUBY
-        require "dry/types"
-
-        module TestApp
-          module Types
-            include Dry.Types()
-          end
-        end
       RUBY
 
       require "hanami/application/settings/loader" # for referencing the error class below

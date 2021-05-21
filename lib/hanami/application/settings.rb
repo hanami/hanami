@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/configurable"
+require "hanami/application/settings/types"
 
 module Hanami
   class Application
@@ -14,8 +15,9 @@ module Hanami
         # other specialised behaviour) we could turn the `Settings` module here into a
         # class that includes Dry::Configurable and then subclass _it_ instead of just
         # making a new class without any defined superclass
-        Class.new { include Dry::Configurable }
-          .instance_eval(&definition_block)
+        Class.new
+          .include(Dry::Configurable)
+          .instance_exec(Types, &definition_block)
           .new
           .config
           .then do |settings|
