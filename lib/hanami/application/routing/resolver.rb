@@ -18,9 +18,10 @@ module Hanami
 
         # @api private
         # @since 2.0.0
-        def initialize(slices:, inflector:)
+        def initialize(slices:, inflector:, endpoints_namespace:)
           @slices = slices
           @inflector = inflector
+          @endpoints_namespace = endpoints_namespace
           @slices_registry = Trie.new
         end
 
@@ -65,6 +66,10 @@ module Hanami
 
         # @api private
         # @since 2.0.0
+        attr_reader :endpoints_namespace
+
+        # @api private
+        # @since 2.0.0
         attr_reader :slices_registry
 
         # @api private
@@ -72,7 +77,7 @@ module Hanami
         def resolve_string_identifier(path, identifier)
           slice_name = slices_registry.find(path) or raise "missing slice for #{path.inspect} (#{identifier.inspect})"
           slice = slices[slice_name]
-          action_key = "actions.#{identifier.gsub(/[#\/]/, '.')}"
+          action_key = "#{endpoints_namespace}.#{identifier.gsub(/[#\/]/, '.')}"
 
           slice[action_key]
         end

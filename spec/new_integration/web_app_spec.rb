@@ -15,6 +15,7 @@ RSpec.describe "Hanami web app", :application_integration do
         module TestApp
           class Application < Hanami::Application
             config.logger.options[:stream] = File.new("/dev/null", "w")
+            config.router.endpoints_namespace = 'endpoints'
           end
         end
       RUBY
@@ -33,11 +34,11 @@ RSpec.describe "Hanami web app", :application_integration do
 
       write "lib/test_app/.keep", ""
 
-      write "slices/main/lib/main/actions/home/index.rb", <<~RUBY
+      write "slices/main/lib/main/endpoints/home/index.rb", <<~RUBY
         require "hanami/action"
 
         module Main
-          module Actions
+          module Endpoints
             module Home
               class Index < Hanami::Action
                 def handle(*, res)
@@ -49,11 +50,11 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
-      write "slices/admin/lib/admin/actions/dashboard/show.rb", <<~RUBY
+      write "slices/admin/lib/admin/endpoints/dashboard/show.rb", <<~RUBY
         require "hanami/action"
 
         module Admin
-          module Actions
+          module Endpoints
             module Dashboard
               class Show < Hanami::Action
                 def handle(*, res)

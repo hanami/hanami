@@ -26,6 +26,8 @@ module Hanami
 
       setting :resolver, Application::Routing::Resolver
 
+      setting :endpoints_namespace, 'actions'
+
       # @api private
       # @since 2.0.0
       def options

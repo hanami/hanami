@@ -339,7 +339,8 @@ module Hanami
 
         resolver = application.config.router.resolver.new(
           slices: application.slices,
-          inflector: application.inflector
+          inflector: application.inflector,
+          endpoints_namespace: application.config.router.endpoints_namespace
         )
 
         router = Application::Router.new(
