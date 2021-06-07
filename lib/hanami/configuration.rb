@@ -104,7 +104,7 @@ module Hanami
 
     setting :autoloader do |autoloader|
       # Convert all falsey values to nil, so we can rely on `nil` representing a disabled
-      # autoloader when using the configuration
+      # autoloader when reading this setting
       autoloader || nil
     end
 
@@ -117,7 +117,11 @@ module Hanami
     setting :logger, Configuration::Logger.new, cloneable: true
 
     def logger=(logger_instance)
-      config.logger = Configuration::Logger.new(logger_instance)
+      @logger_instance = logger_instance
+    end
+
+    def logger_instance
+      @logger_instance || logger.logger_class.new(**logger.options)
     end
 
     setting :settings_path, File.join("config", "settings")

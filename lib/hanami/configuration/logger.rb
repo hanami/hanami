@@ -13,14 +13,6 @@ module Hanami
 
       protected :config
 
-      def initialize(instance = nil)
-        self.instance = instance
-      end
-
-      # Holds a user-supplied pre-initialized logger instance. This should be used in
-      # preference to the `logger_class` and `options`
-      setting :instance
-
       setting :logger_class, Hanami::Logger
 
       setting :options, {level: :debug}
