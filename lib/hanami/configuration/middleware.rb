@@ -6,6 +6,8 @@ module Hanami
     #
     # @since 2.0.0
     class Middleware
+      attr_reader :stack
+
       def initialize
         @stack = []
       end
@@ -13,8 +15,6 @@ module Hanami
       def use(middleware, *args, &block)
         stack.push([middleware, *args, block].compact)
       end
-
-      attr_reader :stack
     end
   end
 end

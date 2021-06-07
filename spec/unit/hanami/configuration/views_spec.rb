@@ -11,8 +11,13 @@ RSpec.describe Hanami::Configuration, "#views" do
     it "exposes Hanami::Views's application configuration" do
       is_expected.to be_an_instance_of(Hanami::View::ApplicationConfiguration)
 
+      is_expected.to respond_to(:finalize!)
       is_expected.to respond_to(:layouts_dir)
       is_expected.to respond_to(:layouts_dir=)
+    end
+
+    it "can be finalized" do
+      is_expected.to respond_to(:finalize!)
     end
   end
 
@@ -37,6 +42,10 @@ RSpec.describe Hanami::Configuration, "#views" do
       is_expected.not_to be_an_instance_of(Hanami::View::ApplicationConfiguration)
       is_expected.not_to respond_to(:layouts_dir)
       is_expected.not_to respond_to(:layouts_dir=)
+    end
+
+    it "can be finalized" do
+      is_expected.to respond_to(:finalize!)
     end
   end
 end

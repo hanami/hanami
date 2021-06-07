@@ -14,6 +14,10 @@ RSpec.describe Hanami::Configuration, "#actions" do
       is_expected.to respond_to(:default_response_format)
       is_expected.to respond_to(:default_response_format=)
     end
+
+    it "can be finalized" do
+      is_expected.to respond_to(:finalize!)
+    end
   end
 
   context "Hanami::Action not available" do
@@ -37,6 +41,10 @@ RSpec.describe Hanami::Configuration, "#actions" do
       is_expected.not_to be_an_instance_of(Hanami::Action::ApplicationConfiguration)
       is_expected.not_to respond_to(:default_response_format)
       is_expected.not_to respond_to(:default_response_format=)
+    end
+
+    it "can be finalized" do
+      is_expected.to respond_to(:finalize!)
     end
   end
 end

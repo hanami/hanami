@@ -14,7 +14,7 @@ RSpec.describe "Hanami web app", :application_integration do
 
         module TestApp
           class Application < Hanami::Application
-            config.logger = {stream: File.new("/dev/null", "w")}
+            config.logger.options[:stream] = File.new("/dev/null", "w")
           end
         end
       RUBY

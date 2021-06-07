@@ -9,8 +9,11 @@ module Hanami
     #
     # @since 2.0.0
     class Sessions
+      NULL_SESSION_OPTION = :null
+      private_constant :NULL_SESSION_OPTION
+
       def self.null
-        NULL_STORAGE
+        self.class.new(NULL_SESSION_OPTION)
       end
 
       attr_reader :storage, :options
@@ -23,7 +26,7 @@ module Hanami
       end
 
       def enabled?
-        storage != NULL_STORAGE
+        storage != NULL_SESSION_OPTION
       end
 
       def middleware
@@ -31,9 +34,6 @@ module Hanami
       end
 
       private
-
-      NULL_STORAGE = :null
-      private_constant :NULL_STORAGE
 
       def storage_middleware
         require_storage

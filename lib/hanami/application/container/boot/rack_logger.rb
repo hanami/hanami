@@ -9,7 +9,7 @@ Hanami.application.register_bootable :rack_logger do |container|
 
     rack_logger = Hanami::Web::RackLogger.new(
       container[:logger],
-      filter_params: Hanami.application.configuration.rack_logger_filter_params
+      filter_params: Hanami.application.configuration.logger.filter_params
     )
 
     rack_logger.attach container[:rack_monitor]
