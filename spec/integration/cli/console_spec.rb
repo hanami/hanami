@@ -86,8 +86,8 @@ Description:
   Starts Hanami console
 
 Options:
-  --engine=VALUE                  	# Force a specific console engine: (pry/ripl/irb)
-  --help, -h                      	# Print this help
+  --engine=VALUE                    # Force a specific console engine: (pry/ripl/irb)
+  --help, -h                        # Print this help
 
 Examples:
   hanami console              # Uses the bundled engine

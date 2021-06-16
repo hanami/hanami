@@ -267,12 +267,12 @@ Description:
   Generate a model
 
 Arguments:
-  MODEL               	# REQUIRED Model name (eg. `user`)
+  MODEL                             # REQUIRED Model name (eg. `user`)
 
 Options:
-  --[no-]skip-migration           	# Skip migration, default: false
-  --relation=VALUE                	# Name of the database relation, default: pluralized model name
-  --help, -h                      	# Print this help
+  --[no-]skip-migration             # Skip migration, default: false
+  --relation=VALUE                  # Name of the database relation, default: pluralized model name
+  --help, -h                        # Print this help
 
 Examples:
   hanami generate model user                     # Generate `User` entity, `UserRepository` repository, and the migration

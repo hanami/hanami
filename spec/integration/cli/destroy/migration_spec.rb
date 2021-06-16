@@ -49,10 +49,10 @@ Description:
   Destroy a migration
 
 Arguments:
-  MIGRATION           	# REQUIRED The migration name (eg. `create_users`)
+  MIGRATION                         # REQUIRED The migration name (eg. `create_users`)
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 
 Examples:
 OUT

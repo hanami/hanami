@@ -26,7 +26,7 @@ Description:
   Print the current migrated version
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 OUT
 
         run_cmd 'hanami db version --help', output

@@ -95,10 +95,10 @@ Description:
   Destroy a model
 
 Arguments:
-  MODEL               	# REQUIRED The model name (eg. `user`)
+  MODEL                             # REQUIRED The model name (eg. `user`)
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 
 Examples:
   hanami destroy model user # Destroy `User` entity and `UserRepository` repository

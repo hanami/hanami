@@ -28,7 +28,7 @@ Description:
   Starts a database console
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 OUT
 
         run_cmd "hanami db console --help", output

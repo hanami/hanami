@@ -155,29 +155,29 @@ RSpec.describe "hanami generate", type: :integration do
     it 'prints help message' do
       with_project do
         output = <<~OUT
-          Command:
-            hanami generate mailer
+Command:
+  hanami generate mailer
 
-          Usage:
-            hanami generate mailer MAILER
+Usage:
+  hanami generate mailer MAILER
 
-          Description:
-            Generate a mailer
+Description:
+  Generate a mailer
 
-          Arguments:
-            MAILER              	# REQUIRED The mailer name (eg. `welcome`)
+Arguments:
+  MAILER                            # REQUIRED The mailer name (eg. `welcome`)
 
-          Options:
-            --from=VALUE                    	# The default `from` field of the mail
-            --to=VALUE                      	# The default `to` field of the mail
-            --subject=VALUE                 	# The mail subject
-            --help, -h                      	# Print this help
+Options:
+  --from=VALUE                      # The default `from` field of the mail
+  --to=VALUE                        # The default `to` field of the mail
+  --subject=VALUE                   # The mail subject
+  --help, -h                        # Print this help
 
-          Examples:
-            hanami generate mailer welcome                                         # Basic usage
-            hanami generate mailer welcome --from="noreply@example.com"            # Generate with default `from` value
-            hanami generate mailer announcement --to="users@example.com"           # Generate with default `to` value
-            hanami generate mailer forgot_password --subject="Your password reset" # Generate with default `subject`
+Examples:
+  hanami generate mailer welcome                                         # Basic usage
+  hanami generate mailer welcome --from="noreply@example.com"            # Generate with default `from` value
+  hanami generate mailer announcement --to="users@example.com"           # Generate with default `to` value
+  hanami generate mailer forgot_password --subject="Your password reset" # Generate with default `subject`
         OUT
 
         run_cmd 'hanami generate mailer --help', output

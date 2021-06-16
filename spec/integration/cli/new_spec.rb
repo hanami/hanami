@@ -930,16 +930,16 @@ Description:
   Generate a new Hanami project
 
 Arguments:
-  PROJECT             	# REQUIRED The project name
+  PROJECT                           # REQUIRED The project name
 
 Options:
-  --database=VALUE, -d VALUE      	# Database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3), default: "sqlite"
-  --application-name=VALUE        	# App name, default: "web"
-  --application-base-url=VALUE    	# App base URL, default: "/"
-  --template=VALUE                	# Template engine (erb/haml/slim), default: "erb"
-  --test=VALUE                    	# Project testing framework (rspec/minitest), default: "rspec"
-  --[no-]hanami-head              	# Use Hanami HEAD (true/false), default: false
-  --help, -h                      	# Print this help
+  --database=VALUE, -d VALUE        # Database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3), default: "sqlite"
+  --application-name=VALUE          # App name, default: "web"
+  --application-base-url=VALUE      # App base URL, default: "/"
+  --template=VALUE                  # Template engine (erb/haml/slim), default: "erb"
+  --test=VALUE                      # Project testing framework (rspec/minitest), default: "rspec"
+  --[no-]hanami-head                # Use Hanami HEAD (true/false), default: false
+  --help, -h                        # Print this help
 
 Examples:
   hanami new bookshelf                     # Basic usage

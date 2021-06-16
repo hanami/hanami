@@ -195,11 +195,11 @@ Description:
   Generate an app
 
 Arguments:
-  APP                 	# REQUIRED The application name (eg. `web`)
+  APP                               # REQUIRED The application name (eg. `web`)
 
 Options:
-  --application-base-url=VALUE    	# The app base URL (eg. `/api/v1`)
-  --help, -h                      	# Print this help
+  --application-base-url=VALUE      # The app base URL (eg. `/api/v1`)
+  --help, -h                        # Print this help
 
 Examples:
   hanami generate app admin                              # Generate `admin` app
