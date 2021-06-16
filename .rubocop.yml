@@ -1,7 +1,7 @@
 # Please keep AllCops, Bundler, Style, Metrics groups and then order cops
 # alphabetically
 inherit_from:
-  - https://raw.githubusercontent.com/hanami/devtools/master/.rubocop.yml
+  - https://raw.githubusercontent.com/hanami/devtools/1.3.x/.rubocop.yml
 AllCops:
   Exclude:
     - "vendor/**/*"

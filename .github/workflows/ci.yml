@@ -12,7 +12,7 @@ name: ci
       - ".rubocop.yml"
   pull_request:
     branches:
-      - master
+      - main
   create:
 
 jobs:

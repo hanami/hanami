@@ -2,6 +2,10 @@
 
 The web, with simplicity.
 
+## Version
+
+**This branch contains the code for `hanami` 1.3.x.**
+
 ## Frameworks
 
 Hanami is a **full-stack** Ruby web framework.
@@ -25,8 +29,8 @@ These components are designed to be used independently or together in a Hanami a
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](https://badge.fury.io/rb/hanami)
-[![CI](https://github.com/hanami/hanami/workflows/ci/badge.svg?branch=master)](https://github.com/hanami/hanami/actions?query=workflow%3Aci+branch%3Amaster)
-[![Test Coverage](https://codecov.io/gh/hanami/hanami/branch/master/graph/badge.svg)](https://codecov.io/gh/hanami/hanami)
+[![CI](https://github.com/hanami/hanami/workflows/ci/badge.svg?branch=1.3.x)](https://github.com/hanami/hanami/actions?query=workflow%3Aci+branch%3A1.3.x)
+[![Test Coverage](https://codecov.io/gh/hanami/hanami/branch/1.3.x/graph/badge.svg)](https://codecov.io/gh/hanami/hanami)
 [![Depfu](https://badges.depfu.com/badges/ba000e0f69e6ef1c44cd3038caaa1841/overview.svg)](https://depfu.com/github/hanami/hanami?project=Bundler)
 [![Inline Docs](http://inch-ci.org/github/hanami/hanami.svg)](http://inch-ci.org/github/hanami/hanami)
 
