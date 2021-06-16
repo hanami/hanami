@@ -8,15 +8,15 @@ end
 
 gem 'i18n'
 
-gem 'hanami-utils',       '~> 1.3', require: false, git: 'https://github.com/hanami/utils.git',       branch: 'master'
-gem 'hanami-validations', '~> 1.3', require: false, git: 'https://github.com/hanami/validations.git', branch: 'master'
-gem 'hanami-router',      '~> 1.3', require: false, git: 'https://github.com/hanami/router.git',      branch: 'master'
-gem 'hanami-controller',  '~> 1.3', require: false, git: 'https://github.com/hanami/controller.git',  branch: 'master'
-gem 'hanami-view',        '~> 1.3', require: false, git: 'https://github.com/hanami/view.git',        branch: '1.x-master'
-gem 'hanami-model',       '~> 1.3', require: false, git: 'https://github.com/hanami/model.git',       branch: 'master'
-gem 'hanami-helpers',     '~> 1.3', require: false, git: 'https://github.com/hanami/helpers.git',     branch: 'master'
-gem 'hanami-mailer',      '~> 1.3', require: false, git: 'https://github.com/hanami/mailer.git',      branch: 'master'
-gem 'hanami-assets',      '~> 1.3', require: false, git: 'https://github.com/hanami/assets.git',      branch: 'master'
+gem 'hanami-utils',       '~> 1.3', require: false, git: 'https://github.com/hanami/utils.git',       branch: '1.3.x'
+gem 'hanami-validations', '~> 1.3', require: false, git: 'https://github.com/hanami/validations.git', branch: '1.3.x'
+gem 'hanami-router',      '~> 1.3', require: false, git: 'https://github.com/hanami/router.git',      branch: '1.3.x'
+gem 'hanami-controller',  '~> 1.3', require: false, git: 'https://github.com/hanami/controller.git',  branch: '1.3.x'
+gem 'hanami-view',        '~> 1.3', require: false, git: 'https://github.com/hanami/view.git',        branch: '1.3.x'
+gem 'hanami-model',       '~> 1.3', require: false, git: 'https://github.com/hanami/model.git',       branch: '1.3.x'
+gem 'hanami-helpers',     '~> 1.3', require: false, git: 'https://github.com/hanami/helpers.git',     branch: '1.3.x'
+gem 'hanami-mailer',      '~> 1.3', require: false, git: 'https://github.com/hanami/mailer.git',      branch: '1.3.x'
+gem 'hanami-assets',      '~> 1.3', require: false, git: 'https://github.com/hanami/assets.git',      branch: '1.3.x'
 
 platforms :ruby do
   gem 'sqlite3'
@@ -46,8 +46,8 @@ gem 'coffee-script', require: false
 gem 'dotenv',    '~> 2.4', require: false
 gem 'shotgun',   '~> 0.9', require: false
 
-gem 'hanami-devtools', require: false, git: 'https://github.com/hanami/devtools.git'
-gem 'hanami-webconsole', require: false, git: 'https://github.com/hanami/webconsole.git'
+gem 'hanami-devtools', require: false, git: 'https://github.com/hanami/devtools.git', branch: '1.3.x'
+gem 'hanami-webconsole', require: false, git: 'https://github.com/hanami/webconsole.git', branch: '1.0.x'
 
 # https://github.com/hanami/hanami/issues/893
 gem 'builder'

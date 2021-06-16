@@ -37,7 +37,7 @@ Description:
   Print Hanami version
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 OUT
 
         run_cmd 'hanami version --help', output
@@ -74,7 +74,7 @@ Description:
   Print Hanami version
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 OUT
 
       run_cmd 'hanami version --help', output

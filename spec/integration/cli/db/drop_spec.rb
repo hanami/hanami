@@ -42,7 +42,7 @@ Description:
   Drop the database (only for development/test)
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 OUT
 
         run_cmd 'hanami db drop --help', output

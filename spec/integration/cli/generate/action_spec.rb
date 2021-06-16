@@ -433,31 +433,31 @@ RSpec.describe "hanami generate", type: :integration do
     it 'prints help message' do
       with_project do
         output = <<~OUT
-          Command:
-            hanami generate action
+Command:
+  hanami generate action
 
-          Usage:
-            hanami generate action APP ACTION
+Usage:
+  hanami generate action APP ACTION
 
-          Description:
-            Generate an action for app
+Description:
+  Generate an action for app
 
-          Arguments:
-            APP                 	# REQUIRED The application name (eg. `web`)
-            ACTION              	# REQUIRED The action name (eg. `home#index`)
+Arguments:
+  APP                               # REQUIRED The application name (eg. `web`)
+  ACTION                            # REQUIRED The action name (eg. `home#index`)
 
-          Options:
-            --url=VALUE                     	# The action URL
-            --method=VALUE                  	# The action HTTP method
-            --[no-]skip-view                	# Skip view and template, default: false
-            --help, -h                      	# Print this help
+Options:
+  --url=VALUE                       # The action URL
+  --method=VALUE                    # The action HTTP method
+  --[no-]skip-view                  # Skip view and template, default: false
+  --help, -h                        # Print this help
 
-          Examples:
-            hanami generate action web home#index                    # Basic usage
-            hanami generate action admin home#index                  # Generate for `admin` app
-            hanami generate action web home#index --url=/            # Specify URL
-            hanami generate action web sessions#destroy --method=GET # Specify HTTP method
-            hanami generate action web books#create --skip-view      # Skip view and template
+Examples:
+  hanami generate action web home#index                    # Basic usage
+  hanami generate action admin home#index                  # Generate for `admin` app
+  hanami generate action web home#index --url=/            # Specify URL
+  hanami generate action web sessions#destroy --method=GET # Specify HTTP method
+  hanami generate action web books#create --skip-view      # Skip view and template
         OUT
 
         run_cmd 'hanami generate action --help', output

@@ -123,11 +123,11 @@ Description:
   Destroy an action from app
 
 Arguments:
-  APP                 	# REQUIRED The application name (eg. `web`)
-  ACTION              	# REQUIRED The action name (eg. `home#index`)
+  APP                               # REQUIRED The application name (eg. `web`)
+  ACTION                            # REQUIRED The action name (eg. `home#index`)
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 
 Examples:
   hanami destroy action web home#index    # Basic usage

@@ -77,10 +77,10 @@ Description:
   Rollback migrations
 
 Arguments:
-  STEPS               	# Number of steps to rollback the database
+  STEPS                             # Number of steps to rollback the database
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 
 Examples:
   hanami db rollback   # Rollbacks latest migration

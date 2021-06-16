@@ -38,7 +38,7 @@ Description:
   Prints routes
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 OUT
 
       run_cmd 'hanami routes --help', output

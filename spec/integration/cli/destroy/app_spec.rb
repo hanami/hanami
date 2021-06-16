@@ -98,10 +98,10 @@ Description:
   Destroy an app
 
 Arguments:
-  APP                 	# REQUIRED The application name (eg. `web`)
+  APP                               # REQUIRED The application name (eg. `web`)
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 
 Examples:
   hanami destroy app admin # Destroy `admin` app

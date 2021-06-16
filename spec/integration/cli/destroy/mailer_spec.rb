@@ -56,10 +56,10 @@ Description:
   Destroy a mailer
 
 Arguments:
-  MAILER              	# REQUIRED The mailer name (eg. `welcome`)
+  MAILER                            # REQUIRED The mailer name (eg. `welcome`)
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 
 Examples:
   hanami destroy mailer welcome # Destroy `WelcomeMailer` mailer

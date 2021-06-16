@@ -133,7 +133,7 @@ Description:
   Precompile assets for deployment
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 
 Examples:
   hanami assets precompile                       # Basic usage

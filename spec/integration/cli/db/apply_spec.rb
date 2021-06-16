@@ -62,7 +62,7 @@ Description:
   Migrate, dump the SQL schema, and delete the migrations (experimental)
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 OUT
 
         run_cmd "hanami db apply --help", output

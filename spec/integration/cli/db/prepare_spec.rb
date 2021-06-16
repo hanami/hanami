@@ -24,7 +24,7 @@ Description:
   Drop, create, and migrate the database (only for development/test)
 
 Options:
-  --help, -h                      	# Print this help
+  --help, -h                        # Print this help
 OUT
 
         run_cmd 'hanami db prepare --help', output
