@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "force SSL", type: :integration do
   it "forces SSL" do
     project = "bookshelf_force_ssl"
@@ -7,10 +9,10 @@ RSpec.describe "force SSL", type: :integration do
 
       inject_line_after "apps/web/application.rb", "configure do", "force_ssl true"
 
-      RSpec::Support::Env['HANAMI_ENV']   = 'production'
-      RSpec::Support::Env['DATABASE_URL'] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
-      RSpec::Support::Env['SMTP_HOST']    = 'localhost'
-      RSpec::Support::Env['SMTP_PORT']    = '25'
+      RSpec::Support::Env["HANAMI_ENV"]   = "production"
+      RSpec::Support::Env["DATABASE_URL"] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+      RSpec::Support::Env["SMTP_HOST"]    = "localhost"
+      RSpec::Support::Env["SMTP_PORT"]    = "25"
 
       # key  = Pathname.new(__dir__).join("..", "fixtures", "openssl", "server.key").realpath
       # cert = Pathname.new(__dir__).join("..", "fixtures", "openssl", "server.crt").realpath
@@ -19,7 +21,7 @@ RSpec.describe "force SSL", type: :integration do
       server do
         # FIXME: I know, it's lame how I solved this problem, but I can't get Excon to do SSL handshake
         expect do
-          get '/'
+          get "/"
         end.to raise_error(Excon::Error::Socket)
       end
     end

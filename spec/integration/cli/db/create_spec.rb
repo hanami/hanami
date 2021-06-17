@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami db", type: :integration do
   describe "create" do
     it "creates database" do
@@ -15,7 +17,7 @@ RSpec.describe "hanami db", type: :integration do
       project = "bookshelf_db_create_production"
 
       with_project(project) do
-        RSpec::Support::Env['HANAMI_ENV'] = 'production'
+        RSpec::Support::Env["HANAMI_ENV"] = "production"
         hanami "db create"
 
         expect(exitstatus).to eq(1)
@@ -25,9 +27,9 @@ RSpec.describe "hanami db", type: :integration do
       end
     end
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
-        output = <<-OUT
+        output = <<~OUT
 Command:
   hanami db create
 

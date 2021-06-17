@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami db", type: :integration do
   describe "console" do
     it "starts database console" do
@@ -7,8 +9,8 @@ RSpec.describe "hanami db", type: :integration do
 
         db_console do |input, _, _|
           input.puts('INSERT INTO users (id, name, age) VALUES(1, "Luca", 34);')
-          input.puts('SELECT * FROM users;')
-          input.puts('.quit')
+          input.puts("SELECT * FROM users;")
+          input.puts(".quit")
         end
 
         expect(out).to include("1|Luca|34")
@@ -17,7 +19,7 @@ RSpec.describe "hanami db", type: :integration do
 
     it "prints help message" do
       with_project do
-        output = <<-OUT
+        output = <<~OUT
 Command:
   hanami db console
 

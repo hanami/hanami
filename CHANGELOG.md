@@ -1,6 +1,89 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha2 - 2021-05-04
+### Added
+- [Luca Guidi] Official support for Ruby: MRI 3.0
+- [Tim Riley] Code autoloading via Zeitwerk
+- [Tim Riley] `Hanami::Application` subclasses generate and configure a `Dry::System::Container`, accessible via `.container` and `AppNamespace::Container`, with several common container methods available directly via the application subclass (e.g. `Bookshelf::Application["foo"]` or `Hanami.application["foo"]`)
+- [Tim Riley] Introduced `Hanami::Application.register_bootable` to register custom components
+- [Tim Riley] Introduced `Hanami::Application.keys` to get the list of resolved components
+- [Tim Riley] Dynamically create an auto-injection mixin (e.g. `Bookshelf::Deps`)
+    ```ruby
+    # frozen_string_literal: true
+
+    module Bookshelf
+      class CreateThing
+        include Deps[service_client: "some_service.client"]
+
+        def call(attrs)
+          # Validate attrs, etc.
+          service_client.create(attrs)
+        end
+      end
+    end
+    ```
+- [Tim Riley] Introduced application settings. They are accessible via `Hanami.application.settings` in `config/settings.rb`
+- [Tim Riley] Introduced application slices to organise high-level application concerns. Slices are generated based on subdirectories of `slices/`, and map onto corresponding ruby module namespaces, e.g. `slices/main` -> `Main`, with the slice instance itself being `Main::Slice` (as well as being accessible via `Hanami.application.slices[:main]`)
+- [Tim Riley] Each slice generates and configures has its own `Dry::System::Container`, accessible via the slice instance (e.g. `Main::Slice.container`) as well as via its own constant (e.g. `Main::Container`)
+- [Tim Riley] Slice containers automatically import the application container, under the `"application"` namespace
+- [Tim Riley] Allow slice containers to be imported by other slice containers
+
+### Changed
+- [Luca Guidi] Drop support for Ruby: MRI 2.5
+- [Tim Riley] Removed `config.cookies` in favor of `config.actions.cookies`
+- [Tim Riley] Removed `config.sessions` in favor of `config.actions.sessions`
+- [Tim Riley] Removed `config.security` settings
+
+## v2.0.0.alpha1 - 2019-01-30
+### Added
+- [Luca Guidi] Implemented from scratch `hanami version`
+- [Luca Guidi] Implemented from scratch `hanami server`
+- [Luca Guidi] Main configuration is opinionated: when a setting is not specified in generated code, it uses a framework default.
+- [Luca Guidi] Main configuration setting `environment`: to yield env based settings (e.g. `config.environment(:production) { |c| c.logger = {...} }`)
+- [Luca Guidi] Main configuration setting `base_url`: to set the base URL of the app (e.g. `config.base_url = "https://example.com"`)
+- [Luca Guidi] Main configuration setting `logger`: to set the logger options (e.g. `config.logger = { level: :info, format: :json }`)
+- [Luca Guidi] Main configuration setting `routes`: to set the path to routes file (e.g. `config.routes = "path/to/routes"`)
+- [Luca Guidi] Main configuration setting `cookies`: to set cookies options (e.g. `config.cookies = { max_age: 300 }`)
+- [Luca Guidi] Main configuration setting `sessions`: to set session options (e.g. `config.sessions = :cookie, { secret: "abc" }`)
+- [Luca Guidi] Main configuration setting `default_request_format`: to set the fallback for request format (aka MIME Type) (e.g. `config.default_request_format = :json`)
+- [Luca Guidi] Main configuration setting `default_response_format`: to set the default response format (aka MIME Type) (e.g. `config.default_response_format = :json`)
+- [Luca Guidi] Main configuration setting `middleware` to mount Rack middleware (e.g. `config.middleware.use MyMiddleware, "argument"`)
+- [Luca Guidi] Main configuration setting `security` to set security settings (see below)
+- [Luca Guidi] Main configuration setting `inflections` to configure inflections (e.g. `config.inflections { |i| i.plural "virus", "viruses" }`)
+- [Luca Guidi] Main configuration security setting `x_frame_options`: defaults to `"deny"` (e.g. `config.security.x_frame_options = "sameorigin"`)
+- [Luca Guidi] Main configuration security setting `x_content_type_options`: defaults to `"nosniff"` (e.g. `config.security.x_content_type_options = nil`)
+- [Luca Guidi] Main configuration security setting `x_xss_protection`: defaults to `"1; mode=block"` (e.g. `config.security.x_xss_protection = "1"`)
+- [Luca Guidi] Main configuration security setting `content_security_policy`: defaults to `"form-action 'self'; frame-ancestors 'self'; base-uri 'self'; default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https:; font-src 'self'; object-src 'none'; plugin-types application/pdf; child-src 'self'; frame-src 'self'; media-src 'self'"`
+  (e.g. `config.security.content_security_policy[:style_src] += " https://my.cdn.example"` to add another source)
+  (e.g. `config.security.content_security_policy[:plugin_types] = nil` to override the settings)
+
+### Changed
+- [Luca Guidi] Drop support for Ruby: MRI 2.3, and 2.4.
+- [Luca Guidi] `Hanami::Application` must be used as superclass for main application under `config/application.rb` (e.g. `Bookshelf::Application`)
+- [Luca Guidi] Main configuration is available at `config/application.rb` instead of `config/enviroment.rb`
+- [Luca Guidi] Removed `Hanami.configure` in favor of main application configuration (e.g. `Bookshelf::Application.config`)
+- [Luca Guidi] Removed DSL syntax for main configuration (from `cookies max_age: 600` to `config.cookies = { max_age: 600 }`)
+- [Luca Guidi] Per enviroment settings must be wrapped in a block (e.g. `config.enviroment(:production) { |c| c.logger = {} }`)
+- [Luca Guidi] Concrete applications are no longer supported (e.g. `Web::Application` in `apps/web/application.rb`)
+- [Luca Guidi] Main routes must be configured at `config/routes.rb`:
+```ruby
+# frozen_string_literal: true
+
+Hanami.application.routes do
+  mount :web, at: "/" do
+    root to: "home#index"
+  end
+
+  mount :admin, at: "/admin" do
+    root to: "home#index"
+  end
+end
+```
+- [Luca Guidi] Per application routes are no longer supported (e.g. `apps/web/config/routes.rb`)
+- [Luca Guidi] Removed `shotgun` and code reloading from the core. Code reloading is implemented by `hanami-reloader` gem.
+- [Luca Guidi] Removed support for `.hanamirc`
+
 ## v1.3.4 - 2021-05-02
 ### Fixed
 - [Slava Kardakov] Fix generated `config.ru` `require_relative` statement

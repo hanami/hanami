@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami new", type: :integration do
   describe "--database" do
     context "postgres" do
       it "generates project" do
-        project = 'bookshelf_postgresql'
+        project = "bookshelf_postgresql"
         output  = [
           "create  db/migrations/.gitkeep",
           "create  db/schema.sql"
@@ -19,7 +21,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:postgresql://localhost/#{project}_development" }
           end
 
-          expect('.env.development').to have_file_content(%r{DATABASE_URL="#{development_url}"})
+          expect(".env.development").to have_file_content(%r{DATABASE_URL="#{development_url}"})
 
           #
           # .env.test
@@ -29,7 +31,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:postgresql://localhost/#{project}_test" }
           end
 
-          expect('.env.test').to have_file_content(%r{DATABASE_URL="#{test_url}"})
+          expect(".env.test").to have_file_content(%r{DATABASE_URL="#{test_url}"})
 
           #
           # Gemfile
@@ -39,7 +41,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc-postgres" }
           end
 
-          expect('Gemfile').to have_file_content(%r{gem '#{gem_name}'})
+          expect("Gemfile").to have_file_content(%r{gem '#{gem_name}'})
 
           #
           # config/environment.rb
@@ -51,12 +53,12 @@ RSpec.describe "hanami new", type: :integration do
           #
           # db/migrations/.gitkeep
           #
-          expect('db/migrations/.gitkeep').to be_an_existing_file
+          expect("db/migrations/.gitkeep").to be_an_existing_file
 
           #
           # db/schema.sql
           #
-          expect('db/schema.sql').to be_an_existing_file
+          expect("db/schema.sql").to be_an_existing_file
 
           #
           # .gitignore
@@ -73,7 +75,7 @@ RSpec.describe "hanami new", type: :integration do
 
     describe "sqlite" do
       it "generates project" do
-        project = 'bookshelf_sqlite'
+        project = "bookshelf_sqlite"
         output  = [
           "create  db/migrations/.gitkeep",
           "create  db/schema.sql"
@@ -90,7 +92,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:sqlite://db/#{project}_development.sqlite" }
           end
 
-          expect('.env.development').to have_file_content(%r{DATABASE_URL="#{development_url}"})
+          expect(".env.development").to have_file_content(%r{DATABASE_URL="#{development_url}"})
 
           #
           # .env.test
@@ -100,7 +102,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:sqlite://db/#{project}_test.sqlite" }
           end
 
-          expect('.env.test').to have_file_content(%r{DATABASE_URL="#{test_url}"})
+          expect(".env.test").to have_file_content(%r{DATABASE_URL="#{test_url}"})
 
           #
           # Gemfile
@@ -110,7 +112,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc-sqlite3" }
           end
 
-          expect('Gemfile').to have_file_content(%r{gem '#{gem_name}'})
+          expect("Gemfile").to have_file_content(%r{gem '#{gem_name}'})
 
           #
           # config/environment.rb
@@ -122,12 +124,12 @@ RSpec.describe "hanami new", type: :integration do
           #
           # db/migrations/.gitkeep
           #
-          expect('db/migrations/.gitkeep').to be_an_existing_file
+          expect("db/migrations/.gitkeep").to be_an_existing_file
 
           #
           # db/schema.sql
           #
-          expect('db/schema.sql').to be_an_existing_file
+          expect("db/schema.sql").to be_an_existing_file
 
           #
           # .gitignore
@@ -145,7 +147,7 @@ RSpec.describe "hanami new", type: :integration do
 
     context "mysql" do
       it "generates project" do
-        project = 'bookshelf_mysql'
+        project = "bookshelf_mysql"
         output  = [
           "create  db/migrations/.gitkeep",
           "create  db/schema.sql"
@@ -162,7 +164,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:mysql://localhost/#{project}_development" }
           end
 
-          expect('.env.development').to have_file_content(%r{DATABASE_URL="#{development_url}"})
+          expect(".env.development").to have_file_content(%r{DATABASE_URL="#{development_url}"})
 
           #
           # .env.test
@@ -172,7 +174,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:mysql://localhost/#{project}_test" }
           end
 
-          expect('.env.test').to have_file_content(%r{DATABASE_URL="#{test_url}"})
+          expect(".env.test").to have_file_content(%r{DATABASE_URL="#{test_url}"})
 
           #
           # Gemfile
@@ -182,7 +184,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc-mysql" }
           end
 
-          expect('Gemfile').to have_file_content(%r{gem '#{gem_name}'})
+          expect("Gemfile").to have_file_content(%r{gem '#{gem_name}'})
 
           #
           # config/environment.rb
@@ -194,12 +196,12 @@ RSpec.describe "hanami new", type: :integration do
           #
           # db/migrations/.gitkeep
           #
-          expect('db/migrations/.gitkeep').to be_an_existing_file
+          expect("db/migrations/.gitkeep").to be_an_existing_file
 
           #
           # db/schema.sql
           #
-          expect('db/schema.sql').to be_an_existing_file
+          expect("db/schema.sql").to be_an_existing_file
 
           #
           # .gitignore

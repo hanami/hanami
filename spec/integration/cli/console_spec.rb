@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami console", type: :integration do
   context "irb" do
     it "starts console" do
@@ -34,21 +36,21 @@ RSpec.describe "hanami console", type: :integration do
     end
 
     it "starts console without hanami-model" do
-      project_without_hanami_model("bookshelf", gems: ['dry-struct'], console: :irb) do
-        write "lib/entities/access_token.rb", <<-EOF
-require 'dry-struct'
-require 'securerandom'
+      project_without_hanami_model("bookshelf", gems: ["dry-struct"], console: :irb) do
+        write "lib/entities/access_token.rb", <<~EOF
+          require 'dry-struct'
+          require 'securerandom'
 
-module Types
-  include Dry::Types.module
-end
+          module Types
+            include Dry::Types.module
+          end
 
-class AccessToken < Dry::Struct
-  attribute :id,     Types::String.default { SecureRandom.uuid }
-  attribute :secret, Types::String
-  attribute :digest, Types::String
-end
-EOF
+          class AccessToken < Dry::Struct
+            attribute :id,     Types::String.default { SecureRandom.uuid }
+            attribute :secret, Types::String
+            attribute :digest, Types::String
+          end
+        EOF
         console do |input, _, _|
           input.puts("AccessToken.new(id: '1', secret: 'shh', digest: 'def')")
           input.puts("exit")
@@ -75,7 +77,7 @@ EOF
 
   it "prints help message" do
     with_project do
-      output = <<-OUT
+      output = <<~OUT
 Command:
   hanami console
 

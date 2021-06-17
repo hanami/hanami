@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hanami
   # Hanami version
   #
@@ -6,7 +8,7 @@ module Hanami
   module Version
     # @since 0.9.0
     # @api private
-    VERSION = '1.3.4'.freeze
+    VERSION = "2.0.0.alpha2"
 
     # @since 0.9.0
     # @api private

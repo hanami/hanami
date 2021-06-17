@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami generate", type: :integration do
   describe "migration" do
     context "with migration name" do
@@ -31,14 +33,15 @@ RSpec.describe "hanami generate", type: :integration do
 ERROR: "hanami generate migration" was called with no arguments
 Usage: "hanami generate migration MIGRATION"
 END
+
           run_cmd "hanami generate migration", output, exit_status: 1
         end
       end
     end
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
-        banner = <<-OUT
+        banner = <<~OUT
 Command:
   hanami generate migration
 

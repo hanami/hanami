@@ -1,16 +1,20 @@
+# frozen_string_literal: true
+
 RSpec.describe "HTTP headers", type: :integration do
   it "returns HTTP headers" do
     with_project do
       generate "action web home#index --url=/"
 
       server do
-        get '/'
+        get "/"
 
         expect(last_response.status).to       eq(200)
         expect(last_response.headers.keys).to eq(
-          ["X-Frame-Options", "X-Content-Type-Options", "X-Xss-Protection",
-           "Content-Security-Policy", "Content-Type", "Content-Length",
-           "Server", "Date", "Connection"]
+          %w[
+            X-Frame-Options X-Content-Type-Options X-Xss-Protection
+            Content-Security-Policy Content-Type Content-Length
+            Server Date Connection
+          ]
         )
 
         expect(last_response.headers["X-Frame-Options"]).to         eq("DENY")

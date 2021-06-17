@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami db", type: :integration do
   describe "rollback" do
     it "rollbacks database" do
@@ -64,9 +66,9 @@ RSpec.describe "hanami db", type: :integration do
       end
     end
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
-        output = <<-OUT
+        output = <<~OUT
 Command:
   hanami db rollback
 
@@ -84,8 +86,9 @@ Options:
 
 Examples:
   hanami db rollback   # Rollbacks latest migration
-  hanami db rollback 2 # Rollbacks last two migrations
+  hanami db rollback 2 # Rollbacks last two migration
 OUT
+
         run_cmd 'hanami db rollback --help', output
       end
     end

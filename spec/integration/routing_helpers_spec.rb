@@ -1,4 +1,6 @@
-RSpec.describe 'Routing helpers', type: :integration do
+# frozen_string_literal: true
+
+RSpec.describe "Routing helpers", type: :integration do
   it "uses routing helpers within action" do
     with_project do
       generate "action web home#index --url=/"
@@ -6,17 +8,17 @@ RSpec.describe 'Routing helpers', type: :integration do
 
       # Add `as:` option, so it can be used by the routing helper
       replace "apps/web/config/routes.rb", "/books", "get '/books', to: 'books#index', as: :books"
-      rewrite "apps/web/controllers/home/index.rb", <<-EOF
-module Web::Controllers::Home
-  class Index
-    include Web::Action
+      rewrite "apps/web/controllers/home/index.rb", <<~EOF
+        module Web::Controllers::Home
+          class Index
+            include Web::Action
 
-    def call(params)
-      redirect_to routes.books_url
-    end
-  end
-end
-EOF
+            def call(params)
+              redirect_to routes.books_url
+            end
+          end
+        end
+      EOF
 
       server do
         visit "/"
@@ -33,21 +35,21 @@ EOF
 
       # Add `as:` option, so it can be used by the routing helper
       replace "apps/web/config/routes.rb", "/books/:id", "get '/books/:id', to: 'books#show', as: :book"
-      rewrite "apps/web/views/books/index.rb", <<-EOF
-module Web::Views::Books
-  class Index
-    include Web::View
+      rewrite "apps/web/views/books/index.rb", <<~EOF
+        module Web::Views::Books
+          class Index
+            include Web::View
 
-    def featured_book_path
-      routes.path(:book, id: 23)
-    end
-  end
-end
-EOF
-      rewrite "apps/web/templates/books/index.html.erb", <<-EOF
-<h1>Books</h1>
-<h2><a href="<%= featured_book_path %>">Featured Book</a></h2>
-EOF
+            def featured_book_path
+              routes.path(:book, id: 23)
+            end
+          end
+        end
+      EOF
+      rewrite "apps/web/templates/books/index.html.erb", <<~EOF
+        <h1>Books</h1>
+        <h2><a href="<%= featured_book_path %>">Featured Book</a></h2>
+      EOF
 
       server do
         visit "/books"

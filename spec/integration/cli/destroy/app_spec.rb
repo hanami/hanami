@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami destroy", type: :integration do
   describe "app" do
     it "destroys app" do
@@ -72,6 +74,7 @@ RSpec.describe "hanami destroy", type: :integration do
 ERROR: "hanami destroy app" was called with no arguments
 Usage: "hanami destroy app APP"
 OUT
+
         run_cmd "hanami destroy app", output, exit_status: 1
       end
     end
@@ -81,13 +84,14 @@ OUT
         output = <<-OUT
 `unknown' is not a valid APP. Please specify one of: `web'
 OUT
+
         run_cmd "hanami destroy app unknown", output, exit_status: 1
       end
     end
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
-        output = <<-OUT
+        output = <<~OUT
 Command:
   hanami destroy app
 

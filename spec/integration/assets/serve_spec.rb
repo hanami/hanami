@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "assets", type: :integration do
   describe "serve" do
     it "compiles and serves assets in development mode" do
@@ -6,31 +8,31 @@ RSpec.describe "assets", type: :integration do
       with_project(project, gems: ['sassc']) do
         generate "action web home#index --url=/"
 
-        write "apps/web/assets/javascripts/application.css.sass", <<-EOF
-$font-family: Helvetica, sans-serif
+        write "apps/web/assets/javascripts/application.css.sass", <<~EOF
+          $font-family: Helvetica, sans-serif
 
-body
-  font: 100% $font-family
-EOF
-        rewrite "apps/web/templates/application.html.erb", <<-EOF
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Web</title>
-    <%= favicon %>
-    <%= stylesheet 'application' %>
-  </head>
-  <body>
-    <%= yield %>
-  </body>
-</html>
-EOF
+          body
+            font: 100% $font-family
+        EOF
+        rewrite "apps/web/templates/application.html.erb", <<~EOF
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Web</title>
+              <%= favicon %>
+              <%= stylesheet 'application' %>
+            </head>
+            <body>
+              <%= yield %>
+            </body>
+          </html>
+        EOF
 
         server do
-          visit '/'
+          visit "/"
           expect(page.body).to include(%(<link href="/assets/application.css" type="text/css" rel="stylesheet">))
 
-          visit '/assets/application.css'
+          visit "/assets/application.css"
           expect(page.body).to include(%(body {\n  font: 100% Helvetica, sans-serif; }\n))
         end
       end
@@ -52,9 +54,9 @@ EOF
           "namespace :library { get '/', to: 'home#index' }"
         )
 
-        write "apps/web/assets/javascripts/application.js", <<-EOF
-console.log('test');
-EOF
+        write "apps/web/assets/javascripts/application.js", <<~EOF
+          console.log('test');
+        EOF
 
         hanami "assets precompile"
 

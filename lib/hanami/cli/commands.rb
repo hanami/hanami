@@ -1,5 +1,7 @@
-require 'dry/cli'
-require 'ostruct'
+# frozen_string_literal: true
+
+require "dry/cli"
+require "ostruct"
 
 module Hanami
   # Hanami CLI
@@ -23,7 +25,7 @@ module Hanami
     #       module CLI
     #         module Commands
     #           class Generate < Hanami::CLI::Command
-    #             desc "Generate Webpack config"
+    #             desc "Generate Webpack configuration"
     #
     #             def call(*)
     #               # ...
@@ -56,46 +58,8 @@ module Hanami
     module Commands
       extend Dry::CLI::Registry
 
-      # CLI command context
-      #
-      # @since 1.1.0
-      # @api private
-      class Context < OpenStruct
-        # @since 1.1.0
-        # @api private
-        def initialize(data)
-          data = data.each_with_object({}) do |(k, v), result|
-            v = Utils::String.new(v) if v.is_a?(::String)
-            result[k] = v
-          end
-
-          super(data)
-          freeze
-        end
-
-        # @since 1.1.0
-        # @api private
-        def with(data)
-          self.class.new(to_h.merge(data))
-        end
-
-        # @since 1.1.0
-        # @api private
-        def binding
-          super
-        end
-      end
-
       require "hanami/cli/commands/command"
-      require "hanami/cli/commands/assets"
-      require "hanami/cli/commands/console"
-      require "hanami/cli/commands/db"
-      require "hanami/cli/commands/destroy"
-      require "hanami/cli/commands/generate"
-      require "hanami/cli/commands/new"
-      require "hanami/cli/commands/routes"
       require "hanami/cli/commands/server"
-      require "hanami/cli/commands/version"
     end
   end
 end

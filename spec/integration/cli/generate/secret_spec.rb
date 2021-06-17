@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami generate", type: :integration do
   describe "secret" do
     context "without application name" do
@@ -22,7 +24,7 @@ RSpec.describe "hanami generate", type: :integration do
 
     it 'prints help message' do
       with_project do
-        banner = <<-OUT
+        banner = <<~OUT
 Command:
   hanami generate secret
 

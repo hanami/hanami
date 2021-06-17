@@ -1,6 +1,6 @@
 name: ci
 
-"on":
+on:
   push:
     paths:
       - ".github/workflows/ci.yml"
@@ -22,22 +22,16 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
+          - "3.0"
           - "2.7"
           - "2.6"
-          - "2.5"
-          - "2.4"
     steps:
-      - uses: actions/checkout@v1
-      - name: Install package dependencies
-        run: "[ -e $APT_DEPS ] || sudo apt-get install -y --no-install-recommends $APT_DEPS"
+      - name: Checkout
+        uses: actions/checkout@v1
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{matrix.ruby}}
-      - name: Install latest bundler
-        run: |
-          gem install bundler --no-document
-      - name: Bundle install
-        run: bundle install --jobs 4 --retry 3
-      - name: Run all tests
-        run: script/ci
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run unit tests
+        run: bundle exec rake

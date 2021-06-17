@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami db", type: :integration do
   describe "migrate" do
     it "migrates database" do
@@ -78,9 +80,9 @@ RSpec.describe "hanami db", type: :integration do
       end
     end
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
-        banner = <<-OUT
+        banner = <<~OUT
 Command:
   hanami db drop
 
