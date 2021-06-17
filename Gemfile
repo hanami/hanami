@@ -51,3 +51,8 @@ gem 'hanami-webconsole', require: false, git: 'https://github.com/hanami/webcons
 
 # https://github.com/hanami/hanami/issues/893
 gem 'builder'
+
+# for hanami's downstream maintenance
+if RUBY_VERSION.to_f >= 2.4
+  gem 'rubocop-packaging', '~> 0.5'
+end

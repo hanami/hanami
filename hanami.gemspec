@@ -2,6 +2,7 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'hanami/version'
+require 'rake/file_list'
 
 Gem::Specification.new do |spec|
   spec.name          = 'hanami'
@@ -13,9 +14,11 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'http://hanamirb.org'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -c -o --exclude-standard -z -- lib/* bin/* LICENSE.md README.md CODE_OF_CONDUCT.md CHANGELOG.md FEATURES.md hanami.gemspec`.split("\x0")
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test)/})
+  spec.files         = Rake::FileList['{lib,bin}/**/{*,.*}'].exclude(*File.read('.gitignore').split)
+                                                            .reject { |f| File.directory?(f) } +
+                       %w(LICENSE.md README.md CODE_OF_CONDUCT.md CHANGELOG.md FEATURES.md hanami.gemspec)
+  spec.executables   = ['hanami']
+  spec.test_files    = Rake::FileList['spec/**/*']
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.3.0'
 
