@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Early Hints", type: :integration do
   it "pushes assets" do
     skip "curl not installed" if which("curl").nil?
@@ -5,16 +7,16 @@ RSpec.describe "Early Hints", type: :integration do
     with_project("bookshelf", server: :puma) do
       generate "action web home#index --url=/"
 
-      write "apps/web/assets/javascripts/application.css", <<-EOF
-body { margin: 0; }
+      write "apps/web/assets/javascripts/application.css", <<~EOF
+        body { margin: 0; }
       EOF
 
       inject_line_after "apps/web/templates/application.html.erb", /favicon/, %(<%= stylesheet "application" %>)
       inject_line_after "config/environment.rb", /mount/, "early_hints true"
 
-      write "config/puma.rb", <<-EOF
-early_hints true
-EOF
+      write "config/puma.rb", <<~EOF
+        early_hints true
+      EOF
 
       port = RSpec::Support::RandomPort.call
       server(port: port) do

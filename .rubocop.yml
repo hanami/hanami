@@ -1,14 +1,18 @@
 # Please keep AllCops, Bundler, Style, Metrics groups and then order cops
 # alphabetically
 inherit_from:
-  - https://raw.githubusercontent.com/hanami/devtools/master/.rubocop.yml
-AllCops:
-  Exclude:
-    - "vendor/**/*"
-    - "spec/support/**/*"
-    - "**/*.gemspec"
-Style/IndentHeredoc:
-  Enabled: true
-Style/MixinGrouping:
-  Exclude:
-    - "spec/support/**/*"
+  - https://raw.githubusercontent.com/hanami/devtools/master/.rubocop-unstable.yml
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+Style/BlockDelimiters:
+  Enabled: false
+Style/CommentedKeyword:
+  Enabled: false
+Style/LambdaCall:
+  Enabled: false
+Style/TrailingCommaInArguments:
+  Enabled: false
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+Style/TrailingCommaInHashLiteral:
+  Enabled: false

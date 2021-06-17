@@ -1,202 +1,366 @@
-require 'thread'
-require 'concurrent'
-require 'hanami/application_name'
-require 'hanami/application_namespace'
-require 'hanami/application_configuration'
-require 'hanami/environment_application_configurations'
-require 'hanami/rendering_policy'
+# frozen_string_literal: true
+
+require "dry/system/container"
+require "hanami/configuration"
+require "pathname"
+require "rack"
+require_relative "slice"
+require_relative "application/autoloader/inflector_adapter"
+require_relative "application/settings"
 
 module Hanami
-  # A full stack Hanami application
+  # Hanami application class
   #
-  # @since 0.1.0
-  #
-  # @example
-  #   require 'hanami'
-  #
-  #   module Bookshelf
-  #     class Application < Hanami::Application
-  #     end
-  #   end
+  # @since 2.0.0
   class Application
-    # Override Ruby's Class#inherited
-    #
-    # @since 0.2.0
-    # @api private
-    #
-    # @see http://www.ruby-doc.org/core/Class.html#method-i-inherited
-    def self.inherited(base)
-      super
+    @_mutex = Mutex.new
 
-      base.extend(ClassMethods)
-      base.namespace.module_eval do
-        class << self
-          # Routes for this application
-          #
-          # @return [Hanami::Routes] the routes for this Hanami application
-          #
-          # @since 0.9.0
-          # @api public
-          #
-          # @example
-          #
-          #   Web.routes
-          #   Admin.routes
-          attr_accessor :routes
+    class << self
+      def inherited(klass)
+        @_mutex.synchronize do
+          klass.class_eval do
+            @_mutex         = Mutex.new
+            @_configuration = Hanami::Configuration.new(env: Hanami.env)
+
+            extend ClassMethods
+            include InstanceMethods
+          end
+
+          klass.send :prepare_base_load_path
+
+          Hanami.application = klass
         end
       end
     end
 
-    # Class interface for Hanami applications
+    # Application class interface
     #
-    # @since 0.9.0
-    # @api private
+    # rubocop:disable Metrics/ModuleLength
     module ClassMethods
-      # Override Ruby's Class#extended
-      #
-      # @since 0.9.0
-      # @api private
-      #
-      # @see http://www.ruby-doc.org/core/Class.html#method-i-extended
-      def self.extended(base) # rubocop:disable Metrics/MethodLength
-        super
+      def self.extended(klass)
+        klass.class_eval do
+          @inited = @booted = false
+        end
+      end
 
-        base.class_eval do
-          @namespace      = ApplicationNamespace.resolve(name)
-          @configurations = EnvironmentApplicationConfigurations.new
-          @_lock          = Mutex.new
+      def configuration
+        @_configuration
+      end
 
-          class << self
-            # @since 0.9.0
-            # @api private
-            attr_reader :namespace
+      alias config configuration
 
-            # @since 0.9.0
-            # @api private
-            attr_reader :configurations
+      def init # rubocop:disable Metrics/MethodLength
+        return self if inited?
 
-            # @since 0.9.0
-            # @api private
-            attr_reader :configuration
+        configuration.finalize
+
+        load_settings
+
+        @container = prepare_container
+        @deps_module = prepare_deps_module
+
+        load_slices
+        slices.values.each(&:init)
+        slices.freeze
+
+        if configuration.autoloader
+          configuration.autoloader.inflector = Autoloader::InflectorAdapter.new(inflector)
+          configuration.autoloader.setup
+        end
+
+        load_routes
+
+        @inited = true
+        self
+      end
+
+      def inited?
+        @inited
+      end
+
+      def container
+        raise "Application not init'ed" unless defined?(@container)
+
+        @container
+      end
+
+      def deps
+        raise "Application not init'ed" unless defined?(@deps_module)
+
+        @deps_module
+      end
+
+      def slices
+        @slices ||= {}
+      end
+
+      def register_slice(name, **slice_args)
+        raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
+
+        slice = Slice.new(self, name: name, **slice_args)
+        slice.namespace.const_set :Slice, slice if slice.namespace # rubocop:disable Style/SafeNavigation
+        slices[name.to_sym] = slice
+      end
+
+      def register(*args, **opts, &block)
+        container.register(*args, **opts, &block)
+      end
+
+      def register_bootable(*args, **opts, &block)
+        container.boot(*args, **opts, &block)
+      end
+
+      def init_bootable(*args)
+        container.init(*args)
+      end
+
+      def start_bootable(*args)
+        container.start(*args)
+      end
+
+      def key?(*args)
+        container.key?(*args)
+      end
+
+      def keys
+        container.keys
+      end
+
+      def [](*args)
+        container[*args]
+      end
+
+      def resolve(*args)
+        container.resolve(*args)
+      end
+
+      def boot(&block)
+        return self if booted?
+
+        init
+
+        container.finalize!(&block)
+
+        slices.values.each(&:boot)
+
+        @booted = true
+        self
+      end
+
+      def booted?
+        @booted
+      end
+
+      def settings(&block) # rubocop:disable Metrics/MethodLength
+        if block
+          @_settings = Application::Settings.build(
+            configuration.settings_loader,
+            configuration.settings_loader_options,
+            &block
+          )
+        elsif instance_variable_defined?(:@_settings)
+          @_settings
+        else
+          # Load settings lazily so they can be used to configure the
+          # Hanami::Application subclass (before the application has inited)
+          load_settings
+          @_settings ||= nil
+        end
+      end
+
+      def routes(&block)
+        @_mutex.synchronize do
+          if block.nil?
+            raise "Hanami.application.routes not configured" unless defined?(@_routes)
+
+            @_routes
+          else
+            @_routes = block
           end
         end
       end
 
-      # Hanami application name
-      #
-      # @return [String] the Hanami application name
-      #
-      # @since 0.9.0
-      # @api private
-      #
-      # @example
-      #   require 'hanami'
-      #
-      #   module Web
-      #     class Application < Hanami::Application
-      #     end
-      #   end
-      #
-      #   Web::Application.app_name # => "web"
-      def app_name
-        ApplicationName.new(name).to_s
+      MODULE_DELIMITER = "::"
+      private_constant :MODULE_DELIMITER
+
+      def namespace
+        inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
       end
 
-      # Set configuration
-      #
-      # @param configuration [Hanami::ApplicationConfiguration] the application configuration
-      #
-      # @raise [RuntimeError] if the configuration is assigned more than once
-      #
-      # @since 0.1.0
+      def namespace_path
+        inflector.underscore(namespace)
+      end
+
+      def application_name
+        inflector.underscore(namespace).to_sym
+      end
+
+      def root
+        configuration.root
+      end
+
+      def inflector
+        configuration.inflector
+      end
+
       # @api private
-      def configuration=(configuration)
-        @_lock.synchronize do
-          # raise "Can't assign configuration more than once (#{app_name})" unless @configuration.nil?
-          @configuration = configuration
+      def component_provider(component)
+        raise "Hanami.application must be inited before detecting providers" unless inited?
+
+        # [Admin, Main, MyApp] or [MyApp::Admin, MyApp::Main, MyApp]
+        providers = slices.values + [self]
+
+        component_class = component.is_a?(Class) ? component : component.class
+        component_name = component_class.name
+
+        return unless component_name
+
+        providers.detect { |provider| component_name.include?(provider.namespace.to_s) }
+      end
+
+      private
+
+      def prepare_base_load_path
+        base_path = File.join(root, "lib")
+        $LOAD_PATH.unshift base_path unless $LOAD_PATH.include?(base_path)
+      end
+
+      def prepare_container
+        define_container.tap do |container|
+          configure_container container
         end
       end
 
-      # Configure the application.
-      # It yields the given block in the context of the configuration
-      #
-      # @param environment [Symbol,nil] the configuration environment name
-      # @param blk [Proc] the configuration block
-      #
-      # @since 0.1.0
-      #
-      # @see Hanami::ApplicationConfiguration
-      #
-      # @example
-      #   require 'hanami'
-      #
-      #   module Bookshelf
-      #     Application < Hanami::Application
-      #       configure do
-      #         # ...
-      #       end
-      #     end
-      #   end
-      def configure(environment = nil, &blk)
-        configurations.add(environment, &blk)
+      def prepare_deps_module
+        define_deps_module
+      end
+
+      def define_container
+        require "#{application_name}/container"
+        namespace.const_get :Container
+      rescue LoadError, NameError
+        namespace.const_set :Container, Class.new(Dry::System::Container)
+      end
+
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+      def configure_container(container)
+        container.use :env, inferrer: -> { Hanami.env }
+        container.use :notifications
+
+        container.configure do |config|
+          config.inflector = configuration.inflector
+
+          config.root = configuration.root
+          config.bootable_dirs = [
+            "config/boot",
+            Pathname(__dir__).join("application/container/boot").realpath,
+          ]
+
+          if configuration.autoloader
+            require "dry/system/loader/autoloading"
+            config.component_dirs.loader = Dry::System::Loader::Autoloading
+            config.component_dirs.add_to_load_path = false
+          end
+
+          if root.join("lib").directory?
+            config.component_dirs.add "lib" do |dir|
+              dir.default_namespace = application_name.to_s
+            end
+
+            configuration.autoloader&.push_dir(root.join("lib"))
+          end
+        end
+
+        container
+      end
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+
+      def define_deps_module
+        require "#{application_name}/deps"
+        namespace.const_get :Deps
+      rescue LoadError, NameError
+        namespace.const_set :Deps, container.injector
+      end
+
+      def load_slices
+        Dir[File.join(slices_path, "*")]
+          .select(&File.method(:directory?))
+          .each(&method(:load_slice))
+      end
+
+      def slices_path
+        File.join(root, config.slices_dir)
+      end
+
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      def load_slice(slice_path)
+        slice_path = Pathname(slice_path)
+
+        slice_name = slice_path.relative_path_from(Pathname(slices_path)).to_s
+        slice_const_name = inflector.camelize(slice_name)
+
+        if config.slices_namespace.const_defined?(slice_const_name)
+          slice_module = config.slices_namespace.const_get(slice_const_name)
+
+          raise "Cannot use slice +#{slice_const_name}+ since it is not a module" unless slice_module.is_a?(Module)
+        else
+          slice_module = Module.new
+          config.slices_namespace.const_set inflector.camelize(slice_name), slice_module
+        end
+
+        register_slice(
+          slice_name,
+          namespace: slice_module,
+          root: slice_path.realpath
+        )
+      end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+      def load_routes
+        require File.join(configuration.root, configuration.router.routes)
+      rescue LoadError # rubocop:disable Lint/SuppressedException
+      end
+
+      def load_settings
+        prepare_base_load_path
+        require File.join(configuration.root, configuration.settings_path)
+      rescue LoadError # rubocop:disable Lint/SuppressedException
       end
     end
+    # rubocop:enable Metrics/ModuleLength
 
-    # Initialize and load a new instance of the application
-    #
-    # @return [Hanami::Application] a new instance of the application
-    #
-    # @since 0.1.0
-    # @api private
-    def initialize
-      @renderer   = RenderingPolicy.new(configuration)
-      @middleware = configuration.middleware
+    # Application instance interface
+    module InstanceMethods
+      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      def initialize(application = self.class)
+        require_relative "application/router"
+
+        application.boot
+
+        resolver = application.config.router.resolver.new(
+          slices: application.slices,
+          inflector: application.inflector
+        )
+
+        router = Application::Router.new(
+          routes: application.routes,
+          resolver: resolver,
+          **application.configuration.router.options,
+        ) do
+          use application[:rack_monitor]
+
+          application.config.for_each_middleware do |m, *args, &block|
+            use(m, *args, &block)
+          end
+        end
+
+        @app = router.to_rack_app
+      end
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+      def call(env)
+        @app.call(env)
+      end
     end
-
-    # Process a request.
-    # This method makes Hanami applications compatible with the Rack protocol.
-    #
-    # @param env [Hash] a Rack env
-    #
-    # @return [Array] a serialized Rack response
-    #
-    # @since 0.1.0
-    #
-    # @see http://rack.github.io
-    # @see Hanami::RenderingPolicy#render
-    # @see Hanami::Application#middleware
-    def call(env)
-      renderer.render(env, middleware.call(env))
-    end
-
-    private
-
-    # Return the configuration for this application
-    #
-    # @since 0.1.0
-    # @api private
-    #
-    # @see Hanami::Application.configuration
-    def configuration
-      self.class.configuration
-    end
-
-    # Rendering policy
-    #
-    # @since 0.2.0
-    # @api private
-    #
-    # @see Hanami::RenderingPolicy
-    attr_reader :renderer
-
-    # Rack middleware stack
-    #
-    # @return [Hanami::MiddlewareStack] the middleware stack
-    #
-    # @since 0.1.0
-    # @api private
-    #
-    # @see Hanami::MiddlewareStack
-    attr_reader :middleware
   end
 end

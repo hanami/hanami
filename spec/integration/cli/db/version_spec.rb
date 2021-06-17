@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami db", type: :integration do
   describe "version" do
     it "prints database version" do
@@ -13,21 +15,21 @@ RSpec.describe "hanami db", type: :integration do
       end
     end
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
-        output = <<-OUT
-Command:
-  hanami db version
+        output = <<~OUT
+          Command:
+            hanami db version
 
-Usage:
-  hanami db version
+          Usage:
+            hanami db version
 
-Description:
-  Print the current migrated version
+          Description:
+            Print the current migrated version
 
-Options:
-  --help, -h                      	# Print this help
-OUT
+          Options:
+            --help, -h                      	# Print this help
+        OUT
 
         run_cmd 'hanami db version --help', output
       end

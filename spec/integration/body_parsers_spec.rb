@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "body parsers", type: :integration do
   it "parses JSON payload for non-GET requests" do
     with_project do
@@ -5,7 +7,7 @@ RSpec.describe "body parsers", type: :integration do
       enable_json_body_parser
 
       server do
-        post '/books', %({"book": {"title": "CLI apps with Ruby"}}), 'CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json'
+        post "/books", %({"book": {"title": "CLI apps with Ruby"}}), "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"
         expect(last_response.body).to eq(%({"book":{"title":"CLI apps with Ruby"}}))
       end
     end
@@ -17,7 +19,7 @@ RSpec.describe "body parsers", type: :integration do
       enable_json_body_parser
 
       server do
-        post '/books', %({"json_class": "Foo"}), 'CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json'
+        post "/books", %({"json_class": "Foo"}), "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"
         expect(last_response.body).to eq(%({"json_class":"Foo"}))
       end
     end
@@ -28,18 +30,18 @@ RSpec.describe "body parsers", type: :integration do
   def generate_action
     generate "action web books#create --url=/books --method=POST"
 
-    rewrite "apps/web/controllers/books/create.rb", <<-EOF
-require 'hanami/utils/json'
-module Web::Controllers::Books
-  class Create
-    include Web::Action
+    rewrite "apps/web/controllers/books/create.rb", <<~EOF
+      require 'hanami/utils/json'
+      module Web::Controllers::Books
+        class Create
+          include Web::Action
 
-    def call(params)
-      self.body = Hanami::Utils::Json.generate(params.to_hash)
-    end
-  end
-end
-EOF
+          def call(params)
+            self.body = Hanami::Utils::Json.generate(params.to_hash)
+          end
+        end
+      end
+    EOF
   end
 
   def enable_json_body_parser

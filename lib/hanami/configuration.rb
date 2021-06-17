@@ -1,215 +1,270 @@
-require 'concurrent'
-require 'hanami/application'
-require 'hanami/utils/class'
-require 'hanami/utils/string'
+# frozen_string_literal: true
+
+require "uri"
+require "concurrent/hash"
+require "concurrent/array"
+require "dry/inflector"
+require "pathname"
+require "zeitwerk"
 
 module Hanami
-  # @api private
+  # Hanami application configuration
+  #
+  # @since 2.0.0
+  #
+  # rubocop:disable Metrics/ClassLength
   class Configuration
-    require "hanami/configuration/app"
-    require "hanami/configuration/middleware"
+    require_relative "configuration/middleware"
+    require_relative "configuration/router"
+    require_relative "configuration/sessions"
 
-    # @api private
-    def initialize(&blk)
-      @settings = Concurrent::Map.new
-      instance_eval(&blk)
-    end
+    attr_reader :actions
+    attr_reader :views
 
-    # Mount a Hanami::Application or a Rack app
-    #
-    # @param app [#call] an application compatible with Rack SPEC
-    # @param options [Hash] a set of options
-    # @option :at [String] options the mount point
-    # @option :host [String] options the mount point
-    #
-    # @since 0.9.0
-    #
-    # @example
-    #   # config/environment.rb
-    #   # ...
-    #   Hanami.configure do
-    #     mount Beta::Application, at: '/', host: 'beta.bookshelf.com'
-    #     mount Admin::Application, at: '/api'
-    #     mount Web::Application, at: '/'
-    #
-    #     # ...
-    #   end
-    def mount(app, options)
-      mounted[app] = App.new(app, options)
-    end
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    def initialize(env:)
+      @settings = Concurrent::Hash.new
 
-    # Configure database
-    #
-    # @param blk [Proc] the database configuration
-    #
-    # @see Hanami::Model.configure
-    #
-    # @example
-    #   # config/environment.rb
-    #   # ...
-    #   Hanami.configure do
-    #     model do
-    #       adapter :sql, ENV['DATABASE_URL']
-    #
-    #       migrations 'db/migrations'
-    #       schema     'db/schema.sql'
-    #     end
-    #
-    #     # ...
-    #   end
-    def model(&blk)
-      if block_given?
-        settings.put_if_absent(:model, blk)
-      else
-        settings.fetch(:model)
+      self.autoloader = Zeitwerk::Loader.new
+
+      self.env = env
+      self.environments = DEFAULT_ENVIRONMENTS.clone
+
+      self.root = Dir.pwd
+      self.slices_dir = DEFAULT_SLICES_DIR
+      settings[:slices] = {}
+
+      self.settings_path = DEFAULT_SETTINGS_PATH
+      self.settings_loader_options = {}
+
+      self.base_url = DEFAULT_BASE_URL
+
+      self.logger   = DEFAULT_LOGGER.clone
+      self.rack_logger_filter_params = DEFAULT_RACK_LOGGER_FILTER_PARAMS.clone
+      self.sessions = DEFAULT_SESSIONS
+
+      self.router     = Router.new(base_url)
+      self.middleware = Middleware.new
+
+      self.inflections = Dry::Inflector.new
+
+      @actions = begin
+        require_path = "hanami/action/application_configuration"
+        require require_path
+        Hanami::Action::ApplicationConfiguration.new
+      rescue LoadError => e
+        raise e unless e.path == require_path
+        Object.new
+      end
+
+      @views = begin
+        require_path = "hanami/view/application_configuration"
+        require require_path
+        Hanami::View::ApplicationConfiguration.new
+      rescue LoadError => e
+        raise e unless e.path == require_path
+        Object.new
       end
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-    # Configure mailer
-    #
-    # @param blk [Proc] the mailer configuration
-    #
-    # @see Hanami::Mailer.configure
-    #
-    # @example
-    #   # config/environment.rb
-    #   # ...
-    #   Hanami.configure do
-    #     mailer do
-    #       root 'lib/bookshelf/mailers'
-    #
-    #       # See https://guides.hanamirb.org/mailers/delivery
-    #       delivery :test
-    #     end
-    #
-    #     # ...
-    #   end
-    def mailer(&blk)
-      mailer_settings.push(blk) if block_given?
+    def finalize
+      environment_for(env).each do |blk|
+        instance_eval(&blk)
+      end
+
+      # Finalize nested configuration
+      #
+      # TODO: would be good to just create empty configurations for actions/views
+      #       instead of plain objects
+      actions.finalize! if actions.respond_to?(:finalize!)
+      views.finalize! if views.respond_to?(:finalize!)
+
+      self
     end
 
-    # @since next
-    # @api private
-    def mailer_settings
-      settings.fetch_or_store(:mailers, [])
+    def environment(name, &blk)
+      environment_for(name).push(blk)
     end
 
-    # @since 0.9.0
-    # @api private
-    def mounted
-      settings.fetch_or_store(:mounted, {})
+    def autoloader=(loader)
+      settings[:autoloader] = loader || nil
     end
 
-    # @since 1.2.0
-    #
-    # @example
-    #   # config/environment.rb
-    #   # ...
-    #   Hanami.configure do
-    #     middleware.use MyRackMiddleware
-    #   end
+    def autoloader
+      settings.fetch(:autoloader)
+    end
+
+    def env=(value)
+      settings[:env] = value
+    end
+
+    def env
+      settings.fetch(:env)
+    end
+
+    def root=(root)
+      settings[:root] = Pathname(root)
+    end
+
+    def root
+      settings.fetch(:root)
+    end
+
+    def slices_dir=(dir)
+      settings[:slices_dir] = dir
+    end
+
+    def slices_dir
+      settings.fetch(:slices_dir)
+    end
+
+    def slices_namespace=(namespace)
+      settings[:slices_namespace] = namespace
+    end
+
+    def slices_namespace
+      settings.fetch(:slices_namespace) { Object }
+    end
+
+    def slice(slice_name, &block)
+      settings[:slices][slice_name] = block
+    end
+
+    def slices
+      settings[:slices]
+    end
+
+    def settings_path=(value)
+      settings[:settings_path] = value
+    end
+
+    def settings_path
+      settings.fetch(:settings_path)
+    end
+
+    def settings_loader=(loader)
+      settings[:settings_loader] = loader
+    end
+
+    def settings_loader
+      settings.fetch(:settings_loader) {
+        require "hanami/application/settings/loader"
+        settings[:settings_loader] = Application::Settings::Loader
+      }
+    end
+
+    def settings_loader_options=(options)
+      settings[:settings_loader_options] = options
+    end
+
+    def settings_loader_options
+      settings[:settings_loader_options]
+    end
+
+    def base_url=(value)
+      settings[:base_url] = URI.parse(value)
+    end
+
+    def base_url
+      settings.fetch(:base_url)
+    end
+
+    def logger=(options)
+      settings[:logger] = options
+    end
+
+    def logger
+      settings.fetch(:logger)
+    end
+
+    def rack_logger_filter_params=(params)
+      settings[:rack_logger_filter_params] = params
+    end
+
+    def rack_logger_filter_params
+      settings[:rack_logger_filter_params]
+    end
+
+    def router=(value)
+      settings[:router] = value
+    end
+
+    def router
+      settings.fetch(:router)
+    end
+
+    def sessions=(*args)
+      settings[:sessions] = Sessions.new(args)
+    end
+
+    def sessions
+      settings.fetch(:sessions)
+    end
+
     def middleware
-      settings.fetch_or_store(:middleware, Configuration::Middleware.new)
+      settings.fetch(:middleware)
     end
 
-    # Setup Early Hints feature
-    #
-    # @since 1.2.0
-    #
-    # @example Enable for all the environments
-    #   # config/environment.rb
-    #   Hanami.configure do
-    #     early_hints true
-    #   end
-    #
-    # @example Enable only for production
-    #   # config/environment.rb
-    #   Hanami.configure do
-    #     environment :production do
-    #       early_hints true
-    #     end
-    #   end
-    def early_hints(value = nil)
-      if value.nil?
-        settings.fetch(:early_hints, false)
+    def inflections(&blk)
+      if blk.nil?
+        settings.fetch(:inflections)
       else
-        settings[:early_hints] = value
+        settings[:inflections] = Dry::Inflector.new(&blk)
       end
     end
 
-    # @since 0.9.0
-    # @api private
-    def apps
-      mounted.each_pair do |klass, app|
-        yield(app) if klass <= Hanami::Application
-      end
+    alias inflector inflections
+
+    def for_each_middleware(&blk)
+      stack = middleware.stack.dup
+      stack += sessions.middleware if sessions.enabled?
+
+      stack.each(&blk)
     end
 
-    # Configure logger
-    #
-    # @since 1.0.0
-    #
-    # @param options [Array] a set of options
-    #
-    # @see Hanami.logger
-    # @see Hanami::Logger
-    #
-    # @see https://guides.hanamirb.org/projects/logging
-    #
-    # @example Basic Usage
-    #   # config/environment.rb
-    #   # ...
-    #   Hanami.configure do
-    #     # ...
-    #     environment :development do
-    #       logger level: :debug
-    #     end
-    #   end
-    #
-    # @example Daily Rotation
-    #   # config/environment.rb
-    #   # ...
-    #   Hanami.configure do
-    #     # ...
-    #     environment :development do
-    #       logger 'daily', level: :debug
-    #     end
-    #   end
-    def logger(*options)
-      if options.empty?
-        settings.fetch(:logger, nil)
-      else
-        settings[:logger] = options
-      end
+    protected
+
+    def environment_for(name)
+      settings[:environments][name]
     end
 
-    # Configure settings for the current environment
-    # @since 1.0.0
-    #
-    # @param name [Symbol] the name of the Hanami environment
-    #
-    # @see Hanami.env
-    #
-    # @example Configure Logging for Different Environments
-    #   # config/environment.rb
-    #   # ...
-    #   Hanami.configure do
-    #     # ...
-    #     environment :development do
-    #       logger level: :debug
-    #     end
-    #
-    #     environment :production do
-    #       logger level: :info, formatter: :json
-    #     end
-    #   end
-    def environment(name)
-      yield if ENV['HANAMI_ENV'] == name.to_s
+    def environments=(values)
+      settings[:environments] = values
+    end
+
+    def middleware=(value)
+      settings[:middleware] = value
+    end
+
+    def inflections=(value)
+      settings[:inflections] = value
     end
 
     private
 
-    # @api private
+    DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
+    private_constant :DEFAULT_ENVIRONMENTS
+
+    DEFAULT_SLICES_DIR = "slices"
+    private_constant :DEFAULT_SLICES_DIR
+
+    DEFAULT_BASE_URL = "http://0.0.0.0:2300"
+    private_constant :DEFAULT_BASE_URL
+
+    DEFAULT_LOGGER = { level: :debug }.freeze
+    private_constant :DEFAULT_LOGGER
+
+    DEFAULT_RACK_LOGGER_FILTER_PARAMS = %w[_csrf password password_confirmation].freeze
+    private_constant :DEFAULT_RACK_LOGGER_FILTER_PARAMS
+
+    DEFAULT_SETTINGS_PATH = File.join("config", "settings")
+    private_constant :DEFAULT_SETTINGS_PATH
+
+    DEFAULT_SESSIONS = Sessions.null
+    private_constant :DEFAULT_SESSIONS
+
     attr_reader :settings
   end
+  # rubocop:enable Metrics/ClassLength
 end

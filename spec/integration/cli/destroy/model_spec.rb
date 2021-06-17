@@ -1,4 +1,6 @@
-require 'pathname'
+# frozen_string_literal: true
+
+require "pathname"
 
 RSpec.describe "hanami destroy", type: :integration do
   describe "model" do
@@ -47,26 +49,26 @@ RSpec.describe "hanami destroy", type: :integration do
 
     it "fails with missing argument" do
       with_project do
-        output = <<-OUT
-ERROR: "hanami destroy model" was called with no arguments
-Usage: "hanami destroy model MODEL"
-OUT
+        output = <<~OUT
+          ERROR: "hanami destroy model" was called with no arguments
+          Usage: "hanami destroy model MODEL"
+        OUT
 
         run_cmd "hanami destroy model", output, exit_status: 1
       end
     end
 
-    xit 'prints help message' do
+    xit "prints help message" do
       with_project do
-        output = <<-OUT
-Usage:
-  hanami destroy model NAME
+        output = <<~OUT
+          Usage:
+            hanami destroy model NAME
 
-Description:
-  `hanami destroy model` will destroy an entity along with repository and \n  corresponding tests
+          Description:
+            `hanami destroy model` will destroy an entity along with repository and \n  corresponding tests
 
-  > $ hanami destroy model car
-OUT
+            > $ hanami destroy model car
+        OUT
 
         run_cmd 'hanami destroy model --help', output
       end
@@ -74,35 +76,35 @@ OUT
 
     it "fails with unknown model" do
       with_project do
-        output = <<-OUT
-cannot find `unknown' model. Please have a look at `lib/bookshelf/entities' directory to find an existing model.
-OUT
+        output = <<~OUT
+          cannot find `unknown' model. Please have a look at `lib/bookshelf/entities' directory to find an existing model.
+        OUT
 
         run_cmd "hanami destroy model unknown", output, exit_status: 1
       end
     end
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
-        output = <<-OUT
-Command:
-  hanami destroy model
+        output = <<~OUT
+          Command:
+            hanami destroy model
 
-Usage:
-  hanami destroy model MODEL
+          Usage:
+            hanami destroy model MODEL
 
-Description:
-  Destroy a model
+          Description:
+            Destroy a model
 
-Arguments:
-  MODEL               	# REQUIRED The model name (eg. `user`)
+          Arguments:
+            MODEL               	# REQUIRED The model name (eg. `user`)
 
-Options:
-  --help, -h                      	# Print this help
+          Options:
+            --help, -h                      	# Print this help
 
-Examples:
-  hanami destroy model user # Destroy `User` entity and `UserRepository` repository
-OUT
+          Examples:
+            hanami destroy model user # Destroy `User` entity and `UserRepository` repository
+        OUT
 
         run_cmd 'hanami destroy model --help', output
       end

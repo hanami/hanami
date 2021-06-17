@@ -1,9 +1,11 @@
-require 'hanami/utils/string'
+# frozen_string_literal: true
+
+require "hanami/utils/string"
 
 RSpec.shared_examples "a new app" do
   let(:app) { Hanami::Utils::String.new(input).underscore.to_s }
 
-  it 'generates vanilla app' do
+  it "generates vanilla app" do
     project = "bookshelf_generate_app_#{Random.rand(100_000_000)}"
 
     with_project(project) do
@@ -26,7 +28,7 @@ RSpec.shared_examples "a new app" do
       insert  config/environment.rb
       append  .env.development
       append  .env.test
-OUT
+      OUT
 
       run_cmd "hanami generate app #{input}", output
 
@@ -363,15 +365,15 @@ END
       #
       # apps/<app>/views/application_layout.rb
       #
-      expect("apps/#{app}/views/application_layout.rb").to have_file_content <<-END
-module #{app_name}
-  module Views
-    class ApplicationLayout
-      include #{app_name}::Layout
-    end
-  end
-end
-END
+      expect("apps/#{app}/views/application_layout.rb").to have_file_content <<~END
+        module #{app_name}
+          module Views
+            class ApplicationLayout
+              include #{app_name}::Layout
+            end
+          end
+        end
+      END
 
       #
       # apps/<app>/assets/favicon.ico

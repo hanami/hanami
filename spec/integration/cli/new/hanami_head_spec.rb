@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami new", type: :integration do
   describe "--hanami-head" do
     it "generates project" do
-      project = 'bookshelf_hanami_head'
+      project = "bookshelf_hanami_head"
 
       run_cmd "hanami new #{project} --hanami-head"
 

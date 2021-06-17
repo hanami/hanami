@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "pathname"
 
 RSpec.describe "CLI plugins", type: :integration do
@@ -17,7 +19,7 @@ RSpec.describe "CLI plugins", type: :integration do
 
   # See https://github.com/hanami/hanami/issues/838
   it "guarantees 'hanami new' to generate a project" do
-    project = 'bookshelf_without_gemfile'
+    project = "bookshelf_without_gemfile"
 
     with_system_tmp_directory do
       run_cmd_with_clean_env "hanami new #{project}"

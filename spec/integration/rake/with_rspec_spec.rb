@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Rake: default task", type: :integration do
   context "with RSpec" do
     it "runs tests" do
@@ -9,19 +11,19 @@ RSpec.describe "Rake: default task", type: :integration do
 
         prepare_test_database
 
-        generate 'mailer bookshelf'
+        generate "mailer bookshelf"
 
-        write "spec/bookshelf/repositories/book_repository_spec.rb", <<-EOF
-RSpec.describe BookRepository do
-  before do
-    described_class.new.clear
-  end
+        write "spec/bookshelf/repositories/book_repository_spec.rb", <<~EOF
+          RSpec.describe BookRepository do
+            before do
+              described_class.new.clear
+            end
 
-  it 'finds all the records' do
-    expect(described_class.new.all.to_a).to eq([])
-  end
-end
-EOF
+            it 'finds all the records' do
+              expect(described_class.new.all.to_a).to eq([])
+            end
+          end
+        EOF
 
         bundle_exec "rake"
 

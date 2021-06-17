@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami assets", type: :integration do
   it "prints subcommands" do
     with_project do
-      output = <<-OUT
-Commands:
-  hanami assets precompile              # Precompile assets for deployment
-OUT
+      output = <<~OUT
+        Commands:
+          hanami assets precompile              # Precompile assets for deployment
+      OUT
 
       run_cmd "hanami assets", output, exit_status: 1
     end

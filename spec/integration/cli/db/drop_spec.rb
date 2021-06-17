@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami db", type: :integration do
   describe "drop" do
     it "drops database" do
@@ -18,7 +20,7 @@ RSpec.describe "hanami db", type: :integration do
       project = "bookshelf_db_drop_production"
 
       with_project(project) do
-        RSpec::Support::Env['HANAMI_ENV'] = 'production'
+        RSpec::Support::Env["HANAMI_ENV"] = "production"
         db = Pathname.new("db").join("#{project}.sqlite").to_s
         FileUtils.touch(db) # simulate existing database
 
@@ -29,21 +31,21 @@ RSpec.describe "hanami db", type: :integration do
       end
     end
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
-        output = <<-OUT
-Command:
-  hanami db drop
+        output = <<~OUT
+          Command:
+            hanami db drop
 
-Usage:
-  hanami db drop
+          Usage:
+            hanami db drop
 
-Description:
-  Drop the database (only for development/test)
+          Description:
+            Drop the database (only for development/test)
 
-Options:
-  --help, -h                      	# Print this help
-OUT
+          Options:
+            --help, -h                      	# Print this help
+        OUT
 
         run_cmd 'hanami db drop --help', output
       end

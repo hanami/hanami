@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Rake: default task", type: :integration do
   context "with Minitest" do
     xit "runs tests" do
@@ -9,19 +11,19 @@ RSpec.describe "Rake: default task", type: :integration do
 
         prepare_test_database
 
-        write "spec/bookshelf/repositories/book_repository_spec.rb", <<-EOF
-require 'spec_helper'
+        write "spec/bookshelf/repositories/book_repository_spec.rb", <<~EOF
+          require 'spec_helper'
 
-describe BookRepository do
-  before do
-    BookRepository.new.clear
-  end
+          describe BookRepository do
+            before do
+              BookRepository.new.clear
+            end
 
-  it 'finds all the records' do
-    BookRepository.new.all.to_a.must_equal []
-  end
-end
-EOF
+            it 'finds all the records' do
+              BookRepository.new.all.to_a.must_equal []
+            end
+          end
+        EOF
 
         bundle_exec "rake"
         expect(out).to include("2 runs, 3 assertions, 0 failures, 0 errors, 0 skips")

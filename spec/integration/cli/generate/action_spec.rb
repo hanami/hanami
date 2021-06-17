@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 RSpec.describe "hanami generate", type: :integration do
   describe "action" do
     it "generates action" do
-      with_project('bookshelf_generate_action') do
+      with_project("bookshelf_generate_action") do
         output = [
           "create  spec/web/controllers/authors/index_spec.rb",
           "create  apps/web/controllers/authors/index.rb",
@@ -16,7 +18,7 @@ RSpec.describe "hanami generate", type: :integration do
         #
         # apps/web/controllers/authors/index.rb
         #
-        expect('apps/web/controllers/authors/index.rb').to have_file_content <<~END
+        expect("apps/web/controllers/authors/index.rb").to have_file_content <<~END
           module Web
             module Controllers
               module Authors
@@ -34,7 +36,7 @@ RSpec.describe "hanami generate", type: :integration do
         #
         # apps/web/views/authors/index.rb
         #
-        expect('apps/web/views/authors/index.rb').to have_file_content <<~END
+        expect("apps/web/views/authors/index.rb").to have_file_content <<~END
           module Web
             module Views
               module Authors
@@ -49,12 +51,12 @@ RSpec.describe "hanami generate", type: :integration do
         #
         # apps/web/config/routes.rb
         #
-        expect('apps/web/config/routes.rb').to have_file_content(%r{get '/authors', to: 'authors#index'})
+        expect("apps/web/config/routes.rb").to have_file_content(%r{get '/authors', to: 'authors#index'})
       end
     end
 
     it "generates namespaced action" do
-      with_project('bookshelf_generate_action') do
+      with_project("bookshelf_generate_action") do
         output = [
           "create  spec/web/controllers/api/authors/index_spec.rb",
           "create  apps/web/controllers/api/authors/index.rb",
@@ -69,7 +71,7 @@ RSpec.describe "hanami generate", type: :integration do
         #
         # apps/web/controllers/api/authors/index.rb
         #
-        expect('apps/web/controllers/api/authors/index.rb').to have_file_content <<~END
+        expect("apps/web/controllers/api/authors/index.rb").to have_file_content <<~END
           module Web
             module Controllers
               module Api
@@ -89,7 +91,7 @@ RSpec.describe "hanami generate", type: :integration do
         #
         # apps/web/views/api/authors/index.rb
         #
-        expect('apps/web/views/api/authors/index.rb').to have_file_content <<~END
+        expect("apps/web/views/api/authors/index.rb").to have_file_content <<~END
           module Web
             module Views
               module Api
@@ -106,7 +108,7 @@ RSpec.describe "hanami generate", type: :integration do
         #
         # apps/web/config/routes.rb
         #
-        expect('apps/web/config/routes.rb').to have_file_content(%r{get '/api/authors', to: 'api/authors#index'})
+        expect("apps/web/config/routes.rb").to have_file_content(%r{get '/api/authors', to: 'api/authors#index'})
       end
     end
 
@@ -117,12 +119,12 @@ RSpec.describe "hanami generate", type: :integration do
         #
         # apps/web/config/routes.rb
         #
-        expect('apps/web/config/routes.rb').to have_file_content(%r{get '/sessions/sign_out', to: 'sessions#sign_out'})
+        expect("apps/web/config/routes.rb").to have_file_content(%r{get '/sessions/sign_out', to: 'sessions#sign_out'})
       end
     end
 
     it "fails with missing arguments" do
-      with_project('bookshelf_generate_action_without_args') do
+      with_project("bookshelf_generate_action_without_args") do
         output = <<~OUT
           ERROR: "hanami generate action" was called with no arguments
           Usage: "hanami generate action APP ACTION"
@@ -132,7 +134,7 @@ RSpec.describe "hanami generate", type: :integration do
     end
 
     it "fails with missing app" do
-      with_project('bookshelf_generate_action_without_app') do
+      with_project("bookshelf_generate_action_without_app") do
         output = <<~OUT
           ERROR: "hanami generate action" was called with arguments ["home#index"]
           Usage: "hanami generate action APP ACTION"
@@ -143,7 +145,7 @@ RSpec.describe "hanami generate", type: :integration do
     end
 
     it "fails with unknown app" do
-      with_project('bookshelf_generate_action_with_unknown_app') do
+      with_project("bookshelf_generate_action_with_unknown_app") do
         output = "`foo' is not a valid APP. Please specify one of: `web'"
 
         run_cmd "hanami generate action foo home#index", output, exit_status: 1
@@ -152,7 +154,7 @@ RSpec.describe "hanami generate", type: :integration do
 
     context "--url" do
       it "generates action" do
-        with_project('bookshelf_generate_action_url') do
+        with_project("bookshelf_generate_action_url") do
           output = [
             "insert  apps/web/config/routes.rb"
           ]
@@ -162,12 +164,12 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # apps/web/config/routes.rb
           #
-          expect('apps/web/config/routes.rb').to have_file_content(%r{get '/', to: 'home#index'})
+          expect("apps/web/config/routes.rb").to have_file_content(%r{get '/', to: 'home#index'})
         end
       end
 
       it "fails with missing argument" do
-        with_project('bookshelf_generate_action_missing_url') do
+        with_project("bookshelf_generate_action_missing_url") do
           output = "`' is not a valid URL"
           run_cmd "hanami generate action web books#create --url=", output, exit_status: 1
         end
@@ -176,7 +178,7 @@ RSpec.describe "hanami generate", type: :integration do
 
     context "--skip-view" do
       it "generates action" do
-        with_project('bookshelf_generate_action_skip_view') do
+        with_project("bookshelf_generate_action_skip_view") do
           output = [
             "create  apps/web/controllers/status/check.rb",
             "create  spec/web/controllers/status/check_spec.rb",
@@ -187,7 +189,7 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # apps/web/controllers/status/check.rb
           #
-          expect('apps/web/controllers/status/check.rb').to have_file_content <<~END
+          expect("apps/web/controllers/status/check.rb").to have_file_content <<~END
             module Web
               module Controllers
                 module Status
@@ -206,7 +208,7 @@ RSpec.describe "hanami generate", type: :integration do
       end
 
       it "generates namespaced action" do
-        with_project('bookshelf_generate_action_skip_view') do
+        with_project("bookshelf_generate_action_skip_view") do
           output = [
             "create  apps/web/controllers/api/authors/index.rb",
             "create  spec/web/controllers/api/authors/index_spec.rb",
@@ -217,7 +219,7 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # apps/web/controllers/status/check.rb
           #
-          expect('apps/web/controllers/api/authors/index.rb').to have_file_content <<~END
+          expect("apps/web/controllers/api/authors/index.rb").to have_file_content <<~END
             module Web
               module Controllers
                 module Api
@@ -240,7 +242,7 @@ RSpec.describe "hanami generate", type: :integration do
 
     context "--method" do
       it "generates action" do
-        with_project('bookshelf_generate_action_method') do
+        with_project("bookshelf_generate_action_method") do
           output = [
             "insert  apps/web/config/routes.rb"
           ]
@@ -250,12 +252,12 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # apps/web/config/routes.rb
           #
-          expect('apps/web/config/routes.rb').to have_file_content(%r{post '/books', to: 'books#create'})
+          expect("apps/web/config/routes.rb").to have_file_content(%r{post '/books', to: 'books#create'})
         end
       end
 
       it "fails with missing argument" do
-        with_project('bookshelf_generate_action_missing_method') do
+        with_project("bookshelf_generate_action_missing_method") do
           output = "`' is not a valid HTTP method. Please use one of: `GET' `POST' `PUT' `DELETE' `HEAD' `OPTIONS' `TRACE' `PATCH' `OPTIONS' `LINK' `UNLINK'"
           run_cmd "hanami generate action web books#create --method=", output, exit_status: 1
         end
@@ -271,7 +273,7 @@ RSpec.describe "hanami generate", type: :integration do
 
     context "erb" do
       it "generates action" do
-        with_project('bookshelf_generate_action_erb', template: 'erb') do
+        with_project("bookshelf_generate_action_erb", template: "erb") do
           output = [
             "create  apps/web/templates/books/index.html.erb"
           ]
@@ -281,20 +283,20 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # apps/web/templates/books/index.html.erb
           #
-          expect('apps/web/templates/books/index.html.erb').to have_file_content <<~END
+          expect("apps/web/templates/books/index.html.erb").to have_file_content <<~END
           END
 
           #
           # spec/web/views/books/index_spec.rb
           #
-          expect('spec/web/views/books/index_spec.rb').to have_file_content %r{'apps/web/templates/books/index.html.erb'}
+          expect("spec/web/views/books/index_spec.rb").to have_file_content %r{'apps/web/templates/books/index.html.erb'}
         end
       end
     end # erb
 
     context "haml" do
       it "generates action" do
-        with_project('bookshelf_generate_action_haml', template: 'haml') do
+        with_project("bookshelf_generate_action_haml", template: "haml") do
           output = [
             "create  apps/web/templates/books/index.html.haml"
           ]
@@ -304,20 +306,20 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # apps/web/templates/books/index.html.haml
           #
-          expect('apps/web/templates/books/index.html.haml').to have_file_content <<~END
+          expect("apps/web/templates/books/index.html.haml").to have_file_content <<~END
           END
 
           #
           # spec/web/views/books/index_spec.rb
           #
-          expect('spec/web/views/books/index_spec.rb').to have_file_content(%r{'apps/web/templates/books/index.html.haml'})
+          expect("spec/web/views/books/index_spec.rb").to have_file_content(%r{'apps/web/templates/books/index.html.haml'})
         end
       end
     end # haml
 
     context "slim" do
       it "generates action" do
-        with_project('bookshelf_generate_action_slim', template: 'slim') do
+        with_project("bookshelf_generate_action_slim", template: "slim") do
           output = [
             "create  apps/web/templates/books/index.html.slim"
           ]
@@ -327,20 +329,20 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # apps/web/templates/books/index.html.slim
           #
-          expect('apps/web/templates/books/index.html.slim').to have_file_content <<~END
+          expect("apps/web/templates/books/index.html.slim").to have_file_content <<~END
           END
 
           #
           # spec/web/views/books/index_spec.rb
           #
-          expect('spec/web/views/books/index_spec.rb').to have_file_content %r{'apps/web/templates/books/index.html.slim'}
+          expect("spec/web/views/books/index_spec.rb").to have_file_content %r{'apps/web/templates/books/index.html.slim'}
         end
       end
     end # slim
 
     context "minitest" do
       it "generates action" do
-        with_project('bookshelf_generate_action_minitest', test: 'minitest') do
+        with_project("bookshelf_generate_action_minitest", test: "minitest") do
           output = [
             "create  spec/web/controllers/books/index_spec.rb",
             "create  spec/web/views/books/index_spec.rb"
@@ -351,7 +353,7 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # spec/web/controllers/books/index_spec.rb
           #
-          expect('spec/web/controllers/books/index_spec.rb').to have_file_content <<~END
+          expect("spec/web/controllers/books/index_spec.rb").to have_file_content <<~END
             require_relative '../../../spec_helper'
 
             describe Web::Controllers::Books::Index do
@@ -368,7 +370,7 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # spec/web/views/books/index_spec.rb
           #
-          expect('spec/web/views/books/index_spec.rb').to have_file_content <<~END
+          expect("spec/web/views/books/index_spec.rb").to have_file_content <<~END
             require_relative '../../../spec_helper'
 
             describe Web::Views::Books::Index do
@@ -388,7 +390,7 @@ RSpec.describe "hanami generate", type: :integration do
 
     context "rspec" do
       it "generates action" do
-        with_project('bookshelf_generate_action_rspec', test: 'rspec') do
+        with_project("bookshelf_generate_action_rspec", test: "rspec") do
           output = [
             "create  spec/web/controllers/books/index_spec.rb",
             "create  spec/web/views/books/index_spec.rb"
@@ -399,7 +401,7 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # spec/web/controllers/books/index_spec.rb
           #
-          expect('spec/web/controllers/books/index_spec.rb').to have_file_content <<~END
+          expect("spec/web/controllers/books/index_spec.rb").to have_file_content <<~END
             RSpec.describe Web::Controllers::Books::Index, type: :action do
               let(:action) { described_class.new }
               let(:params) { Hash[] }
@@ -414,7 +416,7 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # spec/web/views/books/index_spec.rb
           #
-          expect('spec/web/views/books/index_spec.rb').to have_file_content <<~END
+          expect("spec/web/views/books/index_spec.rb").to have_file_content <<~END
             RSpec.describe Web::Views::Books::Index, type: :view do
               let(:exposures) { Hash[format: :html] }
               let(:template)  { Hanami::View::Template.new('apps/web/templates/books/index.html.erb') }
@@ -430,7 +432,7 @@ RSpec.describe "hanami generate", type: :integration do
       end
     end # rspec
 
-    it 'prints help message' do
+    it "prints help message" do
       with_project do
         output = <<~OUT
           Command:

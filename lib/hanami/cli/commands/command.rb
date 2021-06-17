@@ -1,12 +1,10 @@
-require 'hanami'
-require 'hanami/environment'
-require 'hanami/components'
-require 'dry/cli/command'
-require 'hanami/cli/commands/project'
-require 'hanami/cli/commands/templates'
-require 'concurrent'
-require 'hanami/utils/files'
-require 'erb'
+# frozen_string_literal: true
+
+require "hanami"
+require "hanami/cli/command"
+require "concurrent"
+require "hanami/utils/files"
+require "erb"
 
 module Hanami
   # Hanami CLI
@@ -72,30 +70,22 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(**options)
-            if self.class.requirements.any?
-              environment = Hanami::Environment.new(options)
-              environment.require_project_environment
-
-              requirements.resolved('environment', environment)
-              requirements.resolve(self.class.requirements)
-
-              options = environment.to_options.merge(options)
-            end
-
-            super(**options)
-          rescue StandardError => e
-            warn e.message
-            warn e.backtrace.join("\n\t")
+            # FIXME: merge ENV vars (like HANAMI_ENV) into **options
+            super(options)
+          rescue StandardError => exception
+            warn exception.message
+            warn exception.backtrace.join("\n\t")
             exit(1)
           end
         end
 
         # @since 1.1.0
         # @api private
-        def initialize(out: $stdout, files: Utils::Files)
-          @out       = out
-          @files     = files
-          @templates = Templates.new(self.class)
+        def initialize(command_name:, out: $stdout, files: Utils::Files)
+          super(command_name: command_name)
+
+          @out   = out
+          @files = files
         end
 
         private
@@ -107,7 +97,7 @@ module Hanami
         class Renderer
           # @since 1.1.0
           # @api private
-          TRIM_MODE = "-".freeze
+          TRIM_MODE = "-"
 
           # @since 1.1.0
           # @api private
@@ -124,7 +114,7 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        SAY_FORMATTER = "%<operation>12s  %<path>s\n".freeze
+        SAY_FORMATTER = "%<operation>12s  %<path>s\n"
 
         # @since 1.1.0
         # @api private
@@ -165,13 +155,15 @@ module Hanami
         # @since 1.1.0
         # @api private
         def project
-          Project
+          # FIXME: is this still useful?
+          raise "it used to be implemented as Project"
         end
 
         # @since 1.1.0
         # @api private
         def requirements
-          Hanami::Components
+          # FIXME: require components via the new Hanami::Container
+          raise "it used to be implemented as Hanami::Components"
         end
       end
     end
