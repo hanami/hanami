@@ -1,6 +1,7 @@
 require 'hanami/utils/class'
 require 'hanami/views/default'
 require 'hanami/views/null_view'
+require 'hanami/action/rack/errors'
 
 module Hanami
   # Rendering policy
@@ -17,8 +18,6 @@ module Hanami
 
     # @api private
     HANAMI_ACTION = 'hanami.action'.freeze
-    # @api private
-    RACK_EXCEPTION = 'rack.exception'.freeze
 
     # @api private
     SUCCESSFUL_STATUSES = (200..201).freeze
@@ -57,7 +56,7 @@ module Hanami
           action.exposures
         )
       rescue StandardError => e
-        env[RACK_EXCEPTION] = e
+        Hanami::Action::Rack::Errors.set(env, e)
         raise e unless @configuration.handle_exceptions
 
         response[STATUS] = ERROR_STATUS
