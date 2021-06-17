@@ -1,7 +1,7 @@
 # Please keep AllCops, Bundler, Style, Metrics groups and then order cops
 # alphabetically
 inherit_from:
-  - https://raw.githubusercontent.com/hanami/devtools/master/.rubocop-unstable.yml
+  - https://raw.githubusercontent.com/hanami/devtools/main/.rubocop.yml
 Naming/HeredocDelimiterNaming:
   Enabled: false
 Style/BlockDelimiters:
