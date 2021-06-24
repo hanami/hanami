@@ -35,6 +35,7 @@ module Hanami
       settings[:slices] = {}
 
       self.settings_path = DEFAULT_SETTINGS_PATH
+      self.routes_path = DEFAULT_ROUTES_PATH
 
       self.base_url = DEFAULT_BASE_URL
 
@@ -132,6 +133,22 @@ module Hanami
 
     def slices
       settings[:slices]
+    end
+
+    def routes_path=(value)
+      settings[:routes_path] = value
+    end
+
+    def routes_path
+      settings.fetch(:routes_path)
+    end
+
+    def routes_class_name=(name)
+      settings[:routes_class_name] = name
+    end
+
+    def routes_class_name
+      settings.fetch(:routes_class_name, "Routes")
     end
 
     def settings_path=(value)
@@ -256,6 +273,9 @@ module Hanami
 
     DEFAULT_RACK_LOGGER_FILTER_PARAMS = %w[_csrf password password_confirmation].freeze
     private_constant :DEFAULT_RACK_LOGGER_FILTER_PARAMS
+
+    DEFAULT_ROUTES_PATH = File.join("config", "routes")
+    private_constant :DEFAULT_ROUTES_PATH
 
     DEFAULT_SETTINGS_PATH = File.join("config", "settings")
     private_constant :DEFAULT_SETTINGS_PATH
