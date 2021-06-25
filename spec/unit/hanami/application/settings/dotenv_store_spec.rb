@@ -110,12 +110,6 @@ RSpec.describe Hanami::Application::Settings::DotenvStore do
       expect(store.fetch("BAZ") { "qux" }).to eq("qux")
     end
 
-    it "returns the block execution when both default and block are given" do
-      store = described_class.new(store: { "FOO" => "bar" })
-
-      expect(store.fetch("BAZ", "corge") { "qux" }).to eq("qux")
-    end
-
     it "raises KeyError when value is not found and no default is given" do
       store = described_class.new(store: { "FOO" => "bar" })
 
