@@ -151,6 +151,10 @@ module Hanami
         @booted
       end
 
+      def shutdown
+        container.shutdown!
+      end
+
       def settings
         @_settings ||= load_settings
       end
