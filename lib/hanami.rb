@@ -73,6 +73,10 @@ module Hanami
     end
   end
 
+  def self.shutdown
+    application.shutdown
+  end
+
   def self.bundler_groups
     [:plugins]
   end
