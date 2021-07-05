@@ -6,6 +6,7 @@ require "pathname"
 require "rack"
 require_relative "slice"
 require_relative "application/autoloader/inflector_adapter"
+require_relative "application/router"
 require_relative "application/routes"
 require_relative "application/settings"
 
@@ -68,8 +69,6 @@ module Hanami
           configuration.autoloader.inflector = Autoloader::InflectorAdapter.new(inflector)
           configuration.autoloader.setup
         end
-
-        load_routes
 
         @inited = true
         self
@@ -140,6 +139,8 @@ module Hanami
 
         init
 
+        load_router
+
         container.finalize!(&block)
 
         slices.values.each(&:boot)
@@ -154,12 +155,6 @@ module Hanami
 
       def settings
         @_settings ||= load_settings
-      end
-
-      def routes
-        @_mutex.synchronize do
-          @_routes ||= load_routes
-        end
       end
 
       MODULE_DELIMITER = "::"
@@ -202,6 +197,41 @@ module Hanami
         return unless component_name
 
         providers.detect { |provider| component_name.include?(provider.namespace.to_s) }
+      end
+
+      def router
+        @_mutex.synchronize do
+          @_router ||= load_router
+        end
+      end
+
+      def load_router
+        Router.new(
+          routes: routes,
+          resolver: resolver,
+          **configuration.router.options,
+        ) do
+          use Hanami.application[:rack_monitor]
+
+          Hanami.application.config.for_each_middleware do |m, *args, &block|
+            use(m, *args, &block)
+          end
+        end
+      end
+
+      def routes
+        require File.join(configuration.root, configuration.routes_path)
+        routes_class = autodiscover_application_constant(configuration.routes_class_name)
+        routes_class.routes
+      rescue LoadError
+        proc {}
+      end
+
+      def resolver
+        config.router.resolver.new(
+          slices: slices,
+          inflector: inflector
+        )
       end
 
       private
@@ -302,13 +332,6 @@ module Hanami
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-      def load_routes
-        require File.join(configuration.root, configuration.routes_path)
-        routes_class = autodiscover_application_constant(configuration.routes_class_name)
-        routes_class.routes
-      rescue LoadError # rubocop:disable Lint/SuppressedException
-      end
-
       def load_settings
         prepare_base_load_path
         require File.join(configuration.root, configuration.settings_path)
@@ -332,24 +355,7 @@ module Hanami
 
         application.boot
 
-        resolver = application.config.router.resolver.new(
-          slices: application.slices,
-          inflector: application.inflector
-        )
-
-        router = Application::Router.new(
-          routes: application.routes,
-          resolver: resolver,
-          **application.configuration.router.options,
-        ) do
-          use application[:rack_monitor]
-
-          application.config.for_each_middleware do |m, *args, &block|
-            use(m, *args, &block)
-          end
-        end
-
-        @app = router.to_rack_app
+        @app = application.router.to_rack_app
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
