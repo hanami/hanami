@@ -6,6 +6,7 @@ require "pathname"
 require "rack"
 require_relative "slice"
 require_relative "application/autoloader/inflector_adapter"
+require_relative "application/routes"
 require_relative "application/settings"
 
 module Hanami
@@ -159,15 +160,9 @@ module Hanami
         @_settings ||= load_settings
       end
 
-      def routes(&block)
+      def routes
         @_mutex.synchronize do
-          if block.nil?
-            raise "Hanami.application.routes not configured" unless defined?(@_routes)
-
-            @_routes
-          else
-            @_routes = block
-          end
+          @_routes ||= load_routes
         end
       end
 
@@ -312,17 +307,23 @@ module Hanami
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def load_routes
-        require File.join(configuration.root, configuration.router.routes)
+        require File.join(configuration.root, configuration.routes_path)
+        routes_class = autodiscover_application_constant(configuration.routes_class_name)
+        routes_class.routes
       rescue LoadError # rubocop:disable Lint/SuppressedException
       end
 
       def load_settings
         prepare_base_load_path
         require File.join(configuration.root, configuration.settings_path)
-        settings_class = inflector.constantize([namespace_name, configuration.settings_class_name].join(MODULE_DELIMITER))
+        settings_class = autodiscover_application_constant(configuration.settings_class_name)
         settings_class.new(configuration.settings_store)
       rescue LoadError
         Settings.new
+      end
+
+      def autodiscover_application_constant(constants)
+        inflector.constantize([namespace_name, *constants].join(MODULE_DELIMITER))
       end
     end
     # rubocop:enable Metrics/ModuleLength

@@ -20,13 +20,17 @@ RSpec.describe "Hanami web app", :application_integration do
       RUBY
 
       write "config/routes.rb", <<~RUBY
-        Hanami.application.routes do
-          slice :main, at: "/" do
-            root to: "home#index"
-          end
+        module TestApp
+          class Routes < Hanami::Application::Routes
+            define do
+              slice :main, at: "/" do
+                root to: "home#index"
+              end
 
-          slice :admin, at: "/admin" do
-            get "/dashboard", to: "dashboard#show"
+              slice :admin, at: "/admin" do
+                get "/dashboard", to: "dashboard#show"
+              end
+            end
           end
         end
       RUBY

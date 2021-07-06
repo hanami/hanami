@@ -9,21 +9,12 @@ module Hanami
     class Router
       # @api private
       # @since 2.0.0
-      attr_writer :routes
-
-      # @api private
-      # @since 2.0.0
-      attr_reader :routes
-
-      # @api private
-      # @since 2.0.0
       attr_writer :resolver
 
       # @api private
       # @since 2.0.0
-      def initialize(base_url, routes: DEFAULT_ROUTES)
+      def initialize(base_url)
         @base_url = base_url
-        @routes = routes
       end
 
       # @api private
@@ -40,11 +31,6 @@ module Hanami
       def options
         { base_url: @base_url }
       end
-
-      # @api private
-      # @since 2.0.0
-      DEFAULT_ROUTES = File.join("config", "routes")
-      private_constant :DEFAULT_ROUTES
     end
   end
 end
