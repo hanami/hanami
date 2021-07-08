@@ -11,7 +11,7 @@ module Hanami
       end
 
       def use(middleware, *args, &block)
-        stack.push([middleware, *args, block].compact)
+        stack.push([middleware, args, block].compact)
       end
 
       attr_reader :stack
