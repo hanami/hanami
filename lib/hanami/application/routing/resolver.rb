@@ -72,7 +72,7 @@ module Hanami
         def resolve_string_identifier(path, identifier)
           slice_name = slices_registry.find(path) or raise "missing slice for #{path.inspect} (#{identifier.inspect})"
           slice = slices[slice_name]
-          action_key = "actions.#{identifier.gsub(/[#\/]/, '.')}"
+          action_key = "actions.#{identifier}"
 
           slice[action_key]
         end

@@ -24,11 +24,11 @@ RSpec.describe "Hanami web app", :application_integration do
           class Routes < Hanami::Application::Routes
             define do
               slice :main, at: "/" do
-                root to: "home#index"
+                root to: "home.index"
               end
 
               slice :admin, at: "/admin" do
-                get "/dashboard", to: "dashboard#show"
+                get "/dashboard", to: "dashboard.show"
               end
             end
           end
