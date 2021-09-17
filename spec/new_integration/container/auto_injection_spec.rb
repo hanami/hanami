@@ -20,14 +20,14 @@ RSpec.describe "Container auto-injection (aka \"Deps\") mixin", :application_int
         end
       RUBY
 
-      write "slices/admin/lib/admin/slice_service.rb", <<~RUBY
+      write "slices/admin/lib/slice_service.rb", <<~RUBY
         module Admin
           class SliceService
           end
         end
       RUBY
 
-      write "slices/admin/lib/admin/test_op.rb", <<~RUBY
+      write "slices/admin/lib/test_op.rb", <<~RUBY
         module Admin
           class TestOp
             include Deps[

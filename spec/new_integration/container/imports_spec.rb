@@ -56,7 +56,7 @@ RSpec.describe "Container imports", :application_integration do
         end
       RUBY
 
-      write "slices/search/lib/search/index_entity.rb", <<~RUBY
+      write "slices/search/lib/index_entity.rb", <<~RUBY
         module Search
           class IndexEntity
           end
@@ -91,7 +91,7 @@ RSpec.describe "Container imports", :application_integration do
         end
       RUBY
 
-      write "slices/search/lib/search/index_entity.rb", <<~RUBY
+      write "slices/search/lib/index_entity.rb", <<~RUBY
         module Search
           class IndexEntity
           end

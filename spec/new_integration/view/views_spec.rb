@@ -12,7 +12,7 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "slices/main/lib/main/view.rb", <<~RUBY
+      write "slices/main/lib/view.rb", <<~RUBY
         require "hanami/view"
 
         module Main
@@ -21,7 +21,7 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "slices/main/lib/main/views/test_view.rb", <<~RUBY
+      write "slices/main/lib/views/test_view.rb", <<~RUBY
         module Main
           module Views
             class TestView < Main::View

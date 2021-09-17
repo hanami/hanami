@@ -115,12 +115,20 @@ module Hanami
 
           if root.join("lib").directory?
             config.component_dirs.add "lib" do |dir|
-              dir.default_namespace = namespace_path.tr(File::SEPARATOR, config.namespace_separator)
+              if application.configuration.autoloader
+                # If we're using an autoloader, expect all files in the slice's `lib/` to
+                # use the slice's const namespace
+                dir.namespaces.root const: namespace_path.tr(File::SEPARATOR, config.namespace_separator)
+              else
+                # Otherwise expect them to be inside `lib/[namespace]`, and make that take
+                # the root identifier namespace in the container
+                dir.namespaces.add namespace_path
+              end
             end
-
-            application.configuration.autoloader&.push_dir(root.join("lib"))
           end
         end
+
+        application.configuration.autoloader&.push_dir(container.root.join("lib"), namespace: namespace)
       end
 
       # Force after configure hook to run

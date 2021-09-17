@@ -22,7 +22,7 @@ RSpec.describe "Container auto-registration", :application_integration do
         end
       RUBY
 
-      write "slices/admin/lib/admin/nba_jam/get_that_outta_here.rb", <<~RUBY
+      write "slices/admin/lib/nba_jam/get_that_outta_here.rb", <<~RUBY
         module Admin
           module NBAJam
             class GetThatOuttaHere
@@ -60,7 +60,7 @@ RSpec.describe "Container auto-registration", :application_integration do
         end
       RUBY
 
-      write "slices/admin/lib/admin/nba_jam/get_that_outta_here.rb", <<~RUBY
+      write "slices/admin/lib/nba_jam/get_that_outta_here.rb", <<~RUBY
         module Admin
           module NBAJam
             class GetThatOuttaHere

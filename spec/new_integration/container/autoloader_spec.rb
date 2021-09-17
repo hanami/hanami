@@ -23,7 +23,7 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      write "slices/admin/lib/admin/operations/create_game.rb", <<~RUBY
+      write "slices/admin/lib/operations/create_game.rb", <<~RUBY
         module Admin
           module Operations
             class CreateGame
@@ -35,7 +35,7 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      write "slices/admin/lib/admin/entities/game.rb", <<~RUBY
+      write "slices/admin/lib/entities/game.rb", <<~RUBY
         # auto_register: false
 
         module Admin
@@ -46,7 +46,7 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      write "slices/admin/lib/admin/entities/quarter.rb", <<~RUBY
+      write "slices/admin/lib/entities/quarter.rb", <<~RUBY
         # auto_register: false
 
         module Admin
