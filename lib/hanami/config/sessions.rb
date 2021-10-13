@@ -33,6 +33,7 @@ module Hanami
       # @api private
       #
       # @see http://www.rubydoc.info/github/rack/rack/Rack/Session/Abstract/ID
+      # @see https://www.rubydoc.info/github/rack/rack/Rack/Session/Cookie
       def initialize(adapter = nil, options = {}, configuration = nil)
         @adapter       = adapter
         @options       = options
@@ -77,11 +78,17 @@ module Hanami
       # @since 0.2.0
       # @api private
       def default_options
-        if @configuration
+        result = if @configuration
           { domain: domain, secure: @configuration.ssl? }
         else
           {}
         end
+
+        if s = cookies_adapter_serializer
+          result[:coder] = s
+        end
+
+        result
       end
 
       # @since 0.2.0
@@ -97,6 +104,15 @@ module Hanami
       # @api private
       def ip_address?(string)
         !!IPAddr.new(string) rescue false
+      end
+
+      # @since 1.3.5
+      # @api private
+      def cookies_adapter_serializer
+        return nil unless @adapter == :cookie
+
+        require "rack/session/cookie"
+        Rack::Session::Cookie::Base64::JSON.new
       end
     end
   end
