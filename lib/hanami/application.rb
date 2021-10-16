@@ -256,7 +256,7 @@ module Hanami
             config.component_dirs.add "lib" do |dir|
               # Make the files in `lib/[application_name]/` take the root identifier
               # namespace in the container
-              dir.namespaces.add application_name.to_s
+              dir.namespaces.add application_name.to_s, key: nil
             end
 
             configuration.autoloader&.push_dir(root.join("lib"))
