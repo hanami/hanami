@@ -1,6 +1,14 @@
 # Hanami
 The web, with simplicity.
 
+## v1.3.5 - 2021-10-18
+### Fixed
+- [Ivan Kabluchkov] Ensure to properly store exceptions in Rack environment
+- [Sean Collins] Explicitly limit in gemspec the supported rubies (>= 2.3 and < 3) for Hanami 1
+
+### Changed
+- [Luca Guidi] Use JSON as default HTTP session serializer for cookie session storage
+
 ## v1.3.4 - 2021-05-02
 ### Fixed
 - [Slava Kardakov] Fix generated `config.ru` `require_relative` statement
