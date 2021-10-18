@@ -13,14 +13,14 @@ module Hanami
 
       protected :config
 
-      setting :logger_class, Hanami::Logger
+      setting :logger_class, default: Hanami::Logger
 
-      setting :options, {level: :debug}
+      setting :options, default: {level: :debug}
 
       # Currently used for logging of Rack requests only.
       #
       # TODO: incorporate this into the standard logging some way or another
-      setting :filter_params, %w[_csrf password password_confirmation].freeze
+      setting :filter_params, default: %w[_csrf password password_confirmation].freeze
 
       private
 

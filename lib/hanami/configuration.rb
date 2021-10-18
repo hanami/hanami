@@ -99,23 +99,21 @@ module Hanami
       apply_env_config(new_env)
     end
 
-    setting :root do |path|
-      Pathname(path)
-    end
+    setting :root, constructor: -> path { Pathname(path) }
 
-    setting :autoloader do |autoloader|
+    setting :autoloader, constructor: -> autoloader {
       # Convert all falsey values to nil, so we can rely on `nil` representing a disabled
       # autoloader when reading this setting
       autoloader || nil
-    end
+    }
 
-    setting :inflector, Dry::Inflector.new, cloneable: true
+    setting :inflector, default: Dry::Inflector.new, cloneable: true
 
     def inflections(&block)
       self.inflector = Dry::Inflector.new(&block)
     end
 
-    setting :logger, Configuration::Logger.new, cloneable: true
+    setting :logger, default: Configuration::Logger.new, cloneable: true
 
     def logger=(logger_instance)
       @logger_instance = logger_instance
@@ -125,29 +123,25 @@ module Hanami
       @logger_instance || logger.logger_class.new(**logger.options)
     end
 
-    setting :settings_path, File.join("config", "settings")
+    setting :settings_path, default: File.join("config", "settings")
 
-    setting :settings_class_name, "Settings"
+    setting :settings_class_name, default: "Settings"
 
-    setting :settings_store, Application::Settings::DotenvStore
+    setting :settings_store, default: Application::Settings::DotenvStore
 
-    setting :slices_dir, "slices"
+    setting :slices_dir, default: "slices"
 
-    setting :slices_namespace, Object
+    setting :slices_namespace, default: Object
 
     # TODO: convert into a dedicated object with explicit behaviour around blocks per
     # slice, etc.
-    setting :slices, {} do |value|
-      value.dup
-    end
+    setting :slices, default: {}, constructor: :dup.to_proc
 
     def slice(slice_name, &block)
       slices[slice_name] = block
     end
 
-    setting :base_url, "http://0.0.0.0:2300" do |url|
-      URI(url)
-    end
+    setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
 
     def for_each_middleware(&blk)
       stack = middleware.stack.dup
@@ -156,9 +150,7 @@ module Hanami
       stack.each(&blk)
     end
 
-    setting :sessions, :null do |*args|
-      Sessions.new(*args)
-    end
+    setting :sessions, default: :null, constructor: -> *args { Sessions.new(*args) }
 
     private
 
