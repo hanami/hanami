@@ -42,6 +42,7 @@ module Hanami
       # have appropriate values for the current application
       self.root = Dir.pwd
       self.autoloader = Zeitwerk::Loader.new
+      self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
 
       # Config for actions (same for views, below) may not be available if the gem isn't
       # loaded; fall back to a null config object if it's missing
@@ -128,7 +129,7 @@ module Hanami
 
     setting :settings_class_name, "Settings"
 
-    setting :settings_store, Application::Settings::DotenvStore.new.with_dotenv_loaded
+    setting :settings_store, Application::Settings::DotenvStore
 
     setting :slices_dir, "slices"
 
