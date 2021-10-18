@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami/configuration"
+require "logger"
 
 RSpec.describe Hanami::Configuration do
   subject(:config) { described_class.new(env: :development) }
@@ -55,28 +56,28 @@ RSpec.describe Hanami::Configuration do
           .to ["secret_param"]
       end
     end
-
-    describe "#instance" do
-      it "defaults to nil" do
-        expect(config.logger.instance).to be nil
-      end
-
-      it "can be changed to a pre-initialized instance" do
-        logger_instance = Object.new
-
-        expect { config.logger.instance = logger_instance }
-          .to change { config.logger.instance }
-          .to logger_instance
-      end
-    end
   end
 
-  describe "#logger=" do
-    it "sets the logger.instance" do
+  describe "#logger_instance" do
+    it "returns an instance of the configured logger class, with configured options given to its initializer" do
+      klass = Struct.new(:opts)
+
+      config.logger.logger_class = klass
+
+      expect(config.logger_instance).to be_an_instance_of klass
+      expect(config.logger_instance.opts).to eq config.logger.options
+    end
+
+    it "defaults to an Hanami::Logger instance, based on the default logger settings" do
+      expect(config.logger_instance).to be_an_instance_of config.logger.logger_class
+      expect(config.logger_instance.level).to eq Logger::DEBUG
+    end
+
+    it "can be changed to a pre-initialized instance via #logger=" do
       logger_instance = Object.new
 
       expect { config.logger = logger_instance }
-        .to change { config.logger.instance }
+        .to change { config.logger_instance }
         .to logger_instance
     end
   end
