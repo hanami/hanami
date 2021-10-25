@@ -53,7 +53,7 @@ module Hanami
       def init # rubocop:disable Metrics/MethodLength
         return self if inited?
 
-        configuration.finalize
+        configuration.finalize!
 
         load_settings
 
@@ -307,8 +307,8 @@ module Hanami
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def load_routes
-        require File.join(configuration.root, configuration.routes_path)
-        routes_class = autodiscover_application_constant(configuration.routes_class_name)
+        require File.join(configuration.root, configuration.router.routes_path)
+        routes_class = autodiscover_application_constant(configuration.router.routes_class_name)
         routes_class.routes
       rescue LoadError # rubocop:disable Lint/SuppressedException
       end
