@@ -254,8 +254,7 @@ module Hanami
 
           if root.join("lib").directory?
             config.component_dirs.add "lib" do |dir|
-              # Make the files in `lib/[application_name]/` take the root identifier
-              # namespace in the container
+              # Register the files in `lib/[application_name]/` using top-level keys
               dir.namespaces.add application_name.to_s, key: nil
             end
 
