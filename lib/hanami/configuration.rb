@@ -137,6 +137,8 @@ module Hanami
     # slice, etc.
     setting :slices, default: {}, constructor: :dup.to_proc
 
+    setting :component_dir_paths, default: %w[actions entities repositories views]
+
     def slice(slice_name, &block)
       slices[slice_name] = block
     end
