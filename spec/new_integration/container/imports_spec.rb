@@ -12,7 +12,7 @@ RSpec.describe "Container imports", :application_integration do
         end
       RUBY
 
-      write "lib/test_app/shared_service.rb", <<~RUBY
+      write "app/lib/shared_service.rb", <<~RUBY
         module TestApp
           class SharedService
           end

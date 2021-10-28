@@ -15,7 +15,7 @@ RSpec.describe "Container auto-registration", :application_integration do
         end
       RUBY
 
-      write "lib/test_app/operation.rb", <<~RUBY
+      write "app/lib/operation.rb", <<~RUBY
         module TestApp
           class Operation
           end
@@ -53,7 +53,7 @@ RSpec.describe "Container auto-registration", :application_integration do
         end
       RUBY
 
-      write "lib/test_app/operation.rb", <<~RUBY
+      write "app/lib/operation.rb", <<~RUBY
         module TestApp
           class Operation
           end

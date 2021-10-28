@@ -252,15 +252,46 @@ module Hanami
             config.component_dirs.add_to_load_path = false
           end
 
-          if root.join("lib").directory?
-            config.component_dirs.add "lib" do |dir|
-              # Register the files in `lib/[application_name]/` using top-level keys
-              dir.namespaces.add application_name.to_s, key: nil
+          if root.join("app", "lib").directory?
+            config.component_dirs.add(File.join("app", "lib")) do |component_dir|
+              # Expect all component files in app/lib dir to define classes inside the
+              # applications's namespace.
+              #
+              # e.g. "app/lib/foo.rb" should define AppNamespace::Foo, and will be
+              # registered as "foo"
+              component_dir.namespaces.root(key: nil, const: namespace_path)
+              configuration.autoloader.push_dir(root.join("app", "lib"), namespace: namespace)
             end
+          end
 
-            configuration.autoloader&.push_dir(root.join("lib"))
+          configuration.component_dir_paths.each do |app_dir|
+            next unless root.join("app", app_dir).directory?
+
+            config.component_dirs.add(File.join("app", app_dir)) do |component_dir|
+              # Expect component files in the root of these component dirs to define
+              # classes inside a namespace matching the dir.
+              #
+              # e.g. "actions/foo.rb" should define SliceNamespace::Actions::Foo, and will
+              # be registered as "actions.foo"
+              dir_namespace_path = File.join(namespace_path, app_dir)
+
+              autoloader_namespace = begin
+                inflector.constantize(inflector.camelize(dir_namespace_path))
+              rescue NameError
+                namespace.const_set(inflector.camelize(app_dir), Module.new)
+              end
+
+              component_dir.namespaces.root(const: dir_namespace_path, key: app_dir)
+
+              configuration.autoloader.push_dir(
+                root.join("app", app_dir),
+                namespace: autoloader_namespace
+              )
+            end
           end
         end
+
+        container.add_to_load_path!("lib") if root.join("lib").directory?
 
         container
       end

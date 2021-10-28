@@ -14,10 +14,28 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      write "lib/test_app/nba_jam/get_that_outta_here.rb", <<~RUBY
+      write "lib/non_app/thing.rb", <<~RUBY
+        module NonApp
+          class Thing
+          end
+        end
+      RUBY
+
+      write "app/lib/nba_jam/get_that_outta_here.rb", <<~RUBY
         module TestApp
           module NBAJam
             class GetThatOuttaHere
+            end
+          end
+        end
+      RUBY
+
+      write "app/actions/games/create.rb", <<~RUBY
+        module TestApp
+          module Actions
+            module Games
+              class Create
+              end
             end
           end
         end
@@ -35,7 +53,7 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      write "slices/admin/entities/game.rb", <<~RUBY
+      write "slices/admin/lib/entities/game.rb", <<~RUBY
         # auto_register: false
 
         module Admin
@@ -46,7 +64,7 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      write "slices/admin/entities/quarter.rb", <<~RUBY
+      write "slices/admin/lib/entities/quarter.rb", <<~RUBY
         # auto_register: false
 
         module Admin
@@ -59,14 +77,20 @@ RSpec.describe "Application autoloader", :application_integration do
 
       require "hanami/init"
 
-      expect(TestApp::NBAJam::GetThatOuttaHere).to be
+      expect(require("non_app/thing")).to be true
+      expect(NonApp::Thing).to be
+
+      expect(TestApp::Application["nba_jam.get_that_outta_here"]).to be_an_instance_of(TestApp::NBAJam::GetThatOuttaHere)
+      expect(TestApp::Application["actions.games.create"]).to be_an_instance_of(TestApp::Actions::Games::Create)
+
       expect(Admin::Slice["operations.create_game"]).to be_an_instance_of(Admin::Operations::CreateGame)
       expect(Admin::Slice["operations.create_game"].call).to be_an_instance_of(Admin::Entities::Game)
+
       expect(Admin::Entities::Quarter).to be
     end
   end
 
-  specify "Autoloading can be disabled" do
+  xspecify "Autoloading can be disabled" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
