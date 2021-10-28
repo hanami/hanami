@@ -137,7 +137,9 @@ module Hanami
     # slice, etc.
     setting :slices, default: {}, constructor: :dup.to_proc
 
-    setting :component_dir_paths, default: %w[actions entities repositories views]
+    # TODO: turn this into a richer "source dirs" setting that can support enabling
+    # of container component loading as an opt in behvior
+    setting :component_dir_paths, default: %w[actions repositories views]
 
     def slice(slice_name, &block)
       slices[slice_name] = block
