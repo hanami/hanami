@@ -151,8 +151,6 @@ module Hanami
             application.configuration.component_dir_paths.each do |slice_dir|
               next unless root.join(slice_dir).directory?
 
-              dir_namespace_path = File.join(namespace_path, slice_dir)
-
               config.component_dirs.add(slice_dir) do |component_dir|
                 # Expect component files in the root of these component dirs to define
                 # classes inside a namespace matching the dir.
@@ -163,7 +161,7 @@ module Hanami
                 dir_namespace_path = File.join(namespace_path, slice_dir)
 
                 autoloader_namespace = begin
-                  inflector.constantize(inflector.camelize(const_ns))
+                  inflector.constantize(inflector.camelize(dir_namespace_path))
                 rescue NameError
                   namespace.const_set(inflector.camelize(slice_dir), Module.new)
                 end
