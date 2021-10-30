@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Container auto-registration", :application_integration do
-  specify "Auto-registering files in application and slice lib/ directories" do
+  specify "Auto-registering files in slice source directories" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -11,13 +11,6 @@ RSpec.describe "Container auto-registration", :application_integration do
             config.inflections do |inflections|
               inflections.acronym "NBA"
             end
-          end
-        end
-      RUBY
-
-      write "app/lib/operation.rb", <<~RUBY
-        module TestApp
-          class Operation
           end
         end
       RUBY
@@ -34,7 +27,6 @@ RSpec.describe "Container auto-registration", :application_integration do
       require "hanami/setup"
       Hanami.boot web: false
 
-      expect(TestApp::Application["operation"]).to be_a TestApp::Operation
       expect(Admin::Slice["nba_jam.get_that_outta_here"]).to be_an Admin::NBAJam::GetThatOuttaHere
     end
   end
@@ -53,13 +45,6 @@ RSpec.describe "Container auto-registration", :application_integration do
         end
       RUBY
 
-      write "app/lib/operation.rb", <<~RUBY
-        module TestApp
-          class Operation
-          end
-        end
-      RUBY
-
       write "slices/admin/lib/nba_jam/get_that_outta_here.rb", <<~RUBY
         module Admin
           module NBAJam
@@ -70,10 +55,6 @@ RSpec.describe "Container auto-registration", :application_integration do
       RUBY
 
       require "hanami/init"
-
-      expect(TestApp::Application.keys).not_to include("operation")
-      expect(TestApp::Application["operation"]).to be_a TestApp::Operation
-      expect(TestApp::Application.keys).to include("operation")
 
       expect(Admin::Slice.keys).not_to include("nba_jam.get_that_outta_here")
       expect(Admin::Slice["nba_jam.get_that_outta_here"]).to be_an Admin::NBAJam::GetThatOuttaHere

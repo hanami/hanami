@@ -12,24 +12,18 @@ RSpec.describe "Container imports", :application_integration do
         end
       RUBY
 
-      write "app/lib/shared_service.rb", <<~RUBY
-        module TestApp
-          class SharedService
-          end
-        end
-      RUBY
-
-      write "slices/admin/lib/admin/test_op.rb", <<~RUBY
-        module Admin
-          class TestOp
-          end
-        end
-      RUBY
+      write "slices/admin/.keep", ""
 
       require "hanami/setup"
+
+      Hanami.init
+
+      shared_service = Object.new
+      TestApp::Application.register("shared_service", shared_service)
+
       Hanami.boot web: false
 
-      expect(Admin::Slice["application.shared_service"]).to be_a TestApp::SharedService
+      expect(Admin::Slice["application.shared_service"]).to be shared_service
     end
   end
 
@@ -47,14 +41,7 @@ RSpec.describe "Container imports", :application_integration do
         end
       RUBY
 
-      write "lib/test_app/.keep", ""
-
-      write "slices/admin/lib/admin/test_op.rb", <<~RUBY
-        module Admin
-          class TestOp
-          end
-        end
-      RUBY
+      write "slices/admin/.keep", ""
 
       write "slices/search/lib/index_entity.rb", <<~RUBY
         module Search
