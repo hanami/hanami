@@ -125,7 +125,7 @@ module Hanami
             end
           end
 
-          # Add additional component dirs for each if the configured component dir paths
+          # Add component dirs for each configured component path
           application.configuration.component_dir_paths.each do |slice_dir|
             next unless root.join(slice_dir).directory?
 
