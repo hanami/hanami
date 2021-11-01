@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
+require "dry/system/loader/autoloading"
 require "hanami/configuration"
 require "pathname"
 require "rack"
+require "zeitwerk"
 require_relative "slice"
 require_relative "application/autoloader/inflector_adapter"
 require_relative "application/routes"
@@ -55,6 +57,9 @@ module Hanami
 
         configuration.finalize!
 
+        @autoloader = Zeitwerk::Loader.new
+        autoloader.inflector = Autoloader::InflectorAdapter.new(inflector)
+
         load_settings
 
         @container = prepare_container
@@ -64,10 +69,7 @@ module Hanami
         slices.values.each(&:init)
         slices.freeze
 
-        if configuration.autoloader
-          configuration.autoloader.inflector = Autoloader::InflectorAdapter.new(inflector)
-          configuration.autoloader.setup
-        end
+        autoloader.setup
 
         load_routes
 
@@ -77,6 +79,12 @@ module Hanami
 
       def inited?
         @inited
+      end
+
+      def autoloader
+        raise "Application not init'ed" unless defined?(@autoloader)
+
+        @autoloader
       end
 
       def container
@@ -246,16 +254,13 @@ module Hanami
             Pathname(__dir__).join("application/container/boot").realpath,
           ]
 
-          if configuration.autoloader
-            require "dry/system/loader/autoloading"
-            config.component_dirs.loader = Dry::System::Loader::Autoloading
-            config.component_dirs.add_to_load_path = false
-          end
+          config.component_dirs.loader = Dry::System::Loader::Autoloading
+          config.component_dirs.add_to_load_path = false
         end
 
         # Autoload classes defined in lib/[app_namespace]/
         if root.join("lib", namespace_path).directory?
-          configuration.autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
+          autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
         end
 
         # Add lib/ to to the $LOAD_PATH so other files there (outside the app namespace)

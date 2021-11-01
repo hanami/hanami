@@ -6,7 +6,6 @@ require "concurrent/array"
 require "dry/configurable"
 require "dry/inflector"
 require "pathname"
-require "zeitwerk"
 
 require_relative "application/settings/dotenv_store"
 require_relative "configuration/logger"
@@ -41,7 +40,6 @@ module Hanami
       # Some default setting values must be assigned at initialize-time to ensure they
       # have appropriate values for the current application
       self.root = Dir.pwd
-      self.autoloader = Zeitwerk::Loader.new
       self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
 
       # Config for actions (same for views, below) may not be available if the gem isn't
@@ -100,12 +98,6 @@ module Hanami
     end
 
     setting :root, constructor: -> path { Pathname(path) }
-
-    setting :autoloader, constructor: -> autoloader {
-      # Convert all falsey values to nil, so we can rely on `nil` representing a disabled
-      # autoloader when reading this setting
-      autoloader || nil
-    }
 
     setting :inflector, default: Dry::Inflector.new, cloneable: true
 
