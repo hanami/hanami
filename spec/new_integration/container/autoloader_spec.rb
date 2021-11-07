@@ -14,66 +14,9 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      write "lib/test_app/nba_jam/get_that_outta_here.rb", <<~RUBY
-        module TestApp
-          module NBAJam
-            class GetThatOuttaHere
-            end
-          end
-        end
-      RUBY
-
-      write "slices/admin/lib/admin/operations/create_game.rb", <<~RUBY
-        module Admin
-          module Operations
-            class CreateGame
-              def call
-                Entities::Game.new
-              end
-            end
-          end
-        end
-      RUBY
-
-      write "slices/admin/lib/admin/entities/game.rb", <<~RUBY
-        # auto_register: false
-
-        module Admin
-          module Entities
-            class Game
-            end
-          end
-        end
-      RUBY
-
-      write "slices/admin/lib/admin/entities/quarter.rb", <<~RUBY
-        # auto_register: false
-
-        module Admin
-          module Entities
-            class Quarter
-            end
-          end
-        end
-      RUBY
-
-      require "hanami/init"
-
-      expect(TestApp::NBAJam::GetThatOuttaHere).to be
-      expect(Admin::Slice["operations.create_game"]).to be_an_instance_of(Admin::Operations::CreateGame)
-      expect(Admin::Slice["operations.create_game"].call).to be_an_instance_of(Admin::Entities::Game)
-      expect(Admin::Entities::Quarter).to be
-    end
-  end
-
-  specify "Autoloading can be disabled" do
-    with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
-        require "hanami"
-
-        module TestApp
-          class Application < Hanami::Application
-            config.autoloader = false
+      write "lib/non_app/thing.rb", <<~RUBY
+        module NonApp
+          class Thing
           end
         end
       RUBY
@@ -87,9 +30,7 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      write "slices/admin/lib/admin/operations/create_game.rb", <<~RUBY
-        require "admin/entities/game"
-
+      write "slices/admin/lib/operations/create_game.rb", <<~RUBY
         module Admin
           module Operations
             class CreateGame
@@ -101,7 +42,7 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      write "slices/admin/lib/admin/entities/game.rb", <<~RUBY
+      write "slices/admin/lib/entities/game.rb", <<~RUBY
         # auto_register: false
 
         module Admin
@@ -112,7 +53,7 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      write "slices/admin/lib/admin/entities/quarter.rb", <<~RUBY
+      write "slices/admin/lib/entities/quarter.rb", <<~RUBY
         # auto_register: false
 
         module Admin
@@ -125,15 +66,14 @@ RSpec.describe "Application autoloader", :application_integration do
 
       require "hanami/init"
 
-      expect { TestApp::NBAJam::GetThatOuttaHere }.to raise_error NameError
-      require "test_app/nba_jam/get_that_outta_here"
+      expect(require("non_app/thing")).to be true
+      expect(NonApp::Thing).to be
+
       expect(TestApp::NBAJam::GetThatOuttaHere).to be
 
       expect(Admin::Slice["operations.create_game"]).to be_an_instance_of(Admin::Operations::CreateGame)
       expect(Admin::Slice["operations.create_game"].call).to be_an_instance_of(Admin::Entities::Game)
 
-      expect { Admin::Entities::Quarter }.to raise_error NameError
-      require "admin/entities/quarter"
       expect(Admin::Entities::Quarter).to be
     end
   end

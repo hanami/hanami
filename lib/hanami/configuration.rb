@@ -6,7 +6,6 @@ require "concurrent/array"
 require "dry/configurable"
 require "dry/inflector"
 require "pathname"
-require "zeitwerk"
 
 require_relative "application/settings/dotenv_store"
 require_relative "configuration/logger"
@@ -41,7 +40,6 @@ module Hanami
       # Some default setting values must be assigned at initialize-time to ensure they
       # have appropriate values for the current application
       self.root = Dir.pwd
-      self.autoloader = Zeitwerk::Loader.new
       self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
 
       # Config for actions (same for views, below) may not be available if the gem isn't
@@ -101,12 +99,6 @@ module Hanami
 
     setting :root, constructor: -> path { Pathname(path) }
 
-    setting :autoloader, constructor: -> autoloader {
-      # Convert all falsey values to nil, so we can rely on `nil` representing a disabled
-      # autoloader when reading this setting
-      autoloader || nil
-    }
-
     setting :inflector, default: Dry::Inflector.new, cloneable: true
 
     def inflections(&block)
@@ -136,6 +128,10 @@ module Hanami
     # TODO: convert into a dedicated object with explicit behaviour around blocks per
     # slice, etc.
     setting :slices, default: {}, constructor: :dup.to_proc
+
+    # TODO: turn this into a richer "source dirs" setting that can support enabling
+    # of container component loading as an opt in behvior
+    setting :component_dir_paths, default: %w[actions repositories views]
 
     def slice(slice_name, &block)
       slices[slice_name] = block

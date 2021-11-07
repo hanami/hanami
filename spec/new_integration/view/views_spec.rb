@@ -12,7 +12,7 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "slices/main/lib/main/view.rb", <<~RUBY
+      write "slices/main/lib/view.rb", <<~RUBY
         require "hanami/view"
 
         module Main
@@ -21,7 +21,7 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "slices/main/lib/main/views/test_view.rb", <<~RUBY
+      write "slices/main/lib/views/test_view.rb", <<~RUBY
         module Main
           module Views
             class TestView < Main::View
@@ -59,38 +59,39 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "lib/test_app/view.rb", <<~RUBY
+      write "slices/main/lib/view.rb", <<~RUBY
+        # auto_register: false
         require "hanami/view"
 
-        module TestApp
+        module Main
           class View < Hanami::View
           end
         end
       RUBY
 
-      write "lib/test_app/views/test_view.rb", <<~RUBY
-        module TestApp
+      write "slices/main/views/test_view.rb", <<~RUBY
+        module Main
           module Views
-            class TestView < TestApp::View
+            class TestView < Main::View
               expose :name
             end
           end
         end
       RUBY
 
-      write "web/templates/layouts/application.html.slim", <<~SLIM
+      write "slices/main/web/templates/layouts/application.html.slim", <<~SLIM
         html
           body
             == yield
       SLIM
 
-      write "web/templates/test_view.html.slim", <<~'SLIM'
+      write "slices/main/web/templates/test_view.html.slim", <<~'SLIM'
         h1 Hello, #{name}
       SLIM
 
       require "hanami/init"
 
-      rendered = TestApp::Application["views.test_view"].(name: "Jennifer")
+      rendered = Main::Slice["views.test_view"].(name: "Jennifer")
       expect(rendered.to_s).to eq "<html><body><h1>Hello, Jennifer</h1></body></html>"
     end
   end

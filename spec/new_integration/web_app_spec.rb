@@ -35,9 +35,7 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
-      write "lib/test_app/.keep", ""
-
-      write "slices/main/lib/main/actions/home/index.rb", <<~RUBY
+      write "slices/main/actions/home/index.rb", <<~RUBY
         require "hanami/action"
 
         module Main
@@ -53,7 +51,7 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
-      write "slices/admin/lib/admin/actions/dashboard/show.rb", <<~RUBY
+      write "slices/admin/actions/dashboard/show.rb", <<~RUBY
         require "hanami/action"
 
         module Admin
