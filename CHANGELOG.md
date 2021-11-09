@@ -1,6 +1,53 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha3 - 2021-11-09
+### Added
+- [Luca Guidi] Added `Hanami.shutdown` to stop all bootable components in the application container
+- [Tim Riley] Added `component_dir_paths` application setting to allow for components to be loaded from additional directories inside each slice directory. To begin with, this defaults to `%w[actions repositories views]`. Components inside these directories are expected to be namespaced to match the directory name; e.g. given a `main` slice, `slices/main/actions/home.rb` is expected to define `Main::Actions::Home`, and will be registered in the slice container as `"actions.home"`.
+
+### Changed
+- [Tim Riley] A slice's classes can now be defined directly inside `slices/[slice_name]/lib/`; e.g. given a `main` slice, `slices/main/lib/example.rb` is expected to define `Main::Example`, and will be registered in the slice container as `"example"`
+- [Tim Riley] The root `lib/` directory is no longer configured as a component dir, and classes inside `lib/[app_namespace]/` will no longer be auto-registered into the container. If you need to share components, create them in their own slices as appropriate, and import those slices into the other slices that require them.
+- [Tim Riley] `lib/[app_namespace]/` is configured for autoloading, and `lib/` is added to `$LOAD_PATH` to support explicit requires for source files outside `lib/[app_namespace]/`.
+- [Tim Riley] (Internal) Ported `Hanami::Configuration` and related classes to use dry-configurable
+- [Tim Riley] Application inflector can be entirely replaced, if required, via `Hanami::Configuration#inflector=`. Custom inflection rules can still be provided to the default inflector via `Hanami::Configuration#inflections`.
+- [Marc Busqué] App settings are defined within a concrete class rather than an anonymous block, to allow for users to leverage the typical behavior of Ruby classes, such as for defining their own types module to use for coercing setting values. This class also relies on dry-configurable for its settings implementation, so the standard dry-configurable `setting` API is available, such as the `constructor:` and `default:` options.
+    ```ruby
+    # frozen_string_literal: true
+
+    require "dry/types"
+    require "hanami/application/settings"
+
+    module TestApp
+      class Settings < Hanami::Application::Settings
+        # Example usage of a types module (previously not possible inside the anonymous block)
+        Types = Dry.Types()
+
+        setting :session_secret, constructor: Types::String.constrained(min_size: 20)
+
+        setting :some_bool, constructor: Types::Params::Bool, default: false
+      end
+    end
+    ```
+- [Marc Busqué] Application `settings_loader` and `settings_loader_options` have been replaced with `settings_store`, which is an updated abstraction for providing setting values to work with the new `Hanami::Application::Settings` implementation noted above (see `Application::Settings::DotenvStore` for the default store, which provides the same behavior as previously)
+- [Marc Busqué] Routes are defined within a concrete class rather than an anonymous block, to provide consistency with the settings (noted above), as well a place for additional behavior (in future releases):
+    ```ruby
+    # frozen_string_literal: true
+
+    require "hanami/application/routes"
+
+    module MyApp
+      class Routes < Hanami::Application::Routes
+        define do
+          slice :main, at: "/" do
+            root to: "home.show"
+          end
+        end
+      end
+    end
+    ```
+
 ## v2.0.0.alpha2 - 2021-05-04
 ### Added
 - [Luca Guidi] Official support for Ruby: MRI 3.0
