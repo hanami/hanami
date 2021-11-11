@@ -5,17 +5,23 @@ require "dry/configurable"
 
 module Hanami
   module Assets
+    # @since 2.0.0
+    # @api public
     class ApplicationConfiguration
       include Dry::Configurable
 
       setting :server_url, default: "http://localhost:8080"
 
+      # @since 2.0.0
+      # @api private
       def initialize(*)
         super
 
         @base_configuration = Assets::Configuration.new
       end
 
+      # @since 2.0.0
+      # @api private
       def finalize!
       end
 
@@ -31,8 +37,12 @@ module Hanami
 
       private
 
+      # @since 2.0.0
+      # @api private
       attr_reader :base_configuration
 
+      # @since 2.0.0
+      # @api private
       def method_missing(name, *args, &block)
         if config.respond_to?(name)
           config.public_send(name, *args, &block)
@@ -43,6 +53,8 @@ module Hanami
         end
       end
 
+      # @since 2.0.0
+      # @api private
       def respond_to_missing?(name, _incude_all = false)
         config.respond_to?(name) || base_configuration.respond_to?(name) || super
       end
