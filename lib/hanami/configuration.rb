@@ -28,7 +28,7 @@ module Hanami
     attr_reader :actions
     attr_reader :middleware
     attr_reader :router
-    attr_reader :views
+    attr_reader :views, :assets
 
     attr_reader :environments
     private :environments
@@ -42,12 +42,22 @@ module Hanami
       self.root = Dir.pwd
       self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
 
+      @assets = begin
+        require_path = "hanami/assets/application_configuration"
+        require require_path
+        Hanami::Assets::ApplicationConfiguration.new
+      rescue LoadError => e
+        raise e unless e.path == require_path
+        require_relative "configuration/null_configuration"
+        NullConfiguration.new
+      end
+
       # Config for actions (same for views, below) may not be available if the gem isn't
       # loaded; fall back to a null config object if it's missing
       @actions = begin
         require_path = "hanami/action/application_configuration"
         require require_path
-        Hanami::Action::ApplicationConfiguration.new
+        Hanami::Action::ApplicationConfiguration.new(assets_server_url: assets.server_url)
       rescue LoadError => e
         raise e unless e.path == require_path
         require_relative "configuration/null_configuration"
@@ -82,6 +92,7 @@ module Hanami
       apply_env_config
 
       # Finalize nested configurations
+      assets.finalize!
       actions.finalize!
       views.finalize!
       logger.finalize!
