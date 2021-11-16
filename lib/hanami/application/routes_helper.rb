@@ -9,7 +9,7 @@ module Hanami
     # it to get the route helpers for your application.
     #
     # @example
-    #   MyApp::Aplication["routes_helper"].path(:root) # => "/"
+    #   MyApp::Application["routes_helper"].path(:root) # => "/"
     #
     # @see Hanami::Router::UrlHelpers
     # @since 2.0.0
