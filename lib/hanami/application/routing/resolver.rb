@@ -76,7 +76,10 @@ module Hanami
           slice = slices[slice_name]
           endpoint_key = "#{ENDPOINT_KEY_NAMESPACE}.#{identifier}"
 
-          slice[endpoint_key]
+          # Lazily resolve endpoint from the slice to reduce router initialization time,
+          # and break potential endless loops from the resolved endpoint itself requiring
+          # access to router-related concerns
+          -> (*args) { slice[endpoint_key].call(*args) }
         end
       end
     end
