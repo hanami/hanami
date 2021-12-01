@@ -19,6 +19,8 @@ gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.
 gem "dry-files", git: "https://github.com/dry-rb/dry-files.git", branch: "master"
 gem "dry-configurable", git: "https://github.com/dry-rb/dry-configurable.git", branch: "master"
 
+gem "dry-system", git: "https://github.com/dry-rb/dry-system", branch: "more-flexible-component-dir-config"
+
 group :test do
   gem "dotenv"
   gem "dry-types"
