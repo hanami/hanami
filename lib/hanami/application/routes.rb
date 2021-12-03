@@ -33,7 +33,8 @@ module Hanami
       #
       # @yield DSL syntax to define application routes executed in the context
       # of {Hanami::Application::Router}
-      # @returns [Proc]
+      #
+      # @return [Proc]
       def self.define(&block)
         @_routes = block
       end

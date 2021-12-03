@@ -1,6 +1,75 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha4 - 2021-12-07
+### Added
+- [Luca Guidi] Manage Content Security Policy (CSP) with "zero-defaults" policy. New API to change CSP values and to disable the feature.
+    ```ruby
+    # Read a CSP value
+
+    module MyApp
+      class Application < Hanami::Application
+        config.actions.content_security_policy[:base_uri] # => "'self'"
+      end
+    end
+    ```
+
+    ```ruby
+    # Override a default CSP value
+
+    module MyApp
+      class Application < Hanami::Application
+        # This line will generate the following CSP fragment
+        # plugin-types ;
+        config.actions.content_security_policy[:plugin_types] = nil
+      end
+    end
+    ```
+
+    ```ruby
+    # Append to a default CSP value
+
+    module MyApp
+      class Application < Hanami::Application
+        # This line will generate the following CSP fragment
+        # script-src 'self' https://my.cdn.test;
+        config.actions.content_security_policy[:script_src] += " https://my.cdn.test"
+      end
+    end
+    ```
+
+    ```ruby
+    # Add a custom CSP key. Useful when CSP standard evolves.
+
+    module MyApp
+      class Application < Hanami::Application
+        # This line will generate the following CSP fragment
+        # my-custom-setting 'self';
+        config.actions.content_security_policy[:my-custom-setting] = "'self'"
+      end
+    end
+    ```
+
+    ```ruby
+    # Delete a CSP key.
+
+    module MyApp
+      class Application < Hanami::Application
+        config.actions.content_security_policy.delete(:object_src)
+      end
+    end
+    ```
+
+    ```ruby
+    # Disable CSP feature.
+
+    module MyApp
+      class Application < Hanami::Application
+        config.actions.content_security_policy = false
+      end
+    end
+    ```
+
 ## v2.0.0.alpha3 - 2021-11-09
 ### Added
 - [Luca Guidi] Added `Hanami.shutdown` to stop all bootable components in the application container
