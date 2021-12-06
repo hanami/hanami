@@ -128,7 +128,7 @@ module Hanami
 
               application.autoloader.push_dir(root.join("lib"), namespace: namespace)
 
-              config.component_dirs.add_dir(component_dir)
+              config.component_dirs.add(component_dir)
             else
               # Expect component files in the root of these component dirs to define
               # classes inside a namespace matching the dir.
@@ -146,7 +146,7 @@ module Hanami
 
               # TODO: do we need to do something special to clear out any previously configured root namespace here?
               component_dir.namespaces.root(const: dir_namespace_path, key: component_dir.path) # TODO: do we need to swap path delimiters for key delimiters here?
-              config.component_dirs.add_dir(component_dir)
+              config.component_dirs.add(component_dir)
 
               application.autoloader.push_dir(
                 container.root.join(component_dir.path),
