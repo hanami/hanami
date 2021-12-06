@@ -111,9 +111,14 @@ module Hanami
           config.root = root
           config.bootable_dirs = ["config/boot"]
 
-          # Add the "lib" component dir; all slices will load components from lib
-          if root.join("lib").directory?
-            config.component_dirs.add("lib") do |component_dir|
+          # Add component dirs for each configured component path
+          application.configuration.source_dirs.component_dirs.each do |common_component_dir|
+            next unless root.join(common_component_dir.path).directory?
+
+            component_dir = common_component_dir.dup
+
+            # TODO: this `== "lib"` check should be codified into a method somewhere
+            if component_dir.path == "lib"
               # Expect component files in the root of the lib
               # component dir to define classes inside the slice's namespace.
               #
@@ -122,37 +127,32 @@ module Hanami
               component_dir.namespaces.root(key: nil, const: namespace_path)
 
               application.autoloader.push_dir(root.join("lib"), namespace: namespace)
+
+              config.component_dirs.add_dir(component_dir)
+            else
+              # Expect component files in the root of these component dirs to define
+              # classes inside a namespace matching the dir.
+              #
+              # e.g. "actions/foo.rb" should define SliceNamespace::Actions::Foo, and
+              # will be registered as "actions.foo"
+
+              dir_namespace_path = File.join(namespace_path, component_dir.path)
+
+              autoloader_namespace = begin
+                inflector.constantize(inflector.camelize(dir_namespace_path))
+              rescue NameError
+                namespace.const_set(inflector.camelize(component_dir.path), Module.new)
+              end
+
+              # TODO: do we need to do something special to clear out any previously configured root namespace here?
+              component_dir.namespaces.root(const: dir_namespace_path, key: component_dir.path) # TODO: do we need to swap path delimiters for key delimiters here?
+              config.component_dirs.add_dir(component_dir)
+
+              application.autoloader.push_dir(
+                container.root.join(component_dir.path),
+                namespace: autoloader_namespace
+              )
             end
-          end
-
-          # Add component dirs for each configured component path
-          application.configuration.source_dirs.component_dirs.each do |common_component_dir|
-            next unless root.join(common_component_dir.path).directory?
-
-            component_dir = common_component_dir.dup
-
-            # Expect component files in the root of these component dirs to define
-            # classes inside a namespace matching the dir.
-            #
-            # e.g. "actions/foo.rb" should define SliceNamespace::Actions::Foo, and
-            # will be registered as "actions.foo"
-
-            dir_namespace_path = File.join(namespace_path, component_dir.path)
-
-            autoloader_namespace = begin
-              inflector.constantize(inflector.camelize(dir_namespace_path))
-            rescue NameError
-              namespace.const_set(inflector.camelize(component_dir.path), Module.new)
-            end
-
-            # TODO: do we need to do something special to clear out any previously configured root namespace here?
-            component_dir.namespaces.root(const: dir_namespace_path, key: component_dir.path) # TODO: do we need to swap path delimiters for key delimiters here?
-            config.component_dirs.add_dir(component_dir)
-
-            application.autoloader.push_dir(
-              container.root.join(component_dir.path),
-              namespace: autoloader_namespace
-            )
           end
         end
       end

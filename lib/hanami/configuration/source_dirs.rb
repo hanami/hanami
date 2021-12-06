@@ -9,7 +9,7 @@ module Hanami
     #
     # @since 2.0.0
     class SourceDirs
-      DEFAULT_COMPONENT_DIR_PATHS = %w[actions repositories views].freeze
+      DEFAULT_COMPONENT_DIR_PATHS = %w[lib actions repositories views].freeze
       private_constant :DEFAULT_COMPONENT_DIR_PATHS
 
       include Dry::Configurable
