@@ -365,8 +365,6 @@ module Hanami
     module InstanceMethods
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def initialize(application = self.class)
-        require_relative "application/router"
-
         application.boot
 
         @app = application.rack_app
