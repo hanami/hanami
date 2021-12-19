@@ -8,9 +8,6 @@ require "rack"
 require "zeitwerk"
 require_relative "slice"
 require_relative "application/autoloader/inflector_adapter"
-require_relative "application/router"
-require_relative "application/routes"
-require_relative "application/settings"
 
 module Hanami
   # Hanami application class
@@ -314,6 +311,8 @@ module Hanami
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def load_settings
+        require_relative "application/settings"
+
         prepare_base_load_path
         require File.join(configuration.root, configuration.settings_path)
         settings_class = autodiscover_application_constant(configuration.settings_class_name)
@@ -330,6 +329,8 @@ module Hanami
       end
 
       def load_router
+        require_relative "application/router"
+
         Router.new(
           routes: load_routes,
           resolver: router_resolver,
@@ -344,6 +345,8 @@ module Hanami
       end
 
       def load_routes
+        require_relative "application/routes"
+
         require File.join(configuration.root, configuration.router.routes_path)
         routes_class = autodiscover_application_constant(configuration.router.routes_class_name)
         routes_class.routes
