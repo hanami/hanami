@@ -76,8 +76,29 @@ module Hanami
         self
       end
 
+      def boot(&block)
+        return self if booted?
+
+        init
+
+        container.finalize!(&block)
+
+        slices.values.each(&:boot)
+
+        @booted = true
+        self
+      end
+
+      def shutdown
+        container.shutdown!
+      end
+
       def inited?
         @inited
+      end
+
+      def booted?
+        @booted
       end
 
       def autoloader
@@ -152,29 +173,6 @@ module Hanami
 
       def resolve(*args)
         container.resolve(*args)
-      end
-
-      def boot(&block)
-        return self if booted?
-
-        init
-
-        load_router
-
-        container.finalize!(&block)
-
-        slices.values.each(&:boot)
-
-        @booted = true
-        self
-      end
-
-      def booted?
-        @booted
-      end
-
-      def shutdown
-        container.shutdown!
       end
 
       def settings
