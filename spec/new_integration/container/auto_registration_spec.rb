@@ -25,7 +25,7 @@ RSpec.describe "Container auto-registration", :application_integration do
       RUBY
 
       require "hanami/setup"
-      Hanami.boot web: false
+      Hanami.boot
 
       expect(Admin::Slice["nba_jam.get_that_outta_here"]).to be_an Admin::NBAJam::GetThatOuttaHere
     end
