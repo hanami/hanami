@@ -27,7 +27,6 @@ module Hanami
             @_configuration = Hanami::Configuration.new(application_name: name, env: Hanami.env)
 
             extend ClassMethods
-            include InstanceMethods
           end
 
           klass.send :prepare_base_load_path
@@ -360,20 +359,5 @@ module Hanami
       end
     end
     # rubocop:enable Metrics/ModuleLength
-
-    # Application instance interface
-    module InstanceMethods
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      def initialize(application = self.class)
-        application.boot
-
-        @app = application.rack_app
-      end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
-
-      def call(env)
-        @app.call(env)
-      end
-    end
   end
 end
