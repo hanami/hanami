@@ -98,6 +98,18 @@ module Hanami
         @deps_module
       end
 
+      def router
+        raise "Application not init'ed" unless inited?
+
+        @_mutex.synchronize do
+          @_router ||= load_router
+        end
+      end
+
+      def rack_app
+        @rack_app ||= router.to_rack_app
+      end
+
       def slices
         @slices ||= {}
       end
@@ -206,41 +218,6 @@ module Hanami
         return unless component_name
 
         providers.detect { |provider| component_name.include?(provider.namespace.to_s) }
-      end
-
-      def router
-        @_mutex.synchronize do
-          @_router ||= load_router
-        end
-      end
-
-      def load_router
-        Router.new(
-          routes: routes,
-          resolver: resolver,
-          **configuration.router.options,
-        ) do
-          use Hanami.application[:rack_monitor]
-
-          Hanami.application.config.for_each_middleware do |m, *args, &block|
-            use(m, *args, &block)
-          end
-        end
-      end
-
-      def routes
-        require File.join(configuration.root, configuration.router.routes_path)
-        routes_class = autodiscover_application_constant(configuration.router.routes_class_name)
-        routes_class.routes
-      rescue LoadError
-        proc {}
-      end
-
-      def resolver
-        config.router.resolver.new(
-          slices: slices,
-          inflector: inflector
-        )
       end
 
       private
@@ -354,6 +331,35 @@ module Hanami
       def autodiscover_application_constant(constants)
         inflector.constantize([namespace_name, *constants].join(MODULE_DELIMITER))
       end
+
+      def load_router
+        Router.new(
+          routes: load_routes,
+          resolver: router_resolver,
+          **configuration.router.options,
+        ) do
+          use Hanami.application[:rack_monitor]
+
+          Hanami.application.config.for_each_middleware do |m, *args, &block|
+            use(m, *args, &block)
+          end
+        end
+      end
+
+      def load_routes
+        require File.join(configuration.root, configuration.router.routes_path)
+        routes_class = autodiscover_application_constant(configuration.router.routes_class_name)
+        routes_class.routes
+      rescue LoadError
+        proc {}
+      end
+
+      def router_resolver
+        config.router.resolver.new(
+          slices: slices,
+          inflector: inflector
+        )
+      end
     end
     # rubocop:enable Metrics/ModuleLength
 
@@ -365,7 +371,7 @@ module Hanami
 
         application.boot
 
-        @app = application.router.to_rack_app
+        @app = application.rack_app
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
