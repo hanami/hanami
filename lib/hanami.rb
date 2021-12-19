@@ -31,6 +31,10 @@ module Hanami
     end
   end
 
+  def self.rack_app
+    application.rack_app
+  end
+
   def self.env
     (ENV["HANAMI_ENV"] || "development").to_sym
   end

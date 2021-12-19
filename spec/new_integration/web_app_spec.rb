@@ -5,7 +5,7 @@ require "rack/test"
 RSpec.describe "Hanami web app", :application_integration do
   include Rack::Test::Methods
 
-  let(:app) { Hanami.app }
+  let(:app) { Hanami.rack_app }
 
   specify "Routing to actions based on their container identifiers" do
     with_tmp_directory(Dir.mktmpdir) do

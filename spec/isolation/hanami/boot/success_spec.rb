@@ -42,7 +42,6 @@ RSpec.describe Hanami do
       pending "Failing due to dry-system changes"
 
       Hanami.boot
-      expect(Hanami.app).to be_kind_of(Hanami::Application)
       expect(Hanami.application.ancestors).to include(Hanami::Application)
       expect(Hanami.application.root).to eq(Dir.pwd)
       expect(Hanami.logger).to be_kind_of(Hanami::Logger)
