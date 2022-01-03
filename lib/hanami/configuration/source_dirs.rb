@@ -5,7 +5,7 @@ require "dry/system/config/component_dirs"
 
 module Hanami
   class Configuration
-    # Hanami configuration for source dirs
+    # Configuration for slice source dirs
     #
     # @since 2.0.0
     class SourceDirs
