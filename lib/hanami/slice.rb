@@ -156,6 +156,24 @@ module Hanami
               )
             end
           end
+
+          # Pass configured autoload dirs to the autoloader
+          application.configuration.source_dirs.autoload_paths.each do |autoload_path|
+            next unless root.join(autoload_path).directory?
+
+            dir_namespace_path = File.join(namespace_path, autoload_path)
+
+            autoloader_namespace = begin
+              inflector.constantize(inflector.camelize(dir_namespace_path))
+            rescue NameError
+              namespace.const_set(inflector.camelize(autoload_path), Module.new)
+            end
+
+            application.autoloader.push_dir(
+              container.root.join(autoload_path),
+              namespace: autoloader_namespace
+            )
+          end
         end
       end
 
