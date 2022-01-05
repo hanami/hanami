@@ -50,6 +50,8 @@ module Hanami
       self.root = Dir.pwd
       self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
 
+      config.logger = Configuration::Logger.new(application_name: self.application_name)
+
       @assets = begin
         require_path = "hanami/assets/application_configuration"
         require require_path
@@ -128,7 +130,7 @@ module Hanami
       self.inflector = Dry::Inflector.new(&block)
     end
 
-    setting :logger, default: Configuration::Logger.new, cloneable: true
+    setting :logger, cloneable: true
 
     def logger=(logger_instance)
       @logger_instance = logger_instance

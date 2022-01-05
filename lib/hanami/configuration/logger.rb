@@ -13,6 +13,8 @@ module Hanami
 
       protected :config
 
+      setting :application_name
+
       setting :logger_class, default: Hanami::Logger
 
       setting :options, default: {level: :debug}
@@ -21,6 +23,10 @@ module Hanami
       #
       # TODO: incorporate this into the standard logging some way or another
       setting :filter_params, default: %w[_csrf password password_confirmation].freeze
+
+      def initialize(application_name:)
+        config.application_name = application_name
+      end
 
       private
 

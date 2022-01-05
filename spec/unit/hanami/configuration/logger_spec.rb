@@ -22,6 +22,12 @@ RSpec.describe Hanami::Configuration do
       end
     end
 
+    describe "#application_name" do
+      it "defaults to Hanami::Configuration#application_name" do
+        expect(config.logger.application_name).to eq(config.application_name)
+      end
+    end
+
     describe "#options" do
       it "defaults to {level: :debug}" do
         expect(config.logger.options).to eq(level: :debug)
