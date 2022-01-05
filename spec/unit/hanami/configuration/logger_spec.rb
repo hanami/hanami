@@ -96,6 +96,36 @@ RSpec.describe Hanami::Configuration::Logger do
     end
   end
 
+  describe "#colors" do
+    it "defaults to nil" do
+      expect(subject.colors).to eq(nil)
+    end
+
+    context "when :test environment" do
+      let(:env) { :test }
+
+      it "returns false" do
+        expect(subject.colors).to eq(false)
+      end
+    end
+
+    context "when :production environment" do
+      let(:env) { :production }
+
+      it "returns false" do
+        expect(subject.colors).to eq(false)
+      end
+    end
+  end
+
+  describe "#colors=" do
+    it "accepts a value" do
+      expect { subject.colors = false }
+        .to change { subject.colors }
+        .to(false)
+    end
+  end
+
   describe "#options" do
     it "defaults to {level: :debug}" do
       expect(subject.options).to eq(level: :debug)

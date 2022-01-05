@@ -21,6 +21,8 @@ module Hanami
 
       setting :formatter
 
+      setting :colors
+
       setting :logger_class, default: Hanami::Logger
 
       setting :options, default: {level: :debug}
@@ -52,6 +54,11 @@ module Hanami
                            when :production
                              :json
                            end
+
+        config.colors = case env
+                        when :production, :test
+                          false
+                        end
       end
 
       private
