@@ -149,20 +149,22 @@ RSpec.describe Hanami::Configuration::Logger do
   end
 
   describe "#options" do
-    it "defaults to {level: :debug}" do
-      expect(subject.options).to eq(level: :debug)
+    it "defaults to empty array" do
+      expect(subject.options).to eq([])
+    end
+  end
+
+  describe "#options=" do
+    it "accepts value" do
+      subject.options = expected = "daily"
+
+      expect(subject.options).to eq([expected])
     end
 
-    it "can have additional options set" do
-      expect { subject.options[:stream] = "/some/file" }
-        .to change { subject.options }
-        .to(level: :debug, stream: "/some/file")
-    end
+    it "accepts values" do
+      subject.options = expected = [0, 1048576]
 
-    it "can be changed to another hash of options" do
-      expect { subject.options = {level: :info} }
-        .to change { subject.options }
-        .to(level: :info)
+      expect(subject.options).to eq(expected)
     end
   end
 end
@@ -182,15 +184,6 @@ RSpec.describe Hanami::Configuration do
   end
 
   describe "#logger_instance" do
-    it "returns an instance of the configured logger class, with configured options given to its initializer" do
-      klass = Struct.new(:opts)
-
-      config.logger.logger_class = klass
-
-      expect(config.logger_instance).to be_an_instance_of klass
-      expect(config.logger_instance.opts).to eq config.logger.options
-    end
-
     it "defaults to an Hanami::Logger instance, based on the default logger settings" do
       expect(config.logger_instance).to be_an_instance_of config.logger.logger_class
       expect(config.logger_instance.level).to eq Logger::DEBUG

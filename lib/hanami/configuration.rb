@@ -137,7 +137,7 @@ module Hanami
     end
 
     def logger_instance
-      @logger_instance || logger.logger_class.new(**logger.options)
+      @logger_instance || logger.instance
     end
 
     setting :settings_path, default: File.join("config", "settings")

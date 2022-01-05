@@ -25,9 +25,9 @@ module Hanami
 
       setting :filters, default: %w[_csrf password password_confirmation].freeze
 
-      setting :logger_class, default: Hanami::Logger
+      setting :options, default: [], constructor: ->(value) { Array(value).flatten }, cloneable: true
 
-      setting :options, default: {level: :debug}
+      setting :logger_class, default: Hanami::Logger
 
       def initialize(env:, application_name:)
         @env = env
@@ -56,6 +56,10 @@ module Hanami
                         when :production, :test
                           false
                         end
+      end
+
+      def instance
+        logger_class.new(application_name, *options, stream: stream, level: level, formatter: formatter, filter: filters, colorizer: colors)
       end
 
       private
