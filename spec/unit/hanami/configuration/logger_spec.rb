@@ -28,6 +28,20 @@ RSpec.describe Hanami::Configuration do
       end
     end
 
+    describe "#stream" do
+      it "defaults to $stdout" do
+        expect(config.logger.stream).to eq($stdout)
+      end
+    end
+
+    describe "#stream=" do
+      it "accepts a IO object or a path to a file" do
+        expect { config.logger.stream = "/dev/null" }
+          .to change { config.logger.stream }
+          .to("/dev/null")
+      end
+    end
+
     describe "#options" do
       it "defaults to {level: :debug}" do
         expect(config.logger.options).to eq(level: :debug)

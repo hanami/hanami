@@ -15,6 +15,8 @@ module Hanami
 
       setting :application_name
 
+      setting :stream, default: $stdout
+
       setting :logger_class, default: Hanami::Logger
 
       setting :options, default: {level: :debug}
