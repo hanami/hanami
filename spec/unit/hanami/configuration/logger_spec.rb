@@ -74,6 +74,28 @@ RSpec.describe Hanami::Configuration::Logger do
     end
   end
 
+  describe "#formatter" do
+    it "defaults to nil" do
+      expect(subject.formatter).to eq(nil)
+    end
+
+    context "when :production environment" do
+      let(:env) { :production }
+
+      it "returns :json" do
+        expect(subject.formatter).to eq(:json)
+      end
+    end
+  end
+
+  describe "#formatter=" do
+    it "accepts a formatter" do
+      expect { subject.formatter = :json }
+        .to change { subject.formatter }
+        .to(:json)
+    end
+  end
+
   describe "#options" do
     it "defaults to {level: :debug}" do
       expect(subject.options).to eq(level: :debug)

@@ -19,6 +19,8 @@ module Hanami
 
       setting :stream
 
+      setting :formatter
+
       setting :logger_class, default: Hanami::Logger
 
       setting :options, default: {level: :debug}
@@ -45,6 +47,11 @@ module Hanami
                         else
                           $stdout
                         end
+
+        config.formatter = case env
+                           when :production
+                             :json
+                           end
       end
 
       private
