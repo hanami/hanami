@@ -15,6 +15,8 @@ module Hanami
 
       setting :application_name
 
+      setting :level
+
       setting :stream
 
       setting :logger_class, default: Hanami::Logger
@@ -29,6 +31,13 @@ module Hanami
       def initialize(env:, application_name:)
         @env = env
         config.application_name = application_name
+
+        config.level = case env
+                       when :production
+                         :info
+                       else
+                         :debug
+                       end
 
         config.stream = case env
                         when :test

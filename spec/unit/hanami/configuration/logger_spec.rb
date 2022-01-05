@@ -28,6 +28,28 @@ RSpec.describe Hanami::Configuration::Logger do
     end
   end
 
+  describe "#level" do
+    it "defaults to :debug" do
+      expect(subject.level).to eq(:debug)
+    end
+
+    context "when :production environment" do
+      let(:env) { :production }
+
+      it "returns :info" do
+        expect(subject.level).to eq(:info)
+      end
+    end
+  end
+
+  describe "#level=" do
+    it "a value" do
+      expect { subject.level = :warn }
+        .to change { subject.level }
+        .to(:warn)
+    end
+  end
+
   describe "#stream" do
     it "defaults to $stdout" do
       expect(subject.stream).to eq($stdout)
