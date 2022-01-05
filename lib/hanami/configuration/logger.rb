@@ -23,14 +23,11 @@ module Hanami
 
       setting :colors
 
+      setting :filters, default: %w[_csrf password password_confirmation].freeze
+
       setting :logger_class, default: Hanami::Logger
 
       setting :options, default: {level: :debug}
-
-      # Currently used for logging of Rack requests only.
-      #
-      # TODO: incorporate this into the standard logging some way or another
-      setting :filter_params, default: %w[_csrf password password_confirmation].freeze
 
       def initialize(env:, application_name:)
         @env = env

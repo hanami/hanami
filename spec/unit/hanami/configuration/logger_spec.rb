@@ -126,6 +126,28 @@ RSpec.describe Hanami::Configuration::Logger do
     end
   end
 
+  describe "#filters" do
+    it "defaults to a standard array of sensitive param names" do
+      expect(subject.filters).to include(*%w[_csrf password password_confirmation])
+    end
+
+    it "can have other params names added" do
+      expect { subject.filters << "secret" }
+        .to change { subject.filters }
+        .to array_including("secret")
+
+      expect { subject.filters += ["yet", "another"] }
+        .to change { subject.filters }
+        .to array_including(["yet", "another"])
+    end
+
+    it "can be changed to another array" do
+      expect { subject.filters = ["secret"] }
+        .to change { subject.filters }
+        .to ["secret"]
+    end
+  end
+
   describe "#options" do
     it "defaults to {level: :debug}" do
       expect(subject.options).to eq(level: :debug)
@@ -141,24 +163,6 @@ RSpec.describe Hanami::Configuration::Logger do
       expect { subject.options = {level: :info} }
         .to change { subject.options }
         .to(level: :info)
-    end
-  end
-
-  describe "#filter_params" do
-    it "defaults to a standard array of sensitive param names" do
-      expect(subject.filter_params).to include(*%w[_csrf password password_confirmation])
-    end
-
-    it "can have other params names added" do
-      expect { subject.filter_params << "secret_param" }
-        .to change { subject.filter_params }
-        .to array_including("secret_param")
-    end
-
-    it "can be changed to another array" do
-      expect { subject.filter_params = ["secret_param"] }
-        .to change { subject.filter_params }
-        .to ["secret_param"]
     end
   end
 end
