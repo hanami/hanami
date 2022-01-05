@@ -15,7 +15,7 @@ module Hanami
 
       setting :application_name
 
-      setting :stream, default: $stdout
+      setting :stream
 
       setting :logger_class, default: Hanami::Logger
 
@@ -26,8 +26,16 @@ module Hanami
       # TODO: incorporate this into the standard logging some way or another
       setting :filter_params, default: %w[_csrf password password_confirmation].freeze
 
-      def initialize(application_name:)
+      def initialize(env:, application_name:)
+        @env = env
         config.application_name = application_name
+
+        config.stream = case env
+                        when :test
+                          File.join("log", "#{env}.log")
+                        else
+                          $stdout
+                        end
       end
 
       private

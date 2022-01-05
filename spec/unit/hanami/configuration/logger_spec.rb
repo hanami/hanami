@@ -4,8 +4,9 @@ require "hanami/configuration/logger"
 require "logger"
 
 RSpec.describe Hanami::Configuration::Logger do
-  subject { described_class.new(application_name: application_name) }
+  subject { described_class.new(application_name: application_name, env: env) }
   let(:application_name) { :my_app }
+  let(:env) { :development }
 
   describe "#logger_class" do
     it "defaults to Hanami::Logger" do
@@ -30,6 +31,16 @@ RSpec.describe Hanami::Configuration::Logger do
   describe "#stream" do
     it "defaults to $stdout" do
       expect(subject.stream).to eq($stdout)
+    end
+
+    context "when :test environment" do
+      let(:env) { :test }
+
+      it "returns a file" do
+        expected = File.join("log", "test.log")
+
+        expect(subject.stream).to eq(expected)
+      end
     end
   end
 

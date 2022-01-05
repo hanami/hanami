@@ -50,7 +50,7 @@ module Hanami
       self.root = Dir.pwd
       self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
 
-      config.logger = Configuration::Logger.new(application_name: self.application_name)
+      config.logger = Configuration::Logger.new(env: env, application_name: self.application_name)
 
       @assets = begin
         require_path = "hanami/assets/application_configuration"
