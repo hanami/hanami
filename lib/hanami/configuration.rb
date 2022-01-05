@@ -25,6 +25,9 @@ module Hanami
     DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
     private_constant :DEFAULT_ENVIRONMENTS
 
+    MODULE_DELIMITER = "::"
+    private_constant :MODULE_DELIMITER
+
     attr_reader :actions
     attr_reader :middleware
     attr_reader :router
@@ -33,7 +36,12 @@ module Hanami
     attr_reader :environments
     private :environments
 
-    def initialize(env:)
+    attr_reader :application_name
+
+    def initialize(application_name:, env:)
+      @namespace = application_name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER)
+      @application_name = inflector.underscore(@namespace).to_sym
+
       @environments = DEFAULT_ENVIRONMENTS.clone
       config.env = env
 
@@ -99,6 +107,10 @@ module Hanami
       router.finalize!
 
       super
+    end
+
+    def namespace
+      inflector.constantize(@namespace)
     end
 
     setting :env

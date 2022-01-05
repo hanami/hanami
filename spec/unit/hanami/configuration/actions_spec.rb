@@ -4,7 +4,9 @@ require "hanami/configuration"
 require "hanami/action/application_configuration"
 
 RSpec.describe Hanami::Configuration, "#actions" do
-  let(:configuration) { described_class.new(env: :development) }
+  let(:configuration) { described_class.new(application_name: application_name, env: :development) }
+  let(:application_name) { "MyApp::Application" }
+
   subject(:actions) { configuration.actions }
 
   context "Hanami::Action available" do

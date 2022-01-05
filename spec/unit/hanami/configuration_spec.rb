@@ -1,7 +1,8 @@
 require "hanami/configuration"
 
 RSpec.describe Hanami::Configuration do
-  let(:config) { described_class.new(env: env) }
+  let(:config) { described_class.new(application_name: application_name, env: env) }
+  let(:application_name) { "MyApp::Application" }
   let(:env) { :development }
 
   describe "environment-specific configuration" do
