@@ -31,7 +31,7 @@ module Hanami
 
       def initialize(env:, application_name:)
         @env = env
-        config.application_name = application_name
+        @application_name = application_name
 
         config.level = case env
                        when :production
@@ -56,6 +56,10 @@ module Hanami
                         when :production, :test
                           false
                         end
+      end
+
+      def finalize!
+        config.application_name = @application_name.call
       end
 
       def instance

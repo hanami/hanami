@@ -5,7 +5,7 @@ require "logger"
 
 RSpec.describe Hanami::Configuration::Logger do
   subject { described_class.new(application_name: application_name, env: env) }
-  let(:application_name) { :my_app }
+  let(:application_name) { -> { :my_app } }
   let(:env) { :development }
 
   describe "#logger_class" do
@@ -23,8 +23,12 @@ RSpec.describe Hanami::Configuration::Logger do
   end
 
   describe "#application_name" do
+    before do
+      subject.finalize!
+    end
+
     it "defaults returns application name" do
-      expect(subject.application_name).to eq(application_name)
+      expect(subject.application_name).to eq(application_name.call)
     end
   end
 
@@ -172,10 +176,18 @@ end
 
 RSpec.describe Hanami::Configuration do
   subject(:config) { described_class.new(application_name: application_name, env: env) }
-  let(:application_name) { "MyApp::Application" }
+  let(:application_name) { "SOS::Application" }
   let(:env) { :development }
 
   describe "#logger" do
+    before do
+      config.inflections do |inflections|
+        inflections.acronym "SOS"
+      end
+
+      config.logger.finalize!
+    end
+
     describe "#application_name" do
       it "defaults to Hanami::Configuration#application_name" do
         expect(config.logger.application_name).to eq(config.application_name)

@@ -36,11 +36,8 @@ module Hanami
     attr_reader :environments
     private :environments
 
-    attr_reader :application_name
-
     def initialize(application_name:, env:)
       @namespace = application_name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER)
-      @application_name = inflector.underscore(@namespace).to_sym
 
       @environments = DEFAULT_ENVIRONMENTS.clone
       config.env = env
@@ -50,7 +47,7 @@ module Hanami
       self.root = Dir.pwd
       self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
 
-      config.logger = Configuration::Logger.new(env: env, application_name: self.application_name)
+      config.logger = Configuration::Logger.new(env: env, application_name: method(:application_name))
 
       @assets = begin
         require_path = "hanami/assets/application_configuration"
@@ -113,6 +110,10 @@ module Hanami
 
     def namespace
       inflector.constantize(@namespace)
+    end
+
+    def application_name
+      inflector.underscore(@namespace).to_sym
     end
 
     setting :env
