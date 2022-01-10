@@ -4,7 +4,9 @@ require "hanami/configuration"
 require "hanami/view/application_configuration"
 
 RSpec.describe Hanami::Configuration, "#views" do
-  let(:configuration) { described_class.new(env: :development) }
+  let(:configuration) { described_class.new(application_name: application_name, env: :development) }
+  let(:application_name) { "MyApp::Application" }
+
   subject(:views) { configuration.views }
 
   context "Hanami::View available" do

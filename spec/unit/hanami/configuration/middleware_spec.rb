@@ -3,7 +3,8 @@
 require "hanami/configuration"
 
 RSpec.describe Hanami::Configuration do
-  subject(:config) { described_class.new(env: :development) }
+  subject(:config) { described_class.new(application_name: application_name, env: :development) }
+  let(:application_name) { "MyApp::Application" }
 
   describe "#middleware" do
     it "defaults to a stack with no configured middlewares" do

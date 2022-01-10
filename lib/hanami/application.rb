@@ -24,7 +24,7 @@ module Hanami
         @_mutex.synchronize do
           klass.class_eval do
             @_mutex         = Mutex.new
-            @_configuration = Hanami::Configuration.new(env: Hanami.env)
+            @_configuration = Hanami::Configuration.new(application_name: name, env: Hanami.env)
 
             extend ClassMethods
             include InstanceMethods
@@ -169,11 +169,8 @@ module Hanami
         @_settings ||= load_settings
       end
 
-      MODULE_DELIMITER = "::"
-      private_constant :MODULE_DELIMITER
-
       def namespace
-        inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
+        configuration.namespace
       end
 
       def namespace_name
@@ -185,7 +182,7 @@ module Hanami
       end
 
       def application_name
-        inflector.underscore(namespace).to_sym
+        configuration.application_name
       end
 
       def root
@@ -350,6 +347,9 @@ module Hanami
       rescue LoadError
         Settings.new
       end
+
+      MODULE_DELIMITER = "::"
+      private_constant :MODULE_DELIMITER
 
       def autodiscover_application_constant(constants)
         inflector.constantize([namespace_name, *constants].join(MODULE_DELIMITER))

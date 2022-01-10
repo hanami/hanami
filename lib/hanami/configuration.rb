@@ -25,6 +25,9 @@ module Hanami
     DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
     private_constant :DEFAULT_ENVIRONMENTS
 
+    MODULE_DELIMITER = "::"
+    private_constant :MODULE_DELIMITER
+
     attr_reader :actions
     attr_reader :middleware
     attr_reader :router
@@ -33,7 +36,9 @@ module Hanami
     attr_reader :environments
     private :environments
 
-    def initialize(env:)
+    def initialize(application_name:, env:)
+      @namespace = application_name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER)
+
       @environments = DEFAULT_ENVIRONMENTS.clone
       config.env = env
 
@@ -41,6 +46,8 @@ module Hanami
       # have appropriate values for the current application
       self.root = Dir.pwd
       self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
+
+      config.logger = Configuration::Logger.new(env: env, application_name: method(:application_name))
 
       @assets = begin
         require_path = "hanami/assets/application_configuration"
@@ -101,6 +108,14 @@ module Hanami
       super
     end
 
+    def namespace
+      inflector.constantize(@namespace)
+    end
+
+    def application_name
+      inflector.underscore(@namespace).to_sym
+    end
+
     setting :env
 
     def env=(new_env)
@@ -116,14 +131,14 @@ module Hanami
       self.inflector = Dry::Inflector.new(&block)
     end
 
-    setting :logger, default: Configuration::Logger.new, cloneable: true
+    setting :logger, cloneable: true
 
     def logger=(logger_instance)
       @logger_instance = logger_instance
     end
 
     def logger_instance
-      @logger_instance || logger.logger_class.new(**logger.options)
+      @logger_instance || logger.instance
     end
 
     setting :settings_path, default: File.join("config", "settings")
