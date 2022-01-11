@@ -31,20 +31,8 @@ module Hanami
     end
   end
 
-  def self.app
-    @_mutex.synchronize do
-      raise "Hanami.app not configured" unless defined?(@_app)
-
-      @_app
-    end
-  end
-
-  def self.app=(app)
-    @_mutex.synchronize do
-      raise "Hanami.app already configured" if defined?(@_app)
-
-      @_app = app
-    end
+  def self.rack_app
+    application.rack_app
   end
 
   def self.env
@@ -63,14 +51,8 @@ module Hanami
     application.init
   end
 
-  def self.boot(web: true)
-    if defined?(@_app)
-      @_app
-    else
-      application.boot
-
-      @_app = application.new if web
-    end
+  def self.boot
+    application.boot
   end
 
   def self.shutdown

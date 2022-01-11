@@ -43,7 +43,7 @@ RSpec.describe "Container shutdown", :application_integration do
       write "lib/test_app/.keep", ""
 
       require "hanami/setup"
-      Hanami.boot web: false
+      Hanami.boot
 
       persistence = Hanami.application[:persistence]
 

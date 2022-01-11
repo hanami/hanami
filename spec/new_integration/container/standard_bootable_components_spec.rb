@@ -13,7 +13,7 @@ RSpec.describe "Container / Standard bootable components", :application_integrat
       write "lib/test_app/.keep", ""
 
       require "hanami/setup"
-      Hanami.boot web: false
+      Hanami.boot
 
       expect(Hanami.application[:settings]).to be_an_instance_of(Hanami::Application::Settings)
       expect(Hanami.application[:inflector]).to eql Hanami.application.inflector
@@ -69,7 +69,7 @@ RSpec.describe "Container / Standard bootable components", :application_integrat
       write "lib/test_app/.keep", ""
 
       require "hanami/setup"
-      Hanami.boot web: false
+      Hanami.boot
 
       expect(Hanami.application[:settings]).to respond_to :session_secret
     end
@@ -97,7 +97,7 @@ RSpec.describe "Container / Standard bootable components", :application_integrat
       write "lib/test_app/.keep", ""
 
       require "hanami/setup"
-      Hanami.boot web: false
+      Hanami.boot
 
       expect(Hanami.application[:logger]).to eq "custom logger"
     end

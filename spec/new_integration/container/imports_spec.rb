@@ -21,7 +21,7 @@ RSpec.describe "Container imports", :application_integration do
       shared_service = Object.new
       TestApp::Application.register("shared_service", shared_service)
 
-      Hanami.boot web: false
+      Hanami.boot
 
       expect(Admin::Slice["application.shared_service"]).to be shared_service
     end
@@ -51,7 +51,7 @@ RSpec.describe "Container imports", :application_integration do
       RUBY
 
       require "hanami/setup"
-      Hanami.boot web: false
+      Hanami.boot
 
       expect(Admin::Slice["search.index_entity"]).to be_a Search::IndexEntity
     end

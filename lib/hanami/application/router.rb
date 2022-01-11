@@ -10,8 +10,8 @@ module Hanami
     class Router < ::Hanami::Router
       # @since 2.0.0
       # @api private
-      def initialize(routes:, stack: Routing::Middleware::Stack.new, **kwargs, &blk)
-        @stack = stack
+      def initialize(routes:, middleware_stack: Routing::Middleware::Stack.new, **kwargs, &blk)
+        @middleware_stack = middleware_stack
         instance_eval(&blk)
         super(**kwargs, &routes)
       end
@@ -21,20 +21,20 @@ module Hanami
       def freeze
         return self if frozen?
 
-        remove_instance_variable(:@stack)
+        remove_instance_variable(:@middleware_stack)
         super
       end
 
       # @since 2.0.0
       # @api private
       def use(middleware, *args, &blk)
-        @stack.use(middleware, *args, &blk)
+        @middleware_stack.use(middleware, *args, &blk)
       end
 
       # @since 2.0.0
       # @api private
       def scope(*args, &blk)
-        @stack.with(args.first) do
+        @middleware_stack.with(args.first) do
           super
         end
       end
@@ -50,9 +50,9 @@ module Hanami
       # @since 2.0.0
       # @api private
       def to_rack_app
-        return self if @stack.empty?
+        return self if @middleware_stack.empty?
 
-        @stack.to_rack_app(self)
+        @middleware_stack.to_rack_app(self)
       end
     end
   end
