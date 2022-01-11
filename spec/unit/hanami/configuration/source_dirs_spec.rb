@@ -3,7 +3,8 @@
 require "hanami/configuration"
 
 RSpec.describe Hanami::Configuration, "#source_dirs" do
-  subject(:source_dirs) { described_class.new(env: :development).source_dirs }
+  subject(:source_dirs) { described_class.new(application_name: application_name, env: :development).source_dirs }
+  let(:application_name) { "MyApp::Application" }
 
   describe "#component_dirs" do
     it "defaults to 'lib, actions, repositories, views'" do
