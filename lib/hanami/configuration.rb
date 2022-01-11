@@ -12,6 +12,7 @@ require_relative "configuration/logger"
 require_relative "configuration/middleware"
 require_relative "configuration/router"
 require_relative "configuration/sessions"
+require_relative "configuration/source_dirs"
 
 module Hanami
   # Hanami application configuration
@@ -155,9 +156,7 @@ module Hanami
     # slice, etc.
     setting :slices, default: {}, constructor: :dup.to_proc
 
-    # TODO: turn this into a richer "source dirs" setting that can support enabling
-    # of container component loading as an opt in behvior
-    setting :component_dir_paths, default: %w[actions repositories views]
+    setting :source_dirs, default: Configuration::SourceDirs.new, cloneable: true
 
     def slice(slice_name, &block)
       slices[slice_name] = block
