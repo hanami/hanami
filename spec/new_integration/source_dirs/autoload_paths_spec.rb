@@ -25,36 +25,38 @@ RSpec.describe "Source dirs / autoload paths", :application_integration do
   end
 
   specify "User-configured autoload paths are configured with the autoloader" do
-    write "config/application.rb", <<~RUBY
-      require "hanami"
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
 
-      module TestApp
-        class Application < Hanami::Application
-          config.source_dirs.autoload_paths = ["entities", "structs"]
-        end
-      end
-    RUBY
-
-    write "slices/main/entities/post.rb", <<~RUBY
-      module Main
-        module Entities
-          class Post
+        module TestApp
+          class Application < Hanami::Application
+            config.source_dirs.autoload_paths = ["entities", "structs"]
           end
         end
-      end
-    RUBY
+      RUBY
 
-    write "slices/main/structs/post.rb", <<~RUBY
-      module Main
-        module Structs
-          class Post
+      write "slices/main/entities/post.rb", <<~RUBY
+        module Main
+          module Entities
+            class Post
+            end
           end
         end
-      end
-    RUBY
+      RUBY
 
-    require "hanami/init"
-    expect(Main::Entities::Post).to be
-    expect(Main::Structs::Post).to be
+      write "slices/main/structs/post.rb", <<~RUBY
+        module Main
+          module Structs
+            class Post
+            end
+          end
+        end
+      RUBY
+
+      require "hanami/init"
+      expect(Main::Entities::Post).to be
+      expect(Main::Structs::Post).to be
+    end
   end
 end
