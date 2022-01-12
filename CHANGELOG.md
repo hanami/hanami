@@ -1,6 +1,126 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha5 - 2022-01-12
+### Changed
+- [Luca Guidi] Sensible default configuration for application logger, with per-environment defaults:
+
+    The defaults are:
+
+    - In **production**, log for level `info`, send logs to `$stdout` in JSON format without colours
+    - In **development**, log for level `debug`, send logs to `$stdout` in single-line format with colours
+    - In **test**, log for level `debug`, send logs to `log/test.log` in single-line format without colours
+
+    To configure the logger:
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        config.logger.level = :info
+
+        config.logger.stream = $stdout
+        config.logger.stream = "/path/to/file"
+        config.logger.stream = StringIO.new
+
+        config.logger.format = :json
+        config.logger.format = MyCustomFormatter.new
+
+        config.logger.color = false # disable coloring
+        config.logger.color = MyCustomColorizer.new
+
+        config.logger.filters << "secret" # add
+        config.logger.filters += ["yet", "another"] # add
+        config.logger.filters = ["foo"] # replace
+
+        # See https://ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger.html
+        config.logger.options = ["daily"] # time based log rotation
+        config.logger.options = [0, 1048576] # size based log rotation
+      end
+    end
+    ```
+
+    To configure the logger for specific environments:
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        config.environment(:staging) do
+          config.logger.level = :info
+        end
+      end
+    end
+    ```
+
+    To assign a custom replacement logger object:
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        config.logger = MyCustomLogger.new
+      end
+    end
+    ```
+- [Tim Riley] Comprehensive `config.source_dirs` setting
+
+    This replaces the previous `component_dir_paths` setting, and contains two nested settings:
+
+    - `config.source_dirs.component_dirs` (backed by `Dry::System::Config::ComponentDirs`), for directories of source files intended to be registered as components
+    - `config.source_dirs.autoload_paths`, for directories of source files not intended for registration as components, but still to be made accessible by the autoloader
+
+    To add and configure your own additional component dirs:
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        # Adding a simple component dir
+        config.source_dirs.component_dirs.add "serializers"
+
+        # Adding a component dir with custom configuration
+        config.source_dirs.component_dirs.add "serializers" do |dir|
+          dir.auto_register = proc { |component|
+            !component.identifier.start_with?("structs")
+          }
+        end
+      end
+    end
+    ```
+
+    To customize the configuration of the default component dirs ("lib", "actions", "repositories", "views"):
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        # Customising a default component dir
+        config.source_dirs.component_dirs.dir("lib").auto_register = proc { |component|
+          !component.identifier.start_with?("structs")
+        }
+
+        # Setting default config to apply to all component dirs
+        config.source_dirs.component_dirs.auto_register = proc { |component|
+          !component.identifier.start_with?("entities")
+        }
+
+        # Removing a default component dir
+        config.source_dirs.component_dirs.delete("views")
+      end
+    end
+    ```
+
+    To configure the autoload paths (defaulting to `["entities"]`):
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        # Adding your own autoload paths
+        config.source_dirs.autoload_paths << "structs"
+
+        # Or providing a full replacement
+        config.source_dirs.autoload_paths = ["structs"]
+      end
+    end
+    ```
+- [Tim Riley] Application router is lazy loaded (not requiring application to be fully booted) and now available via `Hanami.rack_app` or `Hanami.application.rack_app`, instead of the previous `Hanami.app` (which required the app to be booted first).
+
 ## v2.0.0.alpha4 - 2021-12-07
 ### Added
 - [Luca Guidi] Manage Content Security Policy (CSP) with "zero-defaults" policy. New API to change CSP values and to disable the feature.
