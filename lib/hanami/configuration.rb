@@ -126,7 +126,7 @@ module Hanami
 
     setting :root, constructor: -> path { Pathname(path) }
 
-    setting :inflector, default: Dry::Inflector.new, cloneable: true
+    setting :inflector, default: Dry::Inflector.new
 
     def inflections(&block)
       self.inflector = Dry::Inflector.new(&block)
