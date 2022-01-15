@@ -17,7 +17,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.files         = `git ls-files -c -o --exclude-standard -z -- lib/* bin/* LICENSE.md README.md CODE_OF_CONDUCT.md CHANGELOG.md FEATURES.md hanami.gemspec`.split("\x0")
   spec.test_files    = spec.files.grep(%r{^(test)/})
   spec.require_paths = ["lib"]
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 3.0"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
