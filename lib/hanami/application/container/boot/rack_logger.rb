@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Hanami.application.register_bootable :rack_logger do
+Hanami.application.register_provider :rack_logger do
   start do
     require "hanami/web/rack_logger"
 

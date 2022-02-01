@@ -63,8 +63,8 @@ module Hanami
       container.register(*args, &block)
     end
 
-    def register_bootable(*args, &block)
-      container.boot(*args, &block)
+    def register_provider(...)
+      container.register_provider(...)
     end
 
     def init_bootable(*args)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Hanami.application.register_bootable :routes_helper do
+Hanami.application.register_provider :routes_helper do
   start do
     require "hanami/application/routes_helper"
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Hanami.application.register_bootable :rack_monitor do
+Hanami.application.register_provider :rack_monitor do
   start do
     require "dry/monitor"
     require "dry/monitor/rack/middleware"
