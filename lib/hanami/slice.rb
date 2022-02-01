@@ -108,7 +108,7 @@ module Hanami
 
         if root&.directory?
           config.root = root
-          config.bootable_dirs = ["config/boot"]
+          config.provider_dirs = ["config/providers"]
 
           # Add component dirs for each configured component path
           application.configuration.source_dirs.component_dirs.each do |component_dir|

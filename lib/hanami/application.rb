@@ -247,9 +247,9 @@ module Hanami
           config.inflector = configuration.inflector
 
           config.root = configuration.root
-          config.bootable_dirs = [
-            "config/boot",
-            Pathname(__dir__).join("application/container/boot").realpath,
+          config.provider_dirs = [
+            "config/providers",
+            Pathname(__dir__).join("application/container/providers").realpath,
           ]
 
           config.component_dirs.loader = Dry::System::Loader::Autoloading

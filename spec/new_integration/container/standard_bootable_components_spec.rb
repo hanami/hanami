@@ -86,7 +86,7 @@ RSpec.describe "Container / Standard bootable components", :application_integrat
         end
       RUBY
 
-      write "config/boot/logger.rb", <<~RUBY
+      write "config/providers/logger.rb", <<~RUBY
         Hanami.application.register_provider :logger do
           start do
             register :logger, "custom logger"
@@ -114,7 +114,7 @@ RSpec.describe "Container / Standard bootable components", :application_integrat
         end
       RUBY
 
-      write "config/boot/logger.rb", <<~RUBY
+      write "config/providers/logger.rb", <<~RUBY
         Hanami.application.register_provider :logger do
           start do
             register :logger, "custom logger"
