@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "hanami/application/settings"
+
 RSpec.describe "Application settings", :application_integration do
   before do
     @env = ENV.to_h
