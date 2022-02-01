@@ -41,7 +41,7 @@ RSpec.describe "Hanami view integration", :application_integration do
         h1 Hello, #{name}
       SLIM
 
-      require "hanami/init"
+      require "hanami/prepare"
 
       rendered = Main::Slice["views.test_view"].(name: "Jennifer")
       expect(rendered.to_s).to eq "<html><body><h1>Hello, Jennifer</h1></body></html>"
@@ -89,7 +89,7 @@ RSpec.describe "Hanami view integration", :application_integration do
         h1 Hello, #{name}
       SLIM
 
-      require "hanami/init"
+      require "hanami/prepare"
 
       rendered = Main::Slice["views.test_view"].(name: "Jennifer")
       expect(rendered.to_s).to eq "<html><body><h1>Hello, Jennifer</h1></body></html>"

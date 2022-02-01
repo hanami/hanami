@@ -11,7 +11,7 @@ module Web
 end
 Hanami.application.register_slice :web, namespace: Web
 
-Hanami.init
+Hanami.prepare
 
 module Web
   class Action < Hanami::Action

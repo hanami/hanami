@@ -39,7 +39,7 @@ module Hanami
     module ClassMethods
       def self.extended(klass)
         klass.class_eval do
-          @inited = @booted = false
+          @prepared = @booted = false
         end
       end
 
@@ -49,8 +49,8 @@ module Hanami
 
       alias config configuration
 
-      def init # rubocop:disable Metrics/MethodLength
-        return self if inited?
+      def prepare # rubocop:disable Metrics/MethodLength
+        return self if prepared?
 
         configuration.finalize!
 
@@ -63,19 +63,19 @@ module Hanami
         @deps_module = prepare_deps_module
 
         load_slices
-        slices.values.each(&:init)
+        slices.values.each(&:prepare)
         slices.freeze
 
         autoloader.setup
 
-        @inited = true
+        @prepared = true
         self
       end
 
       def boot(&block)
         return self if booted?
 
-        init
+        prepare
 
         container.finalize!(&block)
 
@@ -89,8 +89,8 @@ module Hanami
         container.shutdown!
       end
 
-      def inited?
-        @inited
+      def prepared?
+        @prepared
       end
 
       def booted?
@@ -98,25 +98,25 @@ module Hanami
       end
 
       def autoloader
-        raise "Application not init'ed" unless defined?(@autoloader)
+        raise "Application not yet prepared" unless defined?(@autoloader)
 
         @autoloader
       end
 
       def container
-        raise "Application not init'ed" unless defined?(@container)
+        raise "Application not yet prepared" unless defined?(@container)
 
         @container
       end
 
       def deps
-        raise "Application not init'ed" unless defined?(@deps_module)
+        raise "Application not yet prepared" unless defined?(@deps_module)
 
         @deps_module
       end
 
       def router
-        raise "Application not init'ed" unless inited?
+        raise "Application not yet prepared" unless prepared?
 
         @_mutex.synchronize do
           @_router ||= load_router
@@ -201,7 +201,7 @@ module Hanami
 
       # @api private
       def component_provider(component)
-        raise "Hanami.application must be inited before detecting providers" unless inited?
+        raise "Hanami.application must be prepared before detecting providers" unless prepared?
 
         # [Admin, Main, MyApp] or [MyApp::Admin, MyApp::Main, MyApp]
         providers = slices.values + [self]

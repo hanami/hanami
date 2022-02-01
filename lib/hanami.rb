@@ -47,8 +47,8 @@ module Hanami
     application[:logger]
   end
 
-  def self.init
-    application.init
+  def self.prepare
+    application.prepare
   end
 
   def self.boot

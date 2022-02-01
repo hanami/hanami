@@ -26,7 +26,7 @@ module Hanami
             # of the boot process respect the provided env
             ENV["HANAMI_ENV"] = arguments[:env] if arguments[:env]
 
-            require "hanami/init"
+            require "hanami/prepare"
             application = Hanami.application
 
             [command.with_application(application), arguments]

@@ -2,4 +2,4 @@
 
 require_relative "setup"
 
-Hanami.init
+Hanami.prepare

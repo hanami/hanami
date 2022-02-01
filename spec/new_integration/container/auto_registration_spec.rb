@@ -54,7 +54,7 @@ RSpec.describe "Container auto-registration", :application_integration do
         end
       RUBY
 
-      require "hanami/init"
+      require "hanami/prepare"
 
       expect(Admin::Slice.keys).not_to include("nba_jam.get_that_outta_here")
       expect(Admin::Slice["nba_jam.get_that_outta_here"]).to be_an Admin::NBAJam::GetThatOuttaHere

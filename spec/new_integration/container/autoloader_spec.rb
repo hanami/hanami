@@ -64,7 +64,7 @@ RSpec.describe "Application autoloader", :application_integration do
         end
       RUBY
 
-      require "hanami/init"
+      require "hanami/prepare"
 
       expect(require("non_app/thing")).to be true
       expect(NonApp::Thing).to be

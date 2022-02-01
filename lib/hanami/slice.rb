@@ -27,7 +27,7 @@ module Hanami
       @namespace_path ||= inflector.underscore(namespace.to_s)
     end
 
-    def init
+    def prepare
       container.import from: application.container, as: :application
 
       slice_block = application.configuration.slices[name]
