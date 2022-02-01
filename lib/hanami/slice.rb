@@ -27,11 +27,18 @@ module Hanami
       @namespace_path ||= inflector.underscore(namespace.to_s)
     end
 
-    def prepare
+    def prepare(provider_name = nil)
+      if provider_name
+        container.prepare(provider_name)
+        return self
+      end
+
       container.import from: application.container, as: :application
 
       slice_block = application.configuration.slices[name]
       instance_eval(&slice_block) if slice_block
+
+      self
     end
 
     def boot
@@ -67,12 +74,8 @@ module Hanami
       container.register_provider(...)
     end
 
-    def init_bootable(*args)
-      container.init(*args)
-    end
-
-    def start_bootable(*args)
-      container.start(*args)
+    def start(...)
+      container.start(...)
     end
 
     def key?(*args)

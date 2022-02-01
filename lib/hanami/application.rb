@@ -49,7 +49,12 @@ module Hanami
 
       alias config configuration
 
-      def prepare # rubocop:disable Metrics/MethodLength
+      def prepare(provider_name = nil) # rubocop:disable Metrics/MethodLength
+        if provider_name
+          container.prepare(provider_name)
+          return self
+        end
+
         return self if prepared?
 
         configuration.finalize!
@@ -147,12 +152,8 @@ module Hanami
         container.register_provider(...)
       end
 
-      def init_bootable(*args)
-        container.init(*args)
-      end
-
-      def start_bootable(*args)
-        container.start(*args)
+      def start(...)
+        container.start(...)
       end
 
       def key?(*args)
