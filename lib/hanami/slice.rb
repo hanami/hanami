@@ -28,7 +28,7 @@ module Hanami
     end
 
     def init
-      container.import application: application.container
+      container.import from: application.container, as: :application
 
       slice_block = application.configuration.slices[name]
       instance_eval(&slice_block) if slice_block
@@ -55,7 +55,7 @@ module Hanami
       raise "Cannot import after booting" if booted?
 
       slice_names.each do |slice_name|
-        container.import slice_name.to_sym => application.slices.fetch(slice_name.to_sym).container
+        container.import from: application.slices.fetch(slice_name.to_sym).container, as: slice_name.to_sym
       end
     end
 
