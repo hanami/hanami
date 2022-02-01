@@ -35,9 +35,7 @@ module Hanami
     end
 
     def boot
-      container.finalize! do
-        container.config.env = application.container.config.env
-      end
+      container.finalize!
 
       @booted = true
       self
@@ -102,6 +100,7 @@ module Hanami
 
       container.configure do |config|
         config.name = name
+        config.env = application.configuration.env
         config.inflector = application.configuration.inflector
 
         config.component_dirs.loader = Dry::System::Loader::Autoloading
