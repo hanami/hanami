@@ -78,20 +78,20 @@ module Hanami
       container.start(...)
     end
 
-    def key?(*args)
-      container.key?(*args)
+    def key?(...)
+      container.key?(...)
     end
 
     def keys
       container.keys
     end
 
-    def [](*args)
-      container[*args]
+    def [](...)
+      container.[](...)
     end
 
-    def resolve(*args)
-      container.resolve(*args)
+    def resolve(...)
+      container.resolve(...)
     end
 
     private

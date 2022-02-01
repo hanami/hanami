@@ -144,8 +144,8 @@ module Hanami
         slices[name.to_sym] = slice
       end
 
-      def register(*args, **opts, &block)
-        container.register(*args, **opts, &block)
+      def register(...)
+        container.register(...)
       end
 
       def register_provider(...)
@@ -156,20 +156,20 @@ module Hanami
         container.start(...)
       end
 
-      def key?(*args)
-        container.key?(*args)
+      def key?(...)
+        container.key?(...)
       end
 
       def keys
         container.keys
       end
 
-      def [](*args)
-        container[*args]
+      def [](...)
+        container.[](...)
       end
 
-      def resolve(*args)
-        container.resolve(*args)
+      def resolve(...)
+        container.resolve(...)
       end
 
       def settings
