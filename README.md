@@ -36,7 +36,7 @@ These components are designed to be used independently or together in a Hanami a
 
 ## Installation
 
-__Hanami__ supports Ruby (MRI) 2.6+
+__Hanami__ supports Ruby (MRI) 3.0+
 
 ```shell
 gem install hanami
