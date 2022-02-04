@@ -20,10 +20,13 @@ RSpec.describe Hanami::Web::RackLogger do
 
   describe "#log_request" do
     it "logs current request" do
+      time = Time.parse("2022-02-04 11:38:25.218816 +0100")
+      expect(Time).to receive(:now).at_least(:once).and_return(time)
+
       path = "/users"
       ip = "127.0.0.1"
       status = 200
-      time = 0.0001
+      elapsed = 0.0001
       content_length = 23
       verb = "POST"
 
@@ -34,12 +37,12 @@ RSpec.describe Hanami::Web::RackLogger do
       params = {"user" => {"password" => "secret"}}
       env["router.params"] = params
 
-      subject.log_request(env, status, time)
+      subject.log_request(env, status, elapsed)
 
       stream.rewind
       actual = stream.read
 
-      expect(actual).to include(%([#{application_name}] [INFO] [#{time}] #{verb} #{status} #{ip} #{path} #{content_length} {"user"=>{"password"=>"[FILTERED]"}}))
+      expect(actual).to include(%([#{application_name}] [INFO] [#{time}] #{verb} #{status} #{elapsed}ms #{ip} #{path} #{content_length} {"user"=>{"password"=>"[FILTERED]"}}))
     end
 
     context "ip" do
