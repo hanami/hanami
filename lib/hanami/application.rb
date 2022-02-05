@@ -244,18 +244,16 @@ module Hanami
         container.use :env, inferrer: -> { Hanami.env }
         container.use :notifications
 
-        container.configure do |config|
-          config.inflector = configuration.inflector
+        container.config.inflector = configuration.inflector
+        container.config.root = configuration.root
 
-          config.root = configuration.root
-          config.provider_dirs = [
-            "config/providers",
-            Pathname(__dir__).join("application/container/providers").realpath,
-          ]
+        container.config.provider_dirs = [
+          "config/providers",
+          Pathname(__dir__).join("application/container/providers").realpath,
+        ]
 
-          config.component_dirs.loader = Dry::System::Loader::Autoloading
-          config.component_dirs.add_to_load_path = false
-        end
+        container.config.component_dirs.loader = Dry::System::Loader::Autoloading
+        container.config.component_dirs.add_to_load_path = false
 
         # Autoload classes defined in lib/[app_namespace]/
         if root.join("lib", namespace_path).directory?
@@ -266,6 +264,7 @@ module Hanami
         # are require-able
         container.add_to_load_path!("lib") if root.join("lib").directory?
 
+        container.configured!
         container
       end
       # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
