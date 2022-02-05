@@ -41,7 +41,7 @@ RSpec.describe "Application routes helper", :application_integration do
         end
       RUBY
 
-      require "hanami/init"
+      require "hanami/prepare"
 
       expect(TestApp::Application["routes_helper"].path(:root)).to eq "/"
       expect(TestApp::Application["routes_helper"].url(:root).to_s).to match /http:\/\/.*\//

@@ -19,7 +19,7 @@ RSpec.describe "Source dirs / autoload paths", :application_integration do
         end
       RUBY
 
-      require "hanami/init"
+      require "hanami/prepare"
       expect(Main::Entities::Post).to be
     end
   end
@@ -54,7 +54,7 @@ RSpec.describe "Source dirs / autoload paths", :application_integration do
         end
       RUBY
 
-      require "hanami/init"
+      require "hanami/prepare"
       expect(Main::Entities::Post).to be
       expect(Main::Structs::Post).to be
     end

@@ -39,7 +39,7 @@ module Hanami
     module ClassMethods
       def self.extended(klass)
         klass.class_eval do
-          @inited = @booted = false
+          @prepared = @booted = false
         end
       end
 
@@ -49,8 +49,13 @@ module Hanami
 
       alias config configuration
 
-      def init # rubocop:disable Metrics/MethodLength
-        return self if inited?
+      def prepare(provider_name = nil) # rubocop:disable Metrics/MethodLength
+        if provider_name
+          container.prepare(provider_name)
+          return self
+        end
+
+        return self if prepared?
 
         configuration.finalize!
 
@@ -63,19 +68,19 @@ module Hanami
         @deps_module = prepare_deps_module
 
         load_slices
-        slices.values.each(&:init)
+        slices.values.each(&:prepare)
         slices.freeze
 
         autoloader.setup
 
-        @inited = true
+        @prepared = true
         self
       end
 
       def boot(&block)
         return self if booted?
 
-        init
+        prepare
 
         container.finalize!(&block)
 
@@ -89,8 +94,8 @@ module Hanami
         container.shutdown!
       end
 
-      def inited?
-        @inited
+      def prepared?
+        @prepared
       end
 
       def booted?
@@ -98,25 +103,25 @@ module Hanami
       end
 
       def autoloader
-        raise "Application not init'ed" unless defined?(@autoloader)
+        raise "Application not yet prepared" unless defined?(@autoloader)
 
         @autoloader
       end
 
       def container
-        raise "Application not init'ed" unless defined?(@container)
+        raise "Application not yet prepared" unless defined?(@container)
 
         @container
       end
 
       def deps
-        raise "Application not init'ed" unless defined?(@deps_module)
+        raise "Application not yet prepared" unless defined?(@deps_module)
 
         @deps_module
       end
 
       def router
-        raise "Application not init'ed" unless inited?
+        raise "Application not yet prepared" unless prepared?
 
         @_mutex.synchronize do
           @_router ||= load_router
@@ -139,36 +144,32 @@ module Hanami
         slices[name.to_sym] = slice
       end
 
-      def register(*args, **opts, &block)
-        container.register(*args, **opts, &block)
+      def register(...)
+        container.register(...)
       end
 
-      def register_bootable(*args, **opts, &block)
-        container.boot(*args, **opts, &block)
+      def register_provider(...)
+        container.register_provider(...)
       end
 
-      def init_bootable(*args)
-        container.init(*args)
+      def start(...)
+        container.start(...)
       end
 
-      def start_bootable(*args)
-        container.start(*args)
-      end
-
-      def key?(*args)
-        container.key?(*args)
+      def key?(...)
+        container.key?(...)
       end
 
       def keys
         container.keys
       end
 
-      def [](*args)
-        container[*args]
+      def [](...)
+        container.[](...)
       end
 
-      def resolve(*args)
-        container.resolve(*args)
+      def resolve(...)
+        container.resolve(...)
       end
 
       def settings
@@ -201,7 +202,7 @@ module Hanami
 
       # @api private
       def component_provider(component)
-        raise "Hanami.application must be inited before detecting providers" unless inited?
+        raise "Hanami.application must be prepared before detecting providers" unless prepared?
 
         # [Admin, Main, MyApp] or [MyApp::Admin, MyApp::Main, MyApp]
         providers = slices.values + [self]
@@ -247,9 +248,9 @@ module Hanami
           config.inflector = configuration.inflector
 
           config.root = configuration.root
-          config.bootable_dirs = [
-            "config/boot",
-            Pathname(__dir__).join("application/container/boot").realpath,
+          config.provider_dirs = [
+            "config/providers",
+            Pathname(__dir__).join("application/container/providers").realpath,
           ]
 
           config.component_dirs.loader = Dry::System::Loader::Autoloading

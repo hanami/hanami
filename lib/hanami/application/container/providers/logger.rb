@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Hanami.application.register_bootable :logger do
+Hanami.application.register_provider :logger do
   start do
     register :logger, Hanami.application.configuration.logger_instance
   end

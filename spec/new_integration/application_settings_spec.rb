@@ -52,7 +52,7 @@ RSpec.describe "Application settings", :application_integration do
         end
       RUBY
 
-      require "hanami/init"
+      require "hanami/prepare"
 
       expect(Hanami.application.settings.database_url).to eq "postgres://localhost/test_app_development"
       expect(Hanami.application.settings.redis_url).to eq "redis://localhost:6379"
@@ -105,7 +105,7 @@ RSpec.describe "Application settings", :application_integration do
       feature_flag_error = "feature_flag: maybe cannot be coerced"
 
       expect {
-        require "hanami/init"
+        require "hanami/prepare"
       }.to raise_error(
         Hanami::Application::Settings::InvalidSettingsError,
         /#{numeric_setting_error}.+#{feature_flag_error}|#{feature_flag_error}.+#{numeric_setting_error}/m

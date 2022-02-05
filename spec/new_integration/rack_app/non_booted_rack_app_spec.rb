@@ -90,7 +90,7 @@ RSpec.describe "Running a Rack app for a non-booted application", :application_i
         end
       RUBY
 
-      require "hanami/init"
+      require "hanami/prepare"
 
       get "/"
 

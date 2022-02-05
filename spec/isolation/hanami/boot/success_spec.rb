@@ -12,7 +12,7 @@ module Web
 end
 slice = Hanami.application.register_slice :web, namespace: Web
 
-Hanami.init
+Hanami.prepare
 
 Hanami.application.routes do
   mount :web, at: "/" do

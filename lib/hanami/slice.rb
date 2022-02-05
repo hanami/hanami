@@ -27,17 +27,22 @@ module Hanami
       @namespace_path ||= inflector.underscore(namespace.to_s)
     end
 
-    def init
-      container.import application: application.container
+    def prepare(provider_name = nil)
+      if provider_name
+        container.prepare(provider_name)
+        return self
+      end
+
+      container.import from: application.container, as: :application
 
       slice_block = application.configuration.slices[name]
       instance_eval(&slice_block) if slice_block
+
+      self
     end
 
     def boot
-      container.finalize! do
-        container.config.env = application.container.config.env
-      end
+      container.finalize!
 
       @booted = true
       self
@@ -57,7 +62,7 @@ module Hanami
       raise "Cannot import after booting" if booted?
 
       slice_names.each do |slice_name|
-        container.import slice_name.to_sym => application.slices.fetch(slice_name.to_sym).container
+        container.import from: application.slices.fetch(slice_name.to_sym).container, as: slice_name.to_sym
       end
     end
 
@@ -65,32 +70,28 @@ module Hanami
       container.register(*args, &block)
     end
 
-    def register_bootable(*args, &block)
-      container.boot(*args, &block)
+    def register_provider(...)
+      container.register_provider(...)
     end
 
-    def init_bootable(*args)
-      container.init(*args)
+    def start(...)
+      container.start(...)
     end
 
-    def start_bootable(*args)
-      container.start(*args)
-    end
-
-    def key?(*args)
-      container.key?(*args)
+    def key?(...)
+      container.key?(...)
     end
 
     def keys
       container.keys
     end
 
-    def [](*args)
-      container[*args]
+    def [](...)
+      container.[](...)
     end
 
-    def resolve(*args)
-      container.resolve(*args)
+    def resolve(...)
+      container.resolve(...)
     end
 
     private
@@ -102,6 +103,7 @@ module Hanami
 
       container.configure do |config|
         config.name = name
+        config.env = application.configuration.env
         config.inflector = application.configuration.inflector
 
         config.component_dirs.loader = Dry::System::Loader::Autoloading
@@ -109,7 +111,7 @@ module Hanami
 
         if root&.directory?
           config.root = root
-          config.bootable_dirs = ["config/boot"]
+          config.provider_dirs = ["config/providers"]
 
           # Add component dirs for each configured component path
           application.configuration.source_dirs.component_dirs.each do |component_dir|

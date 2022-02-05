@@ -12,9 +12,9 @@ RSpec.describe "Container shutdown", :application_integration do
         end
       RUBY
 
-      write "config/boot/persistence.rb", <<~RUBY
-        Hanami.application.register_bootable :persistence do
-          init do
+      write "config/providers/persistence.rb", <<~RUBY
+        Hanami.application.register_provider :persistence do
+          prepare do
             module TestApp
               class Persistence
                 attr_reader :connected

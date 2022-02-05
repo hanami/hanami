@@ -45,7 +45,7 @@ RSpec.describe "Container auto-injection (aka \"Deps\") mixin", :application_int
 
   specify "Dependencies are lazily resolved and auto-injected in an unbooted application" do
     with_application do
-      require "hanami/init"
+      require "hanami/prepare"
 
       op = Admin::Slice["test_op"]
       expect(op.slice_service).to be_an Admin::SliceService
