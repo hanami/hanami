@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
-require "dry/system/loader/autoloading"
 require "pathname"
 
 module Hanami
@@ -99,14 +98,13 @@ module Hanami
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def define_container
       container = Class.new(Dry::System::Container)
+
       container.use :env
+      container.use :zeitwerk
 
       container.config.name = name
       container.config.env = application.configuration.env
       container.config.inflector = application.configuration.inflector
-
-      container.config.component_dirs.loader = Dry::System::Loader::Autoloading
-      container.config.component_dirs.add_to_load_path = false
 
       if root&.directory?
         container.config.root = root
@@ -129,8 +127,6 @@ module Hanami
             component_dir.namespaces.add_root(key: nil, const: namespace_path)
 
             container.config.component_dirs.add(component_dir)
-
-            application.autoloader.push_dir(root.join("lib"), namespace: namespace)
           else
             # Expect component files in the root of non-lib/ component dirs to define
             # classes inside a namespace matching that dir.
@@ -140,24 +136,15 @@ module Hanami
 
             dir_namespace_path = File.join(namespace_path, component_dir.path)
 
-            autoloader_namespace = begin
-              inflector.constantize(inflector.camelize(dir_namespace_path))
-            rescue NameError
-              namespace.const_set(inflector.camelize(component_dir.path), Module.new)
-            end
-
             component_dir.namespaces.delete_root
-            component_dir.namespaces.add_root(const: dir_namespace_path, key: component_dir.path) # TODO: do we need to swap path delimiters for key delimiters here?
+            component_dir.namespaces.add_root(const: dir_namespace_path, key: component_dir.path)
 
             container.config.component_dirs.add(component_dir)
-
-            application.autoloader.push_dir(
-              container.root.join(component_dir.path),
-              namespace: autoloader_namespace
-            )
           end
         end
+      end
 
+      if root&.directory?
         # Pass configured autoload dirs to the autoloader
         application.configuration.source_dirs.autoload_paths.each do |autoload_path|
           next unless root.join(autoload_path).directory?
@@ -170,7 +157,7 @@ module Hanami
             namespace.const_set(inflector.camelize(autoload_path), Module.new)
           end
 
-          application.autoloader.push_dir(
+          container.config.autoloader.push_dir(
             container.root.join(autoload_path),
             namespace: autoloader_namespace
           )
@@ -183,6 +170,7 @@ module Hanami
       end
 
       container.configured!
+
       container
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
