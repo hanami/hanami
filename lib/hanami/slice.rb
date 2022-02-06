@@ -15,7 +15,7 @@ module Hanami
       @name = name.to_sym
       @namespace = namespace
       @root = root ? Pathname(root) : root
-      @container = container || define_container
+      @container = container
     end
 
     def inflector
@@ -31,6 +31,8 @@ module Hanami
         container.prepare(provider_name)
         return self
       end
+
+      @container ||= define_container
 
       container.import from: application.container, as: :application
 
@@ -100,7 +102,10 @@ module Hanami
       container = Class.new(Dry::System::Container)
 
       container.use :env
-      container.use :zeitwerk
+      container.use :zeitwerk,
+        loader: application.autoloader,
+        setup: false,
+        eager_load: false
 
       container.config.name = name
       container.config.env = application.configuration.env

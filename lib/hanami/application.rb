@@ -60,12 +60,15 @@ module Hanami
 
         load_settings
 
+        @autoloader = Zeitwerk::Loader.new
         @container = prepare_container
         @deps_module = prepare_deps_module
 
         load_slices
-        slices.values.each(&:prepare)
+        slices.each_value(&:prepare)
         slices.freeze
+
+        @autoloader.setup
 
         @prepared = true
         self
@@ -94,6 +97,12 @@ module Hanami
 
       def booted?
         @booted
+      end
+
+      def autoloader
+        raise "Application not yet prepared" unless defined?(@autoloader)
+
+        @autoloader
       end
 
       def container
@@ -221,7 +230,7 @@ module Hanami
           end
 
         container.use :env, inferrer: -> { Hanami.env }
-        container.use :zeitwerk
+        container.use :zeitwerk, loader: autoloader, setup: false, eager_load: false
         container.use :notifications
 
         container.config.name = :application
