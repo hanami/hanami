@@ -39,15 +39,16 @@ module Hanami
         end
       end
 
-      def log_request(env, status, time)
+      def log_request(env, status, elapsed)
         data = {
           verb: env[REQUEST_METHOD],
           status: status,
+          elapsed: "#{elapsed}ms",
           ip: env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
           path: env[SCRIPT_NAME] + env[PATH_INFO].to_s,
           length: extract_content_length(env),
           params: env[ROUTER_PARAMS],
-          time: time,
+          time: Time.now,
         }
 
         logger.info(data)
