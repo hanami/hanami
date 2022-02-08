@@ -183,4 +183,47 @@ RSpec.describe "Container imports", :application_integration do
       expect(Search::Slice.container).not_to be_finalized
     end
   end
+
+  specify "Slices can configure specific exports" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+            config.slice :admin do
+              import(
+                keys: %w[index_entity query],
+                from: :search
+              )
+            end
+
+            config.slice :search do
+              container.config.exports = %w[query]
+            end
+          end
+        end
+      RUBY
+
+      write "slices/admin/.keep", ""
+
+      write "slices/search/lib/index_entity.rb", <<~RUBY
+        module Search
+          class IndexEntity; end
+        end
+      RUBY
+
+      write "slices/search/lib/query.rb", <<~RUBY
+        module Search
+          class Query; end
+        end
+      RUBY
+
+      require "hanami/setup"
+      Hanami.boot
+
+      expect(Admin::Slice.key?("search.query")).to be true
+      expect(Admin::Slice.key?("search.index_entity")).to be false
+    end
+  end
 end

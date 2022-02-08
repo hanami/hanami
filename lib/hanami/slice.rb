@@ -39,6 +39,10 @@ module Hanami
       slice_block = application.configuration.slices[name]
       instance_eval(&slice_block) if slice_block
 
+      # This is here and not inside define_container to allow for the slice block to
+      # interact with container config
+      container.configured!
+
       self
     end
 
@@ -180,8 +184,6 @@ module Hanami
         namespace.const_set :Container, container
         namespace.const_set :Deps, container.injector
       end
-
-      container.configured!
 
       container
     end
