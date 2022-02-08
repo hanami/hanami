@@ -54,6 +54,13 @@ RSpec.describe "Container imports", :application_integration do
       Hanami.boot
 
       expect(Admin::Slice["search.index_entity"]).to be_a Search::IndexEntity
+
+      # Ensure a slice's imported components (e.g. from "application") are not then
+      # exported again when that slice is imported, which would result in redundant
+      # components
+      expect(Search::Slice.key?("application.logger")).to be true
+      expect(Admin::Slice.key?("application.logger")).to be true
+      expect(Admin::Slice.key?("search.application.logger")).to be false
     end
   end
 
