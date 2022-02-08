@@ -17,6 +17,7 @@ module Hanami
 
     class << self
       def inherited(klass)
+        super
         @_mutex.synchronize do
           klass.class_eval do
             @_mutex         = Mutex.new
