@@ -46,9 +46,9 @@ module Hanami
         @_configuration
       end
 
-      alias config configuration
+      alias_method :config, :configuration
 
-      def prepare(provider_name = nil) # rubocop:disable Metrics/MethodLength
+      def prepare(provider_name = nil)
         if provider_name
           container.prepare(provider_name)
           return self
@@ -219,7 +219,7 @@ module Hanami
         $LOAD_PATH.unshift base_path unless $LOAD_PATH.include?(base_path)
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize
       def prepare_container
         container =
           begin
@@ -254,7 +254,7 @@ module Hanami
 
         container
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize
 
       def prepare_deps_module
         define_deps_module
@@ -277,7 +277,6 @@ module Hanami
         File.join(root, config.slices_dir)
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def load_slice(slice_path)
         slice_path = Pathname(slice_path)
 
@@ -299,7 +298,6 @@ module Hanami
           root: slice_path.realpath
         )
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def load_settings
         require_relative "application/settings"
