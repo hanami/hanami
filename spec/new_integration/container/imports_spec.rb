@@ -35,7 +35,7 @@ RSpec.describe "Container imports", :application_integration do
         module TestApp
           class Application < Hanami::Application
             config.slice :admin do
-              import :search
+              import from: :search
             end
           end
         end
@@ -64,6 +64,83 @@ RSpec.describe "Container imports", :application_integration do
     end
   end
 
+  specify "Slices can import specific components from other slices" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+            config.slice :admin do
+              import(
+                keys: ["query"],
+                from: :search
+              )
+            end
+          end
+        end
+      RUBY
+
+      write "slices/admin/.keep", ""
+
+      write "slices/search/lib/index_entity.rb", <<~RUBY
+        module Search
+          class IndexEntity; end
+        end
+      RUBY
+
+      write "slices/search/lib/query.rb", <<~RUBY
+        module Search
+          class Query; end
+        end
+      RUBY
+
+      require "hanami/setup"
+      Hanami.boot
+
+      expect(Admin::Slice["search.query"]).to be_a Search::Query
+    end
+  end
+
+  specify "Slices can import from other slices with a custom import key namespace" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+            config.slice :admin do
+              import(
+                keys: ["query"],
+                from: :search,
+                as: :search_engine
+              )
+            end
+          end
+        end
+      RUBY
+
+      write "slices/admin/.keep", ""
+
+      write "slices/search/lib/index_entity.rb", <<~RUBY
+        module Search
+          class IndexEntity; end
+        end
+      RUBY
+
+      write "slices/search/lib/query.rb", <<~RUBY
+        module Search
+          class Query; end
+        end
+      RUBY
+
+      require "hanami/setup"
+      Hanami.boot
+
+      expect(Admin::Slice["search_engine.query"]).to be_a Search::Query
+    end
+  end
+
   specify "Imported components from another slice are lazily resolved in unbooted applications" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
@@ -72,7 +149,7 @@ RSpec.describe "Container imports", :application_integration do
         module TestApp
           class Application < Hanami::Application
             config.slice :admin do
-              import :search
+              import from: :search
             end
           end
         end
@@ -95,9 +172,15 @@ RSpec.describe "Container imports", :application_integration do
       require "hanami/prepare"
 
       expect(Hanami.application).not_to be_booted
+
       expect(Admin::Slice.keys).not_to include "search.index_entity"
       expect(Admin::Slice["search.index_entity"]).to be_a Search::IndexEntity
       expect(Admin::Slice.keys).to include "search.index_entity"
+
+      expect(Admin::Slice).not_to be_booted
+      expect(Admin::Slice.container).not_to be_finalized
+      expect(Search::Slice).not_to be_booted
+      expect(Search::Slice.container).not_to be_finalized
     end
   end
 end

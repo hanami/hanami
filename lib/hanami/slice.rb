@@ -59,12 +59,19 @@ module Hanami
       @container ||= define_container
     end
 
-    def import(*slice_names)
+    def import(from:, **kwargs)
+      # TODO: This should be handled via dry-system (see dry-rb/dry-system#228)
       raise "Cannot import after booting" if booted?
 
-      slice_names.each do |slice_name|
-        container.import from: application.slices.fetch(slice_name.to_sym).container, as: slice_name.to_sym
+      if from.is_a?(Symbol) || from.is_a?(String)
+        slice_name = from
+        # TODO: better error than the KeyError from fetch if the slice doesn't exist
+        from = application.slices.fetch(from.to_sym).container
       end
+
+      as = kwargs[:as] || slice_name
+
+      container.import(from: from, as: as, **kwargs)
     end
 
     def register(*args, &block)
