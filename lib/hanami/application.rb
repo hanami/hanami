@@ -230,7 +230,7 @@ module Hanami
           end
 
         container.use :env, inferrer: -> { Hanami.env }
-        container.use :zeitwerk, loader: autoloader, setup: false, eager_load: false
+        container.use :zeitwerk, loader: autoloader, run_setup: false, eager_load: false
         container.use :notifications
 
         container.config.name = :application

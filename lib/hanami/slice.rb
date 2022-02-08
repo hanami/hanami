@@ -104,7 +104,7 @@ module Hanami
       container.use :env
       container.use :zeitwerk,
         loader: application.autoloader,
-        setup: false,
+        run_setup: false,
         eager_load: false
 
       container.config.name = name
