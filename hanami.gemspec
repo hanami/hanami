@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dry-core",          "~> 0.4"
   spec.add_dependency "dry-inflector",     "~> 0.2", ">= 0.2.1"
   spec.add_dependency "dry-monitor"
-  spec.add_dependency "dry-system",        "~> 0.22", ">= 0.22.0"
+  spec.add_dependency "dry-system",        "~> 0.23", ">= 0.23.0"
   spec.add_dependency "hanami-cli",        "~> 2.0.alpha"
   spec.add_dependency "hanami-utils",      "~> 2.0.alpha"
   spec.add_dependency "zeitwerk",          "~> 2.4"
