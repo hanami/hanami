@@ -233,7 +233,6 @@ module Hanami
         container.use :zeitwerk, loader: autoloader, run_setup: false, eager_load: false
         container.use :notifications
 
-        container.config.name = :application
         container.config.root = configuration.root
         container.config.inflector = configuration.inflector
 
