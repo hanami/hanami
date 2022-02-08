@@ -7,7 +7,6 @@ require "pathname"
 require "rack"
 require "zeitwerk"
 require_relative "slice"
-require_relative "application/autoloader/inflector_adapter"
 
 module Hanami
   # Hanami application class
@@ -59,19 +58,17 @@ module Hanami
 
         configuration.finalize!
 
-        @autoloader = Zeitwerk::Loader.new
-        autoloader.inflector = Autoloader::InflectorAdapter.new(inflector)
-
         load_settings
 
+        @autoloader = Zeitwerk::Loader.new
         @container = prepare_container
         @deps_module = prepare_deps_module
 
         load_slices
-        slices.values.each(&:prepare)
+        slices.each_value(&:prepare)
         slices.freeze
 
-        autoloader.setup
+        @autoloader.setup
 
         @prepared = true
         self
@@ -222,53 +219,47 @@ module Hanami
         $LOAD_PATH.unshift base_path unless $LOAD_PATH.include?(base_path)
       end
 
-      def prepare_container
-        define_container.tap do |container|
-          configure_container container
-        end
-      end
-
-      def prepare_deps_module
-        define_deps_module
-      end
-
-      def define_container
-        require "#{application_name}/container"
-        namespace.const_get :Container
-      rescue LoadError, NameError
-        namespace.const_set :Container, Class.new(Dry::System::Container)
-      end
-
       # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
-      def configure_container(container)
+      def prepare_container
+        container =
+          begin
+            require "#{application_name}/container"
+            namespace.const_get :Container
+          rescue LoadError, NameError
+            namespace.const_set :Container, Class.new(Dry::System::Container)
+          end
+
         container.use :env, inferrer: -> { Hanami.env }
+        container.use :zeitwerk, loader: autoloader, run_setup: false, eager_load: false
         container.use :notifications
 
-        container.configure do |config|
-          config.inflector = configuration.inflector
+        container.config.name = :application
+        container.config.root = configuration.root
+        container.config.inflector = configuration.inflector
 
-          config.root = configuration.root
-          config.provider_dirs = [
-            "config/providers",
-            Pathname(__dir__).join("application/container/providers").realpath,
-          ]
-
-          config.component_dirs.loader = Dry::System::Loader::Autoloading
-          config.component_dirs.add_to_load_path = false
-        end
+        container.config.provider_dirs = [
+          "config/providers",
+          Pathname(__dir__).join("application/container/providers").realpath,
+        ]
 
         # Autoload classes defined in lib/[app_namespace]/
         if root.join("lib", namespace_path).directory?
-          autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
+          container.autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
         end
 
-        # Add lib/ to to the $LOAD_PATH so other files there (outside the app namespace)
-        # are require-able
+        # Add lib/ to to the $LOAD_PATH so any files there (outside the app namespace) can
+        # be required
         container.add_to_load_path!("lib") if root.join("lib").directory?
+
+        container.configured!
 
         container
       end
       # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+
+      def prepare_deps_module
+        define_deps_module
+      end
 
       def define_deps_module
         require "#{application_name}/deps"
