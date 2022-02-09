@@ -39,6 +39,10 @@ module Hanami
       slice_block = application.configuration.slices[name]
       instance_eval(&slice_block) if slice_block
 
+      # This is here and not inside define_container to allow for the slice block to
+      # interact with container config
+      container.configured!
+
       self
     end
 
@@ -59,12 +63,19 @@ module Hanami
       @container ||= define_container
     end
 
-    def import(*slice_names)
+    def import(from:, **kwargs)
+      # TODO: This should be handled via dry-system (see dry-rb/dry-system#228)
       raise "Cannot import after booting" if booted?
 
-      slice_names.each do |slice_name|
-        container.import from: application.slices.fetch(slice_name.to_sym).container, as: slice_name.to_sym
+      if from.is_a?(Symbol) || from.is_a?(String)
+        slice_name = from
+        # TODO: better error than the KeyError from fetch if the slice doesn't exist
+        from = application.slices.fetch(from.to_sym).container
       end
+
+      as = kwargs[:as] || slice_name
+
+      container.import(from: from, as: as, **kwargs)
     end
 
     def register(*args, &block)
@@ -173,8 +184,6 @@ module Hanami
         namespace.const_set :Container, container
         namespace.const_set :Deps, container.injector
       end
-
-      container.configured!
 
       container
     end
