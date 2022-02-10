@@ -1,6 +1,83 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha6 - 2022-02-10
+### Added
+- [Luca Guidi] Official support for Ruby: MRI 3.1
+- [Tim Riley] Introduce partial Slice imports and exports. It allows to selectively export a functionality from a slice and import into another.
+
+    Import from `search` slice, uses `search` as the imported key namespace:
+
+    ```ruby
+    # config/application.rb
+
+    module MyApp
+      class Application < Hanami::Application
+        config.slice(:admin) do
+          import(from: :search)
+        end
+      end
+    end
+    ```
+
+    Import from `search` slice with custom namespace:
+
+    ```ruby
+    # config/application.rb
+
+    module MyApp
+      class Application < Hanami::Application
+        config.slice(:admin) do
+          import(from: :search, as: :search_engine)
+        end
+      end
+    end
+    ```
+
+    Import specific keys from `search` slice
+
+    ```ruby
+    # config/application.rb
+
+    module MyApp
+      class Application < Hanami::Application
+        config.slice(:admin) do
+          import(keys: ["run_query"], from: :search)
+        end
+      end
+    end
+    ```
+
+    Export only specific keys from `search` slice, and import them in `admin`
+
+    ```ruby
+    # config/application.rb
+
+    module MyApp
+      class Application < Hanami::Application
+        config.slice(:admin) do
+          import(from: :search)
+        end
+
+        config.slice(:search) do
+          container.config.exports = %w[run_query index_item]
+        end
+      end
+    end
+    ```
+
+### Fixed
+- [Luca Guidi] Ensure request logger to respect logger formatter option.
+
+### Changed
+- [Luca Guidi] Drop support for Ruby: MRI 2.6 and 2.7.
+- [Tim Riley] `Hanami.init` => `Hanami.prepare` and `hanami/init` => `hanami/prepare`
+- [Tim Riley] `Hanami.register_bootable` => `Hanami.register_provider`
+- [Tim Riley] `Hanami.start_bootable` => `Hanami.start`
+- [Tim Riley] `Hanami::Slice#init` => `Hanami::Slice#prepare`
+- [Tim Riley] `Hanami::Slice#register_bootable` => `Hanami::Slice#register_provider`
+- [Tim Riley] `Hanami::Slice#start_bootable` => `Hanami::Slice#start`
+
 ## v2.0.0.alpha5 - 2022-01-12
 ### Changed
 - [Luca Guidi] Sensible default configuration for application logger, with per-environment defaults:

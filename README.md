@@ -136,8 +136,4 @@ __Hanami__ uses [Semantic Versioning 2.0.0](http://semver.org)
 
 ## Copyright
 
-Released under MIT License.
-
-This project was formerly known as Lotus (`lotusrb`).
-
-Copyright © 2014-2021 Luca Guidi.
+Copyright © 2014-2022 Hanami Team – Released under MIT License.
