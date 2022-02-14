@@ -134,12 +134,23 @@ module Hanami
         @slices ||= {}
       end
 
-      def register_slice(name, slice_class)
+      def register_slice(name, slice_class = nil)
         # TODO: real error class
         raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
+        # TODO: raise error unless name meets format (i.e. single level depth only)
 
-        # slice = Slice.new(self, name: name, **slice_args)
-        # slice.namespace.const_set :Slice, slice if slice.namespace # rubocop:disable Style/SafeNavigation
+        if !slice_class
+          slice_module =
+            begin
+              slice_module_name = inflector.camelize(name.to_s)
+              slice_module = inflector.constantize(slice_module_name)
+            rescue NameError => e
+              Object.const_set(inflector.camelize(slice_module_name), Module.new)
+            end
+
+          slice_class = slice_module.const_set(:Slice, Class.new(Hanami::Slice))
+        end
+
         slices[name.to_sym] = slice_class
       end
 
@@ -203,7 +214,7 @@ module Hanami
       def component_provider(component)
         raise "Hanami.application must be prepared before detecting providers" unless prepared?
 
-        # [Admin, Main, MyApp] or [MyApp::Admin, MyApp::Main, MyApp]
+        # e.g. [Admin, Main, MyApp]
         providers = slices.values + [self]
 
         component_class = component.is_a?(Class) ? component : component.class
@@ -279,34 +290,25 @@ module Hanami
         File.join(root, config.slices_dir)
       end
 
+      # Attempts to load a namespaced `Slice` class defined in "slice.rb" within the given
+      # `slice_path`, then registers the slice with the matching class, if found.
       def load_slice(slice_path)
         slice_path = Pathname(slice_path)
 
         slice_name = slice_path.relative_path_from(Pathname(slices_path)).to_s
         slice_const_name = inflector.camelize(slice_name)
 
-        if config.slices_namespace.const_defined?(slice_const_name)
-          slice_module = config.slices_namespace.const_get(slice_const_name)
-
-          # TODO SliceLoadError class
-          raise "Cannot use slice +#{slice_const_name}+ since it is not a module" unless slice_module.is_a?(Module)
-        else
-          slice_module = Module.new
-          config.slices_namespace.const_set inflector.camelize(slice_name), slice_module
-        end
-
         begin
           require(slice_path.join("slice").to_s)
         rescue LoadError => e
-          raise e if File.basename(e.path) != "slice"
+          raise e unless File.basename(e.path) == "slice"
         end
 
         slice_class =
           begin
-            slice_module.const_get(:Slice)
+            inflector.constantize("#{slice_const_name}::Slice")
           rescue NameError => e
-            raise e if e.name != :Slice
-            slice_module.const_set(:Slice, Class.new(Hanami::Slice))
+            raise e unless e.name == :Slice
           end
 
         register_slice(slice_name, slice_class)

@@ -151,8 +151,6 @@ module Hanami
 
     setting :slices_dir, default: "slices"
 
-    setting :slices_namespace, default: Object
-
     # TODO: convert into a dedicated object with explicit behaviour around blocks per
     # slice, etc.
     setting :slices, default: {}, constructor: :dup.to_proc
