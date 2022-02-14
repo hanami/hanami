@@ -12,7 +12,7 @@ RSpec.describe "Slices", :application_integration do
         end
       RUBY
 
-      write "slices/main/slice.rb", <<~RUBY
+      write "config/slices/main.rb", <<~RUBY
         module Main
           class Slice < Hanami::Slice
           end

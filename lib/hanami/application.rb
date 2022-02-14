@@ -290,18 +290,19 @@ module Hanami
         File.join(root, config.slices_dir)
       end
 
-      # Attempts to load a namespaced `Slice` class defined in "slice.rb" within the given
-      # `slice_path`, then registers the slice with the matching class, if found.
+      # Attempts to load a slice class defined in `config/slices/[slice_name].rb`, then
+      # registers the slice with the matching class, if found.
       def load_slice(slice_path)
         slice_path = Pathname(slice_path)
 
         slice_name = slice_path.relative_path_from(Pathname(slices_path)).to_s
         slice_const_name = inflector.camelize(slice_name)
+        slice_require_path = root.join("config", "slices", slice_name).to_s
 
         begin
-          require(slice_path.join("slice").to_s)
+          require(slice_require_path)
         rescue LoadError => e
-          raise e unless File.basename(e.path) == "slice"
+          raise e unless e.path == slice_require_path
         end
 
         slice_class =
