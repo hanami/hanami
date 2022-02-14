@@ -12,7 +12,12 @@ RSpec.describe "Container imports", :application_integration do
         end
       RUBY
 
-      write "slices/admin/.keep", ""
+      write "config/slices/admin.rb", <<~RUBY
+        module Admin
+          class Slice < Hanami::Slice
+          end
+        end
+      RUBY
 
       require "hanami/setup"
 
@@ -34,14 +39,17 @@ RSpec.describe "Container imports", :application_integration do
 
         module TestApp
           class Application < Hanami::Application
-            config.slice :admin do
-              import from: :search
-            end
           end
         end
       RUBY
 
-      write "slices/admin/.keep", ""
+      write "config/slices/admin.rb", <<~RUBY
+        module Admin
+          class Slice < Hanami::Slice
+            import from: :search
+          end
+        end
+      RUBY
 
       write "slices/search/lib/index_entity.rb", <<~RUBY
         module Search
@@ -50,8 +58,7 @@ RSpec.describe "Container imports", :application_integration do
         end
       RUBY
 
-      require "hanami/setup"
-      Hanami.boot
+      require "hanami/boot"
 
       expect(Admin::Slice["search.index_entity"]).to be_a Search::IndexEntity
 
@@ -71,17 +78,20 @@ RSpec.describe "Container imports", :application_integration do
 
         module TestApp
           class Application < Hanami::Application
-            config.slice :admin do
-              import(
-                keys: ["query"],
-                from: :search
-              )
-            end
           end
         end
       RUBY
 
-      write "slices/admin/.keep", ""
+      write "config/slices/admin.rb", <<~RUBY
+        module Admin
+          class Slice < Hanami::Slice
+            import(
+              keys: ["query"],
+              from: :search
+            )
+          end
+        end
+      RUBY
 
       write "slices/search/lib/index_entity.rb", <<~RUBY
         module Search
@@ -109,18 +119,21 @@ RSpec.describe "Container imports", :application_integration do
 
         module TestApp
           class Application < Hanami::Application
-            config.slice :admin do
-              import(
-                keys: ["query"],
-                from: :search,
-                as: :search_engine
-              )
-            end
           end
         end
       RUBY
 
-      write "slices/admin/.keep", ""
+      write "config/slices/admin.rb", <<~RUBY
+        module Admin
+          class Slice < Hanami::Slice
+            import(
+              keys: ["query"],
+              from: :search,
+              as: :search_engine
+            )
+          end
+        end
+      RUBY
 
       write "slices/search/lib/index_entity.rb", <<~RUBY
         module Search
@@ -148,9 +161,14 @@ RSpec.describe "Container imports", :application_integration do
 
         module TestApp
           class Application < Hanami::Application
-            config.slice :admin do
-              import from: :search
-            end
+          end
+        end
+      RUBY
+
+      write "config/slices/admin.rb", <<~RUBY
+        module Admin
+          class Slice < Hanami::Slice
+            import from: :search
           end
         end
       RUBY
@@ -191,21 +209,28 @@ RSpec.describe "Container imports", :application_integration do
 
         module TestApp
           class Application < Hanami::Application
-            config.slice :admin do
-              import(
-                keys: %w[index_entity query],
-                from: :search
-              )
-            end
-
-            config.slice :search do
-              container.config.exports = %w[query]
-            end
           end
         end
       RUBY
 
-      write "slices/admin/.keep", ""
+      write "config/slices/admin.rb", <<~RUBY
+        module Admin
+          class Slice < Hanami::Slice
+            import(
+              keys: %w[index_entity query],
+              from: :search
+            )
+          end
+        end
+      RUBY
+
+      write "config/slices/search.rb", <<~RUBY
+        module Search
+          class Slice < Hanami::Slice
+            container.config.exports = %w[query]
+          end
+        end
+      RUBY
 
       write "slices/search/lib/index_entity.rb", <<~RUBY
         module Search

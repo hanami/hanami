@@ -151,15 +151,7 @@ module Hanami
 
     setting :slices_dir, default: "slices"
 
-    # TODO: convert into a dedicated object with explicit behaviour around blocks per
-    # slice, etc.
-    setting :slices, default: {}, constructor: :dup.to_proc
-
     setting :source_dirs, default: Configuration::SourceDirs.new, cloneable: true
-
-    def slice(slice_name, &block)
-      slices[slice_name] = block
-    end
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
 
