@@ -281,9 +281,14 @@ module Hanami
       end
 
       def load_slices
-        Dir[File.join(slices_path, "*")]
-          .select(&File.method(:directory?))
-          .each(&method(:load_slice))
+        slice_dirs = Dir[File.join(slices_path, "*")]
+          .select { |path| File.directory?(path) }
+          .map { |path| File.basename(path) }
+
+        slice_configs = Dir[root.join("config", "slices", "*.rb")]
+          .map { |file| File.basename(file, ".rb") }
+
+        (slice_dirs + slice_configs).uniq.sort.each(&method(:load_slice))
       end
 
       def slices_path
@@ -292,10 +297,7 @@ module Hanami
 
       # Attempts to load a slice class defined in `config/slices/[slice_name].rb`, then
       # registers the slice with the matching class, if found.
-      def load_slice(slice_path)
-        slice_path = Pathname(slice_path)
-
-        slice_name = slice_path.relative_path_from(Pathname(slices_path)).to_s
+      def load_slice(slice_name)
         slice_const_name = inflector.camelize(slice_name)
         slice_require_path = root.join("config", "slices", slice_name).to_s
 

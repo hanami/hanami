@@ -31,6 +31,30 @@ RSpec.describe "Slices", :application_integration do
     end
   end
 
+  it "Loading a slice with a defined slice class but no slice dir" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+          end
+        end
+      RUBY
+
+      write "config/slices/main.rb", <<~RUBY
+        module Main
+          class Slice < Hanami::Slice
+          end
+        end
+      RUBY
+
+      require "hanami/prepare"
+
+      expect(Hanami.application.slices[:main]).to be Main::Slice
+    end
+  end
+
   it "Loading a slice generates a slice class if none is defined" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
