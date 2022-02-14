@@ -77,4 +77,25 @@ RSpec.describe "Slices", :application_integration do
       expect(Hanami.application.slices[:main]).to be Main::Slice
     end
   end
+
+  it "Registering a slice with a block creates a slice class and evals the block" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+            register_slice :main do
+              register "greeting", "hello world"
+            end
+          end
+        end
+      RUBY
+
+      require "hanami/prepare"
+
+      expect(Hanami.application.slices[:main]).to be Main::Slice
+      expect(Main::Slice["greeting"]).to eq "hello world"
+    end
+  end
 end

@@ -134,7 +134,7 @@ module Hanami
         @slices ||= {}
       end
 
-      def register_slice(name, slice_class = nil)
+      def register_slice(name, slice_class = nil, &block)
         # TODO: real error class
         raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
         # TODO: raise error unless name meets format (i.e. single level depth only)
@@ -150,6 +150,8 @@ module Hanami
 
           slice_class = slice_module.const_set(:Slice, Class.new(Hanami::Slice))
         end
+
+        slice_class.instance_eval(&block) if block
 
         slices[name.to_sym] = slice_class
       end
