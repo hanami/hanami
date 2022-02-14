@@ -134,12 +134,13 @@ module Hanami
         @slices ||= {}
       end
 
-      def register_slice(name, **slice_args)
+      def register_slice(name, slice_class)
+        # TODO: real error class
         raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
 
-        slice = Slice.new(self, name: name, **slice_args)
-        slice.namespace.const_set :Slice, slice if slice.namespace # rubocop:disable Style/SafeNavigation
-        slices[name.to_sym] = slice
+        # slice = Slice.new(self, name: name, **slice_args)
+        # slice.namespace.const_set :Slice, slice if slice.namespace # rubocop:disable Style/SafeNavigation
+        slices[name.to_sym] = slice_class
       end
 
       def register(...)
@@ -287,17 +288,28 @@ module Hanami
         if config.slices_namespace.const_defined?(slice_const_name)
           slice_module = config.slices_namespace.const_get(slice_const_name)
 
+          # TODO SliceLoadError class
           raise "Cannot use slice +#{slice_const_name}+ since it is not a module" unless slice_module.is_a?(Module)
         else
           slice_module = Module.new
           config.slices_namespace.const_set inflector.camelize(slice_name), slice_module
         end
 
-        register_slice(
-          slice_name,
-          namespace: slice_module,
-          root: slice_path.realpath
-        )
+        begin
+          require(slice_path.join("slice").to_s)
+        rescue LoadError => e
+          raise e if File.basename(e.path) != "slice"
+        end
+
+        slice_class =
+          begin
+            slice_module.const_get(:Slice)
+          rescue NameError => e
+            raise e if e.name != :Slice
+            slice_module.const_set(:Slice, Class.new(Hanami::Slice))
+          end
+
+        register_slice(slice_name, slice_class)
       end
 
       def load_settings
