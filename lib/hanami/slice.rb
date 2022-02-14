@@ -78,6 +78,8 @@ module Hanami
       end
 
       def boot
+        return self if booted?
+
         container.finalize!
 
         @booted = true
