@@ -87,8 +87,8 @@ module Hanami
         self
       end
 
-      def register(*args, &block)
-        container.register(*args, &block)
+      def register(...)
+        container.register(...)
       end
 
       def register_provider(...)
