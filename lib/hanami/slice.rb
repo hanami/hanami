@@ -18,8 +18,8 @@ module Hanami
       def inherited(klass)
         super
 
-        # Create a (to be configured later) container as early as possible, since other
-        # slices may want to refer to it via their import declarations
+        # Create a (to be configured later) container as early as possible, since code in
+        # the slice subclass may want to start referring to it right away (e.g. `.import`)
         klass.instance_variable_set(:@container, Class.new(Dry::System::Container))
       end
 
