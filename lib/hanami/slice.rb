@@ -12,6 +12,10 @@ module Hanami
   #
   # @since 2.0.0
   class Slice
+    # TODO: Move to a common constants file
+    MODULE_DELIMITER = "::"
+    private_constant :MODULE_DELIMITER
+
     class << self
       attr_reader :container
 
@@ -23,8 +27,6 @@ module Hanami
         klass.instance_variable_set(:@container, Class.new(Dry::System::Container))
       end
 
-      MODULE_DELIMITER = "::"
-      private_constant :MODULE_DELIMITER
 
       def namespace
         inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
