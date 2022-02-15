@@ -55,10 +55,7 @@ module Hanami
       alias_method :config, :configuration
 
       def prepare(provider_name = nil)
-        if provider_name
-          container.prepare(provider_name)
-          return self
-        end
+        container.prepare(provider_name) and return self if provider_name
 
         return self if prepared?
 
