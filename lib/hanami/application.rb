@@ -139,21 +139,7 @@ module Hanami
         raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
         # TODO: raise error unless name meets format (i.e. single level depth only)
 
-        if !slice_class
-          slice_module =
-            begin
-              slice_module_name = inflector.camelize(name.to_s)
-              slice_module = inflector.constantize(slice_module_name)
-            rescue NameError => e
-              Object.const_set(inflector.camelize(slice_module_name), Module.new)
-            end
-
-          slice_class = slice_module.const_set(:Slice, Class.new(Hanami::Slice))
-        end
-
-        slice_class.instance_eval(&block) if block
-
-        slices[name.to_sym] = slice_class
+        slices[name.to_sym] = slice_class || Slice.build_slice(name, &block)
       end
 
       def register(...)

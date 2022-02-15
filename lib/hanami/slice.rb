@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
+require "hanami/errors"
 require "pathname"
 
 # Changes here
@@ -27,9 +28,18 @@ module Hanami
         klass.instance_variable_set(:@container, Class.new(Dry::System::Container))
       end
 
+      def build_slice(slice_name, &block)
+        inflector = application.inflector
 
-      def namespace
-        inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
+        slice_module =
+          begin
+            slice_module_name = inflector.camelize(slice_name.to_s)
+            inflector.constantize(slice_module_name)
+          rescue NameError
+            Object.const_set(inflector.camelize(slice_module_name), Module.new)
+          end
+
+        slice_module.const_set(:Slice, Class.new(Hanami::Slice, &block))
       end
 
       def application
@@ -71,8 +81,11 @@ module Hanami
 
         return self if prepared?
 
+        raise SliceLoadError, "Slice must have a class name before it can be prepared" unless name
+
         __prepare_container
 
+        # TODO: Raise error if these consts are already set
         namespace.const_set :Container, container
         namespace.const_set :Deps, container.injector
 
