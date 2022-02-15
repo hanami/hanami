@@ -21,8 +21,10 @@ module Hanami
         super
         @_mutex.synchronize do
           klass.class_eval do
-            @_mutex         = Mutex.new
+            @_mutex = Mutex.new
             @_configuration = Hanami::Configuration.new(application_name: name, env: Hanami.env)
+            @autoloader = Zeitwerk::Loader.new
+            @container = Class.new(Dry::System::Container)
 
             extend ClassMethods
           end
@@ -38,6 +40,8 @@ module Hanami
     #
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
+      attr_reader :autoloader, :container
+
       def self.extended(klass)
         klass.class_eval do
           @prepared = @booted = false
@@ -62,15 +66,16 @@ module Hanami
 
         load_settings
 
-        @autoloader = Zeitwerk::Loader.new
-        @container = prepare_container
-        @deps_module = prepare_deps_module
+        prepare_container
+
+        namespace.const_set :Container, container
+        namespace.const_set :Deps, container.injector
 
         slices.load_slices
         slices.each(&:prepare)
         slices.freeze
 
-        @autoloader.setup
+        autoloader.setup
 
         @prepared = true
         self
@@ -99,24 +104,6 @@ module Hanami
 
       def booted?
         @booted
-      end
-
-      def autoloader
-        raise "Application not yet prepared" unless defined?(@autoloader)
-
-        @autoloader
-      end
-
-      def container
-        raise "Application not yet prepared" unless defined?(@container)
-
-        @container
-      end
-
-      def deps
-        raise "Application not yet prepared" unless defined?(@deps_module)
-
-        @deps_module
       end
 
       def router
@@ -219,14 +206,6 @@ module Hanami
 
       # rubocop:disable Metrics/AbcSize
       def prepare_container
-        container =
-          begin
-            require "#{application_name}/container"
-            namespace.const_get :Container
-          rescue LoadError, NameError
-            namespace.const_set :Container, Class.new(Dry::System::Container)
-          end
-
         container.use :env, inferrer: -> { Hanami.env }
         container.use :zeitwerk, loader: autoloader, run_setup: false, eager_load: false
         container.use :notifications
@@ -253,17 +232,6 @@ module Hanami
         container
       end
       # rubocop:enable Metrics/AbcSize
-
-      def prepare_deps_module
-        define_deps_module
-      end
-
-      def define_deps_module
-        require "#{application_name}/deps"
-        namespace.const_get :Deps
-      rescue LoadError, NameError
-        namespace.const_set :Deps, container.injector
-      end
 
       def load_settings
         require_relative "application/settings"
