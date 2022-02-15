@@ -6,6 +6,7 @@ require "hanami/configuration"
 require "pathname"
 require "rack"
 require "zeitwerk"
+require_relative "constants"
 require_relative "slice"
 
 module Hanami
@@ -315,9 +316,6 @@ module Hanami
       rescue LoadError
         Settings.new
       end
-
-      MODULE_DELIMITER = "::"
-      private_constant :MODULE_DELIMITER
 
       def autodiscover_application_constant(constants)
         inflector.constantize([namespace_name, *constants].join(MODULE_DELIMITER))

@@ -3,16 +3,13 @@
 require "dry/system/container"
 require "hanami/errors"
 require "pathname"
+require_relative "constants"
 
 module Hanami
   # Distinct area of concern within an Hanami application
   #
   # @since 2.0.0
   class Slice
-    # TODO: Move to a common constants file
-    MODULE_DELIMITER = "::"
-    private_constant :MODULE_DELIMITER
-
     class << self
       attr_reader :container
 
