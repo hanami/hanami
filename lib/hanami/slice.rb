@@ -61,13 +61,18 @@ module Hanami
 
         return self if prepared?
 
-        prepare_container
+        __prepare_container
 
         namespace.const_set :Container, container
         namespace.const_set :Deps, container.injector
 
         @prepared = true
+
         self
+      end
+
+      def prepare_container(&block)
+        @prepare_container_block = block
       end
 
       def boot
@@ -134,7 +139,7 @@ module Hanami
       end
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      def prepare_container
+      def __prepare_container
         container.use :env
         container.use :zeitwerk,
           loader: application.autoloader,
@@ -202,6 +207,8 @@ module Hanami
         end
 
         container.import from: application.container, as: :application
+
+        instance_exec(container, &@prepare_container_block) if @prepare_container_block
 
         container.configured!
 
