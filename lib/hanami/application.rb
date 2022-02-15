@@ -8,6 +8,7 @@ require "rack"
 require "zeitwerk"
 require_relative "constants"
 require_relative "slice"
+require_relative "application/slice_registrar"
 
 module Hanami
   # Hanami application class
@@ -67,7 +68,7 @@ module Hanami
         @deps_module = prepare_deps_module
 
         load_slices
-        slices.each_value(&:prepare)
+        slices.each(&:prepare)
         slices.freeze
 
         @autoloader.setup
@@ -83,7 +84,7 @@ module Hanami
 
         container.finalize!(&block)
 
-        slices.each_value(&:boot)
+        slices.each(&:boot)
 
         @booted = true
         self
@@ -132,15 +133,11 @@ module Hanami
       end
 
       def slices
-        @slices ||= {}
+        @slices ||= SliceRegistrar.new
       end
 
-      def register_slice(name, slice_class = nil, &block)
-        # TODO: real error class
-        raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
-        # TODO: raise error unless name meets format (i.e. single level depth only)
-
-        slices[name.to_sym] = slice_class || Slice.build_slice(name, &block)
+      def register_slice(...)
+        slices.register(...)
       end
 
       def register(...)
@@ -204,7 +201,7 @@ module Hanami
         raise "Hanami.application must be prepared before detecting providers" unless prepared?
 
         # e.g. [Admin, Main, MyApp]
-        providers = slices.values + [self]
+        providers = slices.to_a + [self]
 
         component_class = component.is_a?(Class) ? component : component.class
         component_name = component_class.name

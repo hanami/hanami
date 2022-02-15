@@ -141,8 +141,7 @@ module Hanami
         container.after(:configure) do
           if from.is_a?(Symbol) || from.is_a?(String)
             slice_name = from
-            # TODO: better error than the KeyError from fetch if the slice doesn't exist
-            from = application.slices.fetch(from.to_sym).container
+            from = application.slices[from.to_sym].container
           end
 
           as = kwargs[:as] || slice_name
