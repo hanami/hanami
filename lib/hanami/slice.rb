@@ -77,11 +77,11 @@ module Hanami
 
         return self if prepared?
 
-        raise SliceLoadError, "Slice must have a class name before it can be prepared" unless name
+        ensure_slice_name
+        ensure_slice_consts
 
         __prepare_container
 
-        # TODO: Raise error if these consts are already set
         namespace.const_set :Container, container
         namespace.const_set :Deps, container.injector
 
@@ -152,6 +152,21 @@ module Hanami
       end
 
       private
+
+      def ensure_slice_name
+        unless name
+          raise SliceLoadError, "Slice must have a class name before it can be prepared"
+        end
+      end
+
+      def ensure_slice_consts
+        if namespace.const_defined?(:Container) || namespace.const_defined?(:Deps)
+          raise(
+            SliceLoadError,
+            "#{namespace}::Container and #{namespace}::Deps constants must not already be defined"
+          )
+        end
+      end
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def __prepare_container
