@@ -80,13 +80,12 @@ module Hanami
         ensure_slice_name
         ensure_slice_consts
 
-        __prepare_container
+        prepare_all
 
         namespace.const_set :Container, container
         namespace.const_set :Deps, container.injector
 
         @prepared = true
-
         self
       end
 
@@ -168,83 +167,98 @@ module Hanami
         end
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-      def __prepare_container
+      def prepare_all
+        prepare_container_plugins
+        prepare_container_base_config
+        prepare_container_component_dirs
+        prepare_autoload_paths
+        prepare_container_imports
+
+        instance_exec(container, &@prepare_container_block) if @prepare_container_block
+        container.configured!
+      end
+
+      def prepare_container_plugins
         container.use :env
+
         container.use :zeitwerk,
           loader: application.autoloader,
           run_setup: false,
           eager_load: false
+      end
 
+      def prepare_container_base_config
         container.config.name = slice_name
+        container.config.provider_dirs = ["config/providers"]
+
         container.config.env = application.configuration.env
         container.config.inflector = application.configuration.inflector
+      end
 
-        if root&.directory?
-          container.config.root = root
-          container.config.provider_dirs = ["config/providers"]
+      def prepare_container_component_dirs
+        return unless root&.directory?
 
-          # Add component dirs for each configured component path
-          application.configuration.source_dirs.component_dirs.each do |component_dir|
-            next unless root.join(component_dir.path).directory?
+        container.config.root = root
 
-            component_dir = component_dir.dup
+        # Add component dirs for each configured component path
+        application.configuration.source_dirs.component_dirs.each do |component_dir|
+          next unless root.join(component_dir.path).directory?
 
-            # TODO: this `== "lib"` check should be codified into a method somewhere
-            if component_dir.path == "lib"
-              # Expect component files in the root of the lib/ component dir to define
-              # classes inside the slice's namespace.
-              #
-              # e.g. "lib/foo.rb" should define SliceNamespace::Foo, to be registered as
-              # "foo"
-              component_dir.namespaces.delete_root
-              component_dir.namespaces.add_root(key: nil, const: namespace_path)
+          component_dir = component_dir.dup
 
-              container.config.component_dirs.add(component_dir)
-            else
-              # Expect component files in the root of non-lib/ component dirs to define
-              # classes inside a namespace matching that dir.
-              #
-              # e.g. "actions/foo.rb" should define SliceNamespace::Actions::Foo, to be
-              # registered as "actions.foo"
+          # TODO: this `== "lib"` check should be codified into a method somewhere
+          if component_dir.path == "lib"
+            # Expect component files in the root of the lib/ component dir to define
+            # classes inside the slice's namespace.
+            #
+            # e.g. "lib/foo.rb" should define SliceNamespace::Foo, to be registered as
+            # "foo"
+            component_dir.namespaces.delete_root
+            component_dir.namespaces.add_root(key: nil, const: namespace_path)
 
-              dir_namespace_path = File.join(namespace_path, component_dir.path)
+            container.config.component_dirs.add(component_dir)
+          else
+            # Expect component files in the root of non-lib/ component dirs to define
+            # classes inside a namespace matching that dir.
+            #
+            # e.g. "actions/foo.rb" should define SliceNamespace::Actions::Foo, to be
+            # registered as "actions.foo"
 
-              component_dir.namespaces.delete_root
-              component_dir.namespaces.add_root(const: dir_namespace_path, key: component_dir.path)
+            dir_namespace_path = File.join(namespace_path, component_dir.path)
 
-              container.config.component_dirs.add(component_dir)
-            end
-          end
+            component_dir.namespaces.delete_root
+            component_dir.namespaces.add_root(const: dir_namespace_path, key: component_dir.path)
 
-          # Pass configured autoload dirs to the autoloader
-          application.configuration.source_dirs.autoload_paths.each do |autoload_path|
-            next unless root.join(autoload_path).directory?
-
-            dir_namespace_path = File.join(namespace_path, autoload_path)
-
-            autoloader_namespace = begin
-              inflector.constantize(inflector.camelize(dir_namespace_path))
-            rescue NameError
-              namespace.const_set(inflector.camelize(autoload_path), Module.new)
-            end
-
-            container.config.autoloader.push_dir(
-              container.root.join(autoload_path),
-              namespace: autoloader_namespace
-            )
+            container.config.component_dirs.add(component_dir)
           end
         end
-
-        container.import from: application.container, as: :application
-
-        instance_exec(container, &@prepare_container_block) if @prepare_container_block
-
-        container.configured!
-
-        container
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+      def prepare_autoload_paths
+        return unless root&.directory?
+
+        # Pass configured autoload dirs to the autoloader
+        application.configuration.source_dirs.autoload_paths.each do |autoload_path|
+          next unless root.join(autoload_path).directory?
+
+          dir_namespace_path = File.join(namespace_path, autoload_path)
+
+          autoloader_namespace = begin
+            inflector.constantize(inflector.camelize(dir_namespace_path))
+          rescue NameError
+            namespace.const_set(inflector.camelize(autoload_path), Module.new)
+          end
+
+          container.config.autoloader.push_dir(
+            container.root.join(autoload_path),
+            namespace: autoloader_namespace
+          )
+        end
+      end
+
+      def prepare_container_imports
+        container.import from: application.container, as: :application
+      end
     end
   end
 end
