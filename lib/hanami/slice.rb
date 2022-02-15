@@ -41,7 +41,7 @@ module Hanami
       end
 
       def root
-        application.root.join("slices", slice_name.to_s)
+        application.root.join(application.config.slices_dir, slice_name.to_s)
       end
 
       def inflector
