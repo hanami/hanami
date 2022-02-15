@@ -227,9 +227,7 @@ RSpec.describe "Container imports", :application_integration do
       write "config/slices/search.rb", <<~RUBY
         module Search
           class Slice < Hanami::Slice
-            prepare_container do |container|
-              container.config.exports = %w[query]
-            end
+            export(%w[query])
           end
         end
       RUBY

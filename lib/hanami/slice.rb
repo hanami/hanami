@@ -131,6 +131,10 @@ module Hanami
         container.resolve(...)
       end
 
+      def export(keys)
+        container.config.exports = keys
+      end
+
       def import(from:, **kwargs)
         # TODO: This should be handled via dry-system (see dry-rb/dry-system#228)
         raise "Cannot import after booting" if booted?
