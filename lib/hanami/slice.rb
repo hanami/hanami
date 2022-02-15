@@ -32,12 +32,20 @@ module Hanami
         inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
       end
 
-      def namespace_path
-        inflector.underscore(namespace)
+      def application
+        Hanami.application
       end
 
       def slice_name
         inflector.underscore(name.split(MODULE_DELIMITER)[-2]).to_sym
+      end
+
+      def namespace
+        inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
+      end
+
+      def namespace_path
+        inflector.underscore(namespace)
       end
 
       def root
@@ -135,10 +143,6 @@ module Hanami
       end
 
       private
-
-      def application
-        Hanami.application
-      end
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def __prepare_container
