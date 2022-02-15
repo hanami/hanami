@@ -4,10 +4,6 @@ require "dry/system/container"
 require "hanami/errors"
 require "pathname"
 
-# Changes here
-#
-# 1. Requiring every slice to have an actual namespace (no more `if namespace` checks)
-
 module Hanami
   # Distinct area of concern within an Hanami application
   #
