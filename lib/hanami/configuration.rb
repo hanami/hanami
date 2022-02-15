@@ -149,8 +149,6 @@ module Hanami
 
     setting :settings_store, default: Application::Settings::DotenvStore
 
-    setting :slices_dir, default: "slices"
-
     setting :source_dirs, default: Configuration::SourceDirs.new, cloneable: true
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }

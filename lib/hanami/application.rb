@@ -67,7 +67,7 @@ module Hanami
         @container = prepare_container
         @deps_module = prepare_deps_module
 
-        load_slices
+        slices.load_slices
         slices.each(&:prepare)
         slices.freeze
 
@@ -133,7 +133,7 @@ module Hanami
       end
 
       def slices
-        @slices ||= SliceRegistrar.new
+        @slices ||= SliceRegistrar.new(self)
       end
 
       def register_slice(...)
@@ -264,43 +264,6 @@ module Hanami
         namespace.const_get :Deps
       rescue LoadError, NameError
         namespace.const_set :Deps, container.injector
-      end
-
-      def load_slices
-        slice_dirs = Dir[File.join(slices_path, "*")]
-          .select { |path| File.directory?(path) }
-          .map { |path| File.basename(path) }
-
-        slice_configs = Dir[root.join("config", "slices", "*.rb")]
-          .map { |file| File.basename(file, ".rb") }
-
-        (slice_dirs + slice_configs).uniq.sort.each(&method(:load_slice))
-      end
-
-      def slices_path
-        File.join(root, config.slices_dir)
-      end
-
-      # Attempts to load a slice class defined in `config/slices/[slice_name].rb`, then
-      # registers the slice with the matching class, if found.
-      def load_slice(slice_name)
-        slice_const_name = inflector.camelize(slice_name)
-        slice_require_path = root.join("config", "slices", slice_name).to_s
-
-        begin
-          require(slice_require_path)
-        rescue LoadError => e
-          raise e unless e.path == slice_require_path
-        end
-
-        slice_class =
-          begin
-            inflector.constantize("#{slice_const_name}::Slice")
-          rescue NameError => e
-            raise e unless e.name == :Slice
-          end
-
-        register_slice(slice_name, slice_class)
       end
 
       def load_settings
