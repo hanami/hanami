@@ -82,7 +82,7 @@ module Hanami
 
         container.finalize!(&block)
 
-        slices.values.each(&:boot)
+        slices.each_value(&:boot)
 
         @booted = true
         self
