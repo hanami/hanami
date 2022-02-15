@@ -225,8 +225,6 @@ module Hanami
         container.add_to_load_path!("lib") if root.join("lib").directory?
 
         container.configured!
-
-        container
       end
       # rubocop:enable Metrics/AbcSize
 
