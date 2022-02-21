@@ -18,8 +18,10 @@ module Hanami
       end
 
       def register(name, slice_class = nil, &block)
-        # TODO: real error class
-        raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
+        if slices.key?(name.to_sym)
+          raise SliceLoadError, "Slice '#{name.to_s}' is already registered"
+        end
+
         # TODO: raise error unless name meets format (i.e. single level depth only)
 
         slices[name.to_sym] = slice_class || Slice.build_slice(name, &block)
@@ -27,7 +29,7 @@ module Hanami
 
       def [](name)
         slices.fetch(name) do
-          raise "Slice #{name} not found"
+          raise SliceLoadError, "Slice '#{name}' not found"
         end
       end
 
