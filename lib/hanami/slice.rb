@@ -186,6 +186,7 @@ module Hanami
 
       def prepare_container_base_config
         container.config.name = slice_name
+        container.config.root = root
         container.config.provider_dirs = ["config/providers"]
 
         container.config.env = application.configuration.env
@@ -194,8 +195,6 @@ module Hanami
 
       def prepare_container_component_dirs # rubocop:disable Metrics/AbcSize
         return unless root&.directory?
-
-        container.config.root = root
 
         # Add component dirs for each configured component path
         application.configuration.source_dirs.component_dirs.each do |component_dir|
