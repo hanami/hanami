@@ -59,7 +59,6 @@ module Hanami
         application.inflector
       end
 
-      # rubocop:disable Style/DoubleNegation
       def prepared?
         !!@prepared
       end
@@ -67,7 +66,6 @@ module Hanami
       def booted?
         !!@booted
       end
-      # rubocop:enable Style/DoubleNegation
 
       def prepare(provider_name = nil)
         container.prepare(provider_name) and return self if provider_name

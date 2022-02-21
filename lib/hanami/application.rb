@@ -85,11 +85,11 @@ module Hanami
       end
 
       def prepared?
-        @prepared
+        !!@prepared
       end
 
       def booted?
-        @booted
+        !!@booted
       end
 
       def router
