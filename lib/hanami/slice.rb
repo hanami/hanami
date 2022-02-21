@@ -79,9 +79,6 @@ module Hanami
 
         prepare_all
 
-        namespace.const_set :Container, container
-        namespace.const_set :Deps, container.injector
-
         @prepared = true
         self
       end
@@ -171,9 +168,9 @@ module Hanami
         prepare_container_plugins
         prepare_container_base_config
         prepare_container_component_dirs
-        prepare_autoload_paths
+        prepare_autoloader
         prepare_container_imports
-
+        prepare_container_consts
         instance_exec(container, &@prepare_container_block) if @prepare_container_block
         container.configured!
       end
@@ -195,7 +192,7 @@ module Hanami
         container.config.inflector = application.configuration.inflector
       end
 
-      def prepare_container_component_dirs
+      def prepare_container_component_dirs # rubocop:disable Metrics/AbcSize
         return unless root&.directory?
 
         container.config.root = root
@@ -234,7 +231,7 @@ module Hanami
         end
       end
 
-      def prepare_autoload_paths
+      def prepare_autoloader # rubocop:disable Metrics/AbcSize
         return unless root&.directory?
 
         # Pass configured autoload dirs to the autoloader
@@ -258,6 +255,11 @@ module Hanami
 
       def prepare_container_imports
         container.import from: application.container, as: :application
+      end
+
+      def prepare_container_consts
+        namespace.const_set :Container, container
+        namespace.const_set :Deps, container.injector
       end
     end
   end

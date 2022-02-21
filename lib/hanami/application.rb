@@ -61,18 +61,7 @@ module Hanami
 
         configuration.finalize!
 
-        load_settings
-
-        prepare_container
-
-        namespace.const_set :Container, container
-        namespace.const_set :Deps, container.injector
-
-        slices.load_slices
-        slices.each(&:prepare)
-        slices.freeze
-
-        autoloader.setup
+        prepare_all
 
         @prepared = true
         self
@@ -201,12 +190,25 @@ module Hanami
         $LOAD_PATH.unshift base_path unless $LOAD_PATH.include?(base_path)
       end
 
-      # rubocop:disable Metrics/AbcSize
-      def prepare_container
+      def prepare_all
+        load_settings
+        prepare_container_plugins
+        prepare_container_base_config
+        prepare_container_consts
+        container.configured!
+        prepare_slices
+        # For the application, the autoloader must be prepared after the slices, since
+        # they'll be configuring the autoloader with their own dirs
+        prepare_autoloader
+      end
+
+      def prepare_container_plugins
         container.use :env, inferrer: -> { Hanami.env }
         container.use :zeitwerk, loader: autoloader, run_setup: false, eager_load: false
         container.use :notifications
+      end
 
+      def prepare_container_base_config
         container.config.root = configuration.root
         container.config.inflector = configuration.inflector
 
@@ -214,19 +216,33 @@ module Hanami
           "config/providers",
           Pathname(__dir__).join("application/container/providers").realpath,
         ]
+      end
 
+      def prepare_autoload_paths
         # Autoload classes defined in lib/[app_namespace]/
         if root.join("lib", namespace_path).directory?
-          container.autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
+          autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
+        end
+      end
+
+      def prepare_container_consts
+        namespace.const_set :Container, container
+        namespace.const_set :Deps, container.injector
+      end
+
+      def prepare_slices
+        slices.load_slices.each(&:prepare)
+        slices.freeze
+      end
+
+      def prepare_autoloader
+        # Autoload classes defined in lib/[app_namespace]/
+        if root.join("lib", namespace_path).directory?
+          autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
         end
 
-        # Add lib/ to to the $LOAD_PATH so any files there (outside the app namespace) can
-        # be required
-        container.add_to_load_path!("lib") if root.join("lib").directory?
-
-        container.configured!
+        autoloader.setup
       end
-      # rubocop:enable Metrics/AbcSize
 
       def load_settings
         require_relative "application/settings"
