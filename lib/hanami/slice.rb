@@ -201,8 +201,7 @@ module Hanami
 
           component_dir = component_dir.dup
 
-          # TODO: this `== "lib"` check should be codified into a method somewhere
-          if component_dir.path == "lib"
+          if component_dir.path == LIB_DIR
             # Expect component files in the root of the lib/ component dir to define
             # classes inside the slice's namespace.
             #
@@ -210,8 +209,6 @@ module Hanami
             # "foo"
             component_dir.namespaces.delete_root
             component_dir.namespaces.add_root(key: nil, const: namespace_path)
-
-            container.config.component_dirs.add(component_dir)
           else
             # Expect component files in the root of non-lib/ component dirs to define
             # classes inside a namespace matching that dir.
@@ -223,9 +220,9 @@ module Hanami
 
             component_dir.namespaces.delete_root
             component_dir.namespaces.add_root(const: dir_namespace_path, key: component_dir.path)
-
-            container.config.component_dirs.add(component_dir)
           end
+
+          container.config.component_dirs.add(component_dir)
         end
       end
 

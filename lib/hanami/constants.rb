@@ -14,6 +14,10 @@ module Hanami
   private_constant :SLICES_DIR
 
   # @api private
+  LIB_DIR = "lib"
+  private_constant :LIB_DIR
+
+  # @api private
   RB_EXT = ".rb"
   private_constant :RB_EXT
 end
