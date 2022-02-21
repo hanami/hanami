@@ -59,14 +59,6 @@ module Hanami
         application.inflector
       end
 
-      def prepared?
-        !!@prepared
-      end
-
-      def booted?
-        !!@booted
-      end
-
       def prepare(provider_name = nil)
         container.prepare(provider_name) and return self if provider_name
 
@@ -93,6 +85,14 @@ module Hanami
         @booted = true
 
         self
+      end
+
+      def prepared?
+        !!@prepared
+      end
+
+      def booted?
+        !!@booted
       end
 
       def register(...)
