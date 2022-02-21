@@ -174,12 +174,14 @@ module Hanami
       end
 
       def prepare_container_plugins
-        container.use :env
+        container.use(:env, inferrer: -> { Hanami.env })
 
-        container.use :zeitwerk,
+        container.use(
+          :zeitwerk,
           loader: application.autoloader,
           run_setup: false,
           eager_load: false
+        )
       end
 
       def prepare_container_base_config

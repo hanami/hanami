@@ -203,9 +203,9 @@ module Hanami
       end
 
       def prepare_container_plugins
-        container.use :env, inferrer: -> { Hanami.env }
-        container.use :zeitwerk, loader: autoloader, run_setup: false, eager_load: false
-        container.use :notifications
+        container.use(:env, inferrer: -> { Hanami.env })
+        container.use(:zeitwerk, loader: autoloader, run_setup: false, eager_load: false)
+        container.use(:notifications)
       end
 
       def prepare_container_base_config
