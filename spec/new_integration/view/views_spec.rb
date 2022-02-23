@@ -31,13 +31,13 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "slices/main/web/templates/layouts/application.html.slim", <<~SLIM
+      write "slices/main/templates/layouts/application.html.slim", <<~SLIM
         html
           body
             == yield
       SLIM
 
-      write "slices/main/web/templates/test_view.html.slim", <<~'SLIM'
+      write "slices/main/templates/test_view.html.slim", <<~'SLIM'
         h1 Hello, #{name}
       SLIM
 
@@ -79,13 +79,13 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "slices/main/web/templates/layouts/application.html.slim", <<~SLIM
+      write "slices/main/templates/layouts/application.html.slim", <<~SLIM
         html
           body
             == yield
       SLIM
 
-      write "slices/main/web/templates/test_view.html.slim", <<~'SLIM'
+      write "slices/main/templates/test_view.html.slim", <<~'SLIM'
         h1 Hello, #{name}
       SLIM
 
