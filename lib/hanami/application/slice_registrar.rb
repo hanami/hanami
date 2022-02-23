@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../constants"
+require_relative "../slice"
 
 module Hanami
   class Application
@@ -24,7 +25,7 @@ module Hanami
 
         # TODO: raise error unless name meets format (i.e. single level depth only)
 
-        slices[name.to_sym] = slice_class || Slice.build_slice(name, &block)
+        slices[name.to_sym] = slice_class || build_slice(name, &block)
       end
 
       def [](name)
@@ -83,6 +84,18 @@ module Hanami
           end
 
         register(slice_name, slice_class)
+      end
+
+      def build_slice(slice_name, &block)
+        slice_module =
+          begin
+            slice_module_name = inflector.camelize(slice_name.to_s)
+            inflector.constantize(slice_module_name)
+          rescue NameError
+            Object.const_set(inflector.camelize(slice_module_name), Module.new)
+          end
+
+        slice_module.const_set(:Slice, Class.new(Hanami::Slice, &block))
       end
 
       def root

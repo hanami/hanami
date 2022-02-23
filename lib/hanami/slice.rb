@@ -21,20 +21,6 @@ module Hanami
         klass.instance_variable_set(:@container, Class.new(Dry::System::Container))
       end
 
-      def build_slice(slice_name, &block)
-        inflector = application.inflector
-
-        slice_module =
-          begin
-            slice_module_name = inflector.camelize(slice_name.to_s)
-            inflector.constantize(slice_module_name)
-          rescue NameError
-            Object.const_set(inflector.camelize(slice_module_name), Module.new)
-          end
-
-        slice_module.const_set(:Slice, Class.new(Hanami::Slice, &block))
-      end
-
       def application
         Hanami.application
       end
