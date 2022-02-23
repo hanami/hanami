@@ -38,7 +38,6 @@ module Hanami
     private :environments
 
     def initialize(application_name:, env:)
-      # FIXME: Ugh, this shouldn't be here
       @namespace = application_name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER)
 
       @environments = DEFAULT_ENVIRONMENTS.clone
