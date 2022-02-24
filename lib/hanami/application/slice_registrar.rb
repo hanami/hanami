@@ -7,11 +7,8 @@ module Hanami
   class Application
     # @api private
     class SliceRegistrar
-      attr_reader :application
-      private :application
-
-      attr_reader :slices
-      private :slices
+      attr_reader :application, :slices
+      private :application, :slices
 
       def initialize(application)
         @application = application
@@ -20,7 +17,7 @@ module Hanami
 
       def register(name, slice_class = nil, &block)
         if slices.key?(name.to_sym)
-          raise SliceLoadError, "Slice '#{name.to_s}' is already registered"
+          raise SliceLoadError, "Slice '#{name}' is already registered"
         end
 
         # TODO: raise error unless name meets format (i.e. single level depth only)
