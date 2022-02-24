@@ -10,19 +10,28 @@ module Hanami
   #
   # @since 2.0.0
   class Slice
-    class << self
+    def self.inherited(klass)
+      super
+
+      klass.extend(ClassMethods)
+
+      # Eagerly initialize any variables that may be accessed inside the subclass body
+      klass.instance_variable_set(:@container, Class.new(Dry::System::Container))
+      klass.application(Hanami.application)
+    end
+
+    # rubocop:disable Metrics/ModuleLength
+    module ClassMethods
       attr_reader :container
 
-      def inherited(klass)
-        super
+      def application(new_application = nil)
+        if new_application
+          raise SliceLoadError, "Slice application must be set before slice is prepared" if prepared?
 
-        # Create a (to be configured later) container as early as possible, since code in
-        # the slice subclass may want to start referring to it right away (e.g. `.import`)
-        klass.instance_variable_set(:@container, Class.new(Dry::System::Container))
-      end
-
-      def application
-        Hanami.application
+          @application = new_application
+        else
+          @application
+        end
       end
 
       def slice_name
@@ -244,5 +253,6 @@ module Hanami
         namespace.const_set :Deps, container.injector
       end
     end
+    # rubocop:enable Metrics/ModuleLength
   end
 end
