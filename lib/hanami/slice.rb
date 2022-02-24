@@ -182,7 +182,7 @@ module Hanami
       def prepare_container_base_config
         container.config.name = slice_name
         container.config.root = root
-        container.config.provider_dirs = ["config/providers"]
+        container.config.provider_dirs = [File.join("config", "providers")]
 
         container.config.env = application.configuration.env
         container.config.inflector = application.configuration.inflector
