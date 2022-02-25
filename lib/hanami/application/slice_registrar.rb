@@ -22,13 +22,7 @@ module Hanami
 
         # TODO: raise error unless name meets format (i.e. single level depth only)
 
-        slice = slice_class || build_slice(name, &block)
-
-        unless slice.application.eql?(application)
-          raise SliceLoadError, "Slice #{slice} must be registered with its own application"
-        end
-
-        slices[name.to_sym] = slice
+        slices[name.to_sym] = slice_class || build_slice(name, &block)
       end
 
       def [](name)
@@ -98,12 +92,7 @@ module Hanami
             Object.const_set(inflector.camelize(slice_module_name), Module.new)
           end
 
-        slice = Class.new(Hanami::Slice) { |klass|
-          klass.application(application)
-          klass.instance_eval(&block) if block
-        }
-
-        slice_module.const_set(:Slice, slice)
+        slice_module.const_set(:Slice, Class.new(Hanami::Slice, &block))
       end
 
       def root

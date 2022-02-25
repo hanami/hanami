@@ -16,23 +16,13 @@ module Hanami
       klass.extend(ClassMethods)
 
       # Eagerly initialize any variables that may be accessed inside the subclass body
+      klass.instance_variable_set(:@application, Hanami.application)
       klass.instance_variable_set(:@container, Class.new(Dry::System::Container))
-      klass.application(Hanami.application)
     end
 
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
-      attr_reader :container
-
-      def application(new_application = nil)
-        if new_application
-          raise SliceLoadError, "Slice application must be set before slice is prepared" if prepared?
-
-          @application = new_application
-        else
-          @application
-        end
-      end
+      attr_reader :application, :container
 
       def slice_name
         inflector.underscore(name.split(MODULE_DELIMITER)[-2]).to_sym
