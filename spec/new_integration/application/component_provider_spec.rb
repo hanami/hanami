@@ -12,10 +12,7 @@ RSpec.describe Hanami::Application, "#component_provider", :application_integrat
       end
     end
 
-    module Main
-    end
-
-    application.register_slice :main, namespace: Main
+    application.register_slice :main
 
     Hanami.prepare
   end

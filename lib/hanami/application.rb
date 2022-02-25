@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
-require "dry/system/loader/autoloading"
 require "hanami/configuration"
 require "pathname"
 require "rack"
 require "zeitwerk"
+require_relative "constants"
 require_relative "slice"
+require_relative "application/slice_registrar"
 
 module Hanami
   # Hanami application class
@@ -20,8 +21,10 @@ module Hanami
         super
         @_mutex.synchronize do
           klass.class_eval do
-            @_mutex         = Mutex.new
+            @_mutex = Mutex.new
             @_configuration = Hanami::Configuration.new(application_name: name, env: Hanami.env)
+            @autoloader = Zeitwerk::Loader.new
+            @container = Class.new(Dry::System::Container)
 
             extend ClassMethods
           end
@@ -37,6 +40,8 @@ module Hanami
     #
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
+      attr_reader :autoloader, :container
+
       def self.extended(klass)
         klass.class_eval do
           @prepared = @booted = false
@@ -50,26 +55,13 @@ module Hanami
       alias_method :config, :configuration
 
       def prepare(provider_name = nil)
-        if provider_name
-          container.prepare(provider_name)
-          return self
-        end
+        container.prepare(provider_name) and return self if provider_name
 
         return self if prepared?
 
         configuration.finalize!
 
-        load_settings
-
-        @autoloader = Zeitwerk::Loader.new
-        @container = prepare_container
-        @deps_module = prepare_deps_module
-
-        load_slices
-        slices.each_value(&:prepare)
-        slices.freeze
-
-        @autoloader.setup
+        prepare_all
 
         @prepared = true
         self
@@ -82,7 +74,7 @@ module Hanami
 
         container.finalize!(&block)
 
-        slices.values.each(&:boot)
+        slices.each(&:boot)
 
         @booted = true
         self
@@ -93,29 +85,11 @@ module Hanami
       end
 
       def prepared?
-        @prepared
+        !!@prepared
       end
 
       def booted?
-        @booted
-      end
-
-      def autoloader
-        raise "Application not yet prepared" unless defined?(@autoloader)
-
-        @autoloader
-      end
-
-      def container
-        raise "Application not yet prepared" unless defined?(@container)
-
-        @container
-      end
-
-      def deps
-        raise "Application not yet prepared" unless defined?(@deps_module)
-
-        @deps_module
+        !!@booted
       end
 
       def router
@@ -131,15 +105,11 @@ module Hanami
       end
 
       def slices
-        @slices ||= {}
+        @slices ||= SliceRegistrar.new(self)
       end
 
-      def register_slice(name, **slice_args)
-        raise "Slice +#{name}+ already registered" if slices.key?(name.to_sym)
-
-        slice = Slice.new(self, name: name, **slice_args)
-        slice.namespace.const_set :Slice, slice if slice.namespace # rubocop:disable Style/SafeNavigation
-        slices[name.to_sym] = slice
+      def register_slice(...)
+        slices.register(...)
       end
 
       def register(...)
@@ -202,8 +172,8 @@ module Hanami
       def component_provider(component)
         raise "Hanami.application must be prepared before detecting providers" unless prepared?
 
-        # [Admin, Main, MyApp] or [MyApp::Admin, MyApp::Main, MyApp]
-        providers = slices.values + [self]
+        # e.g. [Admin, Main, MyApp]
+        providers = slices.to_a + [self]
 
         component_class = component.is_a?(Class) ? component : component.class
         component_name = component_class.name
@@ -220,20 +190,25 @@ module Hanami
         $LOAD_PATH.unshift base_path unless $LOAD_PATH.include?(base_path)
       end
 
-      # rubocop:disable Metrics/AbcSize
-      def prepare_container
-        container =
-          begin
-            require "#{application_name}/container"
-            namespace.const_get :Container
-          rescue LoadError, NameError
-            namespace.const_set :Container, Class.new(Dry::System::Container)
-          end
+      def prepare_all
+        load_settings
+        prepare_container_plugins
+        prepare_container_base_config
+        prepare_container_consts
+        container.configured!
+        prepare_slices
+        # For the application, the autoloader must be prepared after the slices, since
+        # they'll be configuring the autoloader with their own dirs
+        prepare_autoloader
+      end
 
-        container.use :env, inferrer: -> { Hanami.env }
-        container.use :zeitwerk, loader: autoloader, run_setup: false, eager_load: false
-        container.use :notifications
+      def prepare_container_plugins
+        container.use(:env, inferrer: -> { Hanami.env })
+        container.use(:zeitwerk, loader: autoloader, run_setup: false, eager_load: false)
+        container.use(:notifications)
+      end
 
+      def prepare_container_base_config
         container.config.root = configuration.root
         container.config.inflector = configuration.inflector
 
@@ -241,63 +216,32 @@ module Hanami
           "config/providers",
           Pathname(__dir__).join("application/container/providers").realpath,
         ]
+      end
 
+      def prepare_autoload_paths
         # Autoload classes defined in lib/[app_namespace]/
         if root.join("lib", namespace_path).directory?
-          container.autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
+          autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
         end
-
-        # Add lib/ to to the $LOAD_PATH so any files there (outside the app namespace) can
-        # be required
-        container.add_to_load_path!("lib") if root.join("lib").directory?
-
-        container.configured!
-
-        container
-      end
-      # rubocop:enable Metrics/AbcSize
-
-      def prepare_deps_module
-        define_deps_module
       end
 
-      def define_deps_module
-        require "#{application_name}/deps"
-        namespace.const_get :Deps
-      rescue LoadError, NameError
+      def prepare_container_consts
+        namespace.const_set :Container, container
         namespace.const_set :Deps, container.injector
       end
 
-      def load_slices
-        Dir[File.join(slices_path, "*")]
-          .select(&File.method(:directory?))
-          .each(&method(:load_slice))
+      def prepare_slices
+        slices.load_slices.each(&:prepare)
+        slices.freeze
       end
 
-      def slices_path
-        File.join(root, config.slices_dir)
-      end
-
-      def load_slice(slice_path)
-        slice_path = Pathname(slice_path)
-
-        slice_name = slice_path.relative_path_from(Pathname(slices_path)).to_s
-        slice_const_name = inflector.camelize(slice_name)
-
-        if config.slices_namespace.const_defined?(slice_const_name)
-          slice_module = config.slices_namespace.const_get(slice_const_name)
-
-          raise "Cannot use slice +#{slice_const_name}+ since it is not a module" unless slice_module.is_a?(Module)
-        else
-          slice_module = Module.new
-          config.slices_namespace.const_set inflector.camelize(slice_name), slice_module
+      def prepare_autoloader
+        # Autoload classes defined in lib/[app_namespace]/
+        if root.join("lib", namespace_path).directory?
+          autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
         end
 
-        register_slice(
-          slice_name,
-          namespace: slice_module,
-          root: slice_path.realpath
-        )
+        autoloader.setup
       end
 
       def load_settings
@@ -310,9 +254,6 @@ module Hanami
       rescue LoadError
         Settings.new
       end
-
-      MODULE_DELIMITER = "::"
-      private_constant :MODULE_DELIMITER
 
       def autodiscover_application_constant(constants)
         inflector.constantize([namespace_name, *constants].join(MODULE_DELIMITER))

@@ -148,19 +148,7 @@ module Hanami
 
     setting :settings_store, default: Application::Settings::DotenvStore
 
-    setting :slices_dir, default: "slices"
-
-    setting :slices_namespace, default: Object
-
-    # TODO: convert into a dedicated object with explicit behaviour around blocks per
-    # slice, etc.
-    setting :slices, default: {}, constructor: :dup.to_proc
-
     setting :source_dirs, default: Configuration::SourceDirs.new, cloneable: true
-
-    def slice(slice_name, &block)
-      slices[slice_name] = block
-    end
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
 
