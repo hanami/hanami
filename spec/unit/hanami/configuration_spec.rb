@@ -38,20 +38,6 @@ RSpec.describe Hanami::Configuration do
       it "does not apply the settings when finalizing" do
         expect { config.finalize! }.not_to change { config.settings_path }
       end
-
-      context "env changed to match" do
-        before do
-          config.env = :production
-        end
-
-        it "applies the settings" do
-          expect(config.settings_path).to eq "config/production_settings"
-        end
-
-        it "leaves the settings in place when finalizing" do
-          expect { config.finalize! }.not_to change { config.settings_path }
-        end
-      end
     end
   end
 end

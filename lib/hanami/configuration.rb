@@ -29,6 +29,8 @@ module Hanami
     MODULE_DELIMITER = "::"
     private_constant :MODULE_DELIMITER
 
+    attr_reader :env
+
     attr_reader :actions
     attr_reader :middleware
     attr_reader :router
@@ -41,7 +43,7 @@ module Hanami
       @namespace = application_name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER)
 
       @environments = DEFAULT_ENVIRONMENTS.clone
-      config.env = env
+      @env = env
 
       # Some default setting values must be assigned at initialize-time to ensure they
       # have appropriate values for the current application
@@ -115,13 +117,6 @@ module Hanami
 
     def application_name
       inflector.underscore(@namespace).to_sym
-    end
-
-    setting :env
-
-    def env=(new_env)
-      config.env = env
-      apply_env_config(new_env)
     end
 
     setting :root, constructor: -> path { Pathname(path) }
