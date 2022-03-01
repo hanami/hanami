@@ -13,6 +13,7 @@ require_relative "configuration/middleware"
 require_relative "configuration/router"
 require_relative "configuration/sessions"
 require_relative "configuration/source_dirs"
+require_relative "constants"
 
 module Hanami
   # Hanami application configuration
@@ -25,9 +26,6 @@ module Hanami
 
     DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
     private_constant :DEFAULT_ENVIRONMENTS
-
-    MODULE_DELIMITER = "::"
-    private_constant :MODULE_DELIMITER
 
     attr_reader :env
 
