@@ -13,6 +13,7 @@ require_relative "configuration/middleware"
 require_relative "configuration/router"
 require_relative "configuration/sessions"
 require_relative "configuration/source_dirs"
+require_relative "constants"
 
 module Hanami
   # Hanami application configuration
@@ -26,8 +27,7 @@ module Hanami
     DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
     private_constant :DEFAULT_ENVIRONMENTS
 
-    MODULE_DELIMITER = "::"
-    private_constant :MODULE_DELIMITER
+    attr_reader :env
 
     attr_reader :actions
     attr_reader :middleware
@@ -41,7 +41,7 @@ module Hanami
       @namespace = application_name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER)
 
       @environments = DEFAULT_ENVIRONMENTS.clone
-      config.env = env
+      @env = env
 
       # Some default setting values must be assigned at initialize-time to ensure they
       # have appropriate values for the current application
@@ -115,13 +115,6 @@ module Hanami
 
     def application_name
       inflector.underscore(@namespace).to_sym
-    end
-
-    setting :env
-
-    def env=(new_env)
-      config.env = env
-      apply_env_config(new_env)
     end
 
     setting :root, constructor: -> path { Pathname(path) }
