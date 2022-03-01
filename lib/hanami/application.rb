@@ -81,7 +81,9 @@ module Hanami
       end
 
       def shutdown
+        slices.each(&:shutdown)
         container.shutdown!
+        self
       end
 
       def prepared?

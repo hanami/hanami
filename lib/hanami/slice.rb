@@ -72,6 +72,11 @@ module Hanami
         self
       end
 
+      def shutdown
+        container.shutdown!
+        self
+      end
+
       def prepared?
         !!@prepared
       end
