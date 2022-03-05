@@ -19,10 +19,11 @@ module Hanami
     class << self
       def inherited(klass)
         super
+
         @_mutex.synchronize do
           klass.class_eval do
             @_mutex = Mutex.new
-            @_configuration = Hanami::Configuration.new(application_name: name, env: Hanami.env)
+            @_configuration = Hanami::Configuration.new(application_name: klass.name, env: Hanami.env)
             @autoloader = Zeitwerk::Loader.new
             @container = Class.new(Dry::System::Container)
 
