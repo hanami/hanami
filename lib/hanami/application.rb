@@ -48,6 +48,10 @@ module Hanami
         end
       end
 
+      def application
+        self
+      end
+
       def configuration
         @_configuration
       end
