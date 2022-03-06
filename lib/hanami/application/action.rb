@@ -34,10 +34,10 @@ module Hanami
         def configure_for_slice(slice)
           @slice = slice
 
-          application_config = slice.application.config.actions
+          actions_config = slice.application.config.actions
 
-          configure_from_application_config(application_config)
-          extend_behavior(application_config)
+          configure_from_actions_config(actions_config)
+          extend_behavior(actions_config)
         end
 
         # @api private
@@ -52,27 +52,24 @@ module Hanami
 
         private
 
-        def configure_from_application_config(application_config)
+        def configure_from_actions_config(actions_config)
           config.settings.each do |setting|
-            application_value = application_config.public_send(:"#{setting}")
-            config.public_send :"#{setting}=", application_value
+            config.public_send :"#{setting}=", actions_config.public_send(:"#{setting}")
           end
         end
 
-        def extend_behavior(application_config)
-          # TODO: no op if ancestors already include these modules?
-
-          if application_config.sessions.enabled?
+        def extend_behavior(actions_config)
+          if actions_config.sessions.enabled?
             require "hanami/action/session"
             include Hanami::Action::Session
           end
 
-          if application_config.csrf_protection
+          if actions_config.csrf_protection
             require "hanami/action/csrf_protection"
             include Hanami::Action::CSRFProtection
           end
 
-          if application_config.cookies.enabled?
+          if actions_config.cookies.enabled?
             require "hanami/action/cookies"
             include Hanami::Action::Cookies
           end
