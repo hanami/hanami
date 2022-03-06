@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami/action"
-require "hanami/slice_configurable_class"
+require "hanami/slice_configurable"
 
 module Hanami
   class Application
@@ -11,9 +11,15 @@ module Hanami
         setting :view_context_identifier
       end
 
-      extend Hanami::SliceConfigurableClass
+      extend Hanami::SliceConfigurable
 
       class << self
+        # @api private
+        def inherited(subclass)
+          super
+          subclass.instance_variable_set(:@slice, slice)
+        end
+
         # @api public
         def configuration
           @configuration ||= Application::Action::Configuration.new
