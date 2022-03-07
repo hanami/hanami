@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
+require_relative "errors"
+
 module Hanami
   # @api private
   module SliceConfigurable
     class << self
       def extended(klass)
-        unless Hanami.application?
-          raise "Class #{klass} must be defined within an Hanami application"
-        end
-
         slice_for = method(:slice_for)
 
         inherited_mod = Module.new do
           define_method(:inherited) do |subclass|
+            unless Hanami.application?
+              raise ComponentLoadError, "Class #{klass} must be defined within an Hanami application"
+            end
+
             super(subclass)
 
             subclass.instance_variable_set(:@configured_for_slices, configured_for_slices.dup)
