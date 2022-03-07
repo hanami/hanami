@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-# require "hanami"
-# require "hanami/action"
-# require "hanami/view"
-# require "slim"
-
-RSpec.describe "View rendering in application actions", :application_integration do
+RSpec.describe "Application action / View rendering", :application_integration do
   specify "Views render with a request-specific context object" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
@@ -144,7 +139,6 @@ RSpec.describe "View rendering in application actions", :application_integration
       SLIM
 
       require "hanami/setup"
-      # byebug
       require "hanami/prepare"
 
       action = Main::Slice["actions.users.show"]
