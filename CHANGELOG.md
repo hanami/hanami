@@ -1,6 +1,65 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha7 - 2020-03-08
+
+## Added
+- [Tim Riley] Introduced `Hanami::ApplicationLoadError` and `Hanami::SliceLoadError` exceptions to represent errors encountered during application and slice loading.
+- [Tim Riley] `Hanami::Slice.shutdown` can be used to stop all the providers in a slice
+
+## Changed
+- [Tim Riley] Slices are now represented as concrete classes (such as `Main::Slice`) inheriting from `Hanami::Slice`, as opposed to _instances_ of `Hanami::Slice`. You may create your own definitions for these slices in `config/slices/[slice_name].rb`, which you can then use for customising per-slice config and behavior, e.g.
+
+    ```ruby
+    # config/slices/main.rb:
+
+    module Main
+      class Slice < Hanami::Slice
+        # slice config here
+      end
+    end
+    ```
+- [Tim Riley] Application-level `config.slice(slice_name, &block)` setting has been removed in favour of slice configuration within concrete slice class definitions
+- [Tim Riley] You can configure your slice imports inside your slice classes, e.g.
+
+    ```ruby
+    # config/slices/main.rb:
+
+    module Main
+      class Slice < Hanami::Slice
+        # Import all exported components from "search" slice
+        import from: :search
+      end
+    end
+    ```
+- [Tim Riley] You can configure your slice exports inside your slice classes, e.g.
+
+    ```ruby
+    # config/slices/search.rb:
+
+    module Search
+      class Slice < Hanami::Slice
+        # Export the "index_entity" component only
+        export ["index_entity"]
+      end
+    end
+    ```
+- [Tim Riley] For advanced cases, you can configure your slice's container via a `prepare_container` block:
+
+    ```ruby
+    # config/slices/search.rb:
+
+    module Search
+      class Slice < Hanami::Slice
+        prepare_container do |container|
+          # `container` object is available here, with
+          # slice-specific configuration already applied
+        end
+      end
+    end
+    ```
+- [Tim Riley] `Hanami::Application.shutdown` will now also shutdown all registered slices
+
 ## v2.0.0.alpha6 - 2022-02-10
 ### Added
 - [Luca Guidi] Official support for Ruby: MRI 3.1
