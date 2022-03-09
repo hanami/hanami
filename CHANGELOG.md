@@ -1,6 +1,11 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha7.1 - 2020-03-09
+
+## Fixed
+- [Tim Riley] Fixed error creating slice classes when the enclosing module did not already exist
+
 ## v2.0.0.alpha7 - 2020-03-08
 
 ## Added
