@@ -2,7 +2,7 @@ require "hanami/slice"
 
 RSpec.describe Hanami::Slice, :application_integration do
   before do
-    module Test
+    module TestApp
       class Application < Hanami::Application
       end
     end
@@ -16,7 +16,7 @@ RSpec.describe Hanami::Slice, :application_integration do
   end
 
   describe ".prepare_container" do
-    let(:application_modules) { %i[Test Slice1 Slice2] }
+    let(:application_modules) { %i[TestApp Slice1 Slice2] }
 
     it "allows the user to configure the container after defaults settings have been applied" do
       slice = Hanami.application.register_slice(:slice1).prepare

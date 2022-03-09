@@ -34,6 +34,10 @@ RSpec.describe Hanami::Application, "#component_provider", :application_integrat
   end
 
   context "component from external (non-app/slice) namespace" do
+    before do
+      module External; end
+    end
+
     let(:component) { External::Component = Class.new }
 
     it "returns nil" do
