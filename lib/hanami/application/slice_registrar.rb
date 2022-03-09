@@ -76,8 +76,7 @@ module Hanami
         slice_class =
           begin
             inflector.constantize("#{slice_const_name}::Slice")
-          rescue NameError => e
-            raise e unless e.name == :Slice
+          rescue NameError # rubocop:disable Lint/SuppressedException
           end
 
         register(slice_name, slice_class)
