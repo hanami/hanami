@@ -60,17 +60,10 @@ module Hanami
         NullConfiguration.new
       end
 
-      # Config for actions (same for views, below) may not be available if the gem isn't
-      # loaded; fall back to a null config object if it's missing
-      @actions = begin
-        require_path = "hanami/action/application_configuration"
-        require require_path
-        Hanami::Action::ApplicationConfiguration.new(assets_server_url: assets.server_url)
-      rescue LoadError => e
-        raise e unless e.path == require_path
-        require_relative "configuration/null_configuration"
-        NullConfiguration.new
-      end
+      @actions = load_dependent_config("hanami/action") {
+        require_relative "configuration/actions"
+        Actions.new
+      }
 
       @middleware = Middleware.new
 
@@ -160,6 +153,16 @@ module Hanami
       environments[env].each do |block|
         instance_eval(&block)
       end
+    end
+
+    def load_dependent_config(require_path, &block)
+      require require_path
+      yield
+    rescue LoadError => e
+      raise e unless e.path == require_path
+
+      require_relative "configuration/null_configuration"
+      NullConfiguration.new
     end
 
     def method_missing(name, *args, &block)
