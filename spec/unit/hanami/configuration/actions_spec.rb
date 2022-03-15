@@ -2,6 +2,7 @@
 
 require "hanami/configuration"
 require "hanami/configuration/actions"
+require "hanami/action/configuration"
 
 RSpec.describe Hanami::Configuration, "#actions" do
   let(:configuration) { described_class.new(application_name: application_name, env: :development) }
@@ -10,15 +11,40 @@ RSpec.describe Hanami::Configuration, "#actions" do
   subject(:actions) { configuration.actions }
 
   context "Hanami::Action available" do
-    it "exposes Hanami::Action's application configuration" do
+    it "is a full actions configuration" do
       is_expected.to be_an_instance_of(Hanami::Configuration::Actions)
 
       is_expected.to respond_to(:default_response_format)
       is_expected.to respond_to(:default_response_format=)
     end
 
+    it "configures base action settings" do
+      expect { actions.default_request_format = :json }
+        .to change { actions.default_request_format }
+        .to :json
+    end
+
+    it "configures base actions settings using custom methods" do
+      actions.formats = {}
+
+      expect { actions.format json: "application/json" }
+        .to change { actions.formats }
+        .to("application/json" => :json)
+    end
+
     it "can be finalized" do
       is_expected.to respond_to(:finalize!)
+    end
+
+    describe "#settings" do
+      it "returns a set of available settings" do
+        expect(actions.settings).to be_a(Set)
+        expect(actions.settings).to include(:view_context_identifier, :handled_exceptions)
+      end
+
+      it "includes all base action settings" do
+        expect(actions.settings).to include(Hanami::Action::Configuration.settings)
+      end
     end
   end
 
