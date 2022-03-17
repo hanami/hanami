@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "hanami/action"
-require "hanami/slice_configurable"
 
 module Hanami
   class Application
