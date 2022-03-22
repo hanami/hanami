@@ -28,11 +28,11 @@ RSpec.describe "Application action / View rendering", :application_integration d
       write "lib/test_app/view/base.rb", <<~RUBY
         # auto_register: false
 
-        require "hanami/view"
+        require "hanami/application/view"
 
         module TestApp
           module View
-            class Base < Hanami::View
+            class Base < Hanami::Application::View
             end
           end
         end
@@ -41,11 +41,11 @@ RSpec.describe "Application action / View rendering", :application_integration d
       write "lib/test_app/view/context.rb", <<~RUBY
         # auto_register: false
 
-        require "hanami/view/context"
+        require "hanami/application/view/context"
 
         module TestApp
           module View
-            class Context < Hanami::View::Context
+            class Context < Hanami::Application::View::Context
             end
           end
         end

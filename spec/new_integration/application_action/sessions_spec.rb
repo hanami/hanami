@@ -41,7 +41,7 @@ RSpec.describe "Application action / Sessions", :application_integration do
     }
 
     it "does not have HTTP sessions enabled" do
-      expect(action_class.ancestors).not_to include(Hanami::Action::Session)
+      expect(action_class.ancestors.map(&:to_s)).not_to include("Hanami::Action::Session")
     end
   end
 

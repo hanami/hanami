@@ -1,4 +1,4 @@
-require "hanami"
+# frozen_string_literal: true
 
 RSpec.describe "Application action / View rendering / Automatic rendering", :application_integration do
   it "Renders a view automatically, passing all params and exposures" do
@@ -237,11 +237,11 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
       write "lib/test_app/view/base.rb", <<~RUBY
         # auto_register: false
 
-        require "hanami/view"
+        require "hanami/application/view"
 
         module TestApp
           module View
-            class Base < Hanami::View; end
+            class Base < Hanami::Application::View; end
           end
         end
       RUBY
