@@ -16,7 +16,7 @@ RSpec.describe Hanami::Configuration::Actions, "default values" do
   end
 
   describe "view_name_inferrer" do
-    specify { expect(configuration.view_name_inferrer).to eq Hanami::Application::Action::ViewNameInferrer }
+    specify { expect(configuration.view_name_inferrer).to eq Hanami::Application::ViewNameInferrer }
   end
 
   describe "view_name_inference_base" do
