@@ -7,24 +7,9 @@ require_relative "action/slice_configured_action"
 module Hanami
   class Application
     class Action < Hanami::Action
-      class Configuration < Hanami::Action::Configuration
-        setting :view_name_inferrer
-        setting :view_context_identifier
-      end
-
       extend Hanami::SliceConfigurable
 
       class << self
-        # @api public
-        def configuration
-          @configuration ||= Application::Action::Configuration.new
-        end
-
-        # FIXME: figure out why I actually need this given we have alias_method in the base class
-        def config
-          configuration
-        end
-
         # @api private
         def configure_for_slice(slice)
           extend SliceConfiguredAction.new(slice)

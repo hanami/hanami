@@ -64,12 +64,8 @@ module Hanami
           end
         end
 
-        def actions_config
-          slice.application.config.actions
-        end
-
         def resolve_paired_view(action_class)
-          view_identifiers = action_class.config.view_name_inferrer.call(
+          view_identifiers = actions_config.view_name_inferrer.call(
             action_name: action_class.name,
             provider: slice,
           )
@@ -80,7 +76,7 @@ module Hanami
         end
 
         def resolve_view_context(action_class)
-          identifier = action_class.config.view_context_identifier
+          identifier = actions_config.view_context_identifier
 
           if slice.key?(identifier)
             slice[identifier]
@@ -93,6 +89,10 @@ module Hanami
         def resolve_routes
           # TODO: turn this into a config
           slice.application[:routes_helper] if slice.application.key?(:routes_helper)
+        end
+
+        def actions_config
+          slice.application.config.actions
         end
       end
     end
