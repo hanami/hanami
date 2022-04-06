@@ -69,15 +69,10 @@ module Hanami
 
       @router = Router.new(self)
 
-      @views = begin
-        require_path = "hanami/view/application_configuration"
-        require require_path
-        Hanami::View::ApplicationConfiguration.new
-      rescue LoadError => e
-        raise e unless e.path == require_path
-        require_relative "configuration/null_configuration"
-        NullConfiguration.new
-      end
+      @views = load_dependent_config("hanami/view") {
+        require_relative "configuration/views"
+        Views.new
+      }
 
       yield self if block_given?
     end

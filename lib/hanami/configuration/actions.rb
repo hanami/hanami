@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "dry/configurable"
 require "hanami/action/configuration"
 require_relative "actions/cookies"
 require_relative "actions/sessions"
@@ -21,6 +22,9 @@ module Hanami
       setting :view_name_inference_base, default: "views"
 
       attr_accessor :content_security_policy
+
+      attr_reader :base_configuration
+      private :base_configuration
 
       def initialize(*, **options)
         super()
@@ -57,8 +61,6 @@ module Hanami
       end
 
       private
-
-      attr_reader :base_configuration
 
       # Apply defaults for base configuration settings
       def configure_defaults

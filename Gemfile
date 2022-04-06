@@ -21,5 +21,6 @@ gem "dry-files", git: "https://github.com/dry-rb/dry-files.git"
 group :test do
   gem "dotenv"
   gem "dry-types"
+  gem "saharspec"
   gem "slim"
 end
