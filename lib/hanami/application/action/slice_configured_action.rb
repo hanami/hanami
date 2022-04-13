@@ -10,6 +10,7 @@ module Hanami
         attr_reader :slice
 
         def initialize(slice)
+          super()
           @slice = slice
         end
 
@@ -75,7 +76,7 @@ module Hanami
           end
         end
 
-        def resolve_view_context(action_class)
+        def resolve_view_context(_action_class)
           identifier = actions_config.view_context_identifier
 
           if slice.key?(identifier)

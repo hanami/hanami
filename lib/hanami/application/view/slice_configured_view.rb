@@ -10,6 +10,7 @@ module Hanami
         attr_reader :slice
 
         def initialize(slice)
+          super()
           @slice = slice
         end
 
@@ -24,6 +25,7 @@ module Hanami
 
         private
 
+        # rubocop:disable Metrics/AbcSize
         def configure_view(view_class)
           view_class.settings.each do |setting|
             if slice.application.config.views.respond_to?(:"#{setting}")
@@ -42,6 +44,7 @@ module Hanami
             view_class.config.part_namespace = part_namespace
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         def define_inherited
           template_name = method(:template_name)

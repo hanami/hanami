@@ -46,7 +46,7 @@ RSpec.describe Hanami::Configuration, "#views" do
     it "allows settings to be configured independently of the base view configuration" do
       expect { views.layouts_dir = "custom_layouts" }
         .to change { views.layouts_dir }.to("custom_layouts")
-        .and dont.change { Hanami::View.config.layouts_dir }
+        .and(dont.change { Hanami::View.config.layouts_dir })
     end
 
     describe "specialised default values" do
