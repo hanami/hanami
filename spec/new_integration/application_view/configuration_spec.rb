@@ -30,70 +30,29 @@ RSpec.describe "Application view / Configuration", :application_integration do
     end
   end
 
+  let(:view_class) { Main::View::Base }
+
   subject(:config) { view_class.config }
 
-  describe "base slice view class" do
-    let(:view_class) { Main::View::Base }
-
-    describe "path" do
-      context "no path provided in application config" do
-        it "defaults to 'templates', appended to the slice's root path" do
-          expect(config.paths.map { |path| path.dir.to_s }).to eq ["/test_app/slices/main/templates"]
-        end
-      end
-
-      context "relative path provided in application config" do
-        let(:application_hook) {
-          proc do
-            config.views.paths = ["my_templates"]
-          end
-        }
-
-        it "configures the path as the relative path appended to the slice's root path" do
-          expect(config.paths.map { |path| path.dir.to_s }).to eq ["/test_app/slices/main/my_templates"]
-        end
-      end
-
-      context "absolute path provided in application config" do
-        let(:application_hook) {
-          proc do
-            config.views.paths = ["/absolute/path"]
-          end
-        }
-
-        it "leaves the absolute path in place" do
-          expect(config.paths.map { |path| path.dir.to_s }).to eq ["/absolute/path"]
-        end
-      end
-    end
-
-    it "applies standard view configuration from the application" do
-      aggregate_failures do
-        expect(config.layouts_dir).to eq "layouts"
-        expect(config.layout).to eq "application"
-      end
+  it "applies default view configuration from the application" do
+    aggregate_failures do
+      expect(config.layouts_dir).to eq "layouts"
+      expect(config.layout).to eq "application"
     end
   end
 
-  describe "concrete view class" do
-    before do
-      module Main
-        module Views
-          module Articles
-            class Index < Main::View::Base
-            end
-          end
-        end
+  context "custom views configuration on application" do
+    let(:application_hook) {
+      proc do
+        config.views.layouts_dir = "custom_layouts"
+        config.views.layout = "my_layout"
       end
-    end
+    }
 
-    let(:view_class) { Main::Views::Articles::Index }
-
-    it "inherits the application-specific configuration from the base class" do
+    it "applies the custom configuration" do
       aggregate_failures do
-        expect(config.paths.map { |path| path.dir.to_s }).to eq ["/test_app/slices/main/templates"]
-        expect(config.layouts_dir).to eq "layouts"
-        expect(config.layout).to eq "application"
+        expect(config.layouts_dir).to eq "custom_layouts"
+        expect(config.layout).to eq "my_layout"
       end
     end
   end
