@@ -4,11 +4,15 @@ inherit_from:
   - https://raw.githubusercontent.com/hanami/devtools/main/.rubocop.yml
 Naming/HeredocDelimiterNaming:
   Enabled: false
+Style/AccessorGrouping:
+  Enabled: false
 Style/BlockDelimiters:
   Enabled: false
 Style/CommentedKeyword:
   Enabled: false
 Style/LambdaCall:
+  Enabled: false
+Style/StabbyLambdaParentheses:
   Enabled: false
 Style/TrailingCommaInArguments:
   Enabled: false

@@ -45,8 +45,8 @@ module Hanami
         # (neither true nor false), so we can default it to whether sessions are enabled
         self.csrf_protection = sessions.enabled? if csrf_protection.nil?
 
-        if self.content_security_policy
-          self.default_headers["Content-Security-Policy"] = self.content_security_policy.to_str
+        if content_security_policy
+          default_headers["Content-Security-Policy"] = content_security_policy.to_str
         end
       end
 
