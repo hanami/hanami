@@ -3,7 +3,26 @@
 require_relative "errors"
 
 module Hanami
+  # Calls `configure_for_slice(slice)` on the extended class whenever it is first
+  # subclassed within a module namespace corresponding to a slice.
+  #
+  # @example
+  #   class BaseClass
+  #     extend Hanami::SliceConfigurable
+  #   end
+  #
+  #   # slices/main/lib/my_class.rb
+  #   module Main
+  #     class MyClass < BaseClass
+  #       # Will be called with `Main::Slice`
+  #       def self.configure_for_slice(slice)
+  #         # ...
+  #       end
+  #     end
+  #   end
+  #
   # @api private
+  # @since 2.0.0
   module SliceConfigurable
     class << self
       def extended(klass)

@@ -5,7 +5,11 @@ require "hanami/action"
 module Hanami
   class Application
     class Action < Hanami::Action
+      # Provides slice-specific configuration and behavior for any action class defined
+      # within a slice's module namespace.
+      #
       # @api private
+      # @since 2.0.0
       class SliceConfiguredAction < Module
         attr_reader :slice
 

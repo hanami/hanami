@@ -9,6 +9,9 @@ require_relative "../application/view_name_inferrer"
 
 module Hanami
   class Configuration
+    # Hanami actions configuration
+    #
+    # @since 2.0.0
     class Actions
       include Dry::Configurable
 

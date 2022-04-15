@@ -9,13 +9,19 @@ require_relative "slice_configured_context"
 module Hanami
   class Application
     class View < Hanami::View
+      # View context for views in Hanami applications.
+      #
+      # @api public
+      # @since 2.0.0
       class Context < Hanami::View::Context
         extend Hanami::SliceConfigurable
 
+        # @api private
         def self.configure_for_slice(slice)
           extend SliceConfiguredContext.new(slice)
         end
 
+        # @see SliceConfiguredContext#define_new
         def initialize(**kwargs)
           defaults = {content: {}}
 

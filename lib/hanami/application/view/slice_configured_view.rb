@@ -5,7 +5,11 @@ require "hanami/view"
 module Hanami
   class Application
     class View < Hanami::View
+      # Provides slice-specific configuration and behavior for any view class defined
+      # within a slice's module namespace.
+      #
       # @api private
+      # @since 2.0.0
       class SliceConfiguredView < Module
         attr_reader :slice
 

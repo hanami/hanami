@@ -5,7 +5,11 @@ require "hanami/view"
 module Hanami
   class Application
     class View < Hanami::View
+      # Provides slice-specific configuration and behavior for any view context class
+      # defined within a slice's module namespace.
+      #
       # @api private
+      # @since 2.0.0
       class SliceConfiguredContext < Module
         attr_reader :slice
 
@@ -23,6 +27,16 @@ module Hanami
 
         private
 
+        # Defines a {.new} method on the context class that resolves key components from
+        # the application container and provides them to {#initialize} as injected
+        # dependencies.
+        #
+        # This includes the following application components:
+        #
+        #   - the configured inflector as `inflector`
+        #   - "settings" from the application container as `settings`
+        #   - "routes" from the application container as `routes`
+        #   - "assets" from the application container as `assets`
         def define_new
           inflector = slice.inflector
           resolve_settings = method(:resolve_settings)

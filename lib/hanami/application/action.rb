@@ -6,6 +6,12 @@ require_relative "action/slice_configured_action"
 
 module Hanami
   class Application
+    # Superclass for actions intended for use within an Hanami application.
+    #
+    # @see Hanami::Action
+    #
+    # @api public
+    # @since 2.0.0
     class Action < Hanami::Action
       extend Hanami::SliceConfigurable
 
@@ -48,12 +54,13 @@ module Hanami
         super
       end
 
-      # Decide whether to render the current response with the associated view.
-      # This can be overridden to enable/disable automatic rendering.
+      # Returns true if a view should automatically be rendered onto the response body.
+      #
+      # This may be overridden to enable/disable automatic rendering.
       #
       # @param res [Hanami::Action::Response]
       #
-      # @return [TrueClass,FalseClass]
+      # @return [Boolean]
       #
       # @since 2.0.0
       # @api public
