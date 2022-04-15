@@ -55,7 +55,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
                   res[:favorite_number] = 123
                 end
 
-                def render?(_res)
+                def auto_render?(_res)
                   false
                 end
               end

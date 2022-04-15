@@ -42,7 +42,7 @@ module Hanami
       end
 
       def finish(req, res, halted)
-        res.render(view, **req.params) if !halted && render?(res)
+        res.render(view, **req.params) if !halted && auto_render?(res)
         super
       end
 
@@ -55,7 +55,7 @@ module Hanami
       #
       # @since 2.0.0
       # @api public
-      def render?(res)
+      def auto_render?(res)
         view && res.body.empty?
       end
     end
