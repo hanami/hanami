@@ -53,7 +53,7 @@ module Hanami
       #
       # A custom inflector may still be provided in an `Hanami::View` subclass, via
       # `config.inflector=`.
-      NON_FORWARDABLE_METHODS = [:inflector, :inflector=].freeze
+      NON_FORWARDABLE_METHODS = %i[inflector inflector=].freeze
       private_constant :NON_FORWARDABLE_METHODS
 
       def method_missing(name, *args, &block)
