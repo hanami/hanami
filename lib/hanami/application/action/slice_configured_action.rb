@@ -67,8 +67,8 @@ module Hanami
 
         def resolve_paired_view(action_class)
           view_identifiers = actions_config.view_name_inferrer.call(
-            action_name: action_class.name,
-            provider: slice,
+            action_class_name: action_class.name,
+            slice: slice,
           )
 
           view_identifiers.detect do |identifier|
