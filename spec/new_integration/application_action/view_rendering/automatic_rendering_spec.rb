@@ -154,25 +154,31 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
           module Views
             module Profile
               class Show < Main::View::Base
-                expose :name, :favorite_number
+                expose :name
               end
             end
           end
         end
       RUBY
 
+      # This template will crash if not rendered with a valid `name` string. The absence
+      # of a crash here tells us that the view was never rendered.
       write "slices/main/templates/profile/show.html.slim", <<~'SLIM'
-        h1 Hello, #{name}. Your favorite number is #{favorite_number}, right?
+        h1 Hello, #{name.to_str}!
       SLIM
 
       require "hanami/prepare"
 
+      # Call the action without a `name` param, thereby ensuring the view will raise an
+      # error if rendered
       action = Main::Slice["actions.profile.show"]
-      response = action.(name: "Jennifer")
+      response = action.({})
       rendered = response.body[0]
 
-      expect(rendered).to eq "Not Found"
-      expect(response.status).to eq 404
+      aggregate_failures do
+        expect(rendered).to eq "Not Found"
+        expect(response.status).to eq 404
+      end
     end
   end
 

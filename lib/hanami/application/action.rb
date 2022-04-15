@@ -42,7 +42,7 @@ module Hanami
       end
 
       def finish(req, res, halted)
-        res.render(view, **req.params) if render?(res)
+        res.render(view, **req.params) if !halted && render?(res)
         super
       end
 
