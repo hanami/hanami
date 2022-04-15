@@ -86,13 +86,11 @@ module Hanami
           if slice.key?(identifier)
             slice[identifier]
           elsif slice.application.key?(identifier)
-            # TODO: we might not need the fallback with the way we're setting up the view layer for slices now
             slice.application[identifier]
           end
         end
 
         def resolve_routes
-          # TODO: turn this into a config
           slice.application[:routes_helper] if slice.application.key?(:routes_helper)
         end
 
