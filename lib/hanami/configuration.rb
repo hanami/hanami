@@ -49,15 +49,9 @@ module Hanami
 
       config.logger = Configuration::Logger.new(env: env, application_name: method(:application_name))
 
-      @assets = begin
-        require_path = "hanami/assets/application_configuration"
-        require require_path
+      @assets = load_dependent_config("hanami/assets/application_configuration") {
         Hanami::Assets::ApplicationConfiguration.new
-      rescue LoadError => e
-        raise e unless e.path == require_path
-        require_relative "configuration/null_configuration"
-        NullConfiguration.new
-      end
+      }
 
       @actions = load_dependent_config("hanami/action") {
         require_relative "configuration/actions"
