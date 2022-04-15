@@ -19,8 +19,6 @@ module Hanami
   # Hanami application configuration
   #
   # @since 2.0.0
-  #
-  # rubocop:disable Metrics/ClassLength
   class Configuration
     include Dry::Configurable
 
@@ -37,6 +35,7 @@ module Hanami
     attr_reader :environments
     private :environments
 
+    # rubocop:disable Metrics/AbcSize
     def initialize(application_name:, env:)
       @namespace = application_name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER)
 
@@ -76,6 +75,7 @@ module Hanami
 
       yield self if block_given?
     end
+    # rubocop:enable Metrics/AbcSize
 
     def environment(env_name, &block)
       environments[env_name] << block

@@ -14,10 +14,11 @@ module Hanami
         attr_reader :slice
 
         def initialize(slice)
+          super()
           @slice = slice
         end
 
-        def extended(view_class)
+        def extended(_context_class)
           define_new
         end
 
