@@ -28,6 +28,8 @@ module Hanami
         super(**kwargs)
       end
 
+      private
+
       def build_response(**options)
         options = options.merge(view_options: method(:view_options))
         super(**options)
