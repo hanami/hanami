@@ -7,6 +7,7 @@ require "rack"
 require "zeitwerk"
 require_relative "constants"
 require_relative "slice"
+require_relative "slice_behavior"
 require_relative "slice_name"
 require_relative "application/slice_registrar"
 
@@ -24,13 +25,14 @@ module Hanami
         @_mutex.synchronize do
           subclass.class_eval do
             @_mutex = Mutex.new
-            @application_name = SliceName.new(subclass, inflector: -> { subclass.inflector })
-            @configuration = Hanami::Configuration.new(application_name: @application_name, env: Hanami.env)
+            @slice_name = SliceName.new(subclass, inflector: -> { subclass.inflector })
+            @configuration = Hanami::Configuration.new(application_name: @slice_name, env: Hanami.env)
             @autoloader = Zeitwerk::Loader.new
             @container = Class.new(Dry::System::Container)
 
             @prepared = @booted = false
 
+            extend SliceBehavior
             extend ClassMethods
           end
 
@@ -45,9 +47,7 @@ module Hanami
     #
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
-      attr_reader :application_name, :configuration, :autoloader, :container
-
-      alias_method :slice_name, :application_name
+      attr_reader :slice_name, :configuration, :autoloader, :container
 
       alias_method :config, :configuration
 
@@ -87,14 +87,6 @@ module Hanami
         self
       end
 
-      def prepared?
-        !!@prepared
-      end
-
-      def booted?
-        !!@booted
-      end
-
       def router
         raise "Application not yet prepared" unless prepared?
 
@@ -115,40 +107,8 @@ module Hanami
         slices.register(...)
       end
 
-      def register(...)
-        container.register(...)
-      end
-
-      def register_provider(...)
-        container.register_provider(...)
-      end
-
-      def start(...)
-        container.start(...)
-      end
-
-      def key?(...)
-        container.key?(...)
-      end
-
-      def keys
-        container.keys
-      end
-
-      def [](...)
-        container.[](...)
-      end
-
-      def resolve(...)
-        container.resolve(...)
-      end
-
       def settings
         @_settings ||= load_settings
-      end
-
-      def namespace
-        application_name.namespace
       end
 
       def root
@@ -179,31 +139,17 @@ module Hanami
       end
 
       def prepare_container_plugins
-        container.use(:env, inferrer: -> { Hanami.env })
-        container.use(:zeitwerk, loader: autoloader, run_setup: false, eager_load: false)
+        super
         container.use(:notifications)
       end
 
       def prepare_container_base_config
-        container.config.root = configuration.root
-        container.config.inflector = configuration.inflector
+        super
 
         container.config.provider_dirs = [
-          "config/providers",
+          File.join("config", "providers"),
           Pathname(__dir__).join("application/container/providers").realpath,
         ]
-      end
-
-      def prepare_autoload_paths
-        # Autoload classes defined in lib/[app_namespace]/
-        if root.join("lib", application_name.name).directory?
-          autoloader.push_dir(root.join("lib", application_name.name), namespace: namespace)
-        end
-      end
-
-      def prepare_container_consts
-        namespace.const_set :Container, container
-        namespace.const_set :Deps, container.injector
       end
 
       def prepare_slices
@@ -213,8 +159,8 @@ module Hanami
 
       def prepare_autoloader
         # Autoload classes defined in lib/[app_namespace]/
-        if root.join("lib", application_name.name).directory?
-          autoloader.push_dir(root.join("lib", application_name.name), namespace: namespace)
+        if root.join("lib", slice_name.name).directory?
+          autoloader.push_dir(root.join("lib", slice_name.name), namespace: namespace)
         end
 
         autoloader.setup
@@ -232,7 +178,7 @@ module Hanami
       end
 
       def autodiscover_application_constant(constants)
-        inflector.constantize([application_name.namespace_name, *constants].join(MODULE_DELIMITER))
+        inflector.constantize([slice_name.namespace_name, *constants].join(MODULE_DELIMITER))
       end
 
       def load_router
