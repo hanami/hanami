@@ -27,6 +27,8 @@ module Hanami
             @autoloader = Zeitwerk::Loader.new
             @container = Class.new(Dry::System::Container)
 
+            @prepared = @booted = false
+
             extend ClassMethods
           end
 
@@ -42,12 +44,6 @@ module Hanami
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
       attr_reader :autoloader, :container
-
-      def self.extended(klass)
-        klass.class_eval do
-          @prepared = @booted = false
-        end
-      end
 
       def application
         self
