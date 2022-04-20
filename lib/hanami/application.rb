@@ -17,11 +17,11 @@ module Hanami
     @_mutex = Mutex.new
 
     class << self
-      def inherited(klass)
+      def inherited(subclass)
         super
 
         @_mutex.synchronize do
-          klass.class_eval do
+          subclass.class_eval do
             @_mutex = Mutex.new
             @_configuration = Hanami::Configuration.new(application_name: klass.name, env: Hanami.env)
             @autoloader = Zeitwerk::Loader.new
@@ -30,9 +30,9 @@ module Hanami
             extend ClassMethods
           end
 
-          klass.send :prepare_base_load_path
+          subclass.send :prepare_base_load_path
 
-          Hanami.application = klass
+          Hanami.application = subclass
         end
       end
     end

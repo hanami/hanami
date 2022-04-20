@@ -10,14 +10,14 @@ module Hanami
   #
   # @since 2.0.0
   class Slice
-    def self.inherited(klass)
+    def self.inherited(subclass)
       super
 
-      klass.extend(ClassMethods)
+      subclass.extend(ClassMethods)
 
       # Eagerly initialize any variables that may be accessed inside the subclass body
-      klass.instance_variable_set(:@application, Hanami.application)
-      klass.instance_variable_set(:@container, Class.new(Dry::System::Container))
+      subclass.instance_variable_set(:@application, Hanami.application)
+      subclass.instance_variable_set(:@container, Class.new(Dry::System::Container))
     end
 
     # rubocop:disable Metrics/ModuleLength
