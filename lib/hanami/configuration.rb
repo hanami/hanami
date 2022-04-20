@@ -25,6 +25,7 @@ module Hanami
     DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
     private_constant :DEFAULT_ENVIRONMENTS
 
+    attr_reader :application_name
     attr_reader :env
 
     attr_reader :actions
@@ -37,7 +38,7 @@ module Hanami
 
     # rubocop:disable Metrics/AbcSize
     def initialize(application_name:, env:)
-      @namespace = application_name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER)
+      @application_name = application_name
 
       @environments = DEFAULT_ENVIRONMENTS.clone
       @env = env
@@ -47,7 +48,7 @@ module Hanami
       self.root = Dir.pwd
       self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
 
-      config.logger = Configuration::Logger.new(env: env, application_name: method(:application_name))
+      config.logger = Configuration::Logger.new(env: env, application_name: application_name)
 
       @assets = load_dependent_config("hanami/assets/application_configuration") {
         Hanami::Assets::ApplicationConfiguration.new
@@ -89,14 +90,6 @@ module Hanami
       router.finalize!
 
       super
-    end
-
-    def namespace
-      inflector.constantize(@namespace)
-    end
-
-    def application_name
-      inflector.underscore(@namespace).to_sym
     end
 
     setting :root, constructor: -> path { Pathname(path) }

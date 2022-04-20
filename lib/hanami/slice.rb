@@ -4,6 +4,7 @@ require "dry/system/container"
 require "hanami/errors"
 require "pathname"
 require_relative "constants"
+require_relative "slice_name"
 
 module Hanami
   # Distinct area of concern within an Hanami application
@@ -25,15 +26,16 @@ module Hanami
       attr_reader :application, :container
 
       def slice_name
-        inflector.underscore(name.split(MODULE_DELIMITER)[-2]).to_sym
+        @slice_name ||= SliceName.new(self, inflector: method(:inflector))
       end
 
       def namespace
-        inflector.constantize(name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER))
+        slice_name.namespace
       end
 
+      # TODO: Remove this after https://github.com/hanami/hanami/pull/1156 is merged
       def namespace_path
-        inflector.underscore(namespace)
+        slice_name.name
       end
 
       def root
@@ -175,7 +177,7 @@ module Hanami
       end
 
       def prepare_container_base_config
-        container.config.name = slice_name
+        container.config.name = slice_name.to_sym
         container.config.root = root
         container.config.provider_dirs = [File.join("config", "providers")]
 
@@ -199,7 +201,7 @@ module Hanami
             # e.g. "lib/foo.rb" should define SliceNamespace::Foo, to be registered as
             # "foo"
             component_dir.namespaces.delete_root
-            component_dir.namespaces.add_root(key: nil, const: namespace_path)
+            component_dir.namespaces.add_root(key: nil, const: slice_name.name)
           else
             # Expect component files in the root of non-lib/ component dirs to define
             # classes inside a namespace matching that dir.
@@ -207,7 +209,7 @@ module Hanami
             # e.g. "actions/foo.rb" should define SliceNamespace::Actions::Foo, to be
             # registered as "actions.foo"
 
-            dir_namespace_path = File.join(namespace_path, component_dir.path)
+            dir_namespace_path = File.join(slice_name.name, component_dir.path)
 
             component_dir.namespaces.delete_root
             component_dir.namespaces.add_root(const: dir_namespace_path, key: component_dir.path)
@@ -224,7 +226,7 @@ module Hanami
         application.configuration.source_dirs.autoload_paths.each do |autoload_path|
           next unless root.join(autoload_path).directory?
 
-          dir_namespace_path = File.join(namespace_path, autoload_path)
+          dir_namespace_path = File.join(slice_name.name, autoload_path)
 
           autoloader_namespace = begin
             inflector.constantize(inflector.camelize(dir_namespace_path))
