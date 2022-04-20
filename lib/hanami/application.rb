@@ -175,21 +175,6 @@ module Hanami
         configuration.inflector
       end
 
-      # @api private
-      def component_provider(component)
-        raise "Hanami.application must be prepared before detecting providers" unless prepared?
-
-        # e.g. [Admin, Main, MyApp]
-        providers = slices.to_a + [self]
-
-        component_class = component.is_a?(Class) ? component : component.class
-        component_name = component_class.name
-
-        return unless component_name
-
-        providers.detect { |provider| component_name.include?(provider.namespace.to_s) }
-      end
-
       private
 
       def prepare_base_load_path
