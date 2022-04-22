@@ -149,11 +149,6 @@ module Hanami
         application_name.namespace
       end
 
-      # TODO: Remove this after https://github.com/hanami/hanami/pull/1156 is merged
-      def namespace_path
-        application_name.name
-      end
-
       def root
         configuration.root
       end

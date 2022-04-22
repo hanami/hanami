@@ -33,11 +33,6 @@ module Hanami
         slice_name.namespace
       end
 
-      # TODO: Remove this after https://github.com/hanami/hanami/pull/1156 is merged
-      def namespace_path
-        slice_name.name
-      end
-
       def root
         application.root.join(SLICES_DIR, slice_name.to_s)
       end
