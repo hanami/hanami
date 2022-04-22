@@ -94,7 +94,6 @@ RSpec.describe "Hanami view locals", :application_integration do
           module Views
             module Users
               class Show < View::Base
-                expose :params
                 expose :user
                 expose :downcase_name
                 expose :upcase_name do |user:|
@@ -243,7 +242,6 @@ RSpec.describe "Hanami view locals", :application_integration do
           module Views
             module Users
               class Show < View::Base
-                expose :params
                 expose :user
                 expose :downcase_name
                 expose :upcase_name do |user:|
