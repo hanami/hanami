@@ -95,4 +95,121 @@ RSpec.describe "Hanami view integration", :application_integration do
       expect(rendered.to_s).to eq "<html><body><h1>Hello, Jennifer</h1></body></html>"
     end
   end
+
+  specify "Canonical views setup" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+          end
+        end
+      RUBY
+
+      write "lib/test_app/action/base.rb", <<~RUBY
+        require "hanami/controller"
+
+        module TestApp
+          module Action
+            class Base < Hanami::Action
+            end
+          end
+        end
+      RUBY
+
+      write "lib/test_app/view/base.rb", <<~RUBY
+        require "hanami/view"
+
+        module TestApp
+          module View
+            class Base < Hanami::View
+            end
+          end
+        end
+      RUBY
+
+      write "lib/test_app/view/context.rb", <<~RUBY
+        require "hanami/view/context"
+
+        module TestApp
+          module View
+            class Context < Hanami::View::Context
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/lib/action/base.rb", <<~RUBY
+        require "test_app/action/base"
+
+        module Main
+          module Action
+            class Base < TestApp::Action::Base
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/lib/view/base.rb", <<~RUBY
+        require "test_app/view/base"
+
+        module Main
+          module View
+            class Base < TestApp::View::Base
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/lib/view/context.rb", <<~RUBY
+        require "test_app/view/context"
+
+        module Main
+          module View
+            class Context < TestApp::View::Context
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/actions/users/show.rb", <<~RUBY
+        module Main
+          module Actions
+            module Users
+              class Show < Action::Base
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/views/users/show.rb", <<~RUBY
+        module Main
+          module Views
+            module Users
+              class Show < View::Base
+                expose :name
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/templates/layouts/application.html.slim", <<~SLIM
+        html
+          body
+            == yield
+      SLIM
+
+      write "slices/main/templates/users/show.html.slim", <<~SLIM
+        h1 Hello, \#{name}
+      SLIM
+
+      require "hanami/prepare"
+
+      rendered = Main::Slice["views.users.show"].(name: "Jennifer")
+      expect(rendered.to_s).to eq "<html><body><h1>Hello, Jennifer</h1></body></html>"
+    end
+  end
 end
