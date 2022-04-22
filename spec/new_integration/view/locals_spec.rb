@@ -94,6 +94,7 @@ RSpec.describe "Hanami view locals", :application_integration do
           module Views
             module Users
               class Show < View::Base
+                expose :params
                 expose :user
                 expose :downcase_name
                 expose :upcase_name do |user:|
@@ -119,13 +120,27 @@ RSpec.describe "Hanami view locals", :application_integration do
 
       write "slices/main/templates/users/show.html.slim", <<~SLIM
         h1 Hello, \#{user.fetch(:name)} (\#{upcase_name}, \#{downcase_name})
-        h2 locals: \#{locals.keys}
+        h2 locals: \#{_locals.keys}
+        h3 params: \#{params.to_h.keys}
       SLIM
 
       require "hanami/prepare"
 
       response = Main::Slice["actions.users.show"].(user: {name: "Jennifer"})
-      expect(response.body.first).to eq "<html><body><h1>Hello, Jennifer (JENNIFER, jennifer)</h1><h2>locals: [:user]</h2></body></html>"
+      actual = response.body.first
+      expected = [
+        "<html>",
+        "<body>",
+        "<h1>Hello, Jennifer (JENNIFER, jennifer)</h1>",
+        "<h2>locals: [:params, :user, :downcase_name, :upcase_name]</h2>",
+        "<h3>params: [:user]</h3>",
+        "</body>",
+        "</html>"
+      ]
+
+      expected.each do |line|
+        expect(actual).to include(line)
+      end
     end
   end
 
@@ -228,6 +243,7 @@ RSpec.describe "Hanami view locals", :application_integration do
           module Views
             module Users
               class Show < View::Base
+                expose :params
                 expose :user
                 expose :downcase_name
                 expose :upcase_name do |user:|
@@ -253,13 +269,27 @@ RSpec.describe "Hanami view locals", :application_integration do
 
       write "slices/main/templates/users/show.html.slim", <<~SLIM
         h1 Hello, \#{user.name} (\#{upcase_name}, \#{downcase_name})
-        h2 locals: \#{locals.keys}
+        h2 locals: \#{_locals.keys}
+        h3 params: \#{params.to_h.keys}
       SLIM
 
       require "hanami/prepare"
 
       response = Main::Slice["actions.users.show"].(user: {id: 23})
-      expect(response.body.first).to eq "<html><body><h1>Hello, Amy (AMY, amy)</h1><h2>[:user]</h2></body></html>"
+      actual = response.body.first
+      expected = [
+        "<html>",
+        "<body>",
+        "<h1>Hello, Amy (AMY, amy)</h1>",
+        "<h2>locals: [:params, :user, :downcase_name, :upcase_name]</h2>",
+        "<h3>params: [:user]</h3>",
+        "</body>",
+        "</html>"
+      ]
+
+      expected.each do |line|
+        expect(actual).to include(line)
+      end
     end
   end
 end
