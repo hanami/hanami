@@ -19,8 +19,6 @@ module Hanami
   # Hanami application configuration
   #
   # @since 2.0.0
-  #
-  # rubocop:disable Metrics/ClassLength
   class Configuration
     include Dry::Configurable
 
@@ -37,6 +35,7 @@ module Hanami
     attr_reader :environments
     private :environments
 
+    # rubocop:disable Metrics/AbcSize
     def initialize(application_name:, env:)
       @namespace = application_name.split(MODULE_DELIMITER)[0..-2].join(MODULE_DELIMITER)
 
@@ -50,44 +49,27 @@ module Hanami
 
       config.logger = Configuration::Logger.new(env: env, application_name: method(:application_name))
 
-      @assets = begin
-        require_path = "hanami/assets/application_configuration"
-        require require_path
+      @assets = load_dependent_config("hanami/assets/application_configuration") {
         Hanami::Assets::ApplicationConfiguration.new
-      rescue LoadError => e
-        raise e unless e.path == require_path
-        require_relative "configuration/null_configuration"
-        NullConfiguration.new
-      end
+      }
 
-      # Config for actions (same for views, below) may not be available if the gem isn't
-      # loaded; fall back to a null config object if it's missing
-      @actions = begin
-        require_path = "hanami/action/application_configuration"
-        require require_path
-        Hanami::Action::ApplicationConfiguration.new(assets_server_url: assets.server_url)
-      rescue LoadError => e
-        raise e unless e.path == require_path
-        require_relative "configuration/null_configuration"
-        NullConfiguration.new
-      end
+      @actions = load_dependent_config("hanami/action") {
+        require_relative "configuration/actions"
+        Actions.new
+      }
 
       @middleware = Middleware.new
 
       @router = Router.new(self)
 
-      @views = begin
-        require_path = "hanami/view/application_configuration"
-        require require_path
-        Hanami::View::ApplicationConfiguration.new
-      rescue LoadError => e
-        raise e unless e.path == require_path
-        require_relative "configuration/null_configuration"
-        NullConfiguration.new
-      end
+      @views = load_dependent_config("hanami/view") {
+        require_relative "configuration/views"
+        Views.new
+      }
 
       yield self if block_given?
     end
+    # rubocop:enable Metrics/AbcSize
 
     def environment(env_name, &block)
       environments[env_name] << block
@@ -160,6 +142,16 @@ module Hanami
       environments[env].each do |block|
         instance_eval(&block)
       end
+    end
+
+    def load_dependent_config(require_path, &block)
+      require require_path
+      yield
+    rescue LoadError => e
+      raise e unless e.path == require_path
+
+      require_relative "configuration/null_configuration"
+      NullConfiguration.new
     end
 
     def method_missing(name, *args, &block)

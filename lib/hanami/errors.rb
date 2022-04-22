@@ -9,4 +9,7 @@ module Hanami
 
   # @since 2.0.0
   SliceLoadError = Class.new(Error)
+
+  # @since 2.0.0
+  ComponentLoadError = Class.new(Error)
 end

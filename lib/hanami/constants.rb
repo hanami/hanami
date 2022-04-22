@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
 module Hanami
+  CONTAINER_KEY_DELIMITER = "."
+  private_constant :CONTAINER_KEY_DELIMITER
+
   # @api private
   MODULE_DELIMITER = "::"
   private_constant :MODULE_DELIMITER
+
+  PATH_DELIMITER = "/"
+  private_constant :PATH_DELIMITER
 
   # @api private
   CONFIG_DIR = "config"

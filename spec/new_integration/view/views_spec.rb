@@ -13,10 +13,10 @@ RSpec.describe "Hanami view integration", :application_integration do
       RUBY
 
       write "slices/main/lib/view.rb", <<~RUBY
-        require "hanami/view"
+        require "hanami/application/view"
 
         module Main
-          class View < Hanami::View
+          class View < Hanami::Application::View
           end
         end
       RUBY
@@ -61,10 +61,10 @@ RSpec.describe "Hanami view integration", :application_integration do
 
       write "slices/main/lib/view.rb", <<~RUBY
         # auto_register: false
-        require "hanami/view"
+        require "hanami/application/view"
 
         module Main
-          class View < Hanami::View
+          class View < Hanami::Application::View
           end
         end
       RUBY

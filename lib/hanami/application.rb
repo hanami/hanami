@@ -19,10 +19,11 @@ module Hanami
     class << self
       def inherited(klass)
         super
+
         @_mutex.synchronize do
           klass.class_eval do
             @_mutex = Mutex.new
-            @_configuration = Hanami::Configuration.new(application_name: name, env: Hanami.env)
+            @_configuration = Hanami::Configuration.new(application_name: klass.name, env: Hanami.env)
             @autoloader = Zeitwerk::Loader.new
             @container = Class.new(Dry::System::Container)
 
@@ -46,6 +47,10 @@ module Hanami
         klass.class_eval do
           @prepared = @booted = false
         end
+      end
+
+      def application
+        self
       end
 
       def configuration
@@ -168,21 +173,6 @@ module Hanami
 
       def inflector
         configuration.inflector
-      end
-
-      # @api private
-      def component_provider(component)
-        raise "Hanami.application must be prepared before detecting providers" unless prepared?
-
-        # e.g. [Admin, Main, MyApp]
-        providers = slices.to_a + [self]
-
-        component_class = component.is_a?(Class) ? component : component.class
-        component_name = component_class.name
-
-        return unless component_name
-
-        providers.detect { |provider| component_name.include?(provider.namespace.to_s) }
       end
 
       private
