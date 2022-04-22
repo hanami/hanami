@@ -7,6 +7,7 @@ require "rack"
 require "zeitwerk"
 require_relative "constants"
 require_relative "slice"
+require_relative "slice_name"
 require_relative "application/slice_registrar"
 
 module Hanami
@@ -17,22 +18,25 @@ module Hanami
     @_mutex = Mutex.new
 
     class << self
-      def inherited(klass)
+      def inherited(subclass)
         super
 
         @_mutex.synchronize do
-          klass.class_eval do
+          subclass.class_eval do
             @_mutex = Mutex.new
-            @_configuration = Hanami::Configuration.new(application_name: klass.name, env: Hanami.env)
+            @application_name = SliceName.new(subclass, inflector: -> { subclass.inflector })
+            @configuration = Hanami::Configuration.new(application_name: @application_name, env: Hanami.env)
             @autoloader = Zeitwerk::Loader.new
             @container = Class.new(Dry::System::Container)
+
+            @prepared = @booted = false
 
             extend ClassMethods
           end
 
-          klass.send :prepare_base_load_path
+          subclass.send :prepare_base_load_path
 
-          Hanami.application = klass
+          Hanami.application = subclass
         end
       end
     end
@@ -41,23 +45,15 @@ module Hanami
     #
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
-      attr_reader :autoloader, :container
+      attr_reader :application_name, :configuration, :autoloader, :container
 
-      def self.extended(klass)
-        klass.class_eval do
-          @prepared = @booted = false
-        end
-      end
+      alias_method :slice_name, :application_name
+
+      alias_method :config, :configuration
 
       def application
         self
       end
-
-      def configuration
-        @_configuration
-      end
-
-      alias_method :config, :configuration
 
       def prepare(provider_name = nil)
         container.prepare(provider_name) and return self if provider_name
@@ -152,19 +148,7 @@ module Hanami
       end
 
       def namespace
-        configuration.namespace
-      end
-
-      def namespace_name
-        namespace.name
-      end
-
-      def namespace_path
-        inflector.underscore(namespace)
-      end
-
-      def application_name
-        configuration.application_name
+        application_name.namespace
       end
 
       def root
@@ -212,8 +196,8 @@ module Hanami
 
       def prepare_autoload_paths
         # Autoload classes defined in lib/[app_namespace]/
-        if root.join("lib", namespace_path).directory?
-          autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
+        if root.join("lib", application_name.name).directory?
+          autoloader.push_dir(root.join("lib", application_name.name), namespace: namespace)
         end
       end
 
@@ -229,8 +213,8 @@ module Hanami
 
       def prepare_autoloader
         # Autoload classes defined in lib/[app_namespace]/
-        if root.join("lib", namespace_path).directory?
-          autoloader.push_dir(root.join("lib", namespace_path), namespace: namespace)
+        if root.join("lib", application_name.name).directory?
+          autoloader.push_dir(root.join("lib", application_name.name), namespace: namespace)
         end
 
         autoloader.setup
@@ -248,7 +232,7 @@ module Hanami
       end
 
       def autodiscover_application_constant(constants)
-        inflector.constantize([namespace_name, *constants].join(MODULE_DELIMITER))
+        inflector.constantize([application_name.namespace_name, *constants].join(MODULE_DELIMITER))
       end
 
       def load_router

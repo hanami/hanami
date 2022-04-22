@@ -11,9 +11,9 @@ module Hanami
     class Logger
       include Dry::Configurable
 
-      protected :config
+      attr_reader :application_name
 
-      setting :application_name
+      protected :config
 
       setting :level
 
@@ -30,7 +30,6 @@ module Hanami
       setting :logger_class, default: Hanami::Logger
 
       def initialize(env:, application_name:)
-        @env = env
         @application_name = application_name
 
         config.level = case env
@@ -58,12 +57,16 @@ module Hanami
                         end
       end
 
-      def finalize!
-        config.application_name = @application_name.call
-      end
-
       def instance
-        logger_class.new(application_name, *options, stream: stream, level: level, formatter: formatter, filter: filters, colorizer: colors)
+        logger_class.new(
+          application_name.name,
+          *options,
+          stream: stream,
+          level: level,
+          formatter: formatter,
+          filter: filters,
+          colorizer: colors
+        )
       end
 
       private

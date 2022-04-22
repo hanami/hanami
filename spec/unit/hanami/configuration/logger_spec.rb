@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require "hanami/configuration/logger"
+require "hanami/slice_name"
+require "dry/inflector"
 require "logger"
 
 RSpec.describe Hanami::Configuration::Logger do
   subject { described_class.new(application_name: application_name, env: env) }
-  let(:application_name) { -> { :my_app } }
+  let(:application_name) { Hanami::SliceName.new(double(name: "MyApp::Application"), inflector: -> { Dry::Inflector.new }) }
   let(:env) { :development }
 
   describe "#logger_class" do
@@ -19,16 +21,6 @@ RSpec.describe Hanami::Configuration::Logger do
       expect { subject.logger_class = another_class }
         .to change { subject.logger_class }
         .to(another_class)
-    end
-  end
-
-  describe "#application_name" do
-    before do
-      subject.finalize!
-    end
-
-    it "defaults returns application name" do
-      expect(subject.application_name).to eq(application_name.call)
     end
   end
 
@@ -173,10 +165,9 @@ RSpec.describe Hanami::Configuration::Logger do
   end
 end
 
-
 RSpec.describe Hanami::Configuration do
   subject(:config) { described_class.new(application_name: application_name, env: env) }
-  let(:application_name) { "SOS::Application" }
+  let(:application_name) { Hanami::SliceName.new(double(name: "SOS::Application"), inflector: -> { Dry::Inflector.new }) }
   let(:env) { :development }
 
   describe "#logger" do

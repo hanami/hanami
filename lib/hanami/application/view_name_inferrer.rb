@@ -44,7 +44,7 @@ module Hanami
           slice
             .inflector
             .underscore(action_name)
-            .sub(%r{^#{slice.namespace_path}#{PATH_DELIMITER}}, "")
+            .sub(%r{^#{slice.slice_name.path}#{PATH_DELIMITER}}, "")
             .sub(%r{^#{key_base}#{PATH_DELIMITER}}, "")
             .gsub("/", CONTAINER_KEY_DELIMITER)
         end
