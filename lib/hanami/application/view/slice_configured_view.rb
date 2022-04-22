@@ -70,7 +70,7 @@ module Hanami
         end
 
         def namespace_from_path(path)
-          path = "#{slice.namespace_path}/#{path}"
+          path = "#{slice.slice_name.path}/#{path}"
 
           begin
             require path
@@ -88,7 +88,7 @@ module Hanami
           slice
             .inflector
             .underscore(view_class.name)
-            .sub(/^#{slice.namespace_path}\//, "")
+            .sub(/^#{slice.slice_name.path}\//, "")
             .sub(/^#{view_class.config.template_inference_base}\//, "")
         end
 

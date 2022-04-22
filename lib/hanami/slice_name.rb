@@ -43,22 +43,9 @@ module Hanami
       inflector.underscore(namespace_name)
     end
 
-    alias_method :to_s, :name
-
-    # Returns the name of a slice as a downcased, underscored symbol.
-    #
-    # @example
-    #   slice_name.name # => :main
-    #
-    # @return [Symbol] the slice name
-    #
-    # @see name, to_s
-    #
     # @api public
     # @since 2.0.0
-    def to_sym
-      name.to_sym
-    end
+    alias_method :path, :name
 
     # Returns the name of the slice's module namespace.
     #
@@ -86,7 +73,28 @@ module Hanami
       inflector.constantize(namespace_name)
     end
 
+    # @api public
+    # @since 2.0.0
     alias_method :namespace, :namespace_const
+
+    # @api public
+    # @since 2.0.0
+    alias_method :to_s, :name
+
+    # Returns the name of a slice as a downcased, underscored symbol.
+    #
+    # @example
+    #   slice_name.name # => :main
+    #
+    # @return [Symbol] the slice name
+    #
+    # @see name, to_s
+    #
+    # @api public
+    # @since 2.0.0
+    def to_sym
+      name.to_sym
+    end
 
     private
 

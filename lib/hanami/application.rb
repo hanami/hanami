@@ -47,6 +47,8 @@ module Hanami
     module ClassMethods
       attr_reader :application_name, :configuration, :autoloader, :container
 
+      alias_method :slice_name, :application_name
+
       alias_method :config, :configuration
 
       def application
