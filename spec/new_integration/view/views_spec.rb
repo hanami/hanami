@@ -119,11 +119,11 @@ RSpec.describe "Hanami view integration", :application_integration do
       RUBY
 
       write "lib/test_app/view/context.rb", <<~RUBY
-        require "hanami/view/context"
+        require "hanami/application/view/context"
 
         module TestApp
           module View
-            class Context < Hanami::View::Context
+            class Context < Hanami::Application::View::Context
             end
           end
         end
@@ -214,11 +214,11 @@ RSpec.describe "Hanami view integration", :application_integration do
       RUBY
 
       write "lib/test_app/view/context.rb", <<~RUBY
-        require "hanami/view/context"
+        require "hanami/application/view/context"
 
         module TestApp
           module View
-            class Context < Hanami::View::Context
+            class Context < Hanami::Application::View::Context
             end
           end
         end
