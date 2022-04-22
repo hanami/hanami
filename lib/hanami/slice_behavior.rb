@@ -33,6 +33,7 @@ module Hanami
       slice_name.name
     end
 
+    # TODO: where should this one actually go?
     def root
       application.root.join(SLICES_DIR, slice_name.to_s)
     end
