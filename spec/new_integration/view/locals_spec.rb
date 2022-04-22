@@ -119,7 +119,7 @@ RSpec.describe "Hanami view locals", :application_integration do
 
       write "slices/main/templates/users/show.html.slim", <<~SLIM
         h1 Hello, \#{user.fetch(:name)} (\#{upcase_name}, \#{downcase_name})
-        h2 locals: \#{_locals.keys}
+        h2 locals: \#{locals.keys}
         h3 params: \#{params.to_h.keys}
       SLIM
 
@@ -267,7 +267,7 @@ RSpec.describe "Hanami view locals", :application_integration do
 
       write "slices/main/templates/users/show.html.slim", <<~SLIM
         h1 Hello, \#{user.name} (\#{upcase_name}, \#{downcase_name})
-        h2 locals: \#{_locals.keys}
+        h2 locals: \#{locals.keys}
         h3 params: \#{params.to_h.keys}
       SLIM
 
