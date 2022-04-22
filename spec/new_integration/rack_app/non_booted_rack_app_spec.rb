@@ -14,6 +14,7 @@ RSpec.describe "Running a Rack app for a non-booted application", :application_i
 
         module TestApp
           class Application < Hanami::Application
+            config.logger.stream = File.new("/dev/null", "w")
           end
         end
       RUBY

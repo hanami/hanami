@@ -11,6 +11,7 @@ RSpec.describe "Application view / Configuration", :application_integration do
     end
 
     Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
+    Hanami.application.register_slice :main
     Hanami.application.prepare
 
     module TestApp

@@ -7,12 +7,12 @@ require "dry/configurable"
 require "dry/inflector"
 require "pathname"
 
-require_relative "settings/dotenv_store"
+require_relative "constants"
 require_relative "configuration/logger"
 require_relative "configuration/router"
 require_relative "configuration/sessions"
-require_relative "constants"
-require_relative "application/routing/middleware/stack"
+require_relative "settings/dotenv_store"
+require_relative "slice/routing/middleware/stack"
 
 module Hanami
   # Hanami application configuration
@@ -63,7 +63,7 @@ module Hanami
         Actions.new
       }
 
-      @middleware = Application::Routing::Middleware::Stack.new
+      @middleware = Slice::Routing::Middleware::Stack.new
 
       @router = Router.new(self)
 
@@ -95,7 +95,7 @@ module Hanami
       super
     end
 
-    setting :root, constructor: -> path { Pathname(path) }
+    setting :root, constructor: -> path { Pathname(path) if path }
 
     setting :no_auto_register_paths, default: %w[entities]
 
@@ -116,6 +116,27 @@ module Hanami
     end
 
     setting :settings_store, default: Hanami::Settings::DotenvStore
+
+    setting :slices do
+      # TODO: figure out if we actually need all these or not
+      #
+      # The full list for a booted app:
+      # => ["notifications", "inflector", "logger", "rack_monitor", "rack_logger", "routes_helper", "settings"]
+
+      # TODO: better name
+      #
+      # TODO: should these ones be hard-coded, and this setting reserved for additional
+      # user-defined components only?
+      setting :shared_component_keys, default: %w[
+        inflector
+        logger
+        notifications
+        rack.logger
+        rack.monitor
+        routes
+        settings
+      ]
+    end
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
 

@@ -5,6 +5,7 @@ require "hanami/errors"
 require "pathname"
 require_relative "constants"
 require_relative "slice_name"
+require_relative "slice_registrar"
 
 module Hanami
   # Distinct area of concern within an Hanami application
@@ -16,14 +17,29 @@ module Hanami
 
       subclass.extend(ClassMethods)
 
-      # Eagerly initialize any variables that may be accessed inside the subclass body
-      subclass.instance_variable_set(:@application, Hanami.application)
-      subclass.instance_variable_set(:@container, Class.new(Dry::System::Container))
+      subclass.class_eval do
+        @_mutex = Mutex.new
+        @container = Class.new(Dry::System::Container)
+      end
     end
 
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
-      attr_reader :application, :container
+      attr_reader :parent, :container
+
+      def application
+        Hanami.application
+      end
+
+      # A slice's configuration is copied from the application configuration, which should
+      # have all settings configured before slices are loaded
+      def configuration
+        @configuration ||= application.configuration.dup.tap do |config|
+          # Remove values from application that will not apply to this slice
+          config.root = nil
+        end
+      end
+      alias_method :config, :configuration
 
       def slice_name
         @slice_name ||= SliceName.new(self, inflector: method(:inflector))
@@ -34,25 +50,20 @@ module Hanami
       end
 
       def root
-        application.root.join(SLICES_DIR, slice_name.to_s)
+        configuration.root
       end
 
       def inflector
-        application.inflector
+        configuration.inflector
       end
 
       def prepare(provider_name = nil)
-        container.prepare(provider_name) and return self if provider_name
-
-        return self if prepared?
-
-        ensure_slice_name
-        ensure_slice_consts
-
-        prepare_all
-
-        @prepared = true
-        self
+        if provider_name
+          container.prepare(provider_name)
+          self
+        else
+          prepare_slice
+        end
       end
 
       def prepare_container(&block)
@@ -62,7 +73,10 @@ module Hanami
       def boot
         return self if booted?
 
+        prepare
+
         container.finalize!
+        slices.each(&:boot)
 
         @booted = true
 
@@ -70,6 +84,7 @@ module Hanami
       end
 
       def shutdown
+        slices.each(&:shutdown)
         container.shutdown!
         self
       end
@@ -80,6 +95,14 @@ module Hanami
 
       def booted?
         !!@booted
+      end
+
+      def slices
+        @slices ||= SliceRegistrar.new(self)
+      end
+
+      def register_slice(...)
+        slices.register(...)
       end
 
       def register(...)
@@ -118,12 +141,12 @@ module Hanami
         # TODO: This should be handled via dry-system (see dry-rb/dry-system#228)
         raise "Cannot import after booting" if booted?
 
-        application = self.application
+        slice = self
 
         container.after(:configure) do
           if from.is_a?(Symbol) || from.is_a?(String)
             slice_name = from
-            from = application.slices[from.to_sym].container
+            from = slice.parent.slices[from.to_sym].container
           end
 
           as = kwargs[:as] || slice_name
@@ -132,7 +155,49 @@ module Hanami
         end
       end
 
+      def settings
+        @settings ||= load_settings
+      end
+
+      def routes
+        @routes ||= load_routes
+      end
+
+      def router
+        raise SliceLoadError, "#{self} must be prepared before loading the router" unless prepared?
+
+        @_mutex.synchronize do
+          @_router ||= load_router
+        end
+      end
+
+      def rack_app
+        return unless router
+
+        @rack_app ||= router.to_rack_app
+      end
+
       private
+
+      # rubocop:disable Metrics/AbcSize
+
+      def prepare_slice
+        return self if prepared?
+
+        configuration.finalize!
+
+        ensure_slice_name
+        ensure_slice_consts
+        ensure_root
+
+        prepare_all
+
+        container.configured!
+
+        @prepared = true
+
+        self
+      end
 
       def ensure_slice_name
         unless name
@@ -149,15 +214,26 @@ module Hanami
         end
       end
 
+      def ensure_root
+        unless configuration.root
+          raise SliceLoadError, "Slice must have a `config.root` before it can be prepared"
+        end
+      end
+
       def prepare_all
+        # Load settings first, to fail early in case of missing/unexpected values
+        settings
+
+        prepare_container_consts
         prepare_container_plugins
         prepare_container_base_config
         prepare_container_component_dirs
-        prepare_autoloader
         prepare_container_imports
-        prepare_container_consts
+        prepare_container_providers
+        prepare_autoloader
         instance_exec(container, &@prepare_container_block) if @prepare_container_block
-        container.configured!
+
+        prepare_slices
       end
 
       def prepare_container_plugins
@@ -171,20 +247,20 @@ module Hanami
         )
       end
 
-      def prepare_container_base_config # rubocop:disable Metrics/AbcSize
+      def prepare_container_base_config
         container.config.name = slice_name.to_sym
         container.config.root = root
         container.config.provider_dirs = [File.join("config", "providers")]
 
-        container.config.env = application.configuration.env
-        container.config.inflector = application.configuration.inflector
+        container.config.env = configuration.env
+        container.config.inflector = configuration.inflector
       end
 
-      def prepare_container_component_dirs # rubocop:disable Metrics/AbcSize
-        return unless root&.directory?
+      def prepare_container_component_dirs
+        return unless root.directory?
 
         # Don't auto-register files in `config/` or the configured no_auto_register_paths
-        autoload_only_paths = ([CONFIG_DIR] + application.configuration.no_auto_register_paths)
+        autoload_only_paths = ([CONFIG_DIR] + configuration.no_auto_register_paths)
           .map { |path|
             path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
           }
@@ -196,7 +272,7 @@ module Hanami
           }
         }
 
-        if root&.join(LIB_DIR)&.directory?
+        if root.join(LIB_DIR)&.directory?
           container.config.component_dirs.add(LIB_DIR) do |dir|
             dir.namespaces.add_root(key: nil, const: slice_name.name)
             dir.auto_register = auto_register_proc.(root.join(LIB_DIR))
@@ -205,27 +281,124 @@ module Hanami
 
         # TODO: Change `""` (signifying the root) once dry-rb/dry-system#238 is resolved
         container.config.component_dirs.add("") do |dir|
+          # TODO: ignore lib/ child dir here
           dir.namespaces.add_root(key: nil, const: slice_name.name)
           dir.auto_register = auto_register_proc.(root)
+        end
+      end
+
+      def prepare_container_imports
+        import(
+          keys: config.slices.shared_component_keys,
+          from: application.container,
+          as: nil
+        )
+      end
+
+      def prepare_container_providers
+        # Check here for the `routes` definition only, not `router` itself, because the
+        # `router` requires the slice to be prepared before it can be loaded, and at this
+        # point we're still in the process of preparing.
+        if routes
+          require_relative "providers/routes"
+          register_provider(:routes, source: Hanami::Providers::Routes.for_slice(self))
+        end
+
+        if settings
+          require_relative "providers/settings"
+          register_provider(:settings, source: Hanami::Providers::Settings.for_slice(self))
         end
       end
 
       def prepare_autoloader
         # Everything in the slice directory can be autoloaded _except_ `config/`, which is
         # where we keep files loaded specially by the framework as part of slice setup.
-        if root&.join(CONFIG_DIR)&.directory?
+        if root.join(CONFIG_DIR)&.directory?
           container.config.autoloader.ignore(root.join(CONFIG_DIR))
         end
-      end
-
-      def prepare_container_imports
-        container.import from: application.container, as: :application
       end
 
       def prepare_container_consts
         namespace.const_set :Container, container
         namespace.const_set :Deps, container.injector
       end
+
+      def prepare_slices
+        slices.load_slices.each(&:prepare)
+        slices.freeze
+      end
+
+      def load_settings
+        require_relative "./settings"
+
+        if root.directory?
+          settings_require_path = File.join(root, SETTINGS_PATH)
+
+          begin
+            require settings_require_path
+          rescue LoadError => e
+            raise e unless e.path == settings_require_path
+          end
+        end
+
+        begin
+          settings_class = autodiscover_application_constant(SETTINGS_CLASS_NAME)
+          settings_class.new(configuration.settings_store)
+        rescue NameError => e
+          raise e unless e.name == SETTINGS_CLASS_NAME.to_sym
+        end
+      end
+
+      def load_routes
+        require_relative "./routes"
+
+        if root.directory?
+          routes_require_path = File.join(root, ROUTES_PATH)
+
+          begin
+            require routes_require_path
+          rescue LoadError => e
+            raise e unless e.path == routes_require_path
+          end
+        end
+
+        begin
+          routes_class = autodiscover_application_constant(ROUTES_CLASS_NAME)
+          routes_class.routes
+        rescue NameError => e
+          raise e unless e.name == ROUTES_CLASS_NAME.to_sym
+        end
+      end
+
+      def load_router
+        return unless routes
+
+        require_relative "slice/router"
+
+        config = configuration
+        rack_monitor = self["rack.monitor"]
+
+        Slice::Router.new(routes: routes, resolver: router_resolver, **router_options) do
+          use rack_monitor
+          use config.sessions.middleware if config.sessions.enabled?
+
+          middleware_stack.update(config.middleware_stack)
+        end
+      end
+
+      def router_options
+        configuration.router.options
+      end
+
+      def router_resolver
+        configuration.router.resolver.new(slice: self)
+      end
+
+      def autodiscover_application_constant(constants)
+        inflector.constantize([slice_name.namespace_name, *constants].join(MODULE_DELIMITER))
+      end
+
+      # rubocop:enable Metrics/AbcSize
     end
     # rubocop:enable Metrics/ModuleLength
   end

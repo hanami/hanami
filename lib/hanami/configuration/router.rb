@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/configurable"
-require_relative "../application/routing/resolver"
+require_relative "../slice/routing/resolver"
 
 module Hanami
   class Configuration
@@ -22,7 +22,7 @@ module Hanami
         @base_configuration = base_configuration
       end
 
-      setting :resolver, default: Application::Routing::Resolver
+      setting :resolver, default: Slice::Routing::Resolver
 
       # @api private
       # @since 2.0.0

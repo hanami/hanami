@@ -32,10 +32,10 @@ module Hanami
         # rubocop:disable Metrics/AbcSize
         def configure_view(view_class)
           view_class.settings.each do |setting|
-            if slice.application.config.views.respond_to?(:"#{setting}")
+            if slice.config.views.respond_to?(:"#{setting}")
               view_class.config.public_send(
                 :"#{setting}=",
-                slice.application.config.views.public_send(:"#{setting}")
+                slice.config.views.public_send(:"#{setting}")
               )
             end
           end
@@ -44,7 +44,7 @@ module Hanami
           view_class.config.paths = prepare_paths(slice, view_class.config.paths)
           view_class.config.template = template_name(view_class)
 
-          if (part_namespace = namespace_from_path(slice.application.config.views.parts_path))
+          if (part_namespace = namespace_from_path(slice.config.views.parts_path))
             view_class.config.part_namespace = part_namespace
           end
         end

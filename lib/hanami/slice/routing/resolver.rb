@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Hanami
-  class Application
+  class Slice
     module Routing
       # @since 2.0.0
       class UnknownActionError < Hanami::Error

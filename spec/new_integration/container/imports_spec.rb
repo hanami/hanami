@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Container imports", :application_integration do
-  specify "Application container is imported into slice containers by default" do
+  xspecify "Application container is imported into slice containers by default" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -28,7 +28,7 @@ RSpec.describe "Container imports", :application_integration do
 
       Hanami.boot
 
-      expect(Admin::Slice["application.shared_service"]).to be shared_service
+      expect(Admin::Slice["shared_service"]).to be shared_service
     end
   end
 
@@ -65,9 +65,9 @@ RSpec.describe "Container imports", :application_integration do
       # Ensure a slice's imported components (e.g. from "application") are not then
       # exported again when that slice is imported, which would result in redundant
       # components
-      expect(Search::Slice.key?("application.logger")).to be true
-      expect(Admin::Slice.key?("application.logger")).to be true
-      expect(Admin::Slice.key?("search.application.logger")).to be false
+      expect(Search::Slice.key?("logger")).to be true
+      expect(Admin::Slice.key?("logger")).to be true
+      expect(Admin::Slice.key?("search.logger")).to be false
     end
   end
 
@@ -147,8 +147,7 @@ RSpec.describe "Container imports", :application_integration do
         end
       RUBY
 
-      require "hanami/setup"
-      Hanami.boot
+      require "hanami/boot"
 
       expect(Admin::Slice["search_engine.query"]).to be_a Search::Query
     end

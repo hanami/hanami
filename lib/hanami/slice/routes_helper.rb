@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Hanami
-  class Application
+  class Slice
     # Hanami application routes helpers
     #
     # An instance of this class gets registered in the container
@@ -29,13 +29,13 @@ module Hanami
       end
 
       # @see Hanami::Router::UrlHelpers#path
-      def path(*args, **kwargs, &block)
-        router.path(*args, **kwargs, &block)
+      def path(...)
+        router.path(...)
       end
 
       # @see Hanami::Router::UrlHelpers#url
-      def url(*args, **kwargs, &block)
-        router.url(*args, **kwargs, &block)
+      def url(...)
+        router.url(...)
       end
 
       private

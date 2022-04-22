@@ -5,7 +5,7 @@ require "hanami/action/configuration"
 require_relative "actions/cookies"
 require_relative "actions/sessions"
 require_relative "actions/content_security_policy"
-require_relative "../application/view_name_inferrer"
+require_relative "../slice/view_name_inferrer"
 
 module Hanami
   class Configuration
@@ -21,7 +21,7 @@ module Hanami
 
       setting :name_inference_base, default: "actions"
       setting :view_context_identifier, default: "views.context"
-      setting :view_name_inferrer, default: Application::ViewNameInferrer
+      setting :view_name_inferrer, default: Slice::ViewNameInferrer
       setting :view_name_inference_base, default: "views"
 
       attr_accessor :content_security_policy

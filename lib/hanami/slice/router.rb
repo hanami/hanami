@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "hanami/router"
-require "hanami/application/routing/middleware/stack"
+require_relative "routing/middleware/stack"
 
 module Hanami
-  class Application
+  class Slice
     # Hanami application router
     # @since 2.0.0
     class Router < ::Hanami::Router

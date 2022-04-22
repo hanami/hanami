@@ -3,7 +3,7 @@
 require "rack/builder"
 
 module Hanami
-  class Application
+  class Slice
     module Routing
       # Hanami::Applicatione::Router middleware stack
       #

@@ -48,9 +48,18 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            define do
+            end
+          end
+        end
+      RUBY
+
       require "hanami/boot"
 
-      expect(Hanami.application[:rack_monitor]).to be_instance_of(Dry::Monitor::Rack::Middleware)
+      expect(Hanami.application["rack.monitor"]).to be_instance_of(Dry::Monitor::Rack::Middleware)
 
       get "/"
 

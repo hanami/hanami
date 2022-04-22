@@ -91,11 +91,11 @@ module Hanami
         end
 
         def resolve_routes
-          slice.application[:routes_helper] if slice.application.key?(:routes_helper)
+          slice.application["routes"] if slice.application.key?("routes")
         end
 
         def actions_config
-          slice.application.config.actions
+          slice.config.actions
         end
       end
     end

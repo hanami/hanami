@@ -20,16 +20,16 @@ module Hanami
   #     end
   #   end
   #
-  #   See {Hanami::Application::Router} for the syntax allowed within the
+  #   See {Hanami::Slice::Router} for the syntax allowed within the
   #   `define` block.
   #
-  # @see Hanami::Application::Router
+  # @see Hanami::Slice::Router
   # @since 2.0.0
   class Routes
     # Defines application routes
     #
     # @yield DSL syntax to define application routes executed in the context
-    # of {Hanami::Application::Router}
+    # of {Hanami::Slice::Router}
     #
     # @return [Proc]
     def self.define(&block)

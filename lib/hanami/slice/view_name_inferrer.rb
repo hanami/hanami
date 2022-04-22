@@ -3,7 +3,7 @@
 require_relative "../constants"
 
 module Hanami
-  class Application
+  class Slice
     # Infers a view name for automatically rendering within actions.
     #
     # @api private
@@ -28,8 +28,8 @@ module Hanami
         #
         # @return [Array<string>] array of paired view container keys
         def call(action_class_name:, slice:)
-          action_key_base = slice.application.config.actions.name_inference_base
-          view_key_base = slice.application.config.actions.view_name_inference_base
+          action_key_base = slice.config.actions.name_inference_base
+          view_key_base = slice.config.actions.view_name_inference_base
 
           action_name_key = action_name_key(action_class_name, slice, action_key_base)
 

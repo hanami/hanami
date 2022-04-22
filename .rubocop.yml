@@ -4,6 +4,8 @@ inherit_from:
   - https://raw.githubusercontent.com/hanami/devtools/main/.rubocop.yml
 Naming/HeredocDelimiterNaming:
   Enabled: false
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
 Style/AccessorGrouping:
   Enabled: false
 Style/BlockDelimiters:
@@ -20,3 +22,4 @@ Style/TrailingCommaInArrayLiteral:
   Enabled: false
 Style/TrailingCommaInHashLiteral:
   Enabled: false
+
