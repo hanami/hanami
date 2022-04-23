@@ -112,31 +112,31 @@ RSpec.describe "View helpers / Form", :application_integration do
         end
       RUBY
 
-      write "slices/main/templates/layouts/application.html.slim", <<~SLIM
-        html
-          body
-            == yield
-      SLIM
+      write "slices/main/templates/layouts/application.html.erb", <<~ERB
+        <html>
+          <body>
+            <%= yield %>
+          </body>
+        </html>
+      ERB
 
-      write "slices/main/templates/users/new.html.slim", <<~SLIM
-        = context.form_for(context.routes.path(:users), data: locals) {}
-      SLIM
+      write "slices/main/templates/users/new.html.erb", <<~ERB
+        <%= context.form_for(context.routes.path(:users), values: locals) do |f| %>
+        <% end %>
+      ERB
 
       require "hanami/prepare"
 
       response = Main::Slice["actions.users.new"].({})
       actual = response.body.first
-      expected = [
-        "<html>",
-        "<body>",
-        %(<form action="/users" method="POST" accept-charset="utf-8"></form>),
-        "</body>",
-        "</html>"
-      ]
+      # expected = <<~HTML.chomp
+      #   <form action="/users" method="POST" accept-charset="utf-8"><div><input type="text" name="user[name]" id="user-name" value=""></div></form>
+      # HTML
+      expected = <<~HTML.chomp
+        <form action="/users" method="POST" accept-charset="utf-8"></form>
+      HTML
 
-      expected.each do |line|
-        expect(actual).to include(line)
-      end
+      expect(actual).to include(expected)
     end
   end
 end

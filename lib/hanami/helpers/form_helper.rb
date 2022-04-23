@@ -145,9 +145,9 @@ module Hanami
         # @param name [Symbol] the name of the form
         # @param url [String] the action of the form
         # @param values [Hash,NilClass] a Hash of values to be used to autofill
-        #   <tt>value</tt> attributes for fields
+        #   `value` attributes for fields.
         # @param attributes [Hash,NilClass] a Hash of attributes to pass to the
-        #   <tt>form</tt> tag
+        #   `form` tag
         #
         # @since 2.0.0
         #
@@ -225,21 +225,13 @@ module Hanami
 
       # Instantiate a HTML5 form builder
       #
-      # @overload form_for(name, url, options, &blk)
-      #   Use inline values
-      #   @param name [Symbol] the toplevel name of the form, it's used to generate
-      #     input names, ids, and to lookup params to fill values.
-      #   @param url [String] the form action URL
-      #   @param options [Hash] HTML attributes to pass to the form tag and form values
-      #   @option options [Hash] :values An optional payload of objects to pass
-      #   @option options [Hash] :params An optional override of params
-      #   @param blk [Proc] A block that describes the contents of the form
-      #
-      # @overload form_for(form, attributes = {}, &blk)
-      #   Use Form
-      #   @param form [Hanami::Helpers::FormHelper::Form] a form object
-      #   @param attributes [Hash] HTML attributes to pass to the form tag and form values
-      #   @param blk [Proc] A block that describes the contents of the form
+      # @param name [Symbol] the toplevel name of the form, it's used to generate
+      #   input names, ids, and to lookup params to fill values.
+      # @param url [String] the form action URL
+      # @param values [Hash] An optional data payload to fill in form values
+      #   It is passed automatically by Hanami, using view's `locals`
+      # @option attributes [Hash] HTML attributes to pass to the form tag and form values
+      # @param blk [Proc] A block that describes the contents of the form
       #
       # @return [Hanami::Helpers::FormHelper::FormBuilder] the form builder
       #
@@ -250,20 +242,20 @@ module Hanami
       # @see Hanami::Helpers::FormHelper::FormBuilder
       #
       # @example Inline Values In Template
-      #   <%=
-      #     form_for :book, routes.books_path, class: 'form-horizontal' do
-      #       div do
-      #         label      :title
-      #         text_field :title, class: 'form-control'
-      #       end
+      #   <%= form_for(routes.books_path, class: "form-horizontal") do |f| %>
+      #     <div>
+      #       <%= f.label "book.title" %>
+      #       <%= f.text_field "book.title", class: "form-control" %>
+      #     </div>
       #
-      #       submit 'Create'
-      #     end
-      #   %>
+      #     <div>
+      #       <%= f.submit "Create" %>
+      #     </div>
+      #   <% end %>
       #
       #   <!-- output -->
       #
-      #   <form action="/books" method="POST" accept-charset="utf-8" id="book-form" class="form-horizontal">
+      #   <form action="/books" method="POST" accept-charset="utf-8" class="form-horizontal">
       #     <input type="hidden" name="_csrf_token" value="920cd5bfaecc6e58368950e790f2f7b4e5561eeeab230aa1b7de1b1f40ea7d5d">
       #     <div>
       #       <label for="book-title">Title</label>
@@ -373,10 +365,10 @@ module Hanami
       #
       # @example Method override
       #   <%=
-      #     form_for :book, routes.book_path(id: book.id), method: :put do
-      #       text_field :title
+      #     form_for(routes.book_path(id: book.id), method: :put) do |f|
+      #       f.text_field "book.title"
       #
-      #       submit 'Update'
+      #       f.submit "Update"
       #     end
       #   %>
       #
@@ -392,14 +384,12 @@ module Hanami
       #
       # @example Nested fields
       #   <%=
-      #     form_for :delivery, routes.deliveries_path do
-      #       text_field :customer_name
+      #     form_for routes.deliveries_path do |f|
+      #       f.text_field "delivery.customer_name"
       #
-      #       fields_for :address do
-      #         text_field :city
-      #       end
+      #       f.text_field "delivery.address.city"
       #
-      #       submit 'Create'
+      #       f.submit "Create"
       #     end
       #   %>
       #
@@ -415,24 +405,24 @@ module Hanami
       #
       # @example Override params
       #   <%=
-      #     form_for :song, routes.songs_path, params: { song: { title: "Envision" } } do
-      #       text_field :title
+      #     form_for(routes.songs_path, values: {params:{song:{title: "Envision"}}}) do |f|
+      #       f.text_field "song.title"
       #
-      #       submit 'Create'
+      #       f.submit "Create"
       #     end
       #   %>
       #
       #   <!-- output -->
       #
-      #   <form action="/songs" accept-charset="utf-8" id="song-form" method="POST">
+      #   <form action="/songs" accept-charset="utf-8" method="POST">
       #     <input type="hidden" name="_csrf_token" value="920cd5bfaecc6e58368950e790f2f7b4e5561eeeab230aa1b7de1b1f40ea7d5d">
       #     <input type="text" name="song[title]" id="song-title" value="Envision">
       #
       #     <button type="submit">Create</button>
       #   </form>
-      def form_for(url, data: locals, **attributes, &blk)
+      def form_for(url, values: locals, **attributes, &blk)
         attributes[:action] = url
-        values = Values.new(data, csrf_token)
+        values = Values.new(values, csrf_token)
 
         FormBuilder.new(values: values, **attributes, &blk).to_s
       end

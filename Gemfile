@@ -26,4 +26,5 @@ group :test do
   gem "dry-types"
   gem "saharspec"
   gem "slim"
+  gem "erbse"
 end
