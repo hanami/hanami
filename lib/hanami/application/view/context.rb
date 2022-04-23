@@ -40,6 +40,10 @@ module Hanami
           _options.fetch(:settings)
         end
 
+        def helpers
+          _options.fetch(:helpers)
+        end
+
         def assets
           unless _options[:assets]
             raise Hanami::ComponentLoadError, "hanami-assets gem is required to access assets"

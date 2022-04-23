@@ -18,8 +18,8 @@ module Hanami
           @slice = slice
         end
 
-        def extended(_context_class)
-          define_new
+        def extended(context_class)
+          define_new(context_class)
         end
 
         def inspect
@@ -38,17 +38,25 @@ module Hanami
         #   - "settings" from the application container as `settings`
         #   - "routes" from the application container as `routes`
         #   - "assets" from the application container as `assets`
-        def define_new
+        def define_new(context_class)
           inflector = slice.inflector
           resolve_settings = method(:resolve_settings)
           resolve_routes = method(:resolve_routes)
           resolve_assets = method(:resolve_assets)
+          resolve_helpers = method(:resolve_helpers)
+          helpers = resolve_helpers.()
+
+          if helpers
+            require "hanami/helpers/form_helper"
+            context_class.include(Hanami::Helpers::FormHelper)
+          end
 
           define_method :new do |**kwargs|
             kwargs[:inflector] ||= inflector
             kwargs[:settings] ||= resolve_settings.()
             kwargs[:routes] ||= resolve_routes.()
             kwargs[:assets] ||= resolve_assets.()
+            kwargs[:helpers] ||= resolve_helpers.()
 
             super(**kwargs)
           end
@@ -64,6 +72,10 @@ module Hanami
 
         def resolve_assets
           slice.application[:assets] if slice.application.key?(:assets)
+        end
+
+        def resolve_helpers
+          slice.application[:helpers] if slice.application.key?(:helpers)
         end
       end
     end
