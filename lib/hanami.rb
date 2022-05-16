@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "hanami/utils"
+
 require_relative "hanami/application"
 require_relative "hanami/errors"
 require_relative "hanami/version"
@@ -44,11 +46,11 @@ module Hanami
   end
 
   def self.env
-    (ENV["HANAMI_ENV"] || "development").to_sym
+    Hanami::Utils.env
   end
 
   def self.env?(*names)
-    names.map(&:to_sym).include?(env)
+    Hanami::Utils.env?(*names)
   end
 
   def self.logger
