@@ -1,6 +1,21 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha8 - 2020-05-19
+
+## Added
+- [Tim Riley] Introduced `Hanami::Application::Action` as base class for actions that integrate with Hanami applications. Base action classes in Hanami applications should now inherit from this.
+- [Tim Riley] Introduced `Hanami::Application::View` and `Hanami::Application::View::Context` as base classes for views and view contexts that integrate with Hanami applications. Base view classes in Hanami applications should now inherit from these.
+- [Tim Riley] Introduced `Hanami::Application.application_name`, which returns an `Hanami::SliceName` instance, with methods for representing the application name in various formats.
+
+## Fixed
+- [Andrew Croome] When a request is halted, do not attempt to automatically render any view paired with an `Hanami::Application::Action`
+
+## Changed
+- [Tim Riley] `Hanami::Application.namespace_name`, `.namespace_path` have been removed. These can now be accessed from the `.application_name`.
+- [Tim Riley] `Hanami::Slice.slice_name` now returns an `Hanami::SliceName` instance instead of a Symbol
+- [Tim Riley] `Hanami::Slice.namespace_path` has been removed. This can now be accessed from the `.slice_name`.
+
 ## v2.0.0.alpha7.1 - 2020-03-09
 
 ## Fixed
