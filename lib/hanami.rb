@@ -44,7 +44,7 @@ module Hanami
   end
 
   def self.env
-    (ENV["HANAMI_ENV"] || "development").to_sym
+    ENV.fetch("HANAMI_ENV") { ENV.fetch("RACK_ENV", "development") }.to_sym
   end
 
   def self.env?(*names)
