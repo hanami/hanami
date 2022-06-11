@@ -102,7 +102,7 @@ module Hanami
         def to_str
           @policy.map do |key, value|
             "#{dasherize(key)} #{value}"
-          end.join(";\n")
+          end.join("; ")
         end
 
         private
