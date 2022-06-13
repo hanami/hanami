@@ -321,7 +321,7 @@ The web, with simplicity.
       class Application < Hanami::Application
         # This line will generate the following CSP fragment
         # my-custom-setting 'self';
-        config.actions.content_security_policy[:my-custom-setting] = "'self'"
+        config.actions.content_security_policy['my-custom-setting'] = "'self'"
       end
     end
     ```
