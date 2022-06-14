@@ -10,7 +10,7 @@ end
 
 gem "zeitwerk", "2.5.4"
 
-gem "dry-core", git: "http://github.com/dry-rb/dry-core", branch: "feature/basic-object"
+gem "dry-core", git: "http://github.com/dry-rb/dry-core", branch: "main"
 
 gem "hanami-utils", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/utils.git", branch: "main"
 gem "hanami-router", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/router.git", branch: "main"
