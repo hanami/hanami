@@ -94,22 +94,26 @@ module Hanami
         #
         # @api private
         # @since 2.0.0
-        def initialize(html: Hanami::Helpers::HtmlHelper::HtmlBuilder.new, values: Values.new, inflector: Dry::Inflector.new, **attributes, &blk)
+        def initialize(html: Hanami::Helpers::HtmlHelper::HtmlBuilder.new, values: Values.new, inflector: Dry::Inflector.new)
           super()
 
           @html = html
           @values = values
           @inflector = inflector
+        end
 
-          method_override, original_form_method = _form_method(attributes)
-          csrf_token, token = _csrf_token(values, attributes)
+        def call(content, **attributes)
           attributes[:accept_charset] ||= DEFAULT_CHARSET
 
-          form_builder = self
+          method_override, original_form_method = _form_method(attributes)
+          csrf_token, token = _csrf_token(@values, attributes)
+
+          @html.clear
           @html.form(**attributes) do
             input(type: "hidden", name: "_method", value: original_form_method) if method_override
             input(type: "hidden", name: "_csrf_token", value: token) if csrf_token
-            blk&.call(form_builder)
+
+            text(content)
           end
         end
 

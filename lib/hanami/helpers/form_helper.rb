@@ -420,11 +420,17 @@ module Hanami
       #
       #     <button type="submit">Create</button>
       #   </form>
-      def form_for(url, values: locals, **attributes, &blk)
+      def form_for(url, values: locals, **attributes)
         attributes[:action] = url
-        values = Values.new(values, csrf_token)
 
-        FormBuilder.new(values: values, **attributes, &blk).to_s
+        values = Values.new(values, csrf_token)
+        builder = FormBuilder.new(values: values)
+
+        content = Helpers::Escape.safe_string(
+          block_given? ? yield(builder) : ""
+        )
+
+        builder.call(content, **attributes)
       end
 
       # Returns CSRF Protection Token stored in session.
@@ -435,7 +441,7 @@ module Hanami
       #
       # @since 2.0.0
       def csrf_token
-        if defined?(session)
+        if respond_to?(:session)
           session[CSRF_TOKEN]
         elsif defined?(locals) && locals[:session]
           locals[:session][CSRF_TOKEN]

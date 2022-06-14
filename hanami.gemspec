@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -c -o --exclude-standard -z -- lib/* bin/* LICENSE.md README.md CODE_OF_CONDUCT.md CHANGELOG.md FEATURES.md hanami.gemspec`.split("\x0") # rubocop:disable Layout/LineLength
-  spec.test_files    = spec.files.grep(%r{^(test)/})
+  spec.test_files    = spec.files.grep(%r{^(spec)/})
   spec.require_paths = ["lib"]
   spec.metadata["rubygems_mfa_required"] = "true"
   spec.required_ruby_version = ">= 3.0"
@@ -35,4 +35,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec",     "~> 3.8"
   spec.add_development_dependency "rack-test", "~> 1.1"
   spec.add_development_dependency "rake",      "~> 13.0"
+  spec.add_development_dependency "dry-struct", "~> 1.4"
 end

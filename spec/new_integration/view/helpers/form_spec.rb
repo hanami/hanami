@@ -122,6 +122,9 @@ RSpec.describe "View helpers / Form", :application_integration do
 
       write "slices/main/templates/users/new.html.erb", <<~ERB
         <%= context.form_for(context.routes.path(:users), values: locals) do |f| %>
+          <div>
+            <%= f.text_field "user.full_name" %>
+          </div>
         <% end %>
       ERB
 
@@ -129,11 +132,9 @@ RSpec.describe "View helpers / Form", :application_integration do
 
       response = Main::Slice["actions.users.new"].({})
       actual = response.body.first
-      # expected = <<~HTML.chomp
-      #   <form action="/users" method="POST" accept-charset="utf-8"><div><input type="text" name="user[name]" id="user-name" value=""></div></form>
-      # HTML
+      actual = actual.gsub(/\n/, "").gsub(/>[[:space:]]*</, "><")
       expected = <<~HTML.chomp
-        <form action="/users" method="POST" accept-charset="utf-8"></form>
+        <form action="/users" accept-charset="utf-8" method="POST"><div><input type="text" name="user[full_name]" id="user-full-name" value=""></div></form>
       HTML
 
       expect(actual).to include(expected)

@@ -8,13 +8,15 @@ unless ENV["CI"]
   gem "yard",   require: false
 end
 
+gem "zeitwerk", "2.5.4"
+
 gem "dry-core", git: "http://github.com/dry-rb/dry-core", branch: "feature/basic-object"
 
 gem "hanami-utils", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/utils.git", branch: "main"
 gem "hanami-router", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/router.git", branch: "main"
 gem "hanami-controller", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/controller.git", branch: "main"
 gem "hanami-cli", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/cli.git", branch: "main"
-gem "hanami-view", "~> 2.0.alpha", git: "https://github.com/hanami/view.git", branch: "main"
+gem "hanami-view", "~> 2.0.alpha", git: "https://github.com/hanami/view.git", branch: "erbse-escape"
 gem "hanami-helpers", "~> 2.0.alpha", git: "https://github.com/hanami/helpers.git", branch: "rewrite/hanami-2"
 
 gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.git", branch: "main"

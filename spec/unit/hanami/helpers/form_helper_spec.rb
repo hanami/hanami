@@ -14,12 +14,12 @@ RSpec.describe Hanami::Helpers::FormHelper do
   describe "#form_for" do
     it "renders" do
       actual = view.form_for(action).to_s
-      expect(actual).to eq(%(<form action="/books" method="POST" accept-charset="utf-8"></form>))
+      expect(actual).to eq(%(<form action="/books" accept-charset="utf-8" method="POST"></form>))
     end
 
     it "allows to assign 'id' attribute" do
       actual = view.form_for(action, id: "book-form").to_s
-      expect(actual).to eq(%(<form id="book-form" action="/books" method="POST" accept-charset="utf-8"></form>))
+      expect(actual).to eq(%(<form id="book-form" action="/books" accept-charset="utf-8" method="POST"></form>))
     end
 
     it "allows to override 'method' attribute (get)" do
@@ -49,7 +49,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
     it "allows to specify HTML attributes" do
       actual = view.form_for(action, class: "form-horizonal").to_s
-      expect(actual).to eq(%(<form class="form-horizonal" action="/books" method="POST" accept-charset="utf-8"></form>))
+      expect(actual).to eq(%(<form class="form-horizonal" action="/books" accept-charset="utf-8" method="POST"></form>))
     end
 
     context "input name" do
@@ -110,7 +110,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
       it "injects hidden field session is enabled" do
         actual = view.form_for(action)
-        expect(actual.to_s).to eq(%(<form action="/books" method="POST" accept-charset="utf-8"><input type="hidden" name="_csrf_token" value="#{csrf_token}"></form>))
+        expect(actual.to_s).to eq(%(<form action="/books" accept-charset="utf-8" method="POST"><input type="hidden" name="_csrf_token" value="#{csrf_token}"></form>))
       end
 
       context "with missing token" do
@@ -118,7 +118,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
         it "doesn't inject hidden field" do
           actual = view.form_for(action)
-          expect(actual.to_s).to eq(%(<form action="/books" method="POST" accept-charset="utf-8"></form>))
+          expect(actual.to_s).to eq(%(<form action="/books" accept-charset="utf-8" method="POST"></form>))
         end
       end
 
@@ -162,18 +162,18 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
     context "remote: true" do
       it "adds data-remote=true to form attributes" do
-        actual = view.form_for(action, "data-remote": true) {}
-        expect(actual.to_s).to eq(%(<form data-remote action="/books" method="POST" accept-charset="utf-8"></form>))
+        actual = view.form_for(action, "data-remote": true)
+        expect(actual.to_s).to eq(%(<form data-remote action="/books" accept-charset="utf-8" method="POST"></form>))
       end
 
       it "adds data-remote=false to form attributes" do
-        actual = view.form_for(action, "data-remote": false) {}
-        expect(actual.to_s).to eq(%(<form action="/books" method="POST" accept-charset="utf-8"></form>))
+        actual = view.form_for(action, "data-remote": false)
+        expect(actual.to_s).to eq(%(<form action="/books" accept-charset="utf-8" method="POST"></form>))
       end
 
       it "adds data-remote= to form attributes" do
-        actual = view.form_for(action, "data-remote": nil) {}
-        expect(actual.to_s).to eq(%(<form action="/books" method="POST" accept-charset="utf-8"></form>))
+        actual = view.form_for(action, "data-remote": nil)
+        expect(actual.to_s).to eq(%(<form action="/books" accept-charset="utf-8" method="POST"></form>))
       end
     end
 
@@ -187,7 +187,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           f.text_field "song.title"
         end.to_s
 
-        expect(actual).to eq(%(<form action="/songs" method="POST" accept-charset="utf-8"><input type="text" name="song[title]" id="song-title" value="#{inline_params.dig(:song, :title)}"></form>))
+        expect(actual).to eq(%(<form action="/songs" accept-charset="utf-8" method="POST"><input type="text" name="song[title]" id="song-title" value="#{inline_params.dig(:song, :title)}"></form>))
       end
     end
   end
@@ -337,7 +337,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       end.to_s
 
-      expected = %(<form action="/books" method="POST" accept-charset="utf-8"><label for="book-free-shipping">Free Shipping<abbr title="optional" aria-label="optional">*</abbr></label></form>)
+      expected = %(<form action="/books" accept-charset="utf-8" method="POST"><label for="book-free-shipping">Free Shipping<abbr title="optional" aria-label="optional">*</abbr></label></form>)
       expect(actual).to eq(expected)
     end
   end
@@ -370,7 +370,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       end.to_s
 
-      expected = %(<form action="/books" method="POST" accept-charset="utf-8"><button class="btn btn-secondary"><span class="oi oi-check"></span></button></form>)
+      expected = %(<form action="/books" accept-charset="utf-8" method="POST"><button class="btn btn-secondary"><span class="oi oi-check"></span></button></form>)
       expect(actual).to eq(expected.chomp)
     end
   end
@@ -399,7 +399,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       end.to_s
 
-      expected = %(<form action="/books" method="POST" accept-charset="utf-8"><button type="submit" class="btn btn-primary"><span class="oi oi-check"></span></button></form>)
+      expected = %(<form action="/books" accept-charset="utf-8" method="POST"><button type="submit" class="btn btn-primary"><span class="oi oi-check"></span></button></form>)
       expect(actual).to eq(expected.chomp)
     end
   end
@@ -2626,7 +2626,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             f.select "book.category", option_values
           end.to_s
 
-          expect(actual).to include(%(<form action="/books" method="POST" accept-charset="utf-8"><select name="book[category]" id="book-category"><option>N/A</option><option value="horror" selected>Horror</option><option value="scify">SciFy</option></select></form>))
+          expect(actual).to include(%(<form action="/books" accept-charset="utf-8" method="POST"><select name="book[category]" id="book-category"><option>N/A</option><option value="horror" selected>Horror</option><option value="scify">SciFy</option></select></form>))
         end
       end
 
@@ -2640,7 +2640,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             f.select "book.category", option_values
           end.to_s
 
-          expect(actual).to include(%(<form action="/books" method="POST" accept-charset="utf-8"><select name="book[category]" id="book-category"><option value="1" selected>Horror</option><option value="2">SciFy</option></select></form>))
+          expect(actual).to include(%(<form action="/books" accept-charset="utf-8" method="POST"><select name="book[category]" id="book-category"><option value="1" selected>Horror</option><option value="2">SciFy</option></select></form>))
         end
       end
     end
