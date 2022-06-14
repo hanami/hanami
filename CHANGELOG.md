@@ -1,7 +1,7 @@
 # Hanami
 The web, with simplicity.
 
-## v2.0.0.alpha8 - 2020-05-19
+## v2.0.0.alpha8 - 2022-05-19
 
 ## Added
 - [Tim Riley] Introduced `Hanami::Application::Action` as base class for actions that integrate with Hanami applications. Base action classes in Hanami applications should now inherit from this.
@@ -16,12 +16,12 @@ The web, with simplicity.
 - [Tim Riley] `Hanami::Slice.slice_name` now returns an `Hanami::SliceName` instance instead of a Symbol
 - [Tim Riley] `Hanami::Slice.namespace_path` has been removed. This can now be accessed from the `.slice_name`.
 
-## v2.0.0.alpha7.1 - 2020-03-09
+## v2.0.0.alpha7.1 - 2022-03-09
 
 ## Fixed
 - [Tim Riley] Fixed error creating slice classes when the enclosing module did not already exist
 
-## v2.0.0.alpha7 - 2020-03-08
+## v2.0.0.alpha7 - 2022-03-08
 
 ## Added
 - [Tim Riley] Introduced `Hanami::ApplicationLoadError` and `Hanami::SliceLoadError` exceptions to represent errors encountered during application and slice loading.
@@ -321,7 +321,7 @@ The web, with simplicity.
       class Application < Hanami::Application
         # This line will generate the following CSP fragment
         # my-custom-setting 'self';
-        config.actions.content_security_policy[:my-custom-setting] = "'self'"
+        config.actions.content_security_policy['my-custom-setting'] = "'self'"
       end
     end
     ```
