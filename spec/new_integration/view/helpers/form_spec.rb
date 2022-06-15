@@ -121,7 +121,7 @@ RSpec.describe "View helpers / Form", :application_integration do
       ERB
 
       write "slices/main/templates/users/new.html.erb", <<~ERB
-        <%= context.form_for(context.routes.path(:users), values: locals) do |f| %>
+        <%= form_for(routes.path(:users), values: locals) do |f| %>
           <div>
             <%= f.text_field "user.full_name" %>
           </div>
