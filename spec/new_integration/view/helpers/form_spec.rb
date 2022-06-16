@@ -113,11 +113,7 @@ RSpec.describe "View helpers / Form", :application_integration do
       RUBY
 
       write "slices/main/templates/layouts/application.html.erb", <<~ERB
-        <html>
-          <body>
-            <%= yield %>
-          </body>
-        </html>
+        <%= yield %>
       ERB
 
       write "slices/main/templates/users/new.html.erb", <<~ERB
@@ -130,14 +126,22 @@ RSpec.describe "View helpers / Form", :application_integration do
 
       require "hanami/prepare"
 
-      response = Main::Slice["actions.users.new"].({})
+      rack_env = {"rack.session" => {_csrf_token: "xyz"}}
+      response = Main::Slice["actions.users.new"].(rack_env)
       actual = response.body.first
-      actual = actual.gsub(/\n/, "").gsub(/>[[:space:]]*</, "><")
-      expected = <<~HTML.chomp
-        <form action="/users" accept-charset="utf-8" method="POST"><div><input type="text" name="user[full_name]" id="user-full-name" value=""></div></form>
+
+      expected = <<~HTML
+        <form action="/users" accept-charset="utf-8" method="POST">
+          <input type="hidden" name="_csrf_token" value="xyz">
+          <div>
+            <input type="text" name="user[full_name]" id="user-full-name" value="">
+          </div>
+        </form>
       HTML
 
-      expect(actual).to include(expected)
+      strip = -> str { str.gsub(/\n+\s*/, "") }
+
+      expect(strip.(actual)).to eq strip.(expected)
     end
   end
 end
