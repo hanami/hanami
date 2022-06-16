@@ -19,7 +19,11 @@ module Hanami
         end
 
         def extended(context_class)
-          define_new(context_class)
+          define_new
+
+          # TODO: make this conditional, since helpers may not always be loaded?
+          require "hanami/helpers/form_helper"
+          context_class.include(Hanami::Helpers::FormHelper)
         end
 
         def inspect
@@ -38,18 +42,12 @@ module Hanami
         #   - "settings" from the application container as `settings`
         #   - "routes" from the application container as `routes`
         #   - "assets" from the application container as `assets`
-        def define_new(context_class)
+        def define_new
           inflector = slice.inflector
           resolve_settings = method(:resolve_settings)
           resolve_routes = method(:resolve_routes)
           resolve_assets = method(:resolve_assets)
           resolve_helpers = method(:resolve_helpers)
-          helpers = resolve_helpers.()
-
-          if helpers
-            require "hanami/helpers/form_helper"
-            context_class.include(Hanami::Helpers::FormHelper)
-          end
 
           define_method :new do |**kwargs|
             kwargs[:inflector] ||= inflector
