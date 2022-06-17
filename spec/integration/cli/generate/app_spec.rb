@@ -187,26 +187,26 @@ RSpec.describe "hanami generate", type: :integration do
     it "prints help message" do
       with_project do
         output = <<~OUT
-          Command:
-            hanami generate app
+Command:
+  hanami generate app
 
-          Usage:
-            hanami generate app APP
+Usage:
+  hanami generate app APP
 
-          Description:
-            Generate an app
+Description:
+  Generate an app
 
-          Arguments:
-            APP                 	# REQUIRED The application name (eg. `web`)
+Arguments:
+  APP                               # REQUIRED The application name (eg. `web`)
 
-          Options:
-            --application-base-url=VALUE    	# The app base URL (eg. `/api/v1`)
-            --help, -h                      	# Print this help
+Options:
+  --application-base-url=VALUE      # The app base URL (eg. `/api/v1`)
+  --help, -h                        # Print this help
 
-          Examples:
-            hanami generate app admin                              # Generate `admin` app
-            hanami generate app api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
-        OUT
+Examples:
+  hanami generate app admin                              # Generate `admin` app
+  hanami generate app api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
+OUT
 
         run_cmd 'hanami generate app --help', output
       end

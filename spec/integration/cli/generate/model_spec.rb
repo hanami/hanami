@@ -260,28 +260,28 @@ END
     it "prints help message" do
       with_project do
         output = <<~OUT
-          Command:
-            hanami generate model
+Command:
+  hanami generate model
 
-          Usage:
-            hanami generate model MODEL
+Usage:
+  hanami generate model MODEL
 
-          Description:
-            Generate a model
+Description:
+  Generate a model
 
-          Arguments:
-            MODEL               	# REQUIRED Model name (eg. `user`)
+Arguments:
+  MODEL                             # REQUIRED Model name (eg. `user`)
 
-          Options:
-            --[no-]skip-migration           	# Skip migration, default: false
-            --relation=VALUE                	# Name of the database relation, default: pluralized model name
-            --help, -h                      	# Print this help
+Options:
+  --[no-]skip-migration             # Skip migration, default: false
+  --relation=VALUE                  # Name of the database relation, default: pluralized model name
+  --help, -h                        # Print this help
 
-          Examples:
-            hanami generate model user                     # Generate `User` entity, `UserRepository` repository, and the migration
-            hanami generate model user --skip-migration    # Generate `User` entity and `UserRepository` repository
-            hanami generate model user --relation=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
-        OUT
+Examples:
+  hanami generate model user                     # Generate `User` entity, `UserRepository` repository, and the migration
+  hanami generate model user --skip-migration    # Generate `User` entity and `UserRepository` repository
+  hanami generate model user --relation=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
+OUT
 
         run_cmd 'hanami generate model --help', output
       end

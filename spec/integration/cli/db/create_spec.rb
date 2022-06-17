@@ -30,18 +30,18 @@ RSpec.describe "hanami db", type: :integration do
     it "prints help message" do
       with_project do
         output = <<~OUT
-          Command:
-            hanami db create
+Command:
+  hanami db create
 
-          Usage:
-            hanami db create
+Usage:
+  hanami db create
 
-          Description:
-            Create the database (only for development/test)
+Description:
+  Create the database (only for development/test)
 
-          Options:
-            --help, -h                      	# Print this help
-        OUT
+Options:
+  --help, -h                        # Print this help
+OUT
 
         run_cmd 'hanami db create --help', output
       end

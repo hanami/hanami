@@ -123,22 +123,22 @@ return Dashboard;})();}).call(this);
     it "prints help message" do
       with_project do
         output = <<~OUT
-          Command:
-            hanami assets precompile
+Command:
+  hanami assets precompile
 
-          Usage:
-            hanami assets precompile
+Usage:
+  hanami assets precompile
 
-          Description:
-            Precompile assets for deployment
+Description:
+  Precompile assets for deployment
 
-          Options:
-            --help, -h                      	# Print this help
+Options:
+  --help, -h                        # Print this help
 
-          Examples:
-            hanami assets precompile                       # Basic usage
-            hanami assets precompile HANAMI_ENV=production # Precompile assets for production environment
-        OUT
+Examples:
+  hanami assets precompile                       # Basic usage
+  hanami assets precompile HANAMI_ENV=production # Precompile assets for production environment
+OUT
 
         run_cmd "hanami assets precompile --help", output
       end

@@ -54,7 +54,7 @@ RSpec.describe "hanami new", type: :integration do
 
     within_project_directory(project) do
       # Assert it's an initialized Git repository
-      run_cmd "git status", "On branch master"
+      run_cmd "git status", default_git_branch
 
       #
       # .hanamirc
@@ -183,8 +183,8 @@ END
       #
       # config.ru
       #
-      expect("config.ru").to have_file_content <<~END
-        require './config/environment'
+      expect('config.ru').to have_file_content <<-END
+        require_relative 'config/environment'
 
         run Hanami.app
       END
@@ -201,56 +201,56 @@ END
       # config/environment.rb
       #
       expect('config/environment.rb').to have_file_content <<-END
-require 'bundler/setup'
-require 'hanami/setup'
-require 'hanami/model'
-require_relative '../lib/#{project}'
-require_relative '../apps/web/application'
+        require 'bundler/setup'
+        require 'hanami/setup'
+        require 'hanami/model'
+        require_relative '../lib/#{project}'
+        require_relative '../apps/web/application'
 
-Hanami.configure do
-  mount Web::Application, at: '/'
+        Hanami.configure do
+          mount Web::Application, at: '/'
 
-  model do
-    ##
-    # Database adapter
-    #
-    # Available options:
-    #
-    #  * SQL adapter
-    #    adapter :sql, 'sqlite://db/#{project}_development.sqlite3'
-    #    adapter :sql, 'postgresql://localhost/#{project}_development'
-    #    adapter :sql, 'mysql://localhost/#{project}_development'
-    #
-    adapter :sql, ENV.fetch('DATABASE_URL')
+          model do
+            ##
+            # Database adapter
+            #
+            # Available options:
+            #
+            #  * SQL adapter
+            #    adapter :sql, 'sqlite://db/#{project}_development.sqlite3'
+            #    adapter :sql, 'postgresql://localhost/#{project}_development'
+            #    adapter :sql, 'mysql://localhost/#{project}_development'
+            #
+            adapter :sql, ENV.fetch('DATABASE_URL')
 
-    ##
-    # Migrations
-    #
-    migrations 'db/migrations'
-    schema     'db/schema.sql'
-  end
+            ##
+            # Migrations
+            #
+            migrations 'db/migrations'
+            schema     'db/schema.sql'
+          end
 
-  mailer do
-    root 'lib/#{project}/mailers'
+          mailer do
+            root 'lib/#{project}/mailers'
 
-    # See https://guides.hanamirb.org/mailers/delivery
-    delivery :test
-  end
+            # See https://guides.hanamirb.org/mailers/delivery
+            delivery :test
+          end
 
-  environment :development do
-    # See: https://guides.hanamirb.org/projects/logging
-    logger level: :debug
-  end
+          environment :development do
+            # See: https://guides.hanamirb.org/projects/logging
+            logger level: :debug
+          end
 
-  environment :production do
-    logger level: :info, formatter: :json, filter: []
+          environment :production do
+            logger level: :info, formatter: :json, filter: []
 
-    mailer do
-      delivery :smtp, address: ENV.fetch('SMTP_HOST'), port: ENV.fetch('SMTP_PORT')
-    end
-  end
-end
-END
+            mailer do
+              delivery :smtp, address: ENV.fetch('SMTP_HOST'), port: ENV.fetch('SMTP_PORT')
+            end
+          end
+        end
+      END
 
       project_module = Hanami::Utils::String.new(project).classify
       #
@@ -932,16 +932,16 @@ Description:
   Generate a new Hanami project
 
 Arguments:
-  PROJECT             	# REQUIRED The project name
+  PROJECT                           # REQUIRED The project name
 
 Options:
-  --database=VALUE, -d VALUE      	# Database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3), default: "sqlite"
-  --application-name=VALUE        	# App name, default: "web"
-  --application-base-url=VALUE    	# App base URL, default: "/"
-  --template=VALUE                	# Template engine (erb/haml/slim), default: "erb"
-  --test=VALUE                    	# Project testing framework (rspec/minitest), default: "rspec"
-  --[no-]hanami-head              	# Use Hanami HEAD (true/false), default: false
-  --help, -h                      	# Print this help
+  --database=VALUE, -d VALUE        # Database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3), default: "sqlite"
+  --application-name=VALUE          # App name, default: "web"
+  --application-base-url=VALUE      # App base URL, default: "/"
+  --template=VALUE                  # Template engine (erb/haml/slim), default: "erb"
+  --test=VALUE                      # Project testing framework (rspec/minitest), default: "rspec"
+  --[no-]hanami-head                # Use Hanami HEAD (true/false), default: false
+  --help, -h                        # Print this help
 
 Examples:
   hanami new bookshelf                     # Basic usage
@@ -952,5 +952,19 @@ Examples:
 OUT
 
     run_cmd 'hanami new --help', output
+  end
+
+  private
+
+  def default_git_branch
+    result = `git config --list`.scan(/init\.defaultBranch\=[[:alpha:]]*/i).first
+
+    branch = if result.nil?
+               "(main|master)"
+             else
+               result.split("=").last
+             end
+
+    /On branch #{branch}/
   end
 end

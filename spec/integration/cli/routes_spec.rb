@@ -30,18 +30,18 @@ RSpec.describe "hanami routes", type: :integration do
   it "prints help message" do
     with_project do
       output = <<~OUT
-        Command:
-          hanami routes
+Command:
+  hanami routes
 
-        Usage:
-          hanami routes
+Usage:
+  hanami routes
 
-        Description:
-          Prints routes
+Description:
+  Prints routes
 
-        Options:
-          --help, -h                      	# Print this help
-      OUT
+Options:
+  --help, -h                        # Print this help
+OUT
 
       run_cmd 'hanami routes --help', output
     end

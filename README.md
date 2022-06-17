@@ -2,6 +2,10 @@
 
 The web, with simplicity.
 
+## Version
+
+**This branch contains the code for `hanami` 2.0.x.**
+
 ## Frameworks
 
 Hanami is a **full-stack** Ruby web framework.
@@ -25,14 +29,14 @@ These components are designed to be used independently or together in a Hanami a
 ## Status
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](https://badge.fury.io/rb/hanami)
-[![CI](https://github.com/hanami/hanami/workflows/ci/badge.svg?branch=unstable)](https://github.com/hanami/hanami/actions?query=workflow%3Aci+branch%3Aunstable)
-[![Test Coverage](https://codecov.io/gh/hanami/hanami/branch/unstable/graph/badge.svg)](https://codecov.io/gh/hanami/hanami)
+[![CI](https://github.com/hanami/hanami/workflows/ci/badge.svg?branch=main)](https://github.com/hanami/hanami/actions?query=workflow%3Aci+branch%3Amain)
+[![Test Coverage](https://codecov.io/gh/hanami/hanami/branch/main/graph/badge.svg)](https://codecov.io/gh/hanami/hanami)
 [![Depfu](https://badges.depfu.com/badges/ba000e0f69e6ef1c44cd3038caaa1841/overview.svg)](https://depfu.com/github/hanami/hanami?project=Bundler)
 [![Inline Docs](http://inch-ci.org/github/hanami/hanami.svg)](http://inch-ci.org/github/hanami/hanami)
 
 ## Installation
 
-__Hanami__ supports Ruby (MRI) 2.6+
+__Hanami__ supports Ruby (MRI) 3.0+
 
 ```shell
 gem install hanami
@@ -54,7 +58,7 @@ You can give back to Open Source, by supporting Hanami development via a [donati
 
 ### Supporters
 
-  * [Trung Lê](https://github.com/joneslee85)
+  * [Trung Lê](https://github.com/runlevel5)
   * [James Carlson](https://github.com/jxxcarlson)
   * [Creditas](https://www.creditas.com.br/)
 
@@ -132,8 +136,4 @@ __Hanami__ uses [Semantic Versioning 2.0.0](http://semver.org)
 
 ## Copyright
 
-Released under MIT License.
-
-This project was formerly known as Lotus (`lotusrb`).
-
-Copyright © 2014-2021 Luca Guidi.
+Copyright © 2014-2022 Hanami Team – Released under MIT License.

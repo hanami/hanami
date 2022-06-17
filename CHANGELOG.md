@@ -1,6 +1,432 @@
 # Hanami
 The web, with simplicity.
 
+## v2.0.0.alpha8 - 2022-05-19
+
+## Added
+- [Tim Riley] Introduced `Hanami::Application::Action` as base class for actions that integrate with Hanami applications. Base action classes in Hanami applications should now inherit from this.
+- [Tim Riley] Introduced `Hanami::Application::View` and `Hanami::Application::View::Context` as base classes for views and view contexts that integrate with Hanami applications. Base view classes in Hanami applications should now inherit from these.
+- [Tim Riley] Introduced `Hanami::Application.application_name`, which returns an `Hanami::SliceName` instance, with methods for representing the application name in various formats.
+
+## Fixed
+- [Andrew Croome] When a request is halted, do not attempt to automatically render any view paired with an `Hanami::Application::Action`
+
+## Changed
+- [Tim Riley] `Hanami::Application.namespace_name`, `.namespace_path` have been removed. These can now be accessed from the `.application_name`.
+- [Tim Riley] `Hanami::Slice.slice_name` now returns an `Hanami::SliceName` instance instead of a Symbol
+- [Tim Riley] `Hanami::Slice.namespace_path` has been removed. This can now be accessed from the `.slice_name`.
+
+## v2.0.0.alpha7.1 - 2022-03-09
+
+## Fixed
+- [Tim Riley] Fixed error creating slice classes when the enclosing module did not already exist
+
+## v2.0.0.alpha7 - 2022-03-08
+
+## Added
+- [Tim Riley] Introduced `Hanami::ApplicationLoadError` and `Hanami::SliceLoadError` exceptions to represent errors encountered during application and slice loading.
+- [Tim Riley] `Hanami::Slice.shutdown` can be used to stop all the providers in a slice
+
+## Changed
+- [Tim Riley] Slices are now represented as concrete classes (such as `Main::Slice`) inheriting from `Hanami::Slice`, as opposed to _instances_ of `Hanami::Slice`. You may create your own definitions for these slices in `config/slices/[slice_name].rb`, which you can then use for customising per-slice config and behavior, e.g.
+
+    ```ruby
+    # config/slices/main.rb:
+
+    module Main
+      class Slice < Hanami::Slice
+        # slice config here
+      end
+    end
+    ```
+- [Tim Riley] Application-level `config.slice(slice_name, &block)` setting has been removed in favour of slice configuration within concrete slice class definitions
+- [Tim Riley] You can configure your slice imports inside your slice classes, e.g.
+
+    ```ruby
+    # config/slices/main.rb:
+
+    module Main
+      class Slice < Hanami::Slice
+        # Import all exported components from "search" slice
+        import from: :search
+      end
+    end
+    ```
+- [Tim Riley] You can configure your slice exports inside your slice classes, e.g.
+
+    ```ruby
+    # config/slices/search.rb:
+
+    module Search
+      class Slice < Hanami::Slice
+        # Export the "index_entity" component only
+        export ["index_entity"]
+      end
+    end
+    ```
+- [Tim Riley] For advanced cases, you can configure your slice's container via a `prepare_container` block:
+
+    ```ruby
+    # config/slices/search.rb:
+
+    module Search
+      class Slice < Hanami::Slice
+        prepare_container do |container|
+          # `container` object is available here, with
+          # slice-specific configuration already applied
+        end
+      end
+    end
+    ```
+- [Tim Riley] `Hanami::Application.shutdown` will now also shutdown all registered slices
+
+## v2.0.0.alpha6 - 2022-02-10
+### Added
+- [Luca Guidi] Official support for Ruby: MRI 3.1
+- [Tim Riley] Introduce partial Slice imports and exports. It allows to selectively export a functionality from a slice and import into another.
+
+    Import from `search` slice, uses `search` as the imported key namespace:
+
+    ```ruby
+    # config/application.rb
+
+    module MyApp
+      class Application < Hanami::Application
+        config.slice(:admin) do
+          import(from: :search)
+        end
+      end
+    end
+    ```
+
+    Import from `search` slice with custom namespace:
+
+    ```ruby
+    # config/application.rb
+
+    module MyApp
+      class Application < Hanami::Application
+        config.slice(:admin) do
+          import(from: :search, as: :search_engine)
+        end
+      end
+    end
+    ```
+
+    Import specific keys from `search` slice
+
+    ```ruby
+    # config/application.rb
+
+    module MyApp
+      class Application < Hanami::Application
+        config.slice(:admin) do
+          import(keys: ["run_query"], from: :search)
+        end
+      end
+    end
+    ```
+
+    Export only specific keys from `search` slice, and import them in `admin`
+
+    ```ruby
+    # config/application.rb
+
+    module MyApp
+      class Application < Hanami::Application
+        config.slice(:admin) do
+          import(from: :search)
+        end
+
+        config.slice(:search) do
+          container.config.exports = %w[run_query index_item]
+        end
+      end
+    end
+    ```
+
+### Fixed
+- [Luca Guidi] Ensure request logger to respect logger formatter option.
+
+### Changed
+- [Luca Guidi] Drop support for Ruby: MRI 2.6 and 2.7.
+- [Tim Riley] `Hanami.init` => `Hanami.prepare` and `hanami/init` => `hanami/prepare`
+- [Tim Riley] `Hanami.register_bootable` => `Hanami.register_provider`
+- [Tim Riley] `Hanami.start_bootable` => `Hanami.start`
+- [Tim Riley] `Hanami::Slice#init` => `Hanami::Slice#prepare`
+- [Tim Riley] `Hanami::Slice#register_bootable` => `Hanami::Slice#register_provider`
+- [Tim Riley] `Hanami::Slice#start_bootable` => `Hanami::Slice#start`
+
+## v2.0.0.alpha5 - 2022-01-12
+### Changed
+- [Luca Guidi] Sensible default configuration for application logger, with per-environment defaults:
+
+    The defaults are:
+
+    - In **production**, log for level `info`, send logs to `$stdout` in JSON format without colours
+    - In **development**, log for level `debug`, send logs to `$stdout` in single-line format with colours
+    - In **test**, log for level `debug`, send logs to `log/test.log` in single-line format without colours
+
+    To configure the logger:
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        config.logger.level = :info
+
+        config.logger.stream = $stdout
+        config.logger.stream = "/path/to/file"
+        config.logger.stream = StringIO.new
+
+        config.logger.format = :json
+        config.logger.format = MyCustomFormatter.new
+
+        config.logger.color = false # disable coloring
+        config.logger.color = MyCustomColorizer.new
+
+        config.logger.filters << "secret" # add
+        config.logger.filters += ["yet", "another"] # add
+        config.logger.filters = ["foo"] # replace
+
+        # See https://ruby-doc.org/stdlib/libdoc/logger/rdoc/Logger.html
+        config.logger.options = ["daily"] # time based log rotation
+        config.logger.options = [0, 1048576] # size based log rotation
+      end
+    end
+    ```
+
+    To configure the logger for specific environments:
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        config.environment(:staging) do
+          config.logger.level = :info
+        end
+      end
+    end
+    ```
+
+    To assign a custom replacement logger object:
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        config.logger = MyCustomLogger.new
+      end
+    end
+    ```
+- [Tim Riley] Comprehensive `config.source_dirs` setting
+
+    This replaces the previous `component_dir_paths` setting, and contains two nested settings:
+
+    - `config.source_dirs.component_dirs` (backed by `Dry::System::Config::ComponentDirs`), for directories of source files intended to be registered as components
+    - `config.source_dirs.autoload_paths`, for directories of source files not intended for registration as components, but still to be made accessible by the autoloader
+
+    To add and configure your own additional component dirs:
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        # Adding a simple component dir
+        config.source_dirs.component_dirs.add "serializers"
+
+        # Adding a component dir with custom configuration
+        config.source_dirs.component_dirs.add "serializers" do |dir|
+          dir.auto_register = proc { |component|
+            !component.identifier.start_with?("structs")
+          }
+        end
+      end
+    end
+    ```
+
+    To customize the configuration of the default component dirs ("lib", "actions", "repositories", "views"):
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        # Customising a default component dir
+        config.source_dirs.component_dirs.dir("lib").auto_register = proc { |component|
+          !component.identifier.start_with?("structs")
+        }
+
+        # Setting default config to apply to all component dirs
+        config.source_dirs.component_dirs.auto_register = proc { |component|
+          !component.identifier.start_with?("entities")
+        }
+
+        # Removing a default component dir
+        config.source_dirs.component_dirs.delete("views")
+      end
+    end
+    ```
+
+    To configure the autoload paths (defaulting to `["entities"]`):
+
+    ```ruby
+    module MyApp
+      class Application < Hanami::Application
+        # Adding your own autoload paths
+        config.source_dirs.autoload_paths << "structs"
+
+        # Or providing a full replacement
+        config.source_dirs.autoload_paths = ["structs"]
+      end
+    end
+    ```
+- [Tim Riley] Application router is lazy loaded (not requiring application to be fully booted) and now available via `Hanami.rack_app` or `Hanami.application.rack_app`, instead of the previous `Hanami.app` (which required the app to be booted first).
+
+## v2.0.0.alpha4 - 2021-12-07
+### Added
+- [Luca Guidi] Manage Content Security Policy (CSP) with "zero-defaults" policy. New API to change CSP values and to disable the feature.
+    ```ruby
+    # Read a CSP value
+
+    module MyApp
+      class Application < Hanami::Application
+        config.actions.content_security_policy[:base_uri] # => "'self'"
+      end
+    end
+    ```
+
+    ```ruby
+    # Override a default CSP value
+
+    module MyApp
+      class Application < Hanami::Application
+        # This line will generate the following CSP fragment
+        # plugin-types ;
+        config.actions.content_security_policy[:plugin_types] = nil
+      end
+    end
+    ```
+
+    ```ruby
+    # Append to a default CSP value
+
+    module MyApp
+      class Application < Hanami::Application
+        # This line will generate the following CSP fragment
+        # script-src 'self' https://my.cdn.test;
+        config.actions.content_security_policy[:script_src] += " https://my.cdn.test"
+      end
+    end
+    ```
+
+    ```ruby
+    # Add a custom CSP key. Useful when CSP standard evolves.
+
+    module MyApp
+      class Application < Hanami::Application
+        # This line will generate the following CSP fragment
+        # my-custom-setting 'self';
+        config.actions.content_security_policy['my-custom-setting'] = "'self'"
+      end
+    end
+    ```
+
+    ```ruby
+    # Delete a CSP key.
+
+    module MyApp
+      class Application < Hanami::Application
+        config.actions.content_security_policy.delete(:object_src)
+      end
+    end
+    ```
+
+    ```ruby
+    # Disable CSP feature.
+
+    module MyApp
+      class Application < Hanami::Application
+        config.actions.content_security_policy = false
+      end
+    end
+    ```
+
+## v2.0.0.alpha3 - 2021-11-09
+### Added
+- [Luca Guidi] Added `Hanami.shutdown` to stop all bootable components in the application container
+- [Tim Riley] Added `component_dir_paths` application setting to allow for components to be loaded from additional directories inside each slice directory. To begin with, this defaults to `%w[actions repositories views]`. Components inside these directories are expected to be namespaced to match the directory name; e.g. given a `main` slice, `slices/main/actions/home.rb` is expected to define `Main::Actions::Home`, and will be registered in the slice container as `"actions.home"`.
+
+### Changed
+- [Tim Riley] A slice's classes can now be defined directly inside `slices/[slice_name]/lib/`; e.g. given a `main` slice, `slices/main/lib/example.rb` is expected to define `Main::Example`, and will be registered in the slice container as `"example"`
+- [Tim Riley] The root `lib/` directory is no longer configured as a component dir, and classes inside `lib/[app_namespace]/` will no longer be auto-registered into the container. If you need to share components, create them in their own slices as appropriate, and import those slices into the other slices that require them.
+- [Tim Riley] `lib/[app_namespace]/` is configured for autoloading, and `lib/` is added to `$LOAD_PATH` to support explicit requires for source files outside `lib/[app_namespace]/`.
+- [Tim Riley] (Internal) Ported `Hanami::Configuration` and related classes to use dry-configurable
+- [Tim Riley] Application inflector can be entirely replaced, if required, via `Hanami::Configuration#inflector=`. Custom inflection rules can still be provided to the default inflector via `Hanami::Configuration#inflections`.
+- [Marc Busqué] App settings are defined within a concrete class rather than an anonymous block, to allow for users to leverage the typical behavior of Ruby classes, such as for defining their own types module to use for coercing setting values. This class also relies on dry-configurable for its settings implementation, so the standard dry-configurable `setting` API is available, such as the `constructor:` and `default:` options.
+    ```ruby
+    # frozen_string_literal: true
+
+    require "dry/types"
+    require "hanami/application/settings"
+
+    module TestApp
+      class Settings < Hanami::Application::Settings
+        # Example usage of a types module (previously not possible inside the anonymous block)
+        Types = Dry.Types()
+
+        setting :session_secret, constructor: Types::String.constrained(min_size: 20)
+
+        setting :some_bool, constructor: Types::Params::Bool, default: false
+      end
+    end
+    ```
+- [Marc Busqué] Application `settings_loader` and `settings_loader_options` have been replaced with `settings_store`, which is an updated abstraction for providing setting values to work with the new `Hanami::Application::Settings` implementation noted above (see `Application::Settings::DotenvStore` for the default store, which provides the same behavior as previously)
+- [Marc Busqué] Routes are defined within a concrete class rather than an anonymous block, to provide consistency with the settings (noted above), as well a place for additional behavior (in future releases):
+    ```ruby
+    # frozen_string_literal: true
+
+    require "hanami/application/routes"
+
+    module MyApp
+      class Routes < Hanami::Application::Routes
+        define do
+          slice :main, at: "/" do
+            root to: "home.show"
+          end
+        end
+      end
+    end
+    ```
+
+## v2.0.0.alpha2 - 2021-05-04
+### Added
+- [Luca Guidi] Official support for Ruby: MRI 3.0
+- [Tim Riley] Code autoloading via Zeitwerk
+- [Tim Riley] `Hanami::Application` subclasses generate and configure a `Dry::System::Container`, accessible via `.container` and `AppNamespace::Container`, with several common container methods available directly via the application subclass (e.g. `Bookshelf::Application["foo"]` or `Hanami.application["foo"]`)
+- [Tim Riley] Introduced `Hanami::Application.register_bootable` to register custom components
+- [Tim Riley] Introduced `Hanami::Application.keys` to get the list of resolved components
+- [Tim Riley] Dynamically create an auto-injection mixin (e.g. `Bookshelf::Deps`)
+    ```ruby
+    # frozen_string_literal: true
+
+    module Bookshelf
+      class CreateThing
+        include Deps[service_client: "some_service.client"]
+
+        def call(attrs)
+          # Validate attrs, etc.
+          service_client.create(attrs)
+        end
+      end
+    end
+    ```
+- [Tim Riley] Introduced application settings. They are accessible via `Hanami.application.settings` in `config/settings.rb`
+- [Tim Riley] Introduced application slices to organise high-level application concerns. Slices are generated based on subdirectories of `slices/`, and map onto corresponding ruby module namespaces, e.g. `slices/main` -> `Main`, with the slice instance itself being `Main::Slice` (as well as being accessible via `Hanami.application.slices[:main]`)
+- [Tim Riley] Each slice generates and configures has its own `Dry::System::Container`, accessible via the slice instance (e.g. `Main::Slice.container`) as well as via its own constant (e.g. `Main::Container`)
+- [Tim Riley] Slice containers automatically import the application container, under the `"application"` namespace
+- [Tim Riley] Allow slice containers to be imported by other slice containers
+
+### Changed
+- [Luca Guidi] Drop support for Ruby: MRI 2.5
+- [Tim Riley] Removed `config.cookies` in favor of `config.actions.cookies`
+- [Tim Riley] Removed `config.sessions` in favor of `config.actions.sessions`
+- [Tim Riley] Removed `config.security` settings
+
 ## v2.0.0.alpha1 - 2019-01-30
 ### Added
 - [Luca Guidi] Implemented from scratch `hanami version`
@@ -49,6 +475,12 @@ end
 - [Luca Guidi] Per application routes are no longer supported (e.g. `apps/web/config/routes.rb`)
 - [Luca Guidi] Removed `shotgun` and code reloading from the core. Code reloading is implemented by `hanami-reloader` gem.
 - [Luca Guidi] Removed support for `.hanamirc`
+
+## v1.3.4 - 2021-05-02
+### Fixed
+- [Slava Kardakov] Fix generated `config.ru` `require_relative` statement
+- [Armin] Fix `Hanami::CommonLogger` elapsed time compatibility with `rack` 2.1.0+
+- [Adam Daniels] Fix generated tests compatibility with `minitest` 6.0+
 
 ## v1.3.3 - 2019-09-20
 ### Added

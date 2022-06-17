@@ -29,18 +29,18 @@ RSpec.describe "hanami version", type: :integration do
     it "prints help message" do
       with_project do
         output = <<~OUT
-          Command:
-            hanami version
+Command:
+  hanami version
 
-          Usage:
-            hanami version
+Usage:
+  hanami version
 
-          Description:
-            Print Hanami version
+Description:
+  Print Hanami version
 
-          Options:
-            --help, -h                      	# Print this help
-        OUT
+Options:
+  --help, -h                        # Print this help
+OUT
 
         run_cmd 'hanami version --help', output
       end
@@ -66,18 +66,18 @@ RSpec.describe "hanami version", type: :integration do
 
     it "prints help message" do
       output = <<~OUT
-        Command:
-          hanami version
+Command:
+  hanami version
 
-        Usage:
-          hanami version
+Usage:
+  hanami version
 
-        Description:
-          Print Hanami version
+Description:
+  Print Hanami version
 
-        Options:
-          --help, -h                      	# Print this help
-      OUT
+Options:
+  --help, -h                        # Print this help
+OUT
 
       run_cmd 'hanami version --help', output
     end

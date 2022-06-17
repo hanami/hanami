@@ -54,18 +54,18 @@ SQL
     it "prints help message" do
       with_project do
         output = <<~OUT
-          Command:
-            hanami db apply
+Command:
+  hanami db apply
 
-          Usage:
-            hanami db apply
+Usage:
+  hanami db apply
 
-          Description:
-            Migrate, dump the SQL schema, and delete the migrations (experimental)
+Description:
+  Migrate, dump the SQL schema, and delete the migrations (experimental)
 
-          Options:
-            --help, -h                      	# Print this help
-        OUT
+Options:
+  --help, -h                        # Print this help
+OUT
 
         run_cmd "hanami db apply --help", output
       end

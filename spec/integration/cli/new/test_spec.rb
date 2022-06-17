@@ -52,7 +52,7 @@ RSpec.describe "hanami new", type: :integration do
           #
           # spec/<app>/views/application_layout_spec.rb
           #
-          expect("spec/web/views/application_layout_spec.rb").to have_file_content <<~END
+          expect("spec/web/views/application_layout_spec.rb").to have_file_content <<-END
             require "spec_helper"
 
             describe Web::Views::ApplicationLayout do
@@ -60,7 +60,7 @@ RSpec.describe "hanami new", type: :integration do
               let(:rendered) { layout.render }
 
               it 'contains application name' do
-                rendered.must_include('Web')
+                _(rendered).must_include('Web')
               end
             end
           END

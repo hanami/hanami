@@ -69,24 +69,24 @@ RSpec.describe "hanami db", type: :integration do
     it "prints help message" do
       with_project do
         output = <<~OUT
-          Command:
-            hanami db rollback
+Command:
+  hanami db rollback
 
-          Usage:
-            hanami db rollback [STEPS]
+Usage:
+  hanami db rollback [STEPS]
 
-          Description:
-            Rollback migrations
+Description:
+  Rollback migrations
 
-          Arguments:
-            STEPS               	# Number of steps to rollback the database
+Arguments:
+  STEPS                             # Number of steps to rollback the database
 
-          Options:
-            --help, -h                      	# Print this help
+Options:
+  --help, -h                        # Print this help
 
 Examples:
   hanami db rollback   # Rollbacks latest migration
-  hanami db rollback 2 # Rollbacks last two migrations
+  hanami db rollback 2 # Rollbacks last two migration
 OUT
 
         run_cmd 'hanami db rollback --help', output

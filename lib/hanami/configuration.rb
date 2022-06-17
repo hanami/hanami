@@ -3,215 +3,122 @@
 require "uri"
 require "concurrent/hash"
 require "concurrent/array"
+require "dry/configurable"
 require "dry/inflector"
 require "pathname"
-require "zeitwerk"
+
+require_relative "application/settings/dotenv_store"
+require_relative "configuration/logger"
+require_relative "configuration/middleware"
+require_relative "configuration/router"
+require_relative "configuration/sessions"
+require_relative "configuration/source_dirs"
+require_relative "constants"
 
 module Hanami
   # Hanami application configuration
   #
   # @since 2.0.0
-  #
-  # rubocop:disable Metrics/ClassLength
   class Configuration
-    require_relative "configuration/middleware"
-    require_relative "configuration/router"
-    require_relative "configuration/sessions"
+    include Dry::Configurable
+
+    DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
+    private_constant :DEFAULT_ENVIRONMENTS
+
+    attr_reader :application_name
+    attr_reader :env
 
     attr_reader :actions
-    attr_reader :views
+    attr_reader :middleware
+    attr_reader :router
+    attr_reader :views, :assets
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    def initialize(env:)
-      @settings = Concurrent::Hash.new
+    attr_reader :environments
+    private :environments
 
-      self.autoloader = Zeitwerk::Loader.new
+    # rubocop:disable Metrics/AbcSize
+    def initialize(application_name:, env:)
+      @application_name = application_name
 
-      self.env = env
-      self.environments = DEFAULT_ENVIRONMENTS.clone
+      @environments = DEFAULT_ENVIRONMENTS.clone
+      @env = env
 
+      # Some default setting values must be assigned at initialize-time to ensure they
+      # have appropriate values for the current application
       self.root = Dir.pwd
-      self.slices_dir = DEFAULT_SLICES_DIR
-      settings[:slices] = {}
+      self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
 
-      self.settings_path = DEFAULT_SETTINGS_PATH
-      self.settings_loader_options = {}
+      config.logger = Configuration::Logger.new(env: env, application_name: application_name)
 
-      self.base_url = DEFAULT_BASE_URL
+      @assets = load_dependent_config("hanami/assets/application_configuration") {
+        Hanami::Assets::ApplicationConfiguration.new
+      }
 
-      self.logger   = DEFAULT_LOGGER.clone
-      self.rack_logger_filter_params = DEFAULT_RACK_LOGGER_FILTER_PARAMS.clone
-      self.sessions = DEFAULT_SESSIONS
+      @actions = load_dependent_config("hanami/action") {
+        require_relative "configuration/actions"
+        Actions.new
+      }
 
-      self.router     = Router.new(base_url)
-      self.middleware = Middleware.new
+      @middleware = Middleware.new
 
-      self.inflections = Dry::Inflector.new
+      @router = Router.new(self)
 
-      @actions = begin
-        require_path = "hanami/action/application_configuration"
-        require require_path
-        Hanami::Action::ApplicationConfiguration.new
-      rescue LoadError => e
-        raise e unless e.path == require_path
-        Object.new
-      end
+      @views = load_dependent_config("hanami/view") {
+        require_relative "configuration/views"
+        Views.new
+      }
 
-      @views = begin
-        require_path = "hanami/view/application_configuration"
-        require require_path
-        Hanami::View::ApplicationConfiguration.new
-      rescue LoadError => e
-        raise e unless e.path == require_path
-        Object.new
-      end
+      yield self if block_given?
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
 
-    def finalize
-      environment_for(env).each do |blk|
-        instance_eval(&blk)
-      end
-
-      # Finalize nested configuration
-      actions.finalize!
-      views.finalize!
+    def environment(env_name, &block)
+      environments[env_name] << block
+      apply_env_config
 
       self
     end
 
-    def environment(name, &blk)
-      environment_for(name).push(blk)
+    def finalize!
+      apply_env_config
+
+      # Finalize nested configurations
+      assets.finalize!
+      actions.finalize!
+      views.finalize!
+      logger.finalize!
+      router.finalize!
+
+      super
     end
 
-    def autoloader=(loader)
-      settings[:autoloader] = loader || nil
+    setting :root, constructor: -> path { Pathname(path) }
+
+    setting :inflector, default: Dry::Inflector.new
+
+    def inflections(&block)
+      self.inflector = Dry::Inflector.new(&block)
     end
 
-    def autoloader
-      settings.fetch(:autoloader)
+    setting :logger, cloneable: true
+
+    def logger=(logger_instance)
+      @logger_instance = logger_instance
     end
 
-    def env=(value)
-      settings[:env] = value
+    def logger_instance
+      @logger_instance || logger.instance
     end
 
-    def env
-      settings.fetch(:env)
-    end
+    setting :settings_path, default: File.join("config", "settings")
 
-    def root=(root)
-      settings[:root] = Pathname(root)
-    end
+    setting :settings_class_name, default: "Settings"
 
-    def root
-      settings.fetch(:root)
-    end
+    setting :settings_store, default: Application::Settings::DotenvStore
 
-    def slices_dir=(dir)
-      settings[:slices_dir] = dir
-    end
+    setting :source_dirs, default: Configuration::SourceDirs.new, cloneable: true
 
-    def slices_dir
-      settings.fetch(:slices_dir)
-    end
-
-    def slices_namespace=(namespace)
-      settings[:slices_namespace] = namespace
-    end
-
-    def slices_namespace
-      settings.fetch(:slices_namespace) { Object }
-    end
-
-    def slice(slice_name, &block)
-      settings[:slices][slice_name] = block
-    end
-
-    def slices
-      settings[:slices]
-    end
-
-    def settings_path=(value)
-      settings[:settings_path] = value
-    end
-
-    def settings_path
-      settings.fetch(:settings_path)
-    end
-
-    def settings_loader=(loader)
-      settings[:settings_loader] = loader
-    end
-
-    def settings_loader
-      settings.fetch(:settings_loader) {
-        require "hanami/application/settings/loader"
-        settings[:settings_loader] = Application::Settings::Loader
-      }
-    end
-
-    def settings_loader_options=(options)
-      settings[:settings_loader_options] = options
-    end
-
-    def settings_loader_options
-      settings[:settings_loader_options]
-    end
-
-    def base_url=(value)
-      settings[:base_url] = URI.parse(value)
-    end
-
-    def base_url
-      settings.fetch(:base_url)
-    end
-
-    def logger=(options)
-      settings[:logger] = options
-    end
-
-    def logger
-      settings.fetch(:logger)
-    end
-
-    def rack_logger_filter_params=(params)
-      settings[:rack_logger_filter_params] = params
-    end
-
-    def rack_logger_filter_params
-      settings[:rack_logger_filter_params]
-    end
-
-    def router=(value)
-      settings[:router] = value
-    end
-
-    def router
-      settings.fetch(:router)
-    end
-
-    def sessions=(*args)
-      settings[:sessions] = Sessions.new(args)
-    end
-
-    def sessions
-      settings.fetch(:sessions)
-    end
-
-    def middleware
-      settings.fetch(:middleware)
-    end
-
-    def inflections(&blk)
-      if blk.nil?
-        settings.fetch(:inflections)
-      else
-        settings[:inflections] = Dry::Inflector.new(&blk)
-      end
-    end
-
-    alias inflector inflections
+    setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
 
     def for_each_middleware(&blk)
       stack = middleware.stack.dup
@@ -220,48 +127,36 @@ module Hanami
       stack.each(&blk)
     end
 
-    protected
-
-    def environment_for(name)
-      settings[:environments][name]
-    end
-
-    def environments=(values)
-      settings[:environments] = values
-    end
-
-    def middleware=(value)
-      settings[:middleware] = value
-    end
-
-    def inflections=(value)
-      settings[:inflections] = value
-    end
+    setting :sessions, default: :null, constructor: -> *args { Sessions.new(*args) }
 
     private
 
-    DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
-    private_constant :DEFAULT_ENVIRONMENTS
+    def apply_env_config(env = self.env)
+      environments[env].each do |block|
+        instance_eval(&block)
+      end
+    end
 
-    DEFAULT_SLICES_DIR = "slices"
-    private_constant :DEFAULT_SLICES_DIR
+    def load_dependent_config(require_path, &block)
+      require require_path
+      yield
+    rescue LoadError => e
+      raise e unless e.path == require_path
 
-    DEFAULT_BASE_URL = "http://0.0.0.0:2300"
-    private_constant :DEFAULT_BASE_URL
+      require_relative "configuration/null_configuration"
+      NullConfiguration.new
+    end
 
-    DEFAULT_LOGGER = { level: :debug }.freeze
-    private_constant :DEFAULT_LOGGER
+    def method_missing(name, *args, &block)
+      if config.respond_to?(name)
+        config.public_send(name, *args, &block)
+      else
+        super
+      end
+    end
 
-    DEFAULT_RACK_LOGGER_FILTER_PARAMS = %w[_csrf password password_confirmation].freeze
-    private_constant :DEFAULT_RACK_LOGGER_FILTER_PARAMS
-
-    DEFAULT_SETTINGS_PATH = File.join("config", "settings")
-    private_constant :DEFAULT_SETTINGS_PATH
-
-    DEFAULT_SESSIONS = Sessions.null
-    private_constant :DEFAULT_SESSIONS
-
-    attr_reader :settings
+    def respond_to_missing?(name, _incude_all = false)
+      config.respond_to?(name) || super
+    end
   end
-  # rubocop:enable Metrics/ClassLength
 end

@@ -92,24 +92,24 @@ OUT
     it "prints help message" do
       with_project do
         output = <<~OUT
-          Command:
-            hanami destroy app
+Command:
+  hanami destroy app
 
-          Usage:
-            hanami destroy app APP
+Usage:
+  hanami destroy app APP
 
-          Description:
-            Destroy an app
+Description:
+  Destroy an app
 
-          Arguments:
-            APP                 	# REQUIRED The application name (eg. `web`)
+Arguments:
+  APP                               # REQUIRED The application name (eg. `web`)
 
-          Options:
-            --help, -h                      	# Print this help
+Options:
+  --help, -h                        # Print this help
 
-          Examples:
-            hanami destroy app admin # Destroy `admin` app
-        OUT
+Examples:
+  hanami destroy app admin # Destroy `admin` app
+OUT
 
         run_cmd 'hanami destroy app --help', output
       end

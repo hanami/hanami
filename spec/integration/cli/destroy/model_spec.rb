@@ -87,24 +87,24 @@ RSpec.describe "hanami destroy", type: :integration do
     it "prints help message" do
       with_project do
         output = <<~OUT
-          Command:
-            hanami destroy model
+Command:
+  hanami destroy model
 
-          Usage:
-            hanami destroy model MODEL
+Usage:
+  hanami destroy model MODEL
 
-          Description:
-            Destroy a model
+Description:
+  Destroy a model
 
-          Arguments:
-            MODEL               	# REQUIRED The model name (eg. `user`)
+Arguments:
+  MODEL                             # REQUIRED The model name (eg. `user`)
 
-          Options:
-            --help, -h                      	# Print this help
+Options:
+  --help, -h                        # Print this help
 
-          Examples:
-            hanami destroy model user # Destroy `User` entity and `UserRepository` repository
-        OUT
+Examples:
+  hanami destroy model user # Destroy `User` entity and `UserRepository` repository
+OUT
 
         run_cmd 'hanami destroy model --help', output
       end

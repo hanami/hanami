@@ -20,18 +20,18 @@ RSpec.describe "hanami db", type: :integration do
     it "prints help message" do
       with_project do
         output = <<~OUT
-          Command:
-            hanami db console
+Command:
+  hanami db console
 
-          Usage:
-            hanami db console
+Usage:
+  hanami db console
 
-          Description:
-            Starts a database console
+Description:
+  Starts a database console
 
-          Options:
-            --help, -h                      	# Print this help
-        OUT
+Options:
+  --help, -h                        # Print this help
+OUT
 
         run_cmd "hanami db console --help", output
       end

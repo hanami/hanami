@@ -13,27 +13,17 @@ RSpec.describe "Container auto-injection (aka \"Deps\") mixin", :application_int
         end
       RUBY
 
-      write "lib/test_app/shared_service.rb", <<~RUBY
-        module TestApp
-          class SharedService
-          end
-        end
-      RUBY
-
-      write "slices/admin/lib/admin/slice_service.rb", <<~RUBY
+      write "slices/admin/lib/slice_service.rb", <<~RUBY
         module Admin
           class SliceService
           end
         end
       RUBY
 
-      write "slices/admin/lib/admin/test_op.rb", <<~RUBY
+      write "slices/admin/lib/test_op.rb", <<~RUBY
         module Admin
           class TestOp
-            include Deps[
-              "slice_service",
-              app_service: "application.shared_service",
-            ]
+            include Deps["slice_service"]
           end
         end
       RUBY
@@ -46,21 +36,19 @@ RSpec.describe "Container auto-injection (aka \"Deps\") mixin", :application_int
   specify "Dependencies are auto-injected in a booted application" do
     with_application do
       require "hanami/setup"
-      Hanami.boot web: false
+      Hanami.boot
 
       op = Admin::Slice["test_op"]
       expect(op.slice_service).to be_an Admin::SliceService
-      expect(op.app_service).to be_a TestApp::SharedService
     end
   end
 
   specify "Dependencies are lazily resolved and auto-injected in an unbooted application" do
     with_application do
-      require "hanami/init"
+      require "hanami/prepare"
 
       op = Admin::Slice["test_op"]
       expect(op.slice_service).to be_an Admin::SliceService
-      expect(op.app_service).to be_a TestApp::SharedService
     end
   end
 end

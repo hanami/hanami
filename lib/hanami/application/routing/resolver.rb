@@ -7,6 +7,8 @@ module Hanami
       #
       # @since 2.0.0
       class Resolver
+        ENDPOINT_KEY_NAMESPACE = "actions"
+
         require_relative "resolver/trie"
 
         # @since 2.0.0
@@ -21,7 +23,7 @@ module Hanami
         def initialize(slices:, inflector:)
           @slices = slices
           @inflector = inflector
-          @slices_registry = Trie.new
+          @slice_registry = Trie.new
         end
 
         # @api private
@@ -50,7 +52,7 @@ module Hanami
         # @api private
         # @since 2.0.0
         def register_slice_at_path(name, path)
-          slices_registry.add(path, name)
+          slice_registry.add(path, name)
         end
 
         private
@@ -65,16 +67,19 @@ module Hanami
 
         # @api private
         # @since 2.0.0
-        attr_reader :slices_registry
+        attr_reader :slice_registry
 
         # @api private
         # @since 2.0.0
         def resolve_string_identifier(path, identifier)
-          slice_name = slices_registry.find(path) or raise "missing slice for #{path.inspect} (#{identifier.inspect})"
+          slice_name = slice_registry.find(path) or raise "missing slice for #{path.inspect} (#{identifier.inspect})"
           slice = slices[slice_name]
-          action_key = "actions.#{identifier.gsub(/[#\/]/, '.')}"
+          endpoint_key = "#{ENDPOINT_KEY_NAMESPACE}.#{identifier}"
 
-          slice[action_key]
+          # Lazily resolve endpoint from the slice to reduce router initialization time,
+          # and break potential endless loops from the resolved endpoint itself requiring
+          # access to router-related concerns
+          -> (*args) { slice[endpoint_key].call(*args) }
         end
       end
     end

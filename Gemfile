@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
-
 gemspec
 
 unless ENV["CI"]
@@ -9,19 +8,19 @@ unless ENV["CI"]
   gem "yard",   require: false
 end
 
-gem "hanami-utils", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/utils.git", branch: "unstable"
-gem "hanami-router", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/router.git", branch: "unstable"
-gem "hanami-controller", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/controller.git", branch: "unstable"
-gem "dry-files", "~> 0.1", require: false, git: "https://github.com/dry-rb/dry-files.git", branch: "master"
+gem "hanami-utils", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/utils.git", branch: "main"
+gem "hanami-router", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/router.git", branch: "main"
+gem "hanami-controller", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/controller.git", branch: "main"
 gem "hanami-cli", "~> 2.0.alpha", require: false, git: "https://github.com/hanami/cli.git", branch: "main"
-gem "hanami-view", "~> 2.0.alpha", git: "https://github.com/hanami/view.git", branch: "master"
+gem "hanami-view", "~> 2.0.alpha", git: "https://github.com/hanami/view.git", branch: "main"
 
-gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.git", branch: "unstable"
+gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.git", branch: "main"
 
-gem "dry-configurable", git: "https://github.com/dry-rb/dry-configurable.git", branch: "master"
+gem "dry-files", "~> 0.1", require: false, git: "https://github.com/dry-rb/dry-files.git", branch: "main"
 
 group :test do
   gem "dotenv"
   gem "dry-types"
+  gem "saharspec"
   gem "slim"
 end
