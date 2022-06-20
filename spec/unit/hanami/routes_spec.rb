@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "hanami/application/routes"
+require "hanami/routes"
 
-RSpec.describe Hanami::Application::Routes do
+RSpec.describe Hanami::Routes do
   describe ".define" do
     it "sets routes block" do
       routes_class = Class.new(described_class)

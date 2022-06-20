@@ -17,7 +17,7 @@ RSpec.describe "Application view / Context / Routes", :application_integration d
 
       write "config/routes.rb", <<~RUBY
         module TestApp
-          class Routes < Hanami::Application::Routes
+          class Routes < Hanami::Routes
             define do
               slice :main, at: "/" do
                 root to: "test_action"
