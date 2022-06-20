@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "hanami/application/settings"
+require "hanami/settings"
 
-RSpec.describe Hanami::Application::Settings do
+RSpec.describe Hanami::Settings do
   describe "#initialize" do
     it "uses values from the store when present" do
       config_class = Class.new(described_class) do

@@ -7,7 +7,7 @@ require "dry/configurable"
 require "dry/inflector"
 require "pathname"
 
-require_relative "application/settings/dotenv_store"
+require_relative "settings/dotenv_store"
 require_relative "configuration/logger"
 require_relative "configuration/middleware"
 require_relative "configuration/router"
@@ -46,7 +46,7 @@ module Hanami
       # Some default setting values must be assigned at initialize-time to ensure they
       # have appropriate values for the current application
       self.root = Dir.pwd
-      self.settings_store = Application::Settings::DotenvStore.new.with_dotenv_loaded
+      self.settings_store = Hanami::Settings::DotenvStore.new.with_dotenv_loaded
 
       config.logger = Configuration::Logger.new(env: env, application_name: application_name)
 
@@ -114,7 +114,7 @@ module Hanami
 
     setting :settings_class_name, default: "Settings"
 
-    setting :settings_store, default: Application::Settings::DotenvStore
+    setting :settings_store, default: Hanami::Settings::DotenvStore
 
     setting :source_dirs, default: Configuration::SourceDirs.new, cloneable: true
 

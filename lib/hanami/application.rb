@@ -221,7 +221,7 @@ module Hanami
       end
 
       def load_settings
-        require_relative "application/settings"
+        require_relative "./settings"
 
         prepare_base_load_path
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "hanami/application/settings"
+require "hanami/settings"
 
 RSpec.describe "Application settings", :application_integration do
   before do
@@ -23,11 +23,11 @@ RSpec.describe "Application settings", :application_integration do
       RUBY
 
       write "config/settings.rb", <<~RUBY
-        require "hanami/application/settings"
+        require "hanami/settings"
         require "test_app/types"
 
         module TestApp
-          class Settings < Hanami::Application::Settings
+          class Settings < Hanami::Settings
             setting :database_url
             setting :redis_url
             setting :feature_flag, constructor: TestApp::Types::Params::Bool
@@ -75,11 +75,11 @@ RSpec.describe "Application settings", :application_integration do
       RUBY
 
       write "config/settings.rb", <<~RUBY
-        require "hanami/application/settings"
+        require "hanami/settings"
         require "test_app/types"
 
         module TestApp
-          class Settings < Hanami::Application::Settings
+          class Settings < Hanami::Settings
             setting :numeric_setting, constructor: TestApp::Types::Params::Integer
             setting :feature_flag, constructor: TestApp::Types::Params::Bool
           end
@@ -107,7 +107,7 @@ RSpec.describe "Application settings", :application_integration do
       expect {
         require "hanami/prepare"
       }.to raise_error(
-        Hanami::Application::Settings::InvalidSettingsError,
+        Hanami::Settings::InvalidSettingsError,
         /#{numeric_setting_error}.+#{feature_flag_error}|#{feature_flag_error}.+#{numeric_setting_error}/m
       )
     end

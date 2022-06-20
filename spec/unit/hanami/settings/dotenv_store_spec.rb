@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "hanami/application/settings/dotenv_store"
+require "hanami/settings/dotenv_store"
 require "dotenv"
 
-RSpec.describe Hanami::Application::Settings::DotenvStore do
+RSpec.describe Hanami::Settings::DotenvStore do
   def mock_dotenv(store)
     dotenv = spy(:dotenv)
     allow(store).to receive(:require).and_call_original
