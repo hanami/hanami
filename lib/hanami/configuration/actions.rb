@@ -34,9 +34,9 @@ module Hanami
 
         @base_configuration = Hanami::Action::Configuration.new
         @content_security_policy = ContentSecurityPolicy.new do |csp|
-          if assets_server_url = options[:assets_server_url]
-            csp[:script_src] += " #{assets_server_url}"
-            csp[:style_src] += " #{assets_server_url}"
+          if assets = options[:assets] and assets.class.to_s != "Hanami::Configuration::NullConfiguration"
+            csp[:script_src] += " #{assets.server_url}"
+            csp[:style_src] += " #{assets.server_url}"
           end
         end
 

@@ -56,7 +56,7 @@ module Hanami
 
       @actions = load_dependent_config("hanami/action") {
         require_relative "configuration/actions"
-        Actions.new(assets_server_url: assets.server_url)
+        Actions.new(assets: assets)
       }
 
       @middleware = Middleware.new

@@ -1,45 +1,55 @@
 # frozen_string_literal: true
 
 require "hanami/configuration/actions"
+require "hanami/configuration/null_configuration"
 
 RSpec.describe Hanami::Configuration::Actions, "#content_security_policy" do
   let(:configuration) { described_class.new }
   subject(:content_security_policy) { configuration.content_security_policy }
 
   context "no CSP config specified" do
-    context "without assets_server_url" do
+    let(:default_configuration) do
+      [
+        %(base-uri 'self';),
+        %(child-src 'self';),
+        %(connect-src 'self';),
+        %(default-src 'none';),
+        %(font-src 'self';),
+        %(form-action 'self';),
+        %(frame-ancestors 'self';),
+        %(frame-src 'self';),
+        %(img-src 'self' https: data:;),
+        %(media-src 'self';),
+        %(object-src 'none';),
+        %(plugin-types application/pdf;),
+        %(script-src 'self';),
+        %(style-src 'self' 'unsafe-inline' https:)
+      ].join(" ")
+    end
 
+    context "without assets option" do
       it "has defaults" do
         expect(content_security_policy[:base_uri]).to eq("'self'")
-
-        expected = [
-          %(base-uri 'self';),
-          %(child-src 'self';),
-          %(connect-src 'self';),
-          %(default-src 'none';),
-          %(font-src 'self';),
-          %(form-action 'self';),
-          %(frame-ancestors 'self';),
-          %(frame-src 'self';),
-          %(img-src 'self' https: data:;),
-          %(media-src 'self';),
-          %(object-src 'none';),
-          %(plugin-types application/pdf;),
-          %(script-src 'self';),
-          %(style-src 'self' 'unsafe-inline' https:)
-        ].join(" ")
-
-        expect(content_security_policy.to_str).to eq(expected)
+        expect(content_security_policy.to_str).to eq(default_configuration)
       end
     end
 
-    context "with assets_server_url" do
-      let(:configuration) { described_class.new(assets_server_url: assets_server_url) }
+    context "with assets options" do
+      let(:configuration) { described_class.new(assets: assets) }
       let(:assets_server_url) { "http://localhost:8080" }
+      let(:assets) { Struct.new(:server_url).new(assets_server_url) }
 
       it "includes server url" do
         expect(content_security_policy[:script_src]).to eq("'self' #{assets_server_url}")
         expect(content_security_policy[:style_src]).to eq("'self' 'unsafe-inline' https: #{assets_server_url}")
+      end
+    end
+
+    context "with null configuration for assets" do
+      let(:configuration) { described_class.new(assets: Hanami::Configuration::NullConfiguration.new) }
+
+      it "has defaults" do
+        expect(content_security_policy.to_str).to eq(default_configuration)
       end
     end
   end
