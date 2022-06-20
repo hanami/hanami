@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-require "hanami/rake_tasks"
+require "hanami/cli/rake_tasks"
 require "hanami/cli/command_line"
 
-Hanami::RakeTasks.register_tasks do
+Hanami::CLI::RakeTasks.register_tasks do
   @_hanami_command_line = Hanami::CLI::CommandLine.new
 
   desc "Load the application environment"
   task :environment do
-    # TODO: implement me
-    puts "TODO: implement me.."
+    require "hanami/prepare"
   end
 
   # Ruby ecosystem compatibility
@@ -40,13 +39,15 @@ Hanami::RakeTasks.register_tasks do
   # Rake tasks, they are here to solve this only specific problem.
   namespace :db do
     task :migrate do
-      run_hanami_command("db migrate")
+      # TODO(@jodosha): Enable when we'll integrate with ROM
+      # run_hanami_command("db migrate")
     end
   end
 
   namespace :assets do
     task :precompile do
-      run_hanami_command("assets precompile")
+      # TODO(@jodosha): Enable when we'll integrate with hanami-assets
+      # run_hanami_command("assets precompile")
     end
   end
 
@@ -57,4 +58,4 @@ Hanami::RakeTasks.register_tasks do
   end
 end
 
-Hanami::RakeTasks.install_tasks
+Hanami::CLI::RakeTasks.install_tasks
