@@ -16,7 +16,7 @@ gem "hanami-view", "~> 2.0.alpha", git: "https://github.com/hanami/view.git", br
 
 gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.git", branch: "main"
 
-gem "dry-files", git: "https://github.com/dry-rb/dry-files.git"
+gem "dry-files", git: "https://github.com/dry-rb/dry-files.git", branch: "main"
 
 group :test do
   gem "dotenv"
