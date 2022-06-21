@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "hanami/application/action"
-
 RSpec.describe "Application action / View rendering / Paired view inference", :application_integration do
   before do
     module TestApp
@@ -14,7 +12,7 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
 
     module Main
       module Action
-        class Base < Hanami::Application::Action; end
+        class Base < Hanami::Action; end
       end
     end
   end

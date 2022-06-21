@@ -217,11 +217,9 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
       write "lib/test_app/action/base.rb", <<~RUBY
         # auto_register: false
 
-        require "hanami/application/action"
-
         module TestApp
           module Action
-            class Base < Hanami::Application::Action
+            class Base < Hanami::Action
             end
           end
         end

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "hanami/application/action"
-
 RSpec.describe "Application action / Cookies", :application_integration do
   before do
     module TestApp
@@ -14,7 +12,7 @@ RSpec.describe "Application action / Cookies", :application_integration do
     Hanami.application.prepare
 
     module Main
-      class Action < Hanami::Application::Action
+      class Action < Hanami::Action
       end
     end
   end

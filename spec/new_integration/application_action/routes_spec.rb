@@ -24,11 +24,11 @@ RSpec.describe "Application action / Routes", :application_integration do
       RUBY
 
       write "slices/main/lib/action/base.rb", <<~RUBY
-        require "hanami/application/action"
+        # auto_register: false
 
         module Main
           module Action
-            class Base < Hanami::Application::Action; end
+            class Base < Hanami::Action; end
           end
         end
       RUBY

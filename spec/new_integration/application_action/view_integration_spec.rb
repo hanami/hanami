@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "hanami/application/action"
-
 RSpec.describe "Application action / View integration", :application_integration do
   before do
     module TestApp
@@ -15,7 +13,7 @@ RSpec.describe "Application action / View integration", :application_integration
 
     module TestApp
       module Action
-        class Base < Hanami::Application::Action; end
+        class Base < Hanami::Action; end
       end
     end
 

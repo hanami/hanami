@@ -3,8 +3,8 @@
 require "hanami/action"
 
 module Hanami
-  class Application
-    class Action < Hanami::Action
+  module Extensions
+    module Action
       # Provides slice-specific configuration and behavior for any action class defined
       # within a slice's module namespace.
       #
@@ -30,7 +30,7 @@ module Hanami
 
         private
 
-        # @see Hanami::Application::Action#initialize
+        # @see Hanami::Extensions::Action::InstanceMethods#initialize
         def define_new
           resolve_view = method(:resolve_paired_view)
           resolve_view_context = method(:resolve_view_context)
@@ -39,7 +39,7 @@ module Hanami
           define_method(:new) do |**kwargs|
             super(
               view: kwargs.fetch(:view) { resolve_view.(self) },
-              view_context: kwargs.fetch(:view_context) { resolve_view_context.(self) },
+              view_context: kwargs.fetch(:view_context) { resolve_view_context.() },
               routes: kwargs.fetch(:routes) { resolve_routes.() },
               **kwargs,
             )
@@ -80,7 +80,7 @@ module Hanami
           end
         end
 
-        def resolve_view_context(_action_class)
+        def resolve_view_context
           identifier = actions_config.view_context_identifier
 
           if slice.key?(identifier)
