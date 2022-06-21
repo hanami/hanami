@@ -21,7 +21,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         module Main
           module Views
             module Profile
-              class Show < Main::View::Base
+              class Show < Main::View
                 expose :name, :favorite_number
               end
             end
@@ -68,7 +68,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         module Main
           module Views
             module Profile
-              class Show < Main::View::Base
+              class Show < Main::View
                 expose :name, :favorite_number
               end
             end
@@ -110,7 +110,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         module Main
           module Views
             module Profile
-              class Show < Main::View::Base
+              class Show < Main::View
                 expose :name, :favorite_number
               end
             end
@@ -153,7 +153,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         module Main
           module Views
             module Profile
-              class Show < Main::View::Base
+              class Show < Main::View
                 expose :name
               end
             end
@@ -224,26 +224,24 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "lib/test_app/view/base.rb", <<~RUBY
+      write "lib/test_app/view.rb", <<~RUBY
         # auto_register: false
 
-        require "hanami/application/view"
+        require "hanami/view"
 
         module TestApp
-          module View
-            class Base < Hanami::Application::View; end
+          class View < Hanami::View
           end
         end
       RUBY
 
-      write "slices/main/lib/view/base.rb", <<~RUBY
+      write "slices/main/lib/view.rb", <<~RUBY
         # auto_register: false
 
-        require "test_app/view/base"
+        require "test_app/view"
 
         module Main
-          module View
-            class Base < TestApp::View::Base; end
+          class View < TestApp::View
           end
         end
       RUBY

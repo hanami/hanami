@@ -21,49 +21,45 @@ RSpec.describe "Application action / View rendering", :application_integration d
         end
       RUBY
 
-      write "lib/test_app/view/base.rb", <<~RUBY
+      write "lib/test_app/view.rb", <<~RUBY
         # auto_register: false
 
-        require "hanami/application/view"
+        require "hanami/view"
 
         module TestApp
-          module View
-            class Base < Hanami::Application::View
-            end
+          class View < Hanami::View
           end
         end
       RUBY
 
-      write "lib/test_app/view/context.rb", <<~RUBY
+      write "lib/test_app/views/context.rb", <<~RUBY
         # auto_register: false
 
-        require "hanami/application/view/context"
+        require "hanami/view/context"
 
         module TestApp
-          module View
-            class Context < Hanami::Application::View::Context
+          module Views
+            class Context < Hanami::View::Context
             end
           end
         end
       RUBY
 
-      write "slices/main/lib/view/base.rb", <<~RUBY
+      write "slices/main/lib/view.rb", <<~RUBY
         # auto_register: false
 
-        require "test_app/view/base"
+        require "test_app/view"
 
         module Main
-          module View
-            class Base < TestApp::View::Base
-            end
+          class View < TestApp::View
           end
         end
       RUBY
 
-      write "slices/main/lib/view/context.rb", <<~RUBY
+      write "slices/main/lib/views/context.rb", <<~RUBY
         module Main
-          module View
-            class Context < TestApp::View::Context
+          module Views
+            class Context < TestApp::Views::Context
               def request
                 _options.fetch(:request)
               end
@@ -99,7 +95,7 @@ RSpec.describe "Application action / View rendering", :application_integration d
         module Main
           module Views
             module Users
-              class Show < Main::View::Base
+              class Show < Main::View
                 expose :name, :job, :age
               end
             end

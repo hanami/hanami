@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "hanami/application/view"
+require "hanami"
 
 RSpec.describe "Application view / Part namespace", :application_integration do
   before do
@@ -16,26 +16,22 @@ RSpec.describe "Application view / Part namespace", :application_integration do
     Hanami.application.prepare
 
     # The parts module (or any related setup) must exist _before_ we subclass
-    # Hanami::Application::View, because the parts_namespace is configured at the time of
+    # Hanami::View, because the parts_namespace is configured at the time of
     # subclassing (which happens right below)
     parts_module! if respond_to?(:parts_module!)
 
     module TestApp
-      module View
-        class Base < Hanami::Application::View
-        end
+      class View < Hanami::View
       end
     end
 
     module Main
-      module View
-        class Base < TestApp::View::Base
-        end
+      class View < TestApp::View
       end
 
       module Views
         module Article
-          class Index < View::Base
+          class Index < Main::View
           end
         end
       end
@@ -49,7 +45,7 @@ RSpec.describe "Application view / Part namespace", :application_integration do
   context "default parts_path" do
     let(:parts_module!) do
       module Main
-        module View
+        module Views
           module Parts
           end
         end
@@ -57,21 +53,21 @@ RSpec.describe "Application view / Part namespace", :application_integration do
     end
 
     it "is View::Parts" do
-      is_expected.to eq Main::View::Parts
+      is_expected.to eq Main::Views::Parts
     end
   end
 
   context "custom parts_path configured" do
     let(:application_hook) {
       proc do
-        config.views.parts_path = "view/custom_parts"
+        config.views.parts_path = "views/custom_parts"
       end
     }
 
     context "parts module exists" do
       let(:parts_module!) do
         module Main
-          module View
+          module Views
             module CustomParts
             end
           end
@@ -79,16 +75,16 @@ RSpec.describe "Application view / Part namespace", :application_integration do
       end
 
       it "is the matching module within the slice" do
-        is_expected.to eq Main::View::CustomParts
+        is_expected.to eq Main::Views::CustomParts
       end
     end
 
     context "parts module exists, but needs requiring first" do
       let(:parts_module!) do
         allow_any_instance_of(Object).to receive(:require).and_call_original
-        allow_any_instance_of(Object).to receive(:require).with("main/view/custom_parts") {
+        allow_any_instance_of(Object).to receive(:require).with("main/views/custom_parts") {
           module Main
-            module View
+            module Views
               module CustomParts
               end
             end
@@ -98,7 +94,7 @@ RSpec.describe "Application view / Part namespace", :application_integration do
       end
 
       it "is the matching module within the slice" do
-        is_expected.to eq Main::View::CustomParts
+        is_expected.to eq Main::Views::CustomParts
       end
     end
 

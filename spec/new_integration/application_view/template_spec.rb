@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "hanami/application/view"
+require "hanami"
 
 RSpec.describe "Application view / Template", :application_integration do
   before do
@@ -16,16 +16,12 @@ RSpec.describe "Application view / Template", :application_integration do
     Hanami.application.prepare
 
     module TestApp
-      module View
-        class Base < Hanami::Application::View
-        end
+      class View < Hanami::View
       end
     end
 
     module Main
-      module View
-        class Base < TestApp::View::Base
-        end
+      class View < TestApp::View
       end
     end
   end
@@ -37,7 +33,7 @@ RSpec.describe "Application view / Template", :application_integration do
       module Main
         module Views
           module Article
-            class Index < View::Base
+            class Index < Main::View
             end
           end
         end
@@ -56,7 +52,7 @@ RSpec.describe "Application view / Template", :application_integration do
       module Main
         module MyViews
           module Users
-            class Show < View::Base
+            class Show < Main::View
             end
           end
         end

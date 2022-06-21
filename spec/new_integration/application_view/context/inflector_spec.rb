@@ -1,5 +1,4 @@
 require "hanami"
-require "hanami/application/view/context"
 
 RSpec.describe "Application view / Context / Inflector", :application_integration do
   before do
@@ -12,21 +11,21 @@ RSpec.describe "Application view / Context / Inflector", :application_integratio
     Hanami.prepare
 
     module TestApp
-      module View
-        class Context < Hanami::Application::View::Context
+      module Views
+        class Context < Hanami::View::Context
         end
       end
     end
 
     module Main
-      module View
-        class Context < TestApp::View::Context
+      module Views
+        class Context < TestApp::Views::Context
         end
       end
     end
   end
 
-  let(:context_class) { Main::View::Context }
+  let(:context_class) { Main::Views::Context }
   subject(:context) { context_class.new }
 
   describe "#inflector" do

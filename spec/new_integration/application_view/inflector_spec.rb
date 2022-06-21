@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "hanami/application/view"
+require "hanami"
 
 RSpec.describe "Application view / Inflector", :application_integration do
   before do
@@ -16,21 +16,17 @@ RSpec.describe "Application view / Inflector", :application_integration do
     Hanami.application.prepare
 
     module TestApp
-      module View
-        class Base < Hanami::Application::View
-        end
+      class View < Hanami::View
       end
     end
 
     module Main
-      module View
-        class Base < TestApp::View::Base
-        end
+      class View < TestApp::View
       end
     end
   end
 
-  subject(:view_class) { Main::View::Base }
+  subject(:view_class) { Main::View }
 
   context "default application inflector" do
     it "configures the view with the default application inflector" do

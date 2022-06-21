@@ -3,8 +3,8 @@
 require "hanami/view"
 
 module Hanami
-  class Application
-    class View < Hanami::View
+  module Extensions
+    module View
       # Provides slice-specific configuration and behavior for any view class defined
       # within a slice's module namespace.
       #

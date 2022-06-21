@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "hanami"
-require "hanami/application/view/context"
 
 RSpec.describe "Application view / Context / Routes", :application_integration do
   it "accesses application routes" do
@@ -27,21 +26,23 @@ RSpec.describe "Application view / Context / Routes", :application_integration d
         end
       RUBY
 
-      write "lib/test_app/view/context.rb", <<~RUBY
-        require "hanami/application/view/context"
+      write "lib/test_app/views/context.rb", <<~RUBY
+        require "hanami/view/context"
 
         module TestApp
-          module View
-            class Context < Hanami::Application::View::Context
+          module Views
+            class Context < Hanami::View::Context
             end
           end
         end
       RUBY
 
-      write "slices/main/lib/view/context.rb", <<~RUBY
+      write "slices/main/lib/views/context.rb", <<~RUBY
+        require "test_app/views/context"
+
         module Main
-          module View
-            class Context < TestApp::View::Context
+          module Views
+            class Context < TestApp::Views::Context
             end
           end
         end
@@ -49,7 +50,7 @@ RSpec.describe "Application view / Context / Routes", :application_integration d
 
       require "hanami/prepare"
 
-      context = Main::View::Context.new
+      context = Main::Views::Context.new
       expect(context.routes.path(:root)).to eq "/"
     end
   end
@@ -63,15 +64,15 @@ RSpec.describe "Application view / Context / Routes", :application_integration d
     Hanami.prepare
 
     module TestApp
-      module View
-        class Context < Hanami::Application::View::Context
+      module Views
+        class Context < Hanami::View::Context
         end
       end
     end
 
     routes = double(:routes)
 
-    context = TestApp::View::Context.new(routes: routes)
+    context = TestApp::Views::Context.new(routes: routes)
 
     expect(context.routes).to be(routes)
   end
