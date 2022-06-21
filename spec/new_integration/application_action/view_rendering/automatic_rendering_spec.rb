@@ -7,7 +7,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         module Main
           module Actions
             module Profile
-              class Show < Main::Action::Base
+              class Show < TestApp::Action
                 def handle(req, res)
                   res[:favorite_number] = 123
                 end
@@ -50,7 +50,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         module Main
           module Actions
             module Profile
-              class Show < Main::Action::Base
+              class Show < TestApp::Action
                 def handle(req, res)
                   res[:favorite_number] = 123
                 end
@@ -96,7 +96,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         module Main
           module Actions
             module Profile
-              class Show < Main::Action::Base
+              class Show < TestApp::Action
                 def handle(req, res)
                   res.body = "200: Okay okay okay"
                 end
@@ -139,7 +139,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         module Main
           module Actions
             module Profile
-              class Show < Main::Action::Base
+              class Show < TestApp::Action
                 def handle(req, res)
                   halt 404
                 end
@@ -188,7 +188,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         module Main
           module Actions
             module Profile
-              class Show < Main::Action::Base
+              class Show < TestApp::Action
               end
             end
           end
@@ -210,30 +210,16 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application; end
-        end
-      RUBY
-
-      write "lib/test_app/action/base.rb", <<~RUBY
-        # auto_register: false
-
-        module TestApp
-          module Action
-            class Base < Hanami::Action
-            end
+          class Application < Hanami::Application
           end
         end
       RUBY
 
-      write "slices/main/lib/action/base.rb", <<~RUBY
+      write "lib/test_app/action.rb", <<~RUBY
         # auto_register: false
 
-        require "test_app/action/base"
-
-        module Main
-          module Action
-            class Base < TestApp::Action::Base
-            end
+        module TestApp
+          class Action < Hanami::Action
           end
         end
       RUBY

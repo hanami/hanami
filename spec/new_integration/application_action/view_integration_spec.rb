@@ -12,19 +12,13 @@ RSpec.describe "Application action / View integration", :application_integration
     Hanami.application.prepare
 
     module TestApp
-      module Action
-        class Base < Hanami::Action; end
-      end
+      class Action < Hanami::Action; end
     end
 
     module Main
-      module Action
-        class Base < TestApp::Action::Base; end
-      end
-
       module Actions
         module Articles
-          class Index < Main::Action::Base; end
+          class Index < TestApp::Action; end
         end
       end
     end

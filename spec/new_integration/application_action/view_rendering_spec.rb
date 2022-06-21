@@ -12,13 +12,11 @@ RSpec.describe "Application action / View rendering", :application_integration d
         end
       RUBY
 
-      write "lib/test_app/action/base.rb", <<~RUBY
+      write "lib/test_app/action.rb", <<~RUBY
         # auto_register: false
 
         module TestApp
-          module Action
-            class Base < Hanami::Action
-            end
+          class Action < Hanami::Action
           end
         end
       RUBY
@@ -44,19 +42,6 @@ RSpec.describe "Application action / View rendering", :application_integration d
         module TestApp
           module View
             class Context < Hanami::Application::View::Context
-            end
-          end
-        end
-      RUBY
-
-      write "slices/main/lib/action/base.rb", <<~RUBY
-        # auto_register: false
-
-        require "test_app/action/base"
-
-        module Main
-          module Action
-            class Base < TestApp::Action::Base
             end
           end
         end
@@ -95,7 +80,7 @@ RSpec.describe "Application action / View rendering", :application_integration d
         module Main
           module Actions
             module Users
-              class Show < Main::Action::Base
+              class Show < TestApp::Action
                 include Deps[view: "views.users.show"]
 
                 def handle(req, res)

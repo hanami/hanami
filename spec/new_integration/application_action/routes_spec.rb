@@ -23,20 +23,18 @@ RSpec.describe "Application action / Routes", :application_integration do
         end
       RUBY
 
-      write "slices/main/lib/action/base.rb", <<~RUBY
+      write "lib/test_app/action.rb", <<~RUBY
         # auto_register: false
 
-        module Main
-          module Action
-            class Base < Hanami::Action; end
-          end
+        module TestApp
+          class Action < Hanami::Action; end
         end
       RUBY
 
       write "slices/main/actions/test_action.rb", <<~RUBY
         module Main
           module Actions
-            class TestAction < Action::Base
+            class TestAction < TestApp::Action
               def handle(req, res)
                 res.body = routes.path(:root)
               end

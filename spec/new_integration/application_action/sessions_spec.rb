@@ -11,13 +11,13 @@ RSpec.describe "Application action / Sessions", :application_integration do
     Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
     Hanami.application.prepare
 
-    module Main
+    module TestApp
       class Action < Hanami::Action
       end
     end
   end
 
-  subject(:action_class) { Main::Action }
+  subject(:action_class) { TestApp::Action }
 
   context "HTTP sessions enabled" do
     let(:application_hook) {

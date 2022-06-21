@@ -10,10 +10,8 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
 
     Hanami.application.prepare
 
-    module Main
-      module Action
-        class Base < Hanami::Action; end
-      end
+    module TestApp
+      class Action < Hanami::Action; end
     end
   end
 
@@ -24,7 +22,7 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
       module Main
         module Actions
           module Articles
-            class Index < Main::Action::Base; end
+            class Index < TestApp::Action; end
           end
         end
       end
@@ -48,7 +46,7 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
           module Main
             module Actions
               module Articles
-                class Index < Main::Action::Base
+                class Index < TestApp::Action
                   include Deps[view: "views.articles.custom"]
                 end
               end
@@ -79,7 +77,7 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
       module Main
         module Actions
           module Articles
-            class Create < Main::Action::Base; end
+            class Create < TestApp::Action; end
           end
         end
       end
