@@ -49,7 +49,7 @@ RSpec.describe "Application action / View integration", :application_integration
     context "Default view context identifier" do
       context "View context registered in slice" do
         before do
-          Main::Slice.register "view.context", slice_view_context
+          Main::Slice.register "views.context", slice_view_context
         end
 
         let(:slice_view_context) { double(:slice_view_context) }
@@ -61,7 +61,7 @@ RSpec.describe "Application action / View integration", :application_integration
 
       context "View context registered in application" do
         before do
-          Hanami.application.register "view.context", application_view_context
+          Hanami.application.register "views.context", application_view_context
         end
 
         let(:application_view_context) { double(:application_view_context) }
