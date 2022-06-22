@@ -15,7 +15,7 @@ RSpec.describe "Container / Standard bootable components", :application_integrat
       require "hanami/setup"
       Hanami.boot
 
-      expect(Hanami.application[:settings]).to be_an_instance_of(Hanami::Application::Settings)
+      expect(Hanami.application[:settings]).to be_an_instance_of(Hanami::Settings)
       expect(Hanami.application[:inflector]).to eql Hanami.application.inflector
       expect(Hanami.application[:logger]).to be_a_kind_of(Hanami::Logger)
       expect(Hanami.application[:rack_logger]).to be_a_kind_of(Hanami::Web::RackLogger)
@@ -38,7 +38,7 @@ RSpec.describe "Container / Standard bootable components", :application_integrat
       require "hanami/setup"
       Hanami.prepare
 
-      expect(Hanami.application[:settings]).to be_an_instance_of(Hanami::Application::Settings)
+      expect(Hanami.application[:settings]).to be_an_instance_of(Hanami::Settings)
       expect(Hanami.application[:inflector]).to eql Hanami.application.inflector
       expect(Hanami.application[:logger]).to be_a_kind_of(Hanami::Logger)
       expect(Hanami.application[:rack_logger]).to be_a_kind_of(Hanami::Web::RackLogger)
@@ -57,10 +57,10 @@ RSpec.describe "Container / Standard bootable components", :application_integrat
       RUBY
 
       write "config/settings.rb", <<~RUBY
-        require "hanami/application/settings"
+        require "hanami/settings"
 
         module TestApp
-          class Settings < Hanami::Application::Settings
+          class Settings < Hanami::Settings
             setting :session_secret
           end
         end

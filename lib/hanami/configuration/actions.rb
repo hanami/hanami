@@ -20,7 +20,7 @@ module Hanami
       setting :csrf_protection
 
       setting :name_inference_base, default: "actions"
-      setting :view_context_identifier, default: "view.context"
+      setting :view_context_identifier, default: "views.context"
       setting :view_name_inferrer, default: Application::ViewNameInferrer
       setting :view_name_inference_base, default: "views"
 
