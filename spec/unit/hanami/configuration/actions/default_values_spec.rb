@@ -12,7 +12,7 @@ RSpec.describe Hanami::Configuration::Actions, "default values" do
   end
 
   describe "view_context_identifier" do
-    specify { expect(configuration.view_context_identifier).to eq "view.context" }
+    specify { expect(configuration.view_context_identifier).to eq "views.context" }
   end
 
   describe "view_name_inferrer" do

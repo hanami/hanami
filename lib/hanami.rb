@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "hanami/application"
-require_relative "hanami/errors"
-require_relative "hanami/version"
-
-
 # A complete web framework for Ruby
 #
 # @since 0.1.0
@@ -12,13 +7,14 @@ require_relative "hanami/version"
 # @see http://hanamirb.org
 module Hanami
   @_mutex = Mutex.new
+  @_bundled = {}
 
   def self.application
     @_mutex.synchronize do
       unless defined?(@_application)
         raise ApplicationLoadError,
-          "Hanami.application is not yet configured. " \
-          "You may need to `require \"hanami/setup\"` to load your config/application.rb file."
+              "Hanami.application is not yet configured. " \
+              "You may need to `require \"hanami/setup\"` to load your config/application.rb file."
       end
 
       @_application
@@ -67,7 +63,23 @@ module Hanami
     application.shutdown
   end
 
+  def self.bundled?(gem_name)
+    @_mutex.synchronize do
+      @_bundled[gem_name] ||= begin
+        gem(gem_name)
+        true
+      rescue Gem::LoadError
+        false
+      end
+    end
+  end
+
   def self.bundler_groups
     [:plugins]
   end
+
+  require_relative "hanami/version"
+  require_relative "hanami/errors"
+  require_relative "hanami/extensions"
+  require_relative "hanami/application"
 end

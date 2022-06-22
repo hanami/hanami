@@ -11,7 +11,7 @@ module Hanami
     class Views
       include Dry::Configurable
 
-      setting :parts_path, default: "view/parts"
+      setting :parts_path, default: "views/parts"
 
       attr_reader :base_configuration
       private :base_configuration

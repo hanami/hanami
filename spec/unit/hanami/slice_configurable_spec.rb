@@ -54,8 +54,8 @@ RSpec.describe Hanami::SliceConfigurable, :application_integration do
 
       subject(:subclass) { Main::MySubSubclass }
 
-      it "does not call `configure_for_slice` again for the same slice" do
-        expect(subclass.traces).to eq [Main::Slice]
+      it "calls `configure_for_slice` again for the same slice" do
+        expect(subclass.traces).to eq [Main::Slice, Main::Slice]
       end
     end
 

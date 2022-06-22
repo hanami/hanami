@@ -19,10 +19,10 @@ RSpec.describe "Running a Rack app for a non-booted application", :application_i
       RUBY
 
       write "config/routes.rb", <<~RUBY
-        require "hanami/application/routes"
+        require "hanami/routes"
 
         module TestApp
-          class Routes < Hanami::Application::Routes
+          class Routes < Hanami::Routes
             define do
               slice :main, at: "/" do
                 root to: "home.show"
