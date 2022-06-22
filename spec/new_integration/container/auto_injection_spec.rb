@@ -13,17 +13,17 @@ RSpec.describe "Container auto-injection (aka \"Deps\") mixin", :application_int
         end
       RUBY
 
-      write "slices/admin/lib/slice_service.rb", <<~RUBY
-        module Admin
-          class SliceService
+      write "app/some_service.rb", <<~'RUBY'
+        module TestApp
+          class SomeService
           end
         end
       RUBY
 
-      write "slices/admin/lib/test_op.rb", <<~RUBY
-        module Admin
-          class TestOp
-            include Deps["slice_service"]
+      write "app/some_operation.rb", <<~'RUBY'
+        module TestApp
+          class SomeOperation
+            include Deps["some_service"]
           end
         end
       RUBY
@@ -35,11 +35,10 @@ RSpec.describe "Container auto-injection (aka \"Deps\") mixin", :application_int
 
   specify "Dependencies are auto-injected in a booted application" do
     with_application do
-      require "hanami/setup"
-      Hanami.boot
+      require "hanami/boot"
 
-      op = Admin::Slice["test_op"]
-      expect(op.slice_service).to be_an Admin::SliceService
+      op = TestApp::Application["some_operation"]
+      expect(op.some_service).to be_a TestApp::SomeService
     end
   end
 
@@ -47,8 +46,8 @@ RSpec.describe "Container auto-injection (aka \"Deps\") mixin", :application_int
     with_application do
       require "hanami/prepare"
 
-      op = Admin::Slice["test_op"]
-      expect(op.slice_service).to be_an Admin::SliceService
+      op = TestApp::Application["some_operation"]
+      expect(op.some_service).to be_a TestApp::SomeService
     end
   end
 end

@@ -162,7 +162,7 @@ module Hanami
       private
 
       def prepare_base_load_path
-        base_path = File.join(root, "lib")
+        base_path = File.join(root, LIB_DIR)
         $LOAD_PATH.unshift base_path unless $LOAD_PATH.include?(base_path)
       end
 
@@ -170,6 +170,7 @@ module Hanami
         load_settings
         prepare_container_plugins
         prepare_container_base_config
+        prepare_container_component_dirs
         prepare_container_consts
         container.configured!
         prepare_slices
@@ -194,10 +195,13 @@ module Hanami
         ]
       end
 
-      def prepare_autoload_paths
-        # Autoload classes defined in lib/[app_namespace]/
-        if root.join("lib", application_name.name).directory?
-          autoloader.push_dir(root.join("lib", application_name.name), namespace: namespace)
+      def prepare_container_component_dirs
+        return unless root.join(APP_DIR)&.directory?
+
+        # Expexct component files in the root of the app/ component dir to define classes
+        # inside the application's namespace
+        container.config.component_dirs.add(APP_DIR) do |dir|
+          dir.namespaces.add_root(key: nil, const: application_name.name)
         end
       end
 
@@ -212,9 +216,14 @@ module Hanami
       end
 
       def prepare_autoloader
-        # Autoload classes defined in lib/[app_namespace]/
-        if root.join("lib", application_name.name).directory?
-          autoloader.push_dir(root.join("lib", application_name.name), namespace: namespace)
+        # Autoload classes defined in `lib/[app_namespace]/`
+        if root.join(LIB_DIR, application_name.name).directory?
+          autoloader.push_dir(root.join(LIB_DIR, application_name.name), namespace: namespace)
+        end
+
+        # Autoload classes defined in `app/`
+        if root.join(APP_DIR, LIB_DIR).directory?
+          autoloader.push_dir(root.join(APP_DIR, LIB_DIR), namespace: namespace)
         end
 
         autoloader.setup
