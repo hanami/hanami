@@ -171,7 +171,7 @@ module Hanami
         )
       end
 
-      def prepare_container_base_config
+      def prepare_container_base_config # rubocop:disable Metrics/AbcSize
         container.config.name = slice_name.to_sym
         container.config.root = root
         container.config.provider_dirs = [File.join("config", "providers")]
@@ -180,59 +180,33 @@ module Hanami
         container.config.inflector = application.configuration.inflector
       end
 
-      def prepare_container_component_dirs # rubocop:disable Metrics/AbcSize
+      def prepare_container_component_dirs
         return unless root&.directory?
 
-        # Add component dirs for each configured component path
-        application.configuration.source_dirs.component_dirs.each do |component_dir|
-          next unless root.join(component_dir.path).directory?
-
-          component_dir = component_dir.dup
-
-          if component_dir.path == LIB_DIR
-            # Expect component files in the root of the lib/ component dir to define
-            # classes inside the slice's namespace.
-            #
-            # e.g. "lib/foo.rb" should define SliceNamespace::Foo, to be registered as
-            # "foo"
-            component_dir.namespaces.delete_root
-            component_dir.namespaces.add_root(key: nil, const: slice_name.name)
-          else
-            # Expect component files in the root of non-lib/ component dirs to define
-            # classes inside a namespace matching that dir.
-            #
-            # e.g. "actions/foo.rb" should define SliceNamespace::Actions::Foo, to be
-            # registered as "actions.foo"
-
-            dir_namespace_path = File.join(slice_name.name, component_dir.path)
-
-            component_dir.namespaces.delete_root
-            component_dir.namespaces.add_root(const: dir_namespace_path, key: component_dir.path)
+        if root&.join(LIB_DIR)&.directory?
+          container.config.component_dirs.add(LIB_DIR) do |dir|
+            dir.namespaces.add_root(key: nil, const: slice_name.name)
           end
+        end
 
-          container.config.component_dirs.add(component_dir)
+        if root&.directory?
+          # FIXME: this is not a good way to add a root component dir
+          container.config.component_dirs.add("") do |dir|
+            dir.namespaces.add_root(key: nil, const: slice_name.name)
+
+            # TODO: Ignore components in slice CONFIG_DIR
+            # dir.auto_register = proc do |component|
+            #   p component
+            # end
+          end
         end
       end
 
-      def prepare_autoloader # rubocop:disable Metrics/AbcSize
-        return unless root&.directory?
-
-        # Pass configured autoload dirs to the autoloader
-        application.configuration.source_dirs.autoload_paths.each do |autoload_path|
-          next unless root.join(autoload_path).directory?
-
-          dir_namespace_path = File.join(slice_name.name, autoload_path)
-
-          autoloader_namespace = begin
-            inflector.constantize(inflector.camelize(dir_namespace_path))
-          rescue NameError
-            namespace.const_set(inflector.camelize(autoload_path), Module.new)
-          end
-
-          container.config.autoloader.push_dir(
-            container.root.join(autoload_path),
-            namespace: autoloader_namespace
-          )
+      def prepare_autoloader
+        # Everything in the slice directory can be autoloaded _except_ `config/`, which is
+        # where we keep files loaded specially by the framework as part of slice setupq.
+        if root&.join(CONFIG_DIR)&.directory?
+          container.config.autoloader.ignore(root.join(CONFIG_DIR))
         end
       end
 

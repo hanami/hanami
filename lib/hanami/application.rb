@@ -195,13 +195,23 @@ module Hanami
         ]
       end
 
-      def prepare_container_component_dirs
-        return unless root.join(APP_DIR)&.directory?
+      def prepare_container_component_dirs # rubocop:disable Metrics/AbcSize
+        return unless root&.directory?
 
-        # Expexct component files in the root of the app/ component dir to define classes
-        # inside the application's namespace
-        container.config.component_dirs.add(APP_DIR) do |dir|
-          dir.namespaces.add_root(key: nil, const: application_name.name)
+        # Component files in both `app/` and `app/lib/` define classes in the
+        # application's namespace
+
+        if root.join(APP_DIR, LIB_DIR).directory?
+          container.config.component_dirs.add(File.join(APP_DIR, LIB_DIR)) do |dir|
+            dir.namespaces.add_root(key: nil, const: application_name.name)
+          end
+        end
+
+        if root.join(APP_DIR).directory?
+          # TODO: ignore lib/ child dir here?
+          container.config.component_dirs.add(APP_DIR) do |dir|
+            dir.namespaces.add_root(key: nil, const: application_name.name)
+          end
         end
       end
 
@@ -216,14 +226,13 @@ module Hanami
       end
 
       def prepare_autoloader
-        # Autoload classes defined in `lib/[app_namespace]/`
+        # Component dirs are automatically pushed to the autoloader by dry-system's
+        # zeitwerk plugin. This method adds other dirs that are not otherwise configured
+        # as component dirs.
+
+        # Autoload classes from `lib/[app_namespace]/`
         if root.join(LIB_DIR, application_name.name).directory?
           autoloader.push_dir(root.join(LIB_DIR, application_name.name), namespace: namespace)
-        end
-
-        # Autoload classes defined in `app/`
-        if root.join(APP_DIR, LIB_DIR).directory?
-          autoloader.push_dir(root.join(APP_DIR, LIB_DIR), namespace: namespace)
         end
 
         autoloader.setup

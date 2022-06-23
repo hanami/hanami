@@ -12,7 +12,6 @@ require_relative "configuration/logger"
 require_relative "configuration/middleware"
 require_relative "configuration/router"
 require_relative "configuration/sessions"
-require_relative "configuration/source_dirs"
 require_relative "constants"
 
 module Hanami
@@ -115,8 +114,6 @@ module Hanami
     setting :settings_class_name, default: "Settings"
 
     setting :settings_store, default: Hanami::Settings::DotenvStore
-
-    setting :source_dirs, default: Configuration::SourceDirs.new, cloneable: true
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
 
