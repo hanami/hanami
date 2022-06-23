@@ -18,6 +18,7 @@ gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.
 
 gem "dry-files", git: "https://github.com/dry-rb/dry-files.git", branch: "main"
 gem "dry-monitor", git: "https://github.com/dry-rb/dry-monitor.git", branch: "main"
+gem "dry-system", git: "https://github.com/dry-rb/dry-system.git", branch: "add-file-path-to-component"
 
 group :test do
   gem "dotenv"

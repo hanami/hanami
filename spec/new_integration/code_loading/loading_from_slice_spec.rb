@@ -74,7 +74,7 @@ RSpec.describe "Code loading / Loading from slice directory", :application_integ
     expect(Main::Slice.key?("action")).to be false
   end
 
-  xspecify "Files in slice config/ directory are not auto-registered" do
+  specify "Files in slice config/ directory are not auto-registered" do
     expect(Main::Slice.key?("config.settings")).to be false
   end
 

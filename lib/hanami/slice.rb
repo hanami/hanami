@@ -180,7 +180,7 @@ module Hanami
         container.config.inflector = application.configuration.inflector
       end
 
-      def prepare_container_component_dirs
+      def prepare_container_component_dirs # rubocop:disable Metrics/AbcSize
         return unless root&.directory?
 
         if root&.join(LIB_DIR)&.directory?
@@ -194,10 +194,11 @@ module Hanami
           container.config.component_dirs.add("") do |dir|
             dir.namespaces.add_root(key: nil, const: slice_name.name)
 
-            # TODO: Ignore components in slice CONFIG_DIR
-            # dir.auto_register = proc do |component|
-            #   p component
-            # end
+            # Do not auto-register components in slice `config/` dirs
+            dir.auto_register = proc do |component|
+              relative_path = component.file_path.relative_path_from(root).to_s
+              !relative_path.start_with?("#{CONFIG_DIR}#{File::SEPARATOR}")
+            end
           end
         end
       end
