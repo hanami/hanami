@@ -261,11 +261,7 @@ module Hanami
       def load_router
         require_relative "application/router"
 
-        Router.new(
-          routes: load_routes,
-          resolver: router_resolver,
-          **configuration.router.options,
-        ) do
+        Router.new(routes: load_routes, resolver: router_resolver, **router_options) do
           use Hanami.application[:rack_monitor]
 
           Hanami.application.config.for_each_middleware do |m, *args, &block|
@@ -286,6 +282,10 @@ module Hanami
         raise e unless e.path == routes_require_path
 
         proc {}
+      end
+
+      def router_options
+        configuration.router.options
       end
 
       def router_resolver
