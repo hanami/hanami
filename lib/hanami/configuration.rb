@@ -35,7 +35,6 @@ module Hanami
     attr_reader :environments
     private :environments
 
-    # rubocop:disable Metrics/AbcSize
     def initialize(application_name:, env:)
       @application_name = application_name
 
@@ -69,7 +68,6 @@ module Hanami
 
       yield self if block_given?
     end
-    # rubocop:enable Metrics/AbcSize
 
     def environment(env_name, &block)
       environments[env_name] << block
