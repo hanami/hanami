@@ -93,6 +93,8 @@ module Hanami
 
     setting :root, constructor: -> path { Pathname(path) }
 
+    setting :no_auto_register_paths, default: %w[entities]
+
     setting :inflector, default: Dry::Inflector.new
 
     def inflections(&block)

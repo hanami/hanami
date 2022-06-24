@@ -183,23 +183,30 @@ module Hanami
       def prepare_container_component_dirs # rubocop:disable Metrics/AbcSize
         return unless root&.directory?
 
+        # Don't auto-register files in `config/` or the configured no_auto_register_paths
+        autoload_only_paths = ([CONFIG_DIR] + application.configuration.no_auto_register_paths)
+          .map { |path|
+            path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
+          }
+
+        auto_register_proc = -> root {
+          -> component {
+            relative_path = component.file_path.relative_path_from(root).to_s
+            !relative_path.start_with?(*autoload_only_paths)
+          }
+        }
+
         if root&.join(LIB_DIR)&.directory?
           container.config.component_dirs.add(LIB_DIR) do |dir|
             dir.namespaces.add_root(key: nil, const: slice_name.name)
+            dir.auto_register = auto_register_proc.(root.join(LIB_DIR))
           end
         end
 
-        if root&.directory?
-          # FIXME: this is not a good way to add a root component dir
-          container.config.component_dirs.add("") do |dir|
-            dir.namespaces.add_root(key: nil, const: slice_name.name)
-
-            # Do not auto-register components in slice `config/` dirs
-            dir.auto_register = proc do |component|
-              relative_path = component.file_path.relative_path_from(root).to_s
-              !relative_path.start_with?("#{CONFIG_DIR}#{File::SEPARATOR}")
-            end
-          end
+        # TODO: Change `""` (signifying the root) once dry-rb/dry-system#238 is resolved
+        container.config.component_dirs.add("") do |dir|
+          dir.namespaces.add_root(key: nil, const: slice_name.name)
+          dir.auto_register = auto_register_proc.(root)
         end
       end
 
