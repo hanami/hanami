@@ -205,7 +205,7 @@ module Hanami
 
       def prepare_autoloader
         # Everything in the slice directory can be autoloaded _except_ `config/`, which is
-        # where we keep files loaded specially by the framework as part of slice setupq.
+        # where we keep files loaded specially by the framework as part of slice setup.
         if root&.join(CONFIG_DIR)&.directory?
           container.config.autoloader.ignore(root.join(CONFIG_DIR))
         end
