@@ -22,10 +22,6 @@ module Hanami
         @base_configuration = base_configuration
       end
 
-      setting :routes_path, default: File.join("config", "routes")
-
-      setting :routes_class_name, default: "Routes"
-
       setting :resolver, default: Application::Routing::Resolver
 
       # @api private

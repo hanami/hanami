@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Hanami
+  # @api private
   CONTAINER_KEY_DELIMITER = "."
   private_constant :CONTAINER_KEY_DELIMITER
 
@@ -8,6 +9,7 @@ module Hanami
   MODULE_DELIMITER = "::"
   private_constant :MODULE_DELIMITER
 
+  # @api private
   PATH_DELIMITER = "/"
   private_constant :PATH_DELIMITER
 
@@ -26,6 +28,22 @@ module Hanami
   # @api private
   SLICES_DIR = "slices"
   private_constant :SLICES_DIR
+
+  # @api private
+  ROUTES_PATH = File.join(CONFIG_DIR, "routes")
+  private_constant :ROUTES_PATH
+
+  # @api private
+  ROUTES_CLASS_NAME = "Routes"
+  private_constant :ROUTES_CLASS_NAME
+
+  # @api private
+  SETTINGS_PATH = File.join(CONFIG_DIR, "settings")
+  private_constant :SETTINGS_PATH
+
+  # @api private
+  SETTINGS_CLASS_NAME = "Settings"
+  private_constant :SETTINGS_CLASS_NAME
 
   # @api private
   RB_EXT = ".rb"
