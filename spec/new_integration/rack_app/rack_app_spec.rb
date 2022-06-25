@@ -7,6 +7,32 @@ RSpec.describe "Hanami web app", :application_integration do
 
   let(:app) { Hanami.rack_app }
 
+  specify "has rack monitor preconfigured with default request logging" do
+    dir = Dir.mktmpdir
+
+    with_tmp_directory(dir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+            config.logger.stream = config.root.join("test.log")
+          end
+        end
+      RUBY
+
+      require "hanami/boot"
+
+      expect(Hanami.application[:rack_monitor]).to be_instance_of(Dry::Monitor::Rack::Middleware)
+
+      get "/"
+
+      logs = -> { Pathname(dir).join("test.log").realpath.read }
+
+      expect(logs.()).to match %r{GET 404 \d+ms 127.0.0.1 /}
+    end
+  end
+
   specify "Routing to actions based on their container identifiers" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY

@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 Hanami.application.register_provider :rack_monitor do
-  start do
+  prepare do
     require "dry/monitor"
-    require "dry/monitor/rack/middleware"
+  end
 
-    middleware = Dry::Monitor::Rack::Middleware.new(target[:notifications])
-
-    register :rack_monitor, middleware
+  start do
+    register :rack_monitor, Dry::Monitor::Rack::Middleware.new(target[:notifications])
   end
 end
