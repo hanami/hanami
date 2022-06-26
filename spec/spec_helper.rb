@@ -5,6 +5,7 @@ SPEC_ROOT = File.expand_path(__dir__).freeze
 require_relative "support/coverage" if ENV["COVERAGE"].eql?("true")
 
 require "hanami"
+begin; require "byebug"; rescue LoadError; end
 require "hanami/utils/file_list"
 require "hanami/devtools/unit"
 

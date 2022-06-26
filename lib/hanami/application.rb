@@ -261,12 +261,13 @@ module Hanami
       def load_router
         require_relative "application/router"
 
+        config = configuration
+
         Router.new(routes: load_routes, resolver: router_resolver, **router_options) do
           use Hanami.application[:rack_monitor]
+          use config.sessions.middleware if config.sessions.enabled?
 
-          Hanami.application.config.for_each_middleware do |m, *args, &block|
-            use(m, *args, &block)
-          end
+          middleware_stack.update(config.middleware_stack)
         end
       end
 

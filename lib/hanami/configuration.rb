@@ -9,10 +9,10 @@ require "pathname"
 
 require_relative "settings/dotenv_store"
 require_relative "configuration/logger"
-require_relative "configuration/middleware"
 require_relative "configuration/router"
 require_relative "configuration/sessions"
 require_relative "constants"
+require_relative "application/routing/middleware/stack"
 
 module Hanami
   # Hanami application configuration
@@ -28,7 +28,13 @@ module Hanami
     attr_reader :env
 
     attr_reader :actions
+
+    # @api public
     attr_reader :middleware
+
+    # @api private
+    alias_method :middleware_stack, :middleware
+
     attr_reader :router
     attr_reader :views, :assets
 
@@ -57,7 +63,7 @@ module Hanami
         Actions.new
       }
 
-      @middleware = Middleware.new
+      @middleware = Application::Routing::Middleware::Stack.new
 
       @router = Router.new(self)
 
@@ -112,13 +118,6 @@ module Hanami
     setting :settings_store, default: Hanami::Settings::DotenvStore
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
-
-    def for_each_middleware(&blk)
-      stack = middleware.stack.dup
-      stack += sessions.middleware if sessions.enabled?
-
-      stack.each(&blk)
-    end
 
     setting :sessions, default: :null, constructor: -> *args { Sessions.new(*args) }
 

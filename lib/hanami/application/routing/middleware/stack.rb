@@ -22,6 +22,10 @@ module Hanami
 
           # @since 2.0.0
           # @api private
+          attr_reader :stack
+
+          # @since 2.0.0
+          # @api private
           def initialize
             @prefix = ROOT_PREFIX
             @stack = Hash.new { |hash, key| hash[key] = [] }
@@ -29,8 +33,27 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          def use(middleware, *args, &blk)
-            @stack[@prefix].push([middleware, args, blk])
+          def use(middleware, *args, before: nil, after: nil, &blk)
+            item = [middleware, args, blk]
+
+            if before
+              @stack[@prefix].insert((idx = index_of(before)).zero? ? 0 : idx - 1, item)
+            elsif after
+              @stack[@prefix].insert(index_of(after) + 1, item)
+            else
+              @stack[@prefix].push([middleware, args, blk])
+            end
+
+            self
+          end
+
+          # @since 2.0.0
+          # @api private
+          def update(other)
+            other.stack.each do |prefix, items|
+              stack[prefix].concat(items)
+            end
+            self
           end
 
           # @since 2.0.0
@@ -81,6 +104,13 @@ module Hanami
             else
               builder.map(prefix, &blk)
             end
+          end
+
+          private
+
+          # @since 2.0.0
+          def index_of(middleware)
+            @stack[@prefix].index { |(m, *)| m.equal?(middleware) }
           end
         end
       end
