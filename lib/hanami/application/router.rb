@@ -52,8 +52,6 @@ module Hanami
       # @since 2.0.0
       # @api private
       def to_rack_app
-        return self if @middleware_stack.empty?
-
         @middleware_stack.to_rack_app(self)
       end
     end

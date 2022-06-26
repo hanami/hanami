@@ -58,7 +58,7 @@ module Hanami
 
                 run app
               end
-            end.to_app
+            end
           end
 
           # @since 2.0.0
