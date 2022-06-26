@@ -45,7 +45,7 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          def to_rack_app(app) # rubocop:disable Metrics/MethodLength
+          def to_rack_app(app)
             s = self
 
             Rack::Builder.new do
