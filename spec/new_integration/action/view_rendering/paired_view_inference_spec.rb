@@ -6,14 +6,14 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
   before do
     module TestApp
       class Application < Hanami::Application
-        register_slice :main
       end
     end
 
     Hanami.application.prepare
 
     module TestApp
-      class Action < Hanami::Action; end
+      class Action < Hanami::Action
+      end
     end
   end
 
@@ -21,20 +21,21 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
 
   describe "Ordinary action" do
     before do
-      module Main
+      module TestApp
         module Actions
           module Articles
-            class Index < TestApp::Action; end
+            class Index < TestApp::Action
+            end
           end
         end
       end
     end
 
-    let(:action_class) { Main::Actions::Articles::Index }
+    let(:action_class) { TestApp::Actions::Articles::Index }
 
     context "Paired view exists" do
       before do
-        Main::Slice.register "views.articles.index", view
+        TestApp::Application.register "views.articles.index", view
       end
 
       let(:view) { double(:view) }
@@ -45,7 +46,7 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
 
       context "Another view explicitly auto-injected" do
         before do
-          module Main
+          module TestApp
             module Actions
               module Articles
                 class Index < TestApp::Action
@@ -55,10 +56,10 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
             end
           end
 
-          Main::Slice.register "views.articles.custom", explicit_view
+          TestApp::Application.register "views.articles.custom", explicit_view
         end
 
-        let(:action_class) { Main::Actions::Articles::Index }
+        let(:action_class) { TestApp::Actions::Articles::Index }
         let(:explicit_view) { double(:explicit_view) }
 
         it "respects the explicitly auto-injected view" do
@@ -76,23 +77,24 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
 
   describe "RESTful action" do
     before do
-      module Main
+      module TestApp
         module Actions
           module Articles
-            class Create < TestApp::Action; end
+            class Create < TestApp::Action
+            end
           end
         end
       end
     end
 
-    let(:action_class) { Main::Actions::Articles::Create }
+    let(:action_class) { TestApp::Actions::Articles::Create }
     let(:direct_paired_view) { double(:direct_paired_view) }
     let(:alternative_paired_view) { double(:alternative_paired_view) }
 
     context "Direct paired view exists" do
       before do
-        Main::Slice.register "views.articles.create", direct_paired_view
-        Main::Slice.register "views.articles.new", alternative_paired_view
+        TestApp::Application.register "views.articles.create", direct_paired_view
+        TestApp::Application.register "views.articles.new", alternative_paired_view
       end
 
       it "auto-injects the directly paired view" do
@@ -102,7 +104,7 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
 
     context "Alternative paired view exists" do
       before do
-        Main::Slice.register "views.articles.new", alternative_paired_view
+        TestApp::Application.register "views.articles.new", alternative_paired_view
       end
 
       it "auto-injects the alternative paired view" do

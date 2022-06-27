@@ -11,13 +11,13 @@ RSpec.describe "Application action / Configuration", :application_integration do
 
     Hanami.application.prepare
 
-    module Main
+    module TestApp
       class Action < Hanami::Action
       end
     end
   end
 
-  let(:action_class) { Main::Action }
+  let(:action_class) { TestApp::Action }
   subject(:configuration) { action_class.config }
 
   it "applies 'config.actions' configuration from the application" do
