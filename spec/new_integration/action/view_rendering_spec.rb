@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Application action / View rendering", :application_integration do
-  specify "Views render with a request-specific context object" do
+  xspecify "Views render with a request-specific context object" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -12,7 +12,7 @@ RSpec.describe "Application action / View rendering", :application_integration d
         end
       RUBY
 
-      write "lib/test_app/action.rb", <<~RUBY
+      write "app/action.rb", <<~RUBY
         # auto_register: false
 
         module TestApp
@@ -21,7 +21,7 @@ RSpec.describe "Application action / View rendering", :application_integration d
         end
       RUBY
 
-      write "lib/test_app/view.rb", <<~RUBY
+      write "app/view.rb", <<~RUBY
         # auto_register: false
 
         require "hanami/view"
@@ -32,7 +32,7 @@ RSpec.describe "Application action / View rendering", :application_integration d
         end
       RUBY
 
-      write "lib/test_app/views/context.rb", <<~RUBY
+      write "app/views/context.rb", <<~RUBY
         # auto_register: false
 
         require "hanami/view/context"
@@ -40,26 +40,6 @@ RSpec.describe "Application action / View rendering", :application_integration d
         module TestApp
           module Views
             class Context < Hanami::View::Context
-            end
-          end
-        end
-      RUBY
-
-      write "slices/main/lib/view.rb", <<~RUBY
-        # auto_register: false
-
-        require "test_app/view"
-
-        module Main
-          class View < TestApp::View
-          end
-        end
-      RUBY
-
-      write "slices/main/lib/views/context.rb", <<~RUBY
-        module Main
-          module Views
-            class Context < TestApp::Views::Context
               def request
                 _options.fetch(:request)
               end
@@ -72,8 +52,8 @@ RSpec.describe "Application action / View rendering", :application_integration d
         end
       RUBY
 
-      write "slices/main/actions/users/show.rb", <<~RUBY
-        module Main
+      write "app/actions/users/show.rb", <<~RUBY
+        module TestApp
           module Actions
             module Users
               class Show < TestApp::Action
@@ -91,11 +71,11 @@ RSpec.describe "Application action / View rendering", :application_integration d
         end
       RUBY
 
-      write "slices/main/views/users/show.rb", <<~RUBY
-        module Main
+      write "app/views/users/show.rb", <<~RUBY
+        module TestApp
           module Views
             module Users
-              class Show < Main::View
+              class Show < TestApp::View
                 expose :name, :job, :age
               end
             end
@@ -103,13 +83,13 @@ RSpec.describe "Application action / View rendering", :application_integration d
         end
       RUBY
 
-      write "slices/main/templates/layouts/application.html.slim", <<~SLIM
+      write "app/templates/layouts/application.html.slim", <<~SLIM
         html
           body
             == yield
       SLIM
 
-      write "slices/main/templates/users/show.html.slim", <<~'SLIM'
+      write "app/templates/users/show.html.slim", <<~'SLIM'
         h1 Hello, #{name}
         - request.params.to_h.values.sort.each do |value|
           p = value
@@ -120,7 +100,7 @@ RSpec.describe "Application action / View rendering", :application_integration d
       require "hanami/setup"
       require "hanami/prepare"
 
-      action = Main::Slice["actions.users.show"]
+      action = TestApp::Application["actions.users.show"]
       response = action.(name: "Jennifer", last_name: "Lopez")
       rendered = response.body[0]
 
