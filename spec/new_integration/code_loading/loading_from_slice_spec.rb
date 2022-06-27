@@ -13,11 +13,7 @@ RSpec.describe "Code loading / Loading from slice directory", :application_integ
       RUBY
 
       write "slices/main/config/settings.rb", <<~'RUBY'
-        module Main
-          class Settings < Hanami::Application::Settings
-            setting :some_setting
-          end
-        end
+        raise "This file should never be loaded"
       RUBY
 
       write "slices/main/test_class.rb", <<~'RUBY'
