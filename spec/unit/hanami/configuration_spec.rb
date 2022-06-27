@@ -7,12 +7,12 @@ RSpec.describe Hanami::Configuration do
 
   describe "environment-specific configuration" do
     before do
-      config.settings_path = "config/default_settings"
+      config.logger.level = :debug__set_without_env
     end
 
     before do
       config.environment :production do |c|
-        c.settings_path = "config/production_settings"
+        c.logger.level = :info__set_for_production_env
       end
     end
 
@@ -20,11 +20,11 @@ RSpec.describe Hanami::Configuration do
       let(:env) { :production }
 
       it "applies the settings" do
-        expect(config.settings_path).to eq "config/production_settings"
+        expect(config.logger.level).to eq :info__set_for_production_env
       end
 
       it "leaves the settings in place when finalizing" do
-        expect { config.finalize! }.not_to change { config.settings_path }
+        expect { config.finalize! }.not_to(change { config.logger.level })
       end
     end
 
@@ -32,11 +32,11 @@ RSpec.describe Hanami::Configuration do
       let(:env) { :development }
 
       it "does not apply the settings" do
-        expect(config.settings_path).to eq "config/default_settings"
+        expect(config.logger.level).to eq :debug__set_without_env
       end
 
       it "does not apply the settings when finalizing" do
-        expect { config.finalize! }.not_to change { config.settings_path }
+        expect { config.finalize! }.not_to(change { config.logger.level })
       end
     end
   end

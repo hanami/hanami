@@ -243,10 +243,10 @@ module Hanami
 
         prepare_base_load_path
 
-        settings_require_path = File.join(configuration.root, configuration.settings_path)
+        settings_require_path = File.join(configuration.root, SETTINGS_PATH)
         require settings_require_path
 
-        settings_class = autodiscover_application_constant(configuration.settings_class_name)
+        settings_class = autodiscover_application_constant(SETTINGS_CLASS_NAME)
         settings_class.new(configuration.settings_store)
       rescue LoadError => e
         raise e unless e.path == settings_require_path
@@ -277,10 +277,10 @@ module Hanami
       def load_routes
         require_relative "./routes"
 
-        routes_require_path = File.join(configuration.root, configuration.router.routes_path)
+        routes_require_path = File.join(configuration.root, ROUTES_PATH)
         require routes_require_path
 
-        routes_class = autodiscover_application_constant(configuration.router.routes_class_name)
+        routes_class = autodiscover_application_constant(ROUTES_CLASS_NAME)
         routes_class.routes
       rescue LoadError => e
         raise e unless e.path == routes_require_path

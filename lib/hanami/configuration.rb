@@ -109,10 +109,6 @@ module Hanami
       @logger_instance || logger.instance
     end
 
-    setting :settings_path, default: File.join("config", "settings")
-
-    setting :settings_class_name, default: "Settings"
-
     setting :settings_store, default: Hanami::Settings::DotenvStore
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
