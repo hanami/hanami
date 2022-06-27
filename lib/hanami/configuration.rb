@@ -12,7 +12,6 @@ require_relative "configuration/logger"
 require_relative "configuration/middleware"
 require_relative "configuration/router"
 require_relative "configuration/sessions"
-require_relative "configuration/source_dirs"
 require_relative "constants"
 
 module Hanami
@@ -36,7 +35,6 @@ module Hanami
     attr_reader :environments
     private :environments
 
-    # rubocop:disable Metrics/AbcSize
     def initialize(application_name:, env:)
       @application_name = application_name
 
@@ -70,7 +68,6 @@ module Hanami
 
       yield self if block_given?
     end
-    # rubocop:enable Metrics/AbcSize
 
     def environment(env_name, &block)
       environments[env_name] << block
@@ -94,6 +91,8 @@ module Hanami
 
     setting :root, constructor: -> path { Pathname(path) }
 
+    setting :no_auto_register_paths, default: %w[entities]
+
     setting :inflector, default: Dry::Inflector.new
 
     def inflections(&block)
@@ -115,8 +114,6 @@ module Hanami
     setting :settings_class_name, default: "Settings"
 
     setting :settings_store, default: Hanami::Settings::DotenvStore
-
-    setting :source_dirs, default: Configuration::SourceDirs.new, cloneable: true
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
 

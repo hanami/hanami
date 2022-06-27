@@ -2,7 +2,22 @@
 
 require "hanami/devtools/integration/files"
 require "hanami/devtools/integration/with_tmp_directory"
+require "tmpdir"
 require "zeitwerk"
+
+module RSpec
+  module Support
+    module WithTmpDirectory
+      private
+
+      def make_tmp_directory
+        Pathname(Dir.mktmpdir).tap do |dir|
+          (@made_tmp_dirs ||= []) << dir
+        end
+      end
+    end
+  end
+end
 
 RSpec.shared_context "Application integration" do
   let(:application_modules) { %i[TestApp Admin Main Search] }
@@ -15,6 +30,7 @@ RSpec.configure do |config|
 
   config.before :each, :application_integration do
     @load_paths = $LOAD_PATH.dup
+    @loaded_features = $LOADED_FEATURES.dup
   end
 
   config.after :each, :application_integration do
@@ -39,9 +55,16 @@ RSpec.configure do |config|
     end
 
     $LOAD_PATH.replace(@load_paths)
-    $LOADED_FEATURES.delete_if do |feature_path|
-      feature_path =~ %r{hanami/(setup|prepare|boot|application/container/providers)}
-    end
+
+    # Remove any specific LOADED_FEATURES added over the course of running each example
+    new_features_to_keep = ($LOADED_FEATURES - @loaded_features).tap { |feats|
+      feats.delete_if do |path|
+        path =~ %r{hanami/(setup|prepare|boot|application/container/providers)} ||
+          path.include?(SPEC_ROOT.to_s) ||
+          path.include?(Dir.tmpdir)
+      end
+    }
+    $LOADED_FEATURES.replace(@loaded_features + new_features_to_keep)
 
     application_modules.each do |app_module_name|
       next unless Object.const_defined?(app_module_name)
@@ -53,6 +76,14 @@ RSpec.configure do |config|
       end
 
       Object.send(:remove_const, app_module_name)
+    end
+  end
+
+  config.after :all do
+    if instance_variable_defined?(:@made_tmp_dirs)
+      Array(@made_tmp_dirs).each do |dir|
+        FileUtils.remove_entry dir
+      end
     end
   end
 end

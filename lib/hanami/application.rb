@@ -162,7 +162,7 @@ module Hanami
       private
 
       def prepare_base_load_path
-        base_path = File.join(root, "lib")
+        base_path = File.join(root, LIB_DIR)
         $LOAD_PATH.unshift base_path unless $LOAD_PATH.include?(base_path)
       end
 
@@ -170,6 +170,7 @@ module Hanami
         load_settings
         prepare_container_plugins
         prepare_container_base_config
+        prepare_container_component_dirs
         prepare_container_consts
         container.configured!
         prepare_slices
@@ -194,10 +195,23 @@ module Hanami
         ]
       end
 
-      def prepare_autoload_paths
-        # Autoload classes defined in lib/[app_namespace]/
-        if root.join("lib", application_name.name).directory?
-          autoloader.push_dir(root.join("lib", application_name.name), namespace: namespace)
+      def prepare_container_component_dirs # rubocop:disable Metrics/AbcSize
+        return unless root&.directory?
+
+        # Component files in both `app/` and `app/lib/` define classes in the
+        # application's namespace
+
+        if root.join(APP_DIR, LIB_DIR).directory?
+          container.config.component_dirs.add(File.join(APP_DIR, LIB_DIR)) do |dir|
+            dir.namespaces.add_root(key: nil, const: application_name.name)
+          end
+        end
+
+        if root.join(APP_DIR).directory?
+          # TODO: ignore lib/ child dir here?
+          container.config.component_dirs.add(APP_DIR) do |dir|
+            dir.namespaces.add_root(key: nil, const: application_name.name)
+          end
         end
       end
 
@@ -212,9 +226,13 @@ module Hanami
       end
 
       def prepare_autoloader
-        # Autoload classes defined in lib/[app_namespace]/
-        if root.join("lib", application_name.name).directory?
-          autoloader.push_dir(root.join("lib", application_name.name), namespace: namespace)
+        # Component dirs are automatically pushed to the autoloader by dry-system's
+        # zeitwerk plugin. This method adds other dirs that are not otherwise configured
+        # as component dirs.
+
+        # Autoload classes from `lib/[app_namespace]/`
+        if root.join(LIB_DIR, application_name.name).directory?
+          autoloader.push_dir(root.join(LIB_DIR, application_name.name), namespace: namespace)
         end
 
         autoloader.setup

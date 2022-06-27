@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+SPEC_ROOT = File.expand_path(__dir__).freeze
+
 require_relative "support/coverage" if ENV["COVERAGE"].eql?("true")
 
 require "hanami"

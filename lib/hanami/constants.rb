@@ -16,12 +16,16 @@ module Hanami
   private_constant :CONFIG_DIR
 
   # @api private
-  SLICES_DIR = "slices"
-  private_constant :SLICES_DIR
+  APP_DIR = "app"
+  private_constant :APP_DIR
 
   # @api private
   LIB_DIR = "lib"
   private_constant :LIB_DIR
+
+  # @api private
+  SLICES_DIR = "slices"
+  private_constant :SLICES_DIR
 
   # @api private
   RB_EXT = ".rb"
