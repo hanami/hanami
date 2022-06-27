@@ -7,8 +7,6 @@ RSpec.describe "Application view / Inflector", :application_integration do
     module TestApp
       class Application < Hanami::Application
         config.root = "/test_app"
-
-        register_slice :main
       end
     end
 
@@ -19,14 +17,9 @@ RSpec.describe "Application view / Inflector", :application_integration do
       class View < Hanami::View
       end
     end
-
-    module Main
-      class View < TestApp::View
-      end
-    end
   end
 
-  subject(:view_class) { Main::View }
+  subject(:view_class) { TestApp::View }
 
   context "default application inflector" do
     it "configures the view with the default application inflector" do

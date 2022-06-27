@@ -7,8 +7,6 @@ RSpec.describe "Application view / Path", :application_integration do
     module TestApp
       class Application < Hanami::Application
         config.root = "/test_app"
-
-        register_slice :main
       end
     end
 
@@ -19,20 +17,15 @@ RSpec.describe "Application view / Path", :application_integration do
       class View < Hanami::View
       end
     end
-
-    module Main
-      class View < TestApp::View
-      end
-    end
   end
 
-  let(:view_class) { Main::View }
+  let(:view_class) { TestApp::View }
 
   subject(:paths) { view_class.config.paths }
 
   context "default path" do
     it "is 'templates' appended to the slice's root path" do
-      expect(paths.map { |path| path.dir.to_s }).to eq ["/test_app/slices/main/templates"]
+      expect(paths.map { |path| path.dir.to_s }).to eq ["/test_app/app/templates"]
     end
   end
 
@@ -44,7 +37,7 @@ RSpec.describe "Application view / Path", :application_integration do
     }
 
     it "configures the path as the relative path appended to the slice's root path" do
-      expect(paths.map { |path| path.dir.to_s }).to eq ["/test_app/slices/main/my_templates"]
+      expect(paths.map { |path| path.dir.to_s }).to eq ["/test_app/app/my_templates"]
     end
   end
 

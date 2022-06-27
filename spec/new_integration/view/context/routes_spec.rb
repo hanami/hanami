@@ -3,7 +3,7 @@
 require "hanami"
 
 RSpec.describe "Application view / Context / Routes", :application_integration do
-  it "accesses application routes" do
+  xit "accesses application routes" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -18,15 +18,13 @@ RSpec.describe "Application view / Context / Routes", :application_integration d
         module TestApp
           class Routes < Hanami::Routes
             define do
-              slice :main, at: "/" do
-                root to: "test_action"
-              end
+              root to: "test_action"
             end
           end
         end
       RUBY
 
-      write "lib/test_app/views/context.rb", <<~RUBY
+      write "app/views/context.rb", <<~RUBY
         require "hanami/view/context"
 
         module TestApp
@@ -37,20 +35,9 @@ RSpec.describe "Application view / Context / Routes", :application_integration d
         end
       RUBY
 
-      write "slices/main/lib/views/context.rb", <<~RUBY
-        require "test_app/views/context"
-
-        module Main
-          module Views
-            class Context < TestApp::Views::Context
-            end
-          end
-        end
-      RUBY
-
       require "hanami/prepare"
 
-      context = Main::Views::Context.new
+      context = TestApp::Views::Context.new
       expect(context.routes.path(:root)).to eq "/"
     end
   end

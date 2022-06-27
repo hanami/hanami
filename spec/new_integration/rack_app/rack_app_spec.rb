@@ -7,7 +7,7 @@ RSpec.describe "Hanami web app", :application_integration do
 
   let(:app) { Hanami.rack_app }
 
-  specify "has rack monitor preconfigured with default request logging" do
+  xspecify "has rack monitor preconfigured with default request logging" do
     dir = Dir.mktmpdir
 
     with_tmp_directory(dir) do
@@ -33,7 +33,7 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
-  specify "Routing to actions based on their container identifiers" do
+  xspecify "Routing to actions based on their container identifiers" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -49,12 +49,30 @@ RSpec.describe "Hanami web app", :application_integration do
         module TestApp
           class Routes < Hanami::Routes
             define do
+              get "/health", to: "health.show"
+
               slice :main, at: "/" do
                 root to: "home.index"
               end
 
               slice :admin, at: "/admin" do
                 get "/dashboard", to: "dashboard.show"
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "app/actions/health/show.rb", <<~RUBY
+        require "hanami/action"
+
+        module TestApp
+          module Actions
+            module Health
+              class Show < Hanami::Action
+                def handle(*, res)
+                  res.body = "Health, OK"
+                end
               end
             end
           end
@@ -99,6 +117,11 @@ RSpec.describe "Hanami web app", :application_integration do
 
       expect(last_response.status).to eq 200
       expect(last_response.body).to eq "Hello world"
+
+      get "/health"
+
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to eq "Health, OK"
 
       get "/admin/dashboard"
 

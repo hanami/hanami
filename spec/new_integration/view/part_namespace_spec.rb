@@ -7,8 +7,6 @@ RSpec.describe "Application view / Part namespace", :application_integration do
     module TestApp
       class Application < Hanami::Application
         config.root = "/test_app"
-
-        register_slice :main
       end
     end
 
@@ -25,13 +23,10 @@ RSpec.describe "Application view / Part namespace", :application_integration do
       end
     end
 
-    module Main
-      class View < TestApp::View
-      end
-
+    module TestApp
       module Views
         module Article
-          class Index < Main::View
+          class Index < TestApp::View
           end
         end
       end
@@ -40,11 +35,11 @@ RSpec.describe "Application view / Part namespace", :application_integration do
 
   subject(:part_namespace) { view_class.config.part_namespace }
 
-  let(:view_class) { Main::Views::Article::Index }
+  let(:view_class) { TestApp::Views::Article::Index }
 
   context "default parts_path" do
     let(:parts_module!) do
-      module Main
+      module TestApp
         module Views
           module Parts
           end
@@ -53,7 +48,7 @@ RSpec.describe "Application view / Part namespace", :application_integration do
     end
 
     it "is View::Parts" do
-      is_expected.to eq Main::Views::Parts
+      is_expected.to eq TestApp::Views::Parts
     end
   end
 
@@ -66,7 +61,7 @@ RSpec.describe "Application view / Part namespace", :application_integration do
 
     context "parts module exists" do
       let(:parts_module!) do
-        module Main
+        module TestApp
           module Views
             module CustomParts
             end
@@ -75,15 +70,15 @@ RSpec.describe "Application view / Part namespace", :application_integration do
       end
 
       it "is the matching module within the slice" do
-        is_expected.to eq Main::Views::CustomParts
+        is_expected.to eq TestApp::Views::CustomParts
       end
     end
 
     context "parts module exists, but needs requiring first" do
       let(:parts_module!) do
         allow_any_instance_of(Object).to receive(:require).and_call_original
-        allow_any_instance_of(Object).to receive(:require).with("main/views/custom_parts") {
-          module Main
+        allow_any_instance_of(Object).to receive(:require).with("app/views/custom_parts") {
+          module TestApp
             module Views
               module CustomParts
               end
@@ -93,8 +88,8 @@ RSpec.describe "Application view / Part namespace", :application_integration do
         }
       end
 
-      it "is the matching module within the slice" do
-        is_expected.to eq Main::Views::CustomParts
+      xit "is the matching module within the slice" do
+        is_expected.to eq TestApp::Views::CustomParts
       end
     end
 
