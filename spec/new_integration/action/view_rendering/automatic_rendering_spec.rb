@@ -3,8 +3,8 @@
 RSpec.describe "Application action / View rendering / Automatic rendering", :application_integration do
   it "Renders a view automatically, passing all params and exposures" do
     within_app do
-      write "slices/main/actions/profile/show.rb", <<~RUBY
-        module Main
+      write "app/actions/profile/show.rb", <<~RUBY
+        module TestApp
           module Actions
             module Profile
               class Show < TestApp::Action
@@ -17,11 +17,11 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/views/profile/show.rb", <<~RUBY
-        module Main
+      write "app/views/profile/show.rb", <<~RUBY
+        module TestApp
           module Views
             module Profile
-              class Show < Main::View
+              class Show < TestApp::View
                 expose :name, :favorite_number
               end
             end
@@ -29,13 +29,13 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/templates/profile/show.html.slim", <<~'SLIM'
+      write "app/templates/profile/show.html.slim", <<~'SLIM'
         h1 Hello, #{name}. Your favorite number is #{favorite_number}, right?
       SLIM
 
       require "hanami/prepare"
 
-      action = Main::Slice["actions.profile.show"]
+      action = TestApp::Application["actions.profile.show"]
       response = action.(name: "Jennifer")
       rendered = response.body[0]
 
