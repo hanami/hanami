@@ -4,7 +4,6 @@ RSpec.describe "Application action / View integration", :application_integration
   before do
     module TestApp
       class Application < Hanami::Application
-        register_slice :main
       end
     end
 
@@ -15,7 +14,7 @@ RSpec.describe "Application action / View integration", :application_integration
       class Action < Hanami::Action; end
     end
 
-    module Main
+    module TestApp
       module Actions
         module Articles
           class Index < TestApp::Action; end
@@ -24,7 +23,7 @@ RSpec.describe "Application action / View integration", :application_integration
     end
   end
 
-  let(:action_class) { Main::Actions::Articles::Index }
+  let(:action_class) { TestApp::Actions::Articles::Index }
   subject(:action) { action_class.new(**action_args) }
   let(:action_args) { {} }
 
@@ -49,7 +48,7 @@ RSpec.describe "Application action / View integration", :application_integration
     context "Default view context identifier" do
       context "View context registered in slice" do
         before do
-          Main::Slice.register "views.context", slice_view_context
+          TestApp::Application.register "views.context", slice_view_context
         end
 
         let(:slice_view_context) { double(:slice_view_context) }
@@ -80,7 +79,7 @@ RSpec.describe "Application action / View integration", :application_integration
       }
 
       before do
-        Main::Slice.register "view.custom_context", custom_view_context
+        TestApp::Application.register "view.custom_context", custom_view_context
       end
 
       let(:custom_view_context) { double(:custom_view_context) }

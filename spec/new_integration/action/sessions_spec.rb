@@ -4,7 +4,6 @@ RSpec.describe "Application action / Sessions", :application_integration do
   before do
     module TestApp
       class Application < Hanami::Application
-        register_slice :main
       end
     end
 
