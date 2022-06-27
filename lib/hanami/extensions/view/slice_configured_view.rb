@@ -62,7 +62,13 @@ module Hanami
         def prepare_paths(slice, configured_paths)
           configured_paths.map { |path|
             if path.dir.relative?
-              slice.root.join(path.dir)
+              if slice.application.equal?(slice)
+                # Application-level templates are in app/
+                slice.root.join(APP_DIR, path.dir)
+              else
+                # Other slice templates are in the root slice dir
+                slice.root.join(path.dir)
+              end
             else
               path
             end

@@ -246,7 +246,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/templates/layouts/application.html.slim", <<~SLIM
+      write "app/templates/layouts/application.html.slim", <<~SLIM
         html
           body
             == yield
