@@ -87,6 +87,16 @@ module Hanami
                       raise UnknownActionError.new(identifier)
                     end
 
+          # TODO: make this implementation to work
+          # subject = if container.key?(endpoint_key)
+          #             container
+          #           elsif (slice_name = slice_registry.find(path))
+          #             slice = slices[slice_name]
+          #             slice if slice.key?(endpoint_key) # <-------------- THIS LINE raises an exception sometimes
+          #           end
+          #
+          # subject or raise UnknownActionError.new(identifier)
+
           # Lazily resolve endpoint from the slice to reduce router initialization time,
           # and break potential endless loops from the resolved endpoint itself requiring
           # access to router-related concerns
