@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Application routes helper", :application_integration do
-  xspecify "Routing to actions based on their container identifiers" do
+  specify "Routing to actions based on their container identifiers" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
