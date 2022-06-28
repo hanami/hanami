@@ -232,13 +232,21 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
-      write "app/actions/feedbacks/index.rb", <<~RUBY
+      write "app/action.rb", <<~RUBY
+        # auto_register: false
         require "hanami/action"
 
         module TestApp
+          class Action < Hanami::Action
+          end
+        end
+      RUBY
+
+      write "app/actions/feedbacks/index.rb", <<~RUBY
+        module TestApp
           module Actions
             module Feedbacks
-              class Index < Hanami::Action
+              class Index < TestApp::Action
                 def handle(*, res)
                   res.body = "Feedbacks"
                 end
@@ -248,13 +256,18 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
-      write "slices/api/actions/people/index.rb", <<~RUBY
-        require "hanami/action"
+      write "slices/api/action.rb", <<~RUBY
+        module Api
+          class Action < TestApp::Action
+          end
+        end
+      RUBY
 
+      write "slices/api/actions/people/index.rb", <<~RUBY
         module Api
           module Actions
             module People
-              class Index < Hanami::Action
+              class Index < Api::Action
                 def handle(*, res)
                   res.body = "People"
                 end
