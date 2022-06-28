@@ -74,25 +74,6 @@ RSpec.describe "Application view / Part namespace", :application_integration do
       end
     end
 
-    context "parts module exists, but needs requiring first" do
-      let(:parts_module!) do
-        allow_any_instance_of(Object).to receive(:require).and_call_original
-        allow_any_instance_of(Object).to receive(:require).with("app/views/custom_parts") {
-          module TestApp
-            module Views
-              module CustomParts
-              end
-            end
-          end
-          true
-        }
-      end
-
-      xit "is the matching module within the slice" do
-        is_expected.to eq TestApp::Views::CustomParts
-      end
-    end
-
     context "namespace does not exist" do
       it "is nil" do
         is_expected.to be_nil
