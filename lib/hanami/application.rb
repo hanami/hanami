@@ -290,8 +290,8 @@ module Hanami
 
       def router_resolver
         config.router.resolver.new(
-          slices: slices,
-          inflector: inflector
+          container: container,
+          slices: slices
         )
       end
     end

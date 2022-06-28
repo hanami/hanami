@@ -15,15 +15,17 @@ RSpec.describe "Application action / Routes", :application_integration do
         module TestApp
           class Routes < Hanami::Routes
             define do
-              slice :main, at: "/" do
-                root to: "test_action"
+              root to: "home.index"
+
+              slice :admin, at: "/admin" do
+                root to: "dashboard.index"
               end
             end
           end
         end
       RUBY
 
-      write "lib/test_app/action.rb", <<~RUBY
+      write "app/action.rb", <<~RUBY
         # auto_register: false
 
         module TestApp
@@ -31,12 +33,28 @@ RSpec.describe "Application action / Routes", :application_integration do
         end
       RUBY
 
-      write "slices/main/actions/test_action.rb", <<~RUBY
-        module Main
+      write "app/actions/home/index.rb", <<~RUBY
+        module TestApp
           module Actions
-            class TestAction < TestApp::Action
-              def handle(req, res)
-                res.body = routes.path(:root)
+            module Home
+              class Index < TestApp::Action
+                def handle(req, res)
+                  res.body = routes.path(:root)
+                end
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "slices/admin/actions/dashboard/index.rb", <<~RUBY
+        module Admin
+          module Actions
+            module Dashboard
+              class Index < TestApp::Action
+                def handle(req, res)
+                  res.body = routes.path(:admin_root)
+                end
               end
             end
           end
@@ -45,8 +63,11 @@ RSpec.describe "Application action / Routes", :application_integration do
 
       require "hanami/prepare"
 
-      response = Main::Slice["actions.test_action"].call({})
+      response = TestApp::Application["actions.home.index"].call({})
       expect(response.body).to eq ["/"]
+
+      response = Admin::Slice["actions.dashboard.index"].call({})
+      expect(response.body).to eq ["/admin"]
     end
   end
 end

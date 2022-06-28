@@ -7,7 +7,7 @@ RSpec.describe "Hanami web app", :application_integration do
 
   let(:app) { Hanami.rack_app }
 
-  xspecify "has rack monitor preconfigured with default request logging" do
+  specify "has rack monitor preconfigured with default request logging" do
     dir = Dir.mktmpdir
 
     with_tmp_directory(dir) do
@@ -33,7 +33,7 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
-  xspecify "Routing to actions based on their container identifiers" do
+  specify "Routing to actions based on their container identifiers" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -50,6 +50,10 @@ RSpec.describe "Hanami web app", :application_integration do
           class Routes < Hanami::Routes
             define do
               get "/health", to: "health.show"
+
+              get "/inline" do
+                "Inline"
+              end
 
               slice :main, at: "/" do
                 root to: "home.index"
@@ -118,6 +122,11 @@ RSpec.describe "Hanami web app", :application_integration do
       expect(last_response.status).to eq 200
       expect(last_response.body).to eq "Hello world"
 
+      get "/inline"
+
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to eq "Inline"
+
       get "/health"
 
       expect(last_response.status).to eq 200
@@ -127,6 +136,34 @@ RSpec.describe "Hanami web app", :application_integration do
 
       expect(last_response.status).to eq 200
       expect(last_response.body).to eq "Admin dashboard here"
+    end
+  end
+
+  specify "It doesn't boot the app, if referenced action isn't registered" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+          end
+        end
+      RUBY
+
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            define do
+              get "/missing", to: "missing.action"
+            end
+          end
+        end
+      RUBY
+
+      expect { require "hanami/boot" }.to raise_error do |exception|
+        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception.message).to include("missing.action")
+      end
     end
   end
 end

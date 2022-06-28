@@ -3,6 +3,20 @@
 module Hanami
   class Application
     module Routing
+      # @since 2.0.0
+      class UnknownActionError < Hanami::Error
+        def initialize(identifier)
+          super("unknown action referenced in router: `#{identifier.inspect}'")
+        end
+      end
+
+      # @since 2.0.0
+      class NotCallableEndpointError < StandardError
+        def initialize(endpoint)
+          super("#{endpoint.inspect} is not compatible with Rack. Please make sure it implements #call.")
+        end
+      end
+
       # Hanami application router endpoint resolver
       #
       # @since 2.0.0
@@ -11,25 +25,17 @@ module Hanami
 
         require_relative "resolver/trie"
 
-        # @since 2.0.0
-        class NotCallableEndpointError < StandardError
-          def initialize(endpoint)
-            super("#{endpoint.inspect} is not compatible with Rack. Please make sure it implements #call.")
-          end
-        end
-
         # @api private
         # @since 2.0.0
-        def initialize(slices:, inflector:)
+        def initialize(container:, slices:)
+          @container = container
           @slices = slices
-          @inflector = inflector
           @slice_registry = Trie.new
         end
 
         # @api private
         # @since 2.0.0
         #
-        # rubocop:disable Metrics/MethodLength
         def call(path, identifier)
           endpoint =
             case identifier
@@ -41,13 +47,12 @@ module Hanami
               identifier
             end
 
-          unless endpoint.respond_to?(:call) # rubocop:disable Style/IfUnlessModifier
+          unless endpoint.respond_to?(:call)
             raise NotCallableEndpointError.new(endpoint)
           end
 
           endpoint
         end
-        # rubocop:enable Metrics/MethodLength
 
         # @api private
         # @since 2.0.0
@@ -59,11 +64,11 @@ module Hanami
 
         # @api private
         # @since 2.0.0
-        attr_reader :slices
+        attr_reader :container
 
         # @api private
         # @since 2.0.0
-        attr_reader :inflector
+        attr_reader :slices
 
         # @api private
         # @since 2.0.0
@@ -72,14 +77,20 @@ module Hanami
         # @api private
         # @since 2.0.0
         def resolve_string_identifier(path, identifier)
-          slice_name = slice_registry.find(path) or raise "missing slice for #{path.inspect} (#{identifier.inspect})"
-          slice = slices[slice_name]
           endpoint_key = "#{ENDPOINT_KEY_NAMESPACE}.#{identifier}"
+
+          subject = if container.key?(endpoint_key)
+                      container
+                    elsif (slice_name = slice_registry.find(path))
+                      slices[slice_name]
+                    else
+                      raise UnknownActionError.new(identifier)
+                    end
 
           # Lazily resolve endpoint from the slice to reduce router initialization time,
           # and break potential endless loops from the resolved endpoint itself requiring
           # access to router-related concerns
-          -> (*args) { slice[endpoint_key].call(*args) }
+          -> (*args) { subject[endpoint_key].call(*args) }
         end
       end
     end

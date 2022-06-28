@@ -51,7 +51,6 @@ RSpec.describe "Running a Rack app for a non-booted application", :application_i
         end
       RUBY
 
-
       write "slices/main/lib/greeter.rb", <<~RUBY
         module Main
           class Greeter
