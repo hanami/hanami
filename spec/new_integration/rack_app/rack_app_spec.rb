@@ -206,7 +206,74 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
-  specify "It doesn't boot the app, if referenced action isn't registered" do
+  xspecify "It does not choose actions from slice to route in app" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+            config.logger.stream = File.new("/dev/null", "w")
+          end
+        end
+      RUBY
+
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            define do
+              get "/feedbacks", to: "feedbacks.index"
+
+              slice :api, at: "/api" do
+                get "/people", to: "people.index"
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "app/actions/feedbacks/index.rb", <<~RUBY
+        require "hanami/action"
+
+        module TestApp
+          module Actions
+            module Feedbacks
+              class Index < Hanami::Action
+                def handle(*, res)
+                  res.body = "Feedbacks"
+                end
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "slices/api/actions/people/index.rb", <<~RUBY
+        require "hanami/action"
+
+        module Api
+          module Actions
+            module People
+              class Index < Hanami::Action
+                def handle(*, res)
+                  res.body = "People"
+                end
+              end
+            end
+          end
+        end
+      RUBY
+
+      require "hanami/boot"
+
+      get "/api/people"
+
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to eq "People"
+    end
+  end
+
+  specify "It doesn't boot the app, if referenced app action isn't registered" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -230,6 +297,67 @@ RSpec.describe "Hanami web app", :application_integration do
       expect { require "hanami/boot" }.to raise_error do |exception|
         expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
+      end
+    end
+  end
+
+  xspecify "It doesn't boot the app, if referenced slice action isn't registered" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+            register_slice :admin
+          end
+        end
+      RUBY
+
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            define do
+              slice :admin, at: "/admin" do
+                get "/missing", to: "missing.action"
+              end
+            end
+          end
+        end
+      RUBY
+
+      expect { require "hanami/boot" }.to raise_error do |exception|
+        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception.message).to include("missing.action")
+      end
+    end
+  end
+
+  specify "It doesn't boot the app, if referenced slice doesn't exist" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+          end
+        end
+      RUBY
+
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            define do
+              slice :foo, at: "/foo" do
+                get "/bar", to: "bar.index"
+              end
+            end
+          end
+        end
+      RUBY
+
+      expect { require "hanami/boot" }.to raise_error do |exception|
+        expect(exception).to be_kind_of(Hanami::SliceLoadError)
+        expect(exception.message).to include("Slice 'foo' not found")
       end
     end
   end
