@@ -139,6 +139,73 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
+  specify "It gives priority to app actions" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+            config.logger.stream = File.new("/dev/null", "w")
+          end
+        end
+      RUBY
+
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            define do
+              root to: "home.index"
+
+              slice :main, at: "/" do
+                root to: "home.index"
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "app/actions/home/index.rb", <<~RUBY
+        require "hanami/action"
+
+        module TestApp
+          module Actions
+            module Home
+              class Index < Hanami::Action
+                def handle(*, res)
+                  res.body = "Hello from App"
+                end
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/actions/home/index.rb", <<~RUBY
+        require "hanami/action"
+
+        module Main
+          module Actions
+            module Home
+              class Index < Hanami::Action
+                def handle(*, res)
+                  res.body = "Hello from Slice"
+                end
+              end
+            end
+          end
+        end
+      RUBY
+
+      require "hanami/boot"
+
+      get "/"
+
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to eq "Hello from App"
+    end
+  end
+
   specify "It doesn't boot the app, if referenced action isn't registered" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
