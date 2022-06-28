@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Application action / View rendering", :application_integration do
-  xspecify "Views render with a request-specific context object" do
+  specify "Views render with a request-specific context object" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -33,8 +33,6 @@ RSpec.describe "Application action / View rendering", :application_integration d
       RUBY
 
       write "app/views/context.rb", <<~RUBY
-        # auto_register: false
-
         require "hanami/view/context"
 
         module TestApp
@@ -97,7 +95,6 @@ RSpec.describe "Application action / View rendering", :application_integration d
         p = age
       SLIM
 
-      require "hanami/setup"
       require "hanami/prepare"
 
       action = TestApp::Application["actions.users.show"]
