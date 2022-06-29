@@ -139,7 +139,8 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
-  specify "It gives priority to app actions" do
+  # TODO: is this test even needed, given this is standard hanami-router behavior?
+  specify "It gives priority to the last declared route" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -202,7 +203,7 @@ RSpec.describe "Hanami web app", :application_integration do
       get "/"
 
       expect(last_response.status).to eq 200
-      expect(last_response.body).to eq "Hello from App"
+      expect(last_response.body).to eq "Hello from Slice"
     end
   end
 
@@ -286,7 +287,7 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
-  specify "It doesn't boot the app, if referenced app action isn't registered" do
+  specify "For a booted application, rack_app raises an exception if a referenced action isn't registered in the application" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -307,14 +308,16 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
-      expect { require "hanami/boot" }.to raise_error do |exception|
+      require "hanami/boot"
+
+      expect { Hanami.rack_app }.to raise_error do |exception|
         expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
       end
     end
   end
 
-  xspecify "It doesn't boot the app, if referenced slice action isn't registered" do
+  specify "For a booted application, rack_app raises an error if a referenced action isn't registered in a slice" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -338,14 +341,83 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
-      expect { require "hanami/boot" }.to raise_error do |exception|
+      require "hanami/boot"
+
+      expect { Hanami.rack_app }.to raise_error do |exception|
         expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
       end
     end
   end
 
-  specify "It doesn't boot the app, if referenced slice doesn't exist" do
+  specify "For a non-booted application, rack_app does not raise an error if a referenced action isn't registered in the application" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+          end
+        end
+      RUBY
+
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            define do
+              get "/missing", to: "missing.action"
+            end
+          end
+        end
+      RUBY
+
+      require "hanami/prepare"
+
+      expect { Hanami.rack_app }.not_to raise_error
+
+      expect { get "/missing" }.to raise_error do |exception|
+        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception.message).to include("missing.action")
+      end
+    end
+  end
+
+  specify "For a non-booted application, rack_app does not raise an error if a referenced action isn't registered in a slice" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+            register_slice :admin
+          end
+        end
+      RUBY
+
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            define do
+              slice :admin, at: "/admin" do
+                get "/missing", to: "missing.action"
+              end
+            end
+          end
+        end
+      RUBY
+
+      require "hanami/prepare"
+
+      expect { Hanami.rack_app }.not_to raise_error
+
+      expect { get "/admin/missing" }.to raise_error do |exception|
+        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception.message).to include("missing.action")
+      end
+    end
+  end
+
+  specify "rack_app raises an error if a referenced slice is not registered" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -368,7 +440,9 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
-      expect { require "hanami/boot" }.to raise_error do |exception|
+      require "hanami/prepare"
+
+      expect { Hanami.rack_app }.to raise_error do |exception|
         expect(exception).to be_kind_of(Hanami::SliceLoadError)
         expect(exception.message).to include("Slice 'foo' not found")
       end

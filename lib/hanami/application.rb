@@ -289,10 +289,7 @@ module Hanami
       end
 
       def router_resolver
-        config.router.resolver.new(
-          container: container,
-          slices: slices
-        )
+        config.router.resolver.new(slice: self)
       end
     end
     # rubocop:enable Metrics/ModuleLength
