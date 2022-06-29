@@ -2,7 +2,7 @@
 
 Hanami.application.register_provider :rack_monitor do
   prepare do
-    require "dry/monitor"
+    require "dry/monitor/rack/middleware"
   end
 
   start do
