@@ -206,7 +206,7 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
-  xspecify "It does not choose actions from slice to route in app" do
+  specify "It does not choose actions from slice to route in app" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
         require "hanami"
@@ -257,17 +257,17 @@ RSpec.describe "Hanami web app", :application_integration do
       RUBY
 
       write "slices/api/action.rb", <<~RUBY
-        module Api
+        module API
           class Action < TestApp::Action
           end
         end
       RUBY
 
       write "slices/api/actions/people/index.rb", <<~RUBY
-        module Api
+        module API
           module Actions
             module People
-              class Index < Api::Action
+              class Index < API::Action
                 def handle(*, res)
                   res.body = "People"
                 end
