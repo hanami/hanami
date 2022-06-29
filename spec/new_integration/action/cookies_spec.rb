@@ -4,20 +4,19 @@ RSpec.describe "Application action / Cookies", :application_integration do
   before do
     module TestApp
       class Application < Hanami::Application
-        register_slice :main
       end
     end
 
     Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
     Hanami.application.prepare
 
-    module Main
+    module TestApp
       class Action < Hanami::Action
       end
     end
   end
 
-  subject(:action_class) { Main::Action }
+  subject(:action_class) { TestApp::Action }
 
   context "default configuration" do
     it "has cookie support enabled" do

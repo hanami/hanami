@@ -18,15 +18,33 @@ RSpec.describe "Application view / Context / Routes", :application_integration d
         module TestApp
           class Routes < Hanami::Routes
             define do
-              slice :main, at: "/" do
-                root to: "test_action"
+              root to: "home.index"
+            end
+          end
+        end
+      RUBY
+
+      write "app/action.rb", <<~RUBY
+        require "hanami/action"
+
+        module TestApp
+          class Action < Hanami::Action
+          end
+        end
+      RUBY
+
+      write "app/actions/home/index.rb", <<~RUBY
+        module TestApp
+          module Actions
+            module Home
+              class Index < Hanami::Action
               end
             end
           end
         end
       RUBY
 
-      write "lib/test_app/views/context.rb", <<~RUBY
+      write "app/views/context.rb", <<~RUBY
         require "hanami/view/context"
 
         module TestApp
@@ -37,20 +55,9 @@ RSpec.describe "Application view / Context / Routes", :application_integration d
         end
       RUBY
 
-      write "slices/main/lib/views/context.rb", <<~RUBY
-        require "test_app/views/context"
-
-        module Main
-          module Views
-            class Context < TestApp::Views::Context
-            end
-          end
-        end
-      RUBY
-
       require "hanami/prepare"
 
-      context = Main::Views::Context.new
+      context = TestApp::Views::Context.new
       expect(context.routes.path(:root)).to eq "/"
     end
   end

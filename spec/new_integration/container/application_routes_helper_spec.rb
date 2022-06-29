@@ -17,18 +17,16 @@ RSpec.describe "Application routes helper", :application_integration do
         module TestApp
           class Routes < Hanami::Routes
             define do
-              slice :main, at: "/" do
-                root to: "home.index"
-              end
+              root to: "home.index"
             end
           end
         end
       RUBY
 
-      write "slices/main/actions/home/index.rb", <<~RUBY
+      write "app/actions/home/index.rb", <<~RUBY
         require "hanami/action"
 
-        module Main
+        module TestApp
           module Actions
             module Home
               class Index < Hanami::Action

@@ -6,7 +6,6 @@ RSpec.describe "Application view / Context / Settings", :application_integration
   before do
     module TestApp
       class Application < Hanami::Application
-        register_slice :main
       end
     end
 
@@ -18,16 +17,9 @@ RSpec.describe "Application view / Context / Settings", :application_integration
         end
       end
     end
-
-    module Main
-      module Views
-        class Context < TestApp::Views::Context
-        end
-      end
-    end
   end
 
-  let(:context_class) { Main::Views::Context }
+  let(:context_class) { TestApp::Views::Context }
   subject(:context) { context_class.new }
 
   describe "#settings" do

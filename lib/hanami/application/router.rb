@@ -40,11 +40,13 @@ module Hanami
       end
 
       # @since 2.0.0
-      def slice(name, at:, &blk)
-        path = prefixed_path(at)
-        @resolver.register_slice_at_path(name, path)
+      def slice(slice_name, at:, &blk)
+        prev_resolver = @resolver
+        @resolver = @resolver.to_slice(slice_name)
 
-        scope(path, &blk)
+        scope(prefixed_path(at), &blk)
+      ensure
+        @resolver = prev_resolver
       end
 
       # @since 2.0.0

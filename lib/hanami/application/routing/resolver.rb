@@ -3,83 +3,87 @@
 module Hanami
   class Application
     module Routing
+      # @since 2.0.0
+      class UnknownActionError < Hanami::Error
+        def initialize(identifier)
+          super("unknown action referenced in router: `#{identifier.inspect}'")
+        end
+      end
+
+      # @since 2.0.0
+      class NotCallableEndpointError < StandardError
+        def initialize(endpoint)
+          super("#{endpoint.inspect} is not compatible with Rack. Please make sure it implements #call.")
+        end
+      end
+
       # Hanami application router endpoint resolver
       #
       # @since 2.0.0
       class Resolver
-        ENDPOINT_KEY_NAMESPACE = "actions"
+        SLICE_ACTIONS_KEY_NAMESPACE = "actions"
 
-        require_relative "resolver/trie"
-
+        # @api private
         # @since 2.0.0
-        class NotCallableEndpointError < StandardError
-          def initialize(endpoint)
-            super("#{endpoint.inspect} is not compatible with Rack. Please make sure it implements #call.")
-          end
+        def initialize(slice:)
+          @slice = slice
         end
 
         # @api private
         # @since 2.0.0
-        def initialize(slices:, inflector:)
-          @slices = slices
-          @inflector = inflector
-          @slice_registry = Trie.new
+        def to_slice(slice_name)
+          self.class.new(slice: slice.slices[slice_name])
         end
 
         # @api private
         # @since 2.0.0
-        #
-        # rubocop:disable Metrics/MethodLength
-        def call(path, identifier)
+        def call(_path, endpoint)
           endpoint =
-            case identifier
+            case endpoint
             when String
-              resolve_string_identifier(path, identifier)
+              resolve_slice_action(endpoint)
             when Class
-              identifier.respond_to?(:call) ? identifier : identifier.new
+              endpoint.respond_to?(:call) ? endpoint : endpoint.new
             else
-              identifier
+              endpoint
             end
 
-          unless endpoint.respond_to?(:call) # rubocop:disable Style/IfUnlessModifier
+          unless endpoint.respond_to?(:call)
             raise NotCallableEndpointError.new(endpoint)
           end
 
           endpoint
-        end
-        # rubocop:enable Metrics/MethodLength
-
-        # @api private
-        # @since 2.0.0
-        def register_slice_at_path(name, path)
-          slice_registry.add(path, name)
         end
 
         private
 
         # @api private
         # @since 2.0.0
-        attr_reader :slices
+        attr_reader :slice
 
         # @api private
         # @since 2.0.0
-        attr_reader :inflector
+        def resolve_slice_action(key)
+          action_key = "#{SLICE_ACTIONS_KEY_NAMESPACE}.#{key}"
 
-        # @api private
-        # @since 2.0.0
-        attr_reader :slice_registry
+          ensure_action_in_slice(action_key)
 
-        # @api private
-        # @since 2.0.0
-        def resolve_string_identifier(path, identifier)
-          slice_name = slice_registry.find(path) or raise "missing slice for #{path.inspect} (#{identifier.inspect})"
-          slice = slices[slice_name]
-          endpoint_key = "#{ENDPOINT_KEY_NAMESPACE}.#{identifier}"
+          # Lazily resolve action from the slice to reduce router initialization time, and
+          # circumvent endless loops from the action requiring access to router-related
+          # concerns (which may not be fully loaded at the time of reading the routes)
+          -> (*args) {
+            action = slice.resolve(action_key) do
+              raise UnknownActionError.new(key)
+            end
 
-          # Lazily resolve endpoint from the slice to reduce router initialization time,
-          # and break potential endless loops from the resolved endpoint itself requiring
-          # access to router-related concerns
-          -> (*args) { slice[endpoint_key].call(*args) }
+            action.call(*args)
+          }
+        end
+
+        def ensure_action_in_slice(key)
+          return unless slice.booted?
+
+          raise UnknownActionError.new(key) unless slice.key?(key)
         end
       end
     end

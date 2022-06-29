@@ -7,8 +7,6 @@ RSpec.describe "Application view / Template", :application_integration do
     module TestApp
       class Application < Hanami::Application
         config.root = "/test_app"
-
-        register_slice :main
       end
     end
 
@@ -19,28 +17,23 @@ RSpec.describe "Application view / Template", :application_integration do
       class View < Hanami::View
       end
     end
-
-    module Main
-      class View < TestApp::View
-      end
-    end
   end
 
   subject(:template) { view_class.config.template }
 
-  context "Ordinary slice view" do
+  context "Ordinary app view" do
     before do
-      module Main
+      module TestApp
         module Views
           module Article
-            class Index < Main::View
+            class Index < TestApp::View
             end
           end
         end
       end
     end
 
-    let(:view_class) { Main::Views::Article::Index }
+    let(:view_class) { TestApp::Views::Article::Index }
 
     it "configures the tempalte to match the class name" do
       expect(template).to eq "article/index"
@@ -49,10 +42,10 @@ RSpec.describe "Application view / Template", :application_integration do
 
   context "Slice view with namespace matching template inference base" do
     before do
-      module Main
+      module TestApp
         module MyViews
           module Users
-            class Show < Main::View
+            class Show < TestApp::View
             end
           end
         end
@@ -65,7 +58,7 @@ RSpec.describe "Application view / Template", :application_integration do
       end
     }
 
-    let(:view_class) { Main::MyViews::Users::Show }
+    let(:view_class) { TestApp::MyViews::Users::Show }
 
     it "configures the tempalte to match the class name" do
       expect(template).to eq "users/show"

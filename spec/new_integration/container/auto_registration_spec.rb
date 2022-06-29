@@ -15,6 +15,27 @@ RSpec.describe "Container auto-registration", :application_integration do
         end
       RUBY
 
+      write "app/action.rb", <<~RUBY
+        # auto_register: false
+        require "hanami/action"
+
+        module TestApp
+          class Action < Hanami::Action
+          end
+        end
+      RUBY
+
+      write "app/actions/nba_rosters/index.rb", <<~RUBY
+        module TestApp
+          module Actions
+            module NBARosters
+              class Index < TestApp::Action
+              end
+            end
+          end
+        end
+      RUBY
+
       write "slices/admin/lib/nba_jam/get_that_outta_here.rb", <<~RUBY
         module Admin
           module NBAJam
@@ -27,6 +48,7 @@ RSpec.describe "Container auto-registration", :application_integration do
       require "hanami/setup"
       Hanami.boot
 
+      expect(TestApp::Application["actions.nba_rosters.index"]).to be_an TestApp::Actions::NBARosters::Index
       expect(Admin::Slice["nba_jam.get_that_outta_here"]).to be_an Admin::NBAJam::GetThatOuttaHere
     end
   end

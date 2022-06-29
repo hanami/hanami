@@ -3,8 +3,8 @@
 RSpec.describe "Application action / View rendering / Automatic rendering", :application_integration do
   it "Renders a view automatically, passing all params and exposures" do
     within_app do
-      write "slices/main/actions/profile/show.rb", <<~RUBY
-        module Main
+      write "app/actions/profile/show.rb", <<~RUBY
+        module TestApp
           module Actions
             module Profile
               class Show < TestApp::Action
@@ -17,11 +17,11 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/views/profile/show.rb", <<~RUBY
-        module Main
+      write "app/views/profile/show.rb", <<~RUBY
+        module TestApp
           module Views
             module Profile
-              class Show < Main::View
+              class Show < TestApp::View
                 expose :name, :favorite_number
               end
             end
@@ -29,13 +29,13 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/templates/profile/show.html.slim", <<~'SLIM'
+      write "app/templates/profile/show.html.slim", <<~'SLIM'
         h1 Hello, #{name}. Your favorite number is #{favorite_number}, right?
       SLIM
 
       require "hanami/prepare"
 
-      action = Main::Slice["actions.profile.show"]
+      action = TestApp::Application["actions.profile.show"]
       response = action.(name: "Jennifer")
       rendered = response.body[0]
 
@@ -46,8 +46,8 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
   it "Does not render a view automatically when #render? returns false " do
     within_app do
-      write "slices/main/actions/profile/show.rb", <<~RUBY
-        module Main
+      write "app/actions/profile/show.rb", <<~RUBY
+        module TestApp
           module Actions
             module Profile
               class Show < TestApp::Action
@@ -64,11 +64,11 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/views/profile/show.rb", <<~RUBY
-        module Main
+      write "app/views/profile/show.rb", <<~RUBY
+        module TestApp
           module Views
             module Profile
-              class Show < Main::View
+              class Show < TestApp::View
                 expose :name, :favorite_number
               end
             end
@@ -76,13 +76,13 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/templates/profile/show.html.slim", <<~'SLIM'
+      write "app/templates/profile/show.html.slim", <<~'SLIM'
         h1 Hello, #{name}. Your favorite number is #{favorite_number}, right?
       SLIM
 
       require "hanami/prepare"
 
-      action = Main::Slice["actions.profile.show"]
+      action = TestApp::Application["actions.profile.show"]
       response = action.(name: "Jennifer")
 
       expect(response.body).to eq []
@@ -92,8 +92,8 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
   it "Doesn't render view automatically when body is already assigned" do
     within_app do
-      write "slices/main/actions/profile/show.rb", <<~RUBY
-        module Main
+      write "app/actions/profile/show.rb", <<~RUBY
+        module TestApp
           module Actions
             module Profile
               class Show < TestApp::Action
@@ -106,11 +106,11 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/views/profile/show.rb", <<~RUBY
-        module Main
+      write "app/views/profile/show.rb", <<~RUBY
+        module TestApp
           module Views
             module Profile
-              class Show < Main::View
+              class Show < TestApp::View
                 expose :name, :favorite_number
               end
             end
@@ -118,13 +118,13 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/templates/profile/show.html.slim", <<~'SLIM'
+      write "app/templates/profile/show.html.slim", <<~'SLIM'
         h1 Hello, #{name}. Your favorite number is #{favorite_number}, right?
       SLIM
 
       require "hanami/prepare"
 
-      action = Main::Slice["actions.profile.show"]
+      action = TestApp::Application["actions.profile.show"]
       response = action.(name: "Jennifer")
       rendered = response.body[0]
 
@@ -135,8 +135,8 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
   it "Doesn't render view automatically when halt is called" do
     within_app do
-      write "slices/main/actions/profile/show.rb", <<~RUBY
-        module Main
+      write "app/actions/profile/show.rb", <<~RUBY
+        module TestApp
           module Actions
             module Profile
               class Show < TestApp::Action
@@ -149,11 +149,11 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/views/profile/show.rb", <<~RUBY
-        module Main
+      write "app/views/profile/show.rb", <<~RUBY
+        module TestApp
           module Views
             module Profile
-              class Show < Main::View
+              class Show < TestApp::View
                 expose :name
               end
             end
@@ -163,7 +163,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
       # This template will crash if not rendered with a valid `name` string. The absence
       # of a crash here tells us that the view was never rendered.
-      write "slices/main/templates/profile/show.html.slim", <<~'SLIM'
+      write "app/templates/profile/show.html.slim", <<~'SLIM'
         h1 Hello, #{name.to_str}!
       SLIM
 
@@ -171,7 +171,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
       # Call the action without a `name` param, thereby ensuring the view will raise an
       # error if rendered
-      action = Main::Slice["actions.profile.show"]
+      action = TestApp::Application["actions.profile.show"]
       response = action.({})
       rendered = response.body[0]
 
@@ -184,8 +184,8 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
   it "Does not render if no view is available" do
     within_app do
-      write "slices/main/actions/profile/show.rb", <<~RUBY
-        module Main
+      write "app/actions/profile/show.rb", <<~RUBY
+        module TestApp
           module Actions
             module Profile
               class Show < TestApp::Action
@@ -197,7 +197,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
       require "hanami/prepare"
 
-      action = Main::Slice["actions.profile.show"]
+      action = TestApp::Application["actions.profile.show"]
       response = action.({})
       expect(response.body).to eq []
       expect(response.status).to eq 200
@@ -215,7 +215,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "lib/test_app/action.rb", <<~RUBY
+      write "app/action.rb", <<~RUBY
         # auto_register: false
 
         module TestApp
@@ -224,7 +224,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "lib/test_app/view.rb", <<~RUBY
+      write "app/view.rb", <<~RUBY
         # auto_register: false
 
         require "hanami/view"
@@ -235,18 +235,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "slices/main/lib/view.rb", <<~RUBY
-        # auto_register: false
-
-        require "test_app/view"
-
-        module Main
-          class View < TestApp::View
-          end
-        end
-      RUBY
-
-      write "slices/main/templates/layouts/application.html.slim", <<~SLIM
+      write "app/templates/layouts/application.html.slim", <<~SLIM
         html
           body
             == yield

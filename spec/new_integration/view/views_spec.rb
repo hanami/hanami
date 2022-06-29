@@ -12,38 +12,41 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "slices/main/lib/view.rb", <<~RUBY
+      write "app/view.rb", <<~RUBY
+        # auto_register: false
         require "hanami/view"
 
-        module Main
+        module TestApp
           class View < Hanami::View
           end
         end
       RUBY
 
-      write "slices/main/lib/views/test_view.rb", <<~RUBY
-        module Main
+      write "app/views/users/show.rb", <<~RUBY
+        module TestApp
           module Views
-            class TestView < Main::View
-              expose :name
+            module Users
+              class Show < TestApp::View
+                expose :name
+              end
             end
           end
         end
       RUBY
 
-      write "slices/main/templates/layouts/application.html.slim", <<~SLIM
+      write "app/templates/layouts/application.html.slim", <<~SLIM
         html
           body
             == yield
       SLIM
 
-      write "slices/main/templates/test_view.html.slim", <<~'SLIM'
+      write "app/templates/users/show.html.slim", <<~'SLIM'
         h1 Hello, #{name}
       SLIM
 
       require "hanami/prepare"
 
-      rendered = Main::Slice["views.test_view"].(name: "Jennifer")
+      rendered = TestApp::Application["views.users.show"].(name: "Jennifer")
       expect(rendered.to_s).to eq "<html><body><h1>Hello, Jennifer</h1></body></html>"
     end
   end
@@ -59,39 +62,41 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "slices/main/lib/view.rb", <<~RUBY
+      write "app/view.rb", <<~RUBY
         # auto_register: false
         require "hanami/view"
 
-        module Main
+        module TestApp
           class View < Hanami::View
           end
         end
       RUBY
 
-      write "slices/main/views/test_view.rb", <<~RUBY
-        module Main
+      write "app/views/users/show.rb", <<~RUBY
+        module TestApp
           module Views
-            class TestView < Main::View
-              expose :name
+            module Users
+              class Show < TestApp::View
+                expose :name
+              end
             end
           end
         end
       RUBY
 
-      write "slices/main/templates/layouts/application.html.slim", <<~SLIM
+      write "app/templates/layouts/application.html.slim", <<~SLIM
         html
           body
             == yield
       SLIM
 
-      write "slices/main/templates/test_view.html.slim", <<~'SLIM'
+      write "app/templates/users/show.html.slim", <<~'SLIM'
         h1 Hello, #{name}
       SLIM
 
       require "hanami/prepare"
 
-      rendered = Main::Slice["views.test_view"].(name: "Jennifer")
+      rendered = TestApp::Application["views.users.show"].(name: "Jennifer")
       expect(rendered.to_s).to eq "<html><body><h1>Hello, Jennifer</h1></body></html>"
     end
   end
