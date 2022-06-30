@@ -7,7 +7,34 @@ RSpec.describe "Hanami web app", :application_integration do
 
   let(:app) { Hanami.rack_app }
 
-  specify "has rack monitor preconfigured with default request logging" do
+  specify "Hanami.rack_app returns a rack builder" do
+    with_tmp_directory do
+      write "config/application.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class Application < Hanami::Application
+          end
+        end
+      RUBY
+
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            define do
+              root to: ->(env) { [200, {}, ["OK"]] }
+            end
+          end
+        end
+      RUBY
+
+      require "hanami/boot"
+
+      expect(app).to be_instance_of(Rack::Builder)
+    end
+  end
+
+  specify "Has rack monitor preconfigured with default request logging" do
     dir = Dir.mktmpdir
 
     with_tmp_directory(dir) do

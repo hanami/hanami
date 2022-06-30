@@ -261,16 +261,13 @@ module Hanami
       def load_router
         require_relative "application/router"
 
-        Router.new(
-          routes: load_routes,
-          resolver: router_resolver,
-          **configuration.router.options,
-        ) do
-          use Hanami.application[:rack_monitor]
+        config = configuration
 
-          Hanami.application.config.for_each_middleware do |m, *args, &block|
-            use(m, *args, &block)
-          end
+        Router.new(routes: load_routes, resolver: router_resolver, **router_options) do
+          use Hanami.application[:rack_monitor]
+          use config.sessions.middleware if config.sessions.enabled?
+
+          middleware_stack.update(config.middleware_stack)
         end
       end
 
@@ -286,6 +283,10 @@ module Hanami
         raise e unless e.path == routes_require_path
 
         proc {}
+      end
+
+      def router_options
+        configuration.router.options
       end
 
       def router_resolver

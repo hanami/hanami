@@ -8,6 +8,9 @@ module Hanami
     # Hanami application router
     # @since 2.0.0
     class Router < ::Hanami::Router
+      # @api private
+      attr_reader :middleware_stack
+
       # @since 2.0.0
       # @api private
       def initialize(routes:, middleware_stack: Routing::Middleware::Stack.new, **kwargs, &blk)
@@ -27,14 +30,14 @@ module Hanami
 
       # @since 2.0.0
       # @api private
-      def use(middleware, *args, &blk)
-        @middleware_stack.use(middleware, *args, &blk)
+      def use(...)
+        middleware_stack.use(...)
       end
 
       # @since 2.0.0
       # @api private
       def scope(*args, &blk)
-        @middleware_stack.with(args.first) do
+        middleware_stack.with(args.first) do
           super
         end
       end
@@ -52,9 +55,7 @@ module Hanami
       # @since 2.0.0
       # @api private
       def to_rack_app
-        return self if @middleware_stack.empty?
-
-        @middleware_stack.to_rack_app(self)
+        middleware_stack.to_rack_app(self)
       end
     end
   end
