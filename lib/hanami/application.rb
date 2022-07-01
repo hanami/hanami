@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/system/container"
-require "forwardable"
-
-require "pathname"
 require "zeitwerk"
 require_relative "configuration"
 require_relative "constants"

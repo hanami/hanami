@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
-require "hanami/errors"
-require "pathname"
 require_relative "constants"
+require_relative "errors"
 require_relative "slice_name"
 require_relative "slice_registrar"
 
