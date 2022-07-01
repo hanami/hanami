@@ -52,8 +52,6 @@ module Hanami
 
       private
 
-      # rubocop:disable Metrics/AbcSize
-
       def prepare_base_load_path
         base_path = root.join(LIB_DIR)
         $LOAD_PATH.unshift(base_path) unless $LOAD_PATH.include?(base_path)
@@ -129,8 +127,6 @@ module Hanami
 
         autoloader.setup
       end
-
-      # rubocop:enable Metrics/AbcSize
     end
   end
 end
