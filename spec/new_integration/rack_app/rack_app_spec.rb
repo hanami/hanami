@@ -347,7 +347,7 @@ RSpec.describe "Hanami web app", :application_integration do
       require "hanami/boot"
 
       expect { Hanami.rack_app }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
       end
     end
@@ -380,7 +380,7 @@ RSpec.describe "Hanami web app", :application_integration do
       require "hanami/boot"
 
       expect { Hanami.rack_app }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
       end
     end
@@ -412,7 +412,7 @@ RSpec.describe "Hanami web app", :application_integration do
       expect { Hanami.rack_app }.not_to raise_error
 
       expect { get "/missing" }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
       end
     end
@@ -447,7 +447,7 @@ RSpec.describe "Hanami web app", :application_integration do
       expect { Hanami.rack_app }.not_to raise_error
 
       expect { get "/admin/missing" }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
       end
     end
