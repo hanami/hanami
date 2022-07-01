@@ -52,7 +52,7 @@ Please follow along with the [Getting Started guide](https://guides.hanamirb.org
 
 ## Donations
 
-You can give back to Open Source, by supporting Hanami development via a [GitHub Sponsors](https://github.com/sponsors/hanami).
+You can give back to Open Source, by supporting Hanami development via [GitHub Sponsors](https://github.com/sponsors/hanami).
 
 ### Supporters
 
