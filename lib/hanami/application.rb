@@ -4,7 +4,6 @@ require "dry/system/container"
 require "forwardable"
 
 require "pathname"
-require "rack"
 require "zeitwerk"
 require_relative "configuration"
 require_relative "constants"
