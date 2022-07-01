@@ -45,9 +45,7 @@ RSpec.describe "Slices / Slice routing", :application_integration do
         module TestApp
           class Routes < Hanami::Routes
             define do
-              slice :main, at: "/" do
-                get "home", to: "home.show", as: :home
-              end
+              get "home", to: "home.show", as: :home
             end
           end
         end
@@ -57,7 +55,6 @@ RSpec.describe "Slices / Slice routing", :application_integration do
 
       require "hanami/prepare"
 
-      expect(Main::Slice["routes"]).to eql(TestApp::Application["routes"])
       expect(Main::Slice["routes"].path(:home)).to eq "/home"
 
       expect(Main::Slice.router).to be nil

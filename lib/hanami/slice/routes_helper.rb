@@ -4,28 +4,19 @@ module Hanami
   class Slice
     # Hanami application routes helpers
     #
-    # An instance of this class gets registered in the container
-    # (`routes_helper` key) once the Hanami application is booted. You can use
-    # it to get the route helpers for your application.
+    # An instance of this class will be registered with slice (at the "routes" key). You
+    # can use it to access the route helpers for your application.
     #
     # @example
-    #   MyApp::Application["routes_helper"].path(:root) # => "/"
+    #   MyApp::Application["routes"].path(:root) # => "/"
     #
     # @see Hanami::Router::UrlHelpers
     # @since 2.0.0
     class RoutesHelper
       # @since 2.0.0
       # @api private
-      def initialize(router_proc)
-        # Expect the router wrapped in a proc so we can defer loading the router until it
-        # is needed. This also means we can avoid loading it entirely in where it is not
-        # required at all.
-        #
-        # This is an issue because the application's RoutesHelper instance is always
-        # initialized and registered with the application via a provider. This will be
-        # fixed in the upcoming application/slice unification, where the provider will
-        # only be registered if routes actually exist.
-        @router_proc = router_proc
+      def initialize(router)
+        @router = router
       end
 
       # @see Hanami::Router::UrlHelpers#path
@@ -40,9 +31,7 @@ module Hanami
 
       private
 
-      def router
-        @router ||= @router_proc.call
-      end
+      attr_reader :router
     end
   end
 end
