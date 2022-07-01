@@ -10,6 +10,11 @@ module Hanami
     class ApplicationConfiguration
       include Dry::Configurable
 
+      # @since 2.0.0
+      # @api private
+      attr_reader :base_configuration
+      protected :base_configuration
+
       setting :server_url, default: "http://localhost:8080"
 
       # @since 2.0.0
@@ -18,6 +23,11 @@ module Hanami
         super
 
         @base_configuration = Assets::Configuration.new
+      end
+
+      def initialize_copy(source)
+        super
+        @base_configuration = source.base_configuration.dup
       end
 
       # @since 2.0.0
@@ -36,10 +46,6 @@ module Hanami
       end
 
       private
-
-      # @since 2.0.0
-      # @api private
-      attr_reader :base_configuration
 
       # @since 2.0.0
       # @api private

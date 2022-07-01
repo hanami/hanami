@@ -33,6 +33,14 @@ module Hanami
 
           # @since 2.0.0
           # @api private
+          def initialize_copy(source)
+            super
+            @prefix = source.instance_variable_get(:@prefix).dup
+            @stack = stack.dup
+          end
+
+          # @since 2.0.0
+          # @api private
           def use(middleware, *args, before: nil, after: nil, &blk)
             item = [middleware, args, blk]
 

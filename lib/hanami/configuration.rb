@@ -75,6 +75,21 @@ module Hanami
       yield self if block_given?
     end
 
+    def initialize_copy(source)
+      super
+
+      @application_name = application_name.dup
+      @environments = environments.dup
+
+      @assets = source.assets.dup
+      @actions = source.actions.dup
+      @middleware = source.middleware.dup
+      @router = source.router.dup.tap do |router|
+        router.instance_variable_set(:@base_configuration, self)
+      end
+      @views = source.views.dup
+    end
+
     def environment(env_name, &block)
       environments[env_name] << block
       apply_env_config

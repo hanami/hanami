@@ -27,7 +27,7 @@ module Hanami
       attr_accessor :content_security_policy
 
       attr_reader :base_configuration
-      private :base_configuration
+      protected :base_configuration
 
       def initialize(*, **options)
         super()
@@ -41,6 +41,12 @@ module Hanami
         end
 
         configure_defaults
+      end
+
+      def initialize_copy(source)
+        super
+        @base_configuration = source.base_configuration.dup
+        @content_security_policy = source.content_security_policy.dup
       end
 
       def finalize!

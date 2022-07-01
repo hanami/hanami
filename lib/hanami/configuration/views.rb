@@ -14,7 +14,7 @@ module Hanami
       setting :parts_path, default: "views/parts"
 
       attr_reader :base_configuration
-      private :base_configuration
+      protected :base_configuration
 
       def initialize(*)
         super
@@ -22,6 +22,11 @@ module Hanami
         @base_configuration = Hanami::View.config.dup
 
         configure_defaults
+      end
+
+      def initialize_copy(source)
+        super
+        @base_configuration = source.base_configuration.dup
       end
 
       # Returns the list of available settings
