@@ -149,4 +149,67 @@ RSpec.describe "Hanami web app", :application_integration do
     expect(last_response).to be_successful
     expect(last_response.body).to eql("one.two")
   end
+
+  specify "Setting a middleware that requires a block" do
+    write "config/application.rb", <<~RUBY
+      require "hanami"
+
+      module TestApp
+        class TestMiddleware
+          def initialize(app, &block)
+            @app = app
+            @block = block
+          end
+
+          def call(env)
+            @block.call(env)
+            @app.call(env)
+          end
+        end
+
+        class Application < Hanami::Application
+          config.logger.stream = File.new("/dev/null", "w")
+
+          config.middleware.use(TestApp::TestMiddleware) { |env| env["tested"] = "yes" }
+        end
+      end
+    RUBY
+
+    write "config/routes.rb", <<~RUBY
+      require "hanami/router"
+
+      module TestApp
+        class Routes < Hanami::Routes
+          define do
+            slice :main, at: "/" do
+              root to: "home.index"
+            end
+          end
+        end
+      end
+    RUBY
+
+    write "slices/main/actions/home/index.rb", <<~RUBY
+      require "hanami/action"
+
+      module Main
+        module Actions
+          module Home
+            class Index < Hanami::Action
+              def handle(req, res)
+                res.body = req.env["tested"]
+              end
+            end
+          end
+        end
+      end
+    RUBY
+
+    require "hanami/boot"
+
+    get "/"
+
+    expect(last_response).to be_successful
+    expect(last_response.body).to eql("yes")
+  end
 end
