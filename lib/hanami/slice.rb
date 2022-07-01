@@ -341,7 +341,7 @@ module Hanami
         end
 
         begin
-          settings_class = autodiscover_application_constant(SETTINGS_CLASS_NAME)
+          settings_class = namespace.const_get(SETTINGS_CLASS_NAME)
           settings_class.new(configuration.settings_store)
         rescue NameError => e
           raise e unless e.name == SETTINGS_CLASS_NAME.to_sym
@@ -361,7 +361,7 @@ module Hanami
         end
 
         begin
-          routes_class = autodiscover_application_constant(ROUTES_CLASS_NAME)
+          routes_class = namespace.const_get(ROUTES_CLASS_NAME)
           routes_class.routes
         rescue NameError => e
           raise e unless e.name == ROUTES_CLASS_NAME.to_sym
@@ -390,10 +390,6 @@ module Hanami
 
       def router_resolver
         configuration.router.resolver.new(slice: self)
-      end
-
-      def autodiscover_application_constant(constants)
-        inflector.constantize([slice_name.namespace_name, *constants].join(MODULE_DELIMITER))
       end
 
       # rubocop:enable Metrics/AbcSize
