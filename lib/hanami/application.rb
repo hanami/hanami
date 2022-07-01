@@ -28,7 +28,7 @@ module Hanami
 
         subclass.class_eval do
           @_mutex = Mutex.new
-          @slice_name = SliceName.new(subclass, inflector: -> { subclass.inflector })
+          @slice_name = SliceName.new(subclass, inflector: subclass.method(:inflector))
           @configuration = Hanami::Configuration.new(application_name: @slice_name, env: Hanami.env)
           @autoloader = Zeitwerk::Loader.new
 
