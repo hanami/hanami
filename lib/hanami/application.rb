@@ -71,8 +71,7 @@ module Hanami
         prepare_application_providers
 
         # The autoloader must be setup after the container is configured, which is the
-        # point at which any registered component dirs from other slices are added to the
-        # autoloader
+        # point at which any component dirs from other slices are added to the autoloader
         app = self
         container.after(:configure) do
           app.send(:prepare_application_autoloader)
