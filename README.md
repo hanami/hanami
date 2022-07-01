@@ -14,10 +14,8 @@ It's made up of smaller, single-purpose libraries.
 This repository is for the full-stack framework,
 which provides the glue that ties all the parts together:
 
-* [**Hanami::Model**](https://github.com/hanami/model) - Persistence with entities, repositories and data mapper
 * [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
 * [**Hanami::Controller**](https://github.com/hanami/controller) - Full featured, fast and testable actions for Rack
-* [**Hanami::Validations**](https://github.com/hanami/validations) - Validations mixin for Ruby objects
 * [**Hanami::Router**](https://github.com/hanami/router) - Rack compatible HTTP router for Ruby
 * [**Hanami::Helpers**](https://github.com/hanami/helpers) - View helpers for Ruby applications
 * [**Hanami::Mailer**](https://github.com/hanami/mailer) - Mail for Ruby applications
@@ -54,7 +52,7 @@ Please follow along with the [Getting Started guide](https://guides.hanamirb.org
 
 ## Donations
 
-You can give back to Open Source, by supporting Hanami development via a [donation](https://salt.bountysource.com/teams/hanami). :green_heart:
+You can give back to Open Source, by supporting Hanami development via a [GitHub Sponsors](https://github.com/sponsors/hanami).
 
 ### Supporters
 
