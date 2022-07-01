@@ -329,12 +329,11 @@ module Hanami
       end
 
       def load_settings
-        require_relative "./settings"
-
         if root.directory?
           settings_require_path = File.join(root, SETTINGS_PATH)
 
           begin
+            require_relative "./settings"
             require settings_require_path
           rescue LoadError => e
             raise e unless e.path == settings_require_path
@@ -350,12 +349,11 @@ module Hanami
       end
 
       def load_routes
-        require_relative "./routes"
-
         if root.directory?
           routes_require_path = File.join(root, ROUTES_PATH)
 
           begin
+            require_relative "./routes"
             require routes_require_path
           rescue LoadError => e
             raise e unless e.path == routes_require_path
