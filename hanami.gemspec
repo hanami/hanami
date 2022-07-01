@@ -14,8 +14,18 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://hanamirb.org"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -c -o --exclude-standard -z -- lib/* bin/* LICENSE.md README.md CODE_OF_CONDUCT.md CHANGELOG.md FEATURES.md hanami.gemspec`.split("\x0") # rubocop:disable Layout/LineLength
-  spec.test_files    = spec.files.grep(%r{^(spec)/})
+  spec.files         = Dir[
+    "CODE_OF_CONDUCT.md",
+    "CHANGELOG.md",
+    "FEATURES.md",
+    "LICENSE.md",
+    "README.md",
+    "hanami.gemspec",
+    "bin/*",
+    "lib/**/*"
+  ]
+
+  spec.test_files    = Dir["spec/**/*"]
   spec.require_paths = ["lib"]
   spec.metadata["rubygems_mfa_required"] = "true"
   spec.required_ruby_version = ">= 3.0"
