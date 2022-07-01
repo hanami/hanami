@@ -8,7 +8,25 @@ require_relative "slice_name"
 require_relative "slice_registrar"
 
 module Hanami
-  # Distinct area of concern within an Hanami application
+  # A slice represents any distinct area of concern within an Hanami application. For
+  # smaller apps, a slice may encompass the whole app itself (see {Hanami::Application}),
+  # whereas larger apps may consist of many slices.
+  #
+  # Each slice corresponds a single module namespace and a single root directory of source
+  # files for loading as components into its container.
+  #
+  # Each slice has its own configuration, and may optionally have its own settings,
+  # routes, as well as other nested slices.
+  #
+  # Slices expect an Hanami application to be defined (which itself is a slice). They will
+  # initialize their configuration as a copy of the application's, and will also configure
+  # certain components
+  #
+  # Slices must be _prepared_ and optionally _booted_ before they can be used (see
+  # {ClassMethods.prepare} and {ClassMethods.boot}). A prepared slice will lazily load its
+  # components and nested slices (useful for minimising initial load time), whereas a
+  # booted slice will eagerly load all its components and nested slices, then freeze its
+  # container.
   #
   # @since 2.0.0
   class Slice
@@ -31,11 +49,12 @@ module Hanami
         Hanami.application
       end
 
-      # A slice's configuration is copied from the application configuration, which should
-      # have all settings configured before slices are loaded
+      # A slice's configuration is copied from the application configuration at time of
+      # first access. The application should have its configuration completed before
+      # slices are loaded.
       def configuration
         @configuration ||= application.configuration.dup.tap do |config|
-          # Remove values from application that will not apply to this slice
+          # Remove specific values from application that will not apply to this slice
           config.root = nil
         end
       end
