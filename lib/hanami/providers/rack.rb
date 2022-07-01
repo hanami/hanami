@@ -21,7 +21,6 @@ module Hanami
         rack_logger.attach(monitor_middleware)
 
         register "monitor", monitor_middleware
-        register "logger", rack_logger
       end
     end
   end

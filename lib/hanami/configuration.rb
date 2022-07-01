@@ -133,20 +133,10 @@ module Hanami
     setting :settings_store, default: Hanami::Settings::DotenvStore
 
     setting :slices do
-      # TODO: figure out if we actually need all these or not
-      #
-      # The full list for a booted app:
-      # => ["notifications", "inflector", "logger", "rack_monitor", "rack_logger", "routes_helper", "settings"]
-
-      # TODO: better name
-      #
-      # TODO: should these ones be hard-coded, and this setting reserved for additional
-      # user-defined components only?
       setting :shared_component_keys, default: %w[
         inflector
         logger
         notifications
-        rack.logger
         rack.monitor
         routes
         settings

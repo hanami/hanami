@@ -69,6 +69,43 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
+  describe "Request logging when using a slice" do
+    let(:app) { Main::Slice.rack_app }
+
+    specify "Has rack monitor preconfigured with default request logging (when used via a slice)" do
+      dir = Dir.mktmpdir
+
+      with_tmp_directory(dir) do
+        write "config/application.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class Application < Hanami::Application
+              config.logger.stream = config.root.join("test.log")
+            end
+          end
+        RUBY
+
+        write "slices/main/config/routes.rb", <<~RUBY
+          module Main
+            class Routes < Hanami::Routes
+              define do
+              end
+            end
+          end
+        RUBY
+
+        require "hanami/boot"
+
+        get "/"
+
+        logs = -> { Pathname(dir).join("test.log").realpath.read }
+
+        expect(logs.()).to match %r{GET 404 \d+ms 127.0.0.1 /}
+      end
+    end
+  end
+
   specify "Routing to actions based on their container identifiers" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/application.rb", <<~RUBY
