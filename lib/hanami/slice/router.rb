@@ -44,6 +44,8 @@ module Hanami
 
       # @since 2.0.0
       def slice(slice_name, at:, &blk)
+        blk ||= @resolver.find_slice(slice_name).routes
+
         prev_resolver = @resolver
         @resolver = @resolver.to_slice(slice_name)
 
