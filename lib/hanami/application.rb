@@ -6,6 +6,7 @@ require "forwardable"
 require "pathname"
 require "rack"
 require "zeitwerk"
+require_relative "configuration"
 require_relative "constants"
 require_relative "slice"
 require_relative "slice_name"
@@ -15,7 +16,6 @@ module Hanami
   #
   # @since 2.0.0
   class Application < Slice
-    require "hanami/configuration"
 
     @_mutex = Mutex.new
 
