@@ -30,14 +30,18 @@ module Hanami
   #
   # @since 2.0.0
   class Slice
+    @_mutex = Mutex.new
+
     def self.inherited(subclass)
       super
 
       subclass.extend(ClassMethods)
 
-      subclass.class_eval do
-        @_mutex = Mutex.new
-        @container = Class.new(Dry::System::Container)
+      @_mutex.synchronize do
+        subclass.class_eval do
+          @_mutex = Mutex.new
+          @container = Class.new(Dry::System::Container)
+        end
       end
     end
 

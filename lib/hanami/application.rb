@@ -19,20 +19,18 @@ module Hanami
   # @api public
   # @since 2.0.0
   class Application < Slice
-
     @_mutex = Mutex.new
 
     def self.inherited(subclass)
       super
 
+      Hanami.application = subclass
+
+      subclass.extend(ClassMethods)
+
       @_mutex.synchronize do
-        Hanami.application = subclass
-
-        subclass.extend ClassMethods
-
         subclass.class_eval do
-          @slice_name = SliceName.new(subclass, inflector: subclass.method(:inflector))
-          @configuration = Hanami::Configuration.new(application_name: @slice_name, env: Hanami.env)
+          @configuration = Hanami::Configuration.new(application_name: slice_name, env: Hanami.env)
           @autoloader = Zeitwerk::Loader.new
 
           prepare_base_load_path
