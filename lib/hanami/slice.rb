@@ -395,20 +395,16 @@ module Hanami
         config = configuration
         rack_monitor = self["rack.monitor"]
 
-        Slice::Router.new(routes: routes, resolver: router_resolver, **router_options) do
+        Slice::Router.new(
+          routes: routes,
+          resolver: configuration.router.resolver.new(slice: self),
+          **configuration.router.options
+        ) do
           use rack_monitor
           use config.sessions.middleware if config.sessions.enabled?
 
           middleware_stack.update(config.middleware_stack)
         end
-      end
-
-      def router_options
-        configuration.router.options
-      end
-
-      def router_resolver
-        configuration.router.resolver.new(slice: self)
       end
 
       # rubocop:enable Metrics/AbcSize
