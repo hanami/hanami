@@ -7,8 +7,16 @@ require_relative "slice"
 require_relative "slice_name"
 
 module Hanami
-  # Hanami application class
+  # The Hanami application is a singular slice tasked with managing the core components of
+  # the application and coordinating overall application boot.
   #
+  # For smaller apps, the application may be the only slice present, whereas larger apps
+  # may consist of many slices, with the application reserved for holding a small number
+  # of shared components only.
+  #
+  # @see Slice
+  #
+  # @api public
   # @since 2.0.0
   class Application < Slice
 
