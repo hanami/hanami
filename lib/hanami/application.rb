@@ -48,10 +48,6 @@ module Hanami
         slice_name
       end
 
-      def root
-        configuration.root
-      end
-
       private
 
       def prepare_base_load_path
