@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "dry/files"
+
 # A complete web framework for Ruby
 #
 # @since 0.1.0
@@ -51,11 +53,25 @@ module Hanami
     application[:logger]
   end
 
-  def self.prepare
+  def self.setup(fs: default_fs)
+    require "bundler/setup"
+    require "hanami"
+
+    begin
+      application_require_path = File.join(fs.pwd, "config/application")
+      require application_require_path
+    rescue LoadError => e
+      raise e unless e.path == application_require_path
+    end
+  end
+
+  def self.prepare(fs: default_fs)
+    setup(fs: fs)
     application.prepare
   end
 
-  def self.boot
+  def self.boot(fs: default_fs)
+    setup(fs: fs)
     application.boot
   end
 
@@ -77,6 +93,13 @@ module Hanami
   def self.bundler_groups
     [:plugins]
   end
+
+  def self.default_fs
+    @_mutex.synchronize do
+      @_default_fs ||= Dry::Files.new
+    end
+  end
+  private_class_method :default_fs
 
   require_relative "hanami/version"
   require_relative "hanami/errors"

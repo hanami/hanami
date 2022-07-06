@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dry-configurable", "~> 0.15"
   spec.add_dependency "dry-core",         "~> 0.7"
   spec.add_dependency "dry-types",        "~> 1.5"
+  spec.add_dependency "dry-files",        "~> 0.1"
   spec.add_dependency "dry-inflector",    "~> 0.2", ">= 0.2.1"
   spec.add_dependency "dry-system",       "~> 0.24"
   spec.add_dependency "dry-monitor",      "~> 0.5"
