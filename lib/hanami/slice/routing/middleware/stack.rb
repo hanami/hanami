@@ -3,7 +3,7 @@
 require "rack/builder"
 
 module Hanami
-  class Application
+  class Slice
     module Routing
       # Hanami::Applicatione::Router middleware stack
       #
@@ -29,6 +29,14 @@ module Hanami
           def initialize
             @prefix = ROOT_PREFIX
             @stack = Hash.new { |hash, key| hash[key] = [] }
+          end
+
+          # @since 2.0.0
+          # @api private
+          def initialize_copy(source)
+            super
+            @prefix = source.instance_variable_get(:@prefix).dup
+            @stack = stack.dup
           end
 
           # @since 2.0.0

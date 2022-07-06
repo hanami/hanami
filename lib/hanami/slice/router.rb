@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "hanami/router"
-require "hanami/application/routing/middleware/stack"
+require_relative "routing/middleware/stack"
 
 module Hanami
-  class Application
+  class Slice
     # Hanami application router
     # @since 2.0.0
     class Router < ::Hanami::Router
@@ -44,6 +44,8 @@ module Hanami
 
       # @since 2.0.0
       def slice(slice_name, at:, &blk)
+        blk ||= @resolver.find_slice(slice_name).routes
+
         prev_resolver = @resolver
         @resolver = @resolver.to_slice(slice_name)
 

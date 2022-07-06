@@ -48,15 +48,61 @@ RSpec.describe "Hanami web app", :application_integration do
         end
       RUBY
 
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            define do
+            end
+          end
+        end
+      RUBY
+
       require "hanami/boot"
 
-      expect(Hanami.application[:rack_monitor]).to be_instance_of(Dry::Monitor::Rack::Middleware)
+      expect(Hanami.application["rack.monitor"]).to be_instance_of(Dry::Monitor::Rack::Middleware)
 
       get "/"
 
       logs = -> { Pathname(dir).join("test.log").realpath.read }
 
       expect(logs.()).to match %r{GET 404 \d+ms 127.0.0.1 /}
+    end
+  end
+
+  describe "Request logging when using a slice" do
+    let(:app) { Main::Slice.rack_app }
+
+    specify "Has rack monitor preconfigured with default request logging (when used via a slice)" do
+      dir = Dir.mktmpdir
+
+      with_tmp_directory(dir) do
+        write "config/application.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class Application < Hanami::Application
+              config.logger.stream = config.root.join("test.log")
+            end
+          end
+        RUBY
+
+        write "slices/main/config/routes.rb", <<~RUBY
+          module Main
+            class Routes < Hanami::Routes
+              define do
+              end
+            end
+          end
+        RUBY
+
+        require "hanami/boot"
+
+        get "/"
+
+        logs = -> { Pathname(dir).join("test.log").realpath.read }
+
+        expect(logs.()).to match %r{GET 404 \d+ms 127.0.0.1 /}
+      end
     end
   end
 
@@ -338,7 +384,7 @@ RSpec.describe "Hanami web app", :application_integration do
       require "hanami/boot"
 
       expect { Hanami.rack_app }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
       end
     end
@@ -371,7 +417,7 @@ RSpec.describe "Hanami web app", :application_integration do
       require "hanami/boot"
 
       expect { Hanami.rack_app }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
       end
     end
@@ -403,7 +449,7 @@ RSpec.describe "Hanami web app", :application_integration do
       expect { Hanami.rack_app }.not_to raise_error
 
       expect { get "/missing" }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
       end
     end
@@ -438,7 +484,7 @@ RSpec.describe "Hanami web app", :application_integration do
       expect { Hanami.rack_app }.not_to raise_error
 
       expect { get "/admin/missing" }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Application::Routing::UnknownActionError)
+        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
         expect(exception.message).to include("missing.action")
       end
     end

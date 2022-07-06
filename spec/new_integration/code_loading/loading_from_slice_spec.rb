@@ -12,7 +12,7 @@ RSpec.describe "Code loading / Loading from slice directory", :application_integ
         end
       RUBY
 
-      write "slices/main/config/settings.rb", <<~'RUBY'
+      write "slices/main/config/not_loadable.rb", <<~'RUBY'
         raise "This file should never be loaded"
       RUBY
 
@@ -58,8 +58,8 @@ RSpec.describe "Code loading / Loading from slice directory", :application_integ
   end
 
   specify "Files in slice config/ directory are not autoloaded" do
-    expect { Main::Settings }.to raise_error NameError
-    expect { Main::Config::Settings }.to raise_error NameError
+    expect { Main::NotLoadable }.to raise_error NameError
+    expect { Main::Config::NotLoadable }.to raise_error NameError
   end
 
   specify "Classes in slice directory are auto-registered" do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Hanami
-  class Application
+  class Slice
     module Routing
       # @since 2.0.0
       class UnknownActionError < Hanami::Error
@@ -31,8 +31,14 @@ module Hanami
 
         # @api private
         # @since 2.0.0
+        def find_slice(slice_name)
+          slice.slices[slice_name]
+        end
+
+        # @api private
+        # @since 2.0.0
         def to_slice(slice_name)
-          self.class.new(slice: slice.slices[slice_name])
+          self.class.new(slice: find_slice(slice_name))
         end
 
         # @api private

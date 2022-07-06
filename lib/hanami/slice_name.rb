@@ -5,8 +5,8 @@ require_relative "constants"
 module Hanami
   # Represents the name of an {Application} or {Slice}.
   #
-  # @see Application::ClassMethods#application_name
   # @see Slice::ClassMethods#slice_name
+  # @see Application::ClassMethods#application_name
   #
   # @api public
   # @since 2.0.0

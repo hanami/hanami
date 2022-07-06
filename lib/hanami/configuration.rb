@@ -7,12 +7,12 @@ require "dry/configurable"
 require "dry/inflector"
 require "pathname"
 
-require_relative "settings/dotenv_store"
+require_relative "constants"
 require_relative "configuration/logger"
 require_relative "configuration/router"
 require_relative "configuration/sessions"
-require_relative "constants"
-require_relative "application/routing/middleware/stack"
+require_relative "settings/dotenv_store"
+require_relative "slice/routing/middleware/stack"
 
 module Hanami
   # Hanami application configuration
@@ -63,7 +63,7 @@ module Hanami
         Actions.new
       }
 
-      @middleware = Application::Routing::Middleware::Stack.new
+      @middleware = Slice::Routing::Middleware::Stack.new
 
       @router = Router.new(self)
 
@@ -73,6 +73,21 @@ module Hanami
       }
 
       yield self if block_given?
+    end
+
+    def initialize_copy(source)
+      super
+
+      @application_name = application_name.dup
+      @environments = environments.dup
+
+      @assets = source.assets.dup
+      @actions = source.actions.dup
+      @middleware = source.middleware.dup
+      @router = source.router.dup.tap do |router|
+        router.instance_variable_set(:@base_configuration, self)
+      end
+      @views = source.views.dup
     end
 
     def environment(env_name, &block)
@@ -95,7 +110,7 @@ module Hanami
       super
     end
 
-    setting :root, constructor: -> path { Pathname(path) }
+    setting :root, constructor: -> path { Pathname(path) if path }
 
     setting :no_auto_register_paths, default: %w[entities]
 
@@ -116,6 +131,17 @@ module Hanami
     end
 
     setting :settings_store, default: Hanami::Settings::DotenvStore
+
+    setting :slices do
+      setting :shared_component_keys, default: %w[
+        inflector
+        logger
+        notifications
+        rack.monitor
+        routes
+        settings
+      ]
+    end
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
 

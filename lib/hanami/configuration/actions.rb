@@ -5,7 +5,7 @@ require "hanami/action/configuration"
 require_relative "actions/cookies"
 require_relative "actions/sessions"
 require_relative "actions/content_security_policy"
-require_relative "../application/view_name_inferrer"
+require_relative "../slice/view_name_inferrer"
 
 module Hanami
   class Configuration
@@ -21,13 +21,13 @@ module Hanami
 
       setting :name_inference_base, default: "actions"
       setting :view_context_identifier, default: "views.context"
-      setting :view_name_inferrer, default: Application::ViewNameInferrer
+      setting :view_name_inferrer, default: Slice::ViewNameInferrer
       setting :view_name_inference_base, default: "views"
 
       attr_accessor :content_security_policy
 
       attr_reader :base_configuration
-      private :base_configuration
+      protected :base_configuration
 
       def initialize(*, **options)
         super()
@@ -41,6 +41,12 @@ module Hanami
         end
 
         configure_defaults
+      end
+
+      def initialize_copy(source)
+        super
+        @base_configuration = source.base_configuration.dup
+        @content_security_policy = source.content_security_policy.dup
       end
 
       def finalize!

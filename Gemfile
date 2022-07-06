@@ -16,9 +16,10 @@ gem "hanami-view", "~> 2.0.alpha", git: "https://github.com/hanami/view.git", br
 
 gem "hanami-devtools", require: false, git: "https://github.com/hanami/devtools.git", branch: "main"
 
-gem "dry-files", git: "https://github.com/dry-rb/dry-files.git", branch: "main"
+gem "dry-files", git: "https://github.com/dry-rb/dry-files.git"
 gem "dry-monitor", git: "https://github.com/dry-rb/dry-monitor.git", branch: "main"
-gem "dry-system", git: "https://github.com/dry-rb/dry-system.git", branch: "main"
+gem "dry-system", git: "https://github.com/dry-rb/dry-system.git", branch: "prefer-local-components-when-importing"
+gem "dry-container", git: "https://github.com/dry-rb/dry-container.git", branch: "accept-block-with-merge"
 
 group :test do
   gem "dotenv"

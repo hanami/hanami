@@ -74,9 +74,7 @@ RSpec.describe "Application shutdown", :application_integration do
         end
       RUBY
 
-      require "hanami/setup"
-
-      Hanami.boot
+      require "hanami/boot"
 
       app_connection = Hanami.application["connection"]
       slice_connection = Main::Slice["connection"]
