@@ -404,8 +404,8 @@ module Hanami
           resolver: configuration.router.resolver.new(slice: self),
           **configuration.router.options
         ) do
-          use rack_monitor
-          use config.sessions.middleware if config.sessions.enabled?
+          use(rack_monitor)
+          use(*config.sessions.middleware) if config.sessions.enabled?
 
           middleware_stack.update(config.middleware_stack)
         end
