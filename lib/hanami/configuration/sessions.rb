@@ -30,7 +30,7 @@ module Hanami
       end
 
       def middleware
-        [storage_middleware, options, nil]
+        [storage_middleware, options]
       end
 
       private
