@@ -2,17 +2,17 @@
 
 require "hanami"
 
-RSpec.describe "Application view / Inflector", :application_integration do
+RSpec.describe "App view / Inflector", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
         config.root = "/test_app"
       end
     end
 
-    Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
-    Hanami.application.register_slice :main
-    Hanami.application.prepare
+    Hanami.app.instance_eval(&app_hook) if respond_to?(:app_hook)
+    Hanami.app.register_slice :main
+    Hanami.app.prepare
 
     module TestApp
       class View < Hanami::View
@@ -22,14 +22,14 @@ RSpec.describe "Application view / Inflector", :application_integration do
 
   subject(:view_class) { TestApp::View }
 
-  context "default application inflector" do
-    it "configures the view with the default application inflector" do
-      expect(view_class.config.inflector).to be TestApp::Application.config.inflector
+  context "default app inflector" do
+    it "configures the view with the default app inflector" do
+      expect(view_class.config.inflector).to be TestApp::App.config.inflector
     end
   end
 
   context "custom inflections configured" do
-    let(:application_hook) {
+    let(:app_hook) {
       proc do
         config.inflections do |inflections|
           inflections.acronym "NBA"
@@ -37,8 +37,8 @@ RSpec.describe "Application view / Inflector", :application_integration do
       end
     }
 
-    it "configures the view with the customized application inflector" do
-      expect(view_class.config.inflector).to be TestApp::Application.config.inflector
+    it "configures the view with the customized app inflector" do
+      expect(view_class.config.inflector).to be TestApp::App.config.inflector
       expect(view_class.config.inflector.camelize("nba_jam")).to eq "NBAJam"
     end
   end
@@ -50,7 +50,7 @@ RSpec.describe "Application view / Inflector", :application_integration do
       view_class.config.inflector = custom_inflector
     end
 
-    it "overrides the default application inflector" do
+    it "overrides the default app inflector" do
       expect(view_class.config.inflector).to be custom_inflector
     end
   end

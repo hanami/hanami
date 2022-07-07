@@ -7,7 +7,7 @@ RSpec.describe "body parsers", type: :integration do
       enable_json_body_parser
 
       server do
-        post "/books", %({"book": {"title": "CLI apps with Ruby"}}), "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"
+        post "/books", %({"book": {"title": "CLI apps with Ruby"}}), "CONTENT_TYPE" => "app/json", "HTTP_ACCEPT" => "app/json"
         expect(last_response.body).to eq(%({"book":{"title":"CLI apps with Ruby"}}))
       end
     end
@@ -19,7 +19,7 @@ RSpec.describe "body parsers", type: :integration do
       enable_json_body_parser
 
       server do
-        post "/books", %({"json_class": "Foo"}), "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"
+        post "/books", %({"json_class": "Foo"}), "CONTENT_TYPE" => "app/json", "HTTP_ACCEPT" => "app/json"
         expect(last_response.body).to eq(%({"json_class":"Foo"}))
       end
     end
@@ -45,6 +45,6 @@ RSpec.describe "body parsers", type: :integration do
   end
 
   def enable_json_body_parser
-    inject_line_after "apps/web/application.rb", "configure do", "body_parsers :json"
+    inject_line_after "apps/web/app.rb", "configure do", "body_parsers :json"
   end
 end

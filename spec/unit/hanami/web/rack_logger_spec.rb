@@ -7,10 +7,10 @@ require "rack/mock"
 
 RSpec.describe Hanami::Web::RackLogger do
   subject { described_class.new(logger) }
-  let(:logger) { Hanami::Logger.new(application_name, stream: stream, level: Hanami::Logger::DEBUG, filter: filters) }
+  let(:logger) { Hanami::Logger.new(app_name, stream: stream, level: Hanami::Logger::DEBUG, filter: filters) }
   let(:stream) { StringIO.new }
   let(:filters) { ["user.password"] }
-  let(:application_name) { "my_app" }
+  let(:app_name) { "my_app" }
 
   describe "#initialize" do
     it "returns an instance of #{described_class}" do
@@ -42,7 +42,7 @@ RSpec.describe Hanami::Web::RackLogger do
       stream.rewind
       actual = stream.read
 
-      expect(actual).to include(%([#{application_name}] [INFO] [#{time}] #{verb} #{status} #{elapsed}ms #{ip} #{path} #{content_length} {"user"=>{"password"=>"[FILTERED]"}}))
+      expect(actual).to include(%([#{app_name}] [INFO] [#{time}] #{verb} #{status} #{elapsed}ms #{ip} #{path} #{content_length} {"user"=>{"password"=>"[FILTERED]"}}))
     end
 
     context "ip" do

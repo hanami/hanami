@@ -30,8 +30,8 @@ module Hanami
 
         inherited_mod = Module.new do
           define_method(:inherited) do |subclass|
-            unless Hanami.application?
-              raise ComponentLoadError, "Class #{klass} must be defined within an Hanami application"
+            unless Hanami.app?
+              raise ComponentLoadError, "Class #{klass} must be defined within an Hanami app"
             end
 
             super(subclass)
@@ -51,7 +51,7 @@ module Hanami
       def slice_for(klass)
         return unless klass.name
 
-        slices = Hanami.application.slices.to_a + [Hanami.application]
+        slices = Hanami.app.slices.to_a + [Hanami.app]
 
         slices.detect { |slice| klass.name.include?(slice.namespace.to_s) }
       end

@@ -43,7 +43,7 @@ RSpec.describe "hanami generate", type: :integration do
               .read("config/environment.rb")
               .lines
               .reject { |l| l[/^require_relative '.*'\n$/] }
-              .reject { |l| l[/^  mount Web::Application, at: '\/'\n$/] }
+              .reject { |l| l[/^  mount Web::App, at: '\/'\n$/] }
               .join("")
           )
 
@@ -52,35 +52,35 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # config/environment.rb
           #
-          expect("config/environment.rb").to have_file_content(%r{require_relative '../apps/#{app}/application'})
-          expect("config/environment.rb").to have_file_content(%r{mount #{app_name}::Application, at: '/no_req_relative'})
+          expect("config/environment.rb").to have_file_content(%r{require_relative '../apps/#{app}/app'})
+          expect("config/environment.rb").to have_file_content(%r{mount #{app_name}::App, at: '/no_req_relative'})
         end
       end
     end
 
-    context "--application-base-url" do
+    context "--app-base-url" do
       it "generates app" do
-        with_project("bookshelf_generate_app_application_base_url") do
+        with_project("bookshelf_generate_app_app_base_url") do
           app      = "api"
           app_name = Hanami::Utils::String.new(app).classify
           output   = [
             "insert  config/environment.rb"
           ]
 
-          run_cmd "hanami generate app #{app} --application-base-url=/api/v1", output
+          run_cmd "hanami generate app #{app} --app-base-url=/api/v1", output
 
           #
           # config/environment.rb
           #
-          expect("config/environment.rb").to have_file_content(%r{require_relative '../apps/#{app}/application'})
-          expect("config/environment.rb").to have_file_content(%r{mount #{app_name}::Application, at: '/api/v1'})
+          expect("config/environment.rb").to have_file_content(%r{require_relative '../apps/#{app}/app'})
+          expect("config/environment.rb").to have_file_content(%r{mount #{app_name}::App, at: '/api/v1'})
         end
       end
 
       it "fails with missing argument" do
-        with_project("bookshelf_generate_app_missing_application_base_url") do
+        with_project("bookshelf_generate_app_missing_app_base_url") do
           output = "`' is not a valid URL"
-          run_cmd "hanami generate app foo --application-base-url=", output, exit_status: 1
+          run_cmd "hanami generate app foo --app-base-url=", output, exit_status: 1
         end
       end
     end
@@ -91,15 +91,15 @@ RSpec.describe "hanami generate", type: :integration do
           app      = "admin"
           app_name = Hanami::Utils::String.new(app).classify
           output   = [
-            "create  apps/#{app}/templates/application.html.erb"
+            "create  apps/#{app}/templates/app.html.erb"
           ]
 
           run_cmd "hanami generate app #{app}", output
 
           #
-          # apps/admin/templates/application.html.erb
+          # apps/admin/templates/app.html.erb
           #
-          expect("apps/admin/templates/application.html.erb").to have_file_content <<~END
+          expect("apps/admin/templates/app.html.erb").to have_file_content <<~END
             <!DOCTYPE html>
             <html>
               <head>
@@ -112,9 +112,9 @@ RSpec.describe "hanami generate", type: :integration do
             </html>
           END
           #
-          # spec/admin/views/application_layout_spec.rb
+          # spec/admin/views/app_layout_spec.rb
           #
-          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{Admin::Views::ApplicationLayout})
+          expect("spec/admin/views/app_layout_spec.rb").to have_file_content(%r{Admin::Views::AppLayout})
         end
       end
     end # erb
@@ -125,15 +125,15 @@ RSpec.describe "hanami generate", type: :integration do
           app      = "admin"
           app_name = Hanami::Utils::String.new(app).classify
           output   = [
-            "create  apps/#{app}/templates/application.html.haml"
+            "create  apps/#{app}/templates/app.html.haml"
           ]
 
           run_cmd "hanami generate app #{app}", output
 
           #
-          # apps/admin/templates/application.html.haml
+          # apps/admin/templates/app.html.haml
           #
-          expect("apps/admin/templates/application.html.haml").to have_file_content <<~END
+          expect("apps/admin/templates/app.html.haml").to have_file_content <<~END
             !!!
             %html
               %head
@@ -144,9 +144,9 @@ RSpec.describe "hanami generate", type: :integration do
           END
 
           #
-          # spec/admin/views/application_layout_spec.rb
+          # spec/admin/views/app_layout_spec.rb
           #
-          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{Admin::Views::ApplicationLayout})
+          expect("spec/admin/views/app_layout_spec.rb").to have_file_content(%r{Admin::Views::AppLayout})
         end
       end
     end # haml
@@ -157,15 +157,15 @@ RSpec.describe "hanami generate", type: :integration do
           app      = "admin"
           app_name = Hanami::Utils::String.new(app).classify
           output   = [
-            "create  apps/#{app}/templates/application.html.slim"
+            "create  apps/#{app}/templates/app.html.slim"
           ]
 
           run_cmd "hanami generate app #{app}", output
 
           #
-          # apps/admin/templates/application.html.slim
+          # apps/admin/templates/app.html.slim
           #
-          expect("apps/admin/templates/application.html.slim").to have_file_content <<~END
+          expect("apps/admin/templates/app.html.slim").to have_file_content <<~END
             doctype html
             html
               head
@@ -177,9 +177,9 @@ RSpec.describe "hanami generate", type: :integration do
           END
 
           #
-          # spec/admin/views/application_layout_spec.rb
+          # spec/admin/views/app_layout_spec.rb
           #
-          expect("spec/admin/views/application_layout_spec.rb").to have_file_content(%r{Admin::Views::ApplicationLayout})
+          expect("spec/admin/views/app_layout_spec.rb").to have_file_content(%r{Admin::Views::AppLayout})
         end
       end
     end # slim
@@ -197,15 +197,15 @@ Description:
   Generate an app
 
 Arguments:
-  APP                               # REQUIRED The application name (eg. `web`)
+  APP                               # REQUIRED The app name (eg. `web`)
 
 Options:
-  --application-base-url=VALUE      # The app base URL (eg. `/api/v1`)
+  --app-base-url=VALUE      # The app base URL (eg. `/api/v1`)
   --help, -h                        # Print this help
 
 Examples:
   hanami generate app admin                              # Generate `admin` app
-  hanami generate app api --application-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
+  hanami generate app api --app-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
 OUT
 
         run_cmd 'hanami generate app --help', output

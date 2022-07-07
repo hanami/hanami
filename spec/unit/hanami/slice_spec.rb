@@ -1,9 +1,9 @@
 require "hanami/slice"
 
-RSpec.describe Hanami::Slice, :application_integration do
+RSpec.describe Hanami::Slice, :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
       end
     end
   end
@@ -16,13 +16,13 @@ RSpec.describe Hanami::Slice, :application_integration do
   end
 
   describe ".prepare_container" do
-    let(:application_modules) { %i[TestApp Slice1 Slice2] }
+    let(:app_modules) { %i[TestApp Slice1 Slice2] }
 
     it "allows the user to configure the container after defaults settings have been applied" do
-      slice = Hanami.application.register_slice(:slice1).prepare
+      slice = Hanami.app.register_slice(:slice1).prepare
       expect(slice.container.config.name).to eq :slice1
 
-      slice = Hanami.application.register_slice(:slice2) {
+      slice = Hanami.app.register_slice(:slice2) {
         prepare_container do |container|
           container.config.name = :my_slice
         end

@@ -2,18 +2,18 @@
 
 require "rack/test"
 
-RSpec.describe "Hanami web app", :application_integration do
+RSpec.describe "Hanami web app", :app_integration do
   include Rack::Test::Methods
 
   let(:app) { Hanami.rack_app }
 
   specify "Hanami.rack_app returns a rack builder" do
     with_tmp_directory do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -38,11 +38,11 @@ RSpec.describe "Hanami web app", :application_integration do
     dir = Dir.mktmpdir
 
     with_tmp_directory(dir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.logger.stream = config.root.join("test.log")
           end
         end
@@ -59,7 +59,7 @@ RSpec.describe "Hanami web app", :application_integration do
 
       require "hanami/boot"
 
-      expect(Hanami.application["rack.monitor"]).to be_instance_of(Dry::Monitor::Rack::Middleware)
+      expect(Hanami.app["rack.monitor"]).to be_instance_of(Dry::Monitor::Rack::Middleware)
 
       get "/"
 
@@ -76,11 +76,11 @@ RSpec.describe "Hanami web app", :application_integration do
       dir = Dir.mktmpdir
 
       with_tmp_directory(dir) do
-        write "config/application.rb", <<~RUBY
+        write "config/app.rb", <<~RUBY
           require "hanami"
 
           module TestApp
-            class Application < Hanami::Application
+            class App < Hanami::App
               config.logger.stream = config.root.join("test.log")
             end
           end
@@ -108,11 +108,11 @@ RSpec.describe "Hanami web app", :application_integration do
 
   specify "Routing to actions based on their container identifiers" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
           end
         end
@@ -215,11 +215,11 @@ RSpec.describe "Hanami web app", :application_integration do
   # TODO: is this test even needed, given this is standard hanami-router behavior?
   specify "It gives priority to the last declared route" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
           end
         end
@@ -282,11 +282,11 @@ RSpec.describe "Hanami web app", :application_integration do
 
   specify "It does not choose actions from slice to route in app" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
           end
         end
@@ -360,13 +360,13 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
-  specify "For a booted application, rack_app raises an exception if a referenced action isn't registered in the application" do
+  specify "For a booted app, rack_app raises an exception if a referenced action isn't registered in the app" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -390,13 +390,13 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
-  specify "For a booted application, rack_app raises an error if a referenced action isn't registered in a slice" do
+  specify "For a booted app, rack_app raises an error if a referenced action isn't registered in a slice" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             register_slice :admin
           end
         end
@@ -423,13 +423,13 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
-  specify "For a non-booted application, rack_app does not raise an error if a referenced action isn't registered in the application" do
+  specify "For a non-booted app, rack_app does not raise an error if a referenced action isn't registered in the app" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -455,13 +455,13 @@ RSpec.describe "Hanami web app", :application_integration do
     end
   end
 
-  specify "For a non-booted application, rack_app does not raise an error if a referenced action isn't registered in a slice" do
+  specify "For a non-booted app, rack_app does not raise an error if a referenced action isn't registered in a slice" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             register_slice :admin
           end
         end
@@ -492,11 +492,11 @@ RSpec.describe "Hanami web app", :application_integration do
 
   specify "rack_app raises an error if a referenced slice is not registered" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY

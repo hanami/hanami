@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe "Code loading / Loading from slice directory", :application_integration do
+RSpec.describe "Code loading / Loading from slice directory", :app_integration do
   before :context do
     with_directory(@dir = make_tmp_directory) do
-      write "config/application.rb", <<~'RUBY'
+      write "config/app.rb", <<~'RUBY'
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -77,11 +77,11 @@ RSpec.describe "Code loading / Loading from slice directory", :application_integ
   describe "slice lib/ directory" do
     before :context do
       with_directory(@dir = make_tmp_directory) do
-        write "config/application.rb", <<~'RUBY'
+        write "config/app.rb", <<~'RUBY'
           require "hanami"
 
           module TestApp
-            class Application < Hanami::Application
+            class App < Hanami::App
             end
           end
         RUBY
@@ -108,11 +108,11 @@ RSpec.describe "Code loading / Loading from slice directory", :application_integ
   describe "same-named class defined in both slice and lib/ directories" do
     before :context do
       with_directory(@dir = make_tmp_directory) do
-        write "config/application.rb", <<~'RUBY'
+        write "config/app.rb", <<~'RUBY'
           require "hanami"
 
           module TestApp
-            class Application < Hanami::Application
+            class App < Hanami::App
             end
           end
         RUBY

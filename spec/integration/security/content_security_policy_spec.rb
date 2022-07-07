@@ -9,7 +9,7 @@ RSpec.describe "Content-Security-Policy header", type: :integration do
         get "/"
 
         expect(last_response.status).to                             eq(200)
-        expect(last_response.headers["Content-Security-Policy"]).to eq("form-action 'self'; frame-ancestors 'self'; base-uri 'self'; default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https:; font-src 'self'; object-src 'none'; plugin-types application/pdf; child-src 'self'; frame-src 'self'; media-src 'self'")
+        expect(last_response.headers["Content-Security-Policy"]).to eq("form-action 'self'; frame-ancestors 'self'; base-uri 'self'; default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https:; font-src 'self'; object-src 'none'; plugin-types app/pdf; child-src 'self'; frame-src 'self'; media-src 'self'")
       end
     end
   end
@@ -18,13 +18,13 @@ RSpec.describe "Content-Security-Policy header", type: :integration do
     with_project do
       generate "action web home#index --url=/"
 
-      replace "apps/web/application.rb", "script-src 'self';", "script-src 'self' https://code.jquery.com;"
+      replace "apps/web/app.rb", "script-src 'self';", "script-src 'self' https://code.jquery.com;"
 
       server do
         get "/"
 
         expect(last_response.status).to                             eq(200)
-        expect(last_response.headers["Content-Security-Policy"]).to eq("form-action 'self'; frame-ancestors 'self'; base-uri 'self'; default-src 'none'; script-src 'self' https://code.jquery.com; connect-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https:; font-src 'self'; object-src 'none'; plugin-types application/pdf; child-src 'self'; frame-src 'self'; media-src 'self'")
+        expect(last_response.headers["Content-Security-Policy"]).to eq("form-action 'self'; frame-ancestors 'self'; base-uri 'self'; default-src 'none'; script-src 'self' https://code.jquery.com; connect-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https:; font-src 'self'; object-src 'none'; plugin-types app/pdf; child-src 'self'; frame-src 'self'; media-src 'self'")
       end
     end
   end
@@ -33,7 +33,7 @@ RSpec.describe "Content-Security-Policy header", type: :integration do
     with_project do
       generate "action web home#index --url=/"
 
-      replace "apps/web/application.rb", "security.content_security_policy %{", "%{"
+      replace "apps/web/app.rb", "security.content_security_policy %{", "%{"
 
       server do
         get "/"

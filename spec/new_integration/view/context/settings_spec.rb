@@ -2,10 +2,10 @@
 
 require "hanami"
 
-RSpec.describe "Application view / Context / Settings", :application_integration do
+RSpec.describe "App view / Context / Settings", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
       end
     end
 
@@ -23,8 +23,8 @@ RSpec.describe "Application view / Context / Settings", :application_integration
   subject(:context) { context_class.new }
 
   describe "#settings" do
-    it "is the application settings by default" do
-      expect(context.settings).to be TestApp::Application.settings
+    it "is the app settings by default" do
+      expect(context.settings).to be TestApp::App.settings
     end
 
     context "injected settings" do

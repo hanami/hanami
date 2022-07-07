@@ -7,11 +7,11 @@ RSpec.describe "Early Hints", type: :integration do
     with_project("bookshelf", server: :puma) do
       generate "action web home#index --url=/"
 
-      write "apps/web/assets/javascripts/application.css", <<~EOF
+      write "apps/web/assets/javascripts/app.css", <<~EOF
         body { margin: 0; }
       EOF
 
-      inject_line_after "apps/web/templates/application.html.erb", /favicon/, %(<%= stylesheet "application" %>)
+      inject_line_after "apps/web/templates/app.html.erb", /favicon/, %(<%= stylesheet "app" %>)
       inject_line_after "config/environment.rb", /mount/, "early_hints true"
 
       write "config/puma.rb", <<~EOF
@@ -28,7 +28,7 @@ RSpec.describe "Early Hints", type: :integration do
         #
         # For this reason we fall back to cURL for this test.
         system_exec("curl -i -v http://localhost:#{port}/")
-        expect(out).to include("Link: </assets/application.css>; rel=preload; as=style")
+        expect(out).to include("Link: </assets/app.css>; rel=preload; as=style")
       end
     end
   end

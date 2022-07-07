@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-RSpec.describe "Application action / Cookies", :application_integration do
+RSpec.describe "App action / Cookies", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
       end
     end
 
-    Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
-    Hanami.application.prepare
+    Hanami.app.instance_eval(&app_hook) if respond_to?(:app_hook)
+    Hanami.app.prepare
 
     module TestApp
       class Action < Hanami::Action
@@ -24,8 +24,8 @@ RSpec.describe "Application action / Cookies", :application_integration do
     end
   end
 
-  context "custom cookie options given in application-level config" do
-    subject(:application_hook) {
+  context "custom cookie options given in app-level config" do
+    subject(:app_hook) {
       proc do
         config.actions.cookies = {max_age: 300}
       end
@@ -40,8 +40,8 @@ RSpec.describe "Application action / Cookies", :application_integration do
     end
   end
 
-  context "cookies disabled in application-level config" do
-    subject(:application_hook) {
+  context "cookies disabled in app-level config" do
+    subject(:app_hook) {
       proc do
         config.actions.cookies = nil
       end

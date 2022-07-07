@@ -9,34 +9,34 @@ module Hanami
   @_mutex = Mutex.new
   @_bundled = {}
 
-  def self.application
+  def self.app
     @_mutex.synchronize do
-      unless defined?(@_application)
-        raise ApplicationLoadError,
-              "Hanami.application is not yet configured. " \
-              "You may need to `require \"hanami/setup\"` to load your config/application.rb file."
+      unless defined?(@_app)
+        raise AppLoadError,
+              "Hanami.app is not yet configured. " \
+              "You may need to `require \"hanami/setup\"` to load your config/app.rb file."
       end
 
-      @_application
+      @_app
     end
   end
 
-  def self.application?
-    defined?(@_application)
+  def self.app?
+    defined?(@_app)
   end
 
-  def self.application=(klass)
+  def self.app=(klass)
     @_mutex.synchronize do
-      if defined?(@_application)
-        raise ApplicationLoadError, "Hanami.application is already configured."
+      if defined?(@_app)
+        raise AppLoadError, "Hanami.app is already configured."
       end
 
-      @_application = klass unless klass.name.nil?
+      @_app = klass unless klass.name.nil?
     end
   end
 
   def self.rack_app
-    application.rack_app
+    app.rack_app
   end
 
   def self.env
@@ -48,19 +48,19 @@ module Hanami
   end
 
   def self.logger
-    application[:logger]
+    app[:logger]
   end
 
   def self.prepare
-    application.prepare
+    app.prepare
   end
 
   def self.boot
-    application.boot
+    app.boot
   end
 
   def self.shutdown
-    application.shutdown
+    app.shutdown
   end
 
   def self.bundled?(gem_name)
@@ -81,5 +81,5 @@ module Hanami
   require_relative "hanami/version"
   require_relative "hanami/errors"
   require_relative "hanami/extensions"
-  require_relative "hanami/application"
+  require_relative "hanami/app"
 end

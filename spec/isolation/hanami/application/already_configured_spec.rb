@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Bookshelf
-  class Application < Hanami::Application
+  class App < Hanami::App
   end
 end
 
@@ -10,10 +10,10 @@ RSpec.describe Hanami do
     it "it raises error when already assigned" do
       expect do
         module Soundcard
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
-      end.to raise_error("Hanami.application already configured")
+      end.to raise_error("Hanami.app already configured")
     end
   end
 end

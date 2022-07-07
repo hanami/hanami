@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-RSpec.describe "Application shutdown", :application_integration do
-  specify "Application shutdown stops providers in both the application and slices" do
+RSpec.describe "App shutdown", :app_integration do
+  specify "App shutdown stops providers in both the app and slices" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         # frozen_string_literal: true
 
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -17,7 +17,7 @@ RSpec.describe "Application shutdown", :application_integration do
       write "config/providers/connection.rb", <<~RUBY
         # frozen_string_literal: true
 
-        Hanami.application.register_provider :connection do
+        Hanami.app.register_provider :connection do
           prepare do
             module TestApp
               class Connection
@@ -76,7 +76,7 @@ RSpec.describe "Application shutdown", :application_integration do
 
       require "hanami/boot"
 
-      app_connection = Hanami.application["connection"]
+      app_connection = Hanami.app["connection"]
       slice_connection = Main::Slice["connection"]
 
       expect(app_connection.connected).to be true

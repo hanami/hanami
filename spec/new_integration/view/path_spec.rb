@@ -2,17 +2,17 @@
 
 require "hanami"
 
-RSpec.describe "Application view / Path", :application_integration do
+RSpec.describe "App view / Path", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
         config.root = "/test_app"
       end
     end
 
-    Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
-    Hanami.application.register_slice :main
-    Hanami.application.prepare
+    Hanami.app.instance_eval(&app_hook) if respond_to?(:app_hook)
+    Hanami.app.register_slice :main
+    Hanami.app.prepare
 
     module TestApp
       class View < Hanami::View
@@ -30,8 +30,8 @@ RSpec.describe "Application view / Path", :application_integration do
     end
   end
 
-  context "relative path provided in application config" do
-    let(:application_hook) {
+  context "relative path provided in app config" do
+    let(:app_hook) {
       proc do
         config.views.paths = ["my_templates"]
       end
@@ -42,8 +42,8 @@ RSpec.describe "Application view / Path", :application_integration do
     end
   end
 
-  context "absolute path provided in application config" do
-    let(:application_hook) {
+  context "absolute path provided in app config" do
+    let(:app_hook) {
       proc do
         config.views.paths = ["/absolute/path"]
       end

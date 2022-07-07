@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe "Slices / Slice configuration", :application_integration do
-  specify "Slices receive a copy of the application configuration, and can make distinct modifications" do
+RSpec.describe "Slices / Slice configuration", :app_integration do
+  specify "Slices receive a copy of the app configuration, and can make distinct modifications" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
 
             config.no_auto_register_paths << "structs"
@@ -32,7 +32,7 @@ RSpec.describe "Slices / Slice configuration", :application_integration do
 
       require "hanami/prepare"
 
-      expect(TestApp::Application.config.no_auto_register_paths).to eq %w[entities structs]
+      expect(TestApp::App.config.no_auto_register_paths).to eq %w[entities structs]
       expect(Main::Slice.config.no_auto_register_paths).to eq %w[entities structs schemas]
       expect(Search::Slice.config.no_auto_register_paths).to eq %w[entities structs]
     end

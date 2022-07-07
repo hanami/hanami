@@ -40,7 +40,7 @@ require 'hanami/helpers'
 require 'hanami/assets'
 
 module #{app_name}
-  class Application < Hanami::Application
+  class App < Hanami::App
     configure do
       ##
       # BASIC

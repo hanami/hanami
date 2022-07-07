@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "hanami/application"
+require "hanami/app"
 require "hanami/slice_configurable"
 
-RSpec.describe Hanami::SliceConfigurable, :application_integration do
+RSpec.describe Hanami::SliceConfigurable, :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
         register_slice :main
         register_slice :admin
       end
@@ -29,7 +29,7 @@ RSpec.describe Hanami::SliceConfigurable, :application_integration do
       end
     end
 
-    Hanami.application.prepare
+    Hanami.app.prepare
   end
 
   context "subclass inside slice namespace" do
@@ -74,7 +74,7 @@ RSpec.describe Hanami::SliceConfigurable, :application_integration do
     end
   end
 
-  context "class inside application" do
+  context "class inside app" do
     before do
       module TestApp
         class MySubclass < TestApp::BaseClass; end
@@ -83,8 +83,8 @@ RSpec.describe Hanami::SliceConfigurable, :application_integration do
 
     subject(:subclass) { TestApp::MySubclass }
 
-    it "calls `configure_for_slice` with the application instance" do
-      expect(subclass.traces).to eq [TestApp::Application]
+    it "calls `configure_for_slice` with the app instance" do
+      expect(subclass.traces).to eq [TestApp::App]
     end
 
     context "further subclass, within another slice namespace" do
@@ -97,7 +97,7 @@ RSpec.describe Hanami::SliceConfigurable, :application_integration do
       subject(:subclass) { Main::MySubSubclass }
 
       it "calls `configure_for_slice` with the other slice" do
-        expect(subclass.traces).to eq [TestApp::Application, Main::Slice]
+        expect(subclass.traces).to eq [TestApp::App, Main::Slice]
       end
     end
   end

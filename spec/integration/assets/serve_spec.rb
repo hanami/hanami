@@ -8,19 +8,19 @@ RSpec.describe "assets", type: :integration do
       with_project(project, gems: ['sassc']) do
         generate "action web home#index --url=/"
 
-        write "apps/web/assets/javascripts/application.css.sass", <<~EOF
+        write "apps/web/assets/javascripts/app.css.sass", <<~EOF
           $font-family: Helvetica, sans-serif
 
           body
             font: 100% $font-family
         EOF
-        rewrite "apps/web/templates/application.html.erb", <<~EOF
+        rewrite "apps/web/templates/app.html.erb", <<~EOF
           <!DOCTYPE html>
           <html>
             <head>
               <title>Web</title>
               <%= favicon %>
-              <%= stylesheet 'application' %>
+              <%= stylesheet 'app' %>
             </head>
             <body>
               <%= yield %>
@@ -30,9 +30,9 @@ RSpec.describe "assets", type: :integration do
 
         server do
           visit "/"
-          expect(page.body).to include(%(<link href="/assets/application.css" type="text/css" rel="stylesheet">))
+          expect(page.body).to include(%(<link href="/assets/app.css" type="text/css" rel="stylesheet">))
 
-          visit "/assets/application.css"
+          visit "/assets/app.css"
           expect(page.body).to include(%(body {\n  font: 100% Helvetica, sans-serif; }\n))
         end
       end
@@ -43,7 +43,7 @@ RSpec.describe "assets", type: :integration do
         generate "action web home#index --url=/"
 
         replace(
-          "apps/web/application.rb",
+          "apps/web/app.rb",
           "# Specify sources for assets",
           "prefix '/library/assets'\n# Specify sources for assets"
         )
@@ -54,14 +54,14 @@ RSpec.describe "assets", type: :integration do
           "namespace :library { get '/', to: 'home#index' }"
         )
 
-        write "apps/web/assets/javascripts/application.js", <<~EOF
+        write "apps/web/assets/javascripts/app.js", <<~EOF
           console.log('test');
         EOF
 
         hanami "assets precompile"
 
         server do
-          visit "/library/assets/application.js"
+          visit "/library/assets/app.js"
           expect(page).to have_content("console.log('test');")
         end
       end

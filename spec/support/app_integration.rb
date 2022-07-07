@@ -24,16 +24,16 @@ RSpec.shared_context "Application integration" do
 end
 
 RSpec.configure do |config|
-  config.include RSpec::Support::Files, :application_integration
-  config.include RSpec::Support::WithTmpDirectory, :application_integration
-  config.include_context "Application integration", :application_integration
+  config.include RSpec::Support::Files, :app_integration
+  config.include RSpec::Support::WithTmpDirectory, :app_integration
+  config.include_context "Application integration", :app_integration
 
-  config.before :each, :application_integration do
+  config.before :each, :app_integration do
     @load_paths = $LOAD_PATH.dup
     @loaded_features = $LOADED_FEATURES.dup
   end
 
-  config.after :each, :application_integration do
+  config.after :each, :app_integration do
     # Tear down Zeitwerk (from zeitwerk's own test/support/loader_test)
     Zeitwerk::Registry.loaders.each(&:unload)
     Zeitwerk::Registry.loaders.clear
@@ -50,8 +50,8 @@ RSpec.configure do |config|
     Zeitwerk::ExplicitNamespace.cpaths.clear
     Zeitwerk::ExplicitNamespace.tracer.disable
 
-    if Hanami.instance_variable_defined?(:@_application)
-      Hanami.remove_instance_variable(:@_application)
+    if Hanami.instance_variable_defined?(:@_app)
+      Hanami.remove_instance_variable(:@_app)
     end
 
     $LOAD_PATH.replace(@load_paths)

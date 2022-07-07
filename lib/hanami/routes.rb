@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Hanami
-  # Application routes
+  # App routes
   #
-  # Users are expected to inherit from this class to define their application
+  # Users are expected to inherit from this class to define their app
   # routes.
   #
   # @example
@@ -26,9 +26,9 @@ module Hanami
   # @see Hanami::Slice::Router
   # @since 2.0.0
   class Routes
-    # Defines application routes
+    # Defines app routes
     #
-    # @yield DSL syntax to define application routes executed in the context
+    # @yield DSL syntax to define app routes executed in the context
     # of {Hanami::Slice::Router}
     #
     # @return [Proc]

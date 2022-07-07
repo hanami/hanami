@@ -104,7 +104,7 @@ RSpec.describe "hanami destroy", type: :integration do
     it "fails with unknown action" do
       with_project("bookshelf_generate_action_with_unknown_action") do
         output = <<~OUT
-          cannot find `home#index' in `web' application.
+          cannot find `home#index' in `web' app.
           please run `hanami routes' to know the existing actions.
         OUT
 
@@ -125,7 +125,7 @@ Description:
   Destroy an action from app
 
 Arguments:
-  APP                               # REQUIRED The application name (eg. `web`)
+  APP                               # REQUIRED The app name (eg. `web`)
   ACTION                            # REQUIRED The action name (eg. `home#index`)
 
 Options:

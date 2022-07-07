@@ -2,7 +2,7 @@
 
 RSpec.describe "hanami generate", type: :integration do
   describe "secret" do
-    context "without application name" do
+    context "without app name" do
       it "prints secret" do
         with_project do
           generate "secret"
@@ -12,7 +12,7 @@ RSpec.describe "hanami generate", type: :integration do
       end
     end
 
-    context "with application name" do
+    context "with app name" do
       it "prints secret" do
         with_project do
           generate "secret web"
@@ -35,7 +35,7 @@ Description:
   Generate session secret
 
 Arguments:
-  APP                               # The application name (eg. `web`)
+  APP                               # The app name (eg. `web`)
 
 Options:
   --help, -h                        # Print this help

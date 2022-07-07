@@ -4,17 +4,17 @@ require "hanami/action"
 require "hanami/logger"
 
 module Bookshelf
-  class Application < Hanami::Application
+  class App < Hanami::App
   end
 end
 
 module Web
 end
-slice = Hanami.application.register_slice :web, namespace: Web
+slice = Hanami.app.register_slice :web, namespace: Web
 
 Hanami.prepare
 
-Hanami.application.routes do
+Hanami.app.routes do
   mount :web, at: "/" do
     root to: "home#index"
   end
@@ -38,12 +38,12 @@ end
 
 RSpec.describe Hanami do
   describe ".boot" do
-    it "assigns Hanami.application, .root, and .logger" do
+    it "assigns Hanami.app, .root, and .logger" do
       pending "Failing due to dry-system changes"
 
       Hanami.boot
-      expect(Hanami.application.ancestors).to include(Hanami::Application)
-      expect(Hanami.application.root).to eq(Dir.pwd)
+      expect(Hanami.app.ancestors).to include(Hanami::Application)
+      expect(Hanami.app.root).to eq(Dir.pwd)
       expect(Hanami.logger).to be_kind_of(Hanami::Logger)
     end
   end

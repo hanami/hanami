@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-RSpec.describe "Application action / View integration", :application_integration do
+RSpec.describe "App action / View integration", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
       end
     end
 
-    Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
-    Hanami.application.prepare
+    Hanami.app.instance_eval(&app_hook) if respond_to?(:app_hook)
+    Hanami.app.prepare
 
     module TestApp
       class Action < Hanami::Action; end
@@ -48,7 +48,7 @@ RSpec.describe "Application action / View integration", :application_integration
     context "Default view context identifier" do
       context "View context registered in slice" do
         before do
-          TestApp::Application.register "views.context", slice_view_context
+          TestApp::App.register "views.context", slice_view_context
         end
 
         let(:slice_view_context) { double(:slice_view_context) }
@@ -58,28 +58,28 @@ RSpec.describe "Application action / View integration", :application_integration
         end
       end
 
-      context "View context registered in application" do
+      context "View context registered in app" do
         before do
-          Hanami.application.register "views.context", application_view_context
+          Hanami.app.register "views.context", app_view_context
         end
 
-        let(:application_view_context) { double(:application_view_context) }
+        let(:app_view_context) { double(:app_view_context) }
 
-        it "is the applications's view context" do
-          is_expected.to eql application_view_context
+        it "is the apps's view context" do
+          is_expected.to eql app_view_context
         end
       end
     end
 
     context "custom view context identifier" do
-      let(:application_hook) {
+      let(:app_hook) {
         proc do |app|
           app.config.actions.view_context_identifier = "view.custom_context"
         end
       }
 
       before do
-        TestApp::Application.register "view.custom_context", custom_view_context
+        TestApp::App.register "view.custom_context", custom_view_context
       end
 
       let(:custom_view_context) { double(:custom_view_context) }

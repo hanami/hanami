@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-RSpec.describe "Application middleware stack", type: :integration do
+RSpec.describe "App middleware stack", type: :integration do
   it "mounts Rack middleware" do
     with_project do
       generate "action web home#index --url=/"
       generate_middleware
 
       # Add apps/web/middleware to the load paths
-      replace "apps/web/application.rb", "load_paths << [", "load_paths << ['middleware',"
+      replace "apps/web/app.rb", "load_paths << [", "load_paths << ['middleware',"
 
       # Require Rack::ETag
-      unshift "apps/web/application.rb", "require 'rack/etag'"
+      unshift "apps/web/app.rb", "require 'rack/etag'"
 
       # Mount middleware
-      replace "apps/web/application.rb", "# middleware.use", "middleware.use 'Web::Middleware::Runtime'\nmiddleware.use 'Web::Middleware::Custom', 'OK'\nmiddleware.use Rack::ETag"
+      replace "apps/web/app.rb", "# middleware.use", "middleware.use 'Web::Middleware::Runtime'\nmiddleware.use 'Web::Middleware::Custom', 'OK'\nmiddleware.use Rack::ETag"
 
       rewrite "apps/web/controllers/home/index.rb", <<~EOF
         module Web::Controllers::Home

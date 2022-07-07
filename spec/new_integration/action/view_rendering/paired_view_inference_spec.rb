@@ -2,14 +2,14 @@
 
 require "hanami"
 
-RSpec.describe "Application action / View rendering / Paired view inference", :application_integration do
+RSpec.describe "App action / View rendering / Paired view inference", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
       end
     end
 
-    Hanami.application.prepare
+    Hanami.app.prepare
 
     module TestApp
       class Action < Hanami::Action
@@ -35,7 +35,7 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
 
     context "Paired view exists" do
       before do
-        TestApp::Application.register "views.articles.index", view
+        TestApp::App.register "views.articles.index", view
       end
 
       let(:view) { double(:view) }
@@ -56,7 +56,7 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
             end
           end
 
-          TestApp::Application.register "views.articles.custom", explicit_view
+          TestApp::App.register "views.articles.custom", explicit_view
         end
 
         let(:action_class) { TestApp::Actions::Articles::Index }
@@ -93,8 +93,8 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
 
     context "Direct paired view exists" do
       before do
-        TestApp::Application.register "views.articles.create", direct_paired_view
-        TestApp::Application.register "views.articles.new", alternative_paired_view
+        TestApp::App.register "views.articles.create", direct_paired_view
+        TestApp::App.register "views.articles.new", alternative_paired_view
       end
 
       it "auto-injects the directly paired view" do
@@ -104,7 +104,7 @@ RSpec.describe "Application action / View rendering / Paired view inference", :a
 
     context "Alternative paired view exists" do
       before do
-        TestApp::Application.register "views.articles.new", alternative_paired_view
+        TestApp::App.register "views.articles.new", alternative_paired_view
       end
 
       it "auto-injects the alternative paired view" do

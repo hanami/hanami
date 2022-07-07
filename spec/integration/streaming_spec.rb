@@ -6,11 +6,11 @@ RSpec.describe "Streaming", type: :integration do
       generate "action web home#index --url=/"
 
       # Require Rack::Chunked
-      unshift "apps/web/application.rb", "require 'rack/chunked'"
+      unshift "apps/web/app.rb", "require 'rack/chunked'"
 
       # Mount middleware
-      replace "apps/web/application.rb", "# middleware.use", "middleware.use ::Rack::Chunked"
-      replace "apps/web/application.rb", "controller.prepare do", "controller.format text: 'text/plain'\ncontroller.prepare do"
+      replace "apps/web/app.rb", "# middleware.use", "middleware.use ::Rack::Chunked"
+      replace "apps/web/app.rb", "controller.prepare do", "controller.format text: 'text/plain'\ncontroller.prepare do"
 
       rewrite "apps/web/controllers/home/index.rb", <<~EOF
         module Web::Controllers::Home

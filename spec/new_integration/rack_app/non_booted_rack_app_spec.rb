@@ -2,18 +2,18 @@
 
 require "rack/test"
 
-RSpec.describe "Running a Rack app for a non-booted application", :application_integration do
+RSpec.describe "Running a Rack app for a non-booted app", :app_integration do
   include Rack::Test::Methods
 
   let(:app) { Hanami.rack_app }
 
   it "lazy loads only the components required for any accessed routes" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
           end
         end
@@ -97,7 +97,7 @@ RSpec.describe "Running a Rack app for a non-booted application", :application_i
       expect(last_response.status).to eq 200
       expect(last_response.body).to eq "Hello world"
 
-      expect(Hanami.application).not_to be_booted
+      expect(Hanami.app).not_to be_booted
       expect(Main::Slice.keys).to include(*%w[actions.home.show greeter])
       expect(Main::Slice.keys).not_to include(*%w[actions.articles.index article_repo])
     end

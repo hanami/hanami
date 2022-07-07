@@ -4,8 +4,8 @@ require "hanami/configuration"
 require "uri"
 
 RSpec.describe Hanami::Configuration, "base_url" do
-  subject(:config) { described_class.new(application_name: application_name, env: :development) }
-  let(:application_name) { "MyApp::Application" }
+  subject(:config) { described_class.new(app_name: app_name, env: :development) }
+  let(:app_name) { "MyApp::app" }
 
   it "defaults to a URI of 'http://0.0.0.0:2300'" do
     expect(config.base_url).to eq URI("http://0.0.0.0:2300")

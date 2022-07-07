@@ -2,10 +2,10 @@
 
 require "hanami"
 
-RSpec.describe "Application view / Context / Assets", :application_integration do
+RSpec.describe "App view / Context / Assets", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
       end
     end
 
@@ -32,15 +32,15 @@ RSpec.describe "Application view / Context / Assets", :application_integration d
 
     context "with assets provider" do
       before do
-        Hanami.application.register_provider(:assets) do
+        Hanami.app.register_provider(:assets) do
           start do
             register "assets", Object.new
           end
         end
       end
 
-      it "is the application assets by default" do
-        expect(context.assets).to be TestApp::Application[:assets]
+      it "is the app assets by default" do
+        expect(context.assets).to be TestApp::App[:assets]
       end
 
       context "injected assets" do

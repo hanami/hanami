@@ -20,8 +20,8 @@ RSpec.describe "hanami destroy", type: :integration do
         expect(".env.test").to_not        have_file_content(%r{ADMIN_SESSIONS_SECRET})
         expect(".env.development").to_not have_file_content(%r{ADMIN_SESSIONS_SECRET})
 
-        expect("config/environment.rb").to_not have_file_content(%r{mount Admin::Application})
-        expect("config/environment.rb").to_not have_file_content("require_relative '../apps/admin/application'")
+        expect("config/environment.rb").to_not have_file_content(%r{mount Admin::App})
+        expect("config/environment.rb").to_not have_file_content("require_relative '../apps/admin/app'")
 
         expect("public/assets/admin").to_not be_an_existing_path
         expect("public/assets.json").to_not be_an_existing_path
@@ -33,10 +33,10 @@ RSpec.describe "hanami destroy", type: :integration do
 
     it "destroys app with actions and assets" do
       with_project do
-        generate "app api --application-base-url=/api/v1"
+        generate "app api --app-base-url=/api/v1"
         generate "action api home#index"
 
-        asset = File.join("apps", "api", "assets", "javascripts", "application.js")
+        asset = File.join("apps", "api", "assets", "javascripts", "app.js")
         touch asset
 
         hanami "assets precompile"
@@ -57,8 +57,8 @@ RSpec.describe "hanami destroy", type: :integration do
         expect(".env.test").to_not        have_file_content(%r{API_SESSIONS_SECRET})
         expect(".env.development").to_not have_file_content(%r{API_SESSIONS_SECRET})
 
-        expect("config/environment.rb").to_not have_file_content(%r{mount Api::Application})
-        expect("config/environment.rb").to_not have_file_content("require_relative '../apps/api/application'")
+        expect("config/environment.rb").to_not have_file_content(%r{mount Api::App})
+        expect("config/environment.rb").to_not have_file_content("require_relative '../apps/api/app'")
 
         expect("public/assets/api/v1").to_not be_an_existing_path
         expect("public/assets.json").to_not be_an_existing_path
@@ -102,7 +102,7 @@ Description:
   Destroy an app
 
 Arguments:
-  APP                               # REQUIRED The application name (eg. `web`)
+  APP                               # REQUIRED The app name (eg. `web`)
 
 Options:
   --help, -h                        # Print this help

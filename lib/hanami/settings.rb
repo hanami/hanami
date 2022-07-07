@@ -4,10 +4,9 @@ require "dry/configurable"
 require "dry/core/constants"
 
 module Hanami
-  # Application settings
+  # App settings
   #
-  # Users are expected to inherit from this class to define their application
-  # settings.
+  # Users are expected to inherit from this class to define their app settings.
   #
   # @example
   #   # config/settings.rb

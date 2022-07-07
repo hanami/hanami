@@ -8,16 +8,16 @@ RSpec.describe "assets", type: :integration do
       with_project do
         generate "action web home#index --url=/"
 
-        write "apps/web/assets/javascripts/application.css", <<~EOF
+        write "apps/web/assets/javascripts/app.css", <<~EOF
           body { font: Helvetica; }
         EOF
-        rewrite "apps/web/templates/application.html.erb", <<~EOF
+        rewrite "apps/web/templates/app.html.erb", <<~EOF
           <!DOCTYPE html>
           <html>
             <head>
               <title>Web</title>
               <%= favicon %>
-              <%= stylesheet 'application' %>
+              <%= stylesheet 'app' %>
             </head>
             <body>
               <%= yield %>
@@ -25,7 +25,7 @@ RSpec.describe "assets", type: :integration do
           </html>
         EOF
 
-        replace "apps/web/application.rb", "subresource_integrity :sha256", "subresource_integrity :sha256, :sha512"
+        replace "apps/web/app.rb", "subresource_integrity :sha256", "subresource_integrity :sha256, :sha512"
 
         #
         # Precompile
@@ -41,12 +41,12 @@ RSpec.describe "assets", type: :integration do
         manifest = File.read("public/assets.json")
         expect(JSON.parse(manifest)).to be_kind_of(Hash) # assert it's a well-formed JSON
 
-        expect(manifest).to include(%("/assets/application.css":{"target":"/assets/application-068e7d97b3671a14824bc20437ac5d06.css","sri":["sha256-cHgODQTP2nNk9ER+ViDGp+lC+ddHRmuLgJk05glJ4+w=","sha512-TDyxo1Ow7UjBib6ykALJh7J1OHEcE0yX4X21s1714ZBAhwdOz7k9t8+QQDAwWAmeH97bNaZGY7oTfVrwyTQ3cw=="]}))
+        expect(manifest).to include(%("/assets/app.css":{"target":"/assets/app-068e7d97b3671a14824bc20437ac5d06.css","sri":["sha256-cHgODQTP2nNk9ER+ViDGp+lC+ddHRmuLgJk05glJ4+w=","sha512-TDyxo1Ow7UjBib6ykALJh7J1OHEcE0yX4X21s1714ZBAhwdOz7k9t8+QQDAwWAmeH97bNaZGY7oTfVrwyTQ3cw=="]}))
         expect(manifest).to include(%("/assets/favicon.ico":{"target":"/assets/favicon-b0979f93c7f7246ac70949a80f7cbdfd.ico","sri":["sha256-PLEDhpDsTBpxl1KtXjzBjg+PUG67zpf05B1z2db4iJU=","sha512-9NvaW7aVAywbLPPi3fw5s4wtWwd37i8VpzgfEo9uCOyr/mDT2dbYJtGNjfTJa4R8TOw69yHr4NhazPQsLt1WHw=="]}))
 
         server do
           visit "/"
-          expect(page.body).to include(%(<link href="/assets/application-068e7d97b3671a14824bc20437ac5d06.css" type="text/css" rel="stylesheet" integrity="sha256-cHgODQTP2nNk9ER+ViDGp+lC+ddHRmuLgJk05glJ4+w= sha512-TDyxo1Ow7UjBib6ykALJh7J1OHEcE0yX4X21s1714ZBAhwdOz7k9t8+QQDAwWAmeH97bNaZGY7oTfVrwyTQ3cw==" crossorigin="anonymous">))
+          expect(page.body).to include(%(<link href="/assets/app-068e7d97b3671a14824bc20437ac5d06.css" type="text/css" rel="stylesheet" integrity="sha256-cHgODQTP2nNk9ER+ViDGp+lC+ddHRmuLgJk05glJ4+w= sha512-TDyxo1Ow7UjBib6ykALJh7J1OHEcE0yX4X21s1714ZBAhwdOz7k9t8+QQDAwWAmeH97bNaZGY7oTfVrwyTQ3cw==" crossorigin="anonymous">))
         end
       end
     end

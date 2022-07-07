@@ -6,7 +6,7 @@ module Hanami
   module Providers
     class Logger < Dry::System::Provider::Source
       def start
-        register :logger, Hanami.application.configuration.logger_instance
+        register :logger, Hanami.app.configuration.logger_instance
       end
     end
   end

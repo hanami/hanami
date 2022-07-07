@@ -4,7 +4,7 @@ require "dry/core/constants"
 
 module Hanami
   class Settings
-    # Default application settings store.
+    # Default app settings store.
     #
     # Uses [dotenv](https://github.com/bkeepers/dotenv) (if available) to load
     # .env files and then loads settings from ENV. For a given `HANAMI_ENV`

@@ -85,13 +85,13 @@ module Hanami
 
           if slice.key?(identifier)
             slice[identifier]
-          elsif slice.application.key?(identifier)
-            slice.application[identifier]
+          elsif slice.app.key?(identifier)
+            slice.app[identifier]
           end
         end
 
         def resolve_routes
-          slice.application["routes"] if slice.application.key?("routes")
+          slice.app["routes"] if slice.app.key?("routes")
         end
 
         def actions_config

@@ -3,7 +3,7 @@
 module Hanami
   class Configuration
     class Actions
-      # Configuration for Content Security Policy in Hanami applications
+      # Configuration for Content Security Policy in Hanami apps
       #
       # @since 2.0.0
       class ContentSecurityPolicy
@@ -47,7 +47,7 @@ module Hanami
         #
         # @example
         #   module MyApp
-        #     class Application < Hanami::Application
+        #     class App < Hanami::App
         #       config.actions.content_security_policy[:base_uri] # => "'self'"
         #     end
         #   end
@@ -65,14 +65,14 @@ module Hanami
         #
         # @example Replace a default value
         #   module MyApp
-        #     class Application < Hanami::Application
+        #     class App < Hanami::App
         #       config.actions.content_security_policy[:plugin_types] = nil
         #     end
         #   end
         #
         # @example Append to a default value
         #   module MyApp
-        #     class Application < Hanami::Application
+        #     class App < Hanami::App
         #       config.actions.content_security_policy[:script_src] += " https://my.cdn.test"
         #     end
         #   end
@@ -89,7 +89,7 @@ module Hanami
         #
         # @example
         #   module MyApp
-        #     class Application < Hanami::Application
+        #     class App < Hanami::App
         #       config.actions.content_security_policy.delete(:object_src)
         #     end
         #   end

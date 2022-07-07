@@ -16,8 +16,8 @@ RSpec.describe "hanami assets", type: :integration do
         #
         # Web assets
         #
-        write "apps/web/assets/javascripts/application.js.coffee", <<~EOF
-          class Application
+        write "apps/web/assets/javascripts/app.js.coffee", <<~EOF
+          class App
             constructor: () ->
               @init = true
         EOF
@@ -25,7 +25,7 @@ RSpec.describe "hanami assets", type: :integration do
           $background-color: #f5f5f5;
         EOF
 
-        write "apps/web/assets/stylesheets/application.css.scss", <<~EOF
+        write "apps/web/assets/stylesheets/app.css.scss", <<~EOF
           @import 'colors';
 
           body {
@@ -60,21 +60,21 @@ RSpec.describe "hanami assets", type: :integration do
 
         expect(manifest).to include(%("/assets/admin/dashboard.js":{"target":"/assets/admin/dashboard-39744f9626a70683b6c2d46305798883.js","sri":["sha256-1myPVWoqrq+uAVP2DSkmAown+5dm0x61+E3AjlGOKEc="]}))
         expect(manifest).to include(%("/assets/admin/favicon.ico":{"target":"/assets/admin/favicon-b0979f93c7f7246ac70949a80f7cbdfd.ico","sri":["sha256-PLEDhpDsTBpxl1KtXjzBjg+PUG67zpf05B1z2db4iJU="]}))
-        expect(manifest).to include(%("/assets/application.css":{"target":"/assets/application-adb4104884aadde9abfef0bd98ac461e.css","sri":["sha256-S6V565W2In9pWE0uzMASpp58xCg32TN3at3Fv4g9aRA="]}))
-        expect(manifest).to include(%("/assets/application.js":{"target":"/assets/application-bb8f10498d83d401db238549409dc4c5.js","sri":["sha256-9m4OTbWigbDPp4oCe1LZz9isqidvW1c3jNL6mXMj2xs="]}))
+        expect(manifest).to include(%("/assets/app.css":{"target":"/assets/app-adb4104884aadde9abfef0bd98ac461e.css","sri":["sha256-S6V565W2In9pWE0uzMASpp58xCg32TN3at3Fv4g9aRA="]}))
+        expect(manifest).to include(%("/assets/app.js":{"target":"/assets/app-bb8f10498d83d401db238549409dc4c5.js","sri":["sha256-9m4OTbWigbDPp4oCe1LZz9isqidvW1c3jNL6mXMj2xs="]}))
         expect(manifest).to include(%("/assets/favicon.ico":{"target":"/assets/favicon-b0979f93c7f7246ac70949a80f7cbdfd.ico","sri":["sha256-PLEDhpDsTBpxl1KtXjzBjg+PUG67zpf05B1z2db4iJU="]}))
 
         #
         # Verify web assets (w/ checksum)
         #
-        expect("public/assets/application-adb4104884aadde9abfef0bd98ac461e.css").to have_file_content <<~EOF
+        expect("public/assets/app-adb4104884aadde9abfef0bd98ac461e.css").to have_file_content <<~EOF
           body {background-color: #f5f5f5}
         EOF
 
-        expect("public/assets/application-bb8f10498d83d401db238549409dc4c5.js").to have_file_content \
+        expect("public/assets/app-bb8f10498d83d401db238549409dc4c5.js").to have_file_content \
           """
-(function(){var Application;Application=(function(){function Application(){this.init=true;}
-return Application;})();}).call(this);
+(function(){var App;App=(function(){function App(){this.init=true;}
+return App;})();}).call(this);
 """
 
         expect("public/assets/favicon-b0979f93c7f7246ac70949a80f7cbdfd.ico").to be_an_existing_file
@@ -82,14 +82,14 @@ return Application;})();}).call(this);
         #
         # Verify web assets (w/o checksum)
         #
-        expect("public/assets/application.css").to have_file_content <<~EOF
+        expect("public/assets/app.css").to have_file_content <<~EOF
           body {background-color: #f5f5f5}
         EOF
 
-        expect("public/assets/application.js").to have_file_content \
+        expect("public/assets/app.js").to have_file_content \
           """
-(function(){var Application;Application=(function(){function Application(){this.init=true;}
-return Application;})();}).call(this);
+(function(){var App;App=(function(){function App(){this.init=true;}
+return App;})();}).call(this);
 """
 
         expect("public/assets/favicon.ico").to be_an_existing_file

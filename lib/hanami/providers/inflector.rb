@@ -6,7 +6,7 @@ module Hanami
   module Providers
     class Inflector < Dry::System::Provider::Source
       def start
-        register :inflector, Hanami.application.inflector
+        register :inflector, Hanami.app.inflector
       end
     end
   end

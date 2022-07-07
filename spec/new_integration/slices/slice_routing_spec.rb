@@ -2,18 +2,18 @@
 
 require "rack/test"
 
-RSpec.describe "Slices / Slice routing", :application_integration do
+RSpec.describe "Slices / Slice routing", :app_integration do
   include Rack::Test::Methods
 
   let(:app) { Main::Slice.rack_app }
 
   specify "Slices have a nil router when no routes are defined" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~'RUBY'
+      write "config/app.rb", <<~'RUBY'
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -27,13 +27,13 @@ RSpec.describe "Slices / Slice routing", :application_integration do
     end
   end
 
-  specify "Slices have the application 'routes' component registered when application routes are defined but not their own" do
+  specify "Slices have the app 'routes' component registered when app routes are defined but not their own" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~'RUBY'
+      write "config/app.rb", <<~'RUBY'
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
           end
         end
@@ -58,17 +58,17 @@ RSpec.describe "Slices / Slice routing", :application_integration do
       expect(Main::Slice["routes"].path(:home)).to eq "/home"
 
       expect(Main::Slice.router).to be nil
-      expect(TestApp::Application.router).not_to be nil
+      expect(TestApp::App.router).not_to be nil
     end
   end
 
   specify "Slices use their own router and registered 'routes' component when their own routes are defined" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~'RUBY'
+      write "config/app.rb", <<~'RUBY'
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
           end
         end
@@ -117,11 +117,11 @@ RSpec.describe "Slices / Slice routing", :application_integration do
   describe "Mounting slice routes" do
     before :context do
       with_directory(@dir = make_tmp_directory) do
-        write "config/application.rb", <<~'RUBY'
+        write "config/app.rb", <<~'RUBY'
           require "hanami"
 
           module TestApp
-            class Application < Hanami::Application
+            class App < Hanami::App
               config.logger.stream = File.new("/dev/null", "w")
             end
           end
@@ -183,7 +183,7 @@ RSpec.describe "Slices / Slice routing", :application_integration do
       end
     end
 
-    let(:app) { TestApp::Application.rack_app }
+    let(:app) { TestApp::App.rack_app }
 
     describe "A slice with its own router can be mounted in its parent's routes" do
       context "prepared" do
