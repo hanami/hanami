@@ -5,7 +5,7 @@ require "rack/test"
 RSpec.describe "Running a Rack app for a non-booted app", :app_integration do
   include Rack::Test::Methods
 
-  let(:app) { Hanami.rack_app }
+  let(:app) { Hanami.app }
 
   it "lazy loads only the components required for any accessed routes" do
     with_tmp_directory(Dir.mktmpdir) do

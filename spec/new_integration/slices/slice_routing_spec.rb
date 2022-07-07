@@ -5,7 +5,7 @@ require "rack/test"
 RSpec.describe "Slices / Slice routing", :app_integration do
   include Rack::Test::Methods
 
-  let(:app) { Main::Slice.rack_app }
+  let(:app) { Main::Slice.app }
 
   specify "Slices have a nil router when no routes are defined" do
     with_tmp_directory(Dir.mktmpdir) do
@@ -183,7 +183,7 @@ RSpec.describe "Slices / Slice routing", :app_integration do
       end
     end
 
-    let(:app) { TestApp::App.rack_app }
+    let(:app) { TestApp::App.app }
 
     describe "A slice with its own router can be mounted in its parent's routes" do
       context "prepared" do

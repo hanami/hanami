@@ -5,7 +5,7 @@ require "rack/test"
 RSpec.describe "Slices / External slices", :app_integration do
   include Rack::Test::Methods
 
-  let(:app) { TestApp::App.rack_app }
+  let(:app) { TestApp::App.app }
 
   specify "External slices can be registered and used" do
     with_tmp_directory(Dir.mktmpdir) do

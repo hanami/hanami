@@ -35,10 +35,6 @@ module Hanami
     end
   end
 
-  def self.rack_app
-    app.rack_app
-  end
-
   def self.env
     ENV.fetch("HANAMI_ENV") { ENV.fetch("RACK_ENV", "development") }.to_sym
   end

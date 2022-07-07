@@ -200,6 +200,10 @@ module Hanami
         @rack_app ||= router.to_rack_app
       end
 
+      def call(...)
+        rack_app.call(...)
+      end
+
       private
 
       # rubocop:disable Metrics/AbcSize

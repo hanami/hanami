@@ -5,7 +5,7 @@ require "rack/test"
 RSpec.describe "Hanami web app", :app_integration do
   include Rack::Test::Methods
 
-  let(:app) { Hanami.rack_app }
+  let(:app) { Hanami.app }
 
   around do |example|
     with_tmp_directory(Dir.mktmpdir, &example)
