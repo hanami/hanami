@@ -2,17 +2,17 @@
 
 require "hanami"
 
-RSpec.describe "Application view / Configuration", :application_integration do
+RSpec.describe "App view / Configuration", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
         config.root = "/test_app"
       end
     end
 
-    Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
-    Hanami.application.register_slice :main
-    Hanami.application.prepare
+    Hanami.app.instance_eval(&app_hook) if respond_to?(:app_hook)
+    Hanami.app.register_slice :main
+    Hanami.app.prepare
 
     module TestApp
       class View < Hanami::View
@@ -24,15 +24,15 @@ RSpec.describe "Application view / Configuration", :application_integration do
 
   subject(:config) { view_class.config }
 
-  it "applies default view configuration from the application" do
+  it "applies default view configuration from the app" do
     aggregate_failures do
       expect(config.layouts_dir).to eq "layouts"
-      expect(config.layout).to eq "application"
+      expect(config.layout).to eq "app"
     end
   end
 
-  context "custom views configuration on application" do
-    let(:application_hook) {
+  context "custom views configuration on app" do
+    let(:app_hook) {
       proc do
         config.views.layouts_dir = "custom_layouts"
         config.views.layout = "my_layout"

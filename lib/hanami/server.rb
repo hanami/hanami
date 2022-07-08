@@ -10,7 +10,7 @@ module Hanami
   #
   #   `bundle exec hanami server`
   #
-  # It runs the application, by using the server specified in your `Gemfile`
+  # It runs the app, by using the server specified in your `Gemfile`
   # (eg. Puma or Unicorn).
   #
   # @since 0.8.0

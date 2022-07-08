@@ -1,11 +1,11 @@
-RSpec.describe "Slices / Slice settings", :application_integration do
+RSpec.describe "Slices / Slice settings", :app_integration do
   specify "Settings are registered for each slice with a settings file" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -35,15 +35,15 @@ RSpec.describe "Slices / Slice settings", :application_integration do
     end
   end
 
-  describe "Application settings are shared with slices if no local settings are defined" do
+  describe "App settings are shared with slices if no local settings are defined" do
     context "prepared" do
       specify do
         with_tmp_directory(Dir.mktmpdir) do
-          write "config/application.rb", <<~RUBY
+          write "config/app.rb", <<~RUBY
             require "hanami"
 
             module TestApp
-              class Application < Hanami::Application
+              class App < Hanami::App
               end
             end
           RUBY
@@ -76,11 +76,11 @@ RSpec.describe "Slices / Slice settings", :application_integration do
 
           require "hanami/prepare"
 
-          expect(TestApp::Application.key?("settings")).to be true
+          expect(TestApp::App.key?("settings")).to be true
           expect(Main::Slice.key?("settings")).to be true
           expect(Admin::Slice.key?("settings")).to be true
 
-          expect(TestApp::Application["settings"]).to respond_to :app_session_secret
+          expect(TestApp::App["settings"]).to respond_to :app_session_secret
           expect(Main::Slice["settings"]).to respond_to :main_session_secret
           expect(Admin::Slice["settings"]).to respond_to :app_session_secret
         end
@@ -90,11 +90,11 @@ RSpec.describe "Slices / Slice settings", :application_integration do
     context "booted" do
       specify do
         with_tmp_directory(Dir.mktmpdir) do
-          write "config/application.rb", <<~RUBY
+          write "config/app.rb", <<~RUBY
             require "hanami"
 
             module TestApp
-              class Application < Hanami::Application
+              class App < Hanami::App
               end
             end
           RUBY
@@ -127,11 +127,11 @@ RSpec.describe "Slices / Slice settings", :application_integration do
 
           require "hanami/boot"
 
-          expect(TestApp::Application.key?("settings")).to be true
+          expect(TestApp::App.key?("settings")).to be true
           expect(Main::Slice.key?("settings")).to be true
           expect(Admin::Slice.key?("settings")).to be true
 
-          expect(TestApp::Application["settings"]).to respond_to :app_session_secret
+          expect(TestApp::App["settings"]).to respond_to :app_session_secret
           expect(Main::Slice["settings"]).to respond_to :main_session_secret
           expect(Admin::Slice["settings"]).to respond_to :app_session_secret
         end

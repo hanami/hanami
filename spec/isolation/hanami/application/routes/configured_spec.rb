@@ -3,13 +3,13 @@
 require "hanami/action"
 
 module Bookshelf
-  class Application < Hanami::Application
+  class App < Hanami::App
   end
 end
 
 module Web
 end
-Hanami.application.register_slice :web, namespace: Web
+Hanami.app.register_slice :web, namespace: Web
 
 Hanami.prepare
 
@@ -25,7 +25,7 @@ module Web
   end
 end
 
-Hanami.application.routes do
+Hanami.app.routes do
   mount :web, at: "/" do
     root to: "home#index"
   end
@@ -33,7 +33,7 @@ end
 
 RSpec.describe Hanami::Application do
   describe ".routes" do
-    subject { Hanami.application.routes }
+    subject { Hanami.app.routes }
 
     it "returns configured routes" do
       expect(subject).to be_kind_of(Proc)

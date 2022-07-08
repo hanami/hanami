@@ -7,7 +7,7 @@ RSpec.describe "force SSL", type: :integration do
     with_project(project, server: :puma) do
       generate "action web home#index --url=/"
 
-      inject_line_after "apps/web/application.rb", "configure do", "force_ssl true"
+      inject_line_after "apps/web/app.rb", "configure do", "force_ssl true"
 
       RSpec::Support::Env["HANAMI_ENV"]   = "production"
       RSpec::Support::Env["DATABASE_URL"] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"

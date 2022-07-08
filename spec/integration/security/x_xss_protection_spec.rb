@@ -18,7 +18,7 @@ RSpec.describe "X-XSS-Protection header", type: :integration do
     with_project do
       generate "action web home#index --url=/"
 
-      replace "apps/web/application.rb", "security.x_xss_protection '1; mode=block'", "security.x_xss_protection '0'"
+      replace "apps/web/app.rb", "security.x_xss_protection '1; mode=block'", "security.x_xss_protection '0'"
 
       server do
         get "/"
@@ -33,7 +33,7 @@ RSpec.describe "X-XSS-Protection header", type: :integration do
     with_project do
       generate "action web home#index --url=/"
 
-      replace "apps/web/application.rb", "security.x_xss_protection '1; mode=block'", ""
+      replace "apps/web/app.rb", "security.x_xss_protection '1; mode=block'", ""
 
       server do
         get "/"

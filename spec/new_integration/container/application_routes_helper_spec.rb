@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe "Application routes helper", :application_integration do
+RSpec.describe "App routes helper", :app_integration do
   specify "Routing to actions based on their container identifiers" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
           end
         end
@@ -41,8 +41,8 @@ RSpec.describe "Application routes helper", :application_integration do
 
       require "hanami/prepare"
 
-      expect(TestApp::Application["routes"].path(:root)).to eq "/"
-      expect(TestApp::Application["routes"].url(:root).to_s).to match /http:\/\/.*\//
+      expect(TestApp::App["routes"].path(:root)).to eq "/"
+      expect(TestApp::App["routes"].url(:root).to_s).to match /http:\/\/.*\//
     end
   end
 end

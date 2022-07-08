@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe "Container auto-registration", :application_integration do
+RSpec.describe "Container auto-registration", :app_integration do
   specify "Auto-registering files in slice source directories" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.inflections do |inflections|
               inflections.acronym "NBA"
             end
@@ -48,18 +48,18 @@ RSpec.describe "Container auto-registration", :application_integration do
       require "hanami/setup"
       Hanami.boot
 
-      expect(TestApp::Application["actions.nba_rosters.index"]).to be_an TestApp::Actions::NBARosters::Index
+      expect(TestApp::App["actions.nba_rosters.index"]).to be_an TestApp::Actions::NBARosters::Index
       expect(Admin::Slice["nba_jam.get_that_outta_here"]).to be_an Admin::NBAJam::GetThatOuttaHere
     end
   end
 
-  it "Unbooted application resolves components lazily from the lib/ directories" do
+  it "Unbooted app resolves components lazily from the lib/ directories" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.inflections do |inflections|
               inflections.acronym "NBA"
             end

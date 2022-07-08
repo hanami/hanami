@@ -52,11 +52,11 @@ module Hanami
       def configure_defaults
         self.paths = ["templates"]
         self.template_inference_base = "views"
-        self.layout = "application"
+        self.layout = "app"
       end
 
       # An inflector for views is not configurable via `config.views.inflector` on an
-      # `Hanami::Application`. The application-wide inflector is already configurable
+      # `Hanami::App`. The app-wide inflector is already configurable
       # there as `config.inflector` and will be used as the default inflector for views.
       #
       # A custom inflector may still be provided in an `Hanami::View` subclass, via

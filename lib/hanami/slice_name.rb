@@ -3,24 +3,24 @@
 require_relative "constants"
 
 module Hanami
-  # Represents the name of an {Application} or {Slice}.
+  # Represents the name of an {App} or {Slice}.
   #
   # @see Slice::ClassMethods#slice_name
-  # @see Application::ClassMethods#application_name
+  # @see App::ClassMethods#app_name
   #
   # @api public
   # @since 2.0.0
   class SliceName
-    # Returns a new SliceName for the slice or application.
+    # Returns a new SliceName for the slice or app.
     #
     # You must provide an inflector for the manipulation of the name into various formats.
     # This should be given in the form of a Proc that returns the inflector when called.
     # The reason for this is that the inflector may be replaced by the user during the
-    # application configuration phase, so the proc should ensure that the current instance
+    # app configuration phase, so the proc should ensure that the current instance
     # of the inflector is returned whenever needed.
     #
-    # @param slice [#name] the slice or application object
-    # @param inflector [Proc] Proc returning the application's inflector when called
+    # @param slice [#name] the slice or app object
+    # @param inflector [Proc] Proc returning the app's inflector when called
     #
     # @api private
     def initialize(slice, inflector:)

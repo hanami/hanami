@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe "Hanami view integration", :application_integration do
+RSpec.describe "Hanami view integration", :app_integration do
   specify "Views take their configuration from their slice in which they are defined" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -34,7 +34,7 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "app/templates/layouts/application.html.slim", <<~SLIM
+      write "app/templates/layouts/app.html.slim", <<~SLIM
         html
           body
             == yield
@@ -46,18 +46,18 @@ RSpec.describe "Hanami view integration", :application_integration do
 
       require "hanami/prepare"
 
-      rendered = TestApp::Application["views.users.show"].(name: "Jennifer")
+      rendered = TestApp::App["views.users.show"].(name: "Jennifer")
       expect(rendered.to_s).to eq "<html><body><h1>Hello, Jennifer</h1></body></html>"
     end
   end
 
-  specify "Views can also take configuration from the application when defined in the top-level application module" do
+  specify "Views can also take configuration from the app when defined in the top-level app module" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -84,7 +84,7 @@ RSpec.describe "Hanami view integration", :application_integration do
         end
       RUBY
 
-      write "app/templates/layouts/application.html.slim", <<~SLIM
+      write "app/templates/layouts/app.html.slim", <<~SLIM
         html
           body
             == yield
@@ -96,7 +96,7 @@ RSpec.describe "Hanami view integration", :application_integration do
 
       require "hanami/prepare"
 
-      rendered = TestApp::Application["views.users.show"].(name: "Jennifer")
+      rendered = TestApp::App["views.users.show"].(name: "Jennifer")
       expect(rendered.to_s).to eq "<html><body><h1>Hello, Jennifer</h1></body></html>"
     end
   end

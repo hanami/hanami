@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "hanami routes", type: :integration do
-  it "prints application routes" do
+  it "prints app routes" do
     with_project do
       generate "app admin"
 

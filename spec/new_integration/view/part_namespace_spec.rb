@@ -2,17 +2,17 @@
 
 require "hanami"
 
-RSpec.describe "Application view / Part namespace", :application_integration do
+RSpec.describe "App view / Part namespace", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
         config.root = "/test_app"
       end
     end
 
-    Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
-    Hanami.application.register_slice :main
-    Hanami.application.prepare
+    Hanami.app.instance_eval(&app_hook) if respond_to?(:app_hook)
+    Hanami.app.register_slice :main
+    Hanami.app.prepare
 
     # The parts module (or any related setup) must exist _before_ we subclass
     # Hanami::View, because the parts_namespace is configured at the time of
@@ -54,7 +54,7 @@ RSpec.describe "Application view / Part namespace", :application_integration do
   end
 
   context "custom parts_path configured" do
-    let(:application_hook) {
+    let(:app_hook) {
       proc do
         config.views.parts_path = "views/custom_parts"
       end
@@ -83,7 +83,7 @@ RSpec.describe "Application view / Part namespace", :application_integration do
   end
 
   context "nil parts_path configured" do
-    let(:application_hook) {
+    let(:app_hook) {
       proc do
         config.views.parts_path = nil
       end

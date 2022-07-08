@@ -116,7 +116,7 @@ RSpec.describe "Sessions", type: :integration do
 
   def prepare
     # Enable sessions
-    replace "apps/web/application.rb", "# sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']", "sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']"
+    replace "apps/web/app.rb", "# sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']", "sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']"
 
     generate_user
     generate_actions

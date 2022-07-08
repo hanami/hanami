@@ -2,7 +2,7 @@
 
 module Hanami
   module Web
-    # Rack logger for Hanami applications
+    # Rack logger for Hanami apps
     class RackLogger
       REQUEST_METHOD = "REQUEST_METHOD"
       private_constant :REQUEST_METHOD

@@ -5,8 +5,8 @@ require "hanami/configuration/actions"
 require "hanami/action/configuration"
 
 RSpec.describe Hanami::Configuration, "#actions" do
-  let(:configuration) { described_class.new(application_name: application_name, env: :development) }
-  let(:application_name) { "MyApp::Application" }
+  let(:configuration) { described_class.new(app_name: app_name, env: :development) }
+  let(:app_name) { "MyApp::app" }
 
   subject(:actions) { configuration.actions }
 
@@ -27,9 +27,9 @@ RSpec.describe Hanami::Configuration, "#actions" do
     it "configures base actions settings using custom methods" do
       actions.formats = {}
 
-      expect { actions.format json: "application/json" }
+      expect { actions.format json: "app/json" }
         .to change { actions.formats }
-        .to("application/json" => :json)
+        .to("app/json" => :json)
     end
 
     it "can be finalized" do

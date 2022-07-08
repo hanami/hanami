@@ -17,7 +17,7 @@ module Hanami
         end
       end
 
-      # Hanami application router endpoint resolver
+      # Hanami app router endpoint resolver
       #
       # @since 2.0.0
       class Resolver

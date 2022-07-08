@@ -32,10 +32,10 @@ RSpec.describe "hanami new", type: :integration do
       create  db/schema.sql
       create  .gitignore
          run  git init . from "."
-      create  apps/web/application.rb
+      create  apps/web/app.rb
       create  apps/web/config/routes.rb
-      create  apps/web/views/application_layout.rb
-      create  apps/web/templates/application.html.erb
+      create  apps/web/views/app_layout.rb
+      create  apps/web/templates/app.html.erb
       create  apps/web/assets/favicon.ico
       create  apps/web/controllers/.gitkeep
       create  apps/web/assets/images/.gitkeep
@@ -43,7 +43,7 @@ RSpec.describe "hanami new", type: :integration do
       create  apps/web/assets/stylesheets/.gitkeep
       create  spec/web/features/.gitkeep
       create  spec/web/controllers/.gitkeep
-      create  spec/web/views/application_layout_spec.rb
+      create  spec/web/views/app_layout_spec.rb
       insert  config/environment.rb
       insert  config/environment.rb
       append  .env.development
@@ -205,10 +205,10 @@ END
         require 'hanami/setup'
         require 'hanami/model'
         require_relative '../lib/#{project}'
-        require_relative '../apps/web/application'
+        require_relative '../apps/web/app'
 
         Hanami.configure do
-          mount Web::Application, at: '/'
+          mount Web::App, at: '/'
 
           model do
             ##
@@ -460,25 +460,25 @@ END
 END
 
       #
-      # apps/web/application.rb
+      # apps/web/app.rb
       #
-      expect("apps/web/application.rb").to have_file_content <<-END
+      expect("apps/web/app.rb").to have_file_content <<-END
 require 'hanami/helpers'
 require 'hanami/assets'
 
 module Web
-  class Application < Hanami::Application
+  class App < Hanami::App
     configure do
       ##
       # BASIC
       #
 
-      # Define the root path of this application.
+      # Define the root path of this app.
       # All paths specified in this configuration are relative to path below.
       #
       root __dir__
 
-      # Relative load paths where this application will recursively load the
+      # Relative load paths where this app will recursively load the
       # code.
       #
       # When you add new directories, remember to add them here.
@@ -498,7 +498,7 @@ module Web
       # HTTP
       #
 
-      # Routes definitions for this application
+      # Routes definitions for this app
       # See: http://www.rubydoc.info/gems/hanami-router#Usage
       #
       routes 'config/routes'
@@ -548,7 +548,7 @@ module Web
       #
       # sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']
 
-      # Configure Rack middleware for this application
+      # Configure Rack middleware for this app
       #
       # middleware.use Rack::Protection
 
@@ -568,7 +568,7 @@ module Web
 
       # The layout to be used by all views
       #
-      layout :application # It will load Web::Views::ApplicationLayout
+      layout :app # It will load Web::Views::AppLayout
 
       # The relative path to templates
       #
@@ -620,7 +620,7 @@ module Web
       # It determines if a web page can or cannot be included via <frame> and
       # <iframe> tags by untrusted domains.
       #
-      # Web applications can send this header to prevent Clickjacking attacks.
+      # Web apps can send this header to prevent Clickjacking attacks.
       #
       # Read more at:
       #
@@ -655,7 +655,7 @@ module Web
       # contents (JavaScript) or other web related assets: stylesheets, images,
       # fonts, plugins, etc.
       #
-      # Web applications can send this header to mitigate Cross Site Scripting
+      # Web apps can send this header to mitigate Cross Site Scripting
       # (XSS) attacks.
       #
       # The default value allows images, scripts, AJAX, fonts and CSS from the
@@ -696,7 +696,7 @@ module Web
         style-src 'self' 'unsafe-inline' https:;
         font-src 'self';
         object-src 'none';
-        plugin-types application/pdf;
+        plugin-types app/pdf;
         child-src 'self';
         frame-src 'self';
         media-src 'self'
@@ -790,12 +790,12 @@ END
 END
 
       #
-      # apps/web/views/application_layout.rb
+      # apps/web/views/app_layout.rb
       #
-      expect("apps/web/views/application_layout.rb").to have_file_content <<~END
+      expect("apps/web/views/app_layout.rb").to have_file_content <<~END
         module Web
           module Views
-            class ApplicationLayout
+            class AppLayout
               include Web::Layout
             end
           end
@@ -803,9 +803,9 @@ END
       END
 
       #
-      # apps/web/templates/application.html.erb
+      # apps/web/templates/app.html.erb
       #
-      expect("apps/web/templates/application.html.erb").to have_file_content <<~END
+      expect("apps/web/templates/app.html.erb").to have_file_content <<~END
         <!DOCTYPE html>
         <html>
           <head>
@@ -936,8 +936,8 @@ Arguments:
 
 Options:
   --database=VALUE, -d VALUE        # Database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3), default: "sqlite"
-  --application-name=VALUE          # App name, default: "web"
-  --application-base-url=VALUE      # App base URL, default: "/"
+  --app-name=VALUE          # App name, default: "web"
+  --app-base-url=VALUE      # App base URL, default: "/"
   --template=VALUE                  # Template engine (erb/haml/slim), default: "erb"
   --test=VALUE                      # Project testing framework (rspec/minitest), default: "rspec"
   --[no-]hanami-head                # Use Hanami HEAD (true/false), default: false

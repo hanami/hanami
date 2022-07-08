@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Application action / View rendering / Automatic rendering", :application_integration do
+RSpec.describe "App action / View rendering / Automatic rendering", :app_integration do
   it "Renders a view automatically, passing all params and exposures" do
     within_app do
       write "app/actions/profile/show.rb", <<~RUBY
@@ -35,7 +35,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
       require "hanami/prepare"
 
-      action = TestApp::Application["actions.profile.show"]
+      action = TestApp::App["actions.profile.show"]
       response = action.(name: "Jennifer")
       rendered = response.body[0]
 
@@ -82,7 +82,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
       require "hanami/prepare"
 
-      action = TestApp::Application["actions.profile.show"]
+      action = TestApp::App["actions.profile.show"]
       response = action.(name: "Jennifer")
 
       expect(response.body).to eq []
@@ -124,7 +124,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
       require "hanami/prepare"
 
-      action = TestApp::Application["actions.profile.show"]
+      action = TestApp::App["actions.profile.show"]
       response = action.(name: "Jennifer")
       rendered = response.body[0]
 
@@ -171,7 +171,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
       # Call the action without a `name` param, thereby ensuring the view will raise an
       # error if rendered
-      action = TestApp::Application["actions.profile.show"]
+      action = TestApp::App["actions.profile.show"]
       response = action.({})
       rendered = response.body[0]
 
@@ -197,7 +197,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
       require "hanami/prepare"
 
-      action = TestApp::Application["actions.profile.show"]
+      action = TestApp::App["actions.profile.show"]
       response = action.({})
       expect(response.body).to eq []
       expect(response.status).to eq 200
@@ -206,11 +206,11 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
 
   def within_app
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -235,7 +235,7 @@ RSpec.describe "Application action / View rendering / Automatic rendering", :app
         end
       RUBY
 
-      write "app/templates/layouts/application.html.slim", <<~SLIM
+      write "app/templates/layouts/app.html.slim", <<~SLIM
         html
           body
             == yield

@@ -2,10 +2,10 @@
 
 require "rack/test"
 
-RSpec.describe "Hanami web app", :application_integration do
+RSpec.describe "Hanami web app", :app_integration do
   include Rack::Test::Methods
 
-  let(:app) { Hanami.rack_app }
+  let(:app) { Hanami.app }
 
   around do |example|
     with_tmp_directory(Dir.mktmpdir, &example)
@@ -45,11 +45,11 @@ RSpec.describe "Hanami web app", :application_integration do
   end
 
   specify "Setting middlewares in the config" do
-    write "config/application.rb", <<~RUBY
+    write "config/app.rb", <<~RUBY
       require "hanami"
 
       module TestApp
-        class Application < Hanami::Application
+        class App < Hanami::App
           config.logger.stream = File.new("/dev/null", "w")
 
           config.middleware.use Middlewares::AppendOne
@@ -98,11 +98,11 @@ RSpec.describe "Hanami web app", :application_integration do
   end
 
   specify "Setting middlewares in the router" do
-    write "config/application.rb", <<~RUBY
+    write "config/app.rb", <<~RUBY
       require "hanami"
 
       module TestApp
-        class Application < Hanami::Application
+        class App < Hanami::App
           config.logger.stream = File.new("/dev/null", "w")
         end
       end
@@ -151,7 +151,7 @@ RSpec.describe "Hanami web app", :application_integration do
   end
 
   specify "Setting a middleware that requires a block" do
-    write "config/application.rb", <<~RUBY
+    write "config/app.rb", <<~RUBY
       require "hanami"
 
       module TestApp
@@ -167,7 +167,7 @@ RSpec.describe "Hanami web app", :application_integration do
           end
         end
 
-        class Application < Hanami::Application
+        class App < Hanami::App
           config.logger.stream = File.new("/dev/null", "w")
 
           config.middleware.use(TestApp::TestMiddleware) { |env| env["tested"] = "yes" }

@@ -29,15 +29,15 @@ module Hanami
         private
 
         # Defines a {.new} method on the context class that resolves key components from
-        # the application container and provides them to {#initialize} as injected
+        # the app container and provides them to {#initialize} as injected
         # dependencies.
         #
-        # This includes the following application components:
+        # This includes the following app components:
         #
         #   - the configured inflector as `inflector`
-        #   - "settings" from the application container as `settings`
-        #   - "routes" from the application container as `routes`
-        #   - "assets" from the application container as `assets`
+        #   - "settings" from the app container as `settings`
+        #   - "routes" from the app container as `routes`
+        #   - "assets" from the app container as `assets`
         def define_new
           inflector = slice.inflector
           resolve_settings = method(:resolve_settings)
@@ -55,15 +55,15 @@ module Hanami
         end
 
         def resolve_settings
-          slice.application[:settings] if slice.application.key?(:settings)
+          slice.app[:settings] if slice.app.key?(:settings)
         end
 
         def resolve_routes
-          slice.application["routes"] if slice.application.key?("routes")
+          slice.app["routes"] if slice.app.key?("routes")
         end
 
         def resolve_assets
-          slice.application[:assets] if slice.application.key?(:assets)
+          slice.app[:assets] if slice.app.key?(:assets)
         end
       end
     end

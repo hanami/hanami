@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe "Container imports", :application_integration do
-  xspecify "Application container is imported into slice containers by default" do
+RSpec.describe "Container imports", :app_integration do
+  xspecify "App container is imported into slice containers by default" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -24,7 +24,7 @@ RSpec.describe "Container imports", :application_integration do
       Hanami.prepare
 
       shared_service = Object.new
-      TestApp::Application.register("shared_service", shared_service)
+      TestApp::App.register("shared_service", shared_service)
 
       Hanami.boot
 
@@ -34,11 +34,11 @@ RSpec.describe "Container imports", :application_integration do
 
   specify "Slices can import other slices" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -62,7 +62,7 @@ RSpec.describe "Container imports", :application_integration do
 
       expect(Admin::Slice["search.index_entity"]).to be_a Search::IndexEntity
 
-      # Ensure a slice's imported components (e.g. from "application") are not then
+      # Ensure a slice's imported components (e.g. from "app") are not then
       # exported again when that slice is imported, which would result in redundant
       # components
       expect(Search::Slice.key?("logger")).to be true
@@ -73,11 +73,11 @@ RSpec.describe "Container imports", :application_integration do
 
   specify "Slices can import specific components from other slices" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -114,11 +114,11 @@ RSpec.describe "Container imports", :application_integration do
 
   specify "Slices can import from other slices with a custom import key namespace" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -153,13 +153,13 @@ RSpec.describe "Container imports", :application_integration do
     end
   end
 
-  specify "Imported components from another slice are lazily resolved in unbooted applications" do
+  specify "Imported components from another slice are lazily resolved in unbooted apps" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -188,7 +188,7 @@ RSpec.describe "Container imports", :application_integration do
 
       require "hanami/prepare"
 
-      expect(Hanami.application).not_to be_booted
+      expect(Hanami.app).not_to be_booted
 
       expect(Admin::Slice.keys).not_to include "search.index_entity"
       expect(Admin::Slice["search.index_entity"]).to be_a Search::IndexEntity
@@ -203,11 +203,11 @@ RSpec.describe "Container imports", :application_integration do
 
   specify "Slices can configure specific exports" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY

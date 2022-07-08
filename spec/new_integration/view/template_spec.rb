@@ -2,17 +2,17 @@
 
 require "hanami"
 
-RSpec.describe "Application view / Template", :application_integration do
+RSpec.describe "App view / Template", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
         config.root = "/test_app"
       end
     end
 
-    Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
-    Hanami.application.register_slice :main
-    Hanami.application.prepare
+    Hanami.app.instance_eval(&app_hook) if respond_to?(:app_hook)
+    Hanami.app.register_slice :main
+    Hanami.app.prepare
 
     module TestApp
       class View < Hanami::View
@@ -53,7 +53,7 @@ RSpec.describe "Application view / Template", :application_integration do
       end
     end
 
-    let(:application_hook) {
+    let(:app_hook) {
       proc do
         config.views.template_inference_base = "my_views"
       end

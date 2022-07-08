@@ -445,7 +445,7 @@ Description:
   Generate an action for app
 
 Arguments:
-  APP                               # REQUIRED The application name (eg. `web`)
+  APP                               # REQUIRED The app name (eg. `web`)
   ACTION                            # REQUIRED The action name (eg. `home#index`)
 
 Options:

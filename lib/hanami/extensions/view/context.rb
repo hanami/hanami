@@ -9,7 +9,7 @@ require_relative "slice_configured_context"
 module Hanami
   module Extensions
     module View
-      # View context for views in Hanami applications.
+      # View context for views in Hanami apps.
       #
       # @api public
       # @since 2.0.0

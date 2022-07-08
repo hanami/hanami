@@ -5,13 +5,13 @@ require "hanami/configuration/views"
 require "saharspec/matchers/dont"
 
 RSpec.describe Hanami::Configuration, "#views" do
-  let(:configuration) { described_class.new(application_name: application_name, env: :development) }
-  let(:application_name) { "MyApp::Application" }
+  let(:configuration) { described_class.new(app_name: app_name, env: :development) }
+  let(:app_name) { "MyApp::app" }
 
   subject(:views) { configuration.views }
 
   context "Hanami::View available" do
-    it "exposes Hanami::Views's application configuration" do
+    it "exposes Hanami::Views's app configuration" do
       is_expected.to be_an_instance_of(Hanami::Configuration::Views)
 
       is_expected.to respond_to(:finalize!)
@@ -65,8 +65,8 @@ RSpec.describe Hanami::Configuration, "#views" do
       end
 
       describe "layout" do
-        it 'is "application"' do
-          expect(views.layout).to eq "application"
+        it 'is "app"' do
+          expect(views.layout).to eq "app"
         end
       end
     end

@@ -1,9 +1,9 @@
 require "hanami"
 
-RSpec.describe "Application view / Context / Inflector", :application_integration do
+RSpec.describe "App view / Context / Inflector", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
       end
     end
 
@@ -21,8 +21,8 @@ RSpec.describe "Application view / Context / Inflector", :application_integratio
   subject(:context) { context_class.new }
 
   describe "#inflector" do
-    it "is the application inflector by default" do
-      expect(context.inflector).to be TestApp::Application.inflector
+    it "is the app inflector by default" do
+      expect(context.inflector).to be TestApp::App.inflector
     end
 
     context "injected inflector" do

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-RSpec.describe "Application action / CSRF protection", :application_integration do
+RSpec.describe "App action / CSRF protection", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
       end
     end
 
-    Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
-    Hanami.application.register_slice :main
-    Hanami.application.prepare
+    Hanami.app.instance_eval(&app_hook) if respond_to?(:app_hook)
+    Hanami.app.register_slice :main
+    Hanami.app.prepare
 
     module TestApp
       class Action < Hanami::Action
@@ -19,9 +19,9 @@ RSpec.describe "Application action / CSRF protection", :application_integration 
 
   subject(:action_class) { TestApp::Action }
 
-  context "application sessions enabled" do
+  context "app sessions enabled" do
     context "CSRF protection not explicitly configured" do
-      let(:application_hook) {
+      let(:app_hook) {
         proc do
           config.actions.sessions = :cookie, {secret: "abc123"}
         end
@@ -33,7 +33,7 @@ RSpec.describe "Application action / CSRF protection", :application_integration 
     end
 
     context "CSRF protection explicitly disabled" do
-      let(:application_hook) {
+      let(:app_hook) {
         proc do
           config.sessions = :cookie, {secret: "abc123"}
           config.actions.csrf_protection = false
@@ -46,7 +46,7 @@ RSpec.describe "Application action / CSRF protection", :application_integration 
     end
   end
 
-  context "application sessions not enabled" do
+  context "app sessions not enabled" do
     it "does not have CSRF protection enabled" do
       expect(action_class.ancestors.map(&:to_s)).not_to include "Hanami::Action::CSRFProtection"
     end

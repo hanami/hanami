@@ -6,7 +6,7 @@ require_relative "action/slice_configured_action"
 
 module Hanami
   module Extensions
-    # Extended behavior for actions intended for use within an Hanami application.
+    # Extended behavior for actions intended for use within an Hanami app.
     #
     # @see Hanami::Action
     #

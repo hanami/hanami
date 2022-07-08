@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-RSpec.describe "Application action / Sessions", :application_integration do
+RSpec.describe "App action / Sessions", :app_integration do
   before do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
       end
     end
 
-    Hanami.application.instance_eval(&application_hook) if respond_to?(:application_hook)
-    Hanami.application.prepare
+    Hanami.app.instance_eval(&app_hook) if respond_to?(:app_hook)
+    Hanami.app.prepare
 
     module TestApp
       class Action < Hanami::Action
@@ -19,7 +19,7 @@ RSpec.describe "Application action / Sessions", :application_integration do
   subject(:action_class) { TestApp::Action }
 
   context "HTTP sessions enabled" do
-    let(:application_hook) {
+    let(:app_hook) {
       proc do
         config.actions.sessions = :cookie, {secret: "abc123"}
       end
@@ -31,7 +31,7 @@ RSpec.describe "Application action / Sessions", :application_integration do
   end
 
   context "HTTP sessions explicitly disabled" do
-    let(:application_hook) {
+    let(:app_hook) {
       proc do
         config.actions.sessions = nil
       end

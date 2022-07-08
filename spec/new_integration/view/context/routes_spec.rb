@@ -2,14 +2,14 @@
 
 require "hanami"
 
-RSpec.describe "Application view / Context / Routes", :application_integration do
-  it "accesses application routes" do
+RSpec.describe "App view / Context / Routes", :app_integration do
+  it "accesses app routes" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -64,7 +64,7 @@ RSpec.describe "Application view / Context / Routes", :application_integration d
 
   it "can inject routes" do
     module TestApp
-      class Application < Hanami::Application
+      class App < Hanami::App
       end
     end
 

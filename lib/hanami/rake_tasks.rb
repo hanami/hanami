@@ -6,7 +6,7 @@ require "hanami/cli/command_line"
 Hanami::CLI::RakeTasks.register_tasks do
   @_hanami_command_line = Hanami::CLI::CommandLine.new
 
-  desc "Load the application environment"
+  desc "Load the app environment"
   task :environment do
     require "hanami/prepare"
   end

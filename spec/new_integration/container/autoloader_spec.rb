@@ -1,11 +1,11 @@
-RSpec.describe "Application autoloader", :application_integration do
+RSpec.describe "App autoloader", :app_integration do
   specify "Classes are autoloaded through direct reference, including through components resolved from the container" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             # Use a custom inflection to ensure this is respected by the autoloader
             config.inflections do |inflections|
               inflections.acronym "NBA"

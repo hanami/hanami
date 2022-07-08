@@ -2,7 +2,7 @@
 
 require "hanami/settings"
 
-RSpec.describe "Application settings", :application_integration do
+RSpec.describe "App settings", :app_integration do
   before do
     @env = ENV.to_h
   end
@@ -13,11 +13,11 @@ RSpec.describe "Application settings", :application_integration do
 
   specify "Settings defined in config/settings.rb are loaded from .env" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY
@@ -54,22 +54,22 @@ RSpec.describe "Application settings", :application_integration do
 
       require "hanami/prepare"
 
-      expect(Hanami.application.settings.database_url).to eq "postgres://localhost/test_app_development"
-      expect(Hanami.application.settings.redis_url).to eq "redis://localhost:6379"
-      expect(Hanami.application.settings.feature_flag).to be true
-      expect(Hanami.application.settings.feature_flag_with_default).to be false
+      expect(Hanami.app.settings.database_url).to eq "postgres://localhost/test_app_development"
+      expect(Hanami.app.settings.redis_url).to eq "redis://localhost:6379"
+      expect(Hanami.app.settings.feature_flag).to be true
+      expect(Hanami.app.settings.feature_flag_with_default).to be false
 
-      expect(Hanami.application[:settings]).to eql Hanami.application.settings
+      expect(Hanami.app[:settings]).to eql Hanami.app.settings
     end
   end
 
   specify "Errors raised from setting constructors are collected" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
           end
         end
       RUBY

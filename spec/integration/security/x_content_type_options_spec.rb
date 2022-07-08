@@ -18,7 +18,7 @@ RSpec.describe "X-Content-Type-Options header", type: :integration do
     with_project do
       generate "action web home#index --url=/"
 
-      replace "apps/web/application.rb", "security.x_content_type_options 'nosniff'", "security.x_content_type_options 'foo'"
+      replace "apps/web/app.rb", "security.x_content_type_options 'nosniff'", "security.x_content_type_options 'foo'"
 
       server do
         get "/"
@@ -33,7 +33,7 @@ RSpec.describe "X-Content-Type-Options header", type: :integration do
     with_project do
       generate "action web home#index --url=/"
 
-      replace "apps/web/application.rb", "security.x_content_type_options 'nosniff'", ""
+      replace "apps/web/app.rb", "security.x_content_type_options 'nosniff'", ""
 
       server do
         get "/"

@@ -7,30 +7,30 @@ require_relative "slice"
 require_relative "slice_name"
 
 module Hanami
-  # The Hanami application is a singular slice tasked with managing the core components of
-  # the application and coordinating overall application boot.
+  # The Hanami app is a singular slice tasked with managing the core components of
+  # the app and coordinating overall app boot.
   #
-  # For smaller apps, the application may be the only slice present, whereas larger apps
-  # may consist of many slices, with the application reserved for holding a small number
+  # For smaller apps, the app may be the only slice present, whereas larger apps
+  # may consist of many slices, with the app reserved for holding a small number
   # of shared components only.
   #
   # @see Slice
   #
   # @api public
   # @since 2.0.0
-  class Application < Slice
+  class App < Slice
     @_mutex = Mutex.new
 
     def self.inherited(subclass)
       super
 
-      Hanami.application = subclass
+      Hanami.app = subclass
 
       subclass.extend(ClassMethods)
 
       @_mutex.synchronize do
         subclass.class_eval do
-          @configuration = Hanami::Configuration.new(application_name: slice_name, env: Hanami.env)
+          @configuration = Hanami::Configuration.new(app_name: slice_name, env: Hanami.env)
           @autoloader = Zeitwerk::Loader.new
 
           prepare_base_load_path
@@ -38,11 +38,11 @@ module Hanami
       end
     end
 
-    # Application class interface
+    # App class interface
     module ClassMethods
       attr_reader :autoloader, :configuration
 
-      def application_name
+      def app_name
         slice_name
       end
 
@@ -61,42 +61,42 @@ module Hanami
         # (which rely on the basic prepare steps having already run)
         super
 
-        # Run specific prepare steps for the application slice. Note also that some
+        # Run specific prepare steps for the app slice. Note also that some
         # standard steps have been skipped via the empty method overrides below.
-        prepare_application_component_dirs
-        prepare_application_providers
+        prepare_app_component_dirs
+        prepare_app_providers
 
         # The autoloader must be setup after the container is configured, which is the
         # point at which any component dirs from other slices are added to the autoloader
         app = self
         container.after(:configure) do
-          app.send(:prepare_application_autoloader)
+          app.send(:prepare_app_autoloader)
         end
       end
 
-      # Skip standard slice prepare steps that do not apply to the application slice
+      # Skip standard slice prepare steps that do not apply to the app slice
       def prepare_container_component_dirs; end
       def prepare_container_imports; end
 
-      def prepare_application_component_dirs
+      def prepare_app_component_dirs
         # Component files in both `app/` and `app/lib/` define classes in the
-        # application's namespace
+        # app's namespace
 
         if root.join(APP_DIR, LIB_DIR).directory?
           container.config.component_dirs.add(File.join(APP_DIR, LIB_DIR)) do |dir|
-            dir.namespaces.add_root(key: nil, const: application_name.name)
+            dir.namespaces.add_root(key: nil, const: app_name.name)
           end
         end
 
         if root.join(APP_DIR).directory?
           # TODO: ignore lib/ child dir here
           container.config.component_dirs.add(APP_DIR) do |dir|
-            dir.namespaces.add_root(key: nil, const: application_name.name)
+            dir.namespaces.add_root(key: nil, const: app_name.name)
           end
         end
       end
 
-      def prepare_application_providers
+      def prepare_app_providers
         require_relative "providers/inflector"
         register_provider(:inflector, source: Hanami::Providers::Inflector)
 
@@ -110,14 +110,14 @@ module Hanami
         register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
       end
 
-      def prepare_application_autoloader
+      def prepare_app_autoloader
         # Component dirs are automatically pushed to the autoloader by dry-system's
         # zeitwerk plugin. This method adds other dirs that are not otherwise configured
         # as component dirs.
 
         # Autoload classes from `lib/[app_namespace]/`
-        if root.join(LIB_DIR, application_name.name).directory?
-          autoloader.push_dir(root.join(LIB_DIR, application_name.name), namespace: namespace)
+        if root.join(LIB_DIR, app_name.name).directory?
+          autoloader.push_dir(root.join(LIB_DIR, app_name.name), namespace: namespace)
         end
 
         autoloader.setup

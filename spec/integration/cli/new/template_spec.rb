@@ -6,7 +6,7 @@ RSpec.describe "hanami new", type: :integration do
       it "generates project" do
         project = "bookshelf_erb"
         output  = [
-          "create  apps/web/templates/application.html.erb"
+          "create  apps/web/templates/app.html.erb"
         ]
 
         run_cmd "hanami new #{project} --template=erb", output
@@ -18,9 +18,9 @@ RSpec.describe "hanami new", type: :integration do
           expect(".hanamirc").to have_file_content(%r{template=erb})
 
           #
-          # apps/web/templates/application.html.erb
+          # apps/web/templates/app.html.erb
           #
-          expect("apps/web/templates/application.html.erb").to have_file_content <<~END
+          expect("apps/web/templates/app.html.erb").to have_file_content <<~END
             <!DOCTYPE html>
             <html>
               <head>
@@ -40,7 +40,7 @@ RSpec.describe "hanami new", type: :integration do
       it "generates project" do
         project = "bookshelf_erb"
         output  = [
-          "create  apps/web/templates/application.html.haml"
+          "create  apps/web/templates/app.html.haml"
         ]
 
         run_cmd "hanami new #{project} --template=haml", output
@@ -52,9 +52,9 @@ RSpec.describe "hanami new", type: :integration do
           expect(".hanamirc").to have_file_content(%r{template=haml})
 
           #
-          # apps/web/templates/application.html.haml
+          # apps/web/templates/app.html.haml
           #
-          expect("apps/web/templates/application.html.haml").to have_file_content <<~END
+          expect("apps/web/templates/app.html.haml").to have_file_content <<~END
             !!!
             %html
               %head
@@ -71,7 +71,7 @@ RSpec.describe "hanami new", type: :integration do
       it "generates project" do
         project = "bookshelf_erb"
         output  = [
-          "create  apps/web/templates/application.html.slim"
+          "create  apps/web/templates/app.html.slim"
         ]
 
         run_cmd "hanami new #{project} --template=slim", output
@@ -83,9 +83,9 @@ RSpec.describe "hanami new", type: :integration do
           expect(".hanamirc").to have_file_content(%r{template=slim})
 
           #
-          # apps/web/templates/application.html.slim
+          # apps/web/templates/app.html.slim
           #
-          expect("apps/web/templates/application.html.slim").to have_file_content <<~END
+          expect("apps/web/templates/app.html.slim").to have_file_content <<~END
             doctype html
             html
               head

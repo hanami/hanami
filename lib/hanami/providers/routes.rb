@@ -12,7 +12,7 @@ module Hanami
       end
 
       def self.slice
-        @slice || Hanami.application
+        @slice || Hanami.app
       end
 
       def prepare

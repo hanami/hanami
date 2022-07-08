@@ -8,7 +8,7 @@ RSpec.describe "hanami new", type: :integration do
         output  = [
           "create  spec/spec_helper.rb",
           "create  spec/features_helper.rb",
-          "create  spec/web/views/application_layout_spec.rb"
+          "create  spec/web/views/app_layout_spec.rb"
         ]
 
         run_cmd "hanami new #{project} --test=minitest", output
@@ -50,16 +50,16 @@ RSpec.describe "hanami new", type: :integration do
           END
 
           #
-          # spec/<app>/views/application_layout_spec.rb
+          # spec/<app>/views/app_layout_spec.rb
           #
-          expect("spec/web/views/application_layout_spec.rb").to have_file_content <<-END
+          expect("spec/web/views/app_layout_spec.rb").to have_file_content <<-END
             require "spec_helper"
 
-            describe Web::Views::ApplicationLayout do
-              let(:layout)   { Web::Views::ApplicationLayout.new({ format: :html }, "contents") }
+            describe Web::Views::AppLayout do
+              let(:layout)   { Web::Views::AppLayout.new({ format: :html }, "contents") }
               let(:rendered) { layout.render }
 
-              it 'contains application name' do
+              it 'contains app name' do
                 _(rendered).must_include('Web')
               end
             end
@@ -76,7 +76,7 @@ RSpec.describe "hanami new", type: :integration do
           "create  spec/spec_helper.rb",
           "create  spec/features_helper.rb",
           "create  spec/support/capybara.rb",
-          "create  spec/web/views/application_layout_spec.rb"
+          "create  spec/web/views/app_layout_spec.rb"
         ]
 
         run_cmd "hanami new #{project} --test=rspec", output
@@ -237,16 +237,16 @@ RSpec.describe "hanami new", type: :integration do
           END
 
           #
-          # spec/<app>/views/application_layout_spec.rb
+          # spec/<app>/views/app_layout_spec.rb
           #
-          expect("spec/web/views/application_layout_spec.rb").to have_file_content <<~END
+          expect("spec/web/views/app_layout_spec.rb").to have_file_content <<~END
             require "spec_helper"
 
-            RSpec.describe Web::Views::ApplicationLayout, type: :view do
-              let(:layout)   { Web::Views::ApplicationLayout.new({ format: :html }, "contents") }
+            RSpec.describe Web::Views::AppLayout, type: :view do
+              let(:layout)   { Web::Views::AppLayout.new({ format: :html }, "contents") }
               let(:rendered) { layout.render }
 
-              it 'contains application name' do
+              it 'contains app name' do
                 expect(rendered).to include('Web')
               end
             end

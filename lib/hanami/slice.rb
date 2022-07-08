@@ -7,10 +7,10 @@ require_relative "slice_name"
 require_relative "slice_registrar"
 
 module Hanami
-  # A slice represents any distinct area of concern within an Hanami application.
+  # A slice represents any distinct area of concern within an Hanami app.
   #
   # For smaller apps, a slice may encompass the whole app itself (see
-  # {Hanami::Application}), whereas larger apps may consist of many slices.
+  # {Hanami::App}), whereas larger apps may consist of many slices.
   #
   # Each slice corresponds a single module namespace and a single root directory of source
   # files for loading as components into its container.
@@ -18,8 +18,8 @@ module Hanami
   # Each slice has its own configuration, and may optionally have its own settings,
   # routes, as well as other nested slices.
   #
-  # Slices expect an Hanami application to be defined (which itself is a slice). They will
-  # initialize their configuration as a copy of the application's, and will also configure
+  # Slices expect an Hanami app to be defined (which itself is a slice). They will
+  # initialize their configuration as a copy of the app's, and will also configure
   # certain components
   #
   # Slices must be _prepared_ and optionally _booted_ before they can be used (see
@@ -49,16 +49,16 @@ module Hanami
     module ClassMethods
       attr_reader :parent, :container
 
-      def application
-        Hanami.application
+      def app
+        Hanami.app
       end
 
-      # A slice's configuration is copied from the application configuration at time of
-      # first access. The application should have its configuration completed before
+      # A slice's configuration is copied from the app configuration at time of
+      # first access. The app should have its configuration completed before
       # slices are loaded.
       def configuration
-        @configuration ||= application.configuration.dup.tap do |config|
-          # Remove specific values from application that will not apply to this slice
+        @configuration ||= app.configuration.dup.tap do |config|
+          # Remove specific values from app that will not apply to this slice
           config.root = nil
         end
       end
@@ -200,6 +200,10 @@ module Hanami
         @rack_app ||= router.to_rack_app
       end
 
+      def call(...)
+        rack_app.call(...)
+      end
+
       private
 
       # rubocop:disable Metrics/AbcSize
@@ -264,7 +268,7 @@ module Hanami
 
         container.use(
           :zeitwerk,
-          loader: application.autoloader,
+          loader: app.autoloader,
           run_setup: false,
           eager_load: false
         )
@@ -313,7 +317,7 @@ module Hanami
       def prepare_container_imports
         import(
           keys: config.slices.shared_component_keys,
-          from: application.container,
+          from: app.container,
           as: nil
         )
       end

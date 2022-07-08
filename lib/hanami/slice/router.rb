@@ -5,7 +5,7 @@ require_relative "routing/middleware/stack"
 
 module Hanami
   class Slice
-    # Hanami application router
+    # Hanami app router
     # @since 2.0.0
     class Router < ::Hanami::Router
       # @api private

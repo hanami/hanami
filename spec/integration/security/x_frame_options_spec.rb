@@ -18,7 +18,7 @@ RSpec.describe "X-Frame-Options header", type: :integration do
     with_project do
       generate "action web home#index --url=/"
 
-      replace "apps/web/application.rb", "security.x_frame_options 'DENY'", "security.x_frame_options 'ALLOW-FROM https://example.test/'"
+      replace "apps/web/app.rb", "security.x_frame_options 'DENY'", "security.x_frame_options 'ALLOW-FROM https://example.test/'"
 
       server do
         get "/"
@@ -33,7 +33,7 @@ RSpec.describe "X-Frame-Options header", type: :integration do
     with_project do
       generate "action web home#index --url=/"
 
-      replace "apps/web/application.rb", "security.x_frame_options 'DENY'", ""
+      replace "apps/web/app.rb", "security.x_frame_options 'DENY'", ""
 
       server do
         get "/"

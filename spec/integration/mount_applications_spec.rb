@@ -2,7 +2,7 @@ require "resolv-replace"
 require "net/http"
 require "uri"
 
-RSpec.describe "mount applications", type: :integration do
+RSpec.describe "mount apps", type: :integration do
   before do
     stub_dns_hosts("127.0.0.1 #{host} www.#{host} #{subdomain} localhost")
   end
@@ -17,7 +17,7 @@ RSpec.describe "mount applications", type: :integration do
         generate "app admin"
         generate "app beta"
 
-        replace "config/environment.rb", "Beta::Application", %(  mount Beta::Application, at: "/", host: "#{subdomain}")
+        replace "config/environment.rb", "Beta::App", %(  mount Beta::App, at: "/", host: "#{subdomain}")
 
         server do
           # Web
@@ -39,7 +39,7 @@ RSpec.describe "mount applications", type: :integration do
         generate "app admin"
         generate "app beta"
 
-        replace "config/environment.rb", "Beta::Application", %(  mount Beta::Application, at: "/", host: "#{subdomain}")
+        replace "config/environment.rb", "Beta::App", %(  mount Beta::App, at: "/", host: "#{subdomain}")
 
         port = RSpec::Support::RandomPort.call
         server(port: port) do

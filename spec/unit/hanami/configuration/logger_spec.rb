@@ -6,8 +6,8 @@ require "dry/inflector"
 require "logger"
 
 RSpec.describe Hanami::Configuration::Logger do
-  subject { described_class.new(application_name: application_name, env: env) }
-  let(:application_name) { Hanami::SliceName.new(double(name: "MyApp::Application"), inflector: -> { Dry::Inflector.new }) }
+  subject { described_class.new(app_name: app_name, env: env) }
+  let(:app_name) { Hanami::SliceName.new(double(name: "MyApp::app"), inflector: -> { Dry::Inflector.new }) }
   let(:env) { :development }
 
   describe "#logger_class" do
@@ -166,8 +166,8 @@ RSpec.describe Hanami::Configuration::Logger do
 end
 
 RSpec.describe Hanami::Configuration do
-  subject(:config) { described_class.new(application_name: application_name, env: env) }
-  let(:application_name) { Hanami::SliceName.new(double(name: "SOS::Application"), inflector: -> { Dry::Inflector.new }) }
+  subject(:config) { described_class.new(app_name: app_name, env: env) }
+  let(:app_name) { Hanami::SliceName.new(double(name: "SOS::app"), inflector: -> { Dry::Inflector.new }) }
   let(:env) { :development }
 
   describe "#logger" do
@@ -179,9 +179,9 @@ RSpec.describe Hanami::Configuration do
       config.logger.finalize!
     end
 
-    describe "#application_name" do
-      it "defaults to Hanami::Configuration#application_name" do
-        expect(config.logger.application_name).to eq(config.application_name)
+    describe "#app_name" do
+      it "defaults to Hanami::Configuration#app_name" do
+        expect(config.logger.app_name).to eq(config.app_name)
       end
     end
   end

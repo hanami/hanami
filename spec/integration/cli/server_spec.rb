@@ -46,10 +46,10 @@ RSpec.describe "hanami server", type: :integration do
     it "serves static asset" do
       with_project do
         server do
-          write "apps/web/assets/javascripts/application.js", <<~EOF
+          write "apps/web/assets/javascripts/app.js", <<~EOF
             console.log('test');
           EOF
-          visit "/assets/application.js"
+          visit "/assets/app.js"
           expect(page).to have_content("console.log('test');")
         end
       end
@@ -155,18 +155,18 @@ RSpec.describe "hanami server", type: :integration do
 
           server do
             post "/books", book: { title: "Why we sleep" }
-            post "/books", JSON.generate(book: { title: "Parsers" }), "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"
-            post "/books", JSON.generate(%w[this is cool]), "CONTENT_TYPE" => "application/json", "HTTP_ACCEPT" => "application/json"
+            post "/books", JSON.generate(book: { title: "Parsers" }), "CONTENT_TYPE" => "app/json", "HTTP_ACCEPT" => "app/json"
+            post "/books", JSON.generate(%w[this is cool]), "CONTENT_TYPE" => "app/json", "HTTP_ACCEPT" => "app/json"
           end
 
           content = contents(log)
           expect(content).to include("[#{project}] [INFO]")
           expect(content).to include("POST 200")
 
-          expect(content).to include("application/x-www-form-urlencoded")
+          expect(content).to include("app/x-www-form-urlencoded")
           expect(content).to include(%({"book"=>{"title"=>"Why we sleep"}}))
 
-          expect(content).to include("application/json")
+          expect(content).to include("app/json")
           expect(content).to include(%({"book"=>{"title"=>"Parsers"}}))
           expect(content).to include(%({"_"=>["this", "is", "cool"]}))
         end
@@ -563,25 +563,25 @@ OUT
   end
 
   context "with HANAMI_APPS ENV variable" do
-    it "loads only specific application" do
+    it "loads only specific app" do
       with_project do
         generate "app admin"
 
-        remove_line "config/environment.rb", "require_relative '../apps/admin/application'"
-        remove_line "config/environment.rb", "mount Admin::Application"
+        remove_line "config/environment.rb", "require_relative '../apps/admin/app'"
+        remove_line "config/environment.rb", "mount Admin::App"
 
-        remove_line "config/environment.rb", "require_relative '../apps/web/application'"
-        remove_line "config/environment.rb", "mount Web::Application"
+        remove_line "config/environment.rb", "require_relative '../apps/web/app'"
+        remove_line "config/environment.rb", "mount Web::App"
 
         inject_line_after "config/environment.rb", "Hanami.configure", <<-EOL
   if Hanami.app?(:admin)
-    require_relative '../apps/admin/application'
-    mount Admin::Application, at: '/admin'
+    require_relative '../apps/admin/app'
+    mount Admin::App, at: '/admin'
   end
 
   if Hanami.app?(:web)
-    require_relative '../apps/web/application'
-    mount Web::Application, at: '/'
+    require_relative '../apps/web/app'
+    mount Web::App, at: '/'
   end
         EOL
         generate "action web home#index --url=/"

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe "Application action / Routes", :application_integration do
-  specify "Access application routes from an action" do
+RSpec.describe "App action / Routes", :app_integration do
+  specify "Access app routes from an action" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~RUBY
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application; end
+          class App < Hanami::App; end
         end
       RUBY
 
@@ -63,7 +63,7 @@ RSpec.describe "Application action / Routes", :application_integration do
 
       require "hanami/prepare"
 
-      response = TestApp::Application["actions.home.index"].call({})
+      response = TestApp::App["actions.home.index"].call({})
       expect(response.body).to eq ["/"]
 
       response = Admin::Slice["actions.dashboard.index"].call({})

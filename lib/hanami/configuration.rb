@@ -15,7 +15,7 @@ require_relative "settings/dotenv_store"
 require_relative "slice/routing/middleware/stack"
 
 module Hanami
-  # Hanami application configuration
+  # Hanami app configuration
   #
   # @since 2.0.0
   class Configuration
@@ -24,7 +24,7 @@ module Hanami
     DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
     private_constant :DEFAULT_ENVIRONMENTS
 
-    attr_reader :application_name
+    attr_reader :app_name
     attr_reader :env
 
     attr_reader :actions
@@ -41,21 +41,21 @@ module Hanami
     attr_reader :environments
     private :environments
 
-    def initialize(application_name:, env:)
-      @application_name = application_name
+    def initialize(app_name:, env:)
+      @app_name = app_name
 
       @environments = DEFAULT_ENVIRONMENTS.clone
       @env = env
 
       # Some default setting values must be assigned at initialize-time to ensure they
-      # have appropriate values for the current application
+      # have appropriate values for the current app
       self.root = Dir.pwd
       self.settings_store = Hanami::Settings::DotenvStore.new.with_dotenv_loaded
 
-      config.logger = Configuration::Logger.new(env: env, application_name: application_name)
+      config.logger = Configuration::Logger.new(env: env, app_name: app_name)
 
-      @assets = load_dependent_config("hanami/assets/application_configuration") {
-        Hanami::Assets::ApplicationConfiguration.new
+      @assets = load_dependent_config("hanami/assets/app_configuration") {
+        Hanami::Assets::AppConfiguration.new
       }
 
       @actions = load_dependent_config("hanami/action") {
@@ -78,7 +78,7 @@ module Hanami
     def initialize_copy(source)
       super
 
-      @application_name = application_name.dup
+      @app_name = app_name.dup
       @environments = environments.dup
 
       @assets = source.assets.dup

@@ -2,18 +2,18 @@
 
 require "rack/test"
 
-RSpec.describe "Slices / External slices", :application_integration do
+RSpec.describe "Slices / External slices", :app_integration do
   include Rack::Test::Methods
 
-  let(:app) { TestApp::Application.rack_app }
+  let(:app) { TestApp::App.app }
 
   specify "External slices can be registered and used" do
     with_tmp_directory(Dir.mktmpdir) do
-      write "config/application.rb", <<~'RUBY'
+      write "config/app.rb", <<~'RUBY'
         require "hanami"
 
         module TestApp
-          class Application < Hanami::Application
+          class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
 
             require "external/slice"
@@ -81,7 +81,7 @@ RSpec.describe "Slices / External slices", :application_integration do
 
       require "hanami/prepare"
 
-      expect(Hanami.application.slices[:external]).to be External::Slice
+      expect(Hanami.app.slices[:external]).to be External::Slice
 
       get "/"
 

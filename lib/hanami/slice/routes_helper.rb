@@ -2,13 +2,13 @@
 
 module Hanami
   class Slice
-    # Hanami application routes helpers
+    # Hanami app routes helpers
     #
     # An instance of this class will be registered with slice (at the "routes" key). You
-    # can use it to access the route helpers for your application.
+    # can use it to access the route helpers for your app.
     #
     # @example
-    #   MyApp::Application["routes"].path(:root) # => "/"
+    #   MyApp::App["routes"].path(:root) # => "/"
     #
     # @see Hanami::Router::UrlHelpers
     # @since 2.0.0
