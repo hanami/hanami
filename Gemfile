@@ -23,7 +23,6 @@ gem "dry-container", github: "dry-rb/dry-container", branch: "main"
 
 group :test do
   gem "dotenv"
-  gem "dry-types"
   gem "saharspec"
   gem "slim"
 end
