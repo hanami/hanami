@@ -6,7 +6,7 @@ module Hanami
   module Providers
     class Rack < Dry::System::Provider::Source
       def prepare
-        require "dry/monitor/rack/middleware" # FIXME: this _used_ to be just "dry/monitor"
+        require "dry/monitor"
         require "hanami/web/rack_logger"
       end
 
