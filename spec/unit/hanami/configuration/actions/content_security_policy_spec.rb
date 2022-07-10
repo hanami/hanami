@@ -8,7 +8,6 @@ RSpec.describe Hanami::Configuration::Actions, "#content_security_policy" do
 
   context "no CSP config specified" do
     context "without assets_server_url" do
-
       it "has defaults" do
         expect(content_security_policy[:base_uri]).to eq("'self'")
 

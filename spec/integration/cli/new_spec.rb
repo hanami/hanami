@@ -68,91 +68,91 @@ RSpec.describe "hanami new", type: :integration do
       #
       # .env.development
       #
-      expect(".env.development").to have_file_content(%r{# Define ENV variables for development environment})
+      expect(".env.development").to have_file_content(/# Define ENV variables for development environment/)
       expect(".env.development").to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_development.sqlite"})
-      expect(".env.development").to have_file_content(%r{SERVE_STATIC_ASSETS="true"})
-      expect(".env.development").to have_file_content(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
+      expect(".env.development").to have_file_content(/SERVE_STATIC_ASSETS="true"/)
+      expect(".env.development").to have_file_content(/WEB_SESSIONS_SECRET="\w{64}"/)
 
       #
       # .env.test
       #
-      expect(".env.test").to have_file_content(%r{# Define ENV variables for test environment})
+      expect(".env.test").to have_file_content(/# Define ENV variables for test environment/)
       expect(".env.test").to have_file_content(%r{DATABASE_URL="sqlite://db/#{project}_test.sqlite"})
-      expect(".env.test").to have_file_content(%r{SERVE_STATIC_ASSETS="true"})
-      expect(".env.test").to have_file_content(%r{WEB_SESSIONS_SECRET="[\w]{64}"})
+      expect(".env.test").to have_file_content(/SERVE_STATIC_ASSETS="true"/)
+      expect(".env.test").to have_file_content(/WEB_SESSIONS_SECRET="\w{64}"/)
 
       #
       # README.md
       #
       expect("README.md").to have_file_content <<~END
-        # Bookshelf
+                # Bookshelf
 
-        Welcome to your new Hanami project!
+                Welcome to your new Hanami project!
 
-        ## Setup
+                ## Setup
 
-        How to run tests:
+                How to run tests:
 
-        ```
-        % bundle exec rake
-        ```
+                ```
+                % bundle exec rake
+                ```
 
-        How to run the development console:
+                How to run the development console:
 
-        ```
-        % bundle exec hanami console
-        ```
+                ```
+                % bundle exec hanami console
+                ```
 
-        How to run the development server:
+                How to run the development server:
 
-        ```
-        % bundle exec hanami server
-        ```
+                ```
+                % bundle exec hanami server
+                ```
 
-        How to prepare (create and migrate) DB for `development` and `test` environments:
+                How to prepare (create and migrate) DB for `development` and `test` environments:
 
-        ```
-        % bundle exec hanami db prepare
+                ```
+                % bundle exec hanami db prepare
 
-        % HANAMI_ENV=test bundle exec hanami db prepare
-        ```
+                % HANAMI_ENV=test bundle exec hanami db prepare
+                ```
 
-Explore Hanami [guides](https://guides.hanamirb.org/), [API docs](http://docs.hanamirb.org/#{Hanami::VERSION}/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
-END
+        Explore Hanami [guides](https://guides.hanamirb.org/), [API docs](http://docs.hanamirb.org/#{Hanami::VERSION}/), or jump in [chat](http://chat.hanamirb.org) for help. Enjoy! 🌸
+      END
 
       #
       # Gemfile
       #
       if Platform.match?(engine: :ruby)
-        expect('Gemfile').to have_file_content <<-END
-source 'https://rubygems.org'
+        expect("Gemfile").to have_file_content <<~END
+          source 'https://rubygems.org'
 
-gem 'rake'
-gem 'hanami',       '#{Hanami::Version.gem_requirement}'
-gem 'hanami-model', '~> 1.3'
+          gem 'rake'
+          gem 'hanami',       '#{Hanami::Version.gem_requirement}'
+          gem 'hanami-model', '~> 1.3'
 
-gem 'sqlite3'
+          gem 'sqlite3'
 
-group :development do
-  # Code reloading
-  # See: https://guides.hanamirb.org/projects/code-reloading
-  gem 'shotgun', platforms: :ruby
-  gem 'hanami-webconsole'
-end
+          group :development do
+            # Code reloading
+            # See: https://guides.hanamirb.org/projects/code-reloading
+            gem 'shotgun', platforms: :ruby
+            gem 'hanami-webconsole'
+          end
 
-group :test, :development do
-  gem 'dotenv', '~> 2.4'
-end
+          group :test, :development do
+            gem 'dotenv', '~> 2.4'
+          end
 
-group :test do
-  gem 'rspec'
-  gem 'capybara'
-end
+          group :test do
+            gem 'rspec'
+            gem 'capybara'
+          end
 
-group :production do
-  # gem 'puma'
-end
-END
+          group :production do
+            # gem 'puma'
+          end
+        END
       end
 
       if Platform.match?(engine: :jruby)
@@ -183,7 +183,7 @@ END
       #
       # config.ru
       #
-      expect('config.ru').to have_file_content <<-END
+      expect("config.ru").to have_file_content <<-END
         require_relative 'config/environment'
 
         run Hanami.app
@@ -200,7 +200,7 @@ END
       #
       # config/environment.rb
       #
-      expect('config/environment.rb').to have_file_content <<-END
+      expect("config/environment.rb").to have_file_content <<-END
         require 'bundler/setup'
         require 'hanami/setup'
         require 'hanami/model'
@@ -451,343 +451,343 @@ END
       #
       # .gitignore
       #
-      expect(".gitignore").to have_file_content <<-END
-/db/*.sqlite
-/public/assets*
-/tmp
-.env.local
-.env.*.local
-END
+      expect(".gitignore").to have_file_content <<~END
+        /db/*.sqlite
+        /public/assets*
+        /tmp
+        .env.local
+        .env.*.local
+      END
 
       #
       # apps/web/app.rb
       #
-      expect("apps/web/app.rb").to have_file_content <<-END
-require 'hanami/helpers'
-require 'hanami/assets'
+      expect("apps/web/app.rb").to have_file_content <<~END
+        require 'hanami/helpers'
+        require 'hanami/assets'
 
-module Web
-  class App < Hanami::App
-    configure do
-      ##
-      # BASIC
-      #
+        module Web
+          class App < Hanami::App
+            configure do
+              ##
+              # BASIC
+              #
 
-      # Define the root path of this app.
-      # All paths specified in this configuration are relative to path below.
-      #
-      root __dir__
+              # Define the root path of this app.
+              # All paths specified in this configuration are relative to path below.
+              #
+              root __dir__
 
-      # Relative load paths where this app will recursively load the
-      # code.
-      #
-      # When you add new directories, remember to add them here.
-      #
-      load_paths << [
-        'controllers',
-        'views'
-      ]
+              # Relative load paths where this app will recursively load the
+              # code.
+              #
+              # When you add new directories, remember to add them here.
+              #
+              load_paths << [
+                'controllers',
+                'views'
+              ]
 
-      # Handle exceptions with HTTP statuses (true) or don't catch them (false).
-      # Defaults to true.
-      # See: http://www.rubydoc.info/gems/hanami-controller/#Exceptions_management
-      #
-      # handle_exceptions true
+              # Handle exceptions with HTTP statuses (true) or don't catch them (false).
+              # Defaults to true.
+              # See: http://www.rubydoc.info/gems/hanami-controller/#Exceptions_management
+              #
+              # handle_exceptions true
 
-      ##
-      # HTTP
-      #
+              ##
+              # HTTP
+              #
 
-      # Routes definitions for this app
-      # See: http://www.rubydoc.info/gems/hanami-router#Usage
-      #
-      routes 'config/routes'
+              # Routes definitions for this app
+              # See: http://www.rubydoc.info/gems/hanami-router#Usage
+              #
+              routes 'config/routes'
 
-      # URI scheme used by the routing system to generate absolute URLs
-      # Defaults to "http"
-      #
-      # scheme 'https'
+              # URI scheme used by the routing system to generate absolute URLs
+              # Defaults to "http"
+              #
+              # scheme 'https'
 
-      # URI host used by the routing system to generate absolute URLs
-      # Defaults to "localhost"
-      #
-      # host 'example.org'
+              # URI host used by the routing system to generate absolute URLs
+              # Defaults to "localhost"
+              #
+              # host 'example.org'
 
-      # URI port used by the routing system to generate absolute URLs
-      # Argument: An object coercible to integer, defaults to 80 if the scheme
-      # is http and 443 if it's https
-      #
-      # This should only be configured if app listens to non-standard ports
-      #
-      # port 443
+              # URI port used by the routing system to generate absolute URLs
+              # Argument: An object coercible to integer, defaults to 80 if the scheme
+              # is http and 443 if it's https
+              #
+              # This should only be configured if app listens to non-standard ports
+              #
+              # port 443
 
-      # Enable cookies
-      # Argument: boolean to toggle the feature
-      #           A Hash with options
-      #
-      # Options:
-      #   :domain   - The domain (String - nil by default, not required)
-      #   :path     - Restrict cookies to a relative URI
-      #               (String - nil by default)
-      #   :max_age  - Cookies expiration expressed in seconds
-      #               (Integer - nil by default)
-      #   :secure   - Restrict cookies to secure connections
-      #               (Boolean - Automatically true when using HTTPS)
-      #               See #scheme and #ssl?
-      #   :httponly - Prevent JavaScript access (Boolean - true by default)
-      #
-      # cookies true
-      # or
-      # cookies max_age: 300
+              # Enable cookies
+              # Argument: boolean to toggle the feature
+              #           A Hash with options
+              #
+              # Options:
+              #   :domain   - The domain (String - nil by default, not required)
+              #   :path     - Restrict cookies to a relative URI
+              #               (String - nil by default)
+              #   :max_age  - Cookies expiration expressed in seconds
+              #               (Integer - nil by default)
+              #   :secure   - Restrict cookies to secure connections
+              #               (Boolean - Automatically true when using HTTPS)
+              #               See #scheme and #ssl?
+              #   :httponly - Prevent JavaScript access (Boolean - true by default)
+              #
+              # cookies true
+              # or
+              # cookies max_age: 300
 
-      # Enable sessions
-      # Argument: Symbol the Rack session adapter
-      #           A Hash with options
-      #
-      # See: http://www.rubydoc.info/gems/rack/Rack/Session/Cookie
-      #
-      # sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']
+              # Enable sessions
+              # Argument: Symbol the Rack session adapter
+              #           A Hash with options
+              #
+              # See: http://www.rubydoc.info/gems/rack/Rack/Session/Cookie
+              #
+              # sessions :cookie, secret: ENV['WEB_SESSIONS_SECRET']
 
-      # Configure Rack middleware for this app
-      #
-      # middleware.use Rack::Protection
+              # Configure Rack middleware for this app
+              #
+              # middleware.use Rack::Protection
 
-      # Default format for the requests that don't specify an HTTP_ACCEPT header
-      # Argument: A symbol representation of a mime type, defaults to :html
-      #
-      # default_request_format :html
+              # Default format for the requests that don't specify an HTTP_ACCEPT header
+              # Argument: A symbol representation of a mime type, defaults to :html
+              #
+              # default_request_format :html
 
-      # Default format for responses that don't consider the request format
-      # Argument: A symbol representation of a mime type, defaults to :html
-      #
-      # default_response_format :html
+              # Default format for responses that don't consider the request format
+              # Argument: A symbol representation of a mime type, defaults to :html
+              #
+              # default_response_format :html
 
-      ##
-      # TEMPLATES
-      #
+              ##
+              # TEMPLATES
+              #
 
-      # The layout to be used by all views
-      #
-      layout :app # It will load Web::Views::AppLayout
+              # The layout to be used by all views
+              #
+              layout :app # It will load Web::Views::AppLayout
 
-      # The relative path to templates
-      #
-      templates 'templates'
+              # The relative path to templates
+              #
+              templates 'templates'
 
-      ##
-      # ASSETS
-      #
-      assets do
-        # JavaScript compressor
-        #
-        # Supported engines:
-        #
-        #   * :builtin
-        #   * :uglifier
-        #   * :yui
-        #   * :closure
-        #
-        # See: https://guides.hanamirb.org/assets/compressors
-        #
-        # In order to skip JavaScript compression comment the following line
-        javascript_compressor :builtin
+              ##
+              # ASSETS
+              #
+              assets do
+                # JavaScript compressor
+                #
+                # Supported engines:
+                #
+                #   * :builtin
+                #   * :uglifier
+                #   * :yui
+                #   * :closure
+                #
+                # See: https://guides.hanamirb.org/assets/compressors
+                #
+                # In order to skip JavaScript compression comment the following line
+                javascript_compressor :builtin
 
-        # Stylesheet compressor
-        #
-        # Supported engines:
-        #
-        #   * :builtin
-        #   * :yui
-        #   * :sass
-        #
-        # See: https://guides.hanamirb.org/assets/compressors
-        #
-        # In order to skip stylesheet compression comment the following line
-        stylesheet_compressor :builtin
+                # Stylesheet compressor
+                #
+                # Supported engines:
+                #
+                #   * :builtin
+                #   * :yui
+                #   * :sass
+                #
+                # See: https://guides.hanamirb.org/assets/compressors
+                #
+                # In order to skip stylesheet compression comment the following line
+                stylesheet_compressor :builtin
 
-        # Specify sources for assets
-        #
-        sources << [
-          'assets'
-        ]
-      end
+                # Specify sources for assets
+                #
+                sources << [
+                  'assets'
+                ]
+              end
 
-      ##
-      # SECURITY
-      #
+              ##
+              # SECURITY
+              #
 
-      # X-Frame-Options is a HTTP header supported by modern browsers.
-      # It determines if a web page can or cannot be included via <frame> and
-      # <iframe> tags by untrusted domains.
-      #
-      # Web apps can send this header to prevent Clickjacking attacks.
-      #
-      # Read more at:
-      #
-      #   * https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
-      #   * https://www.owasp.org/index.php/Clickjacking
-      #
-      security.x_frame_options 'DENY'
+              # X-Frame-Options is a HTTP header supported by modern browsers.
+              # It determines if a web page can or cannot be included via <frame> and
+              # <iframe> tags by untrusted domains.
+              #
+              # Web apps can send this header to prevent Clickjacking attacks.
+              #
+              # Read more at:
+              #
+              #   * https://developer.mozilla.org/en-US/docs/Web/HTTP/X-Frame-Options
+              #   * https://www.owasp.org/index.php/Clickjacking
+              #
+              security.x_frame_options 'DENY'
 
-      # X-Content-Type-Options prevents browsers from interpreting files as
-      # something else than declared by the content type in the HTTP headers.
-      #
-      # Read more at:
-      #
-      #   * https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#X-Content-Type-Options
-      #   * https://msdn.microsoft.com/en-us/library/gg622941%28v=vs.85%29.aspx
-      #   * https://blogs.msdn.microsoft.com/ie/2008/09/02/ie8-security-part-vi-beta-2-update
-      #
-      security.x_content_type_options 'nosniff'
+              # X-Content-Type-Options prevents browsers from interpreting files as
+              # something else than declared by the content type in the HTTP headers.
+              #
+              # Read more at:
+              #
+              #   * https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#X-Content-Type-Options
+              #   * https://msdn.microsoft.com/en-us/library/gg622941%28v=vs.85%29.aspx
+              #   * https://blogs.msdn.microsoft.com/ie/2008/09/02/ie8-security-part-vi-beta-2-update
+              #
+              security.x_content_type_options 'nosniff'
 
-      # X-XSS-Protection is a HTTP header to determine the behavior of the
-      # browser in case an XSS attack is detected.
-      #
-      # Read more at:
-      #
-      #   * https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)
-      #   * https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#X-XSS-Protection
-      #
-      security.x_xss_protection '1; mode=block'
+              # X-XSS-Protection is a HTTP header to determine the behavior of the
+              # browser in case an XSS attack is detected.
+              #
+              # Read more at:
+              #
+              #   * https://www.owasp.org/index.php/Cross-site_Scripting_(XSS)
+              #   * https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#X-XSS-Protection
+              #
+              security.x_xss_protection '1; mode=block'
 
-      # Content-Security-Policy (CSP) is a HTTP header supported by modern
-      # browsers. It determines trusted sources of execution for dynamic
-      # contents (JavaScript) or other web related assets: stylesheets, images,
-      # fonts, plugins, etc.
-      #
-      # Web apps can send this header to mitigate Cross Site Scripting
-      # (XSS) attacks.
-      #
-      # The default value allows images, scripts, AJAX, fonts and CSS from the
-      # same origin, and does not allow any other resources to load (eg object,
-      # frame, media, etc).
-      #
-      # Inline JavaScript is NOT allowed. To enable it, please use:
-      # "script-src 'unsafe-inline'".
-      #
-      # Content Security Policy introduction:
-      #
-      #  * http://www.html5rocks.com/en/tutorials/security/content-security-policy/
-      #  * https://www.owasp.org/index.php/Content_Security_Policy
-      #  * https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29
-      #
-      # Inline and eval JavaScript risks:
-      #
-      #   * http://www.html5rocks.com/en/tutorials/security/content-security-policy/#inline-code-considered-harmful
-      #   * http://www.html5rocks.com/en/tutorials/security/content-security-policy/#eval-too
-      #
-      # Content Security Policy usage:
-      #
-      #  * http://content-security-policy.com/
-      #  * https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_Content_Security_Policy
-      #
-      # Content Security Policy references:
-      #
-      #  * https://developer.mozilla.org/en-US/docs/Web/Security/CSP/CSP_policy_directives
-      #
-      security.content_security_policy %{
-        form-action 'self';
-        frame-ancestors 'self';
-        base-uri 'self';
-        default-src 'none';
-        script-src 'self';
-        connect-src 'self';
-        img-src 'self' https: data:;
-        style-src 'self' 'unsafe-inline' https:;
-        font-src 'self';
-        object-src 'none';
-        plugin-types app/pdf;
-        child-src 'self';
-        frame-src 'self';
-        media-src 'self'
-      }
+              # Content-Security-Policy (CSP) is a HTTP header supported by modern
+              # browsers. It determines trusted sources of execution for dynamic
+              # contents (JavaScript) or other web related assets: stylesheets, images,
+              # fonts, plugins, etc.
+              #
+              # Web apps can send this header to mitigate Cross Site Scripting
+              # (XSS) attacks.
+              #
+              # The default value allows images, scripts, AJAX, fonts and CSS from the
+              # same origin, and does not allow any other resources to load (eg object,
+              # frame, media, etc).
+              #
+              # Inline JavaScript is NOT allowed. To enable it, please use:
+              # "script-src 'unsafe-inline'".
+              #
+              # Content Security Policy introduction:
+              #
+              #  * http://www.html5rocks.com/en/tutorials/security/content-security-policy/
+              #  * https://www.owasp.org/index.php/Content_Security_Policy
+              #  * https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29
+              #
+              # Inline and eval JavaScript risks:
+              #
+              #   * http://www.html5rocks.com/en/tutorials/security/content-security-policy/#inline-code-considered-harmful
+              #   * http://www.html5rocks.com/en/tutorials/security/content-security-policy/#eval-too
+              #
+              # Content Security Policy usage:
+              #
+              #  * http://content-security-policy.com/
+              #  * https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Using_Content_Security_Policy
+              #
+              # Content Security Policy references:
+              #
+              #  * https://developer.mozilla.org/en-US/docs/Web/Security/CSP/CSP_policy_directives
+              #
+              security.content_security_policy %{
+                form-action 'self';
+                frame-ancestors 'self';
+                base-uri 'self';
+                default-src 'none';
+                script-src 'self';
+                connect-src 'self';
+                img-src 'self' https: data:;
+                style-src 'self' 'unsafe-inline' https:;
+                font-src 'self';
+                object-src 'none';
+                plugin-types app/pdf;
+                child-src 'self';
+                frame-src 'self';
+                media-src 'self'
+              }
 
-      ##
-      # FRAMEWORKS
-      #
+              ##
+              # FRAMEWORKS
+              #
 
-      # Configure the code that will yield each time Web::Action is included
-      # This is useful for sharing common functionality
-      #
-      # See: http://www.rubydoc.info/gems/hanami-controller#Configuration
-      controller.prepare do
-        # include MyAuthentication # included in all the actions
-        # before :authenticate!    # run an authentication before callback
-      end
+              # Configure the code that will yield each time Web::Action is included
+              # This is useful for sharing common functionality
+              #
+              # See: http://www.rubydoc.info/gems/hanami-controller#Configuration
+              controller.prepare do
+                # include MyAuthentication # included in all the actions
+                # before :authenticate!    # run an authentication before callback
+              end
 
-      # Configure the code that will yield each time Web::View is included
-      # This is useful for sharing common functionality
-      #
-      # See: http://www.rubydoc.info/gems/hanami-view#Configuration
-      view.prepare do
-        include Hanami::Helpers
-        include Web::Assets::Helpers
-      end
-    end
+              # Configure the code that will yield each time Web::View is included
+              # This is useful for sharing common functionality
+              #
+              # See: http://www.rubydoc.info/gems/hanami-view#Configuration
+              view.prepare do
+                include Hanami::Helpers
+                include Web::Assets::Helpers
+              end
+            end
 
-    ##
-    # DEVELOPMENT
-    #
-    configure :development do
-      # Don't handle exceptions, render the stack trace
-      handle_exceptions false
-    end
+            ##
+            # DEVELOPMENT
+            #
+            configure :development do
+              # Don't handle exceptions, render the stack trace
+              handle_exceptions false
+            end
 
-    ##
-    # TEST
-    #
-    configure :test do
-      # Don't handle exceptions, render the stack trace
-      handle_exceptions false
-    end
+            ##
+            # TEST
+            #
+            configure :test do
+              # Don't handle exceptions, render the stack trace
+              handle_exceptions false
+            end
 
-    ##
-    # PRODUCTION
-    #
-    configure :production do
-      # scheme 'https'
-      # host   'example.org'
-      # port   443
+            ##
+            # PRODUCTION
+            #
+            configure :production do
+              # scheme 'https'
+              # host   'example.org'
+              # port   443
 
-      assets do
-        # Don't compile static assets in production mode (eg. Sass, ES6)
-        #
-        # See: http://www.rubydoc.info/gems/hanami-assets#Configuration
-        compile false
+              assets do
+                # Don't compile static assets in production mode (eg. Sass, ES6)
+                #
+                # See: http://www.rubydoc.info/gems/hanami-assets#Configuration
+                compile false
 
-        # Use fingerprint file name for asset paths
-        #
-        # See: https://guides.hanamirb.org/assets/overview
-        fingerprint true
+                # Use fingerprint file name for asset paths
+                #
+                # See: https://guides.hanamirb.org/assets/overview
+                fingerprint true
 
-        # Content Delivery Network (CDN)
-        #
-        # See: https://guides.hanamirb.org/assets/content-delivery-network
-        #
-        # scheme 'https'
-        # host   'cdn.example.org'
-        # port   443
+                # Content Delivery Network (CDN)
+                #
+                # See: https://guides.hanamirb.org/assets/content-delivery-network
+                #
+                # scheme 'https'
+                # host   'cdn.example.org'
+                # port   443
 
-        # Subresource Integrity
-        #
-        # See: https://guides.hanamirb.org/assets/content-delivery-network/#subresource-integrity
-        subresource_integrity :sha256
-      end
-    end
-  end
-end
-END
+                # Subresource Integrity
+                #
+                # See: https://guides.hanamirb.org/assets/content-delivery-network/#subresource-integrity
+                subresource_integrity :sha256
+              end
+            end
+          end
+        end
+      END
 
       #
       # apps/web/config/routes.rb
       #
-      expect("apps/web/config/routes.rb").to have_file_content <<-END
-# Configure your routes here
-# See: https://guides.hanamirb.org/routing/overview
-#
-# Example:
-# get '/hello', to: ->(env) { [200, {}, ['Hello from Hanami!']] }
-END
+      expect("apps/web/config/routes.rb").to have_file_content <<~END
+        # Configure your routes here
+        # See: https://guides.hanamirb.org/routing/overview
+        #
+        # Example:
+        # get '/hello', to: ->(env) { [200, {}, ['Hello from Hanami!']] }
+      END
 
       #
       # apps/web/views/app_layout.rb
@@ -904,7 +904,7 @@ END
         #
         # .hanamirc
         #
-        expect(".hanamirc").to have_file_content %r{project=#{project}}
+        expect(".hanamirc").to have_file_content(/project=#{project}/)
       end
     end
   end
@@ -920,44 +920,44 @@ END
     end
   end
 
-  it 'prints help message' do
-    output = <<-OUT
-Command:
-  hanami new
+  it "prints help message" do
+    output = <<~OUT
+      Command:
+        hanami new
 
-Usage:
-  hanami new PROJECT
+      Usage:
+        hanami new PROJECT
 
-Description:
-  Generate a new Hanami project
+      Description:
+        Generate a new Hanami project
 
-Arguments:
-  PROJECT                           # REQUIRED The project name
+      Arguments:
+        PROJECT                           # REQUIRED The project name
 
-Options:
-  --database=VALUE, -d VALUE        # Database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3), default: "sqlite"
-  --app-name=VALUE          # App name, default: "web"
-  --app-base-url=VALUE      # App base URL, default: "/"
-  --template=VALUE                  # Template engine (erb/haml/slim), default: "erb"
-  --test=VALUE                      # Project testing framework (rspec/minitest), default: "rspec"
-  --[no-]hanami-head                # Use Hanami HEAD (true/false), default: false
-  --help, -h                        # Print this help
+      Options:
+        --database=VALUE, -d VALUE        # Database (mysql/mysql2/postgresql/postgres/sqlite/sqlite3), default: "sqlite"
+        --app-name=VALUE          # App name, default: "web"
+        --app-base-url=VALUE      # App base URL, default: "/"
+        --template=VALUE                  # Template engine (erb/haml/slim), default: "erb"
+        --test=VALUE                      # Project testing framework (rspec/minitest), default: "rspec"
+        --[no-]hanami-head                # Use Hanami HEAD (true/false), default: false
+        --help, -h                        # Print this help
 
-Examples:
-  hanami new bookshelf                     # Basic usage
-  hanami new bookshelf --test=rspec        # Setup RSpec testing framework
-  hanami new bookshelf --database=postgres # Setup Postgres database
-  hanami new bookshelf --template=slim     # Setup Slim template engine
-  hanami new bookshelf --hanami-head       # Use Hanami HEAD
-OUT
+      Examples:
+        hanami new bookshelf                     # Basic usage
+        hanami new bookshelf --test=rspec        # Setup RSpec testing framework
+        hanami new bookshelf --database=postgres # Setup Postgres database
+        hanami new bookshelf --template=slim     # Setup Slim template engine
+        hanami new bookshelf --hanami-head       # Use Hanami HEAD
+    OUT
 
-    run_cmd 'hanami new --help', output
+    run_cmd "hanami new --help", output
   end
 
   private
 
   def default_git_branch
-    result = `git config --list`.scan(/init\.defaultBranch\=[[:alpha:]]*/i).first
+    result = `git config --list`.scan(/init\.defaultBranch=[[:alpha:]]*/i).first
 
     branch = if result.nil?
                "(main|master)"

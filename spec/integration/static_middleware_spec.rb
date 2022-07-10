@@ -6,7 +6,7 @@ RSpec.describe "Static middleware", type: :integration do
       write "public/static.txt", "Static file"
 
       RSpec::Support::Env["HANAMI_ENV"]          = "production"
-      RSpec::Support::Env["DATABASE_URL"]        = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+      RSpec::Support::Env["DATABASE_URL"]        = "sqlite://#{Pathname.new("db").join("bookshelf.sqlite")}"
       RSpec::Support::Env["SERVE_STATIC_ASSETS"] = "true"
       RSpec::Support::Env["SMTP_HOST"]           = "localhost"
       RSpec::Support::Env["SMTP_PORT"]           = "25"

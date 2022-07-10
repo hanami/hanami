@@ -122,7 +122,7 @@ RSpec.describe "Sessions", type: :integration do
     generate_actions
   end
 
-  def generate_user # rubocop:disable Metrics/MethodLength
+  def generate_user
     generate_model     "user"
     generate_migration "create_users", <<~EOF
       Hanami::Model.migration do
@@ -146,7 +146,7 @@ RSpec.describe "Sessions", type: :integration do
     generate_signout
   end
 
-  def generate_home # rubocop:disable Metrics/MethodLength
+  def generate_home
     generate "action web home#index --url=/"
     replace "apps/web/config/routes.rb", "home#index", 'root to: "home#index"'
 
@@ -228,7 +228,7 @@ RSpec.describe "Sessions", type: :integration do
     EOF
   end
 
-  def given_signedin_user # rubocop:disable Metrics/AbcSize
+  def given_signedin_user
     visit "/"
     expect(current_path).to eq("/")
 

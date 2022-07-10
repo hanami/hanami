@@ -10,7 +10,7 @@ RSpec.describe "force SSL", type: :integration do
       inject_line_after "apps/web/app.rb", "configure do", "force_ssl true"
 
       RSpec::Support::Env["HANAMI_ENV"]   = "production"
-      RSpec::Support::Env["DATABASE_URL"] = "sqlite://#{Pathname.new('db').join('bookshelf.sqlite')}"
+      RSpec::Support::Env["DATABASE_URL"] = "sqlite://#{Pathname.new("db").join("bookshelf.sqlite")}"
       RSpec::Support::Env["SMTP_HOST"]    = "localhost"
       RSpec::Support::Env["SMTP_PORT"]    = "25"
 

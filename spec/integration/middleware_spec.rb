@@ -42,7 +42,7 @@ RSpec.describe "Project middleware", type: :integration do
 
   private
 
-  def generate_middleware # rubocop:disable Metrics/MethodLength
+  def generate_middleware
     write "config/middleware/runtime.rb", <<~EOF
       module Middleware
         class Runtime

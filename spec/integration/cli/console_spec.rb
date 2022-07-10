@@ -59,7 +59,7 @@ RSpec.describe "hanami console", type: :integration do
         expect(out).to include('#<AccessToken id="1" secret="shh" digest="def">')
       end
     end
-  end # irb
+  end
 
   xit "returns error when known engine isn't bundled" do
     with_project("bookshelf_console_irb", console: :irb) do
@@ -78,23 +78,23 @@ RSpec.describe "hanami console", type: :integration do
   it "prints help message" do
     with_project do
       output = <<~OUT
-Command:
-  hanami console
+        Command:
+          hanami console
 
-Usage:
-  hanami console
+        Usage:
+          hanami console
 
-Description:
-  Starts Hanami console
+        Description:
+          Starts Hanami console
 
-Options:
-  --engine=VALUE                    # Force a specific console engine: (pry/ripl/irb)
-  --help, -h                        # Print this help
+        Options:
+          --engine=VALUE                    # Force a specific console engine: (pry/ripl/irb)
+          --help, -h                        # Print this help
 
-Examples:
-  hanami console              # Uses the bundled engine
-  hanami console --engine=pry # Force to use Pry
-OUT
+        Examples:
+          hanami console              # Uses the bundled engine
+          hanami console --engine=pry # Force to use Pry
+      OUT
 
       run_cmd "hanami console --help", output
     end

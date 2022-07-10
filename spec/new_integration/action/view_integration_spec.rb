@@ -111,7 +111,7 @@ RSpec.describe "App action / View integration", :app_integration do
         before do
           allow(initial_view_context).to receive(:with).with(
             request: req,
-            response: res,
+            response: res
           ) { request_view_context }
         end
 
@@ -121,11 +121,11 @@ RSpec.describe "App action / View integration", :app_integration do
       end
 
       context "custom #view_context_options" do
-        let(:custom_view_context) { double(:custom_view_context)}
+        let(:custom_view_context) { double(:custom_view_context) }
 
         before do
           action_class.class_eval do
-            def view_context_options(req, res)
+            def view_context_options(_req, _res)
               {custom_option: "custom option"}
             end
           end
@@ -146,7 +146,7 @@ RSpec.describe "App action / View integration", :app_integration do
         before do
           allow(initial_view_context).to receive(:with).with(
             request: req,
-            response: res,
+            response: res
           ) { request_view_context }
 
           action_class.class_eval do

@@ -30,11 +30,11 @@ RSpec.describe "hanami generate", type: :integration do
 
     context "with missing argument" do
       it "fails" do
-        with_project('bookshelf_generate_model_missing_arguments') do
-          output = <<-END
-ERROR: "hanami generate model" was called with no arguments
-Usage: "hanami generate model MODEL"
-END
+        with_project("bookshelf_generate_model_missing_arguments") do
+          output = <<~END
+            ERROR: "hanami generate model" was called with no arguments
+            Usage: "hanami generate model MODEL"
+          END
 
           run_cmd "hanami generate model", output, exit_status: 1
         end
@@ -109,7 +109,7 @@ END
           output = [
             "create  lib/#{project}/entities/#{model_name}.rb",
             "create  lib/#{project}/repositories/#{model_name}_repository.rb",
-            /create  db\/migrations\/(\d+)_create_#{relation_name}.rb/
+            %r{create  db/migrations/(\d+)_create_#{relation_name}.rb}
           ]
 
           run_cmd "hanami generate model #{model_name} --relation=#{relation_name}", output
@@ -146,7 +146,7 @@ END
           output = [
             "create  lib/#{project}/entities/#{model}.rb",
             "create  lib/#{project}/repositories/#{model}_repository.rb",
-            /create  db\/migrations\/(\d+)_create_#{relation_name}.rb/
+            %r{create  db/migrations/(\d+)_create_#{relation_name}.rb}
           ]
 
           run_cmd "hanami generate model #{model} --relation=BlackSheeps", output
@@ -220,7 +220,7 @@ END
           END
         end
       end
-    end # minitest
+    end
 
     context "rspec" do
       it "generates model" do
@@ -255,36 +255,36 @@ END
           END
         end
       end
-    end # rspec
+    end
 
     it "prints help message" do
       with_project do
         output = <<~OUT
-Command:
-  hanami generate model
+          Command:
+            hanami generate model
 
-Usage:
-  hanami generate model MODEL
+          Usage:
+            hanami generate model MODEL
 
-Description:
-  Generate a model
+          Description:
+            Generate a model
 
-Arguments:
-  MODEL                             # REQUIRED Model name (eg. `user`)
+          Arguments:
+            MODEL                             # REQUIRED Model name (eg. `user`)
 
-Options:
-  --[no-]skip-migration             # Skip migration, default: false
-  --relation=VALUE                  # Name of the database relation, default: pluralized model name
-  --help, -h                        # Print this help
+          Options:
+            --[no-]skip-migration             # Skip migration, default: false
+            --relation=VALUE                  # Name of the database relation, default: pluralized model name
+            --help, -h                        # Print this help
 
-Examples:
-  hanami generate model user                     # Generate `User` entity, `UserRepository` repository, and the migration
-  hanami generate model user --skip-migration    # Generate `User` entity and `UserRepository` repository
-  hanami generate model user --relation=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
-OUT
+          Examples:
+            hanami generate model user                     # Generate `User` entity, `UserRepository` repository, and the migration
+            hanami generate model user --skip-migration    # Generate `User` entity and `UserRepository` repository
+            hanami generate model user --relation=accounts # Generate `User` entity, `UserRepository` and migration to create `accounts` table
+        OUT
 
-        run_cmd 'hanami generate model --help', output
+        run_cmd "hanami generate model --help", output
       end
     end
-  end # model
+  end
 end

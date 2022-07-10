@@ -31,9 +31,7 @@ RSpec.describe "CLI plugins", type: :integration do
 
   private
 
-  def with_project
-    super("bookshelf", gems: { "hanami-plugin" => { groups: [:plugins], path: Pathname.new(__dir__).join("..", "..", "..", "spec", "support", "fixtures", "hanami-plugin").realpath.to_s } }) do
-      yield
-    end
+  def with_project(&block)
+    super("bookshelf", gems: {"hanami-plugin" => {groups: [:plugins], path: Pathname.new(__dir__).join("..", "..", "..", "spec", "support", "fixtures", "hanami-plugin").realpath.to_s}}, &block)
   end
 end

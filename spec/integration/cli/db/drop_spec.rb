@@ -34,20 +34,20 @@ RSpec.describe "hanami db", type: :integration do
     it "prints help message" do
       with_project do
         output = <<~OUT
-Command:
-  hanami db drop
+          Command:
+            hanami db drop
 
-Usage:
-  hanami db drop
+          Usage:
+            hanami db drop
 
-Description:
-  Drop the database (only for development/test)
+          Description:
+            Drop the database (only for development/test)
 
-Options:
-  --help, -h                        # Print this help
-OUT
+          Options:
+            --help, -h                        # Print this help
+        OUT
 
-        run_cmd 'hanami db drop --help', output
+        run_cmd "hanami db drop --help", output
       end
     end
   end

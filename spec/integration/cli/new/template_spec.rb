@@ -15,7 +15,7 @@ RSpec.describe "hanami new", type: :integration do
           #
           # .hanamirc
           #
-          expect(".hanamirc").to have_file_content(%r{template=erb})
+          expect(".hanamirc").to have_file_content(/template=erb/)
 
           #
           # apps/web/templates/app.html.erb
@@ -34,7 +34,7 @@ RSpec.describe "hanami new", type: :integration do
           END
         end
       end
-    end # erb
+    end
 
     context "haml" do
       it "generates project" do
@@ -49,7 +49,7 @@ RSpec.describe "hanami new", type: :integration do
           #
           # .hanamirc
           #
-          expect(".hanamirc").to have_file_content(%r{template=haml})
+          expect(".hanamirc").to have_file_content(/template=haml/)
 
           #
           # apps/web/templates/app.html.haml
@@ -65,7 +65,7 @@ RSpec.describe "hanami new", type: :integration do
           END
         end
       end
-    end # haml
+    end
 
     context "slim" do
       it "generates project" do
@@ -80,7 +80,7 @@ RSpec.describe "hanami new", type: :integration do
           #
           # .hanamirc
           #
-          expect(".hanamirc").to have_file_content(%r{template=slim})
+          expect(".hanamirc").to have_file_content(/template=slim/)
 
           #
           # apps/web/templates/app.html.slim
@@ -97,7 +97,7 @@ RSpec.describe "hanami new", type: :integration do
           END
         end
       end
-    end # slim
+    end
 
     context "missing" do
       it "returns error" do
@@ -105,7 +105,7 @@ RSpec.describe "hanami new", type: :integration do
 
         run_cmd "hanami new bookshelf --template=", output, exit_status: 1
       end
-    end # missing
+    end
 
     context "unknown" do
       it "returns error" do
@@ -113,6 +113,6 @@ RSpec.describe "hanami new", type: :integration do
 
         run_cmd "hanami new bookshelf --template=foo", output, exit_status: 1
       end
-    end # unknown
-  end # template
+    end
+  end
 end

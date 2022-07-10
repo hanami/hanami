@@ -8,7 +8,7 @@ RSpec.describe Hanami::Settings do
       config_class = Class.new(described_class) do
         setting :database_url, default: "postgres://localhost/test_app_development"
       end
-      store = { database_url: "mysql://localhost/test_app_development" }.freeze
+      store = {database_url: "mysql://localhost/test_app_development"}.freeze
 
       instance = config_class.new(store)
 
@@ -38,7 +38,7 @@ RSpec.describe Hanami::Settings do
 
       expect { config_class.new(store) }.to raise_error(
         described_class::InvalidSettingsError,
-        /(database_url: nope to database).*(redis_url: nope to redis)/m,
+        /(database_url: nope to database).*(redis_url: nope to redis)/m
       )
     end
   end

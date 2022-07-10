@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "hanami/configuration/actions"
 
 RSpec.describe Hanami::Configuration::Actions, "default values" do

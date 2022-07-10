@@ -17,10 +17,10 @@ RSpec.describe "hanami destroy", type: :integration do
 
         run_cmd "hanami destroy app admin", output
 
-        expect(".env.test").to_not        have_file_content(%r{ADMIN_SESSIONS_SECRET})
-        expect(".env.development").to_not have_file_content(%r{ADMIN_SESSIONS_SECRET})
+        expect(".env.test").to_not        have_file_content(/ADMIN_SESSIONS_SECRET/)
+        expect(".env.development").to_not have_file_content(/ADMIN_SESSIONS_SECRET/)
 
-        expect("config/environment.rb").to_not have_file_content(%r{mount Admin::App})
+        expect("config/environment.rb").to_not have_file_content(/mount Admin::App/)
         expect("config/environment.rb").to_not have_file_content("require_relative '../apps/admin/app'")
 
         expect("public/assets/admin").to_not be_an_existing_path
@@ -54,10 +54,10 @@ RSpec.describe "hanami destroy", type: :integration do
 
         run_cmd "hanami destroy app api", output
 
-        expect(".env.test").to_not        have_file_content(%r{API_SESSIONS_SECRET})
-        expect(".env.development").to_not have_file_content(%r{API_SESSIONS_SECRET})
+        expect(".env.test").to_not        have_file_content(/API_SESSIONS_SECRET/)
+        expect(".env.development").to_not have_file_content(/API_SESSIONS_SECRET/)
 
-        expect("config/environment.rb").to_not have_file_content(%r{mount Api::App})
+        expect("config/environment.rb").to_not have_file_content(/mount Api::App/)
         expect("config/environment.rb").to_not have_file_content("require_relative '../apps/api/app'")
 
         expect("public/assets/api/v1").to_not be_an_existing_path
@@ -70,10 +70,10 @@ RSpec.describe "hanami destroy", type: :integration do
 
     it "fails with missing argument" do
       with_project do
-        output = <<-OUT
-ERROR: "hanami destroy app" was called with no arguments
-Usage: "hanami destroy app APP"
-OUT
+        output = <<~OUT
+          ERROR: "hanami destroy app" was called with no arguments
+          Usage: "hanami destroy app APP"
+        OUT
 
         run_cmd "hanami destroy app", output, exit_status: 1
       end
@@ -81,9 +81,9 @@ OUT
 
     it "fails with unknown app" do
       with_project do
-        output = <<-OUT
-`unknown' is not a valid APP. Please specify one of: `web'
-OUT
+        output = <<~OUT
+          `unknown' is not a valid APP. Please specify one of: `web'
+        OUT
 
         run_cmd "hanami destroy app unknown", output, exit_status: 1
       end
@@ -92,27 +92,27 @@ OUT
     it "prints help message" do
       with_project do
         output = <<~OUT
-Command:
-  hanami destroy app
+          Command:
+            hanami destroy app
 
-Usage:
-  hanami destroy app APP
+          Usage:
+            hanami destroy app APP
 
-Description:
-  Destroy an app
+          Description:
+            Destroy an app
 
-Arguments:
-  APP                               # REQUIRED The app name (eg. `web`)
+          Arguments:
+            APP                               # REQUIRED The app name (eg. `web`)
 
-Options:
-  --help, -h                        # Print this help
+          Options:
+            --help, -h                        # Print this help
 
-Examples:
-  hanami destroy app admin # Destroy `admin` app
-OUT
+          Examples:
+            hanami destroy app admin # Destroy `admin` app
+        OUT
 
-        run_cmd 'hanami destroy app --help', output
+        run_cmd "hanami destroy app --help", output
       end
     end
-  end # app
+  end
 end

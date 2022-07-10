@@ -264,7 +264,7 @@ RSpec.describe "hanami generate", type: :integration do
       end
 
       it "fails with unknown argument" do
-        with_project('bookshelf_generate_action_unknown_method') do
+        with_project("bookshelf_generate_action_unknown_method") do
           output = "`FOO' is not a valid HTTP method. Please use one of: `GET' `POST' `PUT' `DELETE' `HEAD' `OPTIONS' `TRACE' `PATCH' `OPTIONS' `LINK' `UNLINK'"
           run_cmd "hanami generate action web books#create --method=FOO", output, exit_status: 1
         end
@@ -292,7 +292,7 @@ RSpec.describe "hanami generate", type: :integration do
           expect("spec/web/views/books/index_spec.rb").to have_file_content %r{'apps/web/templates/books/index.html.erb'}
         end
       end
-    end # erb
+    end
 
     context "haml" do
       it "generates action" do
@@ -315,7 +315,7 @@ RSpec.describe "hanami generate", type: :integration do
           expect("spec/web/views/books/index_spec.rb").to have_file_content(%r{'apps/web/templates/books/index.html.haml'})
         end
       end
-    end # haml
+    end
 
     context "slim" do
       it "generates action" do
@@ -338,7 +338,7 @@ RSpec.describe "hanami generate", type: :integration do
           expect("spec/web/views/books/index_spec.rb").to have_file_content %r{'apps/web/templates/books/index.html.slim'}
         end
       end
-    end # slim
+    end
 
     context "minitest" do
       it "generates action" do
@@ -386,7 +386,7 @@ RSpec.describe "hanami generate", type: :integration do
           END
         end
       end
-    end # minitest
+    end
 
     context "rspec" do
       it "generates action" do
@@ -430,40 +430,40 @@ RSpec.describe "hanami generate", type: :integration do
           END
         end
       end
-    end # rspec
+    end
 
     it "prints help message" do
       with_project do
         output = <<~OUT
-Command:
-  hanami generate action
+          Command:
+            hanami generate action
 
-Usage:
-  hanami generate action APP ACTION
+          Usage:
+            hanami generate action APP ACTION
 
-Description:
-  Generate an action for app
+          Description:
+            Generate an action for app
 
-Arguments:
-  APP                               # REQUIRED The app name (eg. `web`)
-  ACTION                            # REQUIRED The action name (eg. `home#index`)
+          Arguments:
+            APP                               # REQUIRED The app name (eg. `web`)
+            ACTION                            # REQUIRED The action name (eg. `home#index`)
 
-Options:
-  --url=VALUE                       # The action URL
-  --method=VALUE                    # The action HTTP method
-  --[no-]skip-view                  # Skip view and template, default: false
-  --help, -h                        # Print this help
+          Options:
+            --url=VALUE                       # The action URL
+            --method=VALUE                    # The action HTTP method
+            --[no-]skip-view                  # Skip view and template, default: false
+            --help, -h                        # Print this help
 
-Examples:
-  hanami generate action web home#index                    # Basic usage
-  hanami generate action admin home#index                  # Generate for `admin` app
-  hanami generate action web home#index --url=/            # Specify URL
-  hanami generate action web sessions#destroy --method=GET # Specify HTTP method
-  hanami generate action web books#create --skip-view      # Skip view and template
+          Examples:
+            hanami generate action web home#index                    # Basic usage
+            hanami generate action admin home#index                  # Generate for `admin` app
+            hanami generate action web home#index --url=/            # Specify URL
+            hanami generate action web sessions#destroy --method=GET # Specify HTTP method
+            hanami generate action web books#create --skip-view      # Skip view and template
         OUT
 
-        run_cmd 'hanami generate action --help', output
+        run_cmd "hanami generate action --help", output
       end
     end
-  end # action
+  end
 end

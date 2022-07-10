@@ -14,7 +14,7 @@ RSpec.shared_examples "a new model" do
       output = [
         "create  lib/#{project}/entities/#{model}.rb",
         "create  lib/#{project}/repositories/#{model}_repository.rb",
-        /create  db\/migrations\/(\d+)_create_#{table_name}.rb/,
+        %r{create  db/migrations/(\d+)_create_#{table_name}.rb},
         "create  spec/#{project}/entities/#{model}_spec.rb",
         "create  spec/#{project}/repositories/#{model}_repository_spec.rb"
       ]
@@ -44,7 +44,7 @@ RSpec.shared_examples "a new model" do
       file       = migrations.find do |child|
         child.to_s.include?("create_#{table_name}")
       end
-      expect(file).to_not be_nil, "Expected to find a migration matching: create_#{table_name}.\nFound: #{migrations.map(&:basename).join(' ')}"
+      expect(file).to_not be_nil, "Expected to find a migration matching: create_#{table_name}.\nFound: #{migrations.map(&:basename).join(" ")}"
 
       expect(file.to_s).to have_file_content <<~END
         Hanami::Model.migration do

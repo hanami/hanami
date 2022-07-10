@@ -21,7 +21,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:postgresql://localhost/#{project}_development" }
           end
 
-          expect(".env.development").to have_file_content(%r{DATABASE_URL="#{development_url}"})
+          expect(".env.development").to have_file_content(/DATABASE_URL="#{development_url}"/)
 
           #
           # .env.test
@@ -31,7 +31,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:postgresql://localhost/#{project}_test" }
           end
 
-          expect(".env.test").to have_file_content(%r{DATABASE_URL="#{test_url}"})
+          expect(".env.test").to have_file_content(/DATABASE_URL="#{test_url}"/)
 
           #
           # Gemfile
@@ -41,7 +41,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc-postgres" }
           end
 
-          expect("Gemfile").to have_file_content(%r{gem '#{gem_name}'})
+          expect("Gemfile").to have_file_content(/gem '#{gem_name}'/)
 
           #
           # config/environment.rb
@@ -63,15 +63,15 @@ RSpec.describe "hanami new", type: :integration do
           #
           # .gitignore
           #
-          expect(".gitignore").to have_file_content <<-END
-/public/assets*
-/tmp
-.env.local
-.env.*.local
+          expect(".gitignore").to have_file_content <<~END
+            /public/assets*
+            /tmp
+            .env.local
+            .env.*.local
           END
         end
       end
-    end # postgres
+    end
 
     describe "sqlite" do
       it "generates project" do
@@ -92,7 +92,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:sqlite://db/#{project}_development.sqlite" }
           end
 
-          expect(".env.development").to have_file_content(%r{DATABASE_URL="#{development_url}"})
+          expect(".env.development").to have_file_content(/DATABASE_URL="#{development_url}"/)
 
           #
           # .env.test
@@ -102,7 +102,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:sqlite://db/#{project}_test.sqlite" }
           end
 
-          expect(".env.test").to have_file_content(%r{DATABASE_URL="#{test_url}"})
+          expect(".env.test").to have_file_content(/DATABASE_URL="#{test_url}"/)
 
           #
           # Gemfile
@@ -112,7 +112,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc-sqlite3" }
           end
 
-          expect("Gemfile").to have_file_content(%r{gem '#{gem_name}'})
+          expect("Gemfile").to have_file_content(/gem '#{gem_name}'/)
 
           #
           # config/environment.rb
@@ -134,16 +134,16 @@ RSpec.describe "hanami new", type: :integration do
           #
           # .gitignore
           #
-          expect(".gitignore").to have_file_content <<-END
-/db/*.sqlite
-/public/assets*
-/tmp
-.env.local
-.env.*.local
+          expect(".gitignore").to have_file_content <<~END
+            /db/*.sqlite
+            /public/assets*
+            /tmp
+            .env.local
+            .env.*.local
           END
         end
       end
-    end # sqlite
+    end
 
     context "mysql" do
       it "generates project" do
@@ -164,7 +164,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:mysql://localhost/#{project}_development" }
           end
 
-          expect(".env.development").to have_file_content(%r{DATABASE_URL="#{development_url}"})
+          expect(".env.development").to have_file_content(/DATABASE_URL="#{development_url}"/)
 
           #
           # .env.test
@@ -174,7 +174,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc:mysql://localhost/#{project}_test" }
           end
 
-          expect(".env.test").to have_file_content(%r{DATABASE_URL="#{test_url}"})
+          expect(".env.test").to have_file_content(/DATABASE_URL="#{test_url}"/)
 
           #
           # Gemfile
@@ -184,7 +184,7 @@ RSpec.describe "hanami new", type: :integration do
             engine(:jruby) { "jdbc-mysql" }
           end
 
-          expect("Gemfile").to have_file_content(%r{gem '#{gem_name}'})
+          expect("Gemfile").to have_file_content(/gem '#{gem_name}'/)
 
           #
           # config/environment.rb
@@ -206,15 +206,15 @@ RSpec.describe "hanami new", type: :integration do
           #
           # .gitignore
           #
-          expect(".gitignore").to have_file_content <<-END
-/public/assets*
-/tmp
-.env.local
-.env.*.local
+          expect(".gitignore").to have_file_content <<~END
+            /public/assets*
+            /tmp
+            .env.local
+            .env.*.local
           END
         end
       end
-    end # mysql
+    end
 
     context "missing" do
       it "returns error" do
@@ -222,7 +222,7 @@ RSpec.describe "hanami new", type: :integration do
 
         run_cmd "hanami new bookshelf --database=", output, exit_status: 1
       end
-    end # missing
+    end
 
     context "unknown" do
       it "returns error" do
@@ -230,6 +230,6 @@ RSpec.describe "hanami new", type: :integration do
 
         run_cmd "hanami new bookshelf --database=foo", output, exit_status: 1
       end
-    end # unknown
-  end # database
+    end
+  end
 end

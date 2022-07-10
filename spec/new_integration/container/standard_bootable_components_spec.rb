@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Container / Standard bootable components", :app_integration do
   specify "Standard components are available on booted container" do
     with_tmp_directory(Dir.mktmpdir) do

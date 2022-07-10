@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Slices / Slice settings", :app_integration do
   specify "Settings are registered for each slice with a settings file" do
     with_tmp_directory(Dir.mktmpdir) do

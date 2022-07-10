@@ -41,30 +41,30 @@ RSpec.describe "hanami destroy", type: :integration do
     it "prints help message" do
       with_project do
         banner = <<~OUT
-Command:
-  hanami destroy migration
+          Command:
+            hanami destroy migration
 
-Usage:
-  hanami destroy migration MIGRATION
+          Usage:
+            hanami destroy migration MIGRATION
 
-Description:
-  Destroy a migration
+          Description:
+            Destroy a migration
 
-Arguments:
-  MIGRATION                         # REQUIRED The migration name (eg. `create_users`)
+          Arguments:
+            MIGRATION                         # REQUIRED The migration name (eg. `create_users`)
 
-Options:
-  --help, -h                        # Print this help
+          Options:
+            --help, -h                        # Print this help
 
-Examples:
-OUT
+          Examples:
+        OUT
         output = [
           banner,
-          %r{  hanami destroy migration create_users # Destroy `db/migrations/[\d]{14}_create_users.rb`}
+          %r{  hanami destroy migration create_users # Destroy `db/migrations/\d{14}_create_users.rb`}
         ]
 
         run_command "hanami destroy migration --help", output
       end
     end
-  end # migration
+  end
 end

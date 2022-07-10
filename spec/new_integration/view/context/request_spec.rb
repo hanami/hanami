@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "hanami"
 
 RSpec.describe "App view / Context / Request", :app_integration do
@@ -22,7 +24,7 @@ RSpec.describe "App view / Context / Request", :app_integration do
   subject(:context) {
     context_class.new(
       request: request,
-      response: response,
+      response: response
     )
   }
 

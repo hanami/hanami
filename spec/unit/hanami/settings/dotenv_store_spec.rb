@@ -81,39 +81,39 @@ RSpec.describe Hanami::Settings::DotenvStore do
 
   describe "#fetch" do
     it "fetches from ENV" do
-      store = described_class.new(store: { "FOO" => "bar" })
+      store = described_class.new(store: {"FOO" => "bar"})
 
       expect(store.fetch("FOO")).to eq("bar")
     end
 
     it "capitalizes name" do
-      store = described_class.new(store: { "FOO" => "bar" })
+      store = described_class.new(store: {"FOO" => "bar"})
 
       expect(store.fetch("foo")).to eq("bar")
     end
 
     it "coerces name to string" do
-      store = described_class.new(store: { "FOO" => "bar" })
+      store = described_class.new(store: {"FOO" => "bar"})
 
       expect(store.fetch(:foo)).to eq("bar")
     end
 
     it "returns default when value is not found" do
-      store = described_class.new(store: { "FOO" => "bar" })
+      store = described_class.new(store: {"FOO" => "bar"})
 
       expect(store.fetch("BAZ", "qux")).to eq("qux")
     end
 
     it "returns the block execution when value is not found" do
-      store = described_class.new(store: { "FOO" => "bar" })
+      store = described_class.new(store: {"FOO" => "bar"})
 
-      expect(store.fetch("BAZ") { "qux" }).to eq("qux")
+      expect(store.fetch("BAZ", "qux")).to eq("qux")
     end
 
     it "raises KeyError when value is not found and no default is given" do
-      store = described_class.new(store: { "FOO" => "bar" })
+      store = described_class.new(store: {"FOO" => "bar"})
 
-      expect{ store.fetch("BAZ") }.to raise_error(KeyError)
+      expect { store.fetch("BAZ") }.to raise_error(KeyError)
     end
   end
 end

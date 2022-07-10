@@ -5,7 +5,7 @@ require "hanami/utils/string"
 RSpec.shared_examples "a new project" do
   let(:project) { Hanami::Utils::String.new(input).underscore.to_s }
 
-  it 'generates vanilla project' do
+  it "generates vanilla project" do
     run_cmd "hanami new #{input}"
 
     [
@@ -25,7 +25,7 @@ RSpec.shared_examples "a new project" do
       #
       # .hanamirc
       #
-      expect(".hanamirc").to have_file_content %r{project=#{project}}
+      expect(".hanamirc").to have_file_content(/project=#{project}/)
 
       #
       # .env.development
@@ -85,13 +85,13 @@ RSpec.shared_examples "a new project" do
       #
       # .gitignore
       #
-      expect(".gitignore").to have_file_content <<-END
-/db/*.sqlite
-/public/assets*
-/tmp
-.env.local
-.env.*.local
-END
+      expect(".gitignore").to have_file_content <<~END
+        /db/*.sqlite
+        /public/assets*
+        /tmp
+        .env.local
+        .env.*.local
+      END
     end
   end
 end

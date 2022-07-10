@@ -17,7 +17,7 @@ RSpec.describe "hanami new", type: :integration do
           #
           # .hanamirc
           #
-          expect(".hanamirc").to have_file_content(%r{test=minitest})
+          expect(".hanamirc").to have_file_content(/test=minitest/)
 
           #
           # spec/spec_helper.rb
@@ -66,7 +66,7 @@ RSpec.describe "hanami new", type: :integration do
           END
         end
       end
-    end # minitest
+    end
 
     describe "rspec" do
       it "generates project" do
@@ -85,7 +85,7 @@ RSpec.describe "hanami new", type: :integration do
           #
           # .hanamirc
           #
-          expect(".hanamirc").to have_file_content(%r{test=rspec})
+          expect(".hanamirc").to have_file_content(/test=rspec/)
 
           #
           # .rspec
@@ -253,7 +253,7 @@ RSpec.describe "hanami new", type: :integration do
           END
         end
       end
-    end # rspec
+    end
 
     context "missing" do
       it "returns error" do
@@ -261,7 +261,7 @@ RSpec.describe "hanami new", type: :integration do
 
         run_cmd "hanami new bookshelf --test=", output, exit_status: 1
       end
-    end # missing
+    end
 
     context "unknown" do
       it "returns error" do
@@ -269,6 +269,6 @@ RSpec.describe "hanami new", type: :integration do
 
         run_cmd "hanami new bookshelf --test=foo", output, exit_status: 1
       end
-    end # unknown
-  end # test
+    end
+  end
 end

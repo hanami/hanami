@@ -48,26 +48,26 @@ RSpec.describe "hanami destroy", type: :integration do
     it "prints help message" do
       with_project do
         output = <<~OUT
-Command:
-  hanami destroy mailer
+          Command:
+            hanami destroy mailer
 
-Usage:
-  hanami destroy mailer MAILER
+          Usage:
+            hanami destroy mailer MAILER
 
-Description:
-  Destroy a mailer
+          Description:
+            Destroy a mailer
 
-Arguments:
-  MAILER                            # REQUIRED The mailer name (eg. `welcome`)
+          Arguments:
+            MAILER                            # REQUIRED The mailer name (eg. `welcome`)
 
-Options:
-  --help, -h                        # Print this help
+          Options:
+            --help, -h                        # Print this help
 
-Examples:
-  hanami destroy mailer welcome # Destroy `WelcomeMailer` mailer
-OUT
+          Examples:
+            hanami destroy mailer welcome # Destroy `WelcomeMailer` mailer
+        OUT
 
-        run_cmd 'hanami destroy mailer --help', output
+        run_cmd "hanami destroy mailer --help", output
       end
     end
   end

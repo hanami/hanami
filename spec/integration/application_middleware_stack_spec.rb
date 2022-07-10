@@ -41,7 +41,7 @@ RSpec.describe "App middleware stack", type: :integration do
 
   private
 
-  def generate_middleware # rubocop:disable Metrics/MethodLength
+  def generate_middleware
     write "apps/web/middleware/runtime.rb", <<~EOF
       module Web
         module Middleware

@@ -132,9 +132,9 @@ RSpec.describe Hanami::Configuration::Logger do
         .to change { subject.filters }
         .to array_including("secret")
 
-      expect { subject.filters += ["yet", "another"] }
+      expect { subject.filters += %w[yet another] }
         .to change { subject.filters }
-        .to array_including(["yet", "another"])
+        .to array_including(%w[yet another])
     end
 
     it "can be changed to another array" do
@@ -158,7 +158,7 @@ RSpec.describe Hanami::Configuration::Logger do
     end
 
     it "accepts values" do
-      subject.options = expected = [0, 1048576]
+      subject.options = expected = [0, 1_048_576]
 
       expect(subject.options).to eq(expected)
     end

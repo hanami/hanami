@@ -10,8 +10,8 @@ RSpec.describe "hanami generate", type: :integration do
          "create  lib/bookshelf_generate_mailer/mailers/templates/welcome.html.erb"]
       end
 
-      it 'generate the mailer files' do
-        with_project('bookshelf_generate_mailer', test: 'rspec') do
+      it "generate the mailer files" do
+        with_project("bookshelf_generate_mailer", test: "rspec") do
           run_cmd "hanami generate mailer welcome", output
           #
           # lib/bookshelf_generate_mailer/mailers/welcome.rb
@@ -33,8 +33,8 @@ RSpec.describe "hanami generate", type: :integration do
         end
       end
 
-      it 'generates a proper minitest file' do
-        with_project('bookshelf_generate_mailer', test: 'minitest') do
+      it "generates a proper minitest file" do
+        with_project("bookshelf_generate_mailer", test: "minitest") do
           run_cmd "hanami generate mailer welcome", output
           #
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
@@ -51,8 +51,8 @@ RSpec.describe "hanami generate", type: :integration do
         end
       end
 
-      it 'generates a proper RSpec file' do
-        with_project('bookshelf_generate_mailer', test: 'rspec') do
+      it "generates a proper RSpec file" do
+        with_project("bookshelf_generate_mailer", test: "rspec") do
           run_cmd "hanami generate mailer welcome", output
           #
           # spec/bookshelf_generate_mailer/mailers/welcome_spec.rb
@@ -157,32 +157,32 @@ RSpec.describe "hanami generate", type: :integration do
     it "prints help message" do
       with_project do
         output = <<~OUT
-Command:
-  hanami generate mailer
+          Command:
+            hanami generate mailer
 
-Usage:
-  hanami generate mailer MAILER
+          Usage:
+            hanami generate mailer MAILER
 
-Description:
-  Generate a mailer
+          Description:
+            Generate a mailer
 
-Arguments:
-  MAILER                            # REQUIRED The mailer name (eg. `welcome`)
+          Arguments:
+            MAILER                            # REQUIRED The mailer name (eg. `welcome`)
 
-Options:
-  --from=VALUE                      # The default `from` field of the mail
-  --to=VALUE                        # The default `to` field of the mail
-  --subject=VALUE                   # The mail subject
-  --help, -h                        # Print this help
+          Options:
+            --from=VALUE                      # The default `from` field of the mail
+            --to=VALUE                        # The default `to` field of the mail
+            --subject=VALUE                   # The mail subject
+            --help, -h                        # Print this help
 
-Examples:
-  hanami generate mailer welcome                                         # Basic usage
-  hanami generate mailer welcome --from="noreply@example.com"            # Generate with default `from` value
-  hanami generate mailer announcement --to="users@example.com"           # Generate with default `to` value
-  hanami generate mailer forgot_password --subject="Your password reset" # Generate with default `subject`
+          Examples:
+            hanami generate mailer welcome                                         # Basic usage
+            hanami generate mailer welcome --from="noreply@example.com"            # Generate with default `from` value
+            hanami generate mailer announcement --to="users@example.com"           # Generate with default `to` value
+            hanami generate mailer forgot_password --subject="Your password reset" # Generate with default `subject`
         OUT
 
-        run_cmd 'hanami generate mailer --help', output
+        run_cmd "hanami generate mailer --help", output
       end
     end
   end

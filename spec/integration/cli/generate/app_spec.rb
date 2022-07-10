@@ -43,7 +43,7 @@ RSpec.describe "hanami generate", type: :integration do
               .read("config/environment.rb")
               .lines
               .reject { |l| l[/^require_relative '.*'\n$/] }
-              .reject { |l| l[/^  mount Web::App, at: '\/'\n$/] }
+              .reject { |l| l[%r{^  mount Web::App, at: '/'\n$}] }
               .join("")
           )
 
@@ -114,10 +114,10 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # spec/admin/views/app_layout_spec.rb
           #
-          expect("spec/admin/views/app_layout_spec.rb").to have_file_content(%r{Admin::Views::AppLayout})
+          expect("spec/admin/views/app_layout_spec.rb").to have_file_content(/Admin::Views::AppLayout/)
         end
       end
-    end # erb
+    end
 
     context "haml" do
       it "generates app" do
@@ -146,10 +146,10 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # spec/admin/views/app_layout_spec.rb
           #
-          expect("spec/admin/views/app_layout_spec.rb").to have_file_content(%r{Admin::Views::AppLayout})
+          expect("spec/admin/views/app_layout_spec.rb").to have_file_content(/Admin::Views::AppLayout/)
         end
       end
-    end # haml
+    end
 
     context "slim" do
       it "generates app" do
@@ -179,37 +179,37 @@ RSpec.describe "hanami generate", type: :integration do
           #
           # spec/admin/views/app_layout_spec.rb
           #
-          expect("spec/admin/views/app_layout_spec.rb").to have_file_content(%r{Admin::Views::AppLayout})
+          expect("spec/admin/views/app_layout_spec.rb").to have_file_content(/Admin::Views::AppLayout/)
         end
       end
-    end # slim
+    end
 
     it "prints help message" do
       with_project do
         output = <<~OUT
-Command:
-  hanami generate app
+          Command:
+            hanami generate app
 
-Usage:
-  hanami generate app APP
+          Usage:
+            hanami generate app APP
 
-Description:
-  Generate an app
+          Description:
+            Generate an app
 
-Arguments:
-  APP                               # REQUIRED The app name (eg. `web`)
+          Arguments:
+            APP                               # REQUIRED The app name (eg. `web`)
 
-Options:
-  --app-base-url=VALUE      # The app base URL (eg. `/api/v1`)
-  --help, -h                        # Print this help
+          Options:
+            --app-base-url=VALUE      # The app base URL (eg. `/api/v1`)
+            --help, -h                        # Print this help
 
-Examples:
-  hanami generate app admin                              # Generate `admin` app
-  hanami generate app api --app-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
-OUT
+          Examples:
+            hanami generate app admin                              # Generate `admin` app
+            hanami generate app api --app-base-url=/api/v1 # Generate `api` app and mount at `/api/v1`
+        OUT
 
-        run_cmd 'hanami generate app --help', output
+        run_cmd "hanami generate app --help", output
       end
     end
-  end # app
+  end
 end

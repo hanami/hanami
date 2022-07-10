@@ -35,7 +35,7 @@ RSpec.describe Hanami::Configuration, "#views" do
       end
 
       it "includes all view settings apart from inflector" do
-        expect(views.settings).to include (Hanami::View.settings - [:inflector])
+        expect(views.settings).to include(Hanami::View.settings - [:inflector])
       end
     end
 
