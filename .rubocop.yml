@@ -1,25 +1,262 @@
-# Please keep AllCops, Bundler, Style, Metrics groups and then order cops
-# alphabetically
-inherit_from:
-  - https://raw.githubusercontent.com/hanami/devtools/main/.rubocop.yml
-Naming/HeredocDelimiterNaming:
-  Enabled: false
-Naming/RescuedExceptionsVariableName:
-  Enabled: false
-Style/AccessorGrouping:
-  Enabled: false
-Style/BlockDelimiters:
-  Enabled: false
-Style/CommentedKeyword:
-  Enabled: false
-Style/LambdaCall:
-  Enabled: false
-Style/StabbyLambdaParentheses:
-  Enabled: false
-Style/TrailingCommaInArguments:
-  Enabled: false
-Style/TrailingCommaInArrayLiteral:
-  Enabled: false
-Style/TrailingCommaInHashLiteral:
+# This is a config synced from dry-rb/template-gem repo
+
+AllCops:
+  TargetRubyVersion: 2.7
+  NewCops: disable
+  Exclude:
+    - benchmarks/*.rb
+    - spec/support/coverage.rb
+    - spec/support/warnings.rb
+    - spec/support/rspec_options.rb
+    - Gemfile.devtools
+    - "*.gemspec"
+
+Layout/SpaceAroundMethodCallOperator:
   Enabled: false
 
+Layout/SpaceInLambdaLiteral:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: true
+  EnforcedStyle: indented
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+  EnforcedStyle: no_space
+  EnforcedStyleForEmptyBraces: no_space
+
+Layout/LineLength:
+  Max: 100
+  Exclude:
+    - "spec/**/*.rb"
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: true
+  # because 'expect { foo }.to change { bar }' is fine
+  Exclude:
+    - "spec/**/*.rb"
+
+Lint/BooleanSymbol:
+  Enabled: false
+
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - "spec/**/*.rb"
+
+Lint/RaiseException:
+  Enabled: false
+
+Lint/StructNewOverride:
+  Enabled: false
+
+Lint/SuppressedException:
+  Exclude:
+    - "spec/spec_helper.rb"
+
+Lint/LiteralAsCondition:
+  Exclude:
+    - "spec/**/*.rb"
+
+Naming/PredicateName:
+  Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - "lib/*-*.rb"
+
+Naming/MethodName:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/CyclomaticComplexity:
+  Enabled: true
+  Max: 12
+
+Style/ExponentialNotation:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: false
+
+Style/HashTransformKeys:
+  Enabled: false
+
+Style/HashTransformValues:
+  Enabled: false
+
+Style/AccessModifierDeclarations:
+  Enabled: false
+
+Style/Alias:
+  Enabled: true
+  EnforcedStyle: prefer_alias_method
+
+Style/AsciiComments:
+  Enabled: false
+
+Style/BlockDelimiters:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Exclude:
+    - "spec/**/*.rb"
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Style/DateTime:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/EachWithObject:
+  Enabled: false
+
+Style/FormatString:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/Lambda:
+  Enabled: false
+
+Style/LambdaCall:
+  Enabled: false
+
+Style/ParallelAssignment:
+  Enabled: false
+
+Style/StabbyLambdaParentheses:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+  ConsistentQuotesInMultiline: false
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/SymbolArray:
+  Exclude:
+    - "spec/**/*.rb"
+
+Style/TrailingUnderscoreVariable:
+  Enabled: false
+
+Style/MultipleComparison:
+  Enabled: false
+
+Style/Next:
+  Enabled: false
+
+Style/AccessorGrouping:
+  Enabled: false
+
+Style/EmptyLiteral:
+  Enabled: false
+
+Style/Semicolon:
+  Exclude:
+    - "spec/**/*.rb"
+
+Style/HashAsLastArrayItem:
+  Exclude:
+    - "spec/**/*.rb"
+
+Style/CaseEquality:
+  Exclude:
+    - "lib/dry/monads/**/*.rb"
+    - "lib/dry/struct/**/*.rb"
+    - "lib/dry/types/**/*.rb"
+    - "spec/**/*.rb"
+
+Style/ExplicitBlockArgument:
+  Exclude:
+    - "lib/dry/types/**/*.rb"
+
+Style/CombinableLoops:
+  Enabled: false
+
+Style/EmptyElse:
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/MultilineBlockChain:
+  Enabled: false
+
+Style/NumberedParametersLimit:
+  Max: 2
+
+Lint/UnusedBlockArgument:
+  Exclude:
+    - "spec/**/*.rb"
+
+Lint/Debugger:
+  Exclude:
+    - "bin/console"
+
+Lint/BinaryOperatorWithIdenticalOperands:
+  Exclude:
+    - "spec/**/*.rb"
+
+Metrics/ParameterLists:
+  Exclude:
+    - "spec/**/*.rb"
+
+Lint/EmptyBlock:
+  Exclude:
+    - "spec/**/*.rb"
+
+Lint/UselessMethodDefinition:
+  Exclude:
+    - "spec/**/*.rb"
+
+Lint/SelfAssignment:
+  Enabled: false
+
+Lint/EmptyClass:
+  Enabled: false
+
+Naming/ConstantName:
+  Exclude:
+    - "spec/**/*.rb"
+
+Naming/VariableNumber:
+  Exclude:
+    - "spec/**/*.rb"
+
+Naming/BinaryOperatorParameterName:
+  Enabled: false
