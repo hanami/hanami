@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-lib = File.expand_path("../lib", __FILE__)
+lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "hanami/version"
 
@@ -35,15 +35,15 @@ Gem::Specification.new do |spec|
   spec.add_dependency "bundler",          ">= 1.16", "< 3"
   spec.add_dependency "dry-configurable", "~> 0.15"
   spec.add_dependency "dry-core",         "~> 0.7"
-  spec.add_dependency "dry-types",        "~> 1.5"
   spec.add_dependency "dry-inflector",    "~> 0.2", ">= 0.2.1"
-  spec.add_dependency "dry-system",       "~> 0.25", ">= 0.25.0"
   spec.add_dependency "dry-monitor",      "~> 0.6", ">= 0.6.0"
+  spec.add_dependency "dry-system",       "~> 0.25", ">= 0.25.0"
+  spec.add_dependency "dry-types",        "~> 1.5"
   spec.add_dependency "hanami-cli",       "~> 2.0.alpha"
   spec.add_dependency "hanami-utils",     "~> 2.0.alpha"
   spec.add_dependency "zeitwerk",         "~> 2.4"
 
-  spec.add_development_dependency "rspec",     "~> 3.8"
   spec.add_development_dependency "rack-test", "~> 1.1"
   spec.add_development_dependency "rake",      "~> 13.0"
+  spec.add_development_dependency "rspec",     "~> 3.8"
 end
