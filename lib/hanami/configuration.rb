@@ -21,6 +21,31 @@ module Hanami
   class Configuration
     include Dry::Configurable
 
+    setting :root, constructor: ->(path) { Pathname(path) if path }
+
+    setting :no_auto_register_paths, default: %w[entities]
+
+    setting :inflector, default: Dry::Inflector.new
+
+    setting :settings_store, default: Hanami::Settings::DotenvStore
+
+    setting :slices do
+      setting :shared_component_keys, default: %w[
+        inflector
+        logger
+        notifications
+        rack.monitor
+        routes
+        settings
+      ]
+    end
+
+    setting :base_url, default: "http://0.0.0.0:2300", constructor: ->(url) { URI(url) }
+
+    setting :sessions, default: :null, constructor: ->(*args) { Sessions.new(*args) }
+
+    setting :logger, cloneable: true
+
     DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
     private_constant :DEFAULT_ENVIRONMENTS
 
@@ -110,17 +135,9 @@ module Hanami
       super
     end
 
-    setting :root, constructor: -> path { Pathname(path) if path }
-
-    setting :no_auto_register_paths, default: %w[entities]
-
-    setting :inflector, default: Dry::Inflector.new
-
     def inflections(&block)
       self.inflector = Dry::Inflector.new(&block)
     end
-
-    setting :logger, cloneable: true
 
     def logger=(logger_instance)
       @logger_instance = logger_instance
@@ -129,23 +146,6 @@ module Hanami
     def logger_instance
       @logger_instance || logger.instance
     end
-
-    setting :settings_store, default: Hanami::Settings::DotenvStore
-
-    setting :slices do
-      setting :shared_component_keys, default: %w[
-        inflector
-        logger
-        notifications
-        rack.monitor
-        routes
-        settings
-      ]
-    end
-
-    setting :base_url, default: "http://0.0.0.0:2300", constructor: -> url { URI(url) }
-
-    setting :sessions, default: :null, constructor: -> *args { Sessions.new(*args) }
 
     private
 
