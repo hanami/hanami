@@ -16,9 +16,6 @@ gem "hanami-view", "~> 2.0.alpha", github: "hanami/view", branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
-gem "dry-system", github: "dry-rb/dry-system", branch: "main"
-gem "dry-container", github: "dry-rb/dry-container", branch: "main"
-
 group :test do
   gem "dotenv"
   gem "saharspec"
