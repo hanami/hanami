@@ -49,23 +49,51 @@ module Hanami
     DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
     private_constant :DEFAULT_ENVIRONMENTS
 
+    # @return [Symbol] The name of the application
+    #
+    # @api public
     attr_reader :app_name
+
+    # @return [String] The current environment
+    #
+    # @api public
     attr_reader :env
 
+    # @return [Hanami::Configuration::Actions]
+    #
+    # @api public
     attr_reader :actions
 
+    # @return [Hanami::Slice::Routing::Middleware::Stack]
+    #
     # @api public
     attr_reader :middleware
 
     # @api private
     alias_method :middleware_stack, :middleware
 
+    # @return [Hanami::Configuration::Router]
+    #
+    # @api public
     attr_reader :router
-    attr_reader :views, :assets
 
+    # @return [Hanami::Configuration::Views]
+    #
+    # @api public
+    attr_reader :views
+
+    # @return [Hanami::Assets::AppConfiguration]
+    #
+    # @api public
+    attr_reader :assets
+
+    # @return [Concurrent::Hash] A hash of default environments
+    #
+    # @api private
     attr_reader :environments
     private :environments
 
+    # @api private
     def initialize(app_name:, env:)
       @app_name = app_name
 
@@ -100,6 +128,32 @@ module Hanami
       yield self if block_given?
     end
 
+    # Apply configuration for the given environment
+    #
+    # @param env [String] the environment name
+    #
+    # @return [Hanami::Configuration]
+    #
+    # @api public
+    def environment(env_name, &block)
+      environments[env_name] << block
+      apply_env_config
+
+      self
+    end
+
+    # Configure application's inflections
+    #
+    # @see https://dry-rb.org/gems/dry-inflector
+    #
+    # @return [Dry::Inflector]
+    #
+    # @api public
+    def inflections(&block)
+      self.inflector = Dry::Inflector.new(&block)
+    end
+
+    # @api private
     def initialize_copy(source)
       super
 
@@ -115,13 +169,7 @@ module Hanami
       @views = source.views.dup
     end
 
-    def environment(env_name, &block)
-      environments[env_name] << block
-      apply_env_config
-
-      self
-    end
-
+    # @api private
     def finalize!
       apply_env_config
 
@@ -135,26 +183,30 @@ module Hanami
       super
     end
 
-    def inflections(&block)
-      self.inflector = Dry::Inflector.new(&block)
-    end
-
+    # Set a default global logger instance
+    #
+    # @api public
     def logger=(logger_instance)
       @logger_instance = logger_instance
     end
 
+    # Return configured logger instance
+    #
+    # @api public
     def logger_instance
       @logger_instance || logger.instance
     end
 
     private
 
+    # @api private
     def apply_env_config(env = self.env)
       environments[env].each do |block|
         instance_eval(&block)
       end
     end
 
+    # @api private
     def load_dependent_config(require_path, &block)
       require require_path
       yield
@@ -165,6 +217,7 @@ module Hanami
       NullConfiguration.new
     end
 
+    # @api private
     def method_missing(name, *args, &block)
       if config.respond_to?(name)
         config.public_send(name, *args, &block)
@@ -173,6 +226,7 @@ module Hanami
       end
     end
 
+    # @api private
     def respond_to_missing?(name, _incude_all = false)
       config.respond_to?(name) || super
     end
