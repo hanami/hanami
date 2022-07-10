@@ -17,7 +17,6 @@ gem "hanami-view", "~> 2.0.alpha", github: "hanami/view", branch: "main"
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
 gem "dry-files", github: "dry-rb/dry-files", branch: "main"
-gem "dry-monitor", github: "dry-rb/dry-monitor", branch: "main"
 gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 gem "dry-container", github: "dry-rb/dry-container", branch: "main"
 
