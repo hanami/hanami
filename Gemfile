@@ -18,7 +18,7 @@ gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
 gem "dry-files", github: "dry-rb/dry-files", branch: "main"
 gem "dry-monitor", github: "dry-rb/dry-monitor", branch: "main"
-gem "dry-system", github: "dry-rb/dry-system", branch: "prefer-local-components-when-importing"
+gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 gem "dry-container", github: "dry-rb/dry-container", branch: "main"
 
 group :test do
