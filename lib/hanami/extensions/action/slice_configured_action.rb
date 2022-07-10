@@ -48,7 +48,8 @@ module Hanami
 
         def configure_action(action_class)
           action_class.config.settings.each do |setting|
-            action_class.config.public_send :"#{setting}=", actions_config.public_send(:"#{setting}")
+            action_class.config.public_send :"#{setting}=",
+                                            actions_config.public_send(:"#{setting}")
           end
         end
 
@@ -72,7 +73,7 @@ module Hanami
         def resolve_paired_view(action_class)
           view_identifiers = actions_config.view_name_inferrer.call(
             action_class_name: action_class.name,
-            slice: slice,
+            slice: slice
           )
 
           view_identifiers.detect do |identifier|

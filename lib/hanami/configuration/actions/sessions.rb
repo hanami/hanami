@@ -23,7 +23,7 @@ module Hanami
         end
 
         def middleware
-          return [] if !enabled?
+          return [] unless enabled?
 
           [[storage_middleware, options]]
         end

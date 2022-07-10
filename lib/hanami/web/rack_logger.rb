@@ -48,7 +48,7 @@ module Hanami
           path: env[SCRIPT_NAME] + env[PATH_INFO].to_s,
           length: extract_content_length(env),
           params: env[ROUTER_PARAMS],
-          time: Time.now,
+          time: Time.now
         }
 
         logger.info(data)

@@ -80,22 +80,24 @@ module Hanami
 
           begin
             require path
-          rescue LoadError => exception
-            raise exception unless exception.path == path
+          rescue LoadError => e
+            raise e unless e.path == path
           end
 
+          # rubocop:disable Lint/SuppressedException
           begin
             inflector.constantize(inflector.camelize(path))
-          rescue NameError => exception
+          rescue NameError
           end
+          # rubocop:enable Lint/SuppressedException
         end
 
         def template_name(view_class)
           slice
             .inflector
             .underscore(view_class.name)
-            .sub(/^#{slice.slice_name.path}\//, "")
-            .sub(/^#{view_class.config.template_inference_base}\//, "")
+            .sub(%r{^#{slice.slice_name.path}/}, "")
+            .sub(%r{^#{view_class.config.template_inference_base}/}, "")
         end
 
         def inflector

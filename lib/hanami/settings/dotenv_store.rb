@@ -30,7 +30,7 @@ module Hanami
 
       def fetch(name, default_value = Undefined, &block)
         name = name.to_s.upcase
-        args = (default_value == Undefined) ? [name] : [name, default_value]
+        args = default_value == Undefined ? [name] : [name, default_value]
 
         store.fetch(*args, &block)
       end

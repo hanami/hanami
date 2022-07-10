@@ -15,7 +15,7 @@ module Hanami
     class Actions
       include Dry::Configurable
 
-      setting :cookies, default: {}, constructor: -> options { Cookies.new(options) }
+      setting :cookies, default: {}, constructor: ->(options) { Cookies.new(options) }
       setting :sessions, constructor: proc { |storage, *options| Sessions.new(storage, *options) }
       setting :csrf_protection
 
@@ -34,7 +34,7 @@ module Hanami
 
         @base_configuration = Hanami::Action::Configuration.new
         @content_security_policy = ContentSecurityPolicy.new do |csp|
-          if assets_server_url = options[:assets_server_url]
+          if (assets_server_url = options[:assets_server_url])
             csp[:script_src] += " #{assets_server_url}"
             csp[:style_src] += " #{assets_server_url}"
           end

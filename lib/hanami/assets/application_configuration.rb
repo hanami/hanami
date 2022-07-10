@@ -32,8 +32,7 @@ module Hanami
 
       # @since 2.0.0
       # @api private
-      def finalize!
-      end
+      def finalize!; end
 
       # Returns the list of available settings
       #

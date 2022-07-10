@@ -13,7 +13,9 @@ module Hanami
       # @since 2.0.0
       class NotCallableEndpointError < StandardError
         def initialize(endpoint)
-          super("#{endpoint.inspect} is not compatible with Rack. Please make sure it implements #call.")
+          super(
+            "#{endpoint.inspect} is not compatible with Rack. Please make sure it implements #call."
+          )
         end
       end
 
@@ -55,7 +57,7 @@ module Hanami
             end
 
           unless endpoint.respond_to?(:call)
-            raise NotCallableEndpointError.new(endpoint)
+            raise NotCallableEndpointError, endpoint
           end
 
           endpoint
@@ -79,7 +81,7 @@ module Hanami
           # concerns (which may not be fully loaded at the time of reading the routes)
           -> (*args) {
             action = slice.resolve(action_key) do
-              raise UnknownActionError.new(key)
+              raise UnknownActionError, key
             end
 
             action.call(*args)
@@ -89,7 +91,7 @@ module Hanami
         def ensure_action_in_slice(key)
           return unless slice.booted?
 
-          raise UnknownActionError.new(key) unless slice.key?(key)
+          raise UnknownActionError, key unless slice.key?(key)
         end
       end
     end

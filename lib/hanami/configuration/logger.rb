@@ -25,7 +25,9 @@ module Hanami
 
       setting :filters, default: %w[_csrf password password_confirmation].freeze
 
-      setting :options, default: [], constructor: ->(value) { Array(value).flatten }, cloneable: true
+      setting :options, default: [], constructor: ->(value) {
+                                                    Array(value).flatten
+                                                  }, cloneable: true
 
       setting :logger_class, default: Hanami::Logger
 
