@@ -102,6 +102,10 @@ RSpec.describe "Code loading / Loading from slice directory", :app_integration d
     specify "Classes in slice lib/ directory are auto-registered" do
       expect(Main::Slice["test_class"]).to be_an_instance_of Main::TestClass
     end
+
+    specify "Classes in slice lib/ directory are not redundantly auto-registered under 'lib' key namespace" do
+      expect(Main::Slice.key?("lib.test_class")).to be false
+    end
   end
 
   # rubocop:disable Style/GlobalVars

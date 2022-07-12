@@ -86,8 +86,12 @@ RSpec.describe "Code loading / Loading from app directory", :app_integration do
       expect(TestApp::TestClass).to be
     end
 
-    specify "Classes in app directory are auto-registered" do
+    specify "Classes in app/lib/ directory are auto-registered" do
       expect(TestApp::App["test_class"]).to be_an_instance_of TestApp::TestClass
+    end
+
+    specify "Classes in app/lib/ directory are not redundantly auto-registered under 'lib' key namespace" do
+      expect(TestApp::App.key?("lib.test_class")).to be false
     end
   end
 

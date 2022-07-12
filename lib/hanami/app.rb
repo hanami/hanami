@@ -78,6 +78,8 @@ module Hanami
       def prepare_container_component_dirs; end
       def prepare_container_imports; end
 
+      # rubocop:disable Metrics/AbcSize
+
       def prepare_app_component_dirs
         # Component files in both `app/` and `app/lib/` define classes in the
         # app's namespace
@@ -88,10 +90,20 @@ module Hanami
           end
         end
 
+        # When auto-registering components in app/, ignore files in `app/lib/` (these will
+        # be auto-registered as above), as well as the configured no_auto_register_paths
+        no_auto_register_paths = ([LIB_DIR] + configuration.no_auto_register_paths)
+          .map { |path|
+            path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
+          }
+
         if root.join(APP_DIR).directory?
-          # TODO: ignore lib/ child dir here
           container.config.component_dirs.add(APP_DIR) do |dir|
             dir.namespaces.add_root(key: nil, const: app_name.name)
+            dir.auto_register = -> component {
+              relative_path = component.file_path.relative_path_from(root.join(APP_DIR)).to_s
+              !relative_path.start_with?(*no_auto_register_paths)
+            }
           end
         end
       end
@@ -122,6 +134,8 @@ module Hanami
 
         autoloader.setup
       end
+
+      # rubocop:enable Metrics/AbcSize
     end
   end
 end
