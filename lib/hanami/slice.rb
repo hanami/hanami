@@ -186,11 +186,11 @@ module Hanami
         @routes ||= load_routes
       end
 
-      def router
+      def router(inspector: nil)
         raise SliceLoadError, "#{self} must be prepared before loading the router" unless prepared?
 
         @_mutex.synchronize do
-          @_router ||= load_router
+          @_router ||= load_router(inspector: inspector)
         end
       end
 
@@ -395,7 +395,7 @@ module Hanami
         end
       end
 
-      def load_router
+      def load_router(inspector:)
         return unless routes
 
         require_relative "slice/router"
@@ -404,6 +404,7 @@ module Hanami
         rack_monitor = self["rack.monitor"]
 
         Slice::Router.new(
+          inspector: inspector,
           routes: routes,
           resolver: configuration.router.resolver.new(slice: self),
           **configuration.router.options
