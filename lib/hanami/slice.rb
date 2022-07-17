@@ -286,31 +286,31 @@ module Hanami
       def prepare_container_component_dirs
         return unless root.directory?
 
-        # Don't auto-register files in `config/` or the configured no_auto_register_paths
-        autoload_only_paths = ([CONFIG_DIR] + configuration.no_auto_register_paths)
-          .map { |path|
-            path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
-          }
-
-        auto_register_proc = -> root {
-          -> component {
-            relative_path = component.file_path.relative_path_from(root).to_s
-            !relative_path.start_with?(*autoload_only_paths)
-          }
-        }
+        # Component files in both the root and `lib/` define classes in the slice's
+        # namespace
 
         if root.join(LIB_DIR)&.directory?
           container.config.component_dirs.add(LIB_DIR) do |dir|
             dir.namespaces.add_root(key: nil, const: slice_name.name)
-            dir.auto_register = auto_register_proc.(root.join(LIB_DIR))
           end
         end
 
+        # When auto-registering components in the root, ignore files in `config/` (this is
+        # for framework config only), `lib/` (these will be auto-registered as above), as
+        # well as the configured no_auto_register_paths
+        no_auto_register_paths = ([LIB_DIR, CONFIG_DIR] + configuration.no_auto_register_paths)
+          .map { |path|
+            path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
+          }
+
         # TODO: Change `""` (signifying the root) once dry-rb/dry-system#238 is resolved
         container.config.component_dirs.add("") do |dir|
-          # TODO: ignore lib/ child dir here
           dir.namespaces.add_root(key: nil, const: slice_name.name)
-          dir.auto_register = auto_register_proc.(root)
+          dir.auto_register = -> component {
+            relative_path = component.file_path.relative_path_from(root).to_s
+            !relative_path.start_with?(*no_auto_register_paths)
+
+          }
         end
       end
 
