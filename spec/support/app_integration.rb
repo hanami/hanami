@@ -29,8 +29,10 @@ RSpec.configure do |config|
   config.include_context "Application integration", :app_integration
 
   config.before :each, :app_integration do
-    @load_paths = $LOAD_PATH.dup
-    @loaded_features = $LOADED_FEATURES.dup
+    # Conditionally assign these in case they have been assigned earlier for specific
+    # example groups (e.g. container/prepare_container_spec.rb)
+    @load_paths ||= $LOAD_PATH.dup
+    @loaded_features ||= $LOADED_FEATURES.dup
   end
 
   config.after :each, :app_integration do
@@ -56,7 +58,7 @@ RSpec.configure do |config|
 
     $LOAD_PATH.replace(@load_paths)
 
-    # Remove any specific LOADED_FEATURES added over the course of running each example
+    # Remove example-specific LOADED_FEATURES added when running each example
     new_features_to_keep = ($LOADED_FEATURES - @loaded_features).tap { |feats|
       feats.delete_if do |path|
         path =~ %r{hanami/(setup|prepare|boot|application/container/providers)} ||
