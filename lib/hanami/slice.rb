@@ -219,6 +219,7 @@ module Hanami
 
         prepare_all
 
+        instance_exec(container, &@prepare_container_block) if @prepare_container_block
         container.configured!
 
         @prepared = true
@@ -258,7 +259,6 @@ module Hanami
         prepare_container_imports
         prepare_container_providers
         prepare_autoloader
-        instance_exec(container, &@prepare_container_block) if @prepare_container_block
 
         prepare_slices
       end
