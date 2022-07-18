@@ -1,7 +1,28 @@
 # Hanami
+
 ### The web, with simplicity.
 
 ## Features
+
+## v2.0.0.beta1 - 2021-07-20
+
+- Generate new apps using `app/` directory
+
+## v2.0.0.alpha8 - 2021-05-19
+
+## v2.0.0.alpha7.1 - 2021-03-09
+
+## v2.0.0.alpha7 - 2021-03-08
+
+## v2.0.0.alpha6 - 2021-02-10
+
+## v2.0.0.alpha5 - 2021-01-12
+
+## v2.0.0.alpha4 - 2021-12-07
+
+## v2.0.0.alpha3 - 2021-11-09
+
+## v2.0.0.alpha2 - 2021-05-04
 
 ## v2.0.0.alpha1 - 2019-01-30
 
@@ -110,14 +131,14 @@
 - Assets preprocessors support (eg. Sass, ES6, Opal, Less, CoffeScript..)
 - Assets compressors (eg. YUI, UglifyJS2, Google Closure Compiler, Sass..)
 - Assets helpers:
-  * `javascript`
-  * `stylesheet`
-  * `favicon`
-  * `image`
-  * `video`
-  * `audio`
-  * `asset_path`
-  * `asset_url`
+  - `javascript`
+  - `stylesheet`
+  - `favicon`
+  - `image`
+  - `video`
+  - `audio`
+  - `asset_path`
+  - `asset_url`
 - Content Delivery Network (CDN) support for static assets (CDN mode)
 - Checksum suffix for static assets in production mode (Digest mode)
 - Support for third party gems as assets distribution channel (eg. `lotus-jquery`)
@@ -159,7 +180,7 @@
 - `Lotus.env` and `Lotus.env?` for current environment introspection (eg. `Lotus.env?(:test)` or `Lotus.env?(:staging, :production)`)
 - Allow repositories to execute raw query/commands against database
 - Automatic timestamps update for entities
-– Dirty Tracking for entities (via `Lotus::Entity::DirtyTracking`)
+  – Dirty Tracking for entities (via `Lotus::Entity::DirtyTracking`)
 - Nested RESTful resource(s)
 - String pluralization and singularization
 

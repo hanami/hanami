@@ -21,7 +21,6 @@ Gem::Specification.new do |spec|
     "LICENSE.md",
     "README.md",
     "hanami.gemspec",
-    "bin/*",
     "lib/**/*"
   ]
 
