@@ -50,6 +50,8 @@ The web, with simplicity.
 
 - [Luca Guidi] Make `app/` the core of Hanami 2 apps
 - [Luca Guidi] `Hanami::Application` -> `Hanami::App`
+- [Luca Guidi] `Hanami.application` -> `Hanami.app`
+- [Luca Guidi] `config/application.rb` -> `config/app.rb`
 - [Luca Guidi] Remove `::Application::` namespace in public API class names (e.g. `Hanami::Application::Routes` -> `Hanami::Routes`) [#1172]
 - [Tim Riley] Removed `Hanami::Configuration#settings_path`, `#settings_class_name` [#1175]
 - [Tim Riley] Removed `Hanami::Configuration::Router#routes_path`, and `#routes_class_name` [#1175]
