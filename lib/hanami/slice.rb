@@ -180,10 +180,6 @@ module Hanami
         end
       end
 
-      def settings
-        self["settings"]
-      end
-
       def routes
         @routes ||= load_routes
       end

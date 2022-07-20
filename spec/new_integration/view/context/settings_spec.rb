@@ -28,7 +28,7 @@ RSpec.describe "App view / Context / Settings", :app_integration do
 
   describe "#settings" do
     it "is the app settings by default" do
-      expect(context.settings).to be TestApp::App.settings
+      expect(context.settings).to be TestApp::App["settings"]
     end
 
     context "injected settings" do
