@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 require "hanami"
+require "hanami/settings"
 
 RSpec.describe "App view / Context / Settings", :app_integration do
   before do
     module TestApp
       class App < Hanami::App
+      end
+
+      class Settings < Hanami::Settings
       end
     end
 

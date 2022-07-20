@@ -181,7 +181,7 @@ module Hanami
       end
 
       def settings
-        self[:settings]
+        self["settings"]
       end
 
       def routes
@@ -226,6 +226,8 @@ module Hanami
 
         prepare_autoloader
 
+        ensure_prepared
+
         # Load child slices last, ensuring their parent is fully prepared beforehand
         # (useful e.g. for slices that may wish to access constants defined in the
         # parent's autoloaded directories)
@@ -257,10 +259,12 @@ module Hanami
         end
       end
 
-      def prepare_all
-        # Load settings first, to fail early in case of missing/unexpected values
-        settings
+      def ensure_prepared
+        # Load settings so we can fail early in case of non-conformant values
+        self[:settings] if key?(:settings)
+      end
 
+      def prepare_all
         prepare_container_consts
         prepare_container_plugins
         prepare_container_base_config
@@ -334,12 +338,12 @@ module Hanami
         # point we're still in the process of preparing.
         if routes
           require_relative "providers/routes"
-          register_provider(:routes, source: Hanami::Providers::Routes.for_slice(self))
+          register_provider(:routes, source: Providers::Routes.for_slice(self))
         end
 
-        if settings
-          require_relative "providers/settings"
-          register_provider(:settings, source: Hanami::Providers::Settings.for_slice(self))
+        require_relative "providers/settings"
+        if Providers::Settings.settings_defined?(self)
+          register_provider(:settings, source: Providers::Settings.for_slice(self))
         end
       end
 
@@ -370,26 +374,6 @@ module Hanami
       def prepare_slices
         slices.load_slices.each(&:prepare)
         slices.freeze
-      end
-
-      def load_settings
-        if root.directory?
-          settings_require_path = File.join(root, SETTINGS_PATH)
-
-          begin
-            require_relative "./settings"
-            require settings_require_path
-          rescue LoadError => e
-            raise e unless e.path == settings_require_path
-          end
-        end
-
-        begin
-          settings_class = namespace.const_get(SETTINGS_CLASS_NAME)
-          settings_class.new(configuration.settings_store)
-        rescue NameError => e
-          raise e unless e.name == SETTINGS_CLASS_NAME.to_sym
-        end
       end
 
       def load_routes
