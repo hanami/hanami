@@ -6,6 +6,7 @@ require_relative "constants"
 require_relative "errors"
 require_relative "slice_name"
 require_relative "slice_registrar"
+require_relative "providers/settings"
 
 module Hanami
   # A slice represents any distinct area of concern within an Hanami app.
@@ -337,7 +338,6 @@ module Hanami
           register_provider(:routes, source: Providers::Routes.for_slice(self))
         end
 
-        require_relative "providers/settings"
         if Providers::Settings.settings_defined?(self)
           register_provider(:settings, source: Providers::Settings.for_slice(self))
         end
