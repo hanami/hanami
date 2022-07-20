@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
+require "zeitwerk"
 require_relative "constants"
 require_relative "errors"
 require_relative "slice_name"
@@ -40,6 +41,7 @@ module Hanami
       @_mutex.synchronize do
         subclass.class_eval do
           @_mutex = Mutex.new
+          @autoloader = Zeitwerk::Loader.new
           @container = Class.new(Dry::System::Container)
         end
       end
@@ -47,7 +49,7 @@ module Hanami
 
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
-      attr_reader :parent, :container
+      attr_reader :parent, :autoloader, :container
 
       def app
         Hanami.app
@@ -222,6 +224,7 @@ module Hanami
         instance_exec(container, &@prepare_container_block) if @prepare_container_block
         container.configured!
 
+        prepare_autoloader
         @prepared = true
 
         self
@@ -258,7 +261,6 @@ module Hanami
         prepare_container_component_dirs
         prepare_container_imports
         prepare_container_providers
-        prepare_autoloader
 
         prepare_slices
       end
@@ -268,7 +270,7 @@ module Hanami
 
         container.use(
           :zeitwerk,
-          loader: app.autoloader,
+          loader: autoloader,
           run_setup: false,
           eager_load: false
         )
@@ -338,11 +340,22 @@ module Hanami
       end
 
       def prepare_autoloader
-        # Everything in the slice directory can be autoloaded _except_ `config/`, which is
-        # where we keep files loaded specially by the framework as part of slice setup.
+        # Component dirs are automatically pushed to the autoloader by dry-system's
+        # zeitwerk plugin. This method adds other dirs that are not otherwise configured
+        # as component dirs.
+
+        # Everything in the slice root can be autoloaded except `config/` and `slices/`,
+        # which are framework-managed directories
+
         if root.join(CONFIG_DIR)&.directory?
-          container.config.autoloader.ignore(root.join(CONFIG_DIR))
+          autoloader.ignore(root.join(CONFIG_DIR))
         end
+
+        if root.join(SLICES_DIR)&.directory?
+          autoloader.ignore(root.join(SLICES_DIR))
+        end
+
+        autoloader.setup
       end
 
       def prepare_container_consts
