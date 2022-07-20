@@ -181,7 +181,7 @@ module Hanami
       end
 
       def settings
-        @settings ||= load_settings
+        self[:settings]
       end
 
       def routes
@@ -225,6 +225,12 @@ module Hanami
         container.configured!
 
         prepare_autoloader
+
+        # Load child slices last, ensuring their parent is fully prepared beforehand
+        # (useful e.g. for slices that may wish to access constants defined in the
+        # parent's autoloaded directories)
+        prepare_slices
+
         @prepared = true
 
         self
@@ -261,8 +267,6 @@ module Hanami
         prepare_container_component_dirs
         prepare_container_imports
         prepare_container_providers
-
-        prepare_slices
       end
 
       def prepare_container_plugins
