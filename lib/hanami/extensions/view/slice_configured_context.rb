@@ -55,15 +55,15 @@ module Hanami
         end
 
         def resolve_settings
-          slice.app[:settings] if slice.app.key?(:settings)
+          slice["settings"] if slice.key?("settings")
         end
 
         def resolve_routes
-          slice.app["routes"] if slice.app.key?("routes")
+          slice["routes"] if slice.key?("routes")
         end
 
         def resolve_assets
-          slice.app[:assets] if slice.app.key?(:assets)
+          slice["assets"] if slice.key?("assets")
         end
       end
     end
