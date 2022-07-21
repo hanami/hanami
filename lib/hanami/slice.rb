@@ -316,7 +316,6 @@ module Hanami
           dir.auto_register = -> component {
             relative_path = component.file_path.relative_path_from(root).to_s
             !relative_path.start_with?(*no_auto_register_paths)
-
           }
         end
       end
