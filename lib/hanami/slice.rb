@@ -338,9 +338,7 @@ module Hanami
           register_provider(:routes, source: Providers::Routes.for_slice(self))
         end
 
-        if Providers::Settings.settings_defined?(self)
-          register_provider(:settings, source: Providers::Settings.for_slice(self))
-        end
+        Providers::Settings.register_with_slice(self)
       end
 
       def prepare_autoloader

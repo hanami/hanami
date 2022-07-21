@@ -9,39 +9,53 @@ module Hanami
     # The settings provider loads and registers the "settings" component in app and slice
     # containers.
     #
-    # Before registering this provider with a container, you must first subclass at for a
-    # given slice using {.for_slice}.
+    # To register this provider with a slice container, you should use
+    # {.register_with_slice}, which will register the provider only if settings are
+    # defined for the slice.
     #
     # @see Slice::ClassMethods.prepare_container_providers
     #
     # @api private
     # @since 2.0.0
     class Settings < Dry::System::Provider::Source
-      # Returns true if settings are defined for the slice.
-      #
-      # Settings are considered defined if a `Settings` class is already defined in the
-      # slice namespace, or a `config/settings.rb` exists under the slice root.
-      def self.settings_defined?(slice)
-        slice.namespace.const_defined?(SETTINGS_CLASS_NAME) ||
-          slice.root.join("#{SETTINGS_PATH}#{RB_EXT}").file?
-      end
+      class << self
+        # Registers the provider with the slice's container, but only if settings are
+        # defined for the slice.
+        def register_with_slice(slice)
+          return unless settings_defined?(slice)
 
-      # Creates a new subclass of the provider for the given slice.
-      #
-      # You must do this before registering the provider with a container. The provider
-      # uses the slice to locate the settings definition based on the slice's config.
-      def self.for_slice(slice)
-        Class.new(self) do |klass|
-          klass.instance_variable_set(:@slice, slice)
-        end
-      end
-
-      def self.slice
-        unless @slice
-          raise SliceLoadError, "a slice must be given to #{self} via `.for_slice(slice)`"
+          slice.register_provider(:settings, source: with_slice(slice))
         end
 
-        @slice
+        # Creates a new subclass of the provider for the given slice.
+        #
+        # You must do this before registering the provider with a container. The provider
+        # uses the slice to locate the settings definition based on the slice's config.
+        def with_slice(slice)
+          Class.new(self) do |klass|
+            klass.instance_variable_set(:@slice, slice)
+          end
+        end
+
+        # Returns the slice for the provider
+        def slice
+          unless @slice
+            raise SliceLoadError, "a slice must be given to #{self} via `.with_slice(slice)`"
+          end
+
+          @slice
+        end
+
+        private
+
+        # Returns true if settings are defined for the slice.
+        #
+        # Settings are considered defined if a `Settings` class is already defined in the
+        # slice namespace, or a `config/settings.rb` exists under the slice root.
+        def settings_defined?(slice)
+          slice.namespace.const_defined?(SETTINGS_CLASS_NAME) ||
+            slice.root.join("#{SETTINGS_PATH}#{RB_EXT}").file?
+        end
       end
 
       def prepare
