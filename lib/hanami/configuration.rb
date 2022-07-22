@@ -30,7 +30,7 @@ module Hanami
     setting :settings_store, default: Hanami::Settings::EnvStore.new
 
     setting :slices do
-      setting :shared_component_keys, default: %w[
+      setting :shared_app_component_keys, default: %w[
         inflector
         logger
         notifications
