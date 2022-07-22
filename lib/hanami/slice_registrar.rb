@@ -15,6 +15,8 @@ module Hanami
     end
 
     def register(name, slice_class = nil, &block)
+      return unless filter_slice_names([name]).any?
+
       if slices.key?(name.to_sym)
         raise SliceLoadError, "Slice '#{name}' is already registered"
       end
@@ -49,7 +51,10 @@ module Hanami
         .select { |path| File.directory?(path) }
         .map { |path| File.basename(path) }
 
-      (slice_dirs + slice_configs).uniq.sort.each do |slice_name|
+      slice_names = (slice_dirs + slice_configs).uniq.sort
+        .then { filter_slice_names(_1) }
+
+      slice_names.each do |slice_name|
         load_slice(slice_name)
       end
 
@@ -60,11 +65,27 @@ module Hanami
       slices.each_value(&block)
     end
 
+    def keys
+      slices.keys
+    end
+
     def to_a
       slices.values
     end
 
     private
+
+    def filter_slice_names(slice_names)
+      slice_names = slice_names.map(&:to_s)
+
+      if parent.config.slices.load_slices
+        slice_names & parent.config.slices.load_slices.map(&:to_s)
+      elsif parent.config.slices.skip_slices
+        slice_names - parent.config.slices.skip_slices.map(&:to_s)
+      else
+        slice_names
+      end
+    end
 
     # Runs when a slice file has been found at `config/slices/[slice_name].rb`, or a slice
     # directory at `slices/[slice_name]`. Attempts to require the slice class, if defined,

@@ -30,6 +30,9 @@ module Hanami
     setting :settings_store, default: Hanami::Settings::EnvStore.new
 
     setting :slices do
+      setting :load_slices
+      setting :skip_slices
+
       setting :shared_app_component_keys, default: %w[
         inflector
         logger
