@@ -38,8 +38,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dry-inflector",    "~> 0.2", ">= 0.2.1"
   spec.add_dependency "dry-system",       "~> 0.25", ">= 0.25.0"
   spec.add_dependency "dry-monitor",      "~> 0.6", ">= 0.6.0"
-  spec.add_dependency "hanami-cli",       "~> 2.0.alpha"
-  spec.add_dependency "hanami-utils",     "~> 2.0.alpha"
+  spec.add_dependency "hanami-cli",       "~> 2.0.beta"
+  spec.add_dependency "hanami-utils",     "~> 2.0.beta"
   spec.add_dependency "zeitwerk",         "~> 2.4"
 
   spec.add_development_dependency "rspec",     "~> 3.8"
