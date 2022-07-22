@@ -2,6 +2,10 @@
 
 The web, with simplicity.
 
+## v2.0.0.beta1.1 - 2022-07-22
+
+- [Andrew Croome] Specified 2.0.0.beta dependencies for hanami-cli and hanami-utils (to prefer these over previously installed alpha versions) [#1187]
+
 ## v2.0.0.beta1 - 2022-07-20
 
 ### Added
