@@ -11,7 +11,7 @@ require_relative "constants"
 require_relative "configuration/logger"
 require_relative "configuration/router"
 require_relative "configuration/sessions"
-require_relative "settings/dotenv_store"
+require_relative "settings/env_store"
 require_relative "slice/routing/middleware/stack"
 
 module Hanami
@@ -27,7 +27,7 @@ module Hanami
 
     setting :inflector, default: Dry::Inflector.new
 
-    setting :settings_store, default: Hanami::Settings::DotenvStore
+    setting :settings_store, default: Hanami::Settings::EnvStore.new
 
     setting :slices do
       setting :shared_component_keys, default: %w[
@@ -103,7 +103,6 @@ module Hanami
       # Some default setting values must be assigned at initialize-time to ensure they
       # have appropriate values for the current app
       self.root = Dir.pwd
-      self.settings_store = Hanami::Settings::DotenvStore.new.with_dotenv_loaded
 
       config.logger = Configuration::Logger.new(env: env, app_name: app_name)
 

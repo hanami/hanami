@@ -22,26 +22,22 @@ module Hanami
   #     end
   #   end
   #
-  # Settings are defined with
-  # [dry-configurable](https://dry-rb.org/gems/dry-configurable/), so you can
-  # take a look there to see the supported syntax.
+  # Settings are defined with [dry-configurable](https://dry-rb.org/gems/dry-configurable/), so you
+  # can take a look there to see the supported syntax.
   #
-  # Users work with an instance of this class made available within the
-  # `settings` key in the container. The instance gets its settings populated
-  # from a configurable store, which defaults to
-  # {Hanami::Settings::DotenvStore}.
+  # Users work with an instance of this class made available within the `settings` key in the
+  # container. The instance gets its settings populated from a configurable store, which defaults to
+  # {Hanami::Settings::EnvStore}.
   #
-  # A different store can be set through the `settings_store` Hanami
-  # configuration option. All it needs to do is implementing a `#fetch` method
-  # with the same signature as `Hash#fetch`.
+  # A different store can be set through the `settings_store` Hanami configuration option. All it
+  # needs to do is implementing a `#fetch` method with the same signature as `Hash#fetch`.
   #
   # @see Hanami::Settings::DotenvStore
   # @since 2.0.0
   class Settings
     # Exception for errors in the definition of settings.
     #
-    # Its message collects all the individual errors that can be raised for
-    # each setting.
+    # Its message collects all the individual errors that can be raised for each setting.
     InvalidSettingsError = Class.new(StandardError) do
       def initialize(errors)
         @errors = errors
