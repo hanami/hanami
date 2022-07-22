@@ -15,6 +15,8 @@ module Hanami
         # @since 2.0.0
         # @api private
         class Stack
+          include Enumerable
+
           # @since 2.0.0
           # @api private
           ROOT_PREFIX = "/"
