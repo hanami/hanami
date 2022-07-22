@@ -5,12 +5,27 @@ require "rack/builder"
 module Hanami
   class Slice
     module Routing
-      # Hanami::Applicatione::Router middleware stack
-      #
       # @since 2.0.0
       # @api private
       module Middleware
-        # Middleware stack
+        # Wraps a rack app with a middleware stack
+        #
+        # We use this class to add middlewares to the rack application generated
+        # from {Hanami::Slice::Router}.
+        #
+        # ```
+        # stack = Hanami::Slice::Routing::Middleware::Stack.new
+        # stack.use(Rack::ContentType, "text/html")
+        # stack.to_rack_app(a_rack_app)
+        # ```
+        #
+        # Middlewares can be mounted on specific paths:
+        #
+        # ```
+        # stack.with("/api") do
+        #   stack.use(Rack::ContentType, "application/json")
+        # end
+        # ```
         #
         # @since 2.0.0
         # @api private
