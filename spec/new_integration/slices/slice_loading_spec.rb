@@ -53,6 +53,28 @@ RSpec.describe "Slices / Slice loading", :app_integration do
           expect { Main }.to raise_error(NameError)
         end
       end
+
+      it "prefers load_slices over skip_slices when both are configured" do
+        with_tmp_directory(Dir.mktmpdir) do
+          write "config/app.rb", <<~'RUBY'
+            require "hanami"
+
+            module TestApp
+              class App < Hanami::App
+                config.slices.load_slices = %w[admin]
+                config.slices.skip_slices = %w[admin]
+              end
+            end
+          RUBY
+
+          write "slices/admin/.keep"
+          write "slices/main/.keep"
+
+          require "hanami/prepare"
+
+          expect(Hanami.app.slices.keys).to eq [:admin]
+        end
+      end
     end
   end
 
@@ -105,6 +127,68 @@ RSpec.describe "Slices / Slice loading", :app_integration do
           expect(Main::Slice).to be
           expect { Admin }.to raise_error(NameError)
         end
+      end
+    end
+  end
+
+  describe "using ENV vars" do
+    before do
+      @orig_env = ENV.to_h
+    end
+
+    after do
+      ENV.replace(@orig_env)
+    end
+
+    it "uses HANAMI_LOAD_SLICES" do
+      ENV["HANAMI_LOAD_SLICES"] = "admin"
+
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "slices/admin/.keep"
+        write "slices/main/.keep"
+
+        require "hanami/setup"
+
+        expect(Hanami.app.config.slices.load_slices).to eq %w[admin]
+
+        require "hanami/prepare"
+
+        expect(Hanami.app.slices.keys).to eq [:admin]
+      end
+    end
+
+    it "uses HANAMI_SKIP_SLICES" do
+      ENV["HANAMI_SKIP_SLICES"] = "admin"
+
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "slices/admin/.keep"
+        write "slices/main/.keep"
+
+        require "hanami/setup"
+
+        expect(Hanami.app.config.slices.skip_slices).to eq %w[admin]
+
+        require "hanami/prepare"
+
+        expect(Hanami.app.slices.keys).to eq [:main]
       end
     end
   end
