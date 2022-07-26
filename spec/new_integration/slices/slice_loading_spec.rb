@@ -2,8 +2,6 @@
 
 require "rack/test"
 
-# TODO: Tests for HANAMI_LOAD_SLICES
-
 RSpec.describe "Slices / Slice loading", :app_integration do
   describe "loading specific slices" do
     describe "setup app" do
