@@ -31,7 +31,10 @@ module Hanami
         subclass.class_eval do
           @configuration = Hanami::Configuration.new(app_name: slice_name, env: Hanami.env)
 
-          prepare_base_load_path
+          # Prepare the load path (based on the default root of `Dir.pwd`) as early as
+          # possible, so you can make a `require` inside the body of an `App` subclass,
+          # which may be useful for certain kinds of app configuration.
+          prepare_load_path
         end
       end
     end
@@ -44,14 +47,52 @@ module Hanami
         slice_name
       end
 
-      private
+      # Prepares the $LOAD_PATH based on the app's configured root, prepending the `lib/`
+      # directory if it exists. If the lib directory is already added, this will do
+      # nothing.
+      #
+      # In ordinary circumstances, you should never have to call this method: this method
+      # is called immediately upon subclassing {Hanami::App}, as a convenicence to put
+      # lib/ (under the default root of `Dir.pwd`) on the load path automatically. This is
+      # helpful if you need to require files inside the subclass body for performing
+      # certain app configuration steps.
+      #
+      # If you change your app's `config.root` and you need to require files from its
+      # `lib/` directory within your {App} subclass body, you should call
+      # {.prepare_load_path} explicitly after setting the new root.
+      #
+      # Otherwise, this method is called again as part of the app {.prepare} step, so if
+      # you've changed your app's root and do _not_ need to require files within your {App}
+      # subclass body, then you don't need to call this method.
+      #
+      # @example
+      #   module MyApp
+      #     class App < Hanami::App
+      #       config.root = Pathname(__dir__).join("../src")
+      #       prepare_load_path
+      #
+      #       # You can make requires for your files here
+      #     end
+      #   end
+      #
+      # @return [self]
+      #
+      # @api public
+      # @since 2.0.0
+      def prepare_load_path
+        if (lib_path = root.join(LIB_DIR)).directory?
+          path = lib_path.realpath.to_s
+          $LOAD_PATH.prepend(path) unless $LOAD_PATH.include?(path)
+        end
 
-      def prepare_base_load_path
-        base_path = root.join(LIB_DIR)
-        $LOAD_PATH.unshift(base_path) unless $LOAD_PATH.include?(base_path)
+        self
       end
 
+      private
+
       def prepare_all
+        prepare_load_path
+
         # Make app-wide notifications available as early as possible
         container.use(:notifications)
 
