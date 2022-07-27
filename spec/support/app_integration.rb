@@ -52,9 +52,8 @@ RSpec.configure do |config|
     Zeitwerk::ExplicitNamespace.cpaths.clear
     Zeitwerk::ExplicitNamespace.tracer.disable
 
-    if Hanami.instance_variable_defined?(:@_app)
-      Hanami.remove_instance_variable(:@_app)
-    end
+    Hanami.instance_variable_set(:@_bundled, {})
+    Hanami.remove_instance_variable(:@_app) if Hanami.instance_variable_defined?(:@_app)
 
     $LOAD_PATH.replace(@load_paths)
 

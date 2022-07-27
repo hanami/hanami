@@ -35,6 +35,8 @@ module Hanami
           # possible, so you can make a `require` inside the body of an `App` subclass,
           # which may be useful for certain kinds of app configuration.
           prepare_load_path
+
+          load_dotenv
         end
       end
     end
@@ -89,6 +91,32 @@ module Hanami
       end
 
       private
+
+      # Uses [dotenv](https://github.com/bkeepers/dotenv) (if available) to populate `ENV` from
+      # various `.env` files.
+      #
+      # For a given `HANAMI_ENV` environment, the `.env` files are looked up in the following order:
+      #
+      # - .env.{environment}.local
+      # - .env.local (unless the environment is `test`)
+      # - .env.{environment}
+      # - .env
+      #
+      # If dotenv is unavailable, the method exits and does nothing.
+      def load_dotenv
+        return unless Hanami.bundled?("dotenv")
+
+        hanami_env = Hanami.env
+        dotenv_files = [
+          ".env.#{hanami_env}.local",
+          (".env.local" unless hanami_env == :test),
+          ".env.#{hanami_env}",
+          ".env"
+        ].compact
+
+        require "dotenv"
+        Dotenv.load(*dotenv_files)
+      end
 
       def prepare_all
         prepare_load_path
