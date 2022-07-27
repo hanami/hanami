@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "zeitwerk"
 require_relative "configuration"
 require_relative "constants"
 require_relative "slice"
@@ -31,7 +30,6 @@ module Hanami
       @_mutex.synchronize do
         subclass.class_eval do
           @configuration = Hanami::Configuration.new(app_name: slice_name, env: Hanami.env)
-          @autoloader = Zeitwerk::Loader.new
 
           prepare_base_load_path
         end
@@ -40,7 +38,7 @@ module Hanami
 
     # App class interface
     module ClassMethods
-      attr_reader :autoloader, :configuration
+      attr_reader :configuration
 
       def app_name
         slice_name
@@ -65,16 +63,9 @@ module Hanami
         # standard steps have been skipped via the empty method overrides below.
         prepare_app_component_dirs
         prepare_app_providers
-
-        # The autoloader must be setup after the container is configured, which is the
-        # point at which any component dirs from other slices are added to the autoloader
-        app = self
-        container.after(:configure) do
-          app.send(:prepare_app_autoloader)
-        end
       end
 
-      # Skip standard slice prepare steps that do not apply to the app slice
+      # Skip standard slice prepare steps that do not apply to the app
       def prepare_container_component_dirs; end
       def prepare_container_imports; end
 
@@ -122,7 +113,7 @@ module Hanami
         register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
       end
 
-      def prepare_app_autoloader
+      def prepare_autoloader
         # Component dirs are automatically pushed to the autoloader by dry-system's
         # zeitwerk plugin. This method adds other dirs that are not otherwise configured
         # as component dirs.

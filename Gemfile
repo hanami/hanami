@@ -16,6 +16,8 @@ gem "hanami-view",       github: "hanami/view",       branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
+gem "dry-types", "~> 1.0"
+
 group :test do
   gem "dotenv"
   gem "saharspec"

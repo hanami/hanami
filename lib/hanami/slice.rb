@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require "dry/system/container"
+require "zeitwerk"
 require_relative "constants"
 require_relative "errors"
 require_relative "slice_name"
 require_relative "slice_registrar"
+require_relative "providers/settings"
 
 module Hanami
   # A slice represents any distinct area of concern within an Hanami app.
@@ -40,6 +42,7 @@ module Hanami
       @_mutex.synchronize do
         subclass.class_eval do
           @_mutex = Mutex.new
+          @autoloader = Zeitwerk::Loader.new
           @container = Class.new(Dry::System::Container)
         end
       end
@@ -47,7 +50,7 @@ module Hanami
 
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
-      attr_reader :parent, :container
+      attr_reader :parent, :autoloader, :container
 
       def app
         Hanami.app
@@ -178,10 +181,6 @@ module Hanami
         end
       end
 
-      def settings
-        @settings ||= load_settings
-      end
-
       def routes
         @routes ||= load_routes
       end
@@ -222,6 +221,15 @@ module Hanami
         instance_exec(container, &@prepare_container_block) if @prepare_container_block
         container.configured!
 
+        prepare_autoloader
+
+        ensure_prepared
+
+        # Load child slices last, ensuring their parent is fully prepared beforehand
+        # (useful e.g. for slices that may wish to access constants defined in the
+        # parent's autoloaded directories)
+        prepare_slices
+
         @prepared = true
 
         self
@@ -248,19 +256,18 @@ module Hanami
         end
       end
 
-      def prepare_all
-        # Load settings first, to fail early in case of missing/unexpected values
-        settings
+      def ensure_prepared
+        # Load settings so we can fail early in case of non-conformant values
+        self[:settings] if key?(:settings)
+      end
 
+      def prepare_all
         prepare_container_consts
         prepare_container_plugins
         prepare_container_base_config
         prepare_container_component_dirs
         prepare_container_imports
         prepare_container_providers
-        prepare_autoloader
-
-        prepare_slices
       end
 
       def prepare_container_plugins
@@ -268,7 +275,7 @@ module Hanami
 
         container.use(
           :zeitwerk,
-          loader: app.autoloader,
+          loader: autoloader,
           run_setup: false,
           eager_load: false
         )
@@ -309,7 +316,6 @@ module Hanami
           dir.auto_register = -> component {
             relative_path = component.file_path.relative_path_from(root).to_s
             !relative_path.start_with?(*no_auto_register_paths)
-
           }
         end
       end
@@ -328,21 +334,29 @@ module Hanami
         # point we're still in the process of preparing.
         if routes
           require_relative "providers/routes"
-          register_provider(:routes, source: Hanami::Providers::Routes.for_slice(self))
+          register_provider(:routes, source: Providers::Routes.for_slice(self))
         end
 
-        if settings
-          require_relative "providers/settings"
-          register_provider(:settings, source: Hanami::Providers::Settings.for_slice(self))
-        end
+        Providers::Settings.register_with_slice(self)
       end
 
       def prepare_autoloader
-        # Everything in the slice directory can be autoloaded _except_ `config/`, which is
-        # where we keep files loaded specially by the framework as part of slice setup.
+        # Component dirs are automatically pushed to the autoloader by dry-system's
+        # zeitwerk plugin. This method adds other dirs that are not otherwise configured
+        # as component dirs.
+
+        # Everything in the slice root can be autoloaded except `config/` and `slices/`,
+        # which are framework-managed directories
+
         if root.join(CONFIG_DIR)&.directory?
-          container.config.autoloader.ignore(root.join(CONFIG_DIR))
+          autoloader.ignore(root.join(CONFIG_DIR))
         end
+
+        if root.join(SLICES_DIR)&.directory?
+          autoloader.ignore(root.join(SLICES_DIR))
+        end
+
+        autoloader.setup
       end
 
       def prepare_container_consts
@@ -353,26 +367,6 @@ module Hanami
       def prepare_slices
         slices.load_slices.each(&:prepare)
         slices.freeze
-      end
-
-      def load_settings
-        if root.directory?
-          settings_require_path = File.join(root, SETTINGS_PATH)
-
-          begin
-            require_relative "./settings"
-            require settings_require_path
-          rescue LoadError => e
-            raise e unless e.path == settings_require_path
-          end
-        end
-
-        begin
-          settings_class = namespace.const_get(SETTINGS_CLASS_NAME)
-          settings_class.new(configuration.settings_store)
-        rescue NameError => e
-          raise e unless e.name == SETTINGS_CLASS_NAME.to_sym
-        end
       end
 
       def load_routes
