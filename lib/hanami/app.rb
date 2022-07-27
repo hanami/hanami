@@ -104,6 +104,8 @@ module Hanami
       #
       # If dotenv is unavailable, the method exits and does nothing.
       def load_dotenv
+        return unless Hanami.bundled?("dotenv")
+
         hanami_env = Hanami.env
         dotenv_files = [
           ".env.#{hanami_env}.local",
@@ -113,9 +115,7 @@ module Hanami
         ].compact
 
         require "dotenv"
-        Dotenv.load(*dotenv_files) if defined?(Dotenv)
-      rescue LoadError => e
-        raise e unless e.path == "dotenv"
+        Dotenv.load(*dotenv_files)
       end
 
       def prepare_all

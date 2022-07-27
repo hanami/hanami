@@ -108,11 +108,8 @@ RSpec.describe "Dotenv loading", :app_integration do
 
   context "dotenv gem is unavailable" do
     before do
-      allow_any_instance_of(Hanami::App.class).to receive(:require).and_call_original
-      allow_any_instance_of(Hanami::App.class).to receive(:require).with("dotenv").and_raise(
-        # Ruby won't let us create a LoadError with a specific path, so stub the method instead
-        LoadError.new.tap { |e| allow(e).to receive(:path) { "dotenv" } }
-      )
+      allow_any_instance_of(Object).to receive(:gem).and_call_original
+      allow_any_instance_of(Object).to receive(:gem).with("dotenv").and_raise(Gem::LoadError)
     end
 
     it "does not load from .env files" do
