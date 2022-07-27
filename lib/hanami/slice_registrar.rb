@@ -6,6 +6,8 @@ require_relative "slice"
 module Hanami
   # @api private
   class SliceRegistrar
+    SLICE_DELIMITER = CONTAINER_KEY_DELIMITER
+
     attr_reader :parent, :slices
     private :parent, :slices
 
@@ -75,16 +77,12 @@ module Hanami
 
     private
 
-    def filter_slice_names(slice_names)
-      slice_names = slice_names.map(&:to_s)
+    def root
+      parent.root
+    end
 
-      if parent.config.slices.load_slices
-        slice_names & parent.config.slices.load_slices.map(&:to_s)
-      elsif parent.config.slices.skip_slices
-        slice_names - parent.config.slices.skip_slices.map(&:to_s)
-      else
-        slice_names
-      end
+    def inflector
+      parent.inflector
     end
 
     # Runs when a slice file has been found at `config/slices/[slice_name].rb`, or a slice
@@ -127,14 +125,76 @@ module Hanami
 
       # Slices require a root, so provide a sensible default based on the slice's parent
       slice.config.root ||= root.join(SLICES_DIR, slice_name.to_s)
+
+      slice.config.slices.load_slices = child_slice_names(slice_name, parent.config.slices.load_slices)
+      slice.config.slices.skip_slices = child_slice_names(slice_name, parent.config.slices.skip_slices)
     end
 
-    def root
-      parent.root
+    # Returns a filtered array of slice names based on the parent's `load_slices` or `skip_slices`
+    # config.
+    #
+    # This works with both singular slice names (e.g. `"admin"`) as well as dot-delimited nested
+    # slice names (e.g. `"admin.shop"`).
+    #
+    # When using the `load_slices` config, it will consider only the base names of the slices (since
+    # in this case, a parent slice must be loaded in order for its children to be laoded).
+    #
+    # @example using `config.slices.load_slices`
+    #   parent.config.slices.load_slices # => ["admin.shop"]
+    #   filter_slice_names(["admin", "main"]) # => ["admin"]
+    #
+    #   parent.config.slices.load_slices # => ["admin"]
+    #   filter_slice_names(["admin", "main"]) # => ["admin"]
+    #
+    # When using the `skip_slices` config, it will match exact slice names only (since skipping a
+    # nested slice does not necessarily imply that its parent should also be skipped).
+    #
+    # @example using `config.slices.skip_slices`
+    #   parent.config.skip_slices # => ["admin.shop"]
+    #   filter_slice_names(["admin", "main"]) # => ["admin", "main"]
+    #
+    #   parent.config.skp_slices # => ["admin"]
+    #   filter_slice_names(["admin", "main"]) # => ["main"]
+    #
+    # In the case of both `load_slices` and `skip_slices` config, it prefers `load_slices`.
+    #
+    # @example using both `config.slices.load_slices` and `skip_slices`
+    #   parent.config.slices.load_slices # => ["main"]
+    #   parent.config.slices.skip_slices # => ["main"]
+    #   filter_slice_names(["admin", "main"]) # => ["main"]
+    def filter_slice_names(slice_names)
+      slice_names = slice_names.map(&:to_s)
+
+      if parent.config.slices.load_slices
+        slice_names & parent.config.slices.load_slices.map { base_slice_name(_1) }
+      elsif parent.config.slices.skip_slices
+        slice_names - parent.config.slices.skip_slices
+      else
+        slice_names
+      end
     end
 
-    def inflector
-      parent.inflector
+    # Returns the base slice name from an (optionally) dot-delimited nested slice name.
+    #
+    # @example
+    #   base_slice_name("admin") # => "admin"
+    #   base_slice_name("admin.users") # => "admin"
+    def base_slice_name(name)
+      name.to_s.split(SLICE_DELIMITER).first
+    end
+
+    # Returns an array of slice names specific to the given child slice.
+    #
+    # @example
+    #   child_local_slice_names("admin", ["main", "admin.users"]) # => ["users"]
+    def child_slice_names(parent_slice_name, slice_names)
+      slice_names
+        &.select { |name|
+          name.include?(SLICE_DELIMITER) && name.split(SLICE_DELIMITER)[0] == parent_slice_name.to_s
+        }
+        &.map { |name|
+          name.split(SLICE_DELIMITER)[1..].join(SLICE_DELIMITER) # which version of Ruby supports this?
+        }
     end
   end
 end

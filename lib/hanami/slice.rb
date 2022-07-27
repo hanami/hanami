@@ -56,9 +56,8 @@ module Hanami
         Hanami.app
       end
 
-      # A slice's configuration is copied from the app configuration at time of
-      # first access. The app should have its configuration completed before
-      # slices are loaded.
+      # A slice's configuration is copied from the app configuration at time of first access. The
+      # app should have its configuration completed before slices are loaded.
       def configuration
         @configuration ||= app.configuration.dup.tap do |config|
           # Remove specific values from app that will not apply to this slice
