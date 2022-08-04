@@ -57,9 +57,11 @@ The web, with simplicity.
 - [Luca Guidi] `Hanami.application` -> `Hanami.app`
 - [Luca Guidi] `config/application.rb` -> `config/app.rb`
 - [Luca Guidi] Remove `::Application::` namespace in public API class names (e.g. `Hanami::Application::Routes` -> `Hanami::Routes`) [#1172]
+- [Tim Riley] Removed `Hanami::Configuration#source_dirs` due to the new autoloading and auto-registration features [#1174]
 - [Tim Riley] Removed `Hanami::Configuration#settings_path`, `#settings_class_name` [#1175]
 - [Tim Riley] Removed `Hanami::Configuration::Router#routes_path`, and `#routes_class_name` [#1175]
 - [Tim Riley] Make `Hanami::App` to inherit from `Hanami::Slice` [#1162]
+
 
 ## v2.0.0.alpha8 - 2022-05-19
 
