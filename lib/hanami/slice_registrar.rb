@@ -6,6 +6,8 @@ require_relative "slice"
 module Hanami
   # @api private
   class SliceRegistrar
+    SLICE_DELIMITER = CONTAINER_KEY_DELIMITER
+
     attr_reader :parent, :slices
     private :parent, :slices
 
@@ -15,6 +17,8 @@ module Hanami
     end
 
     def register(name, slice_class = nil, &block)
+      return unless filter_slice_names([name]).any?
+
       if slices.key?(name.to_sym)
         raise SliceLoadError, "Slice '#{name}' is already registered"
       end
@@ -49,7 +53,10 @@ module Hanami
         .select { |path| File.directory?(path) }
         .map { |path| File.basename(path) }
 
-      (slice_dirs + slice_configs).uniq.sort.each do |slice_name|
+      slice_names = (slice_dirs + slice_configs).uniq.sort
+        .then { filter_slice_names(_1) }
+
+      slice_names.each do |slice_name|
         load_slice(slice_name)
       end
 
@@ -60,11 +67,23 @@ module Hanami
       slices.each_value(&block)
     end
 
+    def keys
+      slices.keys
+    end
+
     def to_a
       slices.values
     end
 
     private
+
+    def root
+      parent.root
+    end
+
+    def inflector
+      parent.inflector
+    end
 
     # Runs when a slice file has been found at `config/slices/[slice_name].rb`, or a slice
     # directory at `slices/[slice_name]`. Attempts to require the slice class, if defined,
@@ -106,14 +125,55 @@ module Hanami
 
       # Slices require a root, so provide a sensible default based on the slice's parent
       slice.config.root ||= root.join(SLICES_DIR, slice_name.to_s)
+
+      slice.config.slices = child_slice_names(slice_name, parent.config.slices)
     end
 
-    def root
-      parent.root
+    # Returns a filtered array of slice names based on the parent's `config.slices`
+    #
+    # This works with both singular slice names (e.g. `"admin"`) as well as dot-delimited nested
+    # slice names (e.g. `"admin.shop"`).
+    #
+    # It will consider only the base names of the slices (since in this case, a parent slice must be
+    # loaded in order for its children to be loaded).
+    #
+    # @example
+    #   parent.config.slices # => ["admin.shop"]
+    #   filter_slice_names(["admin", "main"]) # => ["admin"]
+    #
+    #   parent.config.slices # => ["admin"]
+    #   filter_slice_names(["admin", "main"]) # => ["admin"]
+    def filter_slice_names(slice_names)
+      slice_names = slice_names.map(&:to_s)
+
+      if parent.config.slices
+        slice_names & parent.config.slices.map { base_slice_name(_1) }
+      else
+        slice_names
+      end
     end
 
-    def inflector
-      parent.inflector
+    # Returns the base slice name from an (optionally) dot-delimited nested slice name.
+    #
+    # @example
+    #   base_slice_name("admin") # => "admin"
+    #   base_slice_name("admin.users") # => "admin"
+    def base_slice_name(name)
+      name.to_s.split(SLICE_DELIMITER).first
+    end
+
+    # Returns an array of slice names specific to the given child slice.
+    #
+    # @example
+    #   child_local_slice_names("admin", ["main", "admin.users"]) # => ["users"]
+    def child_slice_names(parent_slice_name, slice_names)
+      slice_names
+        &.select { |name|
+          name.include?(SLICE_DELIMITER) && name.split(SLICE_DELIMITER)[0] == parent_slice_name.to_s
+        }
+        &.map { |name|
+          name.split(SLICE_DELIMITER)[1..].join(SLICE_DELIMITER) # which version of Ruby supports this?
+        }
     end
   end
 end

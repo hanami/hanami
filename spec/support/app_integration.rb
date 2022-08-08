@@ -20,7 +20,7 @@ module RSpec
 end
 
 RSpec.shared_context "Application integration" do
-  let(:application_modules) { %i[TestApp Admin Main Search] }
+  let(:app_modules) { %i[TestApp Admin Main Search] }
 end
 
 RSpec.configure do |config|
@@ -67,7 +67,7 @@ RSpec.configure do |config|
     }
     $LOADED_FEATURES.replace(@loaded_features + new_features_to_keep)
 
-    application_modules.each do |app_module_name|
+    app_modules.each do |app_module_name|
       next unless Object.const_defined?(app_module_name)
 
       Object.const_get(app_module_name).tap do |mod|

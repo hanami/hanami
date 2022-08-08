@@ -29,16 +29,16 @@ module Hanami
 
     setting :settings_store, default: Hanami::Settings::EnvStore.new
 
-    setting :slices do
-      setting :shared_component_keys, default: %w[
-        inflector
-        logger
-        notifications
-        rack.monitor
-        routes
-        settings
-      ]
-    end
+    setting :shared_app_component_keys, default: %w[
+      inflector
+      logger
+      notifications
+      rack.monitor
+      routes
+      settings
+    ]
+
+    setting :slices
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: ->(url) { URI(url) }
 
@@ -100,9 +100,9 @@ module Hanami
       @environments = DEFAULT_ENVIRONMENTS.clone
       @env = env
 
-      # Some default setting values must be assigned at initialize-time to ensure they
-      # have appropriate values for the current app
+      # Apply default values that are only knowable at initialize-time (vs require-time)
       self.root = Dir.pwd
+      load_from_env
 
       config.logger = Configuration::Logger.new(env: env, app_name: app_name)
 
@@ -198,14 +198,16 @@ module Hanami
 
     private
 
-    # @api private
+    def load_from_env
+      self.slices = ENV["HANAMI_SLICES"]&.split(",")&.map(&:strip)
+    end
+
     def apply_env_config(env = self.env)
       environments[env].each do |block|
         instance_eval(&block)
       end
     end
 
-    # @api private
     def load_dependent_config(require_path, &block)
       require require_path
       yield
@@ -216,7 +218,6 @@ module Hanami
       NullConfiguration.new
     end
 
-    # @api private
     def method_missing(name, *args, &block)
       if config.respond_to?(name)
         config.public_send(name, *args, &block)
@@ -225,7 +226,6 @@ module Hanami
       end
     end
 
-    # @api private
     def respond_to_missing?(name, _incude_all = false)
       config.respond_to?(name) || super
     end
