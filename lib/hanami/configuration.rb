@@ -38,10 +38,7 @@ module Hanami
       settings
     ]
 
-    setting :slices do
-      setting :load_slices
-      setting :skip_slices
-    end
+    setting :slices
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: ->(url) { URI(url) }
 
@@ -202,8 +199,7 @@ module Hanami
     private
 
     def load_from_env
-      slices.load_slices = ENV["HANAMI_LOAD_SLICES"]&.split(",")&.map(&:strip)
-      slices.skip_slices = ENV["HANAMI_SKIP_SLICES"]&.split(",")&.map(&:strip)
+      self.slices = ENV["HANAMI_SLICES"]&.split(",")&.map(&:strip)
     end
 
     def apply_env_config(env = self.env)

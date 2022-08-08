@@ -126,49 +126,28 @@ module Hanami
       # Slices require a root, so provide a sensible default based on the slice's parent
       slice.config.root ||= root.join(SLICES_DIR, slice_name.to_s)
 
-      slice.config.slices.load_slices = child_slice_names(slice_name, parent.config.slices.load_slices)
-      slice.config.slices.skip_slices = child_slice_names(slice_name, parent.config.slices.skip_slices)
+      slice.config.slices = child_slice_names(slice_name, parent.config.slices)
     end
 
-    # Returns a filtered array of slice names based on the parent's `load_slices` or `skip_slices`
-    # config.
+    # Returns a filtered array of slice names based on the parent's `config.slices`
     #
     # This works with both singular slice names (e.g. `"admin"`) as well as dot-delimited nested
     # slice names (e.g. `"admin.shop"`).
     #
-    # When using the `load_slices` config, it will consider only the base names of the slices (since
-    # in this case, a parent slice must be loaded in order for its children to be laoded).
+    # It will consider only the base names of the slices (since in this case, a parent slice must be
+    # loaded in order for its children to be loaded).
     #
-    # @example using `config.slices.load_slices`
-    #   parent.config.slices.load_slices # => ["admin.shop"]
+    # @example
+    #   parent.config.slices # => ["admin.shop"]
     #   filter_slice_names(["admin", "main"]) # => ["admin"]
     #
-    #   parent.config.slices.load_slices # => ["admin"]
+    #   parent.config.slices # => ["admin"]
     #   filter_slice_names(["admin", "main"]) # => ["admin"]
-    #
-    # When using the `skip_slices` config, it will match exact slice names only (since skipping a
-    # nested slice does not necessarily imply that its parent should also be skipped).
-    #
-    # @example using `config.slices.skip_slices`
-    #   parent.config.skip_slices # => ["admin.shop"]
-    #   filter_slice_names(["admin", "main"]) # => ["admin", "main"]
-    #
-    #   parent.config.skp_slices # => ["admin"]
-    #   filter_slice_names(["admin", "main"]) # => ["main"]
-    #
-    # In the case of both `load_slices` and `skip_slices` config, it prefers `load_slices`.
-    #
-    # @example using both `config.slices.load_slices` and `skip_slices`
-    #   parent.config.slices.load_slices # => ["main"]
-    #   parent.config.slices.skip_slices # => ["main"]
-    #   filter_slice_names(["admin", "main"]) # => ["main"]
     def filter_slice_names(slice_names)
       slice_names = slice_names.map(&:to_s)
 
-      if parent.config.slices.load_slices
-        slice_names & parent.config.slices.load_slices.map { base_slice_name(_1) }
-      elsif parent.config.slices.skip_slices
-        slice_names - parent.config.slices.skip_slices
+      if parent.config.slices
+        slice_names & parent.config.slices.map { base_slice_name(_1) }
       else
         slice_names
       end
