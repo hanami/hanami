@@ -29,18 +29,18 @@ module Hanami
 
     setting :settings_store, default: Hanami::Settings::EnvStore.new
 
+    setting :shared_app_component_keys, default: %w[
+      inflector
+      logger
+      notifications
+      rack.monitor
+      routes
+      settings
+    ]
+
     setting :slices do
       setting :load_slices
       setting :skip_slices
-
-      setting :shared_app_component_keys, default: %w[
-        inflector
-        logger
-        notifications
-        rack.monitor
-        routes
-        settings
-      ]
     end
 
     setting :base_url, default: "http://0.0.0.0:2300", constructor: ->(url) { URI(url) }

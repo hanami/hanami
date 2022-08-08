@@ -321,7 +321,7 @@ module Hanami
 
       def prepare_container_imports
         import(
-          keys: config.slices.shared_app_component_keys,
+          keys: config.shared_app_component_keys,
           from: app.container,
           as: nil
         )
