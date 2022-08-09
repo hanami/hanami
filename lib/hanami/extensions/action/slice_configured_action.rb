@@ -48,7 +48,50 @@ module Hanami
 
         def configure_action(action_class)
           action_class.config.settings.each do |setting|
-            action_class.config.public_send :"#{setting}=", actions_config.public_send(:"#{setting}")
+            # Configure the action from config on the slice, _unless it has already been configured
+            # by a parent slice_, and re-configuring it for this slice would make no change.
+            #
+            # In the case of most slices, its actions config is likely to be the same as its parent
+            # (since each slice copies its `config` from its parent), and if we re-apply the config
+            # here, then it may possibly overwrite config customisations explicitly made in parent
+            # action classes.
+            #
+            # For example, given an app-level base action class, with custom config:
+            #
+            #   module MyApp
+            #     class Action < Hanami::Action
+            #       config.default_response_format = :json
+            #     end
+            #   end
+            #
+            # And then an action in a slice inheriting from it:
+            #
+            #   module MySlice
+            #     module Actions
+            #       class SomeAction < MyApp::Action
+            #       end
+            #     end
+            #   end
+            #
+            # In this case, `SliceConfiguredAction` will be extended two times:
+            #
+            # 1. When `MyApp::Action` is defined
+            # 2. Again when `MySlice::Actions::SomeAction` is defined
+            #
+            # If we blindly re-configure all action settings each time `SliceConfiguredAction` is
+            # extended, then at the point of (2) above, we'd end up overwriting the custom
+            # `config.default_response_format` explicitly configured in the `MyApp::Action` base
+            # class, leaving `MySlice::Actions::SomeAction` with `config.default_response_format` of
+            # `:html` (the default at `Hanami.app.config.actions.default_response_format`), and not
+            # the `:json` value configured in its immediate superclass.
+            #
+            # This would be surprising behavior, and we want to avoid it.
+            slice_value = slice.config.actions.public_send(:"#{setting}")
+            parent_value = slice.parent.config.actions.public_send(:"#{setting}") if slice.parent
+
+            next if slice.parent && slice_value == parent_value
+
+            action_class.config.public_send(:"#{setting}=", slice_value)
           end
         end
 
