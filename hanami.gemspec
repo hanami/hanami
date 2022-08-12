@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "bundler",          ">= 1.16", "< 3"
   spec.add_dependency "dry-configurable", "~> 0.15"
-  spec.add_dependency "dry-core",         "~> 0.7"
+  spec.add_dependency "dry-core",         "0.8.1"
   spec.add_dependency "dry-inflector",    "~> 0.2", ">= 0.2.1"
   spec.add_dependency "dry-system",       "~> 0.25", ">= 0.25.0"
   spec.add_dependency "dry-monitor",      "~> 0.6", ">= 0.6.0"
