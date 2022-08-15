@@ -9,6 +9,24 @@ module Hanami
   @_mutex = Mutex.new
   @_bundled = {}
 
+  # @api private
+  def self.setup
+    return if app?
+
+    require_relative "hanami/detect_app"
+    app_path = DetectApp.call
+
+    if app_path
+      require app_path
+    else
+      raise(
+        Hanami::AppLoadError, \
+        "Could not locate your Hanami app file.\n\n" \
+        "Your app file should be at `config/app.rb` in your project's root directory."
+      )
+    end
+  end
+
   def self.app
     @_mutex.synchronize do
       unless defined?(@_app)
