@@ -8,6 +8,8 @@ module Hanami
       def prepare
         require "dry/monitor"
         require "hanami/web/rack_logger"
+
+        Dry::Monitor.load_extensions(:rack)
       end
 
       def start
