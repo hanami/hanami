@@ -2,7 +2,78 @@
 
 The web, with simplicity.
 
+## v2.0.0.beta2 - 2022-08-16
+
+### Added
+
+- [Tim Riley] Added `config.slices` setting to specify a list of slices to load. This may also be set via a comma-separated string in the `HANAMI_SLICES` env var. [#1189]
+
+  This is useful when only certain parts of your application are required for particular workloads. Specifying those slices directly improves boot time and minimizes memory usage, as well as ensuring clean boundaries between your slices.
+
+  For example, given an app with both `blog`, `shop` and `admin` slices, you can specify only the first two to load:
+
+  ```ruby
+  # config/app.rb
+
+  module AppName
+    class App < Hanami::App
+      config.slices = %w[blog shop]
+    end
+  end
+  ```
+
+  Or by setting `HANAMI_SLICES=blog,shop` in the env.
+
+  You can also specify arbitrarily nested slices using dot delimiters. For example, if you have an `admin` slice with nested `shop` and `blog` slices, you can specify `config.slices = %w[admin.shop]` to only load the admin slice and its nested shop slice.
+- [Tim Riley] Added `App.prepare_load_path`, which need only be called if you explicitly change your app's `config.root`. The `$LOAD_PATH` is otherwise still prepared automatically for the default `root` of `Dir.pwd`. [#1188]
+- [Marc Busqué, Tim Riley] Added `Hanami.setup` to find and load your Hanami app file (expected at `config/app.rb`). This will search in the current directory, and will search upwards through parent directories until the app file is found. [#1197]
+
+  This behavior allows `Hanami.setup` (and its counterpart convenience require, `require "hanami/setup"`) to work even when called
+  from a nested directory within your Hanami app.
+
+  Also added `Hanami.app_path`, returning the absolute path of the app file, if found.
+
+### Changed
+
+- [Tim Riley] Allow access to autoloaded constants from within `config/settings.rb` [#1186]
+
+  New Hanami apps generate a types module at `lib/[app_name]/types.rb`. Now you can access it within your settings class to type check your settings, e.g.
+
+  ```ruby
+  # config/settings.rb
+
+  module AppName
+    class Settings < Hanami::Settings
+      # By default, AppName::Types is defined at `lib/[app_name]/types.rb`, and can be autoloaded here
+      setting :some_flag, constructor: Types::Params::Bool
+    end
+  end
+  ```
+
+  For settings defined within a slice, you can access types (or any constant) defined within the slice:
+
+  ```ruby
+  # slices/slice_name/config/settings.rb
+
+  module SliceName
+    class Settings < Hanami::Settings
+      # SliceName::Types is expected to be defined at `slices/[slice_name]/types.rb`
+      setting :some_slice_flag, constructor: Types::Params::bool
+    end
+  end
+  ```
+- [Tim Riley] Every slice has a distinct `Zeitwerk::Loader` instance at `Slice.autoloader`. This change enabled the autoloading within settings described above. [#1186]
+- [Tim Riley] `Slice.settings` reader method has been removed. Access settings via `App["settings"]` or `Slice["settings"]` (after the slice has been prepared) instead. [#1186]
+- [Tim Riley] dry-types is no longer a dependency specified in the gemspec. This is made available to generated app via a line in their `Gemfile` instead. [#1186]
+
+### Fixed
+
+- [Tim Riley] `config` explicitly set in `Hanami::Action` or `Hanami::View` base classes (either app- or slice-level) is no longer overridden by slice-level configuration [#1193]
+- [Nikita Shilnikov] Load dry-monitor rack extension explicitly to avoid autoloading errors [#1198] [#1199]
+
 ## v2.0.0.beta1.1 - 2022-07-22
+
+### Changed
 
 - [Andrew Croome] Specified 2.0.0.beta dependencies for hanami-cli and hanami-utils (to prefer these over previously installed alpha versions) [#1187]
 
