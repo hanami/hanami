@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "rack/builder"
-
 module Hanami
   class Slice
     module Routing
@@ -94,6 +92,12 @@ module Hanami
           # @since 2.0.0
           # @api private
           def to_rack_app(app)
+            unless Hanami.bundled?("rack")
+              raise "Add \"rack\" to your `Gemfile` to run Hanami as a rack app"
+            end
+
+            require "rack/builder"
+
             s = self
 
             Rack::Builder.new do
