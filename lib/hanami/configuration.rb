@@ -208,7 +208,8 @@ module Hanami
       end
     end
 
-    def load_dependent_config(require_path, &block)
+    # @api private
+    def load_dependent_config(require_path)
       require require_path
       yield
     rescue LoadError => e

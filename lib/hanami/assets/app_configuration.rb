@@ -7,7 +7,7 @@ module Hanami
   module Assets
     # @since 2.0.0
     # @api public
-    class ApplicationConfiguration
+    class AppConfiguration
       include Dry::Configurable
 
       # @since 2.0.0

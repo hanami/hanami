@@ -36,10 +36,15 @@ module Hanami
 
             super(subclass)
 
+            subclass.instance_variable_set(:@configured_for_slices, configured_for_slices.dup)
+
             slice = slice_for.(subclass)
             return unless slice
 
-            subclass.configure_for_slice(slice)
+            unless subclass.configured_for_slice?(slice)
+              subclass.configure_for_slice(slice)
+              subclass.configured_for_slices << slice # WIP
+            end
           end
         end
 
@@ -58,5 +63,13 @@ module Hanami
     end
 
     def configure_for_slice(slice); end
+
+    def configured_for_slice?(slice)
+      configured_for_slices.include?(slice)
+    end
+
+    def configured_for_slices
+      @configured_for_slices ||= []
+    end
   end
 end
