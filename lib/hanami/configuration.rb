@@ -9,7 +9,6 @@ require "pathname"
 
 require_relative "constants"
 require_relative "configuration/logger"
-require_relative "configuration/router"
 require_relative "configuration/sessions"
 require_relative "settings/env_store"
 require_relative "slice/routing/middleware/stack"
@@ -115,9 +114,11 @@ module Hanami
         Actions.new
       }
 
-      @middleware = Slice::Routing::Middleware::Stack.new
-
-      @router = Router.new(self)
+      @router = load_dependent_config("hanami/router") {
+        require_relative "configuration/router"
+        @middleware = Slice::Routing::Middleware::Stack.new
+        Router.new(self)
+      }
 
       @views = load_dependent_config("hanami/view") {
         require_relative "configuration/views"
