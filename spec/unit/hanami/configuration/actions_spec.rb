@@ -11,7 +11,7 @@ RSpec.describe Hanami::Configuration, "#actions" do
   subject(:actions) { configuration.actions }
 
   context "Hanami::Action available" do
-    it "is a full actions configuration" do
+    it "exposes Hanami::Action's app configuration" do
       is_expected.to be_an_instance_of(Hanami::Configuration::Actions)
 
       is_expected.to respond_to(:default_response_format)
@@ -65,14 +65,8 @@ RSpec.describe Hanami::Configuration, "#actions" do
         .and_raise load_error
     end
 
-    it "does not expose any settings" do
-      is_expected.not_to be_an_instance_of(Hanami::Configuration::Actions)
-      is_expected.not_to respond_to(:default_response_format)
-      is_expected.not_to respond_to(:default_response_format=)
-    end
-
-    it "can be finalized" do
-      is_expected.to respond_to(:finalize!)
+    it "raises an error" do
+      expect { subject }.to raise_error(described_class::ComponentNotAvailable, "`hanami/action` is not available")
     end
   end
 end

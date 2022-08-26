@@ -107,14 +107,8 @@ RSpec.describe Hanami::Configuration, "#views" do
         .and_raise load_error
     end
 
-    it "does not expose any settings" do
-      is_expected.not_to be_an_instance_of(Hanami::Configuration::Views)
-      is_expected.not_to respond_to(:layouts_dir)
-      is_expected.not_to respond_to(:layouts_dir=)
-    end
-
-    it "can be finalized" do
-      is_expected.to respond_to(:finalize!)
+    it "raises an error" do
+      expect { subject }.to raise_error(described_class::ComponentNotAvailable, "`hanami/view` is not available")
     end
   end
 end

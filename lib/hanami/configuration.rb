@@ -20,6 +20,9 @@ module Hanami
   class Configuration
     include Dry::Configurable
 
+    # @api private
+    class ComponentNotAvailable < RuntimeError; end
+
     setting :root, constructor: ->(path) { Pathname(path) if path }
 
     setting :no_auto_register_paths, default: %w[entities]
@@ -216,8 +219,7 @@ module Hanami
     rescue LoadError => e
       raise e unless e.path == require_path
 
-      require_relative "configuration/null_configuration"
-      NullConfiguration.new
+      raise ComponentNotAvailable, "`#{require_path}` is not available"
     end
 
     def method_missing(name, *args, &block)
