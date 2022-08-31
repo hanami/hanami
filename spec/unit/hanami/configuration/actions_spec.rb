@@ -10,7 +10,7 @@ RSpec.describe Hanami::Configuration, "#actions" do
 
   subject(:actions) { configuration.actions }
 
-  context "Hanami::Action available" do
+  context "hanami-controller is bundled" do
     it "exposes Hanami::Action's app configuration" do
       is_expected.to be_an_instance_of(Hanami::Configuration::Actions)
 
@@ -48,25 +48,14 @@ RSpec.describe Hanami::Configuration, "#actions" do
     end
   end
 
-  context "Hanami::Action not available" do
+  context "hanami-action is not bundled" do
     before do
-      load_error = LoadError.new.tap do |error|
-        error.instance_variable_set :@path, "hanami/action"
-      end
-
-      allow_any_instance_of(described_class)
-        .to receive(:require)
-        .with(anything)
-        .and_call_original
-
-      allow_any_instance_of(described_class)
-        .to receive(:require)
-        .with("hanami/action")
-        .and_raise load_error
+      allow(Hanami).to receive(:bundled?).and_call_original
+      allow(Hanami).to receive(:bundled?).with("hanami-controller").and_return(false)
     end
 
     it "raises an error" do
-      expect { subject }.to raise_error(described_class::ComponentNotAvailable, "`hanami/action` is not available")
+      expect { subject }.to raise_error(described_class::ComponentNotAvailable, /add hanami-controller to your Gemfile to configure config.actions/)
     end
   end
 end

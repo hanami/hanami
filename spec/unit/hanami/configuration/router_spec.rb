@@ -29,23 +29,12 @@ RSpec.describe Hanami::Configuration, "#router" do
 
   context "Hanami::Router not available" do
     before do
-      load_error = LoadError.new.tap do |error|
-        error.instance_variable_set :@path, "hanami/router"
-      end
-
-      allow_any_instance_of(described_class)
-        .to receive(:require)
-        .with(anything)
-        .and_call_original
-
-      allow_any_instance_of(described_class)
-        .to receive(:require)
-        .with("hanami/router")
-        .and_raise load_error
+      allow(Hanami).to receive(:bundled?).and_call_original
+      allow(Hanami).to receive(:bundled?).with("hanami-router").and_return(false)
     end
 
     it "raises an error" do
-      expect { subject }.to raise_error(described_class::ComponentNotAvailable, "`hanami/router` is not available")
+      expect { subject }.to raise_error(described_class::ComponentNotAvailable, /add hanami-router to your Gemfile to configure config.router/)
     end
   end
 end
