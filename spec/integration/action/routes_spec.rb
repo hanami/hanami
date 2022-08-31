@@ -14,12 +14,10 @@ RSpec.describe "App action / Routes", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              root to: "home.index"
+            root to: "home.index"
 
-              slice :admin, at: "/admin" do
-                root to: "dashboard.index"
-              end
+            slice :admin, at: "/admin" do
+              root to: "dashboard.index"
             end
           end
         end

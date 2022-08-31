@@ -64,10 +64,8 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class Routes < Hanami::Routes
-          define do
-            slice :main, at: "/" do
-              root to: "home.index"
-            end
+          slice :main, at: "/" do
+            root to: "home.index"
           end
         end
       end
@@ -113,14 +111,12 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class Routes < Hanami::Routes
-          define do
-            slice :main, at: "/" do
-              use TestApp::Middlewares::AppendOne
-              use TestApp::Middlewares::Prepare, before: TestApp::Middlewares::AppendOne
-              use TestApp::Middlewares::AppendTwo, after: TestApp::Middlewares::AppendOne
+          slice :main, at: "/" do
+            use TestApp::Middlewares::AppendOne
+            use TestApp::Middlewares::Prepare, before: TestApp::Middlewares::AppendOne
+            use TestApp::Middlewares::AppendTwo, after: TestApp::Middlewares::AppendOne
 
-              root to: "home.index"
-            end
+            root to: "home.index"
           end
         end
       end
@@ -180,10 +176,8 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class Routes < Hanami::Routes
-          define do
-            slice :main, at: "/" do
-              root to: "home.index"
-            end
+          slice :main, at: "/" do
+            root to: "home.index"
           end
         end
       end
