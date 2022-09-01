@@ -8,7 +8,7 @@ require "hanami/devtools/rake_tasks"
 namespace :spec do
   RSpec::Core::RakeTask.new(:unit) do |task|
     file_list = FileList["spec/**/*_spec.rb"]
-    file_list = file_list.exclude("spec/{integration,isolation}/**/*_spec.rb")
+    file_list = file_list.exclude("spec/{isolation}/**/*_spec.rb")
 
     task.pattern = file_list
   end
