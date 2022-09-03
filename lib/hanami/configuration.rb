@@ -214,11 +214,15 @@ module Hanami
 
     # @api private
     def load_dependent_config(gem_name, config_method)
-      raise ComponentNotAvailable, <<~MSG unless Hanami.bundled?(gem_name)
-        You must add #{gem_name} to your Gemfile to configure config.#{config_method}
-      MSG
-
-      yield
+      if Hanami.bundled?(gem_name)
+        yield
+      else
+        define_method(config_method) do
+          raise ComponentNotAvailable, <<~MSG
+            You must add #{gem_name} to your Gemfile to configure config.#{config_method}
+          MSG
+        end
+      end
     end
 
     def method_missing(name, *args, &block)
