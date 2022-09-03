@@ -92,12 +92,29 @@ RSpec.describe Hanami::Configuration, "#views" do
 
   context "Hanami::View not available" do
     before do
-      allow(Hanami).to receive(:bundled?).and_call_original
-      allow(Hanami).to receive(:bundled?).with("hanami-view").and_return(false)
+      load_error = LoadError.new.tap do |error|
+        error.instance_variable_set :@path, "hanami/view"
+      end
+
+      allow_any_instance_of(described_class)
+        .to receive(:require)
+        .with(anything)
+        .and_call_original
+
+      allow_any_instance_of(described_class)
+        .to receive(:require)
+        .with("hanami/view")
+        .and_raise load_error
     end
 
-    it "raises an error" do
-      expect { subject }.to raise_error(described_class::ComponentNotAvailable, /add hanami-view to your Gemfile to configure config.views/)
+    it "does not expose any settings" do
+      is_expected.not_to be_an_instance_of(Hanami::Configuration::Views)
+      is_expected.not_to respond_to(:layouts_dir)
+      is_expected.not_to respond_to(:layouts_dir=)
+    end
+
+    it "can be finalized" do
+      is_expected.to respond_to(:finalize!)
     end
   end
 end
