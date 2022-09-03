@@ -9,7 +9,6 @@ require "pathname"
 
 require_relative "constants"
 require_relative "configuration/logger"
-require_relative "configuration/router"
 require_relative "configuration/sessions"
 require_relative "settings/env_store"
 require_relative "slice/routing/middleware/stack"
@@ -20,6 +19,9 @@ module Hanami
   # @since 2.0.0
   class Configuration
     include Dry::Configurable
+
+    # @api private
+    class ComponentNotAvailable < RuntimeError; end
 
     setting :root, constructor: ->(path) { Pathname(path) if path }
 
@@ -106,20 +108,22 @@ module Hanami
 
       config.logger = Configuration::Logger.new(env: env, app_name: app_name)
 
-      @assets = load_dependent_config("hanami/assets/app_configuration") {
-        Hanami::Assets::AppConfiguration.new
-      }
+      # TODO: Make assets configuration dependent
+      require "hanami/assets/app_configuration"
+      @assets = Hanami::Assets::AppConfiguration.new
 
-      @actions = load_dependent_config("hanami/action") {
+      @actions = load_dependent_config("hanami-controller", :actions) {
         require_relative "configuration/actions"
         Actions.new
       }
 
-      @middleware = Slice::Routing::Middleware::Stack.new
+      @router = load_dependent_config("hanami-router", :router) {
+        require_relative "configuration/router"
+        @middleware = Slice::Routing::Middleware::Stack.new
+        Router.new(self)
+      }
 
-      @router = Router.new(self)
-
-      @views = load_dependent_config("hanami/view") {
+      @views = load_dependent_config("hanami-view", :views) {
         require_relative "configuration/views"
         Views.new
       }
@@ -209,14 +213,12 @@ module Hanami
     end
 
     # @api private
-    def load_dependent_config(require_path)
-      require require_path
-      yield
-    rescue LoadError => e
-      raise e unless e.path == require_path
+    def load_dependent_config(gem_name, config_method)
+      raise ComponentNotAvailable, <<~MSG unless Hanami.bundled?(gem_name)
+        You must add #{gem_name} to your Gemfile to configure config.#{config_method}
+      MSG
 
-      require_relative "configuration/null_configuration"
-      NullConfiguration.new
+      yield
     end
 
     def method_missing(name, *args, &block)
