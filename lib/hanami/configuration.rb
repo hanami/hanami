@@ -131,6 +131,8 @@ module Hanami
       yield self if block_given?
     end
 
+
+
     # Apply configuration for the given environment
     #
     # @param env [String] the environment name
@@ -217,7 +219,7 @@ module Hanami
       if Hanami.bundled?(gem_name)
         yield
       else
-        define_method(config_method) do
+        define_singleton_method(config_method) do
           raise ComponentNotAvailable, <<~MSG
             You must add #{gem_name} to your Gemfile to configure config.#{config_method}
           MSG
