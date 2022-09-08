@@ -44,9 +44,7 @@ RSpec.describe "Slices / Slice routing", :app_integration do
 
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              get "home", to: "home.show", as: :home
-            end
+            get "home", to: "home.show", as: :home
           end
         end
       RUBY
@@ -79,9 +77,7 @@ RSpec.describe "Slices / Slice routing", :app_integration do
 
         module Main
           class Routes < Hanami::Routes
-            define do
-              get "home", to: "home.show", as: :home
-            end
+            get "home", to: "home.show", as: :home
           end
         end
       RUBY
@@ -130,11 +126,9 @@ RSpec.describe "Slices / Slice routing", :app_integration do
         write "config/routes.rb", <<~'RUBY'
           module TestApp
             class Routes < Hanami::Routes
-              define do
-                root to: "home.show"
+              root to: "home.show"
 
-                slice :main, at: "/main"
-              end
+              slice :main, at: "/main"
             end
           end
         RUBY
@@ -158,9 +152,7 @@ RSpec.describe "Slices / Slice routing", :app_integration do
         write "slices/main/config/routes.rb", <<~'RUBY'
           module Main
             class Routes < Hanami::Routes
-              define do
-                root to: "home.show"
-              end
+              root to: "home.show"
             end
           end
         RUBY

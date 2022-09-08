@@ -21,9 +21,7 @@ RSpec.describe "Hanami web app", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              root to: ->(env) { [200, {}, ["OK"]] }
-            end
+            root to: ->(env) { [200, {}, ["OK"]] }
           end
         end
       RUBY
@@ -51,8 +49,7 @@ RSpec.describe "Hanami web app", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-            end
+            root to: ->(env) { [200, {}, ["OK"]] }
           end
         end
       RUBY
@@ -65,7 +62,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
       logs = -> { Pathname(dir).join("test.log").realpath.read }
 
-      expect(logs.()).to match %r{GET 404 \d+ms 127.0.0.1 /}
+      expect(logs.()).to match %r{GET 200 \d+ms 127.0.0.1 /}
     end
   end
 
@@ -89,8 +86,7 @@ RSpec.describe "Hanami web app", :app_integration do
         write "slices/main/config/routes.rb", <<~RUBY
           module Main
             class Routes < Hanami::Routes
-              define do
-              end
+              root to: ->(env) { [200, {}, ["OK"]] }
             end
           end
         RUBY
@@ -101,7 +97,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
         logs = -> { Pathname(dir).join("test.log").realpath.read }
 
-        expect(logs.()).to match %r{GET 404 \d+ms 127.0.0.1 /}
+        expect(logs.()).to match %r{GET 200 \d+ms 127.0.0.1 /}
       end
     end
   end
@@ -121,20 +117,18 @@ RSpec.describe "Hanami web app", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              get "/health", to: "health.show"
+            get "/health", to: "health.show"
 
-              get "/inline" do
-                "Inline"
-              end
+            get "/inline" do
+              "Inline"
+            end
 
-              slice :main, at: "/" do
-                root to: "home.index"
-              end
+            slice :main, at: "/" do
+              root to: "home.index"
+            end
 
-              slice :admin, at: "/admin" do
-                get "/dashboard", to: "dashboard.show"
-              end
+            slice :admin, at: "/admin" do
+              get "/dashboard", to: "dashboard.show"
             end
           end
         end
@@ -228,12 +222,10 @@ RSpec.describe "Hanami web app", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              root to: "home.index"
+            root to: "home.index"
 
-              slice :main, at: "/" do
-                root to: "home.index"
-              end
+            slice :main, at: "/" do
+              root to: "home.index"
             end
           end
         end
@@ -295,12 +287,10 @@ RSpec.describe "Hanami web app", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              get "/feedbacks", to: "feedbacks.index"
+            get "/feedbacks", to: "feedbacks.index"
 
-              slice :api, at: "/api" do
-                get "/people", to: "people.index"
-              end
+            slice :api, at: "/api" do
+              get "/people", to: "people.index"
             end
           end
         end
@@ -374,9 +364,7 @@ RSpec.describe "Hanami web app", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              get "/missing", to: "missing.action"
-            end
+            get "/missing", to: "missing.action"
           end
         end
       RUBY
@@ -405,10 +393,8 @@ RSpec.describe "Hanami web app", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              slice :admin, at: "/admin" do
-                get "/missing", to: "missing.action"
-              end
+            slice :admin, at: "/admin" do
+              get "/missing", to: "missing.action"
             end
           end
         end
@@ -437,9 +423,7 @@ RSpec.describe "Hanami web app", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              get "/missing", to: "missing.action"
-            end
+            get "/missing", to: "missing.action"
           end
         end
       RUBY
@@ -470,10 +454,8 @@ RSpec.describe "Hanami web app", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              slice :admin, at: "/admin" do
-                get "/missing", to: "missing.action"
-              end
+            slice :admin, at: "/admin" do
+              get "/missing", to: "missing.action"
             end
           end
         end
@@ -504,10 +486,8 @@ RSpec.describe "Hanami web app", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              slice :foo, at: "/foo" do
-                get "/bar", to: "bar.index"
-              end
+            slice :foo, at: "/foo" do
+              get "/bar", to: "bar.index"
             end
           end
         end

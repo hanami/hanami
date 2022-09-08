@@ -16,9 +16,7 @@ RSpec.describe "App routes helper", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              root to: "home.index"
-            end
+            root to: "home.index"
           end
         end
       RUBY

@@ -24,11 +24,9 @@ RSpec.describe "Running a Rack app for a non-booted app", :app_integration do
 
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              slice :main, at: "/" do
-                root to: "home.show"
-                get "/articles", to: "articles.index"
-              end
+            slice :main, at: "/" do
+              root to: "home.show"
+              get "/articles", to: "articles.index"
             end
           end
         end

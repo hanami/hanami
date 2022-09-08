@@ -27,10 +27,8 @@ RSpec.describe "Slices / External slices", :app_integration do
 
         module TestApp
           class Routes < Hanami::Routes
-            define do
-              slice :external, at: "/" do
-                root to: "test_action"
-              end
+            slice :external, at: "/" do
+              root to: "test_action"
             end
           end
         end
