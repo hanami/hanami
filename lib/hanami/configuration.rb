@@ -105,22 +105,22 @@ module Hanami
 
       config.logger = Configuration::Logger.new(env: env, app_name: app_name)
 
-      @assets = load_dependent_config("hanami/assets/app_configuration") {
-        Hanami::Assets::AppConfiguration.new
-      }
+      # TODO: Make assets configuration dependent
+      require "hanami/assets/app_configuration"
+      @assets = Hanami::Assets::AppConfiguration.new
 
-      @actions = load_dependent_config("hanami/action") {
+      @actions = load_dependent_config("hanami-controller") {
         require_relative "configuration/actions"
         Actions.new
       }
 
-      @router = load_dependent_config("hanami/router") {
+      @router = load_dependent_config("hanami-router") {
         require_relative "configuration/router"
         @middleware = Slice::Routing::Middleware::Stack.new
         Router.new(self)
       }
 
-      @views = load_dependent_config("hanami/view") {
+      @views = load_dependent_config("hanami-view") {
         require_relative "configuration/views"
         Views.new
       }
@@ -210,14 +210,13 @@ module Hanami
     end
 
     # @api private
-    def load_dependent_config(require_path)
-      require require_path
-      yield
-    rescue LoadError => e
-      raise e unless e.path == require_path
-
-      require_relative "configuration/null_configuration"
-      NullConfiguration.new
+    def load_dependent_config(gem_name)
+      if Hanami.bundled?(gem_name)
+        yield
+      else
+        require_relative "configuration/null_configuration"
+        NullConfiguration.new
+      end
     end
 
     def method_missing(name, *args, &block)

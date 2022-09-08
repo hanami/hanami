@@ -9,7 +9,7 @@ RSpec.describe Hanami::Configuration, "#router" do
 
   subject(:router) { configuration.router }
 
-  context "Hanami::Router available" do
+  context "hanami-router is bundled" do
     it "is a full router configuration" do
       is_expected.to be_an_instance_of(Hanami::Configuration::Router)
 
@@ -27,21 +27,10 @@ RSpec.describe Hanami::Configuration, "#router" do
     end
   end
 
-  context "Hanami::Router not available" do
+  context "hanami-router is not bundled" do
     before do
-      load_error = LoadError.new.tap do |error|
-        error.instance_variable_set :@path, "hanami/router"
-      end
-
-      allow_any_instance_of(described_class)
-        .to receive(:require)
-        .with(anything)
-        .and_call_original
-
-      allow_any_instance_of(described_class)
-        .to receive(:require)
-        .with("hanami/router")
-        .and_raise load_error
+      allow(Hanami).to receive(:bundled?).and_call_original
+      expect(Hanami).to receive(:bundled?).with("hanami-router").and_return(false)
     end
 
     it "does not expose any settings" do
