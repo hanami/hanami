@@ -55,6 +55,26 @@ RSpec.describe "Hanami setup", :app_integration do
 
         expect { setup }.not_to raise_error
       end
+
+      %w[hanami-view hanami-actions hanami-router].each do |gem_name|
+        it "works when #{gem_name} gem is not bundled" do
+          allow(Hanami).to receive(:bundled?).and_call_original
+          expect(Hanami).to receive(:bundled?).with("hanami-router").and_return(false)
+
+          with_tmp_directory(Dir.mktmpdir) do
+            write "config/app.rb", <<~RUBY
+            require "hanami"
+
+            module TestApp
+              class App < Hanami::App
+              end
+            end
+            RUBY
+
+            expect { setup }.to change { Hanami.app? }.to true
+          end
+        end
+      end
     end
 
     describe "using hanami/setup require" do

@@ -10,7 +10,7 @@ RSpec.describe Hanami::Configuration, "#views" do
 
   subject(:views) { configuration.views }
 
-  context "Hanami::View available" do
+  context "hanami-view is bundled" do
     it "exposes Hanami::Views's app configuration" do
       is_expected.to be_an_instance_of(Hanami::Configuration::Views)
 
@@ -90,21 +90,10 @@ RSpec.describe Hanami::Configuration, "#views" do
     end
   end
 
-  context "Hanami::View not available" do
+  context "hanami-view is not bundled" do
     before do
-      load_error = LoadError.new.tap do |error|
-        error.instance_variable_set :@path, "hanami/view"
-      end
-
-      allow_any_instance_of(described_class)
-        .to receive(:require)
-        .with(anything)
-        .and_call_original
-
-      allow_any_instance_of(described_class)
-        .to receive(:require)
-        .with("hanami/view")
-        .and_raise load_error
+      allow(Hanami).to receive(:bundled?).and_call_original
+      expect(Hanami).to receive(:bundled?).with("hanami-view").and_return(false)
     end
 
     it "does not expose any settings" do
