@@ -2,6 +2,14 @@
 
 The web, with simplicity.
 
+## v2.0.0.beta3 - 2022-09-21
+
+### Changed
+
+- [Piotr Solnica] Simplify routes definition, by removing `routes` block from `config/routes.rb`
+
+### Added
+
 ## v2.0.0.beta2 - 2022-08-16
 
 ### Added
@@ -25,6 +33,7 @@ The web, with simplicity.
   Or by setting `HANAMI_SLICES=blog,shop` in the env.
 
   You can also specify arbitrarily nested slices using dot delimiters. For example, if you have an `admin` slice with nested `shop` and `blog` slices, you can specify `config.slices = %w[admin.shop]` to only load the admin slice and its nested shop slice.
+
 - [Tim Riley] Added `App.prepare_load_path`, which need only be called if you explicitly change your app's `config.root`. The `$LOAD_PATH` is otherwise still prepared automatically for the default `root` of `Dir.pwd`. [#1188]
 - [Marc Busqué, Tim Riley] Added `Hanami.setup` to find and load your Hanami app file (expected at `config/app.rb`). This will search in the current directory, and will search upwards through parent directories until the app file is found. [#1197]
 
@@ -62,6 +71,7 @@ The web, with simplicity.
     end
   end
   ```
+
 - [Tim Riley] Every slice has a distinct `Zeitwerk::Loader` instance at `Slice.autoloader`. This change enabled the autoloading within settings described above. [#1186]
 - [Tim Riley] `Slice.settings` reader method has been removed. Access settings via `App["settings"]` or `Slice["settings"]` (after the slice has been prepared) instead. [#1186]
 - [Tim Riley] dry-types is no longer a dependency specified in the gemspec. This is made available to generated app via a line in their `Gemfile` instead. [#1186]
@@ -132,7 +142,6 @@ The web, with simplicity.
 - [Tim Riley] Removed `Hanami::Configuration#settings_path`, `#settings_class_name` [#1175]
 - [Tim Riley] Removed `Hanami::Configuration::Router#routes_path`, and `#routes_class_name` [#1175]
 - [Tim Riley] Make `Hanami::App` to inherit from `Hanami::Slice` [#1162]
-
 
 ## v2.0.0.alpha8 - 2022-05-19
 
