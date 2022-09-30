@@ -5,9 +5,9 @@ require "zeitwerk"
 require_relative "../hanami"
 require_relative "constants"
 require_relative "errors"
+require_relative "settings"
 require_relative "slice_name"
 require_relative "slice_registrar"
-require_relative "providers/settings"
 
 module Hanami
   # A slice represents any distinct area of concern within an Hanami app.
@@ -74,7 +74,18 @@ module Hanami
       end
 
       def root
-        config.root
+        # Provide a best guess for a root when it is not yet configured.
+        #
+        # This is particularly useful for user-defined slice classes that access `settings` inside
+        # the class body (since the root needed to find the settings file). In this case,
+        # `configuration.root` may be nil when `settings` is called, since the root is configured by
+        # `SliceRegistrar#configure_slice` _after_ the class is loaded.
+        #
+        # In common cases, this best guess will be correct since most Hanami slices will be expected
+        # to live in the app SLICES_DIR. For advanced cases, the correct slice root should be
+        # explicitly configured at the beginning of the slice class body, before any calls to
+        # `settings`.
+        config.root || app.root.join(SLICES_DIR, slice_name.to_s)
       end
 
       def inflector
@@ -179,6 +190,12 @@ module Hanami
         end
       end
 
+      def settings
+        return @settings if instance_variable_defined?(:@settings)
+
+        @settings = Settings.load_for_slice(self)
+      end
+
       def routes
         @routes ||= load_routes
       end
@@ -221,8 +238,6 @@ module Hanami
 
         prepare_autoloader
 
-        ensure_prepared
-
         # Load child slices last, ensuring their parent is fully prepared beforehand
         # (useful e.g. for slices that may wish to access constants defined in the
         # parent's autoloaded directories)
@@ -254,18 +269,23 @@ module Hanami
         end
       end
 
-      def ensure_prepared
-        # Load settings so we can fail early in case of non-conformant values
-        self[:settings] if key?(:settings)
-      end
-
       def prepare_all
+        prepare_settings
         prepare_container_consts
         prepare_container_plugins
         prepare_container_base_config
         prepare_container_component_dirs
         prepare_container_imports
         prepare_container_providers
+      end
+
+      def prepare_settings
+        container.register(:settings, settings) if settings
+      end
+
+      def prepare_container_consts
+        namespace.const_set :Container, container
+        namespace.const_set :Deps, container.injector
       end
 
       def prepare_container_plugins
@@ -334,8 +354,6 @@ module Hanami
           require_relative "providers/routes"
           register_provider(:routes, source: Providers::Routes.for_slice(self))
         end
-
-        Providers::Settings.register_with_slice(self)
       end
 
       def prepare_autoloader
@@ -355,11 +373,6 @@ module Hanami
         end
 
         autoloader.setup
-      end
-
-      def prepare_container_consts
-        namespace.const_set :Container, container
-        namespace.const_set :Deps, container.injector
       end
 
       def prepare_slices
