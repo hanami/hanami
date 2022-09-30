@@ -75,6 +75,12 @@ module Hanami
       slices.values
     end
 
+    def with_nested
+      to_a.flat_map { |slice|
+        [slice] + slice.slices.with_nested
+      }
+    end
+
     private
 
     def root
