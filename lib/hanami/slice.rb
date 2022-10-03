@@ -2,6 +2,7 @@
 
 require "dry/system/container"
 require "zeitwerk"
+require_relative "../hanami"
 require_relative "constants"
 require_relative "errors"
 require_relative "slice_name"
@@ -369,6 +370,8 @@ module Hanami
       end
 
       def load_routes
+        return false unless Hanami.bundled?("hanami-router")
+
         if root.directory?
           routes_require_path = File.join(root, ROUTES_PATH)
 
