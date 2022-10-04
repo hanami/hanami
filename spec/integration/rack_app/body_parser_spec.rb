@@ -17,16 +17,14 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class App < Hanami::App
+          config.middleware.use :body_parser, :json
         end
       end
     RUBY
 
     write "config/routes.rb", <<~RUBY
-      require "hanami/middleware/body_parser"
-
       module TestApp
         class Routes < Hanami::Routes
-          use Hanami::Middleware::BodyParser, :json
           post "/users", to: "users.create"
         end
       end

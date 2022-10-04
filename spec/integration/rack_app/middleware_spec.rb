@@ -206,4 +206,23 @@ RSpec.describe "Hanami web app", :app_integration do
     expect(last_response).to be_successful
     expect(last_response.body).to eql("yes")
   end
+
+  context "Setting an unsupported middleware" do
+    it "raises meaningful error when an unsupported middleware spec was passed" do
+      expect {
+        Class.new(Hanami::App) do
+          config.middleware.use("oops")
+        end
+      }.to raise_error(Hanami::UnsupportedMiddlewareSpecError)
+    end
+
+    it "raises meaningful error when corresponding file failed to load" do
+      expect {
+        Class.new(Hanami::App) do
+          config.middleware.namespaces.delete(Hanami::Middleware)
+          config.middleware.use(:body_parser)
+        end
+      }.to raise_error(Hanami::UnsupportedMiddlewareSpecError)
+    end
+  end
 end

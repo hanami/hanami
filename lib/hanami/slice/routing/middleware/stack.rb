@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "hanami/middleware"
+
 module Hanami
   class Slice
     module Routing
@@ -40,10 +42,15 @@ module Hanami
           attr_reader :stack
 
           # @since 2.0.0
+          # @api public
+          attr_reader :namespaces
+
+          # @since 2.0.0
           # @api private
           def initialize
             @prefix = ROOT_PREFIX
             @stack = Hash.new { |hash, key| hash[key] = [] }
+            @namespaces = [Hanami::Middleware]
           end
 
           # @since 2.0.0
@@ -52,11 +59,13 @@ module Hanami
             super
             @prefix = source.instance_variable_get(:@prefix).dup
             @stack = stack.dup
+            @namespaces = namespaces.dup
           end
 
           # @since 2.0.0
           # @api private
-          def use(middleware, *args, before: nil, after: nil, &blk)
+          def use(spec, *args, before: nil, after: nil, &blk)
+            middleware = resolve_middleware_class(spec)
             item = [middleware, args, blk]
 
             if before
@@ -140,6 +149,40 @@ module Hanami
           # @since 2.0.0
           def index_of(middleware)
             @stack[@prefix].index { |(m, *)| m.equal?(middleware) }
+          end
+
+          # @since 2.0.0
+          def resolve_middleware_class(spec)
+            case spec
+            when Symbol then load_middleware_class(spec)
+            when Class then spec
+            else
+              if spec.respond_to?(:call)
+                spec
+              else
+                raise UnsupportedMiddlewareSpecError, spec
+              end
+            end
+          end
+
+          # @since 2.0.0
+          def load_middleware_class(spec)
+            begin
+              require "hanami/middleware/#{spec}"
+            rescue LoadError # rubocop:disable Lint/SuppressedException
+            end
+
+            class_name = Hanami::Utils::String.classify(spec.to_s)
+            namespace = namespaces.detect { |ns| ns.const_defined?(class_name) }
+
+            if namespace
+              namespace.const_get(class_name)
+            else
+              raise(
+                UnsupportedMiddlewareSpecError,
+                "Failed to find corresponding middleware class for `#{spec}` in #{namespaces.join(', ')}"
+              )
+            end
           end
         end
       end

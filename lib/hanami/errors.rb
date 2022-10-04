@@ -12,4 +12,7 @@ module Hanami
 
   # @since 2.0.0
   ComponentLoadError = Class.new(Error)
+
+  # @since 2.0.0
+  UnsupportedMiddlewareSpecError = Class.new(Error)
 end
