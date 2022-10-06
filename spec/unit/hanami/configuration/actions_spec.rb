@@ -43,7 +43,7 @@ RSpec.describe Hanami::Configuration, "#actions" do
       end
 
       it "includes all base action settings" do
-        expect(actions.settings).to include(Hanami::Action::Configuration.settings)
+        expect(actions.settings).to include(Hanami::Action.settings)
       end
     end
   end

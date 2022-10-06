@@ -65,7 +65,7 @@ module Hanami
       # @since 2.0.0
       # @api private
       def settings
-        base_configuration.settings + self.class.settings
+        Hanami::Action.settings + self.class.settings
       end
 
       private
