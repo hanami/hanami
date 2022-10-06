@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "dry/configurable"
-require "hanami/action/configuration"
 require_relative "actions/cookies"
 require_relative "actions/sessions"
 require_relative "actions/content_security_policy"
@@ -32,7 +31,7 @@ module Hanami
       def initialize(*, **options)
         super()
 
-        @base_configuration = Hanami::Action::Configuration.new
+        @base_configuration = Hanami::Action.config.dup
         @content_security_policy = ContentSecurityPolicy.new do |csp|
           if assets_server_url = options[:assets_server_url]
             csp[:script_src] += " #{assets_server_url}"

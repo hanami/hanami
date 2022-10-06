@@ -2,7 +2,7 @@
 
 require "hanami/configuration"
 require "hanami/configuration/actions"
-require "hanami/action/configuration"
+require "hanami/action"
 
 RSpec.describe Hanami::Configuration, "#actions" do
   let(:configuration) { described_class.new(app_name: app_name, env: :development) }

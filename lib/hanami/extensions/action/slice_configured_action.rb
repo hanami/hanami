@@ -47,7 +47,7 @@ module Hanami
         end
 
         def configure_action(action_class)
-          action_class.config.settings.each do |setting|
+          action_class.settings.each do |setting|
             # Configure the action from config on the slice, _unless it has already been configured
             # by a parent slice_, and re-configuring it for this slice would make no change.
             #
