@@ -38,6 +38,15 @@ module Hanami
   # @since 2.0.0
   class Settings
     class << self
+      def inherited(subclass)
+        super
+
+        if Hanami.bundled?("dry-types")
+          require "dry/types"
+          subclass.const_set(:Types, Dry.Types())
+        end
+      end
+
       # Loads the settings for a slice.
       #
       # Returns nil if no settings class is defined.
