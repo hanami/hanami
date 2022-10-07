@@ -1,4 +1,6 @@
-RSpec.describe "Slices / Slice settings", :app_integration do
+# frozen_string_literal: true
+
+RSpec.describe "Settings / Slice registration", :app_integration do
   specify "Settings are registered for each slice with a settings file" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
@@ -9,6 +11,8 @@ RSpec.describe "Slices / Slice settings", :app_integration do
           end
         end
       RUBY
+
+      # n.b. no app-level settings file
 
       # The main slice has settings
       write "slices/main/config/settings.rb", <<~RUBY
