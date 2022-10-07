@@ -43,7 +43,7 @@ RSpec.describe "Settings / Using types", :app_integration do
     end
   end
 
-  specify "errors raised from setting constructors are collected and re-raised in aggregate" do
+  specify "errors raised from setting constructors are collected and re-raised in aggregate, and will prevent the app from booting" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
