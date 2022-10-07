@@ -35,6 +35,9 @@ module Hanami
   # @see Hanami::Settings::DotenvStore
   # @since 2.0.0
   class Settings
+    # @api private
+    Undefined = Dry::Core::Constants::Undefined
+
     # Exception for errors in the definition of settings.
     #
     # Its message collects all the individual errors that can be raised for each setting.
@@ -59,11 +62,13 @@ module Hanami
 
     # @api private
     def initialize(store = EMPTY_STORE)
-      errors = config._settings.map(&:name).reduce({}) do |errs, name|
-        public_send("#{name}=", store.fetch(name) { Dry::Core::Constants::Undefined })
-        errs
+      errors = config._settings.map(&:name).each_with_object({}) do |name, errs|
+        value = store.fetch(name, Undefined)
+        next if value.eql?(Undefined)
+
+        public_send("#{name}=", value)
       rescue => e # rubocop:disable Style/RescueStandardError
-        errs.merge(name => e)
+        errs[name] = e
       end
 
       raise InvalidSettingsError, errors if errors.any?

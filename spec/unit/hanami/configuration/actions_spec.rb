@@ -2,7 +2,7 @@
 
 require "hanami/configuration"
 require "hanami/configuration/actions"
-require "hanami/action/configuration"
+require "hanami/action"
 
 RSpec.describe Hanami::Configuration, "#actions" do
   let(:configuration) { described_class.new(app_name: app_name, env: :development) }
@@ -43,7 +43,7 @@ RSpec.describe Hanami::Configuration, "#actions" do
       end
 
       it "includes all base action settings" do
-        expect(actions.settings).to include(Hanami::Action::Configuration.settings)
+        expect(actions.settings).to include(Hanami::Action.settings)
       end
     end
   end

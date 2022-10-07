@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "dry/configurable"
-require "hanami/action/configuration"
 require_relative "actions/cookies"
 require_relative "actions/sessions"
 require_relative "actions/content_security_policy"
@@ -26,13 +25,13 @@ module Hanami
 
       attr_accessor :content_security_policy
 
-      attr_reader :base_configuration
-      protected :base_configuration
+      attr_reader :base_config
+      protected :base_config
 
       def initialize(*, **options)
         super()
 
-        @base_configuration = Hanami::Action::Configuration.new
+        @base_config = Hanami::Action.config.dup
         @content_security_policy = ContentSecurityPolicy.new do |csp|
           if assets_server_url = options[:assets_server_url]
             csp[:script_src] += " #{assets_server_url}"
@@ -45,7 +44,7 @@ module Hanami
 
       def initialize_copy(source)
         super
-        @base_configuration = source.base_configuration.dup
+        @base_config = source.base_config.dup
         @content_security_policy = source.content_security_policy.dup
       end
 
@@ -66,7 +65,7 @@ module Hanami
       # @since 2.0.0
       # @api private
       def settings
-        base_configuration.settings + self.class.settings
+        Hanami::Action.settings + self.class.settings
       end
 
       private
@@ -86,15 +85,15 @@ module Hanami
       def method_missing(name, *args, &block)
         if config.respond_to?(name)
           config.public_send(name, *args, &block)
-        elsif base_configuration.respond_to?(name)
-          base_configuration.public_send(name, *args, &block)
+        elsif base_config.respond_to?(name)
+          base_config.public_send(name, *args, &block)
         else
           super
         end
       end
 
       def respond_to_missing?(name, _incude_all = false)
-        config.respond_to?(name) || base_configuration.respond_to?(name) || super
+        config.respond_to?(name) || base_config.respond_to?(name) || super
       end
     end
   end

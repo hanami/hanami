@@ -12,7 +12,7 @@ module Hanami
     # @since 2.0.0
     # @api private
     class EnvStore
-      Undefined = Dry::Core::Constants::Undefined
+      NO_ARG = Object.new.freeze
 
       attr_reader :store, :hanami_env
 
@@ -21,9 +21,9 @@ module Hanami
         @hanami_env = hanami_env
       end
 
-      def fetch(name, default_value = Undefined, &block)
+      def fetch(name, default_value = NO_ARG, &block)
         name = name.to_s.upcase
-        args = default_value == Undefined ? [name] : [name, default_value]
+        args = default_value.eql?(NO_ARG) ? [name] : [name, default_value]
 
         store.fetch(*args, &block)
       end
