@@ -9,76 +9,38 @@ RSpec.describe "Settings / Access to constants", :app_integration do
     ENV.replace(@env)
   end
 
-  describe "Settings can not access autoloadable constants" do
-    specify "settings for app" do
-      with_directory(make_tmp_directory) do
-        write "config/app.rb", <<~'RUBY'
-          require "hanami"
+  specify "Settings can not access autoloadable constants" do
+    with_directory(make_tmp_directory) do
+      write "config/app.rb", <<~'RUBY'
+        require "hanami"
 
-          module TestApp
-            class App < Hanami::App
-            end
+        module TestApp
+          class App < Hanami::App
           end
-        RUBY
+        end
+      RUBY
 
-        write "config/settings.rb", <<~'RUBY'
-          module TestApp
-            class Settings < Hanami::Settings
-              setting :some_flag, constructor: TestApp::Types::Params::Bool
-            end
+      write "config/settings.rb", <<~'RUBY'
+        module TestApp
+          class Settings < Hanami::Settings
+            setting :some_flag, constructor: TestApp::Types::Params::Bool
           end
-        RUBY
+        end
+      RUBY
 
-        write "app/types.rb", <<~'RUBY'
-          # auto_register: false
+      write "app/types.rb", <<~'RUBY'
+        # auto_register: false
 
-          require "dry/types"
+        require "dry/types"
 
-          module TestApp
-            Types = Dry.Types()
-          end
-        RUBY
+        module TestApp
+          Types = Dry.Types()
+        end
+      RUBY
 
-        require "hanami/setup"
+      require "hanami/setup"
 
-        expect { Hanami.app.settings }.to raise_error(NameError, /TestApp::Types/)
-      end
-    end
-
-    specify "settings for slice" do
-      with_directory(make_tmp_directory) do
-        write "config/app.rb", <<~'RUBY'
-          require "hanami"
-
-          module TestApp
-            class App < Hanami::App
-            end
-          end
-        RUBY
-
-        write "slices/main/config/settings.rb", <<~'RUBY'
-          module Main
-            class Settings < Hanami::Settings
-              setting :some_flag, constructor: Main::Types::Params::Bool
-            end
-          end
-        RUBY
-
-        write "slices/main/types.rb", <<~'RUBY'
-          # auto_register: false
-
-          require "dry/types"
-
-          module Main
-            Types = Dry.Types()
-          end
-        RUBY
-
-        require "hanami/setup"
-        Hanami.app.slices.load_slices
-
-        expect { Main::Slice.settings }.to raise_error(NameError, /Main::Types/)
-      end
+      expect { Hanami.app.settings }.to raise_error(NameError, /TestApp::Types/)
     end
   end
 end
