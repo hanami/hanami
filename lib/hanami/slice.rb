@@ -64,7 +64,6 @@ module Hanami
           slice_config.root = nil
         end
       end
-      alias_method :configuration, :config
 
       def slice_name
         @slice_name ||= SliceName.new(self, inflector: method(:inflector))
