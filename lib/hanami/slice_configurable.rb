@@ -56,7 +56,7 @@ module Hanami
       def slice_for(klass)
         return unless klass.name
 
-        slices = Hanami.app.slices.to_a + [Hanami.app]
+        slices = Hanami.app.slices.with_nested + [Hanami.app]
 
         slices.detect { |slice| klass.name.include?(slice.namespace.to_s) }
       end

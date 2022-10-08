@@ -28,8 +28,6 @@ RSpec.describe Hanami::SliceConfigurable, :app_integration do
         end
       end
     end
-
-    Hanami.app.prepare
   end
 
   context "subclass inside slice namespace" do
@@ -99,6 +97,27 @@ RSpec.describe Hanami::SliceConfigurable, :app_integration do
       it "calls `configure_for_slice` with the other slice" do
         expect(subclass.traces).to eq [TestApp::App, Main::Slice]
       end
+    end
+  end
+
+  context "subclass inside nested slice namespace" do
+    before do
+      module Main
+        class Slice
+          register_slice :nested
+        end
+      end
+
+      module Nested
+        class MySubclass < TestApp::BaseClass
+        end
+      end
+    end
+
+    subject(:subclass) { Nested::MySubclass }
+
+    it "calls `configure_for_slice` with the nested slice" do
+      expect(subclass.traces).to eq [Nested::Slice]
     end
   end
 end
