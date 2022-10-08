@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-require "hanami/assets/configuration"
 require "dry/configurable"
+require_relative "config"
 
 module Hanami
   module Assets
     # @since 2.0.0
     # @api public
-    class AppConfiguration
+    class AppConfig
       include Dry::Configurable
 
       # @since 2.0.0
       # @api private
-      attr_reader :base_configuration
-      protected :base_configuration
+      attr_reader :base_config
+      protected :base_config
 
       setting :server_url, default: "http://localhost:8080"
 
@@ -22,12 +22,12 @@ module Hanami
       def initialize(*)
         super
 
-        @base_configuration = Assets::Configuration.new
+        @base_config = Config.new
       end
 
       def initialize_copy(source)
         super
-        @base_configuration = source.base_configuration.dup
+        @base_config = source.base_config.dup
       end
 
       # @since 2.0.0
@@ -42,7 +42,7 @@ module Hanami
       # @since 2.0.0
       # @api private
       def settings
-        base_configuration.settings + self.class.settings
+        base_config.settings + self.class.settings
       end
 
       private
@@ -52,8 +52,8 @@ module Hanami
       def method_missing(name, *args, &block)
         if config.respond_to?(name)
           config.public_send(name, *args, &block)
-        elsif base_configuration.respond_to?(name)
-          base_configuration.public_send(name, *args, &block)
+        elsif base_config.respond_to?(name)
+          base_config.public_send(name, *args, &block)
         else
           super
         end
@@ -62,7 +62,7 @@ module Hanami
       # @since 2.0.0
       # @api private
       def respond_to_missing?(name, _incude_all = false)
-        config.respond_to?(name) || base_configuration.respond_to?(name) || super
+        config.respond_to?(name) || base_config.respond_to?(name) || super
       end
     end
   end

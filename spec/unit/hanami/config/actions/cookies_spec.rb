@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "hanami/configuration/actions"
+require "hanami/config/actions"
 
-RSpec.describe Hanami::Configuration::Actions, "#cookies" do
-  let(:configuration) { described_class.new }
-  subject(:cookies) { configuration.cookies }
+RSpec.describe Hanami::Config::Actions, "#cookies" do
+  let(:config) { described_class.new }
+  subject(:cookies) { config.cookies }
 
   context "default config" do
     it "is enabled" do
@@ -18,7 +18,7 @@ RSpec.describe Hanami::Configuration::Actions, "#cookies" do
 
   context "options given" do
     before do
-      configuration.cookies = {max_age: 300}
+      config.cookies = {max_age: 300}
     end
 
     it "is enabled" do
@@ -32,7 +32,7 @@ RSpec.describe Hanami::Configuration::Actions, "#cookies" do
 
   context "nil value given" do
     before do
-      configuration.cookies = nil
+      config.cookies = nil
     end
 
     it "is not enabled" do

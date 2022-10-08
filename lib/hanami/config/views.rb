@@ -4,8 +4,8 @@ require "dry/configurable"
 require "hanami/view"
 
 module Hanami
-  class Configuration
-    # Hanami actions configuration
+  class Config
+    # Hanami views config
     #
     # @since 2.0.0
     class Views
@@ -13,20 +13,20 @@ module Hanami
 
       setting :parts_path, default: "views/parts"
 
-      attr_reader :base_configuration
-      protected :base_configuration
+      attr_reader :base_config
+      protected :base_config
 
       def initialize(*)
         super
 
-        @base_configuration = Hanami::View.config.dup
+        @base_config = Hanami::View.config.dup
 
         configure_defaults
       end
 
       def initialize_copy(source)
         super
-        @base_configuration = source.base_configuration.dup
+        @base_config = source.base_config.dup
       end
 
       # Returns the list of available settings
@@ -42,7 +42,7 @@ module Hanami
       def finalize!
         return self if frozen?
 
-        base_configuration.finalize!
+        base_config.finalize!
 
         super
       end
@@ -69,8 +69,8 @@ module Hanami
 
         if config.respond_to?(name)
           config.public_send(name, *args, &block)
-        elsif base_configuration.respond_to?(name)
-          base_configuration.public_send(name, *args, &block)
+        elsif base_config.respond_to?(name)
+          base_config.public_send(name, *args, &block)
         else
           super
         end
@@ -79,7 +79,7 @@ module Hanami
       def respond_to_missing?(name, _include_all = false)
         return false if NON_FORWARDABLE_METHODS.include?(name)
 
-        config.respond_to?(name) || base_configuration.respond_to?(name) || super
+        config.respond_to?(name) || base_config.respond_to?(name) || super
       end
     end
   end

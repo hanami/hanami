@@ -8,8 +8,8 @@ require "dry/inflector"
 require "pathname"
 
 require_relative "constants"
-require_relative "configuration/logger"
-require_relative "configuration/sessions"
+require_relative "config/logger"
+require_relative "config/sessions"
 require_relative "settings/env_store"
 require_relative "slice/routing/middleware/stack"
 
@@ -17,7 +17,7 @@ module Hanami
   # Hanami app configuration
   #
   # @since 2.0.0
-  class Configuration
+  class Config
     include Dry::Configurable
 
     setting :root, constructor: ->(path) { Pathname(path) if path }
@@ -58,7 +58,7 @@ module Hanami
     # @api public
     attr_reader :env
 
-    # @return [Hanami::Configuration::Actions]
+    # @return [Hanami::Config::Actions]
     #
     # @api public
     attr_reader :actions
@@ -71,12 +71,12 @@ module Hanami
     # @api private
     alias_method :middleware_stack, :middleware
 
-    # @return [Hanami::Configuration::Router]
+    # @return [Hanami::Config::Router]
     #
     # @api public
     attr_reader :router
 
-    # @return [Hanami::Configuration::Views]
+    # @return [Hanami::Config::Views]
     #
     # @api public
     attr_reader :views
@@ -103,36 +103,36 @@ module Hanami
       self.root = Dir.pwd
       load_from_env
 
-      config.logger = Configuration::Logger.new(env: env, app_name: app_name)
+      config.logger = Config::Logger.new(env: env, app_name: app_name)
 
-      # TODO: Make assets configuration dependent
-      require "hanami/assets/app_configuration"
-      @assets = Hanami::Assets::AppConfiguration.new
+      # TODO: Make assets config dependent
+      require "hanami/assets/app_config"
+      @assets = Hanami::Assets::AppConfig.new
 
       @actions = load_dependent_config("hanami-controller") {
-        require_relative "configuration/actions"
+        require_relative "config/actions"
         Actions.new
       }
 
       @router = load_dependent_config("hanami-router") {
-        require_relative "configuration/router"
+        require_relative "config/router"
         @middleware = Slice::Routing::Middleware::Stack.new
         Router.new(self)
       }
 
       @views = load_dependent_config("hanami-view") {
-        require_relative "configuration/views"
+        require_relative "config/views"
         Views.new
       }
 
       yield self if block_given?
     end
 
-    # Apply configuration for the given environment
+    # Apply config for the given environment
     #
     # @param env [String] the environment name
     #
-    # @return [Hanami::Configuration]
+    # @return [Hanami::Config]
     #
     # @api public
     def environment(env_name, &block)
@@ -164,7 +164,7 @@ module Hanami
       @actions = source.actions.dup
       @middleware = source.middleware.dup
       @router = source.router.dup.tap do |router|
-        router.instance_variable_set(:@base_configuration, self)
+        router.instance_variable_set(:@base_config, self)
       end
       @views = source.views.dup
     end
@@ -173,7 +173,7 @@ module Hanami
     def finalize!
       apply_env_config
 
-      # Finalize nested configurations
+      # Finalize nested configs
       assets.finalize!
       actions.finalize!
       views.finalize!
@@ -214,8 +214,8 @@ module Hanami
       if Hanami.bundled?(gem_name)
         yield
       else
-        require_relative "configuration/null_configuration"
-        NullConfiguration.new
+        require_relative "config/null_config"
+        NullConfig.new
       end
     end
 

@@ -1,32 +1,32 @@
 # frozen_string_literal: true
 
-require "hanami/configuration/actions"
+require "hanami/config/actions"
 
-RSpec.describe Hanami::Configuration::Actions, "#csrf_protection" do
-  let(:configuration) { described_class.new }
-  subject(:value) { configuration.csrf_protection }
+RSpec.describe Hanami::Config::Actions, "#csrf_protection" do
+  let(:config) { described_class.new }
+  subject(:value) { config.csrf_protection }
 
-  context "non-finalized configuration" do
+  context "non-finalized config" do
     it "returns a default of nil" do
       is_expected.to be_nil
     end
 
     it "can be explicitly enabled" do
-      configuration.csrf_protection = true
+      config.csrf_protection = true
       is_expected.to be true
     end
 
     it "can be explicitly disabled" do
-      configuration.csrf_protection = false
+      config.csrf_protection = false
       is_expected.to be false
     end
   end
 
-  context "finalized configuration" do
+  context "finalized config" do
     context "sessions enabled" do
       before do
-        configuration.sessions = :cookie, {secret: "abc"}
-        configuration.finalize!
+        config.sessions = :cookie, {secret: "abc"}
+        config.finalize!
       end
 
       it "is true" do
@@ -35,7 +35,7 @@ RSpec.describe Hanami::Configuration::Actions, "#csrf_protection" do
 
       context "explicitly disabled" do
         before do
-          configuration.csrf_protection = false
+          config.csrf_protection = false
         end
 
         it "is false" do
@@ -46,7 +46,7 @@ RSpec.describe Hanami::Configuration::Actions, "#csrf_protection" do
 
     context "sessions not enabled" do
       before do
-        configuration.finalize!
+        config.finalize!
       end
 
       it "is true" do

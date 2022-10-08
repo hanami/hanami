@@ -1,25 +1,24 @@
 # frozen_string_literal: true
 
-require "hanami/configuration"
-require "hanami/configuration/views"
+require "hanami/config"
 require "saharspec/matchers/dont"
 
-RSpec.describe Hanami::Configuration, "#views" do
-  let(:configuration) { described_class.new(app_name: app_name, env: :development) }
+RSpec.describe Hanami::Config, "#views" do
+  let(:config) { described_class.new(app_name: app_name, env: :development) }
   let(:app_name) { "MyApp::app" }
 
-  subject(:views) { configuration.views }
+  subject(:views) { config.views }
 
   context "hanami-view is bundled" do
-    it "exposes Hanami::Views's app configuration" do
-      is_expected.to be_an_instance_of(Hanami::Configuration::Views)
+    it "exposes Hanami::Views's app config" do
+      is_expected.to be_an_instance_of(Hanami::Config::Views)
 
       is_expected.to respond_to(:finalize!)
       is_expected.to respond_to(:layouts_dir)
       is_expected.to respond_to(:layouts_dir=)
     end
 
-    it "includes base view configuration" do
+    it "includes base view config" do
       expect(views).to respond_to(:paths)
       expect(views).to respond_to(:paths=)
     end
@@ -39,11 +38,11 @@ RSpec.describe Hanami::Configuration, "#views" do
       end
     end
 
-    it "preserves default values from the base view configuration" do
+    it "preserves default values from the base view config" do
       expect(views.layouts_dir).to eq Hanami::View.config.layouts_dir
     end
 
-    it "allows settings to be configured independently of the base view configuration" do
+    it "allows settings to be configured independently of the base view config" do
       expect { views.layouts_dir = "custom_layouts" }
         .to change { views.layouts_dir }.to("custom_layouts")
         .and(dont.change { Hanami::View.config.layouts_dir })
@@ -71,7 +70,7 @@ RSpec.describe Hanami::Configuration, "#views" do
       end
     end
 
-    describe "finalized configuration" do
+    describe "finalized config" do
       before do
         views.finalize!
       end
@@ -97,7 +96,7 @@ RSpec.describe Hanami::Configuration, "#views" do
     end
 
     it "does not expose any settings" do
-      is_expected.not_to be_an_instance_of(Hanami::Configuration::Views)
+      is_expected.not_to be_an_instance_of(Hanami::Config::Views)
       is_expected.not_to respond_to(:layouts_dir)
       is_expected.not_to respond_to(:layouts_dir=)
     end

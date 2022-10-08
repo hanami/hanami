@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "hanami/configuration/actions"
+require "hanami/config/actions"
 
-RSpec.describe Hanami::Configuration::Actions, "#sessions" do
-  let(:configuration) { described_class.new }
-  subject(:sessions) { configuration.sessions }
+RSpec.describe Hanami::Config::Actions, "#sessions" do
+  let(:config) { described_class.new }
+  subject(:sessions) { config.sessions }
 
   context "no session config specified" do
     it "is not enabled" do
@@ -26,7 +26,7 @@ RSpec.describe Hanami::Configuration::Actions, "#sessions" do
 
   context "valid session config provided" do
     before do
-      configuration.sessions = :cookie, {secret: "abc"}
+      config.sessions = :cookie, {secret: "abc"}
     end
 
     it "is enabled" do

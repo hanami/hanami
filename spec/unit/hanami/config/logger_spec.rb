@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "hanami/configuration/logger"
+require "hanami/config/logger"
 require "hanami/slice_name"
 require "dry/inflector"
 require "logger"
 
-RSpec.describe Hanami::Configuration::Logger do
+RSpec.describe Hanami::Config::Logger do
   subject { described_class.new(app_name: app_name, env: env) }
   let(:app_name) { Hanami::SliceName.new(double(name: "MyApp::app"), inflector: -> { Dry::Inflector.new }) }
   let(:env) { :development }
@@ -165,7 +165,7 @@ RSpec.describe Hanami::Configuration::Logger do
   end
 end
 
-RSpec.describe Hanami::Configuration do
+RSpec.describe Hanami::Config do
   subject(:config) { described_class.new(app_name: app_name, env: env) }
   let(:app_name) { Hanami::SliceName.new(double(name: "SOS::app"), inflector: -> { Dry::Inflector.new }) }
   let(:env) { :development }
@@ -180,7 +180,7 @@ RSpec.describe Hanami::Configuration do
     end
 
     describe "#app_name" do
-      it "defaults to Hanami::Configuration#app_name" do
+      it "defaults to Hanami::Config#app_name" do
         expect(config.logger.app_name).to eq(config.app_name)
       end
     end

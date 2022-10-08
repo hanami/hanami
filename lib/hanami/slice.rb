@@ -18,12 +18,11 @@ module Hanami
   # Each slice corresponds a single module namespace and a single root directory of source
   # files for loading as components into its container.
   #
-  # Each slice has its own configuration, and may optionally have its own settings,
-  # routes, as well as other nested slices.
+  # Each slice has its own config, and may optionally have its own settings, routes, as well as
+  # other nested slices.
   #
-  # Slices expect an Hanami app to be defined (which itself is a slice). They will
-  # initialize their configuration as a copy of the app's, and will also configure
-  # certain components
+  # Slices expect an Hanami app to be defined (which itself is a slice). They will initialize their
+  # config as a copy of the app's, and will also configure certain components
   #
   # Slices must be _prepared_ and optionally _booted_ before they can be used (see
   # {ClassMethods.prepare} and {ClassMethods.boot}). A prepared slice will lazily load its
@@ -57,15 +56,15 @@ module Hanami
         Hanami.app
       end
 
-      # A slice's configuration is copied from the app configuration at time of first access. The
-      # app should have its configuration completed before slices are loaded.
-      def configuration
-        @configuration ||= app.configuration.dup.tap do |config|
+      # A slice's config is copied from the app config at time of first access. The app should have
+      # its config completed before slices are loaded.
+      def config
+        @config ||= app.config.dup.tap do |slice_config|
           # Remove specific values from app that will not apply to this slice
-          config.root = nil
+          slice_config.root = nil
         end
       end
-      alias_method :config, :configuration
+      alias_method :configuration, :config
 
       def slice_name
         @slice_name ||= SliceName.new(self, inflector: method(:inflector))
@@ -76,11 +75,11 @@ module Hanami
       end
 
       def root
-        configuration.root
+        config.root
       end
 
       def inflector
-        configuration.inflector
+        config.inflector
       end
 
       def prepare(provider_name = nil)
@@ -210,7 +209,7 @@ module Hanami
       def prepare_slice
         return self if prepared?
 
-        configuration.finalize!
+        config.finalize!
 
         ensure_slice_name
         ensure_slice_consts
@@ -251,7 +250,7 @@ module Hanami
       end
 
       def ensure_root
-        unless configuration.root
+        unless config.root
           raise SliceLoadError, "Slice must have a `config.root` before it can be prepared"
         end
       end
@@ -286,8 +285,8 @@ module Hanami
         container.config.root = root
         container.config.provider_dirs = [File.join("config", "providers")]
 
-        container.config.env = configuration.env
-        container.config.inflector = configuration.inflector
+        container.config.env = config.env
+        container.config.inflector = config.inflector
       end
 
       def prepare_container_component_dirs
@@ -305,7 +304,7 @@ module Hanami
         # When auto-registering components in the root, ignore files in `config/` (this is
         # for framework config only), `lib/` (these will be auto-registered as above), as
         # well as the configured no_auto_register_paths
-        no_auto_register_paths = ([LIB_DIR, CONFIG_DIR] + configuration.no_auto_register_paths)
+        no_auto_register_paths = ([LIB_DIR, CONFIG_DIR] + config.no_auto_register_paths)
           .map { |path|
             path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
           }
@@ -396,14 +395,14 @@ module Hanami
 
         require_relative "slice/router"
 
-        config = configuration
+        config = self.config
         rack_monitor = self["rack.monitor"]
 
         Slice::Router.new(
           inspector: inspector,
           routes: routes,
-          resolver: configuration.router.resolver.new(slice: self),
-          **configuration.router.options
+          resolver: config.router.resolver.new(slice: self),
+          **config.router.options
         ) do
           use(rack_monitor)
           use(*config.sessions.middleware) if config.sessions.enabled?

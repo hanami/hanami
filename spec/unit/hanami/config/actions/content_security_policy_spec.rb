@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "hanami/configuration/actions"
+require "hanami/config/actions"
 
-RSpec.describe Hanami::Configuration::Actions, "#content_security_policy" do
-  let(:configuration) { described_class.new }
-  subject(:content_security_policy) { configuration.content_security_policy }
+RSpec.describe Hanami::Config::Actions, "#content_security_policy" do
+  let(:config) { described_class.new }
+  subject(:content_security_policy) { config.content_security_policy }
 
   context "no CSP config specified" do
     context "without assets_server_url" do
@@ -34,7 +34,7 @@ RSpec.describe Hanami::Configuration::Actions, "#content_security_policy" do
     end
 
     context "with assets_server_url" do
-      let(:configuration) { described_class.new(assets_server_url: assets_server_url) }
+      let(:config) { described_class.new(assets_server_url: assets_server_url) }
       let(:assets_server_url) { "http://localhost:8080" }
 
       it "includes server url" do
@@ -85,18 +85,18 @@ RSpec.describe Hanami::Configuration::Actions, "#content_security_policy" do
 
   context "with CSP enabled" do
     it "sets default header" do
-      configuration.finalize!
+      config.finalize!
 
-      expect(configuration.default_headers.fetch("Content-Security-Policy")).to eq(content_security_policy.to_str)
+      expect(config.default_headers.fetch("Content-Security-Policy")).to eq(content_security_policy.to_str)
     end
   end
 
   context "with CSP disabled" do
     it "doesn't set default header" do
-      configuration.content_security_policy = false
-      configuration.finalize!
+      config.content_security_policy = false
+      config.finalize!
 
-      expect(configuration.default_headers.key?("Content-Security-Policy")).to be(false)
+      expect(config.default_headers.key?("Content-Security-Policy")).to be(false)
     end
   end
 end

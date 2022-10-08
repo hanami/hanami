@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Hanami
-  class Configuration
+  class Config
     class Actions
-      # Configuration for Content Security Policy in Hanami apps
+      # Config for Content Security Policy in Hanami apps
       #
       # @since 2.0.0
       class ContentSecurityPolicy

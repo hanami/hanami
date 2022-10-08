@@ -6,14 +6,14 @@ module Hanami
   module Assets
     # @since 2.0.0
     # @api public
-    class Configuration
+    class Config
       include Dry::Configurable
 
-      # Initialize the Configuration
+      # Initialize the Config
       #
-      # @yield [config] the configuration object
+      # @yield [config] the config object
       #
-      # @return [Configuration]
+      # @return [Config]
       #
       # @since 2.0.0
       # @api private
