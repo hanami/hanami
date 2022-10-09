@@ -156,7 +156,7 @@ module Hanami
           def resolve_middleware_class(spec)
             case spec
             when Symbol then load_middleware_class(spec)
-            when Class then spec
+            when Class, Module then spec
             else
               if spec.respond_to?(:call)
                 spec

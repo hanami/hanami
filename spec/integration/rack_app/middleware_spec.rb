@@ -207,6 +207,15 @@ RSpec.describe "Hanami web app", :app_integration do
     expect(last_response.body).to eql("yes")
   end
 
+  context "Using module as a middleware" do
+    it "sets the module as the middleware" do
+      mod = Module.new
+      app = Class.new(Hanami::App) { config.middleware.use(mod) }
+
+      expect(app.config.middleware.stack["/"][0]).to include(mod)
+    end
+  end
+
   context "Setting an unsupported middleware" do
     it "raises meaningful error when an unsupported middleware spec was passed" do
       expect {
