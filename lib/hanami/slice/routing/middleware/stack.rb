@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami/middleware"
+require "hanami/errors"
 
 module Hanami
   class Slice
