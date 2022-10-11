@@ -74,6 +74,14 @@ module Hanami
       raise InvalidSettingsError, errors if errors.any?
     end
 
+    def inspect
+      "#<#{self.class.to_s} [#{config._settings.map(&:name).join(", ")}]>"
+    end
+
+    def inspect_values
+      "#<#{self.class.to_s} #{config._settings.map { |setting| "#{setting.name}=#{config[setting.name].inspect}" }.join(" ")}>"
+    end
+
     private
 
     def method_missing(name, *args, &block)
