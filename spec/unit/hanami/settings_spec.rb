@@ -8,7 +8,8 @@ RSpec.describe Hanami::Settings do
       settings_class = Class.new(described_class) do
         setting :database_url, default: "postgres://localhost/test_app_development"
       end
-      store = { database_url: "mysql://localhost/test_app_development" }.freeze
+
+      store = {database_url: "mysql://localhost/test_app_development"}.freeze
 
       instance = settings_class.new(store)
 
@@ -19,6 +20,7 @@ RSpec.describe Hanami::Settings do
       settings_class = Class.new(described_class) do
         setting :database_url, default: "postgres://localhost/test_app_development"
       end
+
       store = {}.freeze
 
       instance = settings_class.new(store)
@@ -26,11 +28,12 @@ RSpec.describe Hanami::Settings do
       expect(instance.config.database_url).to eq("postgres://localhost/test_app_development")
     end
 
-    it "collects error for all failed settings" do
+    it "collects error for all setting values failing their constructors" do
       settings_class = Class.new(described_class) do
         setting :database_url, constructor: ->(_v) { raise "nope to database" }
         setting :redis_url, constructor: ->(_v) { raise "nope to redis" }
       end
+
       store = {
         database_url: "postgres://localhost/test_app_development",
         redis_url: "redis://localhost:6379"
@@ -39,6 +42,19 @@ RSpec.describe Hanami::Settings do
       expect { settings_class.new(store) }.to raise_error(
         described_class::InvalidSettingsError,
         /(database_url: nope to database).*(redis_url: nope to redis)/m,
+      )
+    end
+
+    it "collects errors for missing settings failing their constructors" do
+      settings_class = Class.new(described_class) do
+        setting :database_url, constructor: ->(_v) { raise "nope to database" }
+      end
+
+      store = {}
+
+      expect { settings_class.new(store) }.to raise_error(
+        described_class::InvalidSettingsError,
+        /database_url: nope to database/m,
       )
     end
   end
