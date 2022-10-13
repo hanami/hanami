@@ -11,7 +11,7 @@ RSpec.describe "Settings / Using types", :app_integration do
     ENV.replace(@env)
   end
 
-  specify "dry-types can be used as setting constructors to coerce values" do
+  specify "types from a provided types module can be used as setting constructors to coerce values" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -23,14 +23,12 @@ RSpec.describe "Settings / Using types", :app_integration do
       RUBY
 
       write "config/settings.rb", <<~RUBY
-        require "dry/types"
-
         module TestApp
           class Settings < Hanami::Settings
-            Types = Dry.Types()
+            Bool = Types::Params::Bool
 
             setting :numeric, constructor: Types::Params::Integer
-            setting :flag, constructor: Types::Params::Bool
+            setting :flag, constructor: Bool
           end
         end
       RUBY
@@ -45,7 +43,7 @@ RSpec.describe "Settings / Using types", :app_integration do
     end
   end
 
-  specify "errors raised from setting constructors are collected and re-raised in aggregate" do
+  specify "errors raised from setting constructors are collected and re-raised in aggregate, and will prevent the app from booting" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -57,12 +55,8 @@ RSpec.describe "Settings / Using types", :app_integration do
       RUBY
 
       write "config/settings.rb", <<~RUBY
-        require "dry/types"
-
         module TestApp
           class Settings < Hanami::Settings
-            Types = Dry.Types()
-
             setting :numeric, constructor: Types::Params::Integer
             setting :flag, constructor: Types::Params::Bool
           end
@@ -83,5 +77,4 @@ RSpec.describe "Settings / Using types", :app_integration do
       )
     end
   end
-
 end
