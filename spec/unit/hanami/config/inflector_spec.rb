@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "hanami/configuration"
+require "hanami/config"
 
-RSpec.describe Hanami::Configuration do
+RSpec.describe Hanami::Config do
   subject(:config) { described_class.new(app_name: app_name, env: :development) }
   let(:app_name) { "MyApp::app" }
 

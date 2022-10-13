@@ -7,8 +7,8 @@ require_relative "actions/content_security_policy"
 require_relative "../slice/view_name_inferrer"
 
 module Hanami
-  class Configuration
-    # Hanami actions configuration
+  class Config
+    # Hanami actions config
     #
     # @since 2.0.0
     class Actions
@@ -70,7 +70,7 @@ module Hanami
 
       private
 
-      # Apply defaults for base configuration settings
+      # Apply defaults for base config
       def configure_defaults
         self.default_request_format = :html
         self.default_response_format = :html

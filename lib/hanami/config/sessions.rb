@@ -4,8 +4,8 @@ require "hanami/utils/string"
 require "hanami/utils/class"
 
 module Hanami
-  class Configuration
-    # Hanami configuration for HTTP sessions
+  class Config
+    # Hanami config for HTTP sessions
     #
     # @since 2.0.0
     class Sessions

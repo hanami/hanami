@@ -4,8 +4,8 @@ require "dry/configurable"
 require "hanami/logger"
 
 module Hanami
-  class Configuration
-    # Hanami logger configuration
+  class Config
+    # Hanami logger config
     #
     # @since 2.0.0
     class Logger

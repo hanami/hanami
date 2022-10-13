@@ -1,18 +1,17 @@
 # frozen_string_literal: true
 
-require "hanami/configuration"
-require "hanami/configuration/actions"
+require "hanami/config"
 require "hanami/action"
 
-RSpec.describe Hanami::Configuration, "#actions" do
-  let(:configuration) { described_class.new(app_name: app_name, env: :development) }
+RSpec.describe Hanami::Config, "#actions" do
+  let(:config) { described_class.new(app_name: app_name, env: :development) }
   let(:app_name) { "MyApp::app" }
 
-  subject(:actions) { configuration.actions }
+  subject(:actions) { config.actions }
 
   context "hanami-controller is bundled" do
-    it "is a full actions configuration" do
-      is_expected.to be_an_instance_of(Hanami::Configuration::Actions)
+    it "is a full actions config" do
+      is_expected.to be_an_instance_of(Hanami::Config::Actions)
 
       is_expected.to respond_to(:default_response_format)
       is_expected.to respond_to(:default_response_format=)
@@ -55,7 +54,7 @@ RSpec.describe Hanami::Configuration, "#actions" do
     end
 
     it "does not expose any settings" do
-      is_expected.not_to be_an_instance_of(Hanami::Configuration::Actions)
+      is_expected.not_to be_an_instance_of(Hanami::Config::Actions)
       is_expected.not_to respond_to(:default_response_format)
       is_expected.not_to respond_to(:default_response_format=)
     end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "configuration"
+require_relative "config"
 require_relative "constants"
 require_relative "slice"
 require_relative "slice_name"
@@ -29,7 +29,7 @@ module Hanami
 
       @_mutex.synchronize do
         subclass.class_eval do
-          @configuration = Hanami::Configuration.new(app_name: slice_name, env: Hanami.env)
+          @config = Hanami::Config.new(app_name: slice_name, env: Hanami.env)
 
           # Prepare the load path (based on the default root of `Dir.pwd`) as early as
           # possible, so you can make a `require` inside the body of an `App` subclass,
@@ -43,7 +43,7 @@ module Hanami
 
     # App class interface
     module ClassMethods
-      attr_reader :configuration
+      attr_reader :config
 
       def app_name
         slice_name
@@ -152,7 +152,7 @@ module Hanami
 
         # When auto-registering components in app/, ignore files in `app/lib/` (these will
         # be auto-registered as above), as well as the configured no_auto_register_paths
-        no_auto_register_paths = ([LIB_DIR] + configuration.no_auto_register_paths)
+        no_auto_register_paths = ([LIB_DIR] + config.no_auto_register_paths)
           .map { |path|
             path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
           }

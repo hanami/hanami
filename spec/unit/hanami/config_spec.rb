@@ -1,11 +1,11 @@
-require "hanami/configuration"
+require "hanami/config"
 
-RSpec.describe Hanami::Configuration do
+RSpec.describe Hanami::Config do
   let(:config) { described_class.new(app_name: app_name, env: env) }
   let(:app_name) { "MyApp::app" }
   let(:env) { :development }
 
-  describe "environment-specific configuration" do
+  describe "environment-specific config" do
     before do
       config.logger.level = :debug__set_without_env
     end

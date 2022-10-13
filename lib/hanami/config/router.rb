@@ -4,22 +4,22 @@ require "dry/configurable"
 require_relative "../slice/routing/resolver"
 
 module Hanami
-  class Configuration
-    # Hanami router configuration
+  class Config
+    # Hanami router config
     #
     # @since 2.0.0
     # @api private
     class Router
       include Dry::Configurable
 
-      # Base configuration is provided so router config can include the `base_url`
-      attr_reader :base_configuration
-      private :base_configuration
+      # Base config is provided so router config can include the `base_url`
+      attr_reader :base_config
+      private :base_config
 
       # @api private
       # @since 2.0.0
-      def initialize(base_configuration)
-        @base_configuration = base_configuration
+      def initialize(base_config)
+        @base_config = base_config
       end
 
       setting :resolver, default: Slice::Routing::Resolver
@@ -27,7 +27,7 @@ module Hanami
       # @api private
       # @since 2.0.0
       def options
-        {base_url: base_configuration.base_url}
+        {base_url: base_config.base_url}
       end
 
       private

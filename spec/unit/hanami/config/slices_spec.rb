@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "dry/inflector"
-require "hanami/configuration"
+require "hanami/config"
 require "hanami/slice_name"
 
-RSpec.describe Hanami::Configuration, "#slices" do
+RSpec.describe Hanami::Config, "#slices" do
   subject(:config) { described_class.new(app_name: app_name, env: :development) }
   let(:app_name) { Hanami::SliceName.new(double(name: "MyApp::App"), inflector: Dry::Inflector.new) }
 
