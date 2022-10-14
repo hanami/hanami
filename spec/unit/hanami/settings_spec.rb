@@ -57,6 +57,19 @@ RSpec.describe Hanami::Settings do
         /database_url: nope to database/m,
       )
     end
+
+    it "finalizes the config" do
+      settings_class = Class.new(described_class) do
+        setting :database_url
+      end
+
+      store = {database_url: "postgres://localhost/test_app_development"}
+
+      settings = settings_class.new(store)
+
+      expect(settings.config).to be_frozen
+      expect { settings.database_url = "new" }.to raise_error(Dry::Configurable::FrozenConfig)
+    end
   end
 
   describe "#inspect" do

@@ -139,6 +139,8 @@ module Hanami
       end
 
       raise InvalidSettingsError, errors if errors.any?
+
+      config.finalize!
     end
 
     def inspect
