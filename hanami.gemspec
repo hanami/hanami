@@ -33,13 +33,13 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "bundler",          ">= 1.16", "< 3"
   spec.add_dependency "dry-configurable", "~> 0.16", ">= 0.16.0"
-  spec.add_dependency "dry-core",         "~> 0.7"
+  spec.add_dependency "dry-core",         "~> 0.9", ">= 0.9"
   spec.add_dependency "dry-inflector",    "~> 0.2", ">= 0.2.1"
   spec.add_dependency "dry-system",       "~> 0.26", ">= 0.26.0"
-  spec.add_dependency "dry-monitor",      "~> 0.6", ">= 0.6.3"
+  spec.add_dependency "dry-monitor",      "~> 0.7", ">= 0.7"
   spec.add_dependency "hanami-cli",       "~> 2.0.beta"
   spec.add_dependency "hanami-utils",     "~> 2.0.beta"
-  spec.add_dependency "zeitwerk",         "~> 2.4"
+  spec.add_dependency "zeitwerk",         "~> 2.6"
 
   spec.add_development_dependency "rspec",     "~> 3.8"
   spec.add_development_dependency "rack-test", "~> 1.1"
