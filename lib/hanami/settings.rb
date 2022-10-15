@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+require "dry/core"
 require "dry/configurable"
-require "dry/core/constants"
 
 module Hanami
   # App settings

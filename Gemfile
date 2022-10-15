@@ -16,8 +16,7 @@ gem "hanami-view",       github: "hanami/view",       branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
-gem "dry-core", github: "dry-rb/dry-core", branch: "main"
-gem "dry-types", "~> 1.0"
+gem "dry-types", "~> 1.6.1"
 
 group :test do
   gem "dotenv"
