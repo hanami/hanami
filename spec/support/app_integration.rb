@@ -23,6 +23,32 @@ RSpec.shared_context "Application integration" do
   let(:app_modules) { %i[TestApp Admin Main Search] }
 end
 
+def autoloaders_teardown!
+  # Tear down Zeitwerk (from zeitwerk's own test/support/loader_test)
+  Zeitwerk::Registry.loaders.reject! do |loader|
+    test_loader = loader.root_dirs.any? do |dir, _|
+      dir.include?("/spec/") || dir.include?(Dir.tmpdir) || dir.include?("/slices/") || dir.include?("/app")
+    end
+
+    if test_loader
+      loader.unload
+      true
+    else
+      false
+    end
+  end
+
+  Zeitwerk::Registry.gem_loaders_by_root_file.clear
+  Zeitwerk::Registry.autoloads.reject! do |path, _|
+    path.include?("/spec/") || path.include?("/slices/") || path.include?("/app")
+  end
+  Zeitwerk::Registry.inceptions.clear
+
+  Zeitwerk::ExplicitNamespace.cpaths.reject! do |name, _|
+    name.start_with?("Hanami::")
+  end
+end
+
 RSpec.configure do |config|
   config.include RSpec::Support::Files, :app_integration
   config.include RSpec::Support::WithTmpDirectory, :app_integration
@@ -36,21 +62,7 @@ RSpec.configure do |config|
   end
 
   config.after :each, :app_integration do
-    # Tear down Zeitwerk (from zeitwerk's own test/support/loader_test)
-    Zeitwerk::Registry.loaders.each(&:unload)
-    Zeitwerk::Registry.loaders.clear
-
-    # This private interface changes between 2.5.4 and 2.6.0
-    if Zeitwerk::Registry.respond_to?(:loaders_managing_gems)
-      Zeitwerk::Registry.loaders_managing_gems.clear
-    else
-      Zeitwerk::Registry.gem_loaders_by_root_file.clear
-      Zeitwerk::Registry.autoloads.clear
-      Zeitwerk::Registry.inceptions.clear
-    end
-
-    Zeitwerk::ExplicitNamespace.cpaths.clear
-    Zeitwerk::ExplicitNamespace.tracer.disable
+    autoloaders_teardown!
 
     Hanami.instance_variable_set(:@_bundled, {})
     Hanami.remove_instance_variable(:@_app) if Hanami.instance_variable_defined?(:@_app)

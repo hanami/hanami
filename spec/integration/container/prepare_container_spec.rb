@@ -23,6 +23,8 @@ RSpec.describe "Container / prepare_container", :app_integration do
 
     # The prepare_container block is called when the slice is prepared
     slice.prepare
+
+    autoloaders_teardown!
   end
 
   describe "in app", :in_prepare_container do

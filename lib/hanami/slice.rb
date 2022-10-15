@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require "dry/system/container"
 require "zeitwerk"
+require "dry/system"
+
 require_relative "../hanami"
 require_relative "constants"
 require_relative "errors"
