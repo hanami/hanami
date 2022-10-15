@@ -125,14 +125,22 @@ module Hanami
     def initialize(store = EMPTY_STORE)
       errors = config._settings.map(&:name).each_with_object({}) do |name, errs|
         value = store.fetch(name, Undefined)
-        next if value.eql?(Undefined)
 
-        public_send("#{name}=", value)
+        if value.eql?(Undefined)
+          # When a key is missing entirely from the store, _read_ its value from the config instead,
+          # which ensures its setting constructor runs (with a `nil` argument given) and raises any
+          # necessary errors.
+          public_send(name)
+        else
+          public_send("#{name}=", value)
+        end
       rescue => e # rubocop:disable Style/RescueStandardError
         errs[name] = e
       end
 
       raise InvalidSettingsError, errors if errors.any?
+
+      config.finalize!
     end
 
     def inspect
