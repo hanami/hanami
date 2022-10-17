@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/system/provider/source"
-
 module Hanami
   module Providers
     class Routes < Dry::System::Provider::Source

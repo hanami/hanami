@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/system/provider/source"
-
 module Hanami
   module Providers
     class Inflector < Dry::System::Provider::Source
