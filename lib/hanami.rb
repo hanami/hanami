@@ -113,8 +113,7 @@ module Hanami
   def self.bundled?(gem_name)
     @_mutex.synchronize do
       @_bundled[gem_name] ||= begin
-        gem(gem_name)
-        true
+        Bundler.gem(gem_name)
       rescue Gem::LoadError
         false
       end
