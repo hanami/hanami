@@ -31,21 +31,11 @@ def autoloaders_teardown!
     end
 
     if test_loader
-      loader.unload
+      loader.unregister
       true
     else
       false
     end
-  end
-
-  Zeitwerk::Registry.gem_loaders_by_root_file.clear
-  Zeitwerk::Registry.autoloads.reject! do |path, _|
-    path.include?("/spec/") || path.include?("/slices/") || path.include?("/app")
-  end
-  Zeitwerk::Registry.inceptions.clear
-
-  Zeitwerk::ExplicitNamespace.cpaths.reject! do |name, _|
-    name.start_with?("Hanami::")
   end
 end
 
