@@ -26,9 +26,10 @@ end
 def autoloaders_teardown!
   # Tear down Zeitwerk (from zeitwerk's own test/support/loader_test)
   Zeitwerk::Registry.loaders.reject! do |loader|
-    test_loader = loader.root_dirs.any? do |dir, _|
-      dir.include?("/spec/") || dir.include?(Dir.tmpdir) || dir.include?("/slices/") || dir.include?("/app")
-    end
+    test_loader = loader.dirs.any? { |dir|
+      dir.include?("/spec/") || dir.include?(Dir.tmpdir) ||
+        dir.include?("/slices/") || dir.include?("/app")
+    }
 
     if test_loader
       loader.unregister
