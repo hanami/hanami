@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "dry/core"
+require "dry/core/constants"
 require "dry/configurable"
 require_relative "errors"
 

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "hanami/action"
-
 module Hanami
   module Extensions
     module Action

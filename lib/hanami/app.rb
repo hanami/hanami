@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "config"
 require_relative "constants"
-require_relative "slice"
-require_relative "slice_name"
 
 module Hanami
   # The Hanami app is a singular slice tasked with managing the core components of the app and

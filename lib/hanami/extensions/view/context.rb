@@ -3,8 +3,6 @@
 require "hanami/view"
 require "hanami/view/context"
 require_relative "../../errors"
-require_relative "../../slice_configurable"
-require_relative "slice_configured_context"
 
 module Hanami
   module Extensions

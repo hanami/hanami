@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "dry/configurable"
-require_relative "config"
 
 module Hanami
   # @api private
@@ -22,7 +21,7 @@ module Hanami
       def initialize(*)
         super
 
-        @base_config = Config.new
+        @base_config = Assets::Config.new
       end
 
       def initialize_copy(source)
