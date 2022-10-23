@@ -2,6 +2,26 @@
 
 The web, with simplicity.
 
+## v2.0.0.beta4 - 2022-10-24
+
+### Added
+
+- [Peter Solnica] Improve middleware config by avoiding class names and requires: symbols instead of classes can be passed as middleware identifiers (`config.middleware.use(:body_parser, :json)`); constant namespaces can be configured for resolving symbols into class names (`config.middleware.namespaces = [Hanami::Middleware, MyStuff::Middlewares]`), with the first match winning; first-party middleware classes are required automatically. (#1215)
+
+### Fixed
+
+- [Luca Guidi] Do not attempt to load routes if hanami-router is not bundled (#1214)
+- [Marc Busqué] Ensure nested slices are considered when auto-configuring application components using `Hanami::SliceConfigurable` (#1212)
+- [Tim Riley] Ensure errors are raised during settings loading for any settings that are missing entirely from ENV (#1222)
+
+### Changed
+
+- [Tim Riley] Rename `Hanami::App.configuration` to `Hanami::App.config` and `Hanami::Configuration` to `Hanami::Config` (#1218)
+- [Tim Riley] Make `Hanami::App.settings` available as a class method again (#1213)
+- [Tim Riley] `config/settings.rb` in apps no longer has access to autoloaded constants (changed back to behavior pre-beta3) (#1213)
+- [Tim Riley] Auto-generate a nested `Types` module in `Hanami::Settings` subclasses if dry-types is available, for added convenience in type checking settings (#1213)
+- [Marc Busqué] Hide values from `Hanami::Settings#inspect` (values may contain sensitive data). Values can be inspected via `#inspect_values` (#1217)
+
 ## v2.0.0.beta3 - 2022-09-21
 
 ### Changed
