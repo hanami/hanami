@@ -15,7 +15,6 @@ gem "hanami-cli",        github: "hanami/cli",        branch: "main"
 gem "hanami-view",       github: "hanami/view",       branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
-gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 
 gem "dry-types", "~> 1.6.1"
 
