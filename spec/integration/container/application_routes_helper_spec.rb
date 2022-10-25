@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "stringio"
+
 RSpec.describe "App routes helper", :app_integration do
   specify "Routing to actions based on their container identifiers" do
     with_tmp_directory(Dir.mktmpdir) do
@@ -8,7 +10,7 @@ RSpec.describe "App routes helper", :app_integration do
 
         module TestApp
           class App < Hanami::App
-            config.logger.stream = File.new("/dev/null", "w")
+            config.logger.stream = StringIO.new
           end
         end
       RUBY

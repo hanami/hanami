@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "stringio"
+
 RSpec.describe "Slices / Slice configuration", :app_integration do
   specify "Slices receive a copy of the app configuration, and can make distinct modifications" do
     with_tmp_directory(Dir.mktmpdir) do
@@ -8,7 +10,7 @@ RSpec.describe "Slices / Slice configuration", :app_integration do
 
         module TestApp
           class App < Hanami::App
-            config.logger.stream = File.new("/dev/null", "w")
+            config.logger.stream = StringIO.new
 
             config.no_auto_register_paths << "structs"
           end
