@@ -153,6 +153,10 @@ module Hanami
         container.start(...)
       end
 
+      def stop(...)
+        container.stop(...)
+      end
+
       def key?(...)
         container.key?(...)
       end
