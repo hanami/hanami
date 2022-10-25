@@ -4,6 +4,7 @@ require "hanami/config/logger"
 require "hanami/slice_name"
 require "dry/inflector"
 require "logger"
+require "stringio"
 
 RSpec.describe Hanami::Config::Logger do
   subject { described_class.new(app_name: app_name, env: env) }
@@ -63,10 +64,18 @@ RSpec.describe Hanami::Config::Logger do
   end
 
   describe "#stream=" do
-    it "accepts a IO object or a path to a file" do
-      expect { subject.stream = "/dev/null" }
+    it "accepts a path to a file" do
+      expect { subject.stream = File::NULL }
         .to change { subject.stream }
-        .to("/dev/null")
+        .to(File::NULL)
+    end
+
+    it "accepts a IO object" do
+      stream = StringIO.new
+
+      expect { subject.stream = stream }
+        .to change { subject.stream }
+        .to(stream)
     end
   end
 

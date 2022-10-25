@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rack/test"
+require "stringio"
 
 RSpec.describe "Hanami web app", :app_integration do
   include Rack::Test::Methods
@@ -18,6 +19,7 @@ RSpec.describe "Hanami web app", :app_integration do
       module TestApp
         class App < Hanami::App
           config.middleware.use :body_parser, :json
+          config.logger.stream = StringIO.new
         end
       end
     RUBY
@@ -66,6 +68,7 @@ RSpec.describe "Hanami web app", :app_integration do
         class App < Hanami::App
           config.actions.formats["application/json+scim"] = :json
           config.middleware.use :body_parser, [json: "application/json+scim"]
+          config.logger.stream = StringIO.new
         end
       end
     RUBY

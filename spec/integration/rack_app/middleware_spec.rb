@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rack/test"
+require "stringio"
 
 RSpec.describe "Hanami web app", :app_integration do
   include Rack::Test::Methods
@@ -50,7 +51,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class App < Hanami::App
-          config.logger.stream = File.new("/dev/null", "w")
+          config.logger.stream = StringIO.new
 
           config.middleware.use Middlewares::AppendOne
           config.middleware.use Middlewares::Prepare, before: Middlewares::AppendOne
@@ -101,7 +102,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class App < Hanami::App
-          config.logger.stream = File.new("/dev/null", "w")
+          config.logger.stream = StringIO.new
         end
       end
     RUBY
@@ -164,7 +165,7 @@ RSpec.describe "Hanami web app", :app_integration do
         end
 
         class App < Hanami::App
-          config.logger.stream = File.new("/dev/null", "w")
+          config.logger.stream = StringIO.new
 
           config.middleware.use(TestApp::TestMiddleware) { |env| env["tested"] = "yes" }
         end

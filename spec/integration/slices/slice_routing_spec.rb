@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rack/test"
+require "stringio"
 
 RSpec.describe "Slices / Slice routing", :app_integration do
   include Rack::Test::Methods
@@ -34,7 +35,7 @@ RSpec.describe "Slices / Slice routing", :app_integration do
 
         module TestApp
           class App < Hanami::App
-            config.logger.stream = File.new("/dev/null", "w")
+            config.logger.stream = StringIO.new
           end
         end
       RUBY
@@ -67,7 +68,7 @@ RSpec.describe "Slices / Slice routing", :app_integration do
 
         module TestApp
           class App < Hanami::App
-            config.logger.stream = File.new("/dev/null", "w")
+            config.logger.stream = StringIO.new
           end
         end
       RUBY
@@ -118,7 +119,7 @@ RSpec.describe "Slices / Slice routing", :app_integration do
 
           module TestApp
             class App < Hanami::App
-              config.logger.stream = File.new("/dev/null", "w")
+              config.logger.stream = StringIO.new
             end
           end
         RUBY
