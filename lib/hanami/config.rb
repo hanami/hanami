@@ -130,7 +130,7 @@ module Hanami
 
     # Apply config for the given environment
     #
-    # @param env [String] the environment name
+    # @param env_name [String] the environment name
     #
     # @return [Hanami::Config]
     #

@@ -23,7 +23,7 @@ module Hanami
         #   ViewNameInferrer.call(action_name: "Main::Actions::Posts::Create", slice: Main::Slice)
         #   # => ["views.posts.create", "views.posts.new"]
         #
-        # @param action_name [String] action class name
+        # @param action_class_name [String] action class name
         # @param slice [Hanami::Slice, Hanami::Application] Hanami slice containing the action
         #
         # @return [Array<string>] array of paired view container keys
