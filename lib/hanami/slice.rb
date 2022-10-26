@@ -53,12 +53,26 @@ module Hanami
     module ClassMethods
       attr_reader :parent, :autoloader, :container
 
+      # Returns the Hanami app.
+      #
+      # @return [Hanami::App]
+      #
+      # @api public
+      # @since 2.0.0
       def app
         Hanami.app
       end
 
-      # A slice's config is copied from the app config at time of first access. The app should have
-      # its config completed before slices are loaded.
+      # Returns the slice's config.
+      #
+      # A slice's config is copied from the app config at time of first access.
+      #
+      # @return [Hanami::Config]
+      #
+      # @see App::ClassMethods.config
+      #
+      # @api public
+      # @since 2.0.0
       def config
         @config ||= app.config.dup.tap do |slice_config|
           # Remove specific values from app that will not apply to this slice
@@ -66,10 +80,28 @@ module Hanami
         end
       end
 
+      # Returns a {SliceName} for the slice, an object with methods returning the name of the slice
+      # in various formats.
+      #
+      # @return [SliceName]
+      #
+      # @api public
+      # @since 2.0.0
       def slice_name
         @slice_name ||= SliceName.new(self, inflector: method(:inflector))
       end
 
+      # Returns the constant for the slice's module namespace.
+      #
+      # @example
+      #   MySlice::Slice.namespace # => MySlice
+      #
+      # @return [Module] the namespace module constant
+      #
+      # @see SliceName#namespace
+      #
+      # @api public
+      # @since 2.0.0
       def namespace
         slice_name.namespace
       end
