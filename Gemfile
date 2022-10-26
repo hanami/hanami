@@ -6,6 +6,7 @@ gemspec
 unless ENV["CI"]
   gem "byebug", platforms: :mri
   gem "yard"
+  gem "yard-junk"
 end
 
 gem "hanami-utils",      github: "hanami/utils",      branch: "main"
