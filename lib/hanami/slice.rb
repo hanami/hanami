@@ -238,30 +238,133 @@ module Hanami
         self
       end
 
+      # Shuts down the slice's providers, as well as the providers in any nested slices.
+      #
+      # @return [self]
+      #
+      # @api public
+      # @since 2.0.0
       def shutdown
         slices.each(&:shutdown)
         container.shutdown!
         self
       end
 
+      # Returns true if the slice has been prepared.
+      #
+      # @return [Boolean]
+      #
+      # @see #prepare
+      #
+      # @api public
+      # @since 2.0.0
       def prepared?
         !!@prepared
       end
 
+      # Returns true if the slice has been booted.
+      #
+      # @return [Boolean]
+      #
+      # @see #boot
+      #
+      # @api public
+      # @since 2.0.0
       def booted?
         !!@booted
       end
 
+      # Returns the slice's collection of nested slices.
+      #
+      # @return [SliceRegistrar]
+      #
+      # @see #register_slice
+      #
+      # @api public
+      # @since 2.0.0
       def slices
         @slices ||= SliceRegistrar.new(self)
       end
 
+      # @overload register_slice(name, &block)
+      #   Registers a nested slice with the given name.
+      #
+      #   This will define a new {Slice} subclass for the slice. If a block is given, it is passed
+      #   the class object, and will be evaluated in the context of the class like `class_eval`.
+      #
+      #   @example
+      #     MySlice::Slice.register_slice do
+      #       # Configure the slice or do other class-level things here
+      #     end
+      #
+      #   @param name [Symbol] the identifier for the slice to be registered
+      #   @yieldparam slice [Hanami::Slice] the newly defined slice class
+      #
+      # @overload register_slice(name, slice_class)
+      #   Registers a nested slice with the given name.
+      #
+      #   The given `slice_class` will be registered as the slice. It must be a subclass of {Slice}.
+      #
+      #   @param name [Symbol] the identifier for the slice to be registered
+      #   @param slice_class [Hanami::Slice]
+      #
+      # @return [slices]
+      #
+      # @see SliceRegistrar#register
+      #
+      # @api public
+      # @since 2.0.0
       def register_slice(...)
         slices.register(...)
       end
 
+      # Registers a component in the slice's container.
+      #
+      # @overload register(key, object)
+      #   Registers the given object as the component. This same object will be returned whenever
+      #   the component is resolved.
+      #
+      #   @param key [String] the component's key
+      #   @param object [Object] the object to register as the component
+      #
+      # @overload reigster(key, memoize: false, &block)
+      #   Registers the given block as the component. When the component is resolved, the return
+      #   value of the block will be returned.
+      #
+      #   Since the block is not called until resolution-time, this is a useful way to register
+      #   components that have dependencies on other components in the container, which as yet may
+      #   be unavailable at the time of registration.
+      #
+      #   All auto-registered components are registered in block form.
+      #
+      #   When `memoize` is true, the component will be memoized upon first resolution and the same
+      #   object returned on all subsequent resolutions, meaning the block is only called once.
+      #   Otherwise, the block will be called and a new object returned on every resolution.
+      #
+      #   @param key [String] the component's key
+      #   @param memoize [Boolean]
+      #   @yieldreturn [Object] the object to register as the component
+      #
+      # @overload reigster(key, call: true, &block)
+      #   Registers the given block as the component. When `call: false` is given, then the block
+      #   itself will become the component.
+      #
+      #   When such a component is resolved, the block will not be called, and instead the `Proc`
+      #   object for that block will be returned.
+      #
+      #   @param key [String] the component's key
+      #   @param call [Booelan]
+      #
+      # @return [self]
+      #
+      # @see #[]
+      # @see #resolve
+      #
+      # @api public
+      # @since 2.0.0
       def register(...)
         container.register(...)
+        self
       end
 
       def register_provider(...)
