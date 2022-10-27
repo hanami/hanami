@@ -1,2 +1,4 @@
+--markup=markdown
+
 --plugin junk
 --junk-log-ignore UnknownError
