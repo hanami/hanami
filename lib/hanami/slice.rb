@@ -106,6 +106,15 @@ module Hanami
         slice_name.namespace
       end
 
+      # Returns the slice's root, either the root as explicitly configured, or a default fallback of
+      # the slice's name within the app's `slices/` dir.
+      #
+      # @return [Pathname]
+      #
+      # @see Config#root
+      #
+      # @api public
+      # @since 2.0.0
       def root
         # Provide a best guess for a root when it is not yet configured.
         #
@@ -121,23 +130,101 @@ module Hanami
         config.root || app.root.join(SLICES_DIR, slice_name.to_s)
       end
 
+      # Returns the slice's configured inflector.
+      #
+      # Unless explicitly re-configured for the slice, this will be the app's inflector.
+      #
+      # @return [Dry::Inflector]
+      #
+      # @see Config#inflector
+      # @see Config#inflections
+      #
+      # @api public
+      # @since 2.0.0
       def inflector
         config.inflector
       end
 
+      # @overload preapre
+      #   Prepares the slice.
+      #
+      #   This will define the slice's `Slice` and `Deps` constants, make all Ruby source files
+      #   inside the slice's root dir autoloadable, as well as lazily loadable as container
+      #   components.
+      #
+      #   Call `prepare` when you want to access particular components within the slice while still
+      #   minimizing load time. Preparing slices is the approach taken when loading the Hanami
+      #   console or when running tests.
+      #
+      #   @return [self]
+      #
+      #   @see #boot
+      #
+      #   @api public
+      #   @since 2.0.0
+      #
+      # @overload prepare(provider_name)
+      #   Prepares a registered provider with the given name.
+      #
+      #   @return [self]
+      #
+      #   @api public
+      #   @since 2.0.0
       def prepare(provider_name = nil)
         if provider_name
           container.prepare(provider_name)
-          self
         else
           prepare_slice
         end
+
+        self
       end
 
+      # Captures the given block to be called with the slice's container during the slice's
+      # `prepare` step, after the slice has already configured the container.
+      #
+      # This is intended for advanced usage only and should not be needed for ordinary slice
+      # configuration and usage.
+      #
+      # @example
+      #   module MySlice
+      #     class Sliice < Hanami::Slice
+      #       prepare_container do |container|
+      #         # ...
+      #       end
+      #     end
+      #   end
+      #
+      # @yieldparam container [Dry::System::Container] the slice's container
+      #
+      # @return [self]
+      #
+      # @see #prepare
+      #
+      # @api public
+      # @since 2.0.0
       def prepare_container(&block)
         @prepare_container_block = block
+        self
       end
 
+      # Boots the slice.
+      #
+      # This will prepare the slice (if not already prepared), start each of its providers, register
+      # all the slice's components from its Ruby source files, and import components from any other
+      # slices. It will also boot any of the slice's own registered nested slices. It will then
+      # freeze its container so no further components can be registered.
+      #
+      # Call `boot` if you want to fully load a slice and incur all load time up front, such as when
+      # preparing an app to serve web requests. Booting slices is the approach taken when running
+      # Hanami's standard Puma setup (see `config.ru`).
+      #
+      # @return [self]
+      #
+      # @see #prepare
+      #
+      # @api public
+      # @since 2.0.0
       def boot
         return self if booted?
 
