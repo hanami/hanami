@@ -44,8 +44,6 @@ module Hanami
     end
 
     def load_slices
-      return self unless root
-
       slice_configs = Dir[root.join(CONFIG_DIR, SLICES_DIR, "*#{RB_EXT}")]
         .map { |file| File.basename(file, RB_EXT) }
 
