@@ -145,7 +145,7 @@ module Hanami
         config.inflector
       end
 
-      # @overload preapre
+      # @overload prepare
       #   Prepares the slice.
       #
       #   This will define the slice's `Slice` and `Deps` constants, make all Ruby source files
