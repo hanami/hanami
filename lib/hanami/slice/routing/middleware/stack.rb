@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami/middleware"
+require "hanami/middleware/app"
 require "hanami/errors"
 
 module Hanami
@@ -106,20 +107,17 @@ module Hanami
               raise "Add \"rack\" to your `Gemfile` to run Hanami as a rack app"
             end
 
-            require "rack/builder"
+            mapping = to_hash
+            return app if mapping.empty?
 
-            s = self
+            Hanami::Middleware::App.new(app, mapping)
+          end
 
-            Rack::Builder.new do
-              s.each do |prefix, stack|
-                s.mapped(self, prefix) do
-                  stack.each do |middleware, args, blk|
-                    use(middleware, *args, &blk)
-                  end
-                end
-
-                run app
-              end
+          # @since 2.0.0
+          # @api private
+          def to_hash
+            @stack.each_with_object({}) do |(path, _), result|
+              result[path] = stack_for(path)
             end
           end
 
@@ -153,6 +151,16 @@ module Hanami
           end
 
           # @since 2.0.0
+          # @api private
+          def stack_for(current_path)
+            @stack.each_with_object([]) do |(path, stack), result|
+              next unless current_path.start_with?(path)
+
+              result.push(stack)
+            end.flatten(1)
+          end
+
+          # @since 2.0.0
           def resolve_middleware_class(spec)
             case spec
             when Symbol then load_middleware_class(spec)
@@ -173,6 +181,7 @@ module Hanami
             rescue LoadError # rubocop:disable Lint/SuppressedException
             end
 
+            # FIXME: Classify must use App inflector
             class_name = Hanami::Utils::String.classify(spec.to_s)
             namespace = namespaces.detect { |ns| ns.const_defined?(class_name) }
 

@@ -9,7 +9,7 @@ unless ENV["CI"]
 end
 
 gem "hanami-utils",      github: "hanami/utils",      branch: "main"
-gem "hanami-router",     github: "hanami/router",     branch: "main"
+gem "hanami-router",     github: "hanami/router",     branch: "middleware-trie"
 gem "hanami-controller", github: "hanami/controller", branch: "main"
 gem "hanami-cli",        github: "hanami/cli",        branch: "main"
 gem "hanami-view",       github: "hanami/view",       branch: "main"

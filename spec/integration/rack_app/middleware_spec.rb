@@ -236,112 +236,107 @@ RSpec.describe "Hanami web app", :app_integration do
     end
   end
 
-  specify "Setting middlewares on a per-slice basis in the router" do
-    write "config/app.rb", <<~RUBY
-      require "hanami"
+  context "with simple app" do
+    before do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
 
-      module TestApp
-        class App < Hanami::App
-          config.logger.stream = File.new("/dev/null", "w")
-        end
-      end
-    RUBY
-
-    write "config/routes.rb", <<~RUBY
-      module TestApp
-        class Middleware
-          def self.called_as
-            @called_as ||= Hash.new { |hsh, key| hsh[key] = [] }
-          end
-
-          def initialize(app, tag)
-            @app = app
-            @tag = tag
-          end
-
-          def call(env)
-            self.class.called_as[@tag] << env["PATH_INFO"]
-            @app.call(env)
+        module TestApp
+          class App < Hanami::App
+            config.logger.stream = File.new("/dev/null", "w")
           end
         end
+      RUBY
 
-        class Routes < Hanami::Routes
-          slice :main, at: "/" do
-            use TestApp::Middleware, :main
+      write "lib/test_app/middleware/authentication.rb", <<~RUBY
+        module TestApp
+          module Middleware
+            class Authentication
+              def self.inspect
+                "<Middleware::Auth>"
+              end
 
-            root to: "home.show"
-          end
+              def initialize(app)
+                @app = app
+              end
 
-          slice :admin, at: "/admin" do
-            use TestApp::Middleware, :admin
+              def call(env)
+                env["AUTH_USER_ID"] = user_id = "23"
+                status, headers, body = @app.call(env)
+                headers["X-Auth-User-ID"] = user_id
 
-            root to: "home.show"
-
-            get "test", to: "test.show"
-          end
-        end
-      end
-    RUBY
-
-    write "slices/main/actions/home/show.rb", <<~RUBY
-      module Main
-        module Actions
-          module Home
-            class Show < Hanami::Action
-              def handle(*, res)
-                res.body = "Hello from main"
+                [status, headers, body]
               end
             end
           end
         end
-      end
-    RUBY
+      RUBY
 
-    write "slices/admin/actions/home/show.rb", <<~RUBY
-      module Admin
-        module Actions
-          module Home
-            class Show < Hanami::Action
-              def handle(*, res)
-                res.body = "Hello from admin"
+      write "config/routes.rb", <<~RUBY
+        require "test_app/middleware/authentication"
+
+        module TestApp
+          class Routes < Hanami::Routes
+            root to: ->(*) { [200, {"Content-Length" => "4"}, ["Home"]] }
+
+            slice :admin, at: "/admin" do
+              use TestApp::Middleware::Authentication
+
+              root to: "home.show"
+            end
+          end
+        end
+      RUBY
+
+      write "slices/admin/actions/home/show.rb", <<~RUBY
+        module Admin
+          module Actions
+            module Home
+              class Show < Hanami::Action
+                def handle(req, res)
+                  res.body = "Hello from admin (User ID " + req.env['AUTH_USER_ID'] + ")"
+                end
               end
             end
           end
         end
-      end
-    RUBY
+      RUBY
 
-    write "slices/admin/actions/test/show.rb", <<~RUBY
-      module Admin
-        module Actions
-          module Test
-            class Show < Hanami::Action
-              def handle(*, res)
-                res.body = "Hello from admin test"
-              end
-            end
-          end
-        end
-      end
-    RUBY
+      require "hanami/boot"
+    end
 
-    require "hanami/boot"
-
-    aggregate_failures do
+    it "excludes root scope" do
       get "/"
-      expect(last_response.status).to eq 200
-      expect(last_response.body).to eq "Hello from main"
-      expect(TestApp::Middleware.called_as).to eq(main: ["/"])
 
-      get "/admin"
       expect(last_response.status).to eq 200
-      expect(last_response.body).to eq "Hello from admin"
-      expect(TestApp::Middleware.called_as).to eq(main: ["/"], admin: ["/admin"])
+      expect(last_response.body).to eq "Home"
+      expect(last_response.headers).to_not have_key("X-Auth-User-ID")
+    end
 
-      get "/admin/test"
-      expect(last_response.status).to eq 200
-      expect(last_response.body).to eq "Hello from admin test"
-      expect(TestApp::Middleware.called_as).to eq(main: ["/"], admin: ["/admin", "/admin/test"])
+    it "excludes not found routes in root scope" do
+      get "/foo"
+
+      expect(last_response.status).to eq 404
+      expect(last_response.body).to eq "Not Found"
+      expect(last_response.headers).to_not have_key("X-Auth-User-ID")
+    end
+
+    context "within slice" do
+      it "uses Rack middleware" do
+        get "/admin"
+
+        expect(last_response.status).to eq 200
+        expect(last_response.body).to eq "Hello from admin (User ID 23)"
+        expect(last_response.headers).to have_key("X-Auth-User-ID")
+      end
+
+      it "uses Rack middleware for not found paths" do
+        get "/admin/users"
+
+        expect(last_response.status).to be(404)
+        expect(last_response.body).to eq "Not Found"
+        expect(last_response.headers).to have_key("X-Auth-User-ID")
+      end
     end
   end
 end
