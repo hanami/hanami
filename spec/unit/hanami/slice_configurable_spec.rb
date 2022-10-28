@@ -108,16 +108,18 @@ RSpec.describe Hanami::SliceConfigurable, :app_integration do
         end
       end
 
-      module Nested
-        class MySubclass < TestApp::BaseClass
+      module Main
+        module Nested
+          class MySubclass < TestApp::BaseClass
+          end
         end
       end
     end
 
-    subject(:subclass) { Nested::MySubclass }
+    subject(:subclass) { Main::Nested::MySubclass }
 
     it "calls `configure_for_slice` with the nested slice" do
-      expect(subclass.traces).to eq [Nested::Slice]
+      expect(subclass.traces).to eq [Main::Nested::Slice]
     end
   end
 end

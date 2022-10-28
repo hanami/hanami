@@ -89,11 +89,23 @@ module Hanami
       parent.inflector
     end
 
+    def namespace
+      define_at_top_namespace? ? ::Object : parent.namespace
+    end
+
+    def namespace_name
+      namespace.name
+    end
+
+    def define_at_top_namespace?
+      parent == parent.app 
+    end
+
     # Runs when a slice file has been found at `config/slices/[slice_name].rb`, or a slice
     # directory at `slices/[slice_name]`. Attempts to require the slice class, if defined,
     # or generates a new slice class for the given slice name.
     def load_slice(slice_name)
-      slice_const_name = inflector.camelize(slice_name)
+      slice_const_name = inflector.camelize("#{namespace_name}/#{slice_name}")
       slice_require_path = root.join(CONFIG_DIR, SLICES_DIR, slice_name).to_s
 
       begin
@@ -106,7 +118,7 @@ module Hanami
         begin
           inflector.constantize("#{slice_const_name}::Slice")
         rescue NameError => e
-          raise e unless e.name.to_s == slice_const_name || e.name.to_s == :Slice
+          raise e unless e.name.to_s == inflector.camelize(slice_name) || e.name.to_s == :Slice
         end
 
       register(slice_name, slice_class)
@@ -115,10 +127,10 @@ module Hanami
     def build_slice(slice_name, &block)
       slice_module =
         begin
-          slice_module_name = inflector.camelize(slice_name.to_s)
-          inflector.constantize(slice_module_name)
+          slice_const_name = inflector.camelize("#{namespace_name}/#{slice_name}")
+          inflector.constantize(slice_const_name)
         rescue NameError
-          Object.const_set(inflector.camelize(slice_module_name), Module.new)
+          namespace.const_set(inflector.camelize(slice_name), Module.new)
         end
 
       slice_module.const_set(:Slice, Class.new(Hanami::Slice, &block))
