@@ -355,7 +355,7 @@ module Hanami
       #   @param key [String] the component's key
       #   @param call [Booelan]
       #
-      # @return [self]
+      # @return [container]
       #
       # @see #[]
       # @see #resolve
@@ -364,13 +364,85 @@ module Hanami
       # @since 2.0.0
       def register(...)
         container.register(...)
-        self
       end
 
+      # @overload register_provider(name, namespace: nil, from: nil, source: nil, if: true, &block)
+      #   Registers a provider and its lifecycle hooks.
+      #
+      #   In most cases, you should call this from a dedicated file for the provider in your app or
+      #   slice's `config/providers/` dir. This allows the provider to be loaded when individual
+      #   matching components are resolved (for prepared slices) or when slices are booted.
+      #
+      #   @example Simple provider
+      #     # config/providers/db.rb
+      #     Hanami.app.register_provider(:db) do
+      #       start do
+      #         require "db"
+      #         register("db", DB.new)
+      #       end
+      #     end
+      #
+      #   @example Provider with lifecycle steps, also using dependencies from the target container
+      #     # config/providers/db.rb
+      #     Hanami.app.register_provider(:db) do
+      #       prepare do
+      #         require "db"
+      #         db = DB.new(target_container["settings"].database_url)
+      #         register("db", db)
+      #       end
+      #
+      #       start do
+      #         container["db"].establish_connection
+      #       end
+      #
+      #       stop do
+      #         container["db"].close_connection
+      #       end
+      #     end
+      #
+      #   @example Probvider registration under a namespace
+      #     # config/providers/db.rb
+      #     Hanami.app.register_provider(:persistence, namespace: true) do
+      #       start do
+      #         require "db"
+      #
+      #         # Namespace option above means this will be registered as "persistence.db"
+      #         register("db", DB.new)
+      #       end
+      #     end
+      #
+      #   @param name [Symbol] the unique name for the provider
+      #   @param namespace [Boolean, String, nil] register components from the provider with given
+      #     namespace. May be an explicit string, or `true` for the namespace to be the provider's
+      #     name
+      #   @param from [Symbol, nil] the group for an external provider source to use, with the
+      #     provider source name inferred from `name` or passsed explicitly as `source:`
+      #   @param source [Symbol, nil] the name of the external provider source to use, if different
+      #     from the value provided as `name`
+      #   @param if [Boolean] a boolean-returning expression to determine whether to register the
+      #     provider
+      #
+      #   @return [container]
+      #
+      #   @api public
+      #   @since 2.0.0
       def register_provider(...)
         container.register_provider(...)
       end
 
+      # Starts a provider.
+      #
+      # This triggers the provider's `prepare` and `start` lifecycle steps.
+      #
+      # @example
+      #   MySlice::Slice.start(:persistence)
+      #
+      # @param name [Symbol] the name of the registered provider to start
+      #
+      # @return [container]
+      #
+      # @api public
+      # @since 2.0.0
       def start(...)
         container.start(...)
       end
@@ -379,18 +451,58 @@ module Hanami
         container.stop(...)
       end
 
+      # @overload key?(key)
+      #   Returns true if the component with the given key is registered in the container.
+      #
+      #   For a prepared slice, calling `key?` will also try to load the component if not loaded
+      #   already.
+      #
+      #   @param key [String, Symbol] the component key
+      #
+      #   @return [Boolean]
+      #
+      #   @api public
+      #   @since 2.0.0
       def key?(...)
         container.key?(...)
       end
 
+      # Returns an array of keys for all currently registered components in the container.
+      #
+      # For a prepared slice, this will be the set of components that have been previously resolved.
+      # For a booted slice, this will be all components available for the slice.
+      #
+      # @return [Array<String>]
+      #
+      # @api public
+      # @since 2.0.0
       def keys
         container.keys
       end
 
+      # @overload [](key)
+      #   Resolves the component with the given key from the container.
+      #
+      #   For a prepared slice, this will attempt to load and register the matching component if it
+      #   is not loaded already. For a booted slice, this will return from already registered
+      #   components only.
+      #
+      #   @return [Object] the resolved component's object
+      #
+      #   @raise Dry::Container::KeyError if the component could not be found or loaded
+      #
+      #   @see #resolve
+      #
+      #   @api public
+      #   @since 2.0.0
       def [](...)
         container.[](...)
       end
 
+      # @see #[]
+      #
+      # @api public
+      # @since 2.0.0
       def resolve(...)
         container.resolve(...)
       end
