@@ -63,12 +63,12 @@ RSpec.describe "Hanami setup", :app_integration do
 
           with_tmp_directory(Dir.mktmpdir) do
             write "config/app.rb", <<~RUBY
-            require "hanami"
+              require "hanami"
 
-            module TestApp
-              class App < Hanami::App
+              module TestApp
+                class App < Hanami::App
+                end
               end
-            end
             RUBY
 
             expect { setup }.to change { Hanami.app? }.to true
