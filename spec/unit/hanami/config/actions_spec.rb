@@ -54,7 +54,7 @@ RSpec.describe Hanami::Config, "#actions" do
     end
 
     it "does not expose any settings" do
-      is_expected.not_to be_an_instance_of(Hanami::Config::Actions)
+      is_expected.to be_an_instance_of(Hanami::Config::NullConfig)
       is_expected.not_to respond_to(:default_response_format)
       is_expected.not_to respond_to(:default_response_format=)
     end
