@@ -1,22 +1,10 @@
 # frozen_string_literal: true
 
+require_relative "../../routes"
+
 module Hanami
   class Slice
     module Routing
-      # @since 2.0.0
-      class UnknownActionError < Hanami::Error
-        def initialize(identifier)
-          super("unknown action referenced in router: `#{identifier.inspect}'")
-        end
-      end
-
-      # @since 2.0.0
-      class NotCallableEndpointError < StandardError
-        def initialize(endpoint)
-          super("#{endpoint.inspect} is not compatible with Rack. Please make sure it implements #call.")
-        end
-      end
-
       # Hanami app router endpoint resolver
       #
       # @since 2.0.0
@@ -55,7 +43,7 @@ module Hanami
             end
 
           unless endpoint.respond_to?(:call)
-            raise NotCallableEndpointError.new(endpoint)
+            raise Routes::NotCallableEndpointError.new(endpoint)
           end
 
           endpoint
@@ -79,7 +67,7 @@ module Hanami
           # concerns (which may not be fully loaded at the time of reading the routes)
           -> (*args) {
             action = slice.resolve(action_key) do
-              raise UnknownActionError.new(key)
+              raise Routes::MissingActionError.new(action_key, slice)
             end
 
             action.call(*args)
@@ -89,7 +77,7 @@ module Hanami
         def ensure_action_in_slice(key)
           return unless slice.booted?
 
-          raise UnknownActionError.new(key) unless slice.key?(key)
+          raise Routes::MissingActionError.new(key, slice) unless slice.key?(key)
         end
       end
     end
