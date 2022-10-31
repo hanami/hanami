@@ -51,7 +51,48 @@ module Hanami
 
     # rubocop:disable Metrics/ModuleLength
     module ClassMethods
-      attr_reader :parent, :autoloader, :container
+      # Returns the slice's parent.
+      #
+      # For top-level slices defined in `slices/` or `config/slices/`, this will be the Hanami app
+      # itself (`Hanami.app`). For nested slices, this will be the slice in which they were
+      # registered.
+      #
+      # @return [Hanami::Slice]
+      #
+      # @see #register_slice
+      #
+      # @api public
+      # @since 2.0.0
+      attr_reader :parent
+
+      # Returns the slice's autoloader.
+      #
+      # Each slice has its own `Zeitwerk::Loader` autoloader instance, which is setup when the slice
+      # is {#prepare prepared}.
+      #
+      # @return [Zeitwerk::Loader]
+      #
+      # @see https://github.com/fxn/zeitwerk
+      #
+      # @api public
+      # @since 2.0.0
+      attr_reader :autoloader
+
+      # Returns the slice's container.
+      #
+      # This is a `Dry::System::Container` that is already configured for the slice.
+      #
+      # In ordinary usage, you shouldn't need direct access the container at all, since the slice
+      # provides its own methods for interacting with the container (such as {#[]}, {#keys}, {#key?}
+      # {#register}, {#register_provider}, {#prepare}, {#start}, {#stop}).
+      #
+      # If you need to configure the container directly, use {#prepare_container}.
+      #
+      # @see https://dry-rb.org/gems/dry-system
+      #
+      # @api public
+      # @since 2.0.0
+      attr_reader :container
 
       # Returns the Hanami app.
       #
