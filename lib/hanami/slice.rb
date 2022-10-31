@@ -164,7 +164,11 @@ module Hanami
       #   @since 2.0.0
       #
       # @overload prepare(provider_name)
-      #   Prepares a registered provider with the given name.
+      #   Prepares a provider.
+      #
+      #   This triggers the provider's `prepare` lifecycle step.
+      #
+      #   @param provider_name [Symbol] the name of the provider to start
       #
       #   @return [self]
       #
@@ -430,34 +434,38 @@ module Hanami
         container.register_provider(...)
       end
 
-      # Starts a provider.
+      # @overload start(provider_name)
+      #   Starts a provider.
       #
-      # This triggers the provider's `prepare` and `start` lifecycle steps.
+      #   This triggers the provider's `prepare` and `start` lifecycle steps.
       #
-      # @example
-      #   MySlice::Slice.start(:persistence)
+      #   @example
+      #     MySlice::Slice.start(:persistence)
       #
-      # @param name [Symbol] the name of the registered provider to start
+      #   @param provider_name [Symbol] the name of the provider to start
       #
-      # @return [container]
+      #   @return [container]
       #
-      # @api public
-      # @since 2.0.0
+      #   @api public
+      #   @since 2.0.0
       def start(...)
         container.start(...)
       end
 
-      # Stops a provider.
+      # @overload stop(provider_name)
+      #   Stops a provider.
       #
-      # This triggers the provider's `stop` lifecycle hook.
+      #   This triggers the provider's `stop` lifecycle hook.
       #
-      # @example
-      #   MySlice::Slice.stop(:persistence)
+      #   @example
+      #     MySlice::Slice.stop(:persistence)
       #
-      # @return [container]
+      #   @param provider_name [Symbol] the name of the provider to start
       #
-      # @api public
-      # @since 2.0.0
+      #   @return [container]
+      #
+      #   @api public
+      #   @since 2.0.0
       def stop(...)
         container.stop(...)
       end
