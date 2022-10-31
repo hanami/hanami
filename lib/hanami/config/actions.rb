@@ -71,15 +71,14 @@ module Hanami
       #   @since 2.0.0
       setting :csrf_protection
 
-      # @!attribute [r] content_security_policy
-      #   Returns the Content Security Policy config for actions.
+      # Returns the Content Security Policy config for actions.
       #
-      #   The resulting policy is set as a default `"Content-Security-Policy"` response header.
+      # The resulting policy is set as a default `"Content-Security-Policy"` response header.
       #
-      #   @return [Hanami::Config::Actions::ContentSecurityPolicy]
+      # @return [Hanami::Config::Actions::ContentSecurityPolicy]
       #
-      #   @api public
-      #   @since 2.0.0
+      # @api public
+      # @since 2.0.0
       attr_accessor :content_security_policy
 
       # The following settings are for view and assets integration with actions, and are NOT
