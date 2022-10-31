@@ -447,6 +447,17 @@ module Hanami
         container.start(...)
       end
 
+      # Stops a provider.
+      #
+      # This triggers the provider's `stop` lifecycle hook.
+      #
+      # @example
+      #   MySlice::Slice.stop(:persistence)
+      #
+      # @return [container]
+      #
+      # @api public
+      # @since 2.0.0
       def stop(...)
         container.stop(...)
       end
@@ -507,8 +518,26 @@ module Hanami
         container.resolve(...)
       end
 
+      # Specifies the components to export from the slice.
+      #
+      # Slices importing from this slice can import the specified components only.
+      #
+      # @example
+      #   module MySlice
+      #     class Slice < Hanami::Slice
+      #       export ["search", "index_entity"]
+      #     end
+      #   end
+      #
+      # @param keys [Array<String>] the component keys to export
+      #
+      # @return [self]
+      #
+      # @api public
+      # @since 2.0.0
       def export(keys)
         container.config.exports = keys
+        self
       end
 
       def import(from:, **kwargs)
