@@ -10,12 +10,9 @@ module Hanami
   class Config
     # Hanami actions config
     #
-    # This includes standard Hanami::Action `config` and configures it with sensible defaults for
-    # actions used within a full Hanami app.
-    #
-    # It also provides additional settings for integration of actions with TODO
-    #
-    # @see
+    # This exposes all the settings from the standalone `Hanami::Action` class, pre-configured with
+    # sensible defaults for actions within a full Hanami app. It also provides additional settings
+    # for further integration of actions with other full stack app components.
     #
     # @since 2.0.0
     # @api public
