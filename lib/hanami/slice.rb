@@ -178,9 +178,6 @@ module Hanami
       end
 
       def import(from:, **kwargs)
-        # TODO: This should be handled via dry-system (see dry-rb/dry-system#228)
-        raise "Cannot import after booting" if booted?
-
         slice = self
 
         container.after(:configure) do
