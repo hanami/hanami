@@ -10,10 +10,12 @@ module Hanami
     class Router < ::Hanami::Router
       # @api private
       attr_reader :middleware_stack
+      attr_reader :path_prefix
 
       # @since 2.0.0
       # @api private
-      def initialize(routes:, middleware_stack: Routing::Middleware::Stack.new, **kwargs, &blk)
+      def initialize(routes:, middleware_stack: Routing::Middleware::Stack.new, prefix: ::Hanami::Router::DEFAULT_PREFIX, **kwargs, &blk)
+        @path_prefix = Hanami::Router::Prefix.new(prefix)
         @middleware_stack = middleware_stack
         instance_eval(&blk)
         super(**kwargs, &routes)
@@ -30,16 +32,8 @@ module Hanami
 
       # @since 2.0.0
       # @api private
-      def use(...)
-        middleware_stack.use(...)
-      end
-
-      # @since 2.0.0
-      # @api private
-      def scope(*args, &blk)
-        middleware_stack.with(args.first) do
-          super
-        end
+      def use(*args, **kwargs, &blk)
+        middleware_stack.use(*args, **kwargs.merge(path_prefix: path_prefix.to_s), &blk)
       end
 
       # @since 2.0.0
@@ -49,7 +43,7 @@ module Hanami
         prev_resolver = @resolver
         @resolver = @resolver.to_slice(slice_name)
 
-        scope(prefixed_path(at), &blk)
+        scope(at, &blk)
       ensure
         @resolver = prev_resolver
       end
