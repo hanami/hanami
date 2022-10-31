@@ -4,10 +4,11 @@ require "dry/configurable"
 require_relative "config"
 
 module Hanami
+  # @api private
   module Assets
     # App config for assets.
     #
-    # This is not released as of 2.0.0.
+    # This is NOT RELEASED as of 2.0.0.
     #
     # @api private
     class AppConfig

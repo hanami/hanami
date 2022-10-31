@@ -42,11 +42,13 @@ module Hanami
         configure_defaults
       end
 
+      # @api private
       def initialize_copy(source)
         super
         @base_config = source.base_config.dup
         @content_security_policy = source.content_security_policy.dup
       end
+      private :initialize_copy
 
       def finalize!
         # A nil value for `csrf_protection` means it has not been explicitly configured

@@ -11,8 +11,9 @@ module Hanami
     module View
       # View context for views in Hanami apps.
       #
-      # @api public
-      # @since 2.0.0
+      # This is NOT RELEASED as of 2.0.0.
+      #
+      # @api private
       module Context
         def self.included(context_class)
           super
