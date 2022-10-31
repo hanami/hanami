@@ -10,24 +10,103 @@ module Hanami
   class Config
     # Hanami actions config
     #
+    # This includes standard Hanami::Action `config` and configures it with sensible defaults for
+    # actions used within a full Hanami app.
+    #
+    # It also provides additional settings for integration of actions with TODO
+    #
+    # @see
+    #
     # @since 2.0.0
+    # @api public
     class Actions
       include Dry::Configurable
 
+      # @!attribute [rw] cookies
+      #   Sets or returns a hash of cookie options for actions.
+      #
+      #   The hash is wrapped by {Hanami::Config::Actions::Cookies}, which also provides an
+      #   `enabled?` method, returning true in the case of any options provided.
+      #
+      #   @example
+      #     config.actions.cookies = {max_age: 300}
+      #
+      #   @return [Hanami::Config::Actions::Cookies]
+      #
+      #   @api public
+      #   @since 2.0.0
       setting :cookies, default: {}, constructor: -> options { Cookies.new(options) }
+
+      # @!attribute [rw] sessions
+      #   Sets or returns the session store (and its options) for actions.
+      #
+      #   The given values are taken as an argument list to be passed to {Config::Sessions#initialize}.
+      #
+      #   The configured session store is used when setting up the app or slice
+      #   {Slice::ClassMethods#router router}.
+      #
+      #   @example
+      #     config.sessions = :cookie, {secret: "xyz"}
+      #
+      #   @return [Config::Sessions]
+      #
+      #   @see Config::Sessions
+      #   @see Slice::ClassMethods#router
+      #
+      #   @api public
+      #   @since 2.0.0
       setting :sessions, constructor: proc { |storage, *options| Sessions.new(storage, *options) }
+
+      # @!attribute [rw] csrf_protection
+      #   Sets or returns whether CSRF protection should be enabled for action classes.
+      #
+      #   Defaults to true if {#sessions} is enabled. You can override this by explicitly setting a
+      #   true or false value.
+      #
+      #   When true, this will include `Hanami::Action::CSRFProtection` in all action classes.
+      #
+      #   @return [Boolean]
+      #
+      #   @api public
+      #   @since 2.0.0
       setting :csrf_protection
 
-      setting :name_inference_base, default: "actions"
-      setting :view_context_identifier, default: "views.context"
-      setting :view_name_inferrer, default: Slice::ViewNameInferrer
-      setting :view_name_inference_base, default: "views"
-
+      # @!attribute [r] content_security_policy
+      #   Returns the Content Security Policy config for actions.
+      #
+      #   The resulting policy is set as a default `"Content-Security-Policy"` response header.
+      #
+      #   @return [Hanami::Config::Actions::ContentSecurityPolicy]
+      #
+      #   @api public
+      #   @since 2.0.0
       attr_accessor :content_security_policy
 
+      # The following settings are for view and assets integration with actions, and are NOT
+      # publicly released as of 2.0.0. We'll make full documentation available when these become
+      # public in a subsequent release.
+
+      # @!attribute [rw] name_inference_base
+      #   @api private
+      setting :name_inference_base, default: "actions"
+
+      # @!attribute [rw] view_context_identifier
+      #   @api private
+      setting :view_context_identifier, default: "views.context"
+
+      # @!attribute [rw] view_name_inferrer
+      #   @api private
+      setting :view_name_inferrer, default: Slice::ViewNameInferrer
+
+      # @!attribute [rw] view_name_inference_base
+      #   @api private
+      setting :view_name_inference_base, default: "views"
+
+      # @api private
       attr_reader :base_config
       protected :base_config
 
+      # @api private
       def initialize(*, **options)
         super()
 
@@ -50,6 +129,7 @@ module Hanami
       end
       private :initialize_copy
 
+      # @api private
       def finalize!
         # A nil value for `csrf_protection` means it has not been explicitly configured
         # (neither true nor false), so we can default it to whether sessions are enabled

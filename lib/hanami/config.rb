@@ -122,24 +122,9 @@ module Hanami
     #   @since 2.0.0
     setting :no_auto_register_paths, default: %w[entities]
 
-    # @!attribute [rw] sessions
-    #   Sets the session store (and its options) for actions
+    # TODO: Remove this; we have `config.actions.sessions` instead
     #
-    #   The given values are taken as an argument list to be passed to {Config::Sessions#initialize}.
-    #
-    #   The configured session store is used when setting up the app or slice
-    #   {Slice::ClassMethods#router router}.
-    #
-    #   @example
-    #     config.sessions = :cookie, {secret: "xyz"}
-    #
-    #   @return [Config::Sessions]
-    #
-    #   @see Config::Sessions
-    #   @see Slice::ClassMethods#router
-    #
-    #   @api public
-    #   @since 2.0.0
+    # @api private
     setting :sessions, default: :null, constructor: ->(*args) { Sessions.new(*args) }
 
     # @!attribute [rw] base_url
