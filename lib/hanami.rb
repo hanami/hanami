@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "hanami/constants"
+
 # A complete web framework for Ruby
 #
 # @since 0.1.0
@@ -56,9 +58,6 @@ module Hanami
       app_path(dir.parent)
     end
   end
-
-  APP_PATH = "config/app.rb"
-  private_constant :APP_PATH
 
   def self.app
     @_mutex.synchronize do
