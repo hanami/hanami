@@ -540,6 +540,39 @@ module Hanami
         self
       end
 
+      # @overload import(from:, as: nil, keys: nil)
+      #   Specifies components to import from another slice.
+      #
+      #   Booting a slice will register all imported components. For a prepared slice, these
+      #   components will be be imported automatically when resolved.
+      #
+      #   @example
+      #     module MySlice
+      #       class Slice < Hanami:Slice
+      #         # Component from Search::Slice will import as "search.index_entity"
+      #         import keys: ["index_entity"], from: :search
+      #       end
+      #     end
+      #
+      #   @example Other import variations
+      #     # Different key namespace: component will be "search_backend.index_entity"
+      #     import keys: ["index_entity"], from: :search, as: "search_backend"
+      #
+      #     # Import to root key namespace: component will be "index_entity"
+      #     import keys: ["index_entity"], from: :search, as: nil
+      #
+      #     # Import all components
+      #     import from: :search
+      #
+      #   @param keys [Array<String>, nil] Array of component keys to import. To import all
+      #     available components, omit this argument.
+      #   @param from [Symbol] name of the slice to import from
+      #   @param as [Symbol, String, nil]
+      #
+      #   @see #export
+      #
+      #   @api public
+      #   @since 2.0.0
       def import(from:, **kwargs)
         slice = self
 
@@ -555,16 +588,51 @@ module Hanami
         end
       end
 
+      # Returns the slice's settings, or nil if no settings are defined.
+      #
+      # You can define your settings in `config/settings.rb`.
+      #
+      # @return [Hanami::Settings, nil]
+      #
+      # @see Hanami::Settings
+      #
+      # @api public
+      # @since 2.0.0
       def settings
         return @settings if instance_variable_defined?(:@settings)
 
         @settings = Settings.load_for_slice(self)
       end
 
+      # Returns the slice's routes, or nil if no routes are defined.
+      #
+      # You can define your routes in `config/routes.rb`.
+      #
+      # @return [Hanami::Routes, nil]
+      #
+      # @see Hanami::Routes
+      #
+      # @api public
+      # @since 2.0.0
       def routes
         @routes ||= load_routes
       end
 
+      # Returns the slice's router, if or nil if no routes are defined.
+      #
+      # An optional `inspector`, implementing the `Hanami::Router::Inspector` interface, may be
+      # provided at first call (the router is then memoized for subsequent accesses). An inspector
+      # is used by the `hanami routes` CLI comment to provide a list of available routes.
+      #
+      # The returned router is a {Slice::Router}, which provides all `Hanami::Router` functionality,
+      # with the addition of support for slice mounting with the {Slice::Router#slice}.
+      #
+      # @param inspector [Hanami::Router::Inspector, nil] an optional routes inspector
+      #
+      # @return [Hanami::Slice::Router, nil]
+      #
+      # @api public
+      # @since 2.0.0
       def router(inspector: nil)
         raise SliceLoadError, "#{self} must be prepared before loading the router" unless prepared?
 
@@ -573,12 +641,38 @@ module Hanami
         end
       end
 
+      # Returns a [Rack][rack] app for the slice, or nil if no routes are defined.
+      #
+      # The rack app will be memoized on first access.
+      #
+      # [rack]: https://github.com/rack/rack
+      #
+      # @return [#call, nil] the rack app, or nil if no routes are defined
+      #
+      # @see #routes
+      # @see #router
+      #
+      # @api public
+      # @since 2.0.0
       def rack_app
         return unless router
 
         @rack_app ||= router.to_rack_app
       end
 
+      # @overload call(rack_env)
+      #   Calls the slice's [Rack][rack] app and returns a Rack-compatible response object
+      #
+      #   [rack]: https://github.com/rack/rack
+      #
+      #   @param rack_env [Hash] the Rack environment for the request
+      #
+      #   @return [Array] the three-element Rack response array
+      #
+      #   @see #rack_app
+      #
+      #   @api public
+      #   @since 2.0.0
       def call(...)
         rack_app.call(...)
       end
