@@ -542,13 +542,13 @@ RSpec.describe "Hanami web app", :app_integration do
 
               root to: ->(*) { [200, {"Content-Length" => "3"}, ["API"]] }
 
-              # slice :api_v1, at: "/v1" do
-              #   use TestApp::Middleware::ApiVersion
-              #   use TestApp::Middleware::ApiDeprecation
-              #   # use TestApp::Middleware::ScopeIdentifier, "API V1"
+              slice :api_v1, at: "/v1" do
+                use TestApp::Middleware::ApiVersion
+                use TestApp::Middleware::ApiDeprecation
+                use TestApp::Middleware::ScopeIdentifier, "API-V1"
 
-              #   root to: "home.show"
-              # end
+                root to: "home.show"
+              end
             end
           end
         end
@@ -649,11 +649,12 @@ RSpec.describe "Hanami web app", :app_integration do
         get "/api/v1"
 
         expect(last_response.status).to be(200)
-        expect(last_response.headers["X-Identifier-Api-V1"]).to eq("true")
+        expect(last_response.headers["X-Identifier-API-V1"]).to eq("true")
         expect(last_response.headers).to have_key("X-Elapsed")
         expect(last_response.headers).to_not have_key("X-Auth-User-ID")
         expect(last_response.headers).to have_key("X-API-Rate-Limit-Quota")
-        expect(last_response.headers).to have_key("X-API-Version")
+        expect(last_response.headers).to have_key("X-API-Deprecated")
+        expect(last_response.headers["X-API-Version"]).to eq("1")
       end
     end
   end
