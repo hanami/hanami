@@ -341,6 +341,8 @@ RSpec.describe "Hanami web app", :app_integration do
   end
 
   context "with complex app" do
+    let(:app_modules) { %i[TestApp Admin APIV1] }
+
     before do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -566,19 +568,19 @@ RSpec.describe "Hanami web app", :app_integration do
         end
       RUBY
 
-      # write "slices/api_v1/actions/home/show.rb", <<~RUBY
-      #   module ApiV1
-      #     module Actions
-      #       module Home
-      #         class Show < Hanami::Action
-      #           def handle(req, res)
-      #             res.body = "API v1"
-      #           end
-      #         end
-      #       end
-      #     end
-      #   end
-      # RUBY
+      write "slices/api_v1/actions/home/show.rb", <<~RUBY
+        module APIV1
+          module Actions
+            module Home
+              class Show < Hanami::Action
+                def handle(req, res)
+                  res.body = "API v1"
+                end
+              end
+            end
+          end
+        end
+      RUBY
 
       require "hanami/boot"
     end
