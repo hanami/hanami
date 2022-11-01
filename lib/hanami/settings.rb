@@ -2,42 +2,94 @@
 
 require "dry/core"
 require "dry/configurable"
+require_relative "errors"
 
 module Hanami
-  # App settings
+  # Provides user-defined settings for an Hanami app or slice.
   #
-  # Users are expected to inherit from this class to define their app settings.
+  # Define your own settings by inheriting from this class in `config/settings.rb` within an app or
+  # slice. Your settings will be loaded from matching ENV vars (with upper-cased names) and made
+  # registered as a component as part of the Hanami app {Hanami::Slice::ClassMethods#prepare
+  # prepare} step.
+  #
+  # The settings instance is registered in your app and slice containers as a `"settings"`
+  # component. You can use the `Deps` mixin to inject this dependency and make settings available to
+  # your other components as required.
   #
   # @example
   #   # config/settings.rb
   #   # frozen_string_literal: true
   #
-  #   require "hanami/settings"
-  #   require "my_app/types"
-  #
   #   module MyApp
   #     class Settings < Hanami::Settings
-  #       setting :database_url
-  #       setting :feature_flag, default: false, constructor: Types::Params::Bool
+  #       Secret = Types::String.constrained(min_size: 20)
+  #
+  #       setting :database_url, constructor: Types::String
+  #       setting :session_secret, constructor: Secret
+  #       setting :some_flag, default: false, constructor: Types::Params::Bool
   #     end
   #   end
   #
-  # Settings are defined with [dry-configurable](https://dry-rb.org/gems/dry-configurable/), so you
-  # can take a look there to see the supported syntax.
+  # Settings are defined with [dry-configurable][dry-c]'s `setting` method. You may likely want to
+  # provide `default:` and `constructor:` options for your settings.
   #
-  # Users work with an instance of this class made available within the `settings` key in the
-  # container. The instance gets its settings populated from a configurable store, which defaults to
-  # {Hanami::Settings::EnvStore}.
+  # If you have [dry-types][dry-t] bundled, then a nested `Types` module will be available for type
+  # checking your setting values. Pass type objects to the setting `constructor:` options to ensure
+  # their values meet your type expectations. You can use dry-types' default type objects or define
+  # your own.
   #
-  # A different store can be set through the `settings_store` Hanami configuration option. All it
-  # needs to do is implementing a `#fetch` method with the same signature as `Hash#fetch`.
+  # When the settings are initialized, all type errors will be collected and presented together for
+  # correction. Settings are loaded early, as part of the Hanami app's
+  # {Hanami::Slice::ClassMethods#prepare prepare} step, to ensure that the app boots only when valid
+  # settings are present.
+  #
+  # Setting values are loaded from a configurable store, which defaults to
+  # {Hanami::Settings::EnvStore}, which fetches the values from equivalent upper-cased keys in
+  # `ENV`. You can configue an alternative store via {Hanami::Config#settings_store}. Setting stores
+  # must implement a `#fetch` method with the same signature as `Hash#fetch`.
+  #
+  # [dry-c]: https://dry-rb.org/gems/dry-configurable/
+  # [dry-t]: https://dry-rb.org/gems/dry-types/
   #
   # @see Hanami::Settings::DotenvStore
   #
   # @api public
   # @since 2.0.0
   class Settings
+    # Error raised when setting values do not meet their type expectations.
+    #
+    # Its message collects all the individual errors that can be raised for each setting.
+    #
+    # @api public
+    # @since 2.0.0
+    class InvalidSettingsError < Hanami::Error
+      # @api private
+      def initialize(errors)
+        super()
+        @errors = errors
+      end
+
+      # Returns the exception's message.
+      #
+      # @return [String]
+      #
+      # @api public
+      # @since 2.0.0
+      def to_s
+        <<~STR.strip
+          Could not initialize settings. The following settings were invalid:
+
+          #{@errors.map { |setting, message| "#{setting}: #{message}" }.join("\n")}
+        STR
+      end
+    end
+
     class << self
+      # Defines a nested `Types` constant in `Settings` subclasses if dry-types is bundled.
+      #
+      # @see https://dry-rb.org/gems/dry-types
+      #
+      # @api private
       def inherited(subclass)
         super
 
@@ -94,25 +146,6 @@ module Hanami
       end
     end
 
-    # Exception for errors in the definition of settings.
-    #
-    # Its message collects all the individual errors that can be raised for each setting.
-    #
-    # @api public
-    InvalidSettingsError = Class.new(StandardError) do
-      def initialize(errors)
-        @errors = errors
-      end
-
-      def to_s
-        <<~STR.strip
-          Could not initialize settings. The following settings were invalid:
-
-          #{@errors.map { |setting, message| "#{setting}: #{message}" }.join("\n")}
-        STR
-      end
-    end
-
     # @api private
     Undefined = Dry::Core::Constants::Undefined
 
@@ -143,13 +176,46 @@ module Hanami
       config.finalize!
     end
 
+    # Returns a string containing a human-readable representation of the settings.
+    #
+    # This includes setting names only, not any values, to ensure that sensitive values do not
+    # inadvertently leak.
+    #
+    # Use {#inspect_values} to inspect settings with their values.
+    #
+    # @example
+    #   settings.inspect
+    #   # => #<MyApp::Settings [database_url, session_secret, some_flag]>
+    #
+    # @return [String]
+    #
+    # @see #inspect_values
+    #
+    # @api public
+    # @since 2.0.0
     def inspect
-      "#<#{self.class.to_s} [#{config._settings.map(&:name).join(", ")}]>"
+      "#<#{self.class} [#{config._settings.map(&:name).join(", ")}]>"
     end
 
+    # rubocop:disable Layout/LineLength
+
+    # Returns a string containing a human-readable representation of the settings and their values.
+    #
+    # @example
+    #   settings.inspect_values
+    #   # => #<MyApp::Settings database_url="postgres://localhost/my_db", session_secret="xxx", some_flag=true]>
+    #
+    # @return [String]
+    #
+    # @see #inspect
+    #
+    # @api public
+    # @since 2.0.0
     def inspect_values
-      "#<#{self.class.to_s} #{config._settings.map { |setting| "#{setting.name}=#{config[setting.name].inspect}" }.join(" ")}>"
+      "#<#{self.class} #{config._settings.map { |setting| "#{setting.name}=#{config[setting.name].inspect}" }.join(" ")}>"
     end
+
+    # rubocop:enable Layout/LineLength
 
     private
 

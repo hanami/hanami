@@ -14,6 +14,10 @@ module Hanami
   private_constant :PATH_DELIMITER
 
   # @api private
+  APP_PATH = "config/app.rb"
+  private_constant :APP_PATH
+
+  # @api private
   CONFIG_DIR = "config"
   private_constant :CONFIG_DIR
 

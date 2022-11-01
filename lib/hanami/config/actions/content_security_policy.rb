@@ -99,7 +99,7 @@ module Hanami
 
         # @since 2.0.0
         # @api private
-        def to_str
+        def to_s
           @policy.map do |key, value|
             "#{dasherize(key)} #{value}"
           end.join(";\n")

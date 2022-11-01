@@ -29,7 +29,7 @@ RSpec.describe Hanami::Config::Actions, "#content_security_policy" do
           %(style-src 'self' 'unsafe-inline' https:)
         ].join("\n")
 
-        expect(content_security_policy.to_str).to eq(expected)
+        expect(content_security_policy.to_s).to eq(expected)
       end
     end
 
@@ -51,35 +51,35 @@ RSpec.describe Hanami::Config::Actions, "#content_security_policy" do
       content_security_policy[:script_src] += " #{cdn_url}"
 
       expect(content_security_policy[:script_src]).to eq("'self' #{cdn_url}")
-      expect(content_security_policy.to_str).to match("'self' #{cdn_url}")
+      expect(content_security_policy.to_s).to match("'self' #{cdn_url}")
     end
 
     it "overrides default values" do
       content_security_policy[:style_src] = cdn_url
 
       expect(content_security_policy[:style_src]).to eq(cdn_url)
-      expect(content_security_policy.to_str).to match(cdn_url)
+      expect(content_security_policy.to_s).to match(cdn_url)
     end
 
     it "nullifies value" do
       content_security_policy[:plugin_types] = nil
 
       expect(content_security_policy[:plugin_types]).to be(nil)
-      expect(content_security_policy.to_str).to match("plugin-types ;")
+      expect(content_security_policy.to_s).to match("plugin-types ;")
     end
 
     it "deletes key" do
       content_security_policy.delete(:object_src)
 
       expect(content_security_policy[:object_src]).to be(nil)
-      expect(content_security_policy.to_str).to_not match("object-src")
+      expect(content_security_policy.to_s).to_not match("object-src")
     end
 
     it "adds a custom key" do
       content_security_policy[:a_custom_key] = "foo"
 
       expect(content_security_policy[:a_custom_key]).to eq("foo")
-      expect(content_security_policy.to_str).to match("a-custom-key foo")
+      expect(content_security_policy.to_s).to match("a-custom-key foo")
     end
   end
 
@@ -87,7 +87,7 @@ RSpec.describe Hanami::Config::Actions, "#content_security_policy" do
     it "sets default header" do
       config.finalize!
 
-      expect(config.default_headers.fetch("Content-Security-Policy")).to eq(content_security_policy.to_str)
+      expect(config.default_headers.fetch("Content-Security-Policy")).to eq(content_security_policy.to_s)
     end
   end
 

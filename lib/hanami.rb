@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "hanami/constants"
+
 # A complete web framework for Ruby
 #
 # @since 0.1.0
@@ -13,7 +15,7 @@ module Hanami
   #
   # Raises an exception if the app file cannot be found.
   #
-  # @return [Hanami::App] the loaded app class
+  # @return [app] the loaded app class
   #
   # @api public
   # @since 2.0.0
@@ -31,6 +33,52 @@ module Hanami
         "Could not locate your Hanami app file.\n\n" \
         "Your app file should be at `config/app.rb` in your project's root directory."
       )
+    end
+  end
+
+  # Returns the Hamami app class.
+  #
+  # To ensure your Hanami app is loaded, run {.setup} (or `require "hanami/setup"`) first.
+  #
+  # @return [Hanami::App] the app class
+  #
+  # @raise [AppLoadError] if the app has not been loaded
+  #
+  # @see .setup
+  #
+  # @api public
+  # @since 2.0.0
+  def self.app
+    @_mutex.synchronize do
+      unless defined?(@_app)
+        raise AppLoadError,
+              "Hanami.app is not yet configured. " \
+              "You may need to `require \"hanami/setup\"` to load your config/app.rb file."
+      end
+
+      @_app
+    end
+  end
+
+  # Returns true if the Hanami app class has been loaded.
+  #
+  # @return [Boolean]
+  #
+  # @api public
+  # @since 2.0.0
+  def self.app?
+    instance_variable_defined?(:@_app)
+  end
+
+  # @api private
+  # @since 2.0.0
+  def self.app=(klass)
+    @_mutex.synchronize do
+      if instance_variable_defined?(:@_app)
+        raise AppLoadError, "Hanami.app is already configured."
+      end
+
+      @_app = klass unless klass.name.nil?
     end
   end
 
@@ -57,59 +105,94 @@ module Hanami
     end
   end
 
-  APP_PATH = "config/app.rb"
-  private_constant :APP_PATH
-
-  def self.app
-    @_mutex.synchronize do
-      unless defined?(@_app)
-        raise AppLoadError,
-              "Hanami.app is not yet configured. " \
-              "You may need to `require \"hanami/setup\"` to load your config/app.rb file."
-      end
-
-      @_app
-    end
-  end
-
-  def self.app?
-    instance_variable_defined?(:@_app)
-  end
-
-  def self.app=(klass)
-    @_mutex.synchronize do
-      if instance_variable_defined?(:@_app)
-        raise AppLoadError, "Hanami.app is already configured."
-      end
-
-      @_app = klass unless klass.name.nil?
-    end
-  end
-
+  # Returns the Hanami app environment as loaded from the `HANAMI_ENV` environment variable.
+  #
+  # @example
+  #   Hanami.env # => :development
+  #
+  # @return [Symbol] the environment name
+  #
+  # @api public
+  # @since 2.0.0
   def self.env
     ENV.fetch("HANAMI_ENV") { ENV.fetch("RACK_ENV", "development") }.to_sym
   end
 
+  # Returns true if {.env} matches any of the given names
+  #
+  # @example
+  #   Hanami.env # => :development
+  #   Hanami.env?(:development, :test) # => true
+  #
+  # @param names [Array<Symbol>] the environment names to check
+  #
+  # @return [Boolean]
+  #
+  # @api public
+  # @since 2.0.0
   def self.env?(*names)
     names.map(&:to_sym).include?(env)
   end
 
+  # Returns the app's logger.
+  #
+  # Direct global access to the logger via this method is not recommended. Instead, consider
+  # accessing the logger via the app or slice container, in most cases as an dependency using the
+  # `Deps` mixin.
+  #
+  # @example
+  #   # app/my_component.rb
+  #
+  #   module MyApp
+  #     class MyComponent
+  #       include Deps["logger"]
+  #
+  #       def some_method
+  #         logger.info("hello")
+  #       end
+  #     end
+  #   end
+  #
+  # @return [Hanami::Logger]
+  #
+  # @api public
+  # @since 1.0.0
   def self.logger
     app[:logger]
   end
 
+  # Prepares the Hanami app.
+  #
+  # @see App::ClassMethods#prepare
+  #
+  # @api public
+  # @since 2.0.0
   def self.prepare
     app.prepare
   end
 
+  # Boots the Hanami app.
+  #
+  # @see App::ClassMethods#boot
+  #
+  # @api public
+  # @since 2.0.0
   def self.boot
     app.boot
   end
 
+  # Shuts down the Hanami app.
+  #
+  # @see App::ClassMethods#shutdown
+  #
+  # @api public
+  # @since 2.0.0
   def self.shutdown
     app.shutdown
   end
 
+  # @api private
+  # @since 2.0.0
   def self.bundled?(gem_name)
     @_mutex.synchronize do
       @_bundled[gem_name] ||= begin
@@ -120,6 +203,11 @@ module Hanami
     end
   end
 
+  # Returns an array of bundler group names to be eagerly loaded by hanami-cli and other CLI
+  # extensions.
+  #
+  # @api private
+  # @since 2.0.0
   def self.bundler_groups
     [:plugins]
   end

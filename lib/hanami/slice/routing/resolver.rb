@@ -4,9 +4,14 @@ require_relative "../../routes"
 
 module Hanami
   class Slice
+    # @api private
     module Routing
       # Hanami app router endpoint resolver
       #
+      # This resolves endpoints objects from a slice container using the strings passed to `to:` as
+      # their container keys.
+      #
+      # @api private
       # @since 2.0.0
       class Resolver
         SLICE_ACTIONS_KEY_NAMESPACE = "actions"

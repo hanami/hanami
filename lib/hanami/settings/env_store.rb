@@ -4,7 +4,7 @@ require "dry/core/constants"
 
 module Hanami
   class Settings
-    # The default store for {Hanami:Settings}, loading setting values from `ENV`.
+    # The default store for {Hanami::Settings}, loading setting values from `ENV`.
     #
     # If your app loads the dotenv gem, then `ENV` will also be populated from various `.env` files when
     # you subclass `Hanami::App`.
