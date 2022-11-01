@@ -132,7 +132,7 @@ module Hanami
         self.csrf_protection = sessions.enabled? if csrf_protection.nil?
 
         if content_security_policy
-          default_headers["Content-Security-Policy"] = content_security_policy.to_str
+          default_headers["Content-Security-Policy"] = content_security_policy.to_s
         end
       end
 
