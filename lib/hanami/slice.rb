@@ -35,6 +35,7 @@ module Hanami
   class Slice
     @_mutex = Mutex.new
 
+    # @api private
     def self.inherited(subclass)
       super
 
