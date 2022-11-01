@@ -34,16 +34,6 @@ module Hanami
       end
       private :initialize_copy
 
-      # Returns the list of available settings
-      #
-      # @return [Set]
-      #
-      # @since 2.0.0
-      # @api private
-      def settings
-        self.class.settings + View.settings - NON_FORWARDABLE_METHODS
-      end
-
       # @api private
       def finalize!
         return self if frozen?

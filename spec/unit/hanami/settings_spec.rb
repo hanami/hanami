@@ -68,7 +68,7 @@ RSpec.describe Hanami::Settings do
       settings = settings_class.new(store)
 
       expect(settings.config).to be_frozen
-      expect { settings.database_url = "new" }.to raise_error(Dry::Configurable::FrozenConfig)
+      expect { settings.database_url = "new" }.to raise_error(Dry::Configurable::FrozenConfigError)
     end
   end
 
