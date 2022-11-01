@@ -2,6 +2,7 @@
 
 require "dry/core"
 require "dry/configurable"
+require_relative "errors"
 
 module Hanami
   # Provides user-defined settings for an Hanami app or slice.
@@ -55,6 +56,34 @@ module Hanami
   # @api public
   # @since 2.0.0
   class Settings
+    # Error raised when setting values do not meet their type expectations.
+    #
+    # Its message collects all the individual errors that can be raised for each setting.
+    #
+    # @api public
+    # @since 2.0.0
+    class InvalidSettingsError < Hanami::Error
+      # @api private
+      def initialize(errors)
+        super()
+        @errors = errors
+      end
+
+      # Returns the exception's message.
+      #
+      # @return [String]
+      #
+      # @api public
+      # @since 2.0.0
+      def to_s
+        <<~STR.strip
+          Could not initialize settings. The following settings were invalid:
+
+          #{@errors.map { |setting, message| "#{setting}: #{message}" }.join("\n")}
+        STR
+      end
+    end
+
     class << self
       # Defines a nested `Types` constant in `Settings` subclasses if dry-types is bundled.
       #
@@ -117,25 +146,6 @@ module Hanami
       end
     end
 
-    # Exception for errors in the definition of settings.
-    #
-    # Its message collects all the individual errors that can be raised for each setting.
-    #
-    # @api public
-    InvalidSettingsError = Class.new(StandardError) do
-      def initialize(errors)
-        @errors = errors
-      end
-
-      def to_s
-        <<~STR.strip
-          Could not initialize settings. The following settings were invalid:
-
-          #{@errors.map { |setting, message| "#{setting}: #{message}" }.join("\n")}
-        STR
-      end
-    end
-
     # @api private
     Undefined = Dry::Core::Constants::Undefined
 
@@ -166,13 +176,46 @@ module Hanami
       config.finalize!
     end
 
+    # Returns a string containing a human-readable representation of the settings.
+    #
+    # This includes setting names only, not any values, to ensure that sensitive values do not
+    # inadvertently leak.
+    #
+    # Use {#inspect_values} to inspect settings with their values.
+    #
+    # @example
+    #   settings.inspect
+    #   # => #<MyApp::Settings [database_url, session_secret, some_flag]>
+    #
+    # @return [String]
+    #
+    # @see #inspect_values
+    #
+    # @api public
+    # @since 2.0.0
     def inspect
-      "#<#{self.class.to_s} [#{config._settings.map(&:name).join(", ")}]>"
+      "#<#{self.class} [#{config._settings.map(&:name).join(", ")}]>"
     end
 
+    # rubocop:disable Layout/LineLength
+
+    # Returns a string containing a human-readable representation of the settings and their values.
+    #
+    # @example
+    #   settings.inspect_values
+    #   # => #<MyApp::Settings database_url="postgres://localhost/my_db", session_secret="xxx", some_flag=true]>
+    #
+    # @return [String]
+    #
+    # @see #inspect
+    #
+    # @api public
+    # @since 2.0.0
     def inspect_values
-      "#<#{self.class.to_s} #{config._settings.map { |setting| "#{setting.name}=#{config[setting.name].inspect}" }.join(" ")}>"
+      "#<#{self.class} #{config._settings.map { |setting| "#{setting.name}=#{config[setting.name].inspect}" }.join(" ")}>"
     end
+
+    # rubocop:enable Layout/LineLength
 
     private
 
