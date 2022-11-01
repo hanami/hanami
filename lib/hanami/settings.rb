@@ -4,33 +4,51 @@ require "dry/core"
 require "dry/configurable"
 
 module Hanami
-  # App settings
+  # Provides user-defined settings for an Hanami app or slice.
   #
-  # Users are expected to inherit from this class to define their app settings.
+  # Define your own settings by inheriting from this class in `config/settings.rb` within an app or
+  # slice. Your settings will be loaded from matching ENV vars (with upper-cased names) and made
+  # registered as a component as part of the Hanami app {Hanami::Slice::ClassMethods#prepare
+  # prepare} step.
+  #
+  # The settings instance is registered in your app and slice containers as a `"settings"`
+  # component. You can use the `Deps` mixin to inject this dependency and make settings available to
+  # your other components as required.
   #
   # @example
   #   # config/settings.rb
   #   # frozen_string_literal: true
   #
-  #   require "hanami/settings"
-  #   require "my_app/types"
-  #
   #   module MyApp
   #     class Settings < Hanami::Settings
-  #       setting :database_url
-  #       setting :feature_flag, default: false, constructor: Types::Params::Bool
+  #       Secret = Types::String.constrained(min_size: 20)
+  #
+  #       setting :database_url, constructor: Types::String
+  #       setting :session_secret, constructor: Secret
+  #       setting :some_flag, default: false, constructor: Types::Params::Bool
   #     end
   #   end
   #
-  # Settings are defined with [dry-configurable](https://dry-rb.org/gems/dry-configurable/), so you
-  # can take a look there to see the supported syntax.
+  # Settings are defined with [dry-configurable][dry-c]'s `setting` method. You may likely want to
+  # provide `default:` and `constructor:` options for your settings.
   #
-  # Users work with an instance of this class made available within the `settings` key in the
-  # container. The instance gets its settings populated from a configurable store, which defaults to
-  # {Hanami::Settings::EnvStore}.
+  # If you have [dry-types][dry-t] bundled, then a nested `Types` module will be available for type
+  # checking your setting values. Pass type objects to the setting `constructor:` options to ensure
+  # their values meet your type expectations. You can use dry-types' default type objects or define
+  # your own.
   #
-  # A different store can be set through the `settings_store` Hanami configuration option. All it
-  # needs to do is implementing a `#fetch` method with the same signature as `Hash#fetch`.
+  # When the settings are initialized, all type errors will be collected and presented together for
+  # correction. Settings are loaded early, as part of the Hanami app's
+  # {Hanami::Slice::ClassMethods#prepare prepare} step, to ensure that the app boots only when valid
+  # settings are present.
+  #
+  # Setting values are loaded from a configurable store, which defaults to
+  # {Hanami::Settings::EnvStore}, which fetches the values from equivalent upper-cased keys in
+  # `ENV`. You can configue an alternative store via {Hanami::Config#settings_store}. Setting stores
+  # must implement a `#fetch` method with the same signature as `Hash#fetch`.
+  #
+  # [dry-c]: https://dry-rb.org/gems/dry-configurable/
+  # [dry-t]: https://dry-rb.org/gems/dry-types/
   #
   # @see Hanami::Settings::DotenvStore
   #
@@ -38,6 +56,11 @@ module Hanami
   # @since 2.0.0
   class Settings
     class << self
+      # Defines a nested `Types` constant in `Settings` subclasses if dry-types is bundled.
+      #
+      # @see https://dry-rb.org/gems/dry-types
+      #
+      # @api private
       def inherited(subclass)
         super
 
