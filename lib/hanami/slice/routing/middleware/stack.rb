@@ -11,8 +11,8 @@ module Hanami
       module Middleware
         # Wraps a rack app with a middleware stack
         #
-        # We use this class to add middlewares to the rack application generated
-        # from {Hanami::Slice::Router}.
+        # We use this class to add middlewares to the rack application generated from
+        # {Hanami::Slice::Router}.
         #
         # ```
         # stack = Hanami::Slice::Routing::Middleware::Stack.new
@@ -28,6 +28,8 @@ module Hanami
         # end
         # ```
         #
+        # @see Hanami::Config#middleware
+        #
         # @since 2.0.0
         # @api private
         class Stack
@@ -42,8 +44,15 @@ module Hanami
           # @api private
           attr_reader :stack
 
-          # @since 2.0.0
+          # Returns an array of Ruby namespaces from which to load middleware classes specified by
+          # symbol names given to {#use}.
+          #
+          # Defaults to `[Hanami::Middleware]`.
+          #
+          # @return [Array<Object>]
+          #
           # @api public
+          # @since 2.0.0
           attr_reader :namespaces
 
           # @since 2.0.0
@@ -63,8 +72,30 @@ module Hanami
             @namespaces = namespaces.dup
           end
 
+          # Adds a middleware to the stack.
+          #
+          # @example
+          #   # Using a symbol name; adds Hanami::Middleware::BodyParser.new([:json])
+          #   middleware.use :body_parser, :json
+          #
+          #   # Using a class name
+          #   middleware.use MyMiddleware
+          #
+          #   # Adding a middleware before or after others
+          #   middleware.use MyMiddleware, before: SomeMiddleware
+          #   middleware.use MyMiddleware, after: OtherMiddleware
+          #
+          # @param spec [Symbol, Class] the middleware name or class name
+          # @param args [Array, nil] Arguments to pass to the middleware's `.new` method
+          # @param before [Class, nil] an optional (already added) middleware class to add the
+          #   middleware before
+          # @param after [Class, nil] an optional (already added) middleware class to add the
+          #   middleware after
+          #
+          # @return [self]
+          #
+          # @api public
           # @since 2.0.0
-          # @api private
           def use(spec, *args, before: nil, after: nil, &blk)
             middleware = resolve_middleware_class(spec)
             item = [middleware, args, blk]

@@ -192,6 +192,7 @@ module Hanami
     attr_reader :middleware
 
     # @api private
+    # @since 2.0.0
     alias_method :middleware_stack, :middleware
 
     # Returns the app's router config, or a null config if hanami-router is not bundled.
