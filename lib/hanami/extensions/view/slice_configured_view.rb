@@ -32,7 +32,7 @@ module Hanami
         # rubocop:disable Metrics/AbcSize
         def configure_view(view_class)
           view_class.settings.each do |setting|
-            next unless slice.config.views.respond_to?(:"#{setting}")
+            next unless slice.config.views.respond_to?(setting.name)
 
             # Configure the view from config on the slice, _unless it has already been configured by
             # a parent slice_, and re-configuring it for this slice would make no change.
@@ -72,12 +72,12 @@ module Hanami
             # in its immediate superclass.
             #
             # This would be surprising behavior, and we want to avoid it.
-            slice_value = slice.config.views.public_send(:"#{setting}")
-            parent_value = slice.parent.config.views.public_send(:"#{setting}") if slice.parent
+            slice_value = slice.config.views.public_send(setting.name)
+            parent_value = slice.parent.config.views.public_send(setting.name) if slice.parent
 
             next if slice.parent && slice_value == parent_value
 
-            view_class.config.public_send(:"#{setting}=", slice_value)
+            view_class.config.public_send(:"#{setting.name}=", slice_value)
           end
 
           view_class.config.inflector = inflector

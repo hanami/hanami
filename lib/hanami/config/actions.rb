@@ -132,16 +132,6 @@ module Hanami
         end
       end
 
-      # Returns the list of available settings
-      #
-      # @return [Set]
-      #
-      # @since 2.0.0
-      # @api private
-      def settings
-        Hanami::Action.settings + self.class.settings
-      end
-
       private
 
       # Apply defaults for base config
