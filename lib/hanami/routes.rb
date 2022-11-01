@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "constants"
+require_relative "errors"
 require_relative "slice/router"
 
 module Hanami
@@ -26,8 +27,13 @@ module Hanami
   # @see Hanami::Slice::Router
   # @since 2.0.0
   class Routes
+    # Error raised when no action could be found in an app or slice container for the key given in a
+    # routes file.
+    #
+    # @api public
     # @since 2.0.0
-    class MissingActionError < Error
+    class MissingActionError < Hanami::Error
+      # @api private
       def initialize(action_key, slice)
         action_path = action_key.gsub(CONTAINER_KEY_DELIMITER, PATH_DELIMITER)
         action_constant = slice.inflector.camelize(
@@ -43,8 +49,13 @@ module Hanami
       end
     end
 
+    # Error raised when a given routes endpoint does not implement the `#call` interface required
+    # for Rack.
+    #
+    # @api public
     # @since 2.0.0
-    class NotCallableEndpointError < Error
+    class NotCallableEndpointError < Hanami::Error
+      # @api private
       def initialize(endpoint)
         super("#{endpoint.inspect} is not compatible with Rack. Please make sure it implements #call.")
       end
