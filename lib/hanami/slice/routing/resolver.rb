@@ -4,6 +4,7 @@ require_relative "../../routes"
 
 module Hanami
   class Slice
+    # @api private
     module Routing
       # Hanami app router endpoint resolver
       #
