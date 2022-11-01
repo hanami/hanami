@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 module Hanami
+  # @api private
   module Web
     # Rack logger for Hanami apps
+    #
+    # @api private
+    # @since 2.0.0
     class RackLogger
       REQUEST_METHOD = "REQUEST_METHOD"
       private_constant :REQUEST_METHOD
@@ -25,10 +29,14 @@ module Hanami
       CONTENT_LENGTH = "Content-Length"
       private_constant :CONTENT_LENGTH
 
+      # @api private
+      # @since 2.0.0
       def initialize(logger)
         @logger = logger
       end
 
+      # @api private
+      # @since 2.0.0
       def attach(rack_monitor)
         rack_monitor.on :stop do |event|
           log_request event[:env], event[:status], event[:time]
@@ -39,6 +47,8 @@ module Hanami
         end
       end
 
+      # @api private
+      # @since 2.0.0
       def log_request(env, status, elapsed)
         data = {
           verb: env[REQUEST_METHOD],
@@ -54,6 +64,8 @@ module Hanami
         logger.info(data)
       end
 
+      # @api private
+      # @since 2.0.0
       def log_exception(exception)
         logger.error exception.message
         logger.error exception.backtrace.join("\n")
