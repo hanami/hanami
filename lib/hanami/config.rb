@@ -1,17 +1,13 @@
 # frozen_string_literal: true
 
 require "uri"
+require "pathname"
 require "concurrent/hash"
 require "concurrent/array"
 require "dry/configurable"
 require "dry/inflector"
-require "pathname"
 
 require_relative "constants"
-require_relative "config/logger"
-require_relative "config/sessions"
-require_relative "settings/env_store"
-require_relative "slice/routing/middleware/stack"
 
 module Hanami
   # Hanami app config

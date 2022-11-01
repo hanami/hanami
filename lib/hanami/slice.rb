@@ -3,12 +3,8 @@
 require "zeitwerk"
 require "dry/system"
 
-require_relative "../hanami"
 require_relative "constants"
 require_relative "errors"
-require_relative "settings"
-require_relative "slice_name"
-require_relative "slice_registrar"
 
 module Hanami
   # A slice represents any distinct area of concern within an Hanami app.

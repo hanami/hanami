@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 require "dry/configurable"
-require_relative "actions/cookies"
-require_relative "actions/sessions"
-require_relative "actions/content_security_policy"
-require_relative "../slice/view_name_inferrer"
 
 module Hanami
   class Config

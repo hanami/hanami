@@ -2,7 +2,6 @@
 
 require_relative "constants"
 require_relative "errors"
-require_relative "slice/router"
 
 module Hanami
   # App routes

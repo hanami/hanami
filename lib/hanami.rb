@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "zeitwerk"
 require_relative "hanami/constants"
 
 # A complete web framework for Ruby
@@ -10,6 +11,16 @@ require_relative "hanami/constants"
 module Hanami
   @_mutex = Mutex.new
   @_bundled = {}
+
+  # @api private
+  # @since 2.0.0
+  def self.loader
+    @loader ||= Zeitwerk::Loader.for_gem.tap do |loader|
+      loader.ignore(
+        "#{loader.dirs.first}/hanami/{constants,boot,errors,prepare,rake_tasks,setup}.rb"
+      )
+    end
+  end
 
   # Finds and loads the Hanami app file (`config/app.rb`).
   #
@@ -212,8 +223,8 @@ module Hanami
     [:plugins]
   end
 
-  require_relative "hanami/version"
+  loader.setup
+
   require_relative "hanami/errors"
   require_relative "hanami/extensions"
-  require_relative "hanami/app"
 end
