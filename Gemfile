@@ -11,9 +11,9 @@ end
 
 gem "hanami-utils",      github: "hanami/utils",      branch: "main"
 gem "hanami-router",     github: "hanami/router",     branch: "main"
-gem "hanami-controller", github: "hanami/controller", branch: "use-dry-rb-1.0.0rc"
+gem "hanami-controller", github: "hanami/controller", branch: "main"
 gem "hanami-cli",        github: "hanami/cli",        branch: "main"
-gem "hanami-view",       github: "hanami/view",       branch: "use-dry-rb-1.0.0rc"
+gem "hanami-view",       github: "hanami/view",       branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
