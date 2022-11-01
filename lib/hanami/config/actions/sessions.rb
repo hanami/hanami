@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "dry/core/constants"
 require "hanami/utils/string"
 require "hanami/utils/class"
 
@@ -23,7 +22,7 @@ module Hanami
         end
 
         def middleware
-          return [] if !enabled?
+          return [] unless enabled?
 
           [[storage_middleware, options]]
         end
