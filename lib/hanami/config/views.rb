@@ -7,7 +7,9 @@ module Hanami
   class Config
     # Hanami views config
     #
-    # @since 2.0.0
+    # This is NOT RELEASED as of 2.0.0.
+    #
+    # @api private
     class Views
       include Dry::Configurable
 
@@ -16,6 +18,7 @@ module Hanami
       attr_reader :base_config
       protected :base_config
 
+      # @api private
       def initialize(*)
         super
 
@@ -24,10 +27,12 @@ module Hanami
         configure_defaults
       end
 
+      # @api private
       def initialize_copy(source)
         super
         @base_config = source.base_config.dup
       end
+      private :initialize_copy
 
       # Returns the list of available settings
       #
@@ -39,6 +44,7 @@ module Hanami
         self.class.settings + View.settings - NON_FORWARDABLE_METHODS
       end
 
+      # @api private
       def finalize!
         return self if frozen?
 
