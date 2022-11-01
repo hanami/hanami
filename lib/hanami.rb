@@ -134,7 +134,29 @@ module Hanami
     names.map(&:to_sym).include?(env)
   end
 
-  # @api private
+  # Returns the app's logger.
+  #
+  # Direct global access to the logger via this method is not recommended. Instead, consider
+  # accessing the logger via the app or slice container, in most cases as an dependency using the
+  # `Deps` mixin.
+  #
+  # @example
+  #   # app/my_component.rb
+  #
+  #   module MyApp
+  #     class MyComponent
+  #       include Deps["logger"]
+  #
+  #       def some_method
+  #         logger.info("hello")
+  #       end
+  #     end
+  #   end
+  #
+  # @return [Hanami::Logger]
+  #
+  # @api public
+  # @since 1.0.0
   def self.logger
     app[:logger]
   end
