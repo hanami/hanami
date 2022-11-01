@@ -35,7 +35,7 @@ RSpec.describe "App action / CSRF protection", :app_integration do
     context "CSRF protection explicitly disabled" do
       let(:app_hook) {
         proc do
-          config.sessions = :cookie, {secret: "abc123"}
+          config.actions.sessions = :cookie, {secret: "abc123"}
           config.actions.csrf_protection = false
         end
       }

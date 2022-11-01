@@ -922,7 +922,7 @@ module Hanami
           **config.router.options
         ) do
           use(rack_monitor)
-          use(*config.sessions.middleware) if config.sessions.enabled?
+          use(*config.actions.sessions.middleware) if config.actions.sessions.enabled?
 
           middleware_stack.update(config.middleware_stack)
         end

@@ -39,7 +39,7 @@ module Hanami
       #   {Slice::ClassMethods#router router}.
       #
       #   @example
-      #     config.sessions = :cookie, {secret: "xyz"}
+      #     config.actions.sessions = :cookie, {secret: "xyz"}
       #
       #   @return [Config::Sessions]
       #
