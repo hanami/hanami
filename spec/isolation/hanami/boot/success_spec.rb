@@ -44,7 +44,7 @@ RSpec.describe Hanami do
       Hanami.boot
       expect(Hanami.app.ancestors).to include(Hanami::Application)
       expect(Hanami.app.root).to eq(Dir.pwd)
-      expect(Hanami.logger).to be_kind_of(Hanami::Logger)
+      expect(Hanami.logger).to be_kind_of(Dry::Logger::Dispatcher)
     end
   end
 end

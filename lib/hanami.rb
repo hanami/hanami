@@ -164,7 +164,7 @@ module Hanami
   #     end
   #   end
   #
-  # @return [Hanami::Logger]
+  # @return [Dry::Logger::Dispatcher]
   #
   # @api public
   # @since 1.0.0

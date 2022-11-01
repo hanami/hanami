@@ -1,13 +1,24 @@
 # frozen_string_literal: true
 
 require "hanami/web/rack_logger"
-require "hanami/logger"
+require "dry/logger"
 require "stringio"
 require "rack/mock"
 
 RSpec.describe Hanami::Web::RackLogger do
   subject { described_class.new(logger) }
-  let(:logger) { Hanami::Logger.new(app_name, stream: stream, level: Hanami::Logger::DEBUG, filter: filters) }
+
+  let(:logger) do
+    Dry.Logger(
+      app_name,
+      stream: stream,
+      level: :debug,
+      filters: filters,
+      formatter: :rack,
+      template: "[%<progname>s] [%<severity>s] [%<time>s] %<message>s"
+    )
+  end
+
   let(:stream) { StringIO.new }
   let(:filters) { ["user.password"] }
   let(:app_name) { "my_app" }
