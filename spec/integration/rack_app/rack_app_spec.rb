@@ -373,8 +373,9 @@ RSpec.describe "Hanami web app", :app_integration do
       require "hanami/boot"
 
       expect { Hanami.app.rack_app }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
-        expect(exception.message).to include("missing.action")
+        expect(exception).to be_kind_of(Hanami::Routes::MissingActionError)
+        expect(exception.message).to include("Could not find action with key \"actions.missing.action\" in TestApp::App")
+        expect(exception.message).to match(%r{define the action class TestApp::Actions::Missing::Action.+actions/missing/action.rb})
       end
     end
   end
@@ -404,8 +405,9 @@ RSpec.describe "Hanami web app", :app_integration do
       require "hanami/boot"
 
       expect { Hanami.app.rack_app }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
-        expect(exception.message).to include("missing.action")
+        expect(exception).to be_kind_of(Hanami::Routes::MissingActionError)
+        expect(exception.message).to include("Could not find action with key \"actions.missing.action\" in Admin::Slice")
+        expect(exception.message).to match(%r{define the action class Admin::Actions::Missing::Action.+slices/admin/actions/missing/action.rb})
       end
     end
   end
@@ -434,8 +436,9 @@ RSpec.describe "Hanami web app", :app_integration do
       expect { Hanami.app.rack_app }.not_to raise_error
 
       expect { get "/missing" }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
-        expect(exception.message).to include("missing.action")
+        expect(exception).to be_kind_of(Hanami::Routes::MissingActionError)
+        expect(exception.message).to include("Could not find action with key \"actions.missing.action\" in TestApp::App")
+        expect(exception.message).to match(%r{define the action class TestApp::Actions::Missing::Action.+actions/missing/action.rb})
       end
     end
   end
@@ -467,8 +470,9 @@ RSpec.describe "Hanami web app", :app_integration do
       expect { Hanami.app.rack_app }.not_to raise_error
 
       expect { get "/admin/missing" }.to raise_error do |exception|
-        expect(exception).to be_kind_of(Hanami::Slice::Routing::UnknownActionError)
-        expect(exception.message).to include("missing.action")
+        expect(exception).to be_kind_of(Hanami::Routes::MissingActionError)
+        expect(exception.message).to include("Could not find action with key \"actions.missing.action\" in Admin::Slice")
+        expect(exception.message).to match(%r{define the action class Admin::Actions::Missing::Action.+slices/admin/actions/missing/action.rb})
       end
     end
   end
