@@ -181,7 +181,11 @@ module Hanami
     end
   end
 
+  # Returns an array of bundler group names to be eagerly loaded by hanami-cli and other CLI
+  # extensions.
+  #
   # @api private
+  # @since 2.0.0
   def self.bundler_groups
     [:plugins]
   end
