@@ -2,8 +2,6 @@
 
 require "uri"
 require "pathname"
-require "concurrent/hash"
-require "concurrent/array"
 require "dry/configurable"
 require "dry/inflector"
 
@@ -14,10 +12,6 @@ module Hanami
   #
   # @since 2.0.0
   class Config
-    # @api private
-    DEFAULT_ENVIRONMENTS = Concurrent::Hash.new { |h, k| h[k] = Concurrent::Array.new }
-    private_constant :DEFAULT_ENVIRONMENTS
-
     include Dry::Configurable
 
     # @!attribute [rw] root
@@ -219,17 +213,9 @@ module Hanami
     # @api private
     attr_reader :assets
 
-    # @return [Concurrent::Hash] a hash of default environments
-    #
-    # @api private
-    attr_reader :environments
-    private :environments
-
     # @api private
     def initialize(app_name:, env:)
       @app_name = app_name
-
-      @environments = DEFAULT_ENVIRONMENTS.clone
       @env = env
 
       # Apply default values that are only knowable at initialize-time (vs require-time)
@@ -266,7 +252,6 @@ module Hanami
       super
 
       @app_name = app_name.dup
-      @environments = environments.dup
 
       @assets = source.assets.dup
       @actions = source.actions.dup
@@ -285,8 +270,6 @@ module Hanami
     #
     # @api private
     def finalize!
-      apply_env_config
-
       # Finalize nested configs
       assets.finalize!
       actions.finalize!
@@ -315,9 +298,7 @@ module Hanami
     # @api public
     # @since 2.0.0
     def environment(env_name, &block)
-      environments[env_name] << block
-      apply_env_config
-
+      instance_eval(&block) if env_name == env
       self
     end
 
@@ -413,12 +394,6 @@ module Hanami
 
     def load_from_env
       self.slices = ENV["HANAMI_SLICES"]&.split(",")&.map(&:strip)
-    end
-
-    def apply_env_config(env = self.env)
-      environments[env].each do |block|
-        instance_eval(&block)
-      end
     end
 
     # @api private
