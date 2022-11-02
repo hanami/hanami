@@ -3,16 +3,15 @@
 require "hanami/view"
 require "hanami/view/context"
 require_relative "../../errors"
-require_relative "../../slice_configurable"
-require_relative "slice_configured_context"
 
 module Hanami
   module Extensions
     module View
       # View context for views in Hanami apps.
       #
-      # @api public
-      # @since 2.0.0
+      # This is NOT RELEASED as of 2.0.0.
+      #
+      # @api private
       module Context
         def self.included(context_class)
           super

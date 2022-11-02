@@ -46,7 +46,7 @@ RSpec.describe Hanami::Config::Actions, "default values" do
           "X-Frame-Options" => "DENY",
           "X-Content-Type-Options" => "nosniff",
           "X-XSS-Protection" => "1; mode=block",
-          "Content-Security-Policy" => config.content_security_policy.to_str
+          "Content-Security-Policy" => config.content_security_policy.to_s
         )
       }
     end

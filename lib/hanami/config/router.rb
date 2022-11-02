@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "dry/configurable"
-require_relative "../slice/routing/resolver"
 
 module Hanami
   class Config

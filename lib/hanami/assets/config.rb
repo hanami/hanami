@@ -4,8 +4,11 @@ require "dry/configurable"
 
 module Hanami
   module Assets
-    # @since 2.0.0
-    # @api public
+    # App config for assets.
+    #
+    # This is NOT RELEASED as of 2.0.0.
+    #
+    # @api private
     class Config
       include Dry::Configurable
 
@@ -34,8 +37,6 @@ module Hanami
 
       private
 
-      # @since 2.0.0
-      # @api private
       def method_missing(name, *args, &block)
         if config.respond_to?(name)
           config.public_send(name, *args, &block)
@@ -44,8 +45,6 @@ module Hanami
         end
       end
 
-      # @since 2.0.0
-      # @api private
       def respond_to_missing?(name, _incude_all = false)
         config.respond_to?(name) || super
       end

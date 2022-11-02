@@ -16,6 +16,8 @@ Style/LambdaCall:
   Enabled: false
 Style/StabbyLambdaParentheses:
   Enabled: false
+Style/StringLiteralsInInterpolation:
+  Enabled: false
 Style/TrailingCommaInArguments:
   Enabled: false
 Style/TrailingCommaInArrayLiteral:

@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
 require "hanami/view"
-require_relative "../slice_configurable"
-require_relative "view/slice_configured_view"
 
 module Hanami
+  # @api private
   module Extensions
-    # Extended behavior for actions intended for use within an Hanami app.
+    # Integrated behavior for `Hanami::View` classes within Hanami apps.
+    #
+    # This is NOT RELEASED as of 2.0.0.
     #
     # @see Hanami::View
     #
-    # @api public
-    # @since 2.0.0
+    # @api private
     module View
+      # @api private
       def self.included(view_class)
         super
 
@@ -20,6 +21,7 @@ module Hanami
         view_class.extend(ClassMethods)
       end
 
+      # @api private
       module ClassMethods
         # @api private
         def configure_for_slice(slice)

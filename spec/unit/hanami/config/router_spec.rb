@@ -33,7 +33,7 @@ RSpec.describe Hanami::Config, "#router" do
     end
 
     it "does not expose any settings" do
-      is_expected.not_to be_an_instance_of(Hanami::Config::Router)
+      is_expected.to be_an_instance_of(Hanami::Config::NullConfig)
       is_expected.not_to respond_to(:resolver)
     end
 

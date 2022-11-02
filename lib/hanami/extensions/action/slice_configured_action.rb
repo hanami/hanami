@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "hanami/action"
-
 module Hanami
   module Extensions
     module Action
@@ -86,12 +84,12 @@ module Hanami
             # the `:json` value configured in its immediate superclass.
             #
             # This would be surprising behavior, and we want to avoid it.
-            slice_value = slice.config.actions.public_send(:"#{setting}")
-            parent_value = slice.parent.config.actions.public_send(:"#{setting}") if slice.parent
+            slice_value = slice.config.actions.public_send(setting.name)
+            parent_value = slice.parent.config.actions.public_send(setting.name) if slice.parent
 
             next if slice.parent && slice_value == parent_value
 
-            action_class.config.public_send(:"#{setting}=", slice_value)
+            action_class.config.public_send(:"#{setting.name}=", slice_value)
           end
         end
 

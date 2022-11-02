@@ -34,17 +34,6 @@ RSpec.describe Hanami::Config, "#actions" do
     it "can be finalized" do
       is_expected.to respond_to(:finalize!)
     end
-
-    describe "#settings" do
-      it "returns a set of available settings" do
-        expect(actions.settings).to be_a(Set)
-        expect(actions.settings).to include(:view_context_identifier, :handled_exceptions)
-      end
-
-      it "includes all base action settings" do
-        expect(actions.settings).to include(Hanami::Action.settings)
-      end
-    end
   end
 
   context "hanami-controller is not bundled" do
@@ -54,7 +43,7 @@ RSpec.describe Hanami::Config, "#actions" do
     end
 
     it "does not expose any settings" do
-      is_expected.not_to be_an_instance_of(Hanami::Config::Actions)
+      is_expected.to be_an_instance_of(Hanami::Config::NullConfig)
       is_expected.not_to respond_to(:default_response_format)
       is_expected.not_to respond_to(:default_response_format=)
     end
