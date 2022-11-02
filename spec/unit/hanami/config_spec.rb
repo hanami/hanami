@@ -11,8 +11,8 @@ RSpec.describe Hanami::Config do
     end
 
     before do
-      config.environment :production do |c|
-        c.logger.level = :info__set_for_production_env
+      config.environment :production do |env|
+        env.logger.level = :info__set_for_production_env
       end
     end
 

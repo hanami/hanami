@@ -149,6 +149,8 @@ module Hanami
     #
     # @return [Symbol]
     #
+    # @see #environment
+    #
     # @api private
     # @since 2.0.0
     attr_reader :env
@@ -280,18 +282,20 @@ module Hanami
       super
     end
 
-    # Applies config for a given app environment.
+    # Applies config for a given app environment only.
     #
-    # The given block will be evaluated in the context of `self` via `instance_eval`.
+    # If the given `env_name` matches {Hanami.env}, then the block will be evaluated in the context
+    # of `self` via `instance_eval`.
     #
     # @example
-    #   config.environment(:test) do
-    #     config.logger.level = :info
+    #   config.environment(:test) do |env|
+    #     env.logger.level = :info
     #   end
     #
     # @param env_name [Symbol] the environment name
+    # @yieldparam env [self] the config object
     #
-    # @return [Hanami::Config]
+    # @return [self]
     #
     # @see Hanami.env
     #
