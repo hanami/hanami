@@ -118,11 +118,6 @@ module Hanami
     #   @since 2.0.0
     setting :no_auto_register_paths, default: %w[entities]
 
-    # TODO: Remove this; we have `config.actions.sessions` instead
-    #
-    # @api private
-    setting :sessions, default: :null, constructor: ->(*args) { Sessions.new(*args) }
-
     # @!attribute [rw] base_url
     #   Sets the base URL for app's web server.
     #
