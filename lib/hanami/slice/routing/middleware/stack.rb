@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
+require "hanami/router"
 require "hanami/middleware"
+require "hanami/middleware/app"
 require "hanami/errors"
 
 module Hanami
@@ -37,11 +39,6 @@ module Hanami
 
           # @since 2.0.0
           # @api private
-          ROOT_PREFIX = "/"
-          private_constant :ROOT_PREFIX
-
-          # @since 2.0.0
-          # @api private
           attr_reader :stack
 
           # Returns an array of Ruby namespaces from which to load middleware classes specified by
@@ -58,7 +55,6 @@ module Hanami
           # @since 2.0.0
           # @api private
           def initialize
-            @prefix = ROOT_PREFIX
             @stack = Hash.new { |hash, key| hash[key] = [] }
             @namespaces = [Hanami::Middleware]
           end
@@ -67,7 +63,6 @@ module Hanami
           # @api private
           def initialize_copy(source)
             super
-            @prefix = source.instance_variable_get(:@prefix).dup
             @stack = stack.dup
             @namespaces = namespaces.dup
           end
@@ -96,16 +91,16 @@ module Hanami
           #
           # @api public
           # @since 2.0.0
-          def use(spec, *args, before: nil, after: nil, &blk)
+          def use(spec, *args, path_prefix: ::Hanami::Router::DEFAULT_PREFIX, before: nil, after: nil, &blk)
             middleware = resolve_middleware_class(spec)
             item = [middleware, args, blk]
 
             if before
-              @stack[@prefix].insert((idx = index_of(before)).zero? ? 0 : idx - 1, item)
+              @stack[path_prefix].insert((idx = index_of(before, path_prefix)).zero? ? 0 : idx - 1, item)
             elsif after
-              @stack[@prefix].insert(index_of(after) + 1, item)
+              @stack[path_prefix].insert(index_of(after, path_prefix) + 1, item)
             else
-              @stack[@prefix].push([middleware, args, blk])
+              @stack[path_prefix].push([middleware, args, blk])
             end
 
             self
@@ -114,20 +109,10 @@ module Hanami
           # @since 2.0.0
           # @api private
           def update(other)
-            other.stack.each do |prefix, items|
-              stack[prefix].concat(items)
+            other.stack.each do |path_prefix, items|
+              stack[path_prefix].concat(items)
             end
             self
-          end
-
-          # @since 2.0.0
-          # @api private
-          def with(path)
-            prefix = @prefix
-            @prefix = path
-            yield
-          ensure
-            @prefix = prefix
           end
 
           # @since 2.0.0
@@ -137,20 +122,17 @@ module Hanami
               raise "Add \"rack\" to your `Gemfile` to run Hanami as a rack app"
             end
 
-            require "rack/builder"
+            mapping = to_hash
+            return app if mapping.empty?
 
-            s = self
+            Hanami::Middleware::App.new(app, mapping)
+          end
 
-            Rack::Builder.new do
-              s.each do |prefix, stack|
-                s.mapped(self, prefix) do
-                  stack.each do |middleware, args, blk|
-                    use(middleware, *args, &blk)
-                  end
-                end
-
-                run app
-              end
+          # @since 2.0.0
+          # @api private
+          def to_hash
+            @stack.each_with_object({}) do |(path, _), result|
+              result[path] = stack_for(path)
             end
           end
 
@@ -169,7 +151,7 @@ module Hanami
           # @since 2.0.0
           # @api private
           def mapped(builder, prefix, &blk)
-            if prefix == ROOT_PREFIX
+            if prefix == ::Hanami::Router::DEFAULT_PREFIX
               builder.instance_eval(&blk)
             else
               builder.map(prefix, &blk)
@@ -179,8 +161,18 @@ module Hanami
           private
 
           # @since 2.0.0
-          def index_of(middleware)
-            @stack[@prefix].index { |(m, *)| m.equal?(middleware) }
+          def index_of(middleware, path_prefix)
+            @stack[path_prefix].index { |(m, *)| m.equal?(middleware) }
+          end
+
+          # @since 2.0.0
+          # @api private
+          def stack_for(current_path)
+            @stack.each_with_object([]) do |(path, stack), result|
+              next unless current_path.start_with?(path)
+
+              result.push(stack)
+            end.flatten(1)
           end
 
           # @since 2.0.0
@@ -204,6 +196,7 @@ module Hanami
             rescue LoadError # rubocop:disable Lint/SuppressedException
             end
 
+            # FIXME: Classify must use App inflector
             class_name = Hanami::Utils::String.classify(spec.to_s)
             namespace = namespaces.detect { |ns| ns.const_defined?(class_name) }
 
