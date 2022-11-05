@@ -37,8 +37,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dry-inflector",    "~> 1.0", "< 2"
   spec.add_dependency "dry-monitor",      "~> 1.0", "< 2"
   spec.add_dependency "dry-system",       "~> 1.0.0.rc1"
-  spec.add_dependency "hanami-cli",       "~> 2.0.beta"
-  spec.add_dependency "hanami-utils",     "~> 2.0.beta"
+  spec.add_dependency "hanami-cli",       "~> 2.0.0.rc1"
+  spec.add_dependency "hanami-utils",     "~> 2.0.0.rc1"
   spec.add_dependency "zeitwerk",         "~> 2.6"
 
   spec.add_development_dependency "rspec",     "~> 3.8"
