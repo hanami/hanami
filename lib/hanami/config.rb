@@ -287,13 +287,15 @@ module Hanami
     # If the given `env_name` matches {Hanami.env}, then the block will be evaluated in the context
     # of `self` via `instance_eval`.
     #
+    # If the env does not match, then the block is not evaluated at all.
+    #
     # @example
     #   config.environment(:test) do |env|
     #     env.logger.level = :info
     #   end
     #
     # @param env_name [Symbol] the environment name
-    # @yieldparam env [self] the config object
+    # @yieldparam c [self] the config object
     #
     # @return [self]
     #
