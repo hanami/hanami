@@ -117,9 +117,9 @@ module Hanami
     end
 
     def build_slice(slice_name, &block)
+      slice_module_name = inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
       slice_module =
         begin
-          slice_module_name = inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
           inflector.constantize(slice_module_name)
         rescue NameError
           parent_slice_namespace.const_set(inflector.camelize(slice_name), Module.new)
