@@ -105,10 +105,10 @@ module Hanami
         raise e unless e.path == slice_require_path
       end
 
-      slice_const_name = inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
+      slice_module_name = inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
       slice_class =
         begin
-          inflector.constantize("#{slice_const_name}#{MODULE_DELIMITER}Slice")
+          inflector.constantize("#{slice_module_name}#{MODULE_DELIMITER}Slice")
         rescue NameError => e
           raise e unless e.name.to_s == inflector.camelize(slice_name) || e.name.to_s == :Slice
         end
