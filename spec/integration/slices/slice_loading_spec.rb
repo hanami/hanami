@@ -3,7 +3,7 @@
 require "rack/test"
 
 RSpec.describe "Slices / Slice loading", :app_integration, :aggregate_failures do
-  let(:app_modules) { %i[TestApp Admin Editorial Main Shop] }
+  let(:app_modules) { %i[TestApp Admin Main] }
 
   describe "loading specific slices with config.slices" do
     describe "setup app" do
@@ -48,7 +48,7 @@ RSpec.describe "Slices / Slice loading", :app_integration, :aggregate_failures d
 
             expect { Admin::Slice.register_slice :editorial }.not_to(change { Admin::Slice.slices.keys })
             expect { Admin::Slice.register_slice :shop }.to change { Admin::Slice.slices.keys }.to [:shop]
-            expect(Shop::Slice).to be
+            expect(Admin::Shop::Slice).to be
           end
         end
       end
@@ -123,9 +123,9 @@ RSpec.describe "Slices / Slice loading", :app_integration, :aggregate_failures d
             expect(Admin::Slice.slices.keys).to eq [:shop]
 
             expect(Admin::Slice).to be
-            expect(Shop::Slice).to be
+            expect(Admin::Shop::Slice).to be
 
-            expect { Editorial }.to raise_error(NameError)
+            expect { Admin::Editorial }.to raise_error(NameError)
             expect { Main }.to raise_error(NameError)
           end
         end

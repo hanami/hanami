@@ -5,6 +5,7 @@ require_relative "constants"
 module Hanami
   # @api private
   class SliceRegistrar
+    VALID_SLICE_NAME_RE = /^[a-z][a-z0-9_]+$/
     SLICE_DELIMITER = CONTAINER_KEY_DELIMITER
 
     attr_reader :parent, :slices
@@ -16,13 +17,15 @@ module Hanami
     end
 
     def register(name, slice_class = nil, &block)
+      unless name.to_s =~ VALID_SLICE_NAME_RE
+        raise ArgumentError, "slice name #{name.inspect} must be lowercase alphanumeric text and underscores only"
+      end
+
       return unless filter_slice_names([name]).any?
 
       if slices.key?(name.to_sym)
         raise SliceLoadError, "Slice '#{name}' is already registered"
       end
-
-      # TODO: raise error unless name meets format (i.e. single level depth only)
 
       slice = slice_class || build_slice(name, &block)
 
@@ -74,7 +77,9 @@ module Hanami
 
     def with_nested
       to_a.flat_map { |slice|
-        [slice] + slice.slices.with_nested
+        # Return nested slices first so that their more specific namespaces may be picked up first
+        # by SliceConfigurable#slice_for
+        slice.slices.with_nested + [slice]
       }
     end
 
@@ -88,36 +93,39 @@ module Hanami
       parent.inflector
     end
 
-    # Runs when a slice file has been found at `config/slices/[slice_name].rb`, or a slice
-    # directory at `slices/[slice_name]`. Attempts to require the slice class, if defined,
-    # or generates a new slice class for the given slice name.
-    def load_slice(slice_name)
-      slice_const_name = inflector.camelize(slice_name)
-      slice_require_path = root.join(CONFIG_DIR, SLICES_DIR, slice_name).to_s
+    def parent_slice_namespace
+      parent.eql?(parent.app) ? Object : parent.namespace
+    end
 
+    # Runs when a slice file has been found at `config/slices/[slice_name].rb`, or a slice directory
+    # at `slices/[slice_name]`. Attempts to require the slice class, if defined, before registering
+    # the slice. If a slice class is not found, registering the slice will generate the slice class.
+    def load_slice(slice_name)
+      slice_require_path = root.join(CONFIG_DIR, SLICES_DIR, slice_name).to_s
       begin
         require(slice_require_path)
       rescue LoadError => e
         raise e unless e.path == slice_require_path
       end
 
+      slice_module_name = inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
       slice_class =
         begin
-          inflector.constantize("#{slice_const_name}::Slice")
+          inflector.constantize("#{slice_module_name}#{MODULE_DELIMITER}Slice")
         rescue NameError => e
-          raise e unless e.name.to_s == slice_const_name || e.name.to_s == :Slice
+          raise e unless e.name.to_s == inflector.camelize(slice_name) || e.name.to_s == :Slice
         end
 
       register(slice_name, slice_class)
     end
 
     def build_slice(slice_name, &block)
+      slice_module_name = inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
       slice_module =
         begin
-          slice_module_name = inflector.camelize(slice_name.to_s)
           inflector.constantize(slice_module_name)
         rescue NameError
-          Object.const_set(inflector.camelize(slice_module_name), Module.new)
+          parent_slice_namespace.const_set(inflector.camelize(slice_name), Module.new)
         end
 
       slice_module.const_set(:Slice, Class.new(Hanami::Slice, &block))
