@@ -5,6 +5,7 @@ require_relative "constants"
 module Hanami
   # @api private
   class SliceRegistrar
+    VALID_SLICE_NAME_RE = /^[a-z][a-z0-9_]+$/
     SLICE_DELIMITER = CONTAINER_KEY_DELIMITER
 
     attr_reader :parent, :slices
@@ -16,13 +17,15 @@ module Hanami
     end
 
     def register(name, slice_class = nil, &block)
+      unless name.to_s =~ VALID_SLICE_NAME_RE
+        raise ArgumentError, "slice name #{name.inspect} must be lowercase alphanumeric text and underscores only"
+      end
+
       return unless filter_slice_names([name]).any?
 
       if slices.key?(name.to_sym)
         raise SliceLoadError, "Slice '#{name}' is already registered"
       end
-
-      # TODO: raise error unless name meets format (i.e. single level depth only)
 
       slice = slice_class || build_slice(name, &block)
 
