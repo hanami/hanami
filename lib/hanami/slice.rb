@@ -113,7 +113,7 @@ module Hanami
       # @since 2.0.0
       def config
         @config ||= app.config.dup.tap do |slice_config|
-          # Remove specific values from app that will not apply to this slice
+          # Unset config from app that does apply to ordinary slices
           slice_config.root = nil
         end
       end
