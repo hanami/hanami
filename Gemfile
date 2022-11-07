@@ -17,8 +17,6 @@ gem "hanami-view",       github: "hanami/view",       branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
-gem "dry-logger", github: "dry-rb/dry-logger", branch: "main"
-
 # This is needed for settings specs to pass
 gem "dry-types"
 
