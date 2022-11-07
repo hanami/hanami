@@ -33,12 +33,14 @@ module Hanami
           resolve_view = method(:resolve_paired_view)
           resolve_view_context = method(:resolve_view_context)
           resolve_routes = method(:resolve_routes)
+          resolve_rack_monitor = method(:resolve_rack_monitor)
 
           define_method(:new) do |**kwargs|
             super(
               view: kwargs.fetch(:view) { resolve_view.(self) },
               view_context: kwargs.fetch(:view_context) { resolve_view_context.() },
               routes: kwargs.fetch(:routes) { resolve_routes.() },
+              rack_monitor: kwargs.fetch(:rack_monitor) { resolve_rack_monitor.() },
               **kwargs,
             )
           end
@@ -133,6 +135,10 @@ module Hanami
 
         def resolve_routes
           slice.app["routes"] if slice.app.key?("routes")
+        end
+
+        def resolve_rack_monitor
+          slice.app["rack.monitor"] if slice.app.key?("rack.monitor")
         end
 
         def actions_config
