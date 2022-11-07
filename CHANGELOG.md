@@ -2,6 +2,25 @@
 
 The web, with simplicity.
 
+## v2.0.0.rc1 - 2022-11-08
+
+### Added
+
+- [Piotr Solnica] Use Zeitwerk to auto-load Hanami
+- [Tim Riley] Introduce `Hanami::Slice.stop` to properly shutdown all the application slices
+
+### Fixed
+
+- [Luca Guidi] Ensure to properly mount Rack middleware in routing scope and slice
+- [Tim Riley] Simplify and clarify usage of `Hanami::Config#enviroment`
+- [Tim Riley] Improve error message for missing action class
+- [Tim Riley] Expect nested slices to use parent’s namespace
+
+### Changed
+
+- [Piotr Solnica] Replace `Hanami::Logger` with `Dry::Logger`
+- [Tim Riley] Remove duplicated configuration `config.session` and keep `config.actions.sessions`
+
 ## v2.0.0.beta4 - 2022-10-24
 
 ### Added
