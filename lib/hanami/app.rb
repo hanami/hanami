@@ -188,8 +188,10 @@ module Hanami
           register_provider(:logger, source: Hanami::Providers::Logger)
         end
 
-        require_relative "providers/rack"
-        register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
+        if Hanami.bundled?("rack")
+          require_relative "providers/rack"
+          register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
+        end
       end
 
       def prepare_autoloader
