@@ -15,7 +15,7 @@ RSpec.describe "Container / Standard bootable components", :app_integration do
 
       expect(Hanami.app.key?(:settings)).to be false
       expect(Hanami.app["inflector"]).to eql Hanami.app.inflector
-      expect(Hanami.app["logger"]).to be_a_kind_of(Hanami::Logger)
+      expect(Hanami.app["logger"]).to be_a_kind_of(Dry::Logger::Dispatcher)
       expect(Hanami.app["rack.monitor"]).to be_a_kind_of(Dry::Monitor::Rack::Middleware)
     end
   end
@@ -36,7 +36,7 @@ RSpec.describe "Container / Standard bootable components", :app_integration do
 
       expect(Hanami.app.key?(:settings)).to be false
       expect(Hanami.app["inflector"]).to eql Hanami.app.inflector
-      expect(Hanami.app["logger"]).to be_a_kind_of(Hanami::Logger)
+      expect(Hanami.app["logger"]).to be_a_kind_of(Dry::Logger::Dispatcher)
       expect(Hanami.app["rack.monitor"]).to be_a_kind_of(Dry::Monitor::Rack::Middleware)
     end
   end

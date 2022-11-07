@@ -329,7 +329,7 @@ module Hanami
 
     # Returns the logger config.
     #
-    # Use this to configure various options for the default `Hanami::Logger` logger instance.
+    # Use this to configure various options for the default `Dry::Logger::Dispatcher` logger instance.
     #
     # @example
     #   config.logger.level = :debug
@@ -346,7 +346,7 @@ module Hanami
 
     # Sets the app's logger instance.
     #
-    # This entirely replaces the default `Hanami::Logger` instance that would have been
+    # This entirely replaces the default `Dry::Logger::Dispatcher` instance that would have been
     #
     # @see #logger_instance
     #
@@ -360,14 +360,14 @@ module Hanami
 
     # Returns the configured logger instance.
     #
-    # Unless you've replaced the logger with {#logger=}, this returns an `Hanami::Logger` configured
+    # Unless you've replaced the logger with {#logger=}, this returns a `Dry::Logger::Dispatcher` configured
     # with the options configured through {#logger}.
     #
     # This configured logger is registered in all app and slice containers as `"logger"`. For
     # typical usage, you should access the logger via this component, not directly from config.
     #
     # @example Accessing the logger component
-    #   Hanami.app["logger"] # => #<Hanami::Logger>
+    #   Hanami.app["logger"] # => #<Dry::Logger::Dispatcher>
     #
     # @example Injecting the logger as a dependency
     #   module MyApp
@@ -380,7 +380,7 @@ module Hanami
     #     end
     #   end
     #
-    # @return [Hanami::Logger]
+    # @return [Dry::Logger::Dispatcher]
     #
     # @see #logger
     # @see Hanami::Config::Logger

@@ -57,8 +57,7 @@ module Hanami
           ip: env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
           path: env[SCRIPT_NAME] + env[PATH_INFO].to_s,
           length: extract_content_length(env),
-          params: env[ROUTER_PARAMS],
-          time: Time.now,
+          params: env[ROUTER_PARAMS]
         }
 
         logger.info(data)

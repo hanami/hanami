@@ -7,23 +7,15 @@ require "logger"
 require "stringio"
 
 RSpec.describe Hanami::Config::Logger do
-  subject { described_class.new(app_name: app_name, env: env) }
-  let(:app_name) { Hanami::SliceName.new(double(name: "MyApp::app"), inflector: -> { Dry::Inflector.new }) }
-  let(:env) { :development }
-
-  describe "#logger_class" do
-    it "defaults to Hanami::Logger" do
-      expect(subject.logger_class).to eql Hanami::Logger
-    end
-
-    it "can be changed to another class" do
-      another_class = Class.new
-
-      expect { subject.logger_class = another_class }
-        .to change { subject.logger_class }
-        .to(another_class)
-    end
+  subject do
+    described_class.new(app_name: app_name, env: env)
   end
+
+  let(:app_name) do
+    Hanami::SliceName.new(double(name: "MyApp::app"), inflector: -> { Dry::Inflector.new })
+  end
+
+  let(:env) { :development }
 
   describe "#level" do
     it "defaults to :debug" do
@@ -80,8 +72,8 @@ RSpec.describe Hanami::Config::Logger do
   end
 
   describe "#formatter" do
-    it "defaults to nil" do
-      expect(subject.formatter).to eq(nil)
+    it "defaults to :rack" do
+      expect(subject.formatter).to eq(:rack)
     end
 
     context "when :production environment" do
@@ -101,17 +93,17 @@ RSpec.describe Hanami::Config::Logger do
     end
   end
 
-  describe "#colors" do
+  describe "#template" do
     it "defaults to false" do
-      expect(subject.colors).to eq(false)
+      expect(subject.template).to eq("[%<progname>s] [%<severity>s] [%<time>s] %<message>s")
     end
   end
 
-  describe "#colors=" do
+  describe "#template=" do
     it "accepts a value" do
-      expect { subject.colors = true }
-        .to change { subject.colors }
-        .to(true)
+      expect { subject.template = "%<message>s" }
+        .to change { subject.template }
+        .to("%<message>s")
     end
   end
 
@@ -138,20 +130,14 @@ RSpec.describe Hanami::Config::Logger do
   end
 
   describe "#options" do
-    it "defaults to empty array" do
-      expect(subject.options).to eq([])
+    it "defaults to empty hash" do
+      expect(subject.options).to eq({})
     end
   end
 
   describe "#options=" do
     it "accepts value" do
-      subject.options = expected = "daily"
-
-      expect(subject.options).to eq([expected])
-    end
-
-    it "accepts values" do
-      subject.options = expected = [0, 1048576]
+      subject.options = expected = {rotate: "daily"}
 
       expect(subject.options).to eq(expected)
     end
@@ -160,7 +146,11 @@ end
 
 RSpec.describe Hanami::Config do
   subject(:config) { described_class.new(app_name: app_name, env: env) }
-  let(:app_name) { Hanami::SliceName.new(double(name: "SOS::app"), inflector: -> { Dry::Inflector.new }) }
+
+  let(:app_name) do
+    Hanami::SliceName.new(double(name: "SOS::app"), inflector: -> { Dry::Inflector.new })
+  end
+
   let(:env) { :development }
 
   describe "#logger" do
@@ -180,8 +170,8 @@ RSpec.describe Hanami::Config do
   end
 
   describe "#logger_instance" do
-    it "defaults to an Hanami::Logger instance, based on the default logger settings" do
-      expect(config.logger_instance).to be_an_instance_of config.logger.logger_class
+    it "defaults to using Dry::Logger, based on the default logger settings" do
+      expect(config.logger_instance).to be_a(Dry::Logger::Dispatcher)
       expect(config.logger_instance.level).to eq Logger::DEBUG
     end
 
