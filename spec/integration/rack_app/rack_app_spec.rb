@@ -47,10 +47,25 @@ RSpec.describe "Hanami web app", :app_integration do
         end
       RUBY
 
+      write "app/actions/users/index.rb", <<~RUBY
+        module TestApp
+          module Actions
+            module Users
+              class Index < Hanami::Action
+                def handle(req, _resp)
+                  raise StandardError, "OH NOEZ"
+                end
+              end
+            end
+          end
+        end
+      RUBY
+
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
             root to: ->(env) { [200, {}, ["OK"]] }
+            get "/users", to: "users.index"
           end
         end
       RUBY
@@ -64,6 +79,14 @@ RSpec.describe "Hanami web app", :app_integration do
       logs = -> { Pathname(dir).join("test.log").realpath.read }
 
       expect(logs.()).to match %r{GET 200 \d+ms 127.0.0.1 /}
+
+      begin
+        get "/users"
+      rescue => e # rubocop:disable Style/RescueStandardError
+        raise unless e.to_s == "OH NOEZ"
+      end
+
+      expect(logs.()).to match %r{OH NOEZ}
     end
   end
 

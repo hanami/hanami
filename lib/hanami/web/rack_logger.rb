@@ -66,8 +66,7 @@ module Hanami
       # @api private
       # @since 2.0.0
       def log_exception(exception)
-        logger.error exception.message
-        logger.error exception.backtrace.join("\n")
+        logger.error(exception)
       end
 
       private

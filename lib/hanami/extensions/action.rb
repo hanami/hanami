@@ -51,6 +51,15 @@ module Hanami
         # @since 2.0.0
         attr_reader :routes
 
+        # Returns the app or slice's `Dry::Monitor::Rack::Middleware` for use within
+        # action instance methods.
+        #
+        # @return [Dry::Monitor::Rack::Middleware]
+        #
+        # @api public
+        # @since 2.0.0
+        attr_reader :rack_monitor
+
         # @overload def initialize(routes: nil, **kwargs)
         #   Returns a new `Hanami::Action` with app components injected as dependencies.
         #
@@ -61,10 +70,11 @@ module Hanami
         #
         #   @api public
         #   @since 2.0.0
-        def initialize(view: nil, view_context: nil, routes: nil, **kwargs)
+        def initialize(view: nil, view_context: nil, rack_monitor: nil, routes: nil, **kwargs)
           @view = view
           @view_context = view_context
           @routes = routes
+          @rack_monitor = rack_monitor
 
           super(**kwargs)
         end
@@ -80,6 +90,13 @@ module Hanami
         # @api private
         def finish(req, res, halted)
           res.render(view, **req.params) if !halted && auto_render?(res)
+          super
+        end
+
+        # @api private
+        def _handle_exception(request, _response, exception)
+          rack_monitor&.instrument(:error, exception: exception, env: request.env)
+
           super
         end
 
