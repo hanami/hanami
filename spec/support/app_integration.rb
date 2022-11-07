@@ -24,19 +24,11 @@ RSpec.shared_context "Application integration" do
 end
 
 def autoloaders_teardown!
-  # Tear down Zeitwerk (from zeitwerk's own test/support/loader_test)
-  Zeitwerk::Registry.loaders.reject! do |loader|
-    test_loader = loader.dirs.any? { |dir|
+  ObjectSpace.each_object(Zeitwerk::Loader) do |loader|
+    loader.unregister if loader.dirs.any? { |dir|
       dir.include?("/spec/") || dir.include?(Dir.tmpdir) ||
         dir.include?("/slices/") || dir.include?("/app")
     }
-
-    if test_loader
-      loader.unregister
-      true
-    else
-      false
-    end
   end
 end
 
