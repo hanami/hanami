@@ -62,7 +62,7 @@ module Hanami
         def middleware
           return [] unless enabled?
 
-          [[storage_middleware, options]]
+          [storage_middleware, options].flatten
         end
 
         private

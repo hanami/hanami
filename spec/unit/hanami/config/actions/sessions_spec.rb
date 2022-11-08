@@ -42,9 +42,7 @@ RSpec.describe Hanami::Config::Actions, "#sessions" do
     end
 
     it "returns an array of middleware classes and options" do
-      expect(sessions.middleware).to eq [
-        [Rack::Session::Cookie, [secret: "abc"]]
-      ]
+      expect(sessions.middleware).to eq [Rack::Session::Cookie, {secret: "abc"}]
     end
   end
 end
