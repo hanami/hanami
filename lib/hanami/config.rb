@@ -277,32 +277,6 @@ module Hanami
       super
     end
 
-    # Applies config for a given app environment only.
-    #
-    # If the given `env_name` matches {Hanami.env}, then the block will be evaluated in the context
-    # of `self` via `instance_eval`.
-    #
-    # If the env does not match, then the block is not evaluated at all.
-    #
-    # @example
-    #   config.environment(:test) do |env|
-    #     env.logger.level = :info
-    #   end
-    #
-    # @param env_name [Symbol] the environment name
-    # @yieldparam c [self] the config object
-    #
-    # @return [self]
-    #
-    # @see Hanami.env
-    #
-    # @api public
-    # @since 2.0.0
-    def environment(env_name, &block)
-      instance_eval(&block) if env_name == env
-      self
-    end
-
     # Configures the app's custom inflections.
     #
     # You should call this one time only. Subsequent calls will override previously configured

@@ -118,6 +118,41 @@ module Hanami
         end
       end
 
+      # Evaluates the block for a given app environment only.
+      #
+      # If the given `env_name` matches {Hanami.env}, then the block will be evaluated in the
+      # context of `self` (the slice) via `instance_eval`. The slice is also passed as the block's
+      # optional argument.
+      #
+      # If the env does not match, then the block is not evaluated at all.
+      #
+      # @example
+      #   module MySlice
+      #     class Slice < Hanami::Slice
+      #       environment(:test) do
+      #         config.logger.level = :info
+      #       end
+      #     end
+      #   end
+      #
+      # @overload environment(env_name)
+      #   @param env_name [Symbol] the environment name
+      #
+      # @overload environment(env_name)
+      #   @param env_name [Symbol] the environment name
+      #   @yieldparam slice [self] the slice
+      #
+      # @return [self]
+      #
+      # @see Hanami.env
+      #
+      # @api public
+      # @since 2.0.0
+      def environment(env_name, &block)
+        instance_eval(&block) if env_name == config.env
+        self
+      end
+
       # Returns a {SliceName} for the slice, an object with methods returning the name of the slice
       # in various formats.
       #
