@@ -49,6 +49,10 @@ module Hanami
     end
   end
 
+  # Prepare the load path as early as possible (based on the default root inferred from the location
+  # of `config/app.rb`), so `require` can work at the top of `config/app.rb`. This may be useful
+  # when external classes are needed for configuring certain aspects of the app.
+  #
   # @api private
   # @since 2.0.0
   private_class_method def self.prepare_load_path
