@@ -82,6 +82,40 @@ RSpec.describe "Code loading / Loading from lib directory", :app_integration do
     end
   end
 
+  describe "default root with requires at top of app file" do
+    before :context do
+      with_directory(@dir = make_tmp_directory.realpath) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+          require "external_class"
+
+          module TestApp
+            class App < Hanami::App
+              @class_from_lib = ExternalClass
+
+              def self.class_from_lib
+                @class_from_lib
+              end
+            end
+          end
+        RUBY
+
+        write "lib/external_class.rb", <<~'RUBY'
+          class ExternalClass
+          end
+        RUBY
+      end
+    end
+
+    before do
+      with_directory(@dir) { require "hanami/setup" }
+    end
+
+    specify "classes in lib/ can be required directly from the top of the app file" do
+      expect(Hanami.app.class_from_lib).to be ExternalClass
+    end
+  end
+
   context "app root reconfigured" do
     before :context do
       with_directory(@dir = make_tmp_directory.realpath) do

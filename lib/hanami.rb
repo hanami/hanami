@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "pathname"
 require "zeitwerk"
 require_relative "hanami/constants"
 
@@ -36,7 +37,8 @@ module Hanami
     app_path = self.app_path
 
     if app_path
-      require(app_path)
+      prepare_load_path
+      require(app_path.to_s)
       app
     elsif raise_exception
       raise(
@@ -45,6 +47,23 @@ module Hanami
         "Your app file should be at `config/app.rb` in your project's root directory."
       )
     end
+  end
+
+  # Prepare the load path as early as possible (based on the default root inferred from the location
+  # of `config/app.rb`), so `require` can work at the top of `config/app.rb`. This may be useful
+  # when external classes are needed for configuring certain aspects of the app.
+  #
+  # @api private
+  # @since 2.0.0
+  private_class_method def self.prepare_load_path
+    lib_path = app_path&.join("..", "..", LIB_DIR)
+
+    if lib_path&.directory?
+      path = lib_path.realpath.to_s
+      $LOAD_PATH.prepend(path) unless $LOAD_PATH.include?(path)
+    end
+
+    lib_path
   end
 
   # Returns the Hamami app class.
@@ -98,10 +117,10 @@ module Hanami
   # Searches within the given directory, then searches upwards through parent directories until the
   # app file can be found.
   #
-  # @param dir [String] The directory from which to start searching. Defaults to the current
-  #   directory.
+  # @param dir [String, Pathname] The directory from which to start searching. Defaults to the
+  #   current directory.
   #
-  # @return [String, nil] the app file path, or nil if not found.
+  # @return [Pathname, nil] the app file path, or nil if not found.
   #
   # @api public
   # @since 2.0.0
@@ -110,7 +129,7 @@ module Hanami
     path = dir.join(APP_PATH)
 
     if path.file?
-      path.to_s
+      path
     elsif !dir.root?
       app_path(dir.parent)
     end

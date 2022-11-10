@@ -29,11 +29,6 @@ module Hanami
         subclass.class_eval do
           @config = Hanami::Config.new(app_name: slice_name, env: Hanami.env)
 
-          # Prepare the load path (based on the default root of `Dir.pwd`) as early as possible, so
-          # you can make a `require` inside the body of an `App` subclass, which may be useful for
-          # certain kinds of app configuration.
-          prepare_load_path
-
           load_dotenv
         end
       end
