@@ -957,7 +957,9 @@ module Hanami
           **config.router.options
         ) do
           use(rack_monitor)
-          use(*config.actions.sessions.middleware) if config.actions.sessions.enabled?
+          if Hanami.bundled?("hanami-controller")
+            use(*config.actions.sessions.middleware) if config.actions.sessions.enabled?
+          end
 
           middleware_stack.update(config.middleware_stack)
         end
