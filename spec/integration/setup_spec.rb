@@ -126,7 +126,7 @@ RSpec.describe "Hanami setup", :app_integration do
         with_tmp_directory(Dir.mktmpdir) do
           write "config/app.rb"
 
-          expect(app_path).to match(%r{^/.*/config/app.rb$})
+          expect(app_path.to_s).to match(%r{^/.*/config/app.rb$})
         end
       end
     end
@@ -138,7 +138,7 @@ RSpec.describe "Hanami setup", :app_integration do
           write "lib/foo/bar/.keep"
 
           Dir.chdir("lib/foo/bar") do
-            expect(app_path).to match(%r{^/.*/config/app.rb$})
+            expect(app_path.to_s).to match(%r{^/.*/config/app.rb$})
           end
         end
       end
