@@ -26,12 +26,8 @@ RSpec.describe Hanami::Config::Actions, "default values" do
   end
 
   describe "new default values applied to base action settings" do
-    describe "default_request_format" do
-      specify { expect(config.default_request_format).to eq :html }
-    end
-
-    describe "default_response_format" do
-      specify { expect(config.default_response_format).to eq :html }
+    describe "formats" do
+      specify { expect(config.formats.values).to eq [:html] }
     end
 
     describe "content_security_policy" do

@@ -13,22 +13,19 @@ RSpec.describe Hanami::Config, "#actions" do
     it "is a full actions config" do
       is_expected.to be_an_instance_of(Hanami::Config::Actions)
 
-      is_expected.to respond_to(:default_response_format)
-      is_expected.to respond_to(:default_response_format=)
+      is_expected.to respond_to(:format)
     end
 
     it "configures base action settings" do
-      expect { actions.default_request_format = :json }
-        .to change { actions.default_request_format }
-        .to :json
+      expect { actions.public_directory = "pub" }
+        .to change { actions.public_directory }
+        .to end_with("pub")
     end
 
     it "configures base actions settings using custom methods" do
-      actions.formats = {}
-
-      expect { actions.format json: "app/json" }
-        .to change { actions.formats }
-        .to("app/json" => :json)
+      expect { actions.formats.add(:json, "app/json") }
+        .to change { actions.formats.mapping }
+        .to include("app/json" => :json)
     end
 
     it "can be finalized" do

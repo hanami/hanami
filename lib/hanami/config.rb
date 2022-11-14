@@ -274,6 +274,8 @@ module Hanami
       logger.finalize!
       router.finalize!
 
+      use_body_parser_middleware
+
       super
     end
 
@@ -371,7 +373,24 @@ module Hanami
       self.slices = ENV["HANAMI_SLICES"]&.split(",")&.map(&:strip)
     end
 
-    # @api private
+    SUPPORTED_MIDDLEWARE_PARSERS = %i[json].freeze
+    private_constant :SUPPORTED_MIDDLEWARE_PARSERS
+
+    def use_body_parser_middleware
+      return if actions.formats.empty?
+      return if middleware.stack["/"].map(&:first).any? { |klass| klass == "Hanami::Middleware::BodyParser" }
+
+      parsers = SUPPORTED_MIDDLEWARE_PARSERS & actions.formats.values
+      return if parsers.empty?
+
+      middleware.use(
+        :body_parser,
+        [parsers.to_h { |parser_format|
+          [parser_format, actions.formats.mime_types_for(parser_format)]
+        }]
+      )
+    end
+
     def load_dependent_config(gem_name)
       if Hanami.bundled?(gem_name)
         yield

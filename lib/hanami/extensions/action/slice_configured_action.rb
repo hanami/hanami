@@ -60,7 +60,7 @@ module Hanami
             #
             #   module MyApp
             #     class Action < Hanami::Action
-            #       config.default_response_format = :json
+            #       config.format :json
             #     end
             #   end
             #
@@ -91,7 +91,10 @@ module Hanami
 
             next if slice.parent && slice_value == parent_value
 
-            action_class.config.public_send(:"#{setting.name}=", slice_value)
+            action_class.config.public_send(
+              :"#{setting.name}=",
+              setting.mutable? ? slice_value.dup : slice_value
+            )
           end
         end
 

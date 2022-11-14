@@ -77,7 +77,10 @@ module Hanami
 
             next if slice.parent && slice_value == parent_value
 
-            view_class.config.public_send(:"#{setting.name}=", slice_value)
+            view_class.config.public_send(
+              :"#{setting.name}=",
+              setting.mutable? ? slice_value.dup : slice_value
+            )
           end
 
           view_class.config.inflector = inflector
