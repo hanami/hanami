@@ -15,8 +15,14 @@ module Hanami
       # @return [Hanami::SliceName]
       #
       # @api private
-      # @since 2.0.o
+      # @since 2.0.0
       attr_reader :app_name
+
+      # @return [Symbol]
+      #
+      # @api private
+      # @since 2.0.0
+      attr_reader :env
 
       # @!attribute [rw] level
       #   Sets or returns the logger level.
@@ -40,7 +46,7 @@ module Hanami
       #
       #   @api public
       #   @since 2.0.0
-      setting :stream
+      setting :stream, default: $stdout
 
       # @!attribute [rw] formatter
       #   Sets or returns the logger's formatter.
@@ -57,7 +63,7 @@ module Hanami
       #
       #   @api public
       #   @since 2.0.0
-      setting :formatter
+      setting :formatter, default: :string
 
       # @!attribute [rw] template
       #   Sets or returns log entry string template
@@ -68,7 +74,7 @@ module Hanami
       #
       #   @api public
       #   @since 2.0.0
-      setting :template, default: "[%<progname>s] [%<severity>s] [%<time>s] %<message>s"
+      setting :template, default: :details
 
       # @!attribute [rw] filters
       #   Sets or returns an array of attribute names to filter from logs.
@@ -85,11 +91,11 @@ module Hanami
       # @!attribute [rw] logger_constructor
       #   Sets or returns the constructor proc to use for the logger instantiation.
       #
-      #   Defaults to `Dry.method(:Logger)`.
+      #   Defaults to either `Config#production_logger` or `Config#development_logger`
       #
       #   @api public
       #   @since 2.0.0
-      setting :logger_constructor, default: Dry.method(:Logger)
+      setting :logger_constructor
 
       # @!attribute [rw] options
       #   Sets or returns a hash of options to pass to the {logger_constructor} when initializing
@@ -113,27 +119,18 @@ module Hanami
       # @api private
       def initialize(env:, app_name:)
         @app_name = app_name
+        @env = env
 
-        config.level = case env
-                       when :production
-                         :info
-                       else
-                         :debug
-                       end
-
-        config.stream = case env
-                        when :test
-                          File.join("log", "#{env}.log")
-                        else
-                          $stdout
-                        end
-
-        config.formatter = case env
-                           when :production
-                             :json
-                           else
-                             :rack
-                           end
+        case env
+        when :development, :test
+          config.level = :debug
+          config.stream = File.join("log", "#{env}.log") if env == :test
+          config.logger_constructor = method(:development_logger)
+        when :production
+          config.level = :info
+          config.formatter = :json
+          config.logger_constructor = method(:production_logger)
+        end
       end
 
       # Returns a new instance of the logger.
@@ -143,13 +140,39 @@ module Hanami
       # @api public
       # @since 2.0.0
       def instance
-        logger_constructor.call(app_name.name, **logger_constructor_opts)
+        logger_constructor.call(env, app_name.name, **logger_constructor_options)
+      end
+
+      # Build an instance of a development logger
+      #
+      # This logger is used in both development and test
+      #
+      # @return [Dry::Logger::Dispatcher]
+      # @since 2.0.0
+      # @api private
+      def development_logger(_env, app_name, **options)
+        Dry.Logger(app_name, **options) do |setup|
+          setup
+            .add_backend(log_if: -> entry { !entry.tag?(:rack) })
+            .add_backend(formatter: :rack, log_if: -> entry { entry.tag?(:rack) })
+        end
+      end
+
+      # Build an instance of a production logger
+      #
+      # This logger is used in both development and test
+      #
+      # @return [Dry::Logger::Dispatcher]
+      # @since 2.0.0
+      # @api private
+      def production_logger(_env, app_name, **options)
+        Dry.Logger(app_name, **options)
       end
 
       private
 
       # @api private
-      def logger_constructor_opts
+      def logger_constructor_options
         {stream: stream,
           level: level,
           formatter: formatter,

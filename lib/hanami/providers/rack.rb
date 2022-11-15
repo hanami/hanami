@@ -27,7 +27,8 @@ module Hanami
 
         notifications = target[:notifications]
 
-        monitor_middleware = Dry::Monitor::Rack::Middleware.new(notifications)
+        clock = Dry::Monitor::Clock.new(unit: :microsecond)
+        monitor_middleware = Dry::Monitor::Rack::Middleware.new(notifications, clock: clock)
 
         rack_logger = Hanami::Web::RackLogger.new(target[:logger])
         rack_logger.attach(monitor_middleware)

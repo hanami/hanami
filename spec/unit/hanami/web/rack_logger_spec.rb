@@ -53,7 +53,10 @@ RSpec.describe Hanami::Web::RackLogger do
       stream.rewind
       actual = stream.read
 
-      expect(actual).to include(%([#{app_name}] [INFO] [#{time}] #{verb} #{status} #{elapsed}ms #{ip} #{path} #{content_length} {"user"=>{"password"=>"[FILTERED]"}}))
+      expect(actual).to eql(<<~LOG)
+        [#{app_name}] [INFO] [#{time}] #{verb} #{status} #{elapsed}µs #{ip} #{path} #{content_length}
+          {"user"=>{"password"=>"[FILTERED]"}}
+      LOG
     end
 
     context "ip" do

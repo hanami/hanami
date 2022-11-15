@@ -42,6 +42,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.options = {colorize: true}
             config.logger.stream = config.root.join("test.log")
           end
         end
@@ -61,11 +62,26 @@ RSpec.describe "Hanami web app", :app_integration do
         end
       RUBY
 
+      write "app/actions/users/create.rb", <<~RUBY
+        module TestApp
+          module Actions
+            module Users
+              class Create < Hanami::Action
+                def handle(req, resp)
+                  resp.body = req.params.to_h.keys
+                end
+              end
+            end
+          end
+        end
+      RUBY
+
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
             root to: ->(env) { [200, {}, ["OK"]] }
             get "/users", to: "users.index"
+            post "/users", to: "users.create"
           end
         end
       RUBY
@@ -78,7 +94,13 @@ RSpec.describe "Hanami web app", :app_integration do
 
       logs = -> { Pathname(dir).join("test.log").realpath.read }
 
-      expect(logs.()).to match %r{GET 200 \d+ms 127.0.0.1 /}
+      puts logs.().inspect
+
+      expect(logs.()).to match %r{GET 200 \d+(µs|ms) 127.0.0.1 /}
+
+      post "/users", {name: "jane", password: "secret"}, {"Content-Type" => "application/json"}
+
+      expect(logs.()).to match %r{POST 200 \d+(µs|ms) 127.0.0.1 /}
 
       begin
         get "/users"
@@ -86,7 +108,10 @@ RSpec.describe "Hanami web app", :app_integration do
         raise unless e.to_s == "OH NOEZ"
       end
 
-      expect(logs.()).to match %r{OH NOEZ}
+      err_log = logs.()
+
+      expect(err_log).to include("OH NOEZ")
+      expect(err_log).to include("app/actions/users/index.rb:6:in `handle'")
     end
   end
 
@@ -121,7 +146,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
         logs = -> { Pathname(dir).join("test.log").realpath.read }
 
-        expect(logs.()).to match %r{GET 200 \d+ms 127.0.0.1 /}
+        expect(logs.()).to match %r{GET 200 \d+(µs|ms) 127.0.0.1 /}
       end
     end
   end

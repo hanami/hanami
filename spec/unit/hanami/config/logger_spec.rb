@@ -72,8 +72,8 @@ RSpec.describe Hanami::Config::Logger do
   end
 
   describe "#formatter" do
-    it "defaults to :rack" do
-      expect(subject.formatter).to eq(:rack)
+    it "defaults to :string" do
+      expect(subject.formatter).to eq(:string)
     end
 
     context "when :production environment" do
@@ -94,8 +94,8 @@ RSpec.describe Hanami::Config::Logger do
   end
 
   describe "#template" do
-    it "defaults to false" do
-      expect(subject.template).to eq("[%<progname>s] [%<severity>s] [%<time>s] %<message>s")
+    it "defaults to :details" do
+      expect(subject.template).to be(:details)
     end
   end
 

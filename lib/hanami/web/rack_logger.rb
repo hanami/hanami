@@ -8,6 +8,9 @@ module Hanami
     # @api private
     # @since 2.0.0
     class RackLogger
+      EMPTY_PARAMS = {}.freeze
+      private_constant :EMPTY_PARAMS
+
       REQUEST_METHOD = "REQUEST_METHOD"
       private_constant :REQUEST_METHOD
 
@@ -43,39 +46,60 @@ module Hanami
         end
 
         rack_monitor.on :error do |event|
-          log_exception event[:exception]
+          # TODO: why we don't provide time on error?
+          log_exception event[:env], event[:exception], 500, 0
         end
       end
 
       # @api private
       # @since 2.0.0
       def log_request(env, status, elapsed)
-        data = {
-          verb: env[REQUEST_METHOD],
-          status: status,
-          elapsed: "#{elapsed}ms",
-          ip: env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
-          path: env[SCRIPT_NAME] + env[PATH_INFO].to_s,
-          length: extract_content_length(env),
-          params: env[ROUTER_PARAMS]
-        }
-
-        logger.info(data)
+        logger.tagged(:rack) do
+          logger.info(data(env, status: status, elapsed: elapsed))
+        end
       end
 
       # @api private
       # @since 2.0.0
-      def log_exception(exception)
-        logger.error(exception)
+      def log_exception(env, exception, status, elapsed)
+        logger.tagged(:rack) do
+          logger.error(exception, **data(env, status: status, elapsed: elapsed))
+        end
       end
 
       private
 
       attr_reader :logger
 
+      # @api private
+      # @since 2.0.0
+      def data(env, status:, elapsed:)
+        {
+          verb: env[REQUEST_METHOD],
+          status: status,
+          elapsed: extract_elapsed_with_unit(elapsed),
+          ip: env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
+          path: "#{env[SCRIPT_NAME]}#{env[PATH_INFO]}",
+          length: extract_content_length(env),
+          params: env.fetch(ROUTER_PARAMS, EMPTY_PARAMS)
+        }
+      end
+
+      # @api private
+      # @since 2.0.0
       def extract_content_length(env)
         value = env[CONTENT_LENGTH]
         !value || value.to_s == "0" ? "-" : value
+      end
+
+      # @api private
+      # @since 2.0.0
+      def extract_elapsed_with_unit(elapsed)
+        if elapsed > 1000
+          "#{elapsed / 1000}ms"
+        else
+          "#{elapsed}µs"
+        end
       end
     end
   end
