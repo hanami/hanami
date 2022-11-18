@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require "hanami/cli/rake_tasks"
-require "hanami/cli/command_line"
+require "hanami/cli"
 
 Hanami::CLI::RakeTasks.register_tasks do
-  @_hanami_command_line = Hanami::CLI::CommandLine.new
-
   desc "Load the app environment"
   task :environment do
     require "hanami/prepare"
@@ -53,8 +50,10 @@ Hanami::CLI::RakeTasks.register_tasks do
 
   private
 
+  @_hanami_cli_bundler = Hanami::CLI::Bundler.new
+
   def run_hanami_command(command)
-    @_hanami_command_line.call(command)
+    @_hanami_cli_bundler.exec(command)
   end
 end
 
