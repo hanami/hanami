@@ -2,6 +2,25 @@
 
 The web, with simplicity.
 
+## v2.0.0 - 2022-11-22
+
+### Added
+
+- [Tim Riley] Allow custom code from Hanami app `lib/` to be required before to load the app
+- [Tim Riley] Introduced `config.actions.use_format :json` macro that setups the following code:
+
+```ruby
+config.actions.accepted_formats = [:json]
+config.actions.default_request_format = :json
+config.actions.default_response_format = :json
+config.middleware.use :body_parser, :json
+```
+
+### Fixed
+
+- [Luca Guidi] Ensure Hanami app to not crash when `hanami-controller` isn't bundled
+- [Piotr Solnica] Several logger fixes
+
 ## v2.0.0.rc1 - 2022-11-08
 
 ### Added
