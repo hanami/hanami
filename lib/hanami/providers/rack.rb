@@ -30,7 +30,7 @@ module Hanami
         clock = Dry::Monitor::Clock.new(unit: :microsecond)
         monitor_middleware = Dry::Monitor::Rack::Middleware.new(notifications, clock: clock)
 
-        rack_logger = Hanami::Web::RackLogger.new(target[:logger])
+        rack_logger = Hanami::Web::RackLogger.new(target[:logger], env: target.env)
         rack_logger.attach(monitor_middleware)
 
         register "monitor", monitor_middleware
