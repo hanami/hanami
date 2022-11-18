@@ -18,6 +18,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class App < Hanami::App
+          config.actions.format :json
           config.middleware.use :body_parser, :json
           config.logger.stream = StringIO.new
         end
@@ -37,8 +38,6 @@ RSpec.describe "Hanami web app", :app_integration do
         module Actions
           module Users
             class Create < Hanami::Action
-              accept :json
-
               def handle(req, res)
                 res.body = req.params[:users].join("-")
               end
@@ -66,7 +65,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class App < Hanami::App
-          config.actions.formats["application/json+scim"] = :json
+          config.actions.formats.add :json, ["application/json+scim"]
           config.middleware.use :body_parser, [json: "application/json+scim"]
           config.logger.stream = StringIO.new
         end
@@ -86,8 +85,6 @@ RSpec.describe "Hanami web app", :app_integration do
         module Actions
           module Users
             class Create < Hanami::Action
-              accept :json
-
               def handle(req, res)
                 res.body = req.params[:users].join("-")
               end

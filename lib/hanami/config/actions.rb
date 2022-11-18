@@ -136,8 +136,7 @@ module Hanami
 
       # Apply defaults for base config
       def configure_defaults
-        self.default_request_format = :html
-        self.default_response_format = :html
+        base_config.format :html
 
         self.default_headers = {
           "X-Frame-Options" => "DENY",

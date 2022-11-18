@@ -42,6 +42,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.actions.format :json
             config.logger.options = {colorize: true}
             config.logger.stream = config.root.join("test.log")
           end
@@ -98,7 +99,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
       expect(logs.()).to match %r{GET 200 \d+(µs|ms) 127.0.0.1 /}
 
-      post "/users", {name: "jane", password: "secret"}, {"Content-Type" => "application/json"}
+      post "/users", JSON.generate(name: "jane", password: "secret"), {"CONTENT_TYPE" => "application/json"}
 
       expect(logs.()).to match %r{POST 200 \d+(µs|ms) 127.0.0.1 /}
 
