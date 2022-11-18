@@ -377,6 +377,8 @@ module Hanami
     private_constant :SUPPORTED_MIDDLEWARE_PARSERS
 
     def use_body_parser_middleware
+      return unless Hanami.bundled?("hanami-controller")
+
       return if actions.formats.empty?
       return if middleware.stack["/"].map(&:first).any? { |klass| klass == "Hanami::Middleware::BodyParser" }
 
