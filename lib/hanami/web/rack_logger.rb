@@ -32,10 +32,46 @@ module Hanami
       CONTENT_LENGTH = "Content-Length"
       private_constant :CONTENT_LENGTH
 
+      MILISECOND = "ms"
+      private_constant :MILISECOND
+
+      MICROSECOND = "µs"
+      private_constant :MICROSECOND
+
+      # Dynamic extension used in production environments
+      # @api private
+      module Production
+        private
+
+        # @since 1.0.0
+        # @api private
+        def data(env, status:, elapsed:)
+          payload = super
+          payload[:elapsed] = elapsed
+          payload[:elapsed_unit] = MICROSECOND
+          payload
+        end
+      end
+
+      # Dynamic extension used in non-production environments
+      # @api private
+      module Development
+        private
+
+        # @since 1.0.0
+        # @api private
+        def data(env, status:, elapsed:)
+          payload = super
+          payload[:elapsed] = elapsed > 1000 ? "#{elapsed / 1000}ms" : "#{elapsed}#{MICROSECOND}"
+          payload
+        end
+      end
+
       # @api private
       # @since 2.0.0
-      def initialize(logger)
+      def initialize(logger, env: :development)
         @logger = logger
+        extend(env == :production ? Production : Development)
       end
 
       # @api private
@@ -77,7 +113,6 @@ module Hanami
         {
           verb: env[REQUEST_METHOD],
           status: status,
-          elapsed: extract_elapsed_with_unit(elapsed),
           ip: env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
           path: "#{env[SCRIPT_NAME]}#{env[PATH_INFO]}",
           length: extract_content_length(env),
@@ -90,16 +125,6 @@ module Hanami
       def extract_content_length(env)
         value = env[CONTENT_LENGTH]
         !value || value.to_s == "0" ? "-" : value
-      end
-
-      # @api private
-      # @since 2.0.0
-      def extract_elapsed_with_unit(elapsed)
-        if elapsed > 1000
-          "#{elapsed / 1000}ms"
-        else
-          "#{elapsed}µs"
-        end
       end
     end
   end

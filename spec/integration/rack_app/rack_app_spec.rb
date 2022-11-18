@@ -95,8 +95,6 @@ RSpec.describe "Hanami web app", :app_integration do
 
       logs = -> { Pathname(dir).join("test.log").realpath.read }
 
-      puts logs.().inspect
-
       expect(logs.()).to match %r{GET 200 \d+(µs|ms) 127.0.0.1 /}
 
       post "/users", JSON.generate(name: "jane", password: "secret"), {"CONTENT_TYPE" => "application/json"}
@@ -148,6 +146,53 @@ RSpec.describe "Hanami web app", :app_integration do
         logs = -> { Pathname(dir).join("test.log").realpath.read }
 
         expect(logs.()).to match %r{GET 200 \d+(µs|ms) 127.0.0.1 /}
+      end
+    end
+  end
+
+  describe "Request logging on production" do
+    let(:app) { Main::Slice.rack_app }
+
+    around do |example|
+      ENV["HANAMI_ENV"] = "production"
+      example.run
+    ensure
+      ENV["HANAMI_ENV"] = "test"
+    end
+
+    specify "Has rack monitor preconfigured with default request logging (when used via a slice)" do
+      dir = Dir.mktmpdir
+
+      with_tmp_directory(dir) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+              config.logger.stream = config.root.join("test.log")
+            end
+          end
+        RUBY
+
+        write "slices/main/config/routes.rb", <<~RUBY
+          module Main
+            class Routes < Hanami::Routes
+              root to: ->(env) { [200, {}, ["OK"]] }
+            end
+          end
+        RUBY
+
+        require "hanami/boot"
+
+        get "/"
+
+        logs = -> { Pathname(dir).join("test.log").realpath.read }
+
+        log_content = logs.()
+
+        expect(log_content).to match(%r["verb":"GET"])
+        expect(log_content).to match(%r["path":"/"])
+        expect(log_content).to match(%r[elapsed":\d+,"elapsed_unit":"µs"])
       end
     end
   end
