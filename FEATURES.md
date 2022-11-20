@@ -4,27 +4,18 @@
 
 ## Features
 
-## v2.0.0.beta1 - 2021-07-20
+## v2.0.0 - 2021-11-22
 
-- Generate new apps using `app/` directory
-
-## v2.0.0.alpha8 - 2021-05-19
-
-## v2.0.0.alpha7.1 - 2021-03-09
-
-## v2.0.0.alpha7 - 2021-03-08
-
-## v2.0.0.alpha6 - 2021-02-10
-
-## v2.0.0.alpha5 - 2021-01-12
-
-## v2.0.0.alpha4 - 2021-12-07
-
-## v2.0.0.alpha3 - 2021-11-09
-
-## v2.0.0.alpha2 - 2021-05-04
-
-## v2.0.0.alpha1 - 2019-01-30
+- App class built around a container for managing app components; code from app/ is loaded into the app
+- Apps may have multiple Slices; code from `slices/[slice_name]/` is loaded into the corresponding slice
+- Deps mixin for auto-registering dependencies from the app or a slice
+- Code autoloading using Zeitwerk
+- Providers for setting up and managing the lifecycle of your app's critical components and integrations
+- Type-safe app settings
+- Rebuilt high-performance router
+- Redesigned stateless `Hamami::Action` classes supporting the Deps mixin; add your behavior to `#handle(request, response)`
+- Simplified action format configuration via `config.format` and `config.formats`
+- Rewritten CLI
 
 ## v1.3.3 - 2019-09-20
 
