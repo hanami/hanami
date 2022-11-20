@@ -8,19 +8,16 @@ The web, with simplicity.
 
 ## Frameworks
 
-Hanami is a **full-stack** Ruby web framework.
-It's made up of smaller, single-purpose libraries.
+Hanami is a **full-stack** Ruby web framework. It's made up of smaller, single-purpose libraries.
 
-This repository is for the full-stack framework,
-which provides the glue that ties all the parts together:
+This repository is for the full-stack framework, which provides the glue that ties all the parts together:
 
-* [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
-* [**Hanami::Controller**](https://github.com/hanami/controller) - Full featured, fast and testable actions for Rack
 * [**Hanami::Router**](https://github.com/hanami/router) - Rack compatible HTTP router for Ruby
+* [**Hanami::Controller**](https://github.com/hanami/controller) - Full featured, fast and testable actions for Rack
+* [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
 * [**Hanami::Helpers**](https://github.com/hanami/helpers) - View helpers for Ruby applications
 * [**Hanami::Mailer**](https://github.com/hanami/mailer) - Mail for Ruby applications
 * [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby
-* [**Hanami::Utils**](https://github.com/hanami/utils) - Ruby core extensions and class utilities
 
 These components are designed to be used independently or together in a Hanami application.
 
@@ -28,9 +25,7 @@ These components are designed to be used independently or together in a Hanami a
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](https://badge.fury.io/rb/hanami)
 [![CI](https://github.com/hanami/hanami/workflows/ci/badge.svg?branch=main)](https://github.com/hanami/hanami/actions?query=workflow%3Aci+branch%3Amain)
-[![Test Coverage](https://codecov.io/gh/hanami/hanami/branch/main/graph/badge.svg)](https://codecov.io/gh/hanami/hanami)
 [![Depfu](https://badges.depfu.com/badges/ba000e0f69e6ef1c44cd3038caaa1841/overview.svg)](https://depfu.com/github/hanami/hanami?project=Bundler)
-[![Inline Docs](http://inch-ci.org/github/hanami/hanami.svg)](http://inch-ci.org/github/hanami/hanami)
 
 ## Installation
 
@@ -75,10 +70,7 @@ You can give back to Open Source, by supporting Hanami development via [GitHub S
 
 ## Community
 
-We strive for an inclusive and helpful community.
-We have a [Code of Conduct](http://hanamirb.org/community/#code-of-conduct) to handle controversial cases.
-In general, we expect **you** to be **nice** with other people.
-Our hope is for a great software and a great Community.
+We strive for an inclusive and helpful community. We have a [Code of Conduct](http://hanamirb.org/community/#code-of-conduct) to handle controversial cases. In general, we expect **you** to be **nice** with other people. Our hope is for a great software and a great Community.
 
 ## Contributing [![Open Source Helpers](https://www.codetriage.com/hanami/hanami/badges/users.svg)](https://www.codetriage.com/hanami/hanami)
 
@@ -90,42 +82,20 @@ Our hope is for a great software and a great Community.
 
 In addition to contributing code, you can help to triage issues. This can include reproducing bug reports, or asking for vital information such as version numbers or reproduction instructions. If you would like to start triaging issues, one easy way to get started is to [subscribe to hanami on CodeTriage](https://www.codetriage.com/hanami/hanami).
 
-### How To Use Hanami HEAD
-
-If you want to test Hanami's HEAD to try a new feature or to test a bug fix, here's how to do:
-
-```
-git clone https://github.com/hanami/hanami.git
-cd hanami && bundle
-bundle exec hanami new bookshelf --hanami-head
-cd bookshelf
-vim Gemfile # edit with: gem 'hanami', path: '..'
-bundle
-```
-
 ### Development Requirements
 
-  * Ruby 2.3+ / JRuby 9.1.5.0+
+  * Ruby >= 3.0
   * Bundler
-  * [PhantomJS](http://phantomjs.org/download.html)
   * Node.js (MacOS)
 
 ### Testing
 
-In order to simulate installed gems on developers' computers, the build installs
-all the gems locally in `vendor/cache`, including `hanami` code from `lib/`.
+In order to simulate installed gems on developers' computers, the build installs all the gems locally in `vendor/cache`, including `hanami` code from `lib/`.
 
 **Before running a test, please make sure you have a fresh version of the code:**
 
 ```shell
-./script/setup
 bundle exec rspec spec/path/to/file_spec.rb
-```
-
-To run all the tests, please use:
-
-```shell
-./script/ci
 ```
 
 ## Versioning
