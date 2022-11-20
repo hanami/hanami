@@ -8,14 +8,15 @@
 
 - App class built around a container for managing app components; code from app/ is loaded into the app
 - Apps may have multiple Slices; code from `slices/[slice_name]/` is loaded into the corresponding slice
-- Deps mixin for auto-registering dependencies from the app or a slice
+- `MyApp::Deps` or `MySlice::Deps` mixin for auto-registering dependencies from the app or a slice
 - Code autoloading using Zeitwerk
+- Code reloading via Guard
 - Providers for setting up and managing the lifecycle of your app's critical components and integrations
 - Type-safe app settings
 - Rebuilt high-performance router
 - Redesigned stateless `Hamami::Action` classes supporting the Deps mixin; add your behavior to `#handle(request, response)`
 - Simplified action format configuration via `config.format` and `config.formats`
-- Rewritten CLI
+- Rewritten CLI and console
 
 ## v1.3.3 - 2019-09-20
 
