@@ -6,7 +6,9 @@
 
 ## v2.0.0 - 2021-11-22
 
-- App class built around a container for managing app components; code from app/ is loaded into the app
+- Renamed _apps_ into _slices_, and _project_ into _app_
+- The core of new applications is going to be `app/`. Slices are now optional.
+- App class built around a container for managing app components; code from `app/` is loaded into the app
 - Apps may have multiple Slices; code from `slices/[slice_name]/` is loaded into the corresponding slice
 - `MyApp::Deps` or `MySlice::Deps` mixin for auto-registering dependencies from the app or a slice
 - Code autoloading using Zeitwerk
