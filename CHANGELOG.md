@@ -21,6 +21,10 @@ config.middleware.use :body_parser, :json
 - [Luca Guidi] Ensure Hanami app to not crash when `hanami-controller` isn't bundled
 - [Piotr Solnica] Several logger fixes
 
+### Changed
+
+- [Tim Riley] Don't assign a default MIME Type for Hanami apps
+
 ## v2.0.0.rc1 - 2022-11-08
 
 ### Added
