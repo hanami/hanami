@@ -136,8 +136,6 @@ module Hanami
 
       # Apply defaults for base config
       def configure_defaults
-        base_config.format :html
-
         self.default_headers = {
           "X-Frame-Options" => "DENY",
           "X-Content-Type-Options" => "nosniff",

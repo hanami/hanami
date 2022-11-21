@@ -34,7 +34,7 @@ RSpec.describe "App action / Slice configuration", :app_integration do
       it "applies default actions config from the app", :aggregate_failures do
         prepare_app
 
-        expect(TestApp::Action.config.formats.values).to eq [:html]
+        expect(TestApp::Action.config.formats.values).to eq []
       end
 
       it "applies actions config from the app" do
@@ -75,7 +75,7 @@ RSpec.describe "App action / Slice configuration", :app_integration do
       it "applies default actions config from the app", :aggregate_failures do
         prepare_app
 
-        expect(TestApp::Actions::Articles::Index.config.formats.values).to eq [:html]
+        expect(TestApp::Actions::Articles::Index.config.formats.values).to eq []
       end
 
       it "applies actions config from the app" do
@@ -114,7 +114,7 @@ RSpec.describe "App action / Slice configuration", :app_integration do
       it "applies default actions config from the app", :aggregate_failures do
         prepare_app
 
-        expect(Admin::Actions::Articles::Index.config.formats.values).to eq [:html]
+        expect(Admin::Actions::Articles::Index.config.formats.values).to eq []
       end
 
       it "applies actions config from the app" do
@@ -151,7 +151,7 @@ RSpec.describe "App action / Slice configuration", :app_integration do
       it "applies default actions config from the app", :aggregate_failures do
         prepare_app
 
-        expect(Admin::Action.config.formats.values).to eq [:html]
+        expect(Admin::Action.config.formats.values).to eq []
       end
 
       it "applies actions config from the app" do
@@ -227,7 +227,7 @@ RSpec.describe "App action / Slice configuration", :app_integration do
       it "applies default actions config from the app", :aggregate_failures do
         prepare_app
 
-        expect(Admin::Actions::Articles::Index.config.formats.values).to eq [:html]
+        expect(Admin::Actions::Articles::Index.config.formats.values).to eq []
       end
 
       it "applies actions config from the app" do
