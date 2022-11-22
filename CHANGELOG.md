@@ -7,14 +7,8 @@ The web, with simplicity.
 ### Added
 
 - [Tim Riley] Allow custom code from Hanami app `lib/` to be required before to load the app
-- [Tim Riley] Introduced `config.actions.use_format :json` macro that setups the following code:
-
-```ruby
-config.actions.accepted_formats = [:json]
-config.actions.default_request_format = :json
-config.actions.default_response_format = :json
-config.middleware.use :body_parser, :json
-```
+- [Tim Riley] Support the new `Hanami::Action::Config#formats` config from hanami-controller 2.0.0
+- [Tim Riley] Automatically use body_parser middleware when actions `:json` format is configured
 
 ### Fixed
 
