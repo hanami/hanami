@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "constants"
+require_relative "env"
 
 module Hanami
   # The Hanami app is a singular slice tasked with managing the core components of the app and
@@ -28,8 +29,7 @@ module Hanami
       @_mutex.synchronize do
         subclass.class_eval do
           @config = Hanami::Config.new(app_name: slice_name, env: Hanami.env)
-
-          load_dotenv
+          Hanami::Env.load
         end
       end
     end
@@ -96,32 +96,6 @@ module Hanami
       end
 
       private
-
-      # Uses [dotenv](https://github.com/bkeepers/dotenv) (if available) to populate `ENV` from
-      # various `.env` files.
-      #
-      # For a given `HANAMI_ENV` environment, the `.env` files are looked up in the following order:
-      #
-      # - .env.{environment}.local
-      # - .env.local (unless the environment is `test`)
-      # - .env.{environment}
-      # - .env
-      #
-      # If dotenv is unavailable, the method exits and does nothing.
-      def load_dotenv
-        return unless Hanami.bundled?("dotenv")
-
-        hanami_env = Hanami.env
-        dotenv_files = [
-          ".env.#{hanami_env}.local",
-          (".env.local" unless hanami_env == :test),
-          ".env.#{hanami_env}",
-          ".env"
-        ].compact
-
-        require "dotenv"
-        Dotenv.load(*dotenv_files)
-      end
 
       def prepare_all
         prepare_load_path
