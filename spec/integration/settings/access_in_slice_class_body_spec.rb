@@ -3,6 +3,7 @@
 RSpec.describe "Settings / Access within slice class bodies", :app_integration do
   before do
     @env = ENV.to_h
+    allow(Hanami::Env).to receive(:loaded?).and_return(false)
   end
 
   after do

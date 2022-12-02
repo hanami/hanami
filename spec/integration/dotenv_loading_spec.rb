@@ -5,6 +5,7 @@
 RSpec.describe "Dotenv loading", :app_integration do
   before do
     @orig_env = ENV.to_h
+    allow(Hanami::Env).to receive(:loaded?).and_return(false)
   end
 
   after do
