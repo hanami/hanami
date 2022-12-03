@@ -13,21 +13,21 @@ RSpec.describe Hanami::Config::Actions, "#content_security_policy" do
         expect(content_security_policy[:base_uri]).to eq("'self'")
 
         expected = [
-          %(base-uri 'self';),
-          %(child-src 'self';),
-          %(connect-src 'self';),
-          %(default-src 'none';),
-          %(font-src 'self';),
-          %(form-action 'self';),
-          %(frame-ancestors 'self';),
-          %(frame-src 'self';),
-          %(img-src 'self' https: data:;),
-          %(media-src 'self';),
-          %(object-src 'none';),
-          %(plugin-types application/pdf;),
-          %(script-src 'self';),
+          %(base-uri 'self'),
+          %(child-src 'self'),
+          %(connect-src 'self'),
+          %(default-src 'none'),
+          %(font-src 'self'),
+          %(form-action 'self'),
+          %(frame-ancestors 'self'),
+          %(frame-src 'self'),
+          %(img-src 'self' https: data:),
+          %(media-src 'self'),
+          %(object-src 'none'),
+          %(plugin-types application/pdf),
+          %(script-src 'self'),
           %(style-src 'self' 'unsafe-inline' https:)
-        ].join("\n")
+        ].join(";")
 
         expect(content_security_policy.to_s).to eq(expected)
       end
