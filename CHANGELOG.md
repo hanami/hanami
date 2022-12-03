@@ -2,6 +2,12 @@
 
 The web, with simplicity.
 
+## v2.0.1 - 2022-12-06
+
+### Fixed
+
+- [Luca Guidi] Ensure `Content-Security-Policy` HTTP response header to be returned as a single line
+
 ## v2.0.0 - 2022-11-22
 
 ### Added
