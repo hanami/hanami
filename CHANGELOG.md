@@ -7,6 +7,7 @@ The web, with simplicity.
 ### Fixed
 
 - [Luca Guidi] Ensure `Content-Security-Policy` HTTP response header to be returned as a single line
+- [Tim Riley] Ensure Rack events are on internal notifications system
 
 ## v2.0.0 - 2022-11-22
 
