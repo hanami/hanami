@@ -15,20 +15,27 @@ module Hanami
     class Rack < Dry::System::Provider::Source
       # @api private
       def prepare
-        require "dry/monitor"
-        require "hanami/web/rack_logger"
-
         Dry::Monitor.load_extensions(:rack)
+
+        # Explicitly register the Rack middleware events on our notifications bus. The Dry::Monitor
+        # rack extension (activated above) does register these globally, but if the notifications
+        # bus has been used before this provider loads, then it will have created its own separate
+        # locally copy of all registered events as of that moment in time, which will not included
+        # the Rack events globally reigstered above.
+        notifications = target["notifications"]
+        notifications.register_event(Dry::Monitor::Rack::Middleware::REQUEST_START)
+        notifications.register_event(Dry::Monitor::Rack::Middleware::REQUEST_STOP)
+        notifications.register_event(Dry::Monitor::Rack::Middleware::REQUEST_ERROR)
       end
 
       # @api private
       def start
         target.start :logger
 
-        notifications = target[:notifications]
-
-        clock = Dry::Monitor::Clock.new(unit: :microsecond)
-        monitor_middleware = Dry::Monitor::Rack::Middleware.new(notifications, clock: clock)
+        monitor_middleware = Dry::Monitor::Rack::Middleware.new(
+          target["notifications"],
+          clock: Dry::Monitor::Clock.new(unit: :microsecond)
+        )
 
         rack_logger = Hanami::Web::RackLogger.new(target[:logger], env: target.env)
         rack_logger.attach(monitor_middleware)
