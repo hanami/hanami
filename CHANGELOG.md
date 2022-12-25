@@ -2,6 +2,16 @@
 
 The web, with simplicity.
 
+## v2.0.2 - 2022-12-25
+
+### Added
+
+- [Luca Guidi] Official support for Ruby 3.2
+
+### Fixed
+
+- [Luca Guidi] Content Security Policy: remove deprecated `plugin-types`
+
 ## v2.0.1 - 2022-12-06
 
 ### Fixed
