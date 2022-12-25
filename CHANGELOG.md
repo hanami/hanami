@@ -2,6 +2,12 @@
 
 The web, with simplicity.
 
+## v2.0.2 - 2022-12-25
+
+### Fixed
+
+- [Luca Guidi] Official support for Ruby 3.2
+
 ## v2.0.1 - 2022-12-06
 
 ### Fixed
