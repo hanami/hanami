@@ -22,7 +22,6 @@ module Hanami
             img_src: "'self' https: data:",
             media_src: "'self'",
             object_src: "'none'",
-            plugin_types: "application/pdf",
             script_src: "'self'",
             style_src: "'self' 'unsafe-inline' https:"
           }
