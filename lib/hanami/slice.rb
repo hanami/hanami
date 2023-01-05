@@ -843,6 +843,7 @@ module Hanami
         container.config.name = slice_name.to_sym
         container.config.root = root
         container.config.provider_dirs = [File.join("config", "providers")]
+        container.config.registrations_dir = File.join("config", "registrations")
 
         container.config.env = config.env
         container.config.inflector = config.inflector
