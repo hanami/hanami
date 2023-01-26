@@ -126,7 +126,7 @@ module Hanami
           config.level = :debug
           config.stream = File.join("log", "#{env}.log") if env == :test
           config.logger_constructor = method(:development_logger)
-        when :production
+        else
           config.level = :info
           config.formatter = :json
           config.logger_constructor = method(:production_logger)

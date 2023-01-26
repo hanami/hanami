@@ -182,5 +182,14 @@ RSpec.describe Hanami::Config do
         .to change { config.logger_instance }
         .to logger_instance
     end
+
+    context "unrecognized :env" do
+      let(:env) { :staging }
+
+      it "provides a fail-safe configuration" do
+        expect { config.logger_instance }.to_not raise_error
+        expect(config.logger_instance).to be_a(Dry::Logger::Dispatcher)
+      end
+    end
   end
 end
