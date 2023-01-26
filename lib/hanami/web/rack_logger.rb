@@ -71,7 +71,7 @@ module Hanami
       # @since 2.0.0
       def initialize(logger, env: :development)
         @logger = logger
-        extend(env == :production ? Production : Development)
+        extend(%i[development test].include?(env) ? Development : Production)
       end
 
       # @api private
