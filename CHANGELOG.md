@@ -2,6 +2,18 @@
 
 The web, with simplicity.
 
+## v2.0.3 - 2023-02-01
+
+### Added
+
+- [Luca Guidi] Official support for Ruby 3.2
+
+### Fixed
+
+- [Adam Lassek] Ensure to setup a logger in a non-default Hanami env
+- [R Gibim] Use production logger settings for non-default Hanami env
+- [Adam Lassek] Allow slices to have a default for registrations directory
+
 ## v2.0.2 - 2022-12-25
 
 ### Added

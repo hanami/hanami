@@ -38,30 +38,16 @@ module Hanami
       MICROSECOND = "µs"
       private_constant :MICROSECOND
 
-      # Dynamic extension used in production environments
-      # @api private
-      module Production
-        private
-
-        # @since 1.0.0
-        # @api private
-        def data(env, status:, elapsed:)
-          payload = super
-          payload[:elapsed] = elapsed
-          payload[:elapsed_unit] = MICROSECOND
-          payload
-        end
-      end
-
-      # Dynamic extension used in non-production environments
+      # Dynamic extension used in development and test environments
       # @api private
       module Development
         private
 
-        # @since 1.0.0
+        # @since 2.0.0
         # @api private
         def data(env, status:, elapsed:)
           payload = super
+          payload.delete(:elapsed_unit)
           payload[:elapsed] = elapsed > 1000 ? "#{elapsed / 1000}ms" : "#{elapsed}#{MICROSECOND}"
           payload
         end
@@ -71,7 +57,7 @@ module Hanami
       # @since 2.0.0
       def initialize(logger, env: :development)
         @logger = logger
-        extend(env == :production ? Production : Development)
+        extend(Development) if %i[development test].include?(env)
       end
 
       # @api private
@@ -116,7 +102,9 @@ module Hanami
           ip: env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
           path: "#{env[SCRIPT_NAME]}#{env[PATH_INFO]}",
           length: extract_content_length(env),
-          params: env.fetch(ROUTER_PARAMS, EMPTY_PARAMS)
+          params: env.fetch(ROUTER_PARAMS, EMPTY_PARAMS),
+          elapsed: elapsed,
+          elapsed_unit: MICROSECOND,
         }
       end
 

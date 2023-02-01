@@ -1,0 +1,9 @@
+# This is a config synced from hanami/template-gem repo
+
+sources:
+  - repo: hanami/template-gem
+    sync:
+      - ".repobot.yml.erb"
+      - ".github/FUNDING.yml"
+      - "CODE_OF_CONDUCT.md"
+      - "LICENSE.md.erb"
