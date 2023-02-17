@@ -23,6 +23,6 @@ RSpec.configure do |config|
     # TODO: Find out what causes logger to create this dir when running specs.
     #       There's probably a test app class being created somewhere with root
     #       not pointing to a tmp dir.
-    FileUtils.rm_r(LOG_DIR) if LOG_DIR.exist?
+    FileUtils.rm_rf(LOG_DIR) if LOG_DIR.exist?
   end
 end
