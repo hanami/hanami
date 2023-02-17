@@ -42,5 +42,5 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - name: Run unit tests
+      - name: Run the test suite
         run: bundle exec rake
