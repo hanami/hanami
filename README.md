@@ -82,21 +82,37 @@ We strive for an inclusive and helpful community. We have a [Code of Conduct](ht
 
 In addition to contributing code, you can help to triage issues. This can include reproducing bug reports, or asking for vital information such as version numbers or reproduction instructions. If you would like to start triaging issues, one easy way to get started is to [subscribe to hanami on CodeTriage](https://www.codetriage.com/hanami/hanami).
 
+### Tests
+
+To run all test suite:
+
+```shell
+$ bundle exec rake
+```
+
+To run all the unit tests:
+
+```shell
+$ bundle exec rspec spec/unit
+```
+
+To run all the integration tests:
+
+```shell
+$ bundle exec rspec spec/integration
+```
+
+To run a single test:
+
+```shell
+$ bundle exec rspec path/to/spec.rb
+```
+
 ### Development Requirements
 
   * Ruby >= 3.0
   * Bundler
   * Node.js (MacOS)
-
-### Testing
-
-In order to simulate installed gems on developers' computers, the build installs all the gems locally in `vendor/cache`, including `hanami` code from `lib/`.
-
-**Before running a test, please make sure you have a fresh version of the code:**
-
-```shell
-bundle exec rspec spec/path/to/file_spec.rb
-```
 
 ## Versioning
 
