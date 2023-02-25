@@ -28,46 +28,68 @@ module Hanami
         end
 
         module InstanceMethods
+          attr_reader :inflector
+
+          attr_reader :settings
+
+          attr_reader :routes
+
+          attr_reader :request
+
           # @see SliceConfiguredContext#define_new
-          def initialize(**kwargs)
-            defaults = {content: {}}
+          def initialize( # rubocop:disable Metrics/ParameterLists
+            inflector:,
+            settings:,
+            routes: nil,
+            assets: nil,
+            request: nil,
+            **args
+          )
+            @inflector = inflector
+            @settings = settings
+            @routes = routes
+            @assets = assets
+            @request = request
 
-            super(**kwargs, **defaults)
+            @content_for = {}
+
+            super(**args)
           end
 
-          def inflector
-            _options.fetch(:inflector)
+          def initialize_copy(source)
+            super
+
+            # Dup objects that may be mutated over a given rendering
+            @content_for = source.instance_variable_get(:@content_for).dup
           end
 
-          def routes
-            _options.fetch(:routes)
-          end
-
-          def settings
-            _options.fetch(:settings)
+          def with(**args)
+            self.class.new(
+              inflector: @inflector,
+              settings: @settings,
+              assets: @assets,
+              routes: @routes,
+              request: @request,
+              **args
+            )
           end
 
           def assets
-            unless _options[:assets]
+            unless @assets
               raise Hanami::ComponentLoadError, "hanami-assets gem is required to access assets"
             end
 
-            _options[:assets]
+            @assets
           end
 
-          def content_for(key, value = nil, &block)
-            content = _options[:content]
-            output = nil
-
-            if block
-              content[key] = yield
+          def content_for(key, value = nil)
+            if block_given?
+              @content_for[key] = yield
             elsif value
-              content[key] = value
+              @content_for[key] = value
             else
-              output = content[key]
+              @content_for[key]
             end
-
-            output
           end
 
           def current_path
@@ -78,23 +100,12 @@ module Hanami
             request.session[Hanami::Action::CSRFProtection::CSRF_TOKEN]
           end
 
-          def request
-            _options.fetch(:request)
-          end
-
           def session
             request.session
           end
 
           def flash
-            response.flash
-          end
-
-          private
-
-          # TODO: create `Request#flash` so we no longer need the `response`
-          def response
-            _options.fetch(:response)
+            request.flash
           end
         end
       end
