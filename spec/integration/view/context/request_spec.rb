@@ -20,14 +20,10 @@ RSpec.describe "App view / Context / Request", :app_integration do
   let(:context_class) { TestApp::Views::Context }
 
   subject(:context) {
-    context_class.new(
-      request: request,
-      response: response,
-    )
+    context_class.new(request: request)
   }
 
   let(:request) { double(:request) }
-  let(:response) { double(:response) }
 
   describe "#request" do
     it "is the provided request" do
@@ -51,10 +47,10 @@ RSpec.describe "App view / Context / Request", :app_integration do
     let(:flash) { double(:flash) }
 
     before do
-      allow(response).to receive(:flash) { flash }
+      allow(request).to receive(:flash) { flash }
     end
 
-    it "is the response's flash" do
+    it "is the request's flash" do
       expect(context.flash).to be flash
     end
   end

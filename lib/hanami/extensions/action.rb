@@ -101,13 +101,13 @@ module Hanami
         end
 
         # @api private
-        def view_options(req, res)
-          {context: view_context&.with(**view_context_options(req, res))}.compact
+        def view_options(request, response)
+          {context: view_context&.with(**view_context_options(request, response))}.compact
         end
 
         # @api private
-        def view_context_options(req, res)
-          {request: req, response: res}
+        def view_context_options(request, response) # rubocop:disable Lint:UnusedMethodArgument
+          {request: request}
         end
 
         # Returns true if a view should automatically be rendered onto the response body.

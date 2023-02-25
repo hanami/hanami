@@ -91,9 +91,9 @@ RSpec.describe "App action / View integration", :app_integration do
   end
 
   describe "#view_options" do
-    subject(:view_options) { action.send(:view_options, req, res) }
-    let(:req) { double(:req) }
-    let(:res) { double(:res) }
+    subject(:view_options) { action.send(:view_options, request, response) }
+    let(:request) { double(:request) }
+    let(:response) { double(:response) }
 
     context "without view context" do
       it "is an empty hash" do
@@ -109,10 +109,9 @@ RSpec.describe "App action / View integration", :app_integration do
         let(:request_view_context) { double(:request_view_context) }
 
         before do
-          allow(initial_view_context).to receive(:with).with(
-            request: req,
-            response: res,
-          ) { request_view_context }
+          allow(initial_view_context).to receive(:with).with(request: request) {
+            request_view_context
+          }
         end
 
         it "is the view context with the request and response provided" do
@@ -125,7 +124,7 @@ RSpec.describe "App action / View integration", :app_integration do
 
         before do
           action_class.class_eval do
-            def view_context_options(req, res)
+            def view_context_options(_request, _response)
               {custom_option: "custom option"}
             end
           end
@@ -144,13 +143,12 @@ RSpec.describe "App action / View integration", :app_integration do
         let(:request_view_context) { double(:request_view_context) }
 
         before do
-          allow(initial_view_context).to receive(:with).with(
-            request: req,
-            response: res,
-          ) { request_view_context }
+          allow(initial_view_context).to receive(:with).with(request: request) {
+            request_view_context
+          }
 
           action_class.class_eval do
-            def view_options(req, res)
+            def view_options(_request, _response)
               super.merge(extra_option: "extra option")
             end
           end

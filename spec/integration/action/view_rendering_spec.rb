@@ -38,13 +38,6 @@ RSpec.describe "App action / View rendering", :app_integration do
         module TestApp
           module Views
             class Context < Hanami::View::Context
-              def request
-                _options.fetch(:request)
-              end
-
-              def response
-                _options.fetch(:response)
-              end
             end
           end
         end
