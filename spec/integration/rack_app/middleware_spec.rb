@@ -41,6 +41,19 @@ RSpec.describe "Hanami web app", :app_integration do
             @app.call(env)
           end
         end
+
+        class AppendSession < Core
+          def initialize(app, options = {})
+            super()
+            @app = app
+            @options = options
+          end
+
+          def call(env)
+            env["session"] << @options.fetch(:secret, "no secret")
+            @app.call(env)
+          end
+        end
       end
     end
   end
@@ -56,6 +69,7 @@ RSpec.describe "Hanami web app", :app_integration do
           config.middleware.use Middlewares::AppendOne
           config.middleware.use Middlewares::Prepare, before: Middlewares::AppendOne
           config.middleware.use Middlewares::AppendTwo, after: Middlewares::AppendOne
+          config.middleware.use Middlewares::AppendSession, secret: "abc"
         end
       end
     RUBY
