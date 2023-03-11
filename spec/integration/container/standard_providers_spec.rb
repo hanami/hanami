@@ -89,10 +89,19 @@ RSpec.describe "Container / Standard providers", :app_integration do
         end
       RUBY
 
+      write "config/providers/rack.rb", <<~RUBY
+        Hanami.app.register_provider :rack do
+          start do
+            register "rack.monitor", "custom rack monitor"
+          end
+        end
+      RUBY
+
       require "hanami/setup"
       Hanami.boot
 
       expect(Hanami.app[:logger]).to eq "custom logger"
+      expect(Hanami.app["rack.monitor"]).to eq "custom rack monitor"
     end
   end
 
@@ -115,10 +124,19 @@ RSpec.describe "Container / Standard providers", :app_integration do
         end
       RUBY
 
+      write "config/providers/rack.rb", <<~RUBY
+        Hanami.app.register_provider :rack do
+          start do
+            register "rack.monitor", "custom rack monitor"
+          end
+        end
+      RUBY
+
       require "hanami/setup"
       Hanami.prepare
 
       expect(Hanami.app[:logger]).to eq "custom logger"
+      expect(Hanami.app["rack.monitor"]).to eq "custom rack monitor"
     end
   end
 end

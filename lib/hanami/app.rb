@@ -151,15 +151,17 @@ module Hanami
         require_relative "providers/inflector"
         register_provider(:inflector, source: Hanami::Providers::Inflector)
 
-        # Allow logger to be replaced by users with a manual provider, for advanced cases
+        # Allow logger and rack to be replaced by users with manual providers, for advanced cases
         unless container.providers.find_and_load_provider(:logger)
           require_relative "providers/logger"
           register_provider(:logger, source: Hanami::Providers::Logger)
         end
 
         if Hanami.bundled?("rack")
-          require_relative "providers/rack"
-          register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
+          unless container.providers.find_and_load_provider(:rack)
+            require_relative "providers/rack"
+            register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
+          end
         end
       end
 
