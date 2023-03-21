@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "constants"
 require_relative "errors"
 
 module Hanami
@@ -58,7 +59,7 @@ module Hanami
 
         slices = Hanami.app.slices.with_nested + [Hanami.app]
 
-        slices.detect { |slice| klass.name.include?(slice.namespace.to_s) }
+        slices.detect { |slice| klass.name.start_with?("#{slice.namespace}#{MODULE_DELIMITER}") }
       end
     end
 
