@@ -72,6 +72,24 @@ RSpec.describe Hanami::SliceConfigurable, :app_integration do
     end
   end
 
+  context "subclass inside slice with name overlapping another slice" do
+    let(:app_modules) { super() << :ExternalAdmin }
+
+    before do
+      TestApp::App.register_slice :external_admin
+
+      module ExternalAdmin
+        class MySubclass < TestApp::BaseClass; end
+      end
+    end
+
+    subject(:subclass) { ExternalAdmin::MySubclass }
+
+    it "calls `configure_for_slice` with the correct matching slice" do
+      expect(subclass.traces).to eq [ExternalAdmin::Slice]
+    end
+  end
+
   context "class inside app" do
     before do
       module TestApp
