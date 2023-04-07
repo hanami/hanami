@@ -21,6 +21,7 @@ module Hanami
         def extended(view_class)
           load_app_view
           configure_view(view_class)
+          include_helpers
           define_inherited
         end
 
@@ -109,6 +110,16 @@ module Hanami
           end
         end
         # rubocop:enable Metrics/AbcSize
+
+        def include_helpers
+          include_helpers_in(part_class)
+          include_helpers_in(scope_class)
+        end
+
+        def include_helpers_in(klass)
+          require "hanami/helpers/example_helper"
+          klass.include Helpers::ExampleHelper
+        end
 
         def define_inherited
           template_name = method(:template_name)
