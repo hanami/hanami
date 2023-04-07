@@ -19,6 +19,7 @@ module Hanami
         end
 
         def extended(view_class)
+          load_app_view
           configure_view(view_class)
           define_inherited
         end
@@ -28,6 +29,19 @@ module Hanami
         end
 
         private
+
+        # If the given view doesn't inherit from the app view, attempt to load it anyway, since
+        # requiring the app view is necessary for _its_ `SliceConfiguredView` hook to execute and
+        # define the app-level part and scope classes that we refer to here.
+        def load_app_view
+          return if app?
+
+          begin
+            slice.app.namespace.const_get(:View, false)
+          rescue NameError => e
+            raise unless e.name == :View
+          end
+        end
 
         # rubocop:disable Metrics/AbcSize
         def configure_view(view_class)
@@ -86,7 +100,10 @@ module Hanami
           view_class.config.inflector = inflector
           view_class.config.paths = prepare_paths(slice, view_class.config.paths)
           view_class.config.template = template_name(view_class)
+          view_class.config.part_class = part_class
+          view_class.config.scope_class = scope_class
 
+          # TODO: parts_path probably doesn't need to be configurable
           if (part_namespace = namespace_from_path(slice.config.views.parts_path))
             view_class.config.part_namespace = part_namespace
           end
@@ -143,6 +160,58 @@ module Hanami
 
         def inflector
           slice.inflector
+        end
+
+        def part_class
+          @part_class ||=
+            if views_namespace.const_defined?(:Part)
+              views_namespace.const_get(:Part)
+            else
+              views_namespace.const_set(:Part, Class.new(part_superclass))
+            end
+        end
+
+        def part_superclass
+          return Hanami::View::Part if app?
+
+          begin
+            # slice.app.namespace.const_get(:Views, false).const_get(:Part, false)
+            inflector.constantize(inflector.camelize("#{slice.app.slice_name.name}/views/part"))
+          rescue NameError
+            Hanami::View::Part
+          end
+        end
+
+        def scope_class
+          @scope_class ||=
+            if views_namespace.const_defined?(:Scope)
+              views_namespace.const_get(:Scope)
+            else
+              views_namespace.const_set(:Scope, Class.new(scope_superclass))
+            end
+        end
+
+        def scope_superclass
+          return Hanami::View::Scope if app?
+
+          begin
+            inflector.constantize(inflector.camelize("#{slice.app.slice_name.name}/views/scope"))
+          rescue NameError
+            Hanami::View::Scope
+          end
+        end
+
+        def views_namespace
+          @slice_views_namespace ||=
+            if slice.namespace.const_defined?(:Views)
+              slice.namespace.const_get(:Views)
+            else
+              slice.namespace.const_set(:Views, Module.new)
+            end
+        end
+
+        def app?
+          slice.app == slice
         end
       end
     end
