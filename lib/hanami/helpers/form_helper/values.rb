@@ -23,9 +23,15 @@ module Hanami
 
         # @since 2.0.0
         # @api private
-        def initialize(values = {}, csrf_token = nil)
-          @values = Utils::Hash.symbolize(values || {})
-          @params = values.fetch(:params).to_h
+        # def initialize(values = {}, csrf_token = nil)
+        #   @values = Utils::Hash.symbolize(values || {})
+        #   @params = values.fetch(:params).to_h
+        #   @csrf_token = csrf_token
+        # end
+
+        def initialize(values: {}, params: {}, csrf_token: nil)
+          @values = values.to_h
+          @params = params.to_h
           @csrf_token = csrf_token
         end
 

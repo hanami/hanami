@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require "hanami/helpers/form_helper/form_builder"
-require "hanami/helpers/html_helper"
+require "hanami/view/helpers/html_helper"
 
 module Hanami
   module Helpers
@@ -80,6 +79,8 @@ module Hanami
     #   <!-- use this in the template -->
     #   <%= my_form %>
     module FormHelper
+      require_relative "form_helper/form_builder"
+
       # Default HTTP method for form
       #
       # @since 2.0.0
@@ -100,7 +101,7 @@ module Hanami
       # @api private
       CSRF_TOKEN = :_csrf_token
 
-      include HtmlHelper
+      include Hanami::View::Helpers::HTMLHelper
 
       # Form object
       #
@@ -420,31 +421,26 @@ module Hanami
       #
       #     <button type="submit">Create</button>
       #   </form>
-      def form_for(url, values: locals, **attributes)
+
+      # TODO: I think we should remove one of values/params as arguments here...
+      def form_for(url, values: _form_values, params: _context.request.params, **attributes)
         attributes[:action] = url
 
-        values = Values.new(values, csrf_token)
-        builder = FormBuilder.new(values: values)
+        values = Values.new(values: values, params: params, csrf_token: _context.csrf_token)
+        builder = FormBuilder.new(values: values, inflector: _context.inflector)
 
-        content = Helpers::Escape.safe_string(
-          block_given? ? yield(builder) : ""
-        )
+        content = (block_given? ? yield(builder) : "").html_safe
 
         builder.call(content, **attributes)
       end
 
-      # Returns CSRF Protection Token stored in session.
-      #
-      # It returns <tt>nil</tt> if sessions aren't enabled or the value is missing.
-      #
-      # @return [String,NilClass] token, if present
-      #
-      # @since 2.0.0
-      def csrf_token
-        if respond_to?(:session)
-          session[CSRF_TOKEN]
-        elsif defined?(locals) && locals[:session]
-          locals[:session][CSRF_TOKEN]
+      def _form_values
+        if respond_to?(:_locals) # Scope
+          _locals
+        elsif respond_to?(:_name) # Part
+          {_name => self}
+        else
+          {}
         end
       end
 
@@ -472,10 +468,10 @@ module Hanami
       #     <!-- ... -->
       #   </html>
       def csrf_meta_tags
-        return if csrf_token.nil?
+        return unless _context.csrf_token
 
         html.meta(name: "csrf-param", content: CSRF_TOKEN) +
-          html.meta(name: "csrf-token", content: csrf_token)
+          html.meta(name: "csrf-token", content: _context.csrf_token)
       end
     end
   end

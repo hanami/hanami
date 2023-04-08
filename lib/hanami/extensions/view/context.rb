@@ -38,8 +38,8 @@ module Hanami
 
           # @see SliceConfiguredContext#define_new
           def initialize( # rubocop:disable Metrics/ParameterLists
-            inflector:,
-            settings:,
+            inflector: nil,
+            settings: nil,
             routes: nil,
             assets: nil,
             request: nil,

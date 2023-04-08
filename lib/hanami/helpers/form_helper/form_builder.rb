@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "hanami/helpers/form_helper/values"
-require "hanami/helpers/html_helper/html_builder"
-require "hanami/helpers/escape_helper"
 require "dry-inflector"
+require "hanami/view/helpers/html_helper/html_builder"
+require "hanami/view/helpers/escape_helper"
+require_relative "values"
 
 module Hanami
   module Helpers
@@ -80,7 +80,7 @@ module Hanami
         EMPTY_STRING = ""
         private_constant :EMPTY_STRING
 
-        include Helpers::EscapeHelper
+        include Hanami::View::Helpers::EscapeHelper
 
         # Instantiate a new form builder
         #
@@ -94,10 +94,10 @@ module Hanami
         #
         # @api private
         # @since 2.0.0
-        def initialize(html: Hanami::Helpers::HtmlHelper::HtmlBuilder.new, values: Values.new, inflector: Dry::Inflector.new)
+        def initialize(inflector:, values: Values.new)
           super()
 
-          @html = html
+          @html = Hanami::View::Helpers::HTMLHelper::HTMLBuilder.new
           @values = values
           @inflector = inflector
         end
@@ -583,7 +583,7 @@ module Hanami
         #   <input type="url" name="user[website]" id="user-website" value="" class="form-control">
         def url_field(name, **attributes)
           attrs         = attributes.dup
-          attrs[:value] = escape_url(attrs.fetch(:value) { _value(name) })
+          attrs[:value] = sanitize_url(attrs.fetch(:value) { _value(name) })
 
           input(**_attributes(:url, name, attrs))
         end
@@ -1114,7 +1114,7 @@ module Hanami
           selected    = options.delete(:selected)
           input_value = _value(name)
 
-          option_html = HtmlHelper::HtmlBuilder.new
+          option_html = Hanami::View::Helpers::HTMLHelper::HTMLBuilder.new
 
           already_selected = nil
           option_html.option(prompt, disabled: true) if prompt
@@ -1288,7 +1288,7 @@ module Hanami
         #   <input name="image" width="50" type="image" src="https://hanamirb.org/assets/button.png">
         def image_button(source, **attributes)
           attributes[:type] = :image
-          attributes[:src]  = escape_url(source)
+          attributes[:src]  = sanitize_url(source)
 
           input(**attributes)
         end
