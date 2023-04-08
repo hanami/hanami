@@ -421,9 +421,7 @@ module Hanami
       #
       #     <button type="submit">Create</button>
       #   </form>
-
-      # TODO: I think we should remove one of values/params as arguments here...
-      def form_for(url, values: _form_values, params: _context.request.params, **attributes)
+      def form_for(url, values: _form_for_values, params: _form_for_params, **attributes)
         attributes[:action] = url
 
         values = Values.new(values: values, params: params, csrf_token: _context.csrf_token)
@@ -434,7 +432,9 @@ module Hanami
         builder.call(content, **attributes)
       end
 
-      def _form_values
+      # @api private
+      # @since 2.0.0
+      def _form_for_values
         if respond_to?(:_locals) # Scope
           _locals
         elsif respond_to?(:_name) # Part
@@ -442,6 +442,12 @@ module Hanami
         else
           {}
         end
+      end
+
+      # @api private
+      # @since 2.0.0
+      def _form_for_params
+        _context.request.params
       end
 
       # Prints CSRF meta tags for Unobtrusive JavaScript (UJS) purposes.
