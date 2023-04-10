@@ -81,6 +81,7 @@ module Hanami
         private_constant :EMPTY_STRING
 
         include Hanami::View::Helpers::EscapeHelper
+        include Hanami::View::Helpers::HTMLHelper
 
         # Instantiate a new form builder
         #
@@ -97,7 +98,6 @@ module Hanami
         def initialize(inflector:, values: Values.new)
           super()
 
-          @html = Hanami::View::Helpers::HTMLHelper::HTMLBuilder.new
           @values = values
           @inflector = inflector
         end
@@ -108,26 +108,12 @@ module Hanami
           method_override, original_form_method = _form_method(attributes)
           csrf_token, token = _csrf_token(@values, attributes)
 
-          @html.clear
-          @html.form(**attributes) do
+          html.form(**attributes) do
             input(type: "hidden", name: "_method", value: original_form_method) if method_override
             input(type: "hidden", name: "_csrf_token", value: token) if csrf_token
 
             text(content)
           end
-        end
-
-        # Resolves all the nodes and generates the markup
-        #
-        # @return [Hanami::Utils::Escape::SafeString] the output
-        #
-        # @since 2.0.0
-        # @api private
-        #
-        # @see Hanami::Helpers::HtmlHelper::HtmlBuilder#to_s
-        # @see http://www.rubydoc.info/gems/hanami-utils/Hanami/Utils/Escape/SafeString
-        def to_s
-          html.to_s
         end
 
         # Label tag
@@ -1373,10 +1359,6 @@ module Hanami
 
         # @api private
         # @since 2.0.0
-        attr_reader :html
-
-        # @api private
-        # @since 2.0.0
         attr_reader :inflector
 
         # @api private
@@ -1402,22 +1384,6 @@ module Hanami
           return [] if EXCLUDED_CSRF_METHODS.include?(attributes[:method])
 
           [true, values.csrf_token]
-        end
-
-        # @api private
-        # @since 2.0.0
-        def method_missing(method_name, *args, **kwargs, &blk)
-          if html.respond_to?(method_name)
-            html.__send__(method_name, *args, **kwargs, &blk)
-          else
-            super
-          end
-        end
-
-        # @api private
-        # @since 2.0.0
-        def respond_to_missing?(method_name, include_all)
-          html.respond_to?(method_name, include_all)
         end
 
         # Return a set of default HTML attributes

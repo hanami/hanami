@@ -424,7 +424,7 @@ module Hanami
       def form_for(url, values: _form_for_values, params: _form_for_params, **attributes)
         attributes[:action] = url
 
-        values = Values.new(values: values, params: params, csrf_token: _context.csrf_token)
+        values = Values.new(values: values, params: params, csrf_token: _context.try_csrf_token)
         builder = FormBuilder.new(values: values, inflector: _context.inflector)
 
         content = (block_given? ? yield(builder) : "").html_safe
@@ -474,7 +474,7 @@ module Hanami
       #     <!-- ... -->
       #   </html>
       def csrf_meta_tags
-        return unless _context.csrf_token
+        return unless _context.try_csrf_token
 
         html.meta(name: "csrf-param", content: CSRF_TOKEN) +
           html.meta(name: "csrf-token", content: _context.csrf_token)

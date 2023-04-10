@@ -100,6 +100,13 @@ module Hanami
             request.session[Hanami::Action::CSRFProtection::CSRF_TOKEN]
           end
 
+          # TODO: find a better approach than this
+          def try_csrf_token
+            return unless request.instance_variable_get(:@sessions_enabled)
+
+            request.session[Hanami::Action::CSRFProtection::CSRF_TOKEN]
+          end
+
           def session
             request.session
           end

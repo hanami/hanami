@@ -119,6 +119,9 @@ module Hanami
         def include_helpers_in(klass)
           require "hanami/helpers/example_helper"
           klass.include Helpers::ExampleHelper
+
+          require "hanami/helpers/form_helper"
+          klass.include Helpers::FormHelper
         end
 
         def define_inherited
