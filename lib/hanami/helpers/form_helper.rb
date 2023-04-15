@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "hanami/view/helpers/html_helper"
+require "hanami/view/helpers/tag_helper"
 
 module Hanami
   module Helpers
@@ -101,7 +101,7 @@ module Hanami
       # @api private
       CSRF_TOKEN = :_csrf_token
 
-      include Hanami::View::Helpers::HTMLHelper
+      include Hanami::View::Helpers::TagHelper
 
       # Form object
       #
@@ -476,8 +476,8 @@ module Hanami
       def csrf_meta_tags
         return unless _context.try_csrf_token
 
-        html.meta(name: "csrf-param", content: CSRF_TOKEN) +
-          html.meta(name: "csrf-token", content: _context.csrf_token)
+        tag.meta(name: "csrf-param", content: CSRF_TOKEN) +
+          tag.meta(name: "csrf-token", content: _context.csrf_token)
       end
     end
   end

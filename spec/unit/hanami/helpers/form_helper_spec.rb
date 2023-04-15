@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami/helpers/form_helper"
+require "hanami/view/erb/template"
 
 RSpec.describe Hanami::Helpers::FormHelper do
   subject(:obj) {
@@ -33,6 +34,10 @@ RSpec.describe Hanami::Helpers::FormHelper do
     obj.instance_eval(&block)
   end
 
+  def render(erb)
+    Hanami::View::ERB::Template.new { erb }.render(obj)
+  end
+
   describe "#form_for" do
     it "renders" do
       html = h { form_for("/books") }
@@ -41,6 +46,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
     it "allows to assign 'id' attribute" do
       html = h { form_for("/books", id: "book-form") }
+
       expect(html).to eq %(<form id="book-form" action="/books" accept-charset="utf-8" method="POST"></form>)
     end
 
@@ -221,12 +227,12 @@ RSpec.describe Hanami::Helpers::FormHelper do
     context "remote: true" do
       it "adds data-remote=true to form attributes" do
         html = h { form_for("/books", "data-remote": true) }
-        expect(html).to eq %(<form data-remote action="/books" accept-charset="utf-8" method="POST"></form>)
+        expect(html).to eq %(<form data-remote="true" action="/books" accept-charset="utf-8" method="POST"></form>)
       end
 
       it "adds data-remote=false to form attributes" do
         html = h { form_for("/books", "data-remote": false) }
-        expect(html).to eq %(<form action="/books" accept-charset="utf-8" method="POST"></form>)
+        expect(html).to eq %(<form data-remote="false" action="/books" accept-charset="utf-8" method="POST"></form>)
       end
 
       it "adds data-remote= to form attributes" do
@@ -393,16 +399,23 @@ RSpec.describe Hanami::Helpers::FormHelper do
     end
 
     it "renders a label with block" do
-      html = h {
-        form_for("/books") do |f|
-          f.label for: "book.free_shipping" do
-            f.text "Free Shipping"
-            f.abbr "*", title: "optional", "aria-label": "optional"
-          end
-        end
-      }
+      html = render(<<~ERB)
+        <%= form_for "/books" do |f| %>
+          <%= f.label for: "book.free_shipping" do %>
+            Free Shipping
+            <%= tag.abbr "*", title: "optional", aria: {label: "optional"} %>
+          <% end %>
+        <% end %>
+      ERB
 
-      expect(html).to eq %(<form action="/books" accept-charset="utf-8" method="POST"><label for="book-free-shipping">Free Shipping<abbr title="optional" aria-label="optional">*</abbr></label></form>)
+      expect(html).to eq <<~HTML
+        <form action="/books" accept-charset="utf-8" method="POST">
+          <label for="book-free-shipping">
+            Free Shipping
+            <abbr title="optional" aria-label="optional">*</abbr>
+          </label>
+        </form>
+      HTML
     end
   end
 
@@ -428,15 +441,21 @@ RSpec.describe Hanami::Helpers::FormHelper do
     end
 
     it "renders a button with block" do
-      html = h {
-        form_for("/books") do |f|
-          f.button class: "btn btn-secondary" do
-            f.span class: "oi oi-check"
-          end
-        end
-      }
+      html = render(<<~ERB)
+        <%= form_for("/books") do |f| %>
+          <%= f.button class: "btn btn-secondary" do %>
+            <%= tag.span class: "oi oi-check" %>
+          <% end %>
+        <% end %>
+      ERB
 
-      expect(html).to eq %(<form action="/books" accept-charset="utf-8" method="POST"><button class="btn btn-secondary"><span class="oi oi-check"></span></button></form>).chomp
+      expect(html).to eq <<~HTML
+        <form action="/books" accept-charset="utf-8" method="POST">
+          <button class="btn btn-secondary">
+            <span class="oi oi-check"></span>
+          </button>
+        </form>
+      HTML
     end
   end
 
@@ -462,15 +481,21 @@ RSpec.describe Hanami::Helpers::FormHelper do
     end
 
     it "renders a submit button with block" do
-      html = h {
-        form_for("/books") do |f|
-          f.submit class: "btn btn-primary" do
-            f.span class: "oi oi-check"
-          end
-        end
-      }
+      html = render(<<~ERB)
+        <%= form_for "/books" do |f| %>
+          <%= f.submit class: "btn btn-primary" do %>
+            <%= tag.span class: "oi oi-check" %>
+          <% end %>
+        <% end %>
+      ERB
 
-      expect(html).to eq %(<form action="/books" accept-charset="utf-8" method="POST"><button type="submit" class="btn btn-primary"><span class="oi oi-check"></span></button></form>).chomp
+      expect(html).to eq <<~HTML
+        <form action="/books" accept-charset="utf-8" method="POST">
+          <button type="submit" class="btn btn-primary">
+            <span class="oi oi-check"></span>
+          </button>
+        </form>
+      HTML
     end
   end
 
@@ -510,23 +535,33 @@ RSpec.describe Hanami::Helpers::FormHelper do
   # FIELDSET
   #
 
+  def squish(str)
+    str
+      .gsub(/[[:space:]]+/, " ")
+      .strip
+  end
+
   describe "#fieldset" do
     it "renders a fieldset" do
-      html = h {
-        form_for("/books") do |f|
-          f.fieldset do
-            f.legend "Author"
+      # TODO: work out whether to keep or remove fields_for here %>
+      # <% fields_for :author do %>
+      html = render(<<~ERB)
+        <%= form_for "/books" do |f| %>
+          <%= f.fieldset do %>
+            <%= tag.legend "Author" %>
+            <%= f.label "author.name" %>
+            <%= f.text_field "author.name" %>
+          <% end %>
+        <% end %>
+      ERB
 
-            # TODO: work out whether to keep or remove fields_for here
-            # fields_for :author do
-            f.label "author.name"
-            f.text_field "author.name"
-            # end
-          end
-        end
-      }
-
-      expect(html).to include %(<fieldset><legend>Author</legend><label for="author-name">Name</label><input type="text" name="author[name]" id="author-name" value=""></fieldset>)
+      expect(squish(html)).to include squish(<<~HTML)
+        <fieldset>
+          <legend>Author</legend>
+          <label for="author-name">Name</label>
+          <input type="text" name="author[name]" id="author-name" value="">
+        </fieldset>
+      HTML
     end
   end
 
@@ -607,14 +642,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
     end
 
     it "handles multiple checkboxes" do
-      html = h {
-        form_for("/books") do |f|
-          f.check_box "book.languages", name: "book[languages][]", value: "italian" # , id: nil FIXME
-          f.check_box "book.languages", name: "book[languages][]", value: "english" # , id: nil FIXME
-        end
-      }
+      html = render(<<~ERB)
+        <%= form_for("/books") do |f| %>
+          <%= f.check_box "book.languages", name: "book[languages][]", value: "italian", id: nil %>
+          <%= f.check_box "book.languages", name: "book[languages][]", value: "english", id: nil %>
+        <% end %>
+      ERB
 
-      expect(html).to include %(<input type="checkbox" name="book[languages][]" id="book-languages" value="italian"><input type="checkbox" name="book[languages][]" id="book-languages" value="english">)
+      expect(squish(html)).to include squish(<<~HTML)
+        <input type="checkbox" name="book[languages][]" value="italian">
+        <input type="checkbox" name="book[languages][]" value="english">
+      HTML
     end
 
     context "with filled params" do
@@ -676,14 +714,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:params) { {book: {languages: ["italian"]}} }
 
         it "handles multiple checkboxes" do
-          html = h {
-            form_for("/books") do |f|
-              f.check_box "book.languages", name: "book[languages][]", value: "italian" # , id: nil FIXME
-              f.check_box "book.languages", name: "book[languages][]", value: "english" # , id: nil FIXME
-            end
-          }
+          html = render(<<~ERB)
+            <%= form_for("/books") do |f| %>
+              <%= f.check_box "book.languages", name: "book[languages][]", value: "italian", id: nil %>
+              <%= f.check_box "book.languages", name: "book[languages][]", value: "english", id: nil %>
+            <% end %>
+          ERB
 
-          expect(html).to include %(<input type="checkbox" name="book[languages][]" id="book-languages" value="italian" checked="checked"><input type="checkbox" name="book[languages][]" id="book-languages" value="english">)
+          expect(squish(html)).to include squish(<<~HTML)
+            <input type="checkbox" name="book[languages][]" value="italian" checked="checked">
+            <input type="checkbox" name="book[languages][]" value="english">
+          HTML
         end
       end
 
@@ -1471,7 +1512,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       }
 
-      expect(html).to include %(<input type="email" name="book[publisher_email]" id="book-publisher-email" value="" multiple>)
+      expect(html).to include %(<input type="email" name="book[publisher_email]" id="book-publisher-email" value="" multiple="multiple">)
     end
 
     it "allows to specify HTML attributes" do
@@ -1585,7 +1626,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       }
 
-      expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="" multiple>)
+      expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="" multiple="multiple">)
     end
 
     it "allows to specify HTML attributes" do
@@ -1726,7 +1767,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       }
 
-      expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="book-publisher-telephone" value="" multiple>)
+      expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="book-publisher-telephone" value="" multiple="multiple">)
     end
 
     it "allows to specify HTML attributes" do
@@ -1850,7 +1891,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       }
 
-      expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover" multiple>)
+      expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover" multiple="multiple">)
     end
 
     it "allows to specify single value for 'accept' attribute" do
@@ -2295,7 +2336,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       }
 
-      expect(html).to include %(<textarea name="book[description]" id="book-description"></textarea>)
+      expect(html).to include %(<textarea name="book[description]" id="book-description">\n</textarea>)
     end
 
     it "allows to override 'id' attribute" do
@@ -2305,7 +2346,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       }
 
-      expect(html).to include %(<textarea name="book[description]" id="desc"></textarea>)
+      expect(html).to include %(<textarea name="book[description]" id="desc">\n</textarea>)
     end
 
     it "allows to override 'name' attribute" do
@@ -2315,7 +2356,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       }
 
-      expect(html).to include %(<textarea name="book[desc]" id="book-description"></textarea>)
+      expect(html).to include %(<textarea name="book[desc]" id="book-description">\n</textarea>)
     end
 
     it "allows to specify HTML attributes" do
@@ -2325,7 +2366,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       }
 
-      expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control" cols="5"></textarea>)
+      expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control" cols="5">\n</textarea>)
     end
 
     it "allows to omit content" do
@@ -2335,7 +2376,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       }
 
-      expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control" cols="5"></textarea>)
+      expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control" cols="5">\n</textarea>)
     end
 
     it "allows to omit content, by accepting Hash serializable options" do
@@ -2347,7 +2388,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       }
 
-      expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control" cols="5"></textarea>)
+      expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control" cols="5">\n</textarea>)
     end
 
     context "set content explicitly" do
@@ -2361,7 +2402,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description">#{content}</textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description">\n#{content}</textarea>)
       end
     end
 
@@ -2377,7 +2418,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description">#{val}</textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description">\n#{val}</textarea>)
       end
 
       it "renders with value, when only attributes are specified" do
@@ -2388,7 +2429,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control">#{val}</textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control">\n#{val}</textarea>)
       end
 
       it "allows to override value" do
@@ -2399,7 +2440,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description">Just a simple description</textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description">\nJust a simple description</textarea>)
       end
 
       it "forces blank value" do
@@ -2410,7 +2451,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description"></textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description">\n</textarea>)
       end
 
       it "forces blank value, when also attributes are specified" do
@@ -2421,7 +2462,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control"></textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control">\n</textarea>)
       end
     end
 
@@ -2436,7 +2477,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description">#{val}</textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description">\n#{val}</textarea>)
       end
 
       it "renders with value, when only attributes are specified" do
@@ -2446,7 +2487,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control">#{val}</textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control">\n#{val}</textarea>)
       end
 
       it "allows to override value" do
@@ -2456,7 +2497,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description">Just a simple description</textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description">\nJust a simple description</textarea>)
       end
 
       it "forces blank value" do
@@ -2466,7 +2507,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description"></textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description">\n</textarea>)
       end
 
       it "forces blank value, when also attributes are specified" do
@@ -2476,7 +2517,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control"></textarea>)
+        expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control">\n</textarea>)
       end
     end
   end
@@ -2797,8 +2838,8 @@ RSpec.describe Hanami::Helpers::FormHelper do
     it "renders" do
       html = h {
         form_for("/books") do |f|
-          f.radio_button "book.category", "Fiction"
-          f.radio_button "book.category", "Non-Fiction"
+          f.radio_button("book.category", "Fiction") +
+            f.radio_button("book.category", "Non-Fiction")
         end
       }
 
@@ -2808,8 +2849,8 @@ RSpec.describe Hanami::Helpers::FormHelper do
     it "allows to override 'name' attribute" do
       html = h {
         form_for("/books") do |f|
-          f.radio_button "book.category", "Fiction",     name: "category_name"
-          f.radio_button "book.category", "Non-Fiction", name: "category_name"
+          f.radio_button("book.category", "Fiction", name: "category_name") +
+            f.radio_button("book.category", "Non-Fiction", name: "category_name")
         end
       }
 
@@ -2819,8 +2860,8 @@ RSpec.describe Hanami::Helpers::FormHelper do
     it "allows to specify HTML attributes" do
       html = h {
         form_for("/books") do |f|
-          f.radio_button "book.category", "Fiction",     class: "form-control"
-          f.radio_button "book.category", "Non-Fiction", class: "radio-button"
+          f.radio_button("book.category", "Fiction", class: "form-control") +
+            f.radio_button("book.category", "Non-Fiction", class: "radio-button")
         end
       }
 
@@ -2835,8 +2876,8 @@ RSpec.describe Hanami::Helpers::FormHelper do
         values = self.values
         html = h {
           form_for("/books", values: values) do |f|
-            f.radio_button "book.category", "Fiction"
-            f.radio_button "book.category", "Non-Fiction"
+            f.radio_button("book.category", "Fiction") +
+              f.radio_button("book.category", "Non-Fiction")
           end
         }
 
@@ -2852,8 +2893,8 @@ RSpec.describe Hanami::Helpers::FormHelper do
         it "renders with value" do
           html = h {
             form_for("/books") do |f|
-              f.radio_button "book.category", "Fiction"
-              f.radio_button "book.category", "Non-Fiction"
+              f.radio_button("book.category", "Fiction") +
+                f.radio_button("book.category", "Non-Fiction")
             end
           }
 
@@ -2868,8 +2909,8 @@ RSpec.describe Hanami::Helpers::FormHelper do
         it "renders with value" do
           html = h {
             form_for("/books") do |f|
-              f.radio_button "book.price", 10.0
-              f.radio_button "book.price", 20.0
+              f.radio_button("book.price", 10.0) +
+                f.radio_button("book.price", 20.0)
             end
           }
 
@@ -2946,7 +2987,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<select name="book[store][]" id="book-store" multiple><option value="it">Italy</option><option value="us">United States</option></select>)
+        expect(html).to include %(<select name="book[store][]" id="book-store" multiple="multiple"><option value="it">Italy</option><option value="us">United States</option></select>)
       end
 
       it "allows to select values" do
@@ -2957,7 +2998,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<select name="book[store][]" id="book-store" multiple><option value="it" selected>Italy</option><option value="us" selected>United States</option></select>)
+        expect(html).to include %(<select name="book[store][]" id="book-store" multiple="multiple"><option value="it" selected="selected">Italy</option><option value="us" selected="selected">United States</option></select>)
       end
     end
 
@@ -2987,7 +3028,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             end
           }
 
-          expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected>Italy</option><option value="us">United States</option></select>)
+          expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
         end
       end
 
@@ -3033,7 +3074,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             end
           }
 
-          expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected>Italy</option><option value="us">United States</option></select>)
+          expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
         end
       end
     end
@@ -3050,7 +3091,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected>Italy</option><option value="us">United States</option></select>)
+        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
       end
     end
 
@@ -3066,7 +3107,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected>Italy</option><option value="us">United States</option></select>)
+        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
       end
     end
 
@@ -3079,7 +3120,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<select name="book[store]" id="book-store"><option disabled>Select a store</option><option value="it">Italy</option><option value="us">United States</option></select>)
+        expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled">Select a store</option><option value="it">Italy</option><option value="us">United States</option></select>)
       end
 
       it "allows blank string" do
@@ -3090,7 +3131,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<select name="book[store]" id="book-store"><option disabled></option><option value="it">Italy</option><option value="us">United States</option></select>)
+        expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled"></option><option value="it">Italy</option><option value="us">United States</option></select>)
       end
 
       context "with values" do
@@ -3105,7 +3146,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             end
           }
 
-          expect(html).to include %(<select name="book[store]" id="book-store"><option disabled>Select a store</option><option value="it" selected>Italy</option><option value="us">United States</option></select>)
+          expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled">Select a store</option><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
         end
       end
 
@@ -3122,7 +3163,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
               end
             }
 
-            expect(html).to include %(<select name="book[store]" id="book-store"><option disabled>Select a store</option><option value="it" selected>Italy</option><option value="us">United States</option></select>)
+            expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled">Select a store</option><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
           end
         end
 
@@ -3139,7 +3180,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
               end
             }
 
-            expect(html).to include %(<select name="bookshelf[book]" id="bookshelf-book"><option value="1" selected>Brave new world</option><option value="2">Solaris</option></select>)
+            expect(html).to include %(<select name="bookshelf[book]" id="bookshelf-book"><option value="1" selected="selected">Brave new world</option><option value="2">Solaris</option></select>)
           end
         end
       end
@@ -3157,7 +3198,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected>Italy</option><option value="us">United States</option></select>)
+        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
       end
     end
 
@@ -3172,7 +3213,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option><option selected>N/A</option></select>)
+        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option><option selected="selected">N/A</option></select>)
       end
 
       it "set as selected the option with nil value" do
@@ -3183,7 +3224,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option><option selected>N/A</option></select>)
+        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option><option selected="selected">N/A</option></select>)
       end
 
       it "set as selected the option with a value" do
@@ -3194,7 +3235,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           end
         }
 
-        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected>Italy</option><option value="us">United States</option><option>N/A</option></select>)
+        expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option><option>N/A</option></select>)
       end
 
       it "allows to force the selection of none" do
@@ -3221,7 +3262,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             end
           }
 
-          expect(html).to include %(<form action="/books" accept-charset="utf-8" method="POST"><select name="book[category]" id="book-category"><option>N/A</option><option value="horror" selected>Horror</option><option value="scify">SciFy</option></select></form>)
+          expect(html).to include %(<form action="/books" accept-charset="utf-8" method="POST"><select name="book[category]" id="book-category"><option>N/A</option><option value="horror" selected="selected">Horror</option><option value="scify">SciFy</option></select></form>)
         end
       end
 
@@ -3238,7 +3279,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             end
           }
 
-          expect(html).to include %(<form action="/books" accept-charset="utf-8" method="POST"><select name="book[category]" id="book-category"><option value="1" selected>Horror</option><option value="2">SciFy</option></select></form>)
+          expect(html).to include %(<form action="/books" accept-charset="utf-8" method="POST"><select name="book[category]" id="book-category"><option value="1" selected="selected">Horror</option><option value="2">SciFy</option></select></form>)
         end
       end
     end

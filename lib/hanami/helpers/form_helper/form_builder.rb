@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "dry-inflector"
-require "hanami/view/helpers/html_helper/html_builder"
 require "hanami/view/helpers/escape_helper"
 require_relative "values"
 
@@ -81,7 +80,7 @@ module Hanami
         private_constant :EMPTY_STRING
 
         include Hanami::View::Helpers::EscapeHelper
-        include Hanami::View::Helpers::HTMLHelper
+        include Hanami::View::Helpers::TagHelper
 
         # Instantiate a new form builder
         #
@@ -103,16 +102,17 @@ module Hanami
         end
 
         def call(content, **attributes)
-          attributes[:accept_charset] ||= DEFAULT_CHARSET
+          attributes["accept-charset"] ||= DEFAULT_CHARSET
 
           method_override, original_form_method = _form_method(attributes)
           csrf_token, token = _csrf_token(@values, attributes)
 
-          html.form(**attributes) do
-            input(type: "hidden", name: "_method", value: original_form_method) if method_override
-            input(type: "hidden", name: "_csrf_token", value: token) if csrf_token
-
-            text(content)
+          tag.form(**attributes) do
+            (+"").tap { |inner|
+              inner << input(type: "hidden", name: "_method", value: original_form_method) if method_override
+              inner << input(type: "hidden", name: "_csrf_token", value: token) if csrf_token
+              inner << content
+            }.html_safe
           end
         end
 
@@ -184,7 +184,7 @@ module Hanami
             content = inflector.humanize(content.split(INPUT_NAME_SEPARATOR).last)
           end
 
-          html.label(content, **attributes, &blk)
+          tag.label(content, **attributes, &blk)
         end
 
         # Fieldset
@@ -213,7 +213,7 @@ module Hanami
         #   </fieldset>
         def fieldset(...)
           # This is here only for documentation purposes
-          html.fieldset(...)
+          tag.fieldset(...)
         end
 
         # Check box
@@ -315,8 +315,10 @@ module Hanami
         #   <input type="checkbox" name="book[languages][]" value="italian" checked>
         #   <input type="checkbox" name="book[languages][]" value="english">
         def check_box(name, **attributes)
-          _hidden_field_for_check_box(name, attributes)
-          input(**_attributes_for_check_box(name, attributes))
+          (+"").tap { |output|
+            output << _hidden_field_for_check_box(name, attributes).to_s
+            output << input(**_attributes_for_check_box(name, attributes))
+          }.html_safe
         end
 
         # Color input
@@ -802,7 +804,7 @@ module Hanami
           end
 
           attributes = {name: _input_name(name), id: _input_id(name)}.merge(attributes)
-          html.textarea(content || _value(name), **attributes)
+          tag.textarea(content || _value(name), **attributes)
         end
 
         # Text input
@@ -914,7 +916,7 @@ module Hanami
         #   <input type="radio" name="book[category]" value="Non-Fiction" checked>
         def radio_button(name, value, **attributes)
           attributes = {type: :radio, name: _input_name(name), value: value}.merge(attributes)
-          attributes[:checked] = CHECKED if _value(name).to_s == value.to_s
+          attributes[:checked] = true if _value(name).to_s == value.to_s
 
           input(**attributes)
         end
@@ -1100,20 +1102,20 @@ module Hanami
           selected    = options.delete(:selected)
           input_value = _value(name)
 
-          option_html = Hanami::View::Helpers::HTMLHelper::HTMLBuilder.new
-
+          option_tags = []
           already_selected = nil
-          option_html.option(prompt, disabled: true) if prompt
+
+          option_tags << tag.option(prompt, disabled: true) if prompt
           values.each do |content, value|
             if (multiple || !already_selected) && (already_selected = _select_option_selected?(value, selected,
                                                                                                input_value, multiple))
-              option_html.option(content, **{value: value, selected: true}.merge(options))
+                                                                                               option_tags << tag.option(content, **{value: value, selected: true}.merge(options))
             else
-              option_html.option(content, **{value: value}.merge(options))
+              option_tags << tag.option(content, **{value: value}.merge(options))
             end
           end
 
-          html.select(option_html, **attributes)
+          tag.select(option_tags.join.html_safe, **attributes)
         end
 
         # Datalist input
@@ -1188,12 +1190,16 @@ module Hanami
           attrs[:list]  = list
           datalist[:id] = list
 
-          text_field(name, **attrs)
-          html.datalist(**datalist) do
-            values.each do |value, content|
-              option(content, **{value: value}.merge(options))
-            end
-          end
+          (+"").tap { |output|
+            output << text_field(name, **attrs)
+            output << tag.datalist(**datalist) {
+              (+"").tap { |inner|
+                values.each do |value, content|
+                  inner << tag.option(content, **{value: value}.merge(options))
+                end
+              }.html_safe
+            }
+          }.html_safe
         end
 
         # Button
@@ -1241,7 +1247,7 @@ module Hanami
         #     <span class="oi oi-check"></span>
         #   </button>
         def button(...)
-          html.button(...)
+          tag.button(...)
         end
 
         # Image button
@@ -1330,7 +1336,7 @@ module Hanami
           end
 
           attributes = {type: :submit}.merge(attributes)
-          html.button(content, **attributes, &blk)
+          tag.button(content, **attributes, &blk)
         end
 
         # Form input
@@ -1352,7 +1358,7 @@ module Hanami
         #   <!-- output -->
         #   <input type="text" name="book[title]" id="book-title" value="Hanami book">
         def input(...)
-          html.input(...)
+          tag.input(...)
         end
 
         private
