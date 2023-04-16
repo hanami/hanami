@@ -30,6 +30,10 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   let(:params) { {} }
 
+  def form_for(...)
+    obj.instance_eval { form_for(...) }
+  end
+
   def h(&block)
     obj.instance_eval(&block)
   end
@@ -40,55 +44,51 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#form_for" do
     it "renders" do
-      html = h { form_for("/books") }
+      html = form_for("/books")
       expect(html).to eq %(<form action="/books" accept-charset="utf-8" method="POST"></form>)
     end
 
     it "allows to assign 'id' attribute" do
-      html = h { form_for("/books", id: "book-form") }
+      html = form_for("/books", id: "book-form")
 
       expect(html).to eq %(<form id="book-form" action="/books" accept-charset="utf-8" method="POST"></form>)
     end
 
     it "allows to override 'method' attribute ('get')" do
-      html = h { form_for("/books", method: "get") }
+      html = form_for("/books", method: "get")
       expect(html).to eq %(<form method="GET" action="/books" accept-charset="utf-8"></form>)
     end
 
     it "allows to override 'method' attribute (:get)" do
-      html = h { form_for("/books", method: :get) }
+      html = form_for("/books", method: :get)
       expect(html).to eq %(<form method="GET" action="/books" accept-charset="utf-8"></form>)
     end
 
     it "allows to override 'method' attribute ('GET')" do
-      html = h { form_for("/books", method: "GET") }
+      html = form_for("/books", method: "GET")
       expect(html).to eq %(<form method="GET" action="/books" accept-charset="utf-8"></form>)
     end
 
     %i[patch put delete].each do |verb|
       it "allows to override 'method' attribute (#{verb})" do
-        html = h {
-          form_for("/books", method: verb) do |f|
-            f.text_field "book.title"
-          end
-        }
+        html = form_for("/books", method: verb) do |f|
+          f.text_field "book.title"
+        end
 
         expect(html).to eq %(<form method="POST" action="/books" accept-charset="utf-8"><input type="hidden" name="_method" value="#{verb.to_s.upcase}"><input type="text" name="book[title]" id="book-title" value=""></form>)
       end
     end
 
     it "allows to specify HTML attributes" do
-      html = h { form_for("/books", class: "form-horizonal") }
+      html = form_for("/books", class: "form-horizonal")
       expect(html).to eq %(<form class="form-horizonal" action="/books" accept-charset="utf-8" method="POST"></form>)
     end
 
     context "input name" do
       it "renders nested field names" do
-        html = h {
-          form_for("/books") do |f|
-            f.text_field "book.author.avatar.url"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.text_field "book.author.avatar.url"
+        end
 
         expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="">)
       end
@@ -104,11 +104,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
 
         it "renders with value" do
-          html = h {
-            form_for("/books") do |f|
-              f.text_field "book.author.avatar.url"
-            end
-          }
+          html = form_for("/books") do |f|
+            f.text_field "book.author.avatar.url"
+          end
 
           expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="#{val}">)
         end
@@ -119,23 +117,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val) { "https://hanami.test/avatar.png" }
 
         it "renders with value" do
-          values = self.values
-          html = h {
-            form_for("/books", values: values) do |f|
-              f.text_field "book.author.avatar.url"
-            end
-          }
+          html = form_for("/books", values: values) do |f|
+            f.text_field "book.author.avatar.url"
+          end
 
           expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="#{val}">)
         end
 
         it "allows to override 'value' attribute" do
-          values = self.values
-          html = h {
-            form_for("/books", values: values) do |f|
-              f.text_field "book.author.avatar.url", value: "https://hanami.test/another-avatar.jpg"
-            end
-          }
+          html = form_for("/books", values: values) do |f|
+            f.text_field "book.author.avatar.url", value: "https://hanami.test/another-avatar.jpg"
+          end
 
           expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="https://hanami.test/another-avatar.jpg">)
         end
@@ -146,21 +138,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val) { "https://hanami.test/avatar.png" }
 
         it "renders with value" do
-          html = h {
-            form_for("/books") do |f|
-              f.text_field "book.author.avatar.url"
-            end
-          }
+          html = form_for("/books") do |f|
+            f.text_field "book.author.avatar.url"
+          end
 
           expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="#{val}">)
         end
 
         it "allows to override 'value' attribute" do
-          html = h {
-            form_for("/books") do |f|
-              f.text_field "book.author.avatar.url", value: "https://hanami.test/another-avatar.jpg"
-            end
-          }
+          html = form_for("/books") do |f|
+            f.text_field "book.author.avatar.url", value: "https://hanami.test/another-avatar.jpg"
+          end
 
           expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="https://hanami.test/another-avatar.jpg">)
         end
@@ -175,7 +163,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
       end
 
       it "injects hidden field session is enabled" do
-        html = h { form_for("/books") }
+        html = form_for("/books")
         expect(html).to eq %(<form action="/books" accept-charset="utf-8" method="POST"><input type="hidden" name="_csrf_token" value="#{csrf_token}"></form>)
       end
 
@@ -183,21 +171,21 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:csrf_token) { nil }
 
         it "doesn't inject hidden field" do
-          html = h { form_for("/books") }
+          html = form_for("/books")
           expect(html).to eq %(<form action="/books" accept-charset="utf-8" method="POST"></form>)
         end
       end
 
       context "with csrf_token on get verb" do
         it "doesn't inject hidden field" do
-          html = h { form_for("/books", method: "GET") }
+          html = form_for("/books", method: "GET")
           expect(html).to eq %(<form method="GET" action="/books" accept-charset="utf-8"></form>)
         end
       end
 
       %i[patch put delete].each do |verb|
         it "it injects hidden field when Method Override (#{verb}) is active" do
-          html = h { form_for("/books", method: verb) }
+          html = form_for("/books", method: verb)
           expect(html).to eq %(<form method="POST" action="/books" accept-charset="utf-8"><input type="hidden" name="_method" value="#{verb.to_s.upcase}"><input type="hidden" name="_csrf_token" value="#{csrf_token}"></form>)
         end
       end
@@ -210,8 +198,12 @@ RSpec.describe Hanami::Helpers::FormHelper do
         allow(request).to receive(:session) { {_csrf_token: csrf_token} }
       end
 
+      def csrf_meta_tags(...)
+        h { csrf_meta_tags(...) }
+      end
+
       it "prints meta tags" do
-        html = h { csrf_meta_tags }
+        html = csrf_meta_tags
         expect(html).to eq %(<meta name="csrf-param" content="_csrf_token"><meta name="csrf-token" content="#{csrf_token}">)
       end
 
@@ -219,24 +211,24 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:csrf_token) { nil }
 
         it "returns nil" do
-          expect(h { csrf_meta_tags }).to be(nil)
+          expect(csrf_meta_tags).to be(nil)
         end
       end
     end
 
     context "remote: true" do
       it "adds data-remote=true to form attributes" do
-        html = h { form_for("/books", "data-remote": true) }
+        html = form_for("/books", "data-remote": true)
         expect(html).to eq %(<form data-remote="true" action="/books" accept-charset="utf-8" method="POST"></form>)
       end
 
       it "adds data-remote=false to form attributes" do
-        html = h { form_for("/books", "data-remote": false) }
+        html = form_for("/books", "data-remote": false)
         expect(html).to eq %(<form data-remote="false" action="/books" accept-charset="utf-8" method="POST"></form>)
       end
 
       it "adds data-remote= to form attributes" do
-        html = h { form_for("/books", "data-remote": nil) }
+        html = form_for("/books", "data-remote": nil)
         expect(html).to eq %(<form action="/books" accept-charset="utf-8" method="POST"></form>)
       end
     end
@@ -247,12 +239,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:action) { "/songs" }
 
       it "renders" do
-        given_params = self.given_params
-        html = h {
-          form_for("/songs", params: given_params) do |f|
-            f.text_field "song.title"
-          end
-        }
+        html = form_for("/songs", params: given_params) do |f|
+          f.text_field "song.title"
+        end
 
         expect(html).to eq(%(<form action="/songs" accept-charset="utf-8" method="POST"><input type="text" name="song[title]" id="song-title" value="Arabesque"></form>))
       end
@@ -379,21 +368,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#label" do
     it "renders capitalized string" do
-      html = h {
-        form_for("/books") do |f|
-          f.label "book.free_shipping"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.label "book.free_shipping"
+      end
 
       expect(html).to include %(<label for="book-free-shipping">Free shipping</label>)
     end
 
     it "accepts a string as custom content" do
-      html = h {
-        form_for("/books") do |f|
-          f.label "Free Shipping!", for: "book.free_shipping"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.label "Free Shipping!", for: "book.free_shipping"
+      end
 
       expect(html).to include %(<label for="book-free-shipping">Free Shipping!</label>)
     end
@@ -421,21 +406,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#button" do
     it "renders a button" do
-      html = h {
-        form_for("/books") do |f|
-          f.button "Click me"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.button "Click me"
+      end
 
       expect(html).to include %(<button>Click me</button>)
     end
 
     it "renders a button with HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.button "Click me", class: "btn btn-secondary"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.button "Click me", class: "btn btn-secondary"
+      end
 
       expect(html).to include(%(<button class="btn btn-secondary">Click me</button>))
     end
@@ -461,21 +442,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#submit" do
     it "renders a submit button" do
-      html = h {
-        form_for("/books") do |f|
-          f.submit "Create"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.submit "Create"
+      end
 
       expect(html).to include %(<button type="submit">Create</button>)
     end
 
     it "renders a submit button with HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.submit "Create", class: "btn btn-primary"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.submit "Create", class: "btn btn-primary"
+      end
 
       expect(html).to include %(<button type="submit" class="btn btn-primary">Create</button>)
     end
@@ -501,31 +478,25 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#image_button" do
     it "renders an image button" do
-      html = h {
-        form_for("/books") do |f|
-          f.image_button "https://hanamirb.org/assets/image_button.png"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.image_button "https://hanamirb.org/assets/image_button.png"
+      end
 
       expect(html).to include %(<input type="image" src="https://hanamirb.org/assets/image_button.png">)
     end
 
     it "renders an image button with HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.image_button "https://hanamirb.org/assets/image_button.png", name: "image", width: "50"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.image_button "https://hanamirb.org/assets/image_button.png", name: "image", width: "50"
+      end
 
       expect(html).to include %(<input name="image" width="50" type="image" src="https://hanamirb.org/assets/image_button.png">)
     end
 
     it "prevents XSS attacks" do
-      html = h {
-        form_for("/books") do |f|
-          f.image_button "<script>alert('xss');</script>"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.image_button "<script>alert('xss');</script>"
+      end
 
       expect(html).to include %(<input type="image" src="">)
     end
@@ -571,72 +542,58 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#check_box" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.check_box "book.free_shipping"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.check_box "book.free_shipping"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[free_shipping]" value="0"><input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="1">)
     end
 
     it "allows to pass checked and unchecked value" do
-      html = h {
-        form_for("/books") do |f|
-          f.check_box "book.free_shipping", checked_value: "true", unchecked_value: "false"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.check_box "book.free_shipping", checked_value: "true", unchecked_value: "false"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[free_shipping]" value="false"><input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="true">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.check_box "book.free_shipping", id: "shipping"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.check_box "book.free_shipping", id: "shipping"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[free_shipping]" value="0"><input type="checkbox" name="book[free_shipping]" id="shipping" value="1">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.check_box "book.free_shipping", name: "book[free]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.check_box "book.free_shipping", name: "book[free]"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[free]" value="0"><input type="checkbox" name="book[free]" id="book-free-shipping" value="1">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.check_box "book.free_shipping", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.check_box "book.free_shipping", class: "form-control"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[free_shipping]" value="0"><input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="1" class="form-control">)
     end
 
     it "doesn't render hidden field if 'value' attribute is specified" do
-      html = h {
-        form_for("/books") do |f|
-          f.check_box "book.free_shipping", value: "ok"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.check_box "book.free_shipping", value: "ok"
+      end
 
       expect(html).not_to include %(<input type="hidden" name="book[free_shipping]" value="0">)
       expect(html).to include %(<input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="ok">)
     end
 
     it "renders hidden field if 'value' attribute and 'unchecked_value' option are both specified" do
-      html = h {
-        form_for("/books") do |f|
-          f.check_box "book.free_shipping", value: "yes", unchecked_value: "no"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.check_box "book.free_shipping", value: "yes", unchecked_value: "no"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[free_shipping]" value="no"><input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="yes">)
     end
@@ -662,11 +619,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val) { "1" }
 
         it "renders with 'checked' attribute" do
-          html = h {
-            form_for("/books") do |f|
-              f.check_box "book.free_shipping"
-            end
-          }
+          html = form_for("/books") do |f|
+            f.check_box "book.free_shipping"
+          end
 
           expect(html).to include %(<input type="hidden" name="book[free_shipping]" value="0"><input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="1" checked="checked">)
         end
@@ -676,21 +631,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val) { "0" }
 
         it "renders without 'checked' attribute" do
-          html = h {
-            form_for("/books") do |f|
-              f.check_box "book.free_shipping"
-            end
-          }
+          html = form_for("/books") do |f|
+            f.check_box "book.free_shipping"
+          end
 
           expect(html).to include %(<input type="hidden" name="book[free_shipping]" value="0"><input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="1">)
         end
 
         it "allows to override 'checked' attribute" do
-          html = h {
-            form_for("/books") do |f|
-              f.check_box "book.free_shipping", checked: "checked"
-            end
-          }
+          html = form_for("/books") do |f|
+            f.check_box "book.free_shipping", checked: "checked"
+          end
 
           expect(html).to include %(<input type="hidden" name="book[free_shipping]" value="0"><input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="1" checked="checked">)
         end
@@ -700,11 +651,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val) { true }
 
         it "renders with 'checked' attribute" do
-          html = h {
-            form_for("/books") do |f|
-              f.check_box "book.free_shipping"
-            end
-          }
+          html = form_for("/books") do |f|
+            f.check_box "book.free_shipping"
+          end
 
           expect(html).to include %(<input type="hidden" name="book[free_shipping]" value="0"><input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="1" checked="checked">)
         end
@@ -732,11 +681,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:params) { {book: {free_shipping: "true"}} }
 
         it "renders with 'checked' attribute" do
-          html = h {
-            form_for("/books") do |f|
-              f.check_box "book.free_shipping", checked_value: true
-            end
-          }
+          html = form_for("/books") do |f|
+            f.check_box "book.free_shipping", checked_value: true
+          end
 
           expect(html).to include %(<input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="true" checked="checked">)
         end
@@ -749,12 +696,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
           let(:values) { {book: Struct.new(:free_shipping).new(false)} }
 
           it "renders" do
-            values = self.values
-            html = h {
-              form_for("/books", values: values) do |f|
-                f.check_box "book.free_shipping", checked_value: true
-              end
-            }
+            html = form_for("/books", values: values) do |f|
+              f.check_box "book.free_shipping", checked_value: true
+            end
 
             expect(html).to include %(<input type="checkbox" name="book[free_shipping]" id="book-free-shipping" value="true">)
           end
@@ -765,51 +709,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#color_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.color_field "book.cover"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.color_field "book.cover"
+      end
 
       expect(html).to include %(<input type="color" name="book[cover]" id="book-cover" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.color_field "book.cover", id: "b-cover"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.color_field "book.cover", id: "b-cover"
+      end
 
       expect(html).to include %(<input type="color" name="book[cover]" id="b-cover" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.color_field "book.cover", name: "cover"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.color_field "book.cover", name: "cover"
+      end
 
       expect(html).to include %(<input type="color" name="cover" id="book-cover" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.color_field "book.cover", value: "#ffffff"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.color_field "book.cover", value: "#ffffff"
+      end
 
       expect(html).to include %(<input type="color" name="book[cover]" id="book-cover" value="#ffffff">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.color_field "book.cover", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.color_field "book.cover", class: "form-control"
+      end
 
       expect(html).to include %(<input type="color" name="book[cover]" id="book-cover" value="" class="form-control">)
     end
@@ -819,23 +753,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val) { "#d3397e" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.color_field "book.cover"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.color_field "book.cover"
+        end
 
         expect(html).to include %(<input type="color" name="book[cover]" id="book-cover" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.color_field "book.cover", value: "#000000"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.color_field "book.cover", value: "#000000"
+        end
 
         expect(html).to include %(<input type="color" name="book[cover]" id="book-cover" value="#000000">)
       end
@@ -846,21 +774,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val) { "#d3397e" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.color_field "book.cover"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.color_field "book.cover"
+        end
 
         expect(html).to include %(<input type="color" name="book[cover]" id="book-cover" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.color_field "book.cover", value: "#000000"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.color_field "book.cover", value: "#000000"
+        end
 
         expect(html).to include %(<input type="color" name="book[cover]" id="book-cover" value="#000000">)
       end
@@ -869,51 +793,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#date_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.date_field "book.release_date"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.date_field "book.release_date"
+      end
 
       expect(html).to include %(<input type="date" name="book[release_date]" id="book-release-date" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.date_field "book.release_date", id: "release-date"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.date_field "book.release_date", id: "release-date"
+      end
 
       expect(html).to include %(<input type="date" name="book[release_date]" id="release-date" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.date_field "book.release_date", name: "release_date"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.date_field "book.release_date", name: "release_date"
+      end
 
       expect(html).to include %(<input type="date" name="release_date" id="book-release-date" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.date_field "book.release_date", value: "2015-02-19"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.date_field "book.release_date", value: "2015-02-19"
+      end
 
       expect(html).to include %(<input type="date" name="book[release_date]" id="book-release-date" value="2015-02-19">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.date_field "book.release_date", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.date_field "book.release_date", class: "form-control"
+      end
 
       expect(html).to include %(<input type="date" name="book[release_date]" id="book-release-date" value="" class="form-control">)
     end
@@ -923,23 +837,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "2014-06-23" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.date_field "book.release_date"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.date_field "book.release_date"
+        end
 
         expect(html).to include %(<input type="date" name="book[release_date]" id="book-release-date" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.date_field "book.release_date", value: "2015-03-23"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.date_field "book.release_date", value: "2015-03-23"
+        end
 
         expect(html).to include %(<input type="date" name="book[release_date]" id="book-release-date" value="2015-03-23">)
       end
@@ -950,21 +858,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "2014-06-23" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.date_field "book.release_date"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.date_field "book.release_date"
+        end
 
         expect(html).to include %(<input type="date" name="book[release_date]" id="book-release-date" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.date_field "book.release_date", value: "2015-03-23"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.date_field "book.release_date", value: "2015-03-23"
+        end
 
         expect(html).to include %(<input type="date" name="book[release_date]" id="book-release-date" value="2015-03-23">)
       end
@@ -973,51 +877,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#datetime_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.datetime_field "book.published_at"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datetime_field "book.published_at"
+      end
 
       expect(html).to include %(<input type="datetime" name="book[published_at]" id="book-published-at" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.datetime_field "book.published_at", id: "published-timestamp"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datetime_field "book.published_at", id: "published-timestamp"
+      end
 
       expect(html).to include %(<input type="datetime" name="book[published_at]" id="published-timestamp" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.datetime_field "book.published_at", name: "book[published][timestamp]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datetime_field "book.published_at", name: "book[published][timestamp]"
+      end
 
       expect(html).to include %(<input type="datetime" name="book[published][timestamp]" id="book-published-at" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.datetime_field "book.published_at", value: "2015-02-19T12:50:36Z"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datetime_field "book.published_at", value: "2015-02-19T12:50:36Z"
+      end
 
       expect(html).to include %(<input type="datetime" name="book[published_at]" id="book-published-at" value="2015-02-19T12:50:36Z">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.datetime_field "book.published_at", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datetime_field "book.published_at", class: "form-control"
+      end
 
       expect(html).to include %(<input type="datetime" name="book[published_at]" id="book-published-at" value="" class="form-control">)
     end
@@ -1027,23 +921,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "2015-02-19T12:56:31Z" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.datetime_field "book.published_at"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.datetime_field "book.published_at"
+        end
 
         expect(html).to include %(<input type="datetime" name="book[published_at]" id="book-published-at" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.datetime_field "book.published_at", value: "2015-02-19T12:50:36Z"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.datetime_field "book.published_at", value: "2015-02-19T12:50:36Z"
+        end
 
         expect(html).to include %(<input type="datetime" name="book[published_at]" id="book-published-at" value="2015-02-19T12:50:36Z">)
       end
@@ -1054,21 +942,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "2015-02-19T12:56:31Z" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.datetime_field "book.published_at"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.datetime_field "book.published_at"
+        end
 
         expect(html).to include %(<input type="datetime" name="book[published_at]" id="book-published-at" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.datetime_field "book.published_at", value: "2015-02-19T12:50:36Z"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.datetime_field "book.published_at", value: "2015-02-19T12:50:36Z"
+        end
 
         expect(html).to include %(<input type="datetime" name="book[published_at]" id="book-published-at" value="2015-02-19T12:50:36Z">)
       end
@@ -1077,51 +961,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#datetime_local_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.datetime_local_field "book.released_at"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datetime_local_field "book.released_at"
+      end
 
       expect(html).to include %(<input type="datetime-local" name="book[released_at]" id="book-released-at" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.datetime_local_field "book.released_at", id: "local-release-timestamp"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datetime_local_field "book.released_at", id: "local-release-timestamp"
+      end
 
       expect(html).to include %(<input type="datetime-local" name="book[released_at]" id="local-release-timestamp" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.datetime_local_field "book.released_at", name: "book[release-timestamp]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datetime_local_field "book.released_at", name: "book[release-timestamp]"
+      end
 
       expect(html).to include %(<input type="datetime-local" name="book[release-timestamp]" id="book-released-at" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.datetime_local_field "book.released_at", value: "2015-02-19T14:01:28+01:00"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datetime_local_field "book.released_at", value: "2015-02-19T14:01:28+01:00"
+      end
 
       expect(html).to include %(<input type="datetime-local" name="book[released_at]" id="book-released-at" value="2015-02-19T14:01:28+01:00">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.datetime_local_field "book.released_at", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datetime_local_field "book.released_at", class: "form-control"
+      end
 
       expect(html).to include %(<input type="datetime-local" name="book[released_at]" id="book-released-at" value="" class="form-control">)
     end
@@ -1131,21 +1005,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "2015-02-19T14:11:19+01:00" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.datetime_local_field "book.released_at"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.datetime_local_field "book.released_at"
+        end
 
         expect(html).to include %(<input type="datetime-local" name="book[released_at]" id="book-released-at" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.datetime_local_field "book.released_at", value: "2015-02-19T14:01:28+01:00"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.datetime_local_field "book.released_at", value: "2015-02-19T14:01:28+01:00"
+        end
 
         expect(html).to include %(<input type="datetime-local" name="book[released_at]" id="book-released-at" value="2015-02-19T14:01:28+01:00">)
       end
@@ -1154,51 +1024,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#time_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.time_field "book.release_hour"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.time_field "book.release_hour"
+      end
 
       expect(html).to include %(<input type="time" name="book[release_hour]" id="book-release-hour" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.time_field "book.release_hour", id: "release-hour"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.time_field "book.release_hour", id: "release-hour"
+      end
 
       expect(html).to include %(<input type="time" name="book[release_hour]" id="release-hour" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.time_field "book.release_hour", name: "release_hour"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.time_field "book.release_hour", name: "release_hour"
+      end
 
       expect(html).to include %(<input type="time" name="release_hour" id="book-release-hour" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.time_field "book.release_hour", value: "00:00"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.time_field "book.release_hour", value: "00:00"
+      end
 
       expect(html).to include %(<input type="time" name="book[release_hour]" id="book-release-hour" value="00:00">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.time_field "book.release_hour", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.time_field "book.release_hour", class: "form-control"
+      end
 
       expect(html).to include %(<input type="time" name="book[release_hour]" id="book-release-hour" value="" class="form-control">)
     end
@@ -1208,23 +1068,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "18:30" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.time_field "book.release_hour"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.time_field "book.release_hour"
+        end
 
         expect(html).to include %(<input type="time" name="book[release_hour]" id="book-release-hour" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.time_field "book.release_hour", value: "17:00"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.time_field "book.release_hour", value: "17:00"
+        end
 
         expect(html).to include %(<input type="time" name="book[release_hour]" id="book-release-hour" value="17:00">)
       end
@@ -1235,21 +1089,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "11:30" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.time_field "book.release_hour"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.time_field "book.release_hour"
+        end
 
         expect(html).to include %(<input type="time" name="book[release_hour]" id="book-release-hour" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.time_field "book.release_hour", value: "8:15"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.time_field "book.release_hour", value: "8:15"
+        end
 
         expect(html).to include %(<input type="time" name="book[release_hour]" id="book-release-hour" value="8:15">)
       end
@@ -1258,51 +1108,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#month_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.month_field "book.release_month"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.month_field "book.release_month"
+      end
 
       expect(html).to include %(<input type="month" name="book[release_month]" id="book-release-month" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.month_field "book.release_month", id: "release-month"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.month_field "book.release_month", id: "release-month"
+      end
 
       expect(html).to include %(<input type="month" name="book[release_month]" id="release-month" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.month_field "book.release_month", name: "release_month"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.month_field "book.release_month", name: "release_month"
+      end
 
       expect(html).to include %(<input type="month" name="release_month" id="book-release-month" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.month_field "book.release_month", value: "2017-03"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.month_field "book.release_month", value: "2017-03"
+      end
 
       expect(html).to include %(<input type="month" name="book[release_month]" id="book-release-month" value="2017-03">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.month_field "book.release_month", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.month_field "book.release_month", class: "form-control"
+      end
 
       expect(html).to include %(<input type="month" name="book[release_month]" id="book-release-month" value="" class="form-control">)
     end
@@ -1312,23 +1152,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "2017-03" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.month_field "book.release_month"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.month_field "book.release_month"
+        end
 
         expect(html).to include %(<input type="month" name="book[release_month]" id="book-release-month" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.month_field "book.release_month", value: "2017-04"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.month_field "book.release_month", value: "2017-04"
+        end
 
         expect(html).to include %(<input type="month" name="book[release_month]" id="book-release-month" value="2017-04">)
       end
@@ -1339,21 +1173,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "2017-10" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.month_field "book.release_month"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.month_field "book.release_month"
+        end
 
         expect(html).to include %(<input type="month" name="book[release_month]" id="book-release-month" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.month_field "book.release_month", value: "2017-04"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.month_field "book.release_month", value: "2017-04"
+        end
 
         expect(html).to include %(<input type="month" name="book[release_month]" id="book-release-month" value="2017-04">)
       end
@@ -1362,51 +1192,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#week_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.week_field "book.release_week"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.week_field "book.release_week"
+      end
 
       expect(html).to include %(<input type="week" name="book[release_week]" id="book-release-week" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.week_field "book.release_week", id: "release-week"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.week_field "book.release_week", id: "release-week"
+      end
 
       expect(html).to include %(<input type="week" name="book[release_week]" id="release-week" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.week_field "book.release_week", name: "release_week"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.week_field "book.release_week", name: "release_week"
+      end
 
       expect(html).to include %(<input type="week" name="release_week" id="book-release-week" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.week_field "book.release_week", value: "2017-W10"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.week_field "book.release_week", value: "2017-W10"
+      end
 
       expect(html).to include %(<input type="week" name="book[release_week]" id="book-release-week" value="2017-W10">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.week_field "book.release_week", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.week_field "book.release_week", class: "form-control"
+      end
 
       expect(html).to include %(<input type="week" name="book[release_week]" id="book-release-week" value="" class="form-control">)
     end
@@ -1416,23 +1236,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "2017-W10" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.week_field "book.release_week"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.week_field "book.release_week"
+        end
 
         expect(html).to include %(<input type="week" name="book[release_week]" id="book-release-week" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.week_field "book.release_week", value: "2017-W31"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.week_field "book.release_week", value: "2017-W31"
+        end
 
         expect(html).to include %(<input type="week" name="book[release_week]" id="book-release-week" value="2017-W31">)
       end
@@ -1443,21 +1257,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "2017-W44" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.week_field "book.release_week"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.week_field "book.release_week"
+        end
 
         expect(html).to include %(<input type="week" name="book[release_week]" id="book-release-week" value="#{val}">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.week_field "book.release_week", value: "2017-W07"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.week_field "book.release_week", value: "2017-W07"
+        end
 
         expect(html).to include %(<input type="week" name="book[release_week]" id="book-release-week" value="2017-W07">)
       end
@@ -1466,61 +1276,49 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#email_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.email_field "book.publisher_email"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.email_field "book.publisher_email"
+      end
 
       expect(html).to include %(<input type="email" name="book[publisher_email]" id="book-publisher-email" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.email_field "book.publisher_email", id: "publisher-email"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.email_field "book.publisher_email", id: "publisher-email"
+      end
 
       expect(html).to include %(<input type="email" name="book[publisher_email]" id="publisher-email" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.email_field "book.publisher_email", name: "book[email]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.email_field "book.publisher_email", name: "book[email]"
+      end
 
       expect(html).to include %(<input type="email" name="book[email]" id="book-publisher-email" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.email_field "book.publisher_email", value: "publisher@example.org"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.email_field "book.publisher_email", value: "publisher@example.org"
+      end
 
       expect(html).to include %(<input type="email" name="book[publisher_email]" id="book-publisher-email" value="publisher@example.org">)
     end
 
     it "allows to specify 'multiple' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.email_field "book.publisher_email", multiple: true
-        end
-      }
+      html = form_for("/books") do |f|
+        f.email_field "book.publisher_email", multiple: true
+      end
 
       expect(html).to include %(<input type="email" name="book[publisher_email]" id="book-publisher-email" value="" multiple="multiple">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.email_field "book.publisher_email", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.email_field "book.publisher_email", class: "form-control"
+      end
 
       expect(html).to include %(<input type="email" name="book[publisher_email]" id="book-publisher-email" value="" class="form-control">)
     end
@@ -1530,23 +1328,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "maria@publisher.org" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.email_field "book.publisher_email"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.email_field "book.publisher_email"
+        end
 
         expect(html).to include %(<input type="email" name="book[publisher_email]" id="book-publisher-email" value="maria@publisher.org">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.email_field "book.publisher_email", value: "publisher@example.org"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.email_field "book.publisher_email", value: "publisher@example.org"
+        end
 
         expect(html).to include %(<input type="email" name="book[publisher_email]" id="book-publisher-email" value="publisher@example.org">)
       end
@@ -1557,21 +1349,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "maria@publisher.org" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.email_field "book.publisher_email"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.email_field "book.publisher_email"
+        end
 
         expect(html).to include %(<input type="email" name="book[publisher_email]" id="book-publisher-email" value="maria@publisher.org">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.email_field "book.publisher_email", value: "publisher@example.org"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.email_field "book.publisher_email", value: "publisher@example.org"
+        end
 
         expect(html).to include %(<input type="email" name="book[publisher_email]" id="book-publisher-email" value="publisher@example.org">)
       end
@@ -1580,61 +1368,49 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#url_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.url_field "book.website"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.url_field "book.website"
+      end
 
       expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.url_field "book.website", id: "website"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.url_field "book.website", id: "website"
+      end
 
       expect(html).to include %(<input type="url" name="book[website]" id="website" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.url_field "book.website", name: "book[url]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.url_field "book.website", name: "book[url]"
+      end
 
       expect(html).to include %(<input type="url" name="book[url]" id="book-website" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.url_field "book.website", value: "http://example.org"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.url_field "book.website", value: "http://example.org"
+      end
 
       expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="http://example.org">)
     end
 
     it "allows to specify 'multiple' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.url_field "book.website", multiple: true
-        end
-      }
+      html = form_for("/books") do |f|
+        f.url_field "book.website", multiple: true
+      end
 
       expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="" multiple="multiple">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.url_field "book.website", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.url_field "book.website", class: "form-control"
+      end
 
       expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="" class="form-control">)
     end
@@ -1644,23 +1420,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "http://publisher.org" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.url_field "book.website"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.url_field "book.website"
+        end
 
         expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="http://publisher.org">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.url_field "book.website", value: "https://www.example.org"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.url_field "book.website", value: "https://www.example.org"
+        end
 
         expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="https://www.example.org">)
       end
@@ -1671,21 +1441,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "http://publisher.org" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.url_field "book.website"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.url_field "book.website"
+        end
 
         expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="http://publisher.org">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.url_field "book.website", value: "http://example.org"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.url_field "book.website", value: "http://example.org"
+        end
 
         expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="http://example.org">)
       end
@@ -1696,23 +1462,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { %("onclick=javascript:alert('xss')) }
 
       it "renders with automatic value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.url_field "book.website"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.url_field "book.website"
+        end
 
         expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="">)
       end
 
       it "renders with explicit value" do
-        values, val = self.values, self.val
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.url_field "book.website", value: val
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.url_field "book.website", value: val
+        end
 
         expect(html).to include %(<input type="url" name="book[website]" id="book-website" value="">)
       end
@@ -1721,61 +1481,49 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#tel_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.tel_field "book.publisher_telephone"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.tel_field "book.publisher_telephone"
+      end
 
       expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="book-publisher-telephone" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.tel_field "book.publisher_telephone", id: "publisher-telephone"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.tel_field "book.publisher_telephone", id: "publisher-telephone"
+      end
 
       expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="publisher-telephone" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.tel_field "book.publisher_telephone", name: "book[telephone]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.tel_field "book.publisher_telephone", name: "book[telephone]"
+      end
 
       expect(html).to include %(<input type="tel" name="book[telephone]" id="book-publisher-telephone" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.tel_field "book.publisher_telephone", value: "publisher@example.org"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.tel_field "book.publisher_telephone", value: "publisher@example.org"
+      end
 
       expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="book-publisher-telephone" value="publisher@example.org">)
     end
 
     it "allows to specify 'multiple' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.tel_field "book.publisher_telephone", multiple: true
-        end
-      }
+      html = form_for("/books") do |f|
+        f.tel_field "book.publisher_telephone", multiple: true
+      end
 
       expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="book-publisher-telephone" value="" multiple="multiple">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.tel_field "book.publisher_telephone", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.tel_field "book.publisher_telephone", class: "form-control"
+      end
 
       expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="book-publisher-telephone" value="" class="form-control">)
     end
@@ -1785,23 +1533,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "maria@publisher.org" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.tel_field "book.publisher_telephone"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.tel_field "book.publisher_telephone"
+        end
 
         expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="book-publisher-telephone" value="maria@publisher.org">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.tel_field "book.publisher_telephone", value: "publisher@example.org"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.tel_field "book.publisher_telephone", value: "publisher@example.org"
+        end
 
         expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="book-publisher-telephone" value="publisher@example.org">)
       end
@@ -1812,21 +1554,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "maria@publisher.org" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.tel_field "book.publisher_telephone"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.tel_field "book.publisher_telephone"
+        end
 
         expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="book-publisher-telephone" value="maria@publisher.org">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.tel_field "book.publisher_telephone", value: "publisher@example.org"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.tel_field "book.publisher_telephone", value: "publisher@example.org"
+        end
 
         expect(html).to include %(<input type="tel" name="book[publisher_telephone]" id="book-publisher-telephone" value="publisher@example.org">)
       end
@@ -1835,11 +1573,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#file_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.file_field "book.image_cover"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.file_field "book.image_cover"
+      end
 
       expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover">)
     end
@@ -1865,61 +1601,49 @@ RSpec.describe Hanami::Helpers::FormHelper do
     # end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.file_field "book.image_cover", id: "book-cover"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.file_field "book.image_cover", id: "book-cover"
+      end
 
       expect(html).to include %(<input type="file" name="book[image_cover]" id="book-cover">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.file_field "book.image_cover", name: "book[cover]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.file_field "book.image_cover", name: "book[cover]"
+      end
 
       expect(html).to include %(<input type="file" name="book[cover]" id="book-image-cover">)
     end
 
     it "allows to specify 'multiple' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.file_field "book.image_cover", multiple: true
-        end
-      }
+      html = form_for("/books") do |f|
+        f.file_field "book.image_cover", multiple: true
+      end
 
       expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover" multiple="multiple">)
     end
 
     it "allows to specify single value for 'accept' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.file_field "book.image_cover", accept: "application/pdf"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.file_field "book.image_cover", accept: "application/pdf"
+      end
 
       expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover" accept="application/pdf">)
     end
 
     it "allows to specify multiple values for 'accept' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.file_field "book.image_cover", accept: "image/png,image/jpg"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.file_field "book.image_cover", accept: "image/png,image/jpg"
+      end
 
       expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover" accept="image/png,image/jpg">)
     end
 
     it "allows to specify multiple values (array) for 'accept' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.file_field "book.image_cover", accept: ["image/png", "image/jpg"]
-        end
-      }
+      html = form_for("/books") do |f|
+        f.file_field "book.image_cover", accept: ["image/png", "image/jpg"]
+      end
 
       expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover" accept="image/png,image/jpg">)
     end
@@ -1929,12 +1653,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "image" }
 
       it "ignores value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.file_field "book.image_cover"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.file_field "book.image_cover"
+        end
 
         expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover">)
       end
@@ -1945,11 +1666,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "image" }
 
       it "ignores value" do
-        html = h {
-          form_for("/books") do |f|
-            f.file_field "book.image_cover"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.file_field "book.image_cover"
+        end
 
         expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover">)
       end
@@ -1958,51 +1677,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#hidden_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.hidden_field "book.author_id"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.hidden_field "book.author_id"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[author_id]" id="book-author-id" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.hidden_field "book.author_id", id: "author-id"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.hidden_field "book.author_id", id: "author-id"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[author_id]" id="author-id" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.hidden_field "book.author_id", name: "book[author]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.hidden_field "book.author_id", name: "book[author]"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[author]" id="book-author-id" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.hidden_field "book.author_id", value: "23"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.hidden_field "book.author_id", value: "23"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[author_id]" id="book-author-id" value="23">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.hidden_field "book.author_id", class: "form-details"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.hidden_field "book.author_id", class: "form-details"
+      end
 
       expect(html).to include %(<input type="hidden" name="book[author_id]" id="book-author-id" value="" class="form-details">)
     end
@@ -2012,23 +1721,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "1" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.hidden_field "book.author_id"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.hidden_field "book.author_id"
+        end
 
         expect(html).to include %(<input type="hidden" name="book[author_id]" id="book-author-id" value="1">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.hidden_field "book.author_id", value: "23"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.hidden_field "book.author_id", value: "23"
+        end
 
         expect(html).to include %(<input type="hidden" name="book[author_id]" id="book-author-id" value="23">)
       end
@@ -2039,21 +1742,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "1" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.hidden_field "book.author_id"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.hidden_field "book.author_id"
+        end
 
         expect(html).to include %(<input type="hidden" name="book[author_id]" id="book-author-id" value="1">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.hidden_field "book.author_id", value: "23"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.hidden_field "book.author_id", value: "23"
+        end
 
         expect(html).to include %(<input type="hidden" name="book[author_id]" id="book-author-id" value="23">)
       end
@@ -2062,81 +1761,65 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#number_field" do
     it "renders the element" do
-      html = h {
-        form_for("/books") do |f|
-          f.number_field "book.percent_read"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.number_field "book.percent_read"
+      end
 
       expect(html).to include %(<input type="number" name="book[percent_read]" id="book-percent-read" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.number_field "book.percent_read", id: "percent-read"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.number_field "book.percent_read", id: "percent-read"
+      end
 
       expect(html).to include %(<input type="number" name="book[percent_read]" id="percent-read" value="">)
     end
 
     it "allows to override the 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.number_field "book.percent_read", name: "book[read]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.number_field "book.percent_read", name: "book[read]"
+      end
 
       expect(html).to include %(<input type="number" name="book[read]" id="book-percent-read" value="">)
     end
 
     it "allows to override the 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.number_field "book.percent_read", value: "99"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.number_field "book.percent_read", value: "99"
+      end
 
       expect(html).to include %(<input type="number" name="book[percent_read]" id="book-percent-read" value="99">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.number_field "book.percent_read", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.number_field "book.percent_read", class: "form-control"
+      end
 
       expect(html).to include %(<input type="number" name="book[percent_read]" id="book-percent-read" value="" class="form-control">)
     end
 
     it "allows to specify a 'min' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.number_field "book.percent_read", min: 0
-        end
-      }
+      html = form_for("/books") do |f|
+        f.number_field "book.percent_read", min: 0
+      end
 
       expect(html).to include %(<input type="number" name="book[percent_read]" id="book-percent-read" value="" min="0">)
     end
 
     it "allows to specify a 'max' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.number_field "book.percent_read", max: 100
-        end
-      }
+      html = form_for("/books") do |f|
+        f.number_field "book.percent_read", max: 100
+      end
 
       expect(html).to include %(<input type="number" name="book[percent_read]" id="book-percent-read" value="" max="100">)
     end
 
     it "allows to specify a 'step' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.number_field "book.percent_read", step: 5
-        end
-      }
+      html = form_for("/books") do |f|
+        f.number_field "book.percent_read", step: 5
+      end
 
       expect(html).to include %(<input type="number" name="book[percent_read]" id="book-percent-read" value="" step="5">)
     end
@@ -2146,23 +1829,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { 95 }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.number_field "book.percent_read"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.number_field "book.percent_read"
+        end
 
         expect(html).to include %(<input type="number" name="book[percent_read]" id="book-percent-read" value="95">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.number_field "book.percent_read", value: 50
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.number_field "book.percent_read", value: 50
+        end
 
         expect(html).to include %(<input type="number" name="book[percent_read]" id="book-percent-read" value="50">)
       end
@@ -2173,21 +1850,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { 95 }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.number_field "book.percent_read"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.number_field "book.percent_read"
+        end
 
         expect(html).to include %(<input type="number" name="book[percent_read]" id="book-percent-read" value="95">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.number_field "book.percent_read", value: 50
-          end
-        }
+        html = form_for("/books") do |f|
+          f.number_field "book.percent_read", value: 50
+        end
 
         expect(html).to include %(<input type="number" name="book[percent_read]" id="book-percent-read" value="50">)
       end
@@ -2196,81 +1869,65 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#range_field" do
     it "renders the element" do
-      html = h {
-        form_for("/books") do |f|
-          f.range_field "book.discount_percentage"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.range_field "book.discount_percentage"
+      end
 
       expect(html).to include %(<input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.range_field "book.discount_percentage", id: "discount-percentage"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.range_field "book.discount_percentage", id: "discount-percentage"
+      end
 
       expect(html).to include %(<input type="range" name="book[discount_percentage]" id="discount-percentage" value="">)
     end
 
     it "allows to override the 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.range_field "book.discount_percentage", name: "book[read]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.range_field "book.discount_percentage", name: "book[read]"
+      end
 
       expect(html).to include %(<input type="range" name="book[read]" id="book-discount-percentage" value="">)
     end
 
     it "allows to override the 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.range_field "book.discount_percentage", value: "99"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.range_field "book.discount_percentage", value: "99"
+      end
 
       expect(html).to include %(<input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="99">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.range_field "book.discount_percentage", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.range_field "book.discount_percentage", class: "form-control"
+      end
 
       expect(html).to include %(<input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="" class="form-control">)
     end
 
     it "allows to specify a 'min' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.range_field "book.discount_percentage", min: 0
-        end
-      }
+      html = form_for("/books") do |f|
+        f.range_field "book.discount_percentage", min: 0
+      end
 
       expect(html).to include %(<input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="" min="0">)
     end
 
     it "allows to specify a 'max' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.range_field "book.discount_percentage", max: 100
-        end
-      }
+      html = form_for("/books") do |f|
+        f.range_field "book.discount_percentage", max: 100
+      end
 
       expect(html).to include %(<input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="" max="100">)
     end
 
     it "allows to specify a 'step' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.range_field "book.discount_percentage", step: 5
-        end
-      }
+      html = form_for("/books") do |f|
+        f.range_field "book.discount_percentage", step: 5
+      end
 
       expect(html).to include %(<input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="" step="5">)
     end
@@ -2280,23 +1937,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { 95 }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.range_field "book.discount_percentage"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.range_field "book.discount_percentage"
+        end
 
         expect(html).to include %(<input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="95">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.range_field "book.discount_percentage", value: 50
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.range_field "book.discount_percentage", value: 50
+        end
 
         expect(html).to include %(<input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="50">)
       end
@@ -2307,21 +1958,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { 95 }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.range_field "book.discount_percentage"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.range_field "book.discount_percentage"
+        end
 
         expect(html).to include %(<input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="95">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.range_field "book.discount_percentage", value: 50
-          end
-        }
+        html = form_for("/books") do |f|
+          f.range_field "book.discount_percentage", value: 50
+        end
 
         expect(html).to include %(<input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="50">)
       end
@@ -2330,51 +1977,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#text_area" do
     it "renders the element" do
-      html = h {
-        form_for("/books") do |f|
-          f.text_area "book.description"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_area "book.description"
+      end
 
       expect(html).to include %(<textarea name="book[description]" id="book-description">\n</textarea>)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.text_area "book.description", nil, id: "desc"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_area "book.description", nil, id: "desc"
+      end
 
       expect(html).to include %(<textarea name="book[description]" id="desc">\n</textarea>)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.text_area "book.description", nil, name: "book[desc]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_area "book.description", nil, name: "book[desc]"
+      end
 
       expect(html).to include %(<textarea name="book[desc]" id="book-description">\n</textarea>)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.text_area "book.description", nil, class: "form-control", cols: "5"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_area "book.description", nil, class: "form-control", cols: "5"
+      end
 
       expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control" cols="5">\n</textarea>)
     end
 
     it "allows to omit content" do
-      html = h {
-        form_for("/books") do |f|
-          f.text_area "book.description", class: "form-control", cols: "5"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_area "book.description", class: "form-control", cols: "5"
+      end
 
       expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control" cols="5">\n</textarea>)
     end
@@ -2382,11 +2019,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
     it "allows to omit content, by accepting Hash serializable options" do
       options = {class: "form-control", cols: 5}
 
-      html = h {
-        form_for("/books") do |f|
-          f.text_area "book.description", options
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_area "book.description", options
+      end
 
       expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control" cols="5">\n</textarea>)
     end
@@ -2395,12 +2030,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:content) { "A short description of the book" }
 
       it "allows to set content" do
-        content = self.content
-        html = h {
-          form_for("/books") do |f|
-            f.text_area "book.description", content
-          end
-        }
+        html = form_for("/books") do |f|
+          f.text_area "book.description", content
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description">\n#{content}</textarea>)
       end
@@ -2411,56 +2043,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val) { "A short description of the book" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.text_area "book.description"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.text_area "book.description"
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description">\n#{val}</textarea>)
       end
 
       it "renders with value, when only attributes are specified" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.text_area "book.description", class: "form-control"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.text_area "book.description", class: "form-control"
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control">\n#{val}</textarea>)
       end
 
       it "allows to override value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.text_area "book.description", "Just a simple description"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.text_area "book.description", "Just a simple description"
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description">\nJust a simple description</textarea>)
       end
 
       it "forces blank value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.text_area "book.description", ""
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.text_area "book.description", ""
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description">\n</textarea>)
       end
 
       it "forces blank value, when also attributes are specified" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.text_area "book.description", "", class: "form-control"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.text_area "book.description", "", class: "form-control"
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control">\n</textarea>)
       end
@@ -2471,51 +2088,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val) { "A short description of the book" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.text_area "book.description"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.text_area "book.description"
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description">\n#{val}</textarea>)
       end
 
       it "renders with value, when only attributes are specified" do
-        html = h {
-          form_for("/books") do |f|
-            f.text_area "book.description", class: "form-control"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.text_area "book.description", class: "form-control"
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control">\n#{val}</textarea>)
       end
 
       it "allows to override value" do
-        html = h {
-          form_for("/books") do |f|
-            f.text_area "book.description", "Just a simple description"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.text_area "book.description", "Just a simple description"
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description">\nJust a simple description</textarea>)
       end
 
       it "forces blank value" do
-        html = h {
-          form_for("/books") do |f|
-            f.text_area "book.description", ""
-          end
-        }
+        html = form_for("/books") do |f|
+          f.text_area "book.description", ""
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description">\n</textarea>)
       end
 
       it "forces blank value, when also attributes are specified" do
-        html = h {
-          form_for("/books") do |f|
-            f.text_area "book.description", "", class: "form-control"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.text_area "book.description", "", class: "form-control"
+        end
 
         expect(html).to include %(<textarea name="book[description]" id="book-description" class="form-control">\n</textarea>)
       end
@@ -2524,51 +2131,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#text_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.text_field "book.title"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_field "book.title"
+      end
 
       expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.text_field "book.title", id: "book-short-title"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_field "book.title", id: "book-short-title"
+      end
 
       expect(html).to include %(<input type="text" name="book[title]" id="book-short-title" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.text_field "book.title", name: "book[short_title]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_field "book.title", name: "book[short_title]"
+      end
 
       expect(html).to include %(<input type="text" name="book[short_title]" id="book-title" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.text_field "book.title", value: "Refactoring"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_field "book.title", value: "Refactoring"
+      end
 
       expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="Refactoring">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.text_field "book.title", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.text_field "book.title", class: "form-control"
+      end
 
       expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="" class="form-control">)
     end
@@ -2578,23 +2175,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "PPoEA" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.text_field "book.title"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.text_field "book.title"
+        end
 
         expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="PPoEA">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.text_field "book.title", value: "DDD"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.text_field "book.title", value: "DDD"
+        end
 
         expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="DDD">)
       end
@@ -2605,21 +2196,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "PPoEA" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.text_field "book.title"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.text_field "book.title"
+        end
 
         expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="PPoEA">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.text_field "book.title", value: "DDD"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.text_field "book.title", value: "DDD"
+        end
 
         expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="DDD">)
       end
@@ -2628,51 +2215,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#search_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.search_field "book.search_title"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.search_field "book.search_title"
+      end
 
       expect(html).to include %(<input type="search" name="book[search_title]" id="book-search-title" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.search_field "book.search_title", id: "book-short-title"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.search_field "book.search_title", id: "book-short-title"
+      end
 
       expect(html).to include %(<input type="search" name="book[search_title]" id="book-short-title" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.search_field "book.search_title", name: "book[short_title]"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.search_field "book.search_title", name: "book[short_title]"
+      end
 
       expect(html).to include %(<input type="search" name="book[short_title]" id="book-search-title" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.search_field "book.search_title", value: "Refactoring"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.search_field "book.search_title", value: "Refactoring"
+      end
 
       expect(html).to include %(<input type="search" name="book[search_title]" id="book-search-title" value="Refactoring">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.search_field "book.search_title", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.search_field "book.search_title", class: "form-control"
+      end
 
       expect(html).to include %(<input type="search" name="book[search_title]" id="book-search-title" value="" class="form-control">)
     end
@@ -2682,23 +2259,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "PPoEA" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.search_field "book.search_title"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.search_field "book.search_title"
+        end
 
         expect(html).to include %(<input type="search" name="book[search_title]" id="book-search-title" value="PPoEA">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.search_field "book.search_title", value: "DDD"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.search_field "book.search_title", value: "DDD"
+        end
 
         expect(html).to include %(<input type="search" name="book[search_title]" id="book-search-title" value="DDD">)
       end
@@ -2709,21 +2280,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "PPoEA" }
 
       it "renders with value" do
-        html = h {
-          form_for("/books") do |f|
-            f.search_field "book.search_title"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.search_field "book.search_title"
+        end
 
         expect(html).to include %(<input type="search" name="book[search_title]" id="book-search-title" value="PPoEA">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.search_field "book.search_title", value: "DDD"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.search_field "book.search_title", value: "DDD"
+        end
 
         expect(html).to include %(<input type="search" name="book[search_title]" id="book-search-title" value="DDD">)
       end
@@ -2732,51 +2299,41 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#password_field" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.password_field "signup.password"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.password_field "signup.password"
+      end
 
       expect(html).to include %(<input type="password" name="signup[password]" id="signup-password" value="">)
     end
 
     it "allows to override 'id' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.password_field "signup.password", id: "signup-pass"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.password_field "signup.password", id: "signup-pass"
+      end
 
       expect(html).to include %(<input type="password" name="signup[password]" id="signup-pass" value="">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.password_field "signup.password", name: "password"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.password_field "signup.password", name: "password"
+      end
 
       expect(html).to include %(<input type="password" name="password" id="signup-password" value="">)
     end
 
     it "allows to override 'value' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.password_field "signup.password", value: "topsecret"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.password_field "signup.password", value: "topsecret"
+      end
 
       expect(html).to include %(<input type="password" name="signup[password]" id="signup-password" value="topsecret">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.password_field "signup.password", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.password_field "signup.password", class: "form-control"
+      end
 
       expect(html).to include %(<input type="password" name="signup[password]" id="signup-password" value="" class="form-control">)
     end
@@ -2786,23 +2343,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "secret" }
 
       it "ignores value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.password_field "signup.password"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.password_field "signup.password"
+        end
 
         expect(html).to include %(<input type="password" name="signup[password]" id="signup-password" value="">)
       end
 
       it "allows to override 'value' attribute" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.password_field "signup.password", value: "123"
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.password_field "signup.password", value: "123"
+        end
 
         expect(html).to include %(<input type="password" name="signup[password]" id="signup-password" value="123">)
       end
@@ -2813,21 +2364,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "secret" }
 
       it "ignores value" do
-        html = h {
-          form_for("/books") do |f|
-            f.password_field "signup.password"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.password_field "signup.password"
+        end
 
         expect(html).to include %(<input type="password" name="signup[password]" id="signup-password" value="">)
       end
 
       it "allows to override 'value' attribute" do
-        html = h {
-          form_for("/books") do |f|
-            f.password_field "signup.password", value: "123"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.password_field "signup.password", value: "123"
+        end
 
         expect(html).to include %(<input type="password" name="signup[password]" id="signup-password" value="123">)
       end
@@ -2836,34 +2383,28 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#radio_button" do
     it "renders" do
-      html = h {
-        form_for("/books") do |f|
-          f.radio_button("book.category", "Fiction") +
-            f.radio_button("book.category", "Non-Fiction")
-        end
-      }
+      html = form_for("/books") do |f|
+        f.radio_button("book.category", "Fiction") +
+          f.radio_button("book.category", "Non-Fiction")
+      end
 
       expect(html).to include %(<input type="radio" name="book[category]" value="Fiction"><input type="radio" name="book[category]" value="Non-Fiction">)
     end
 
     it "allows to override 'name' attribute" do
-      html = h {
-        form_for("/books") do |f|
-          f.radio_button("book.category", "Fiction", name: "category_name") +
-            f.radio_button("book.category", "Non-Fiction", name: "category_name")
-        end
-      }
+      html = form_for("/books") do |f|
+        f.radio_button("book.category", "Fiction", name: "category_name") +
+          f.radio_button("book.category", "Non-Fiction", name: "category_name")
+      end
 
       expect(html).to include %(<input type="radio" name="category_name" value="Fiction"><input type="radio" name="category_name" value="Non-Fiction">)
     end
 
     it "allows to specify HTML attributes" do
-      html = h {
-        form_for("/books") do |f|
-          f.radio_button("book.category", "Fiction", class: "form-control") +
-            f.radio_button("book.category", "Non-Fiction", class: "radio-button")
-        end
-      }
+      html = form_for("/books") do |f|
+        f.radio_button("book.category", "Fiction", class: "form-control") +
+          f.radio_button("book.category", "Non-Fiction", class: "radio-button")
+      end
 
       expect(html).to include %(<input type="radio" name="book[category]" value="Fiction" class="form-control"><input type="radio" name="book[category]" value="Non-Fiction" class="radio-button">)
     end
@@ -2873,13 +2414,10 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "Non-Fiction" }
 
       it "renders with value" do
-        values = self.values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.radio_button("book.category", "Fiction") +
-              f.radio_button("book.category", "Non-Fiction")
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.radio_button("book.category", "Fiction") +
+            f.radio_button("book.category", "Non-Fiction")
+        end
 
         expect(html).to include %(<input type="radio" name="book[category]" value="Fiction"><input type="radio" name="book[category]" value="Non-Fiction" checked="checked">)
       end
@@ -2891,12 +2429,10 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val)    { "Non-Fiction" }
 
         it "renders with value" do
-          html = h {
-            form_for("/books") do |f|
-              f.radio_button("book.category", "Fiction") +
-                f.radio_button("book.category", "Non-Fiction")
-            end
-          }
+          html = form_for("/books") do |f|
+            f.radio_button("book.category", "Fiction") +
+              f.radio_button("book.category", "Non-Fiction")
+          end
 
           expect(html).to include %(<input type="radio" name="book[category]" value="Fiction"><input type="radio" name="book[category]" value="Non-Fiction" checked="checked">)
         end
@@ -2907,12 +2443,10 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val)    { "20.0" }
 
         it "renders with value" do
-          html = h {
-            form_for("/books") do |f|
-              f.radio_button("book.price", 10.0) +
-                f.radio_button("book.price", 20.0)
-            end
-          }
+          html = form_for("/books") do |f|
+            f.radio_button("book.price", 10.0) +
+              f.radio_button("book.price", 20.0)
+          end
 
           expect(html).to include %(<input type="radio" name="book[price]" value="10.0"><input type="radio" name="book[price]" value="20.0" checked="checked">)
         end
@@ -2924,79 +2458,58 @@ RSpec.describe Hanami::Helpers::FormHelper do
     let(:option_values) { {"Italy" => "it", "United States" => "us"} }
 
     it "renders" do
-      option_values = self.option_values
-      html = h {
-        form_for("/books") do |f|
-          f.select "book.store", option_values
-        end
-      }
+      html = form_for("/books") do |f|
+        f.select "book.store", option_values
+      end
 
       expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option></select>)
     end
 
     it "allows to override 'id' attribute" do
-      option_values = self.option_values
-      html = h {
-        form_for("/books") do |f|
-          f.select "book.store", option_values, id: "store"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.select "book.store", option_values, id: "store"
+      end
 
       expect(html).to include %(<select name="book[store]" id="store"><option value="it">Italy</option><option value="us">United States</option></select>)
     end
 
     it "allows to override 'name' attribute" do
-      option_values = self.option_values
-      html = h {
-        form_for("/books") do |f|
-          f.select "book.store", option_values, name: "store"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.select "book.store", option_values, name: "store"
+      end
 
       expect(html).to include %(<select name="store" id="book-store"><option value="it">Italy</option><option value="us">United States</option></select>)
     end
 
     it "allows to specify HTML attributes" do
-      option_values = self.option_values
-      html = h {
-        form_for("/books") do |f|
-          f.select "book.store", option_values, class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.select "book.store", option_values, class: "form-control"
+      end
 
       expect(html).to include %(<select name="book[store]" id="book-store" class="form-control"><option value="it">Italy</option><option value="us">United States</option></select>)
     end
 
     it "allows to specify HTML attributes for options" do
-      option_values = self.option_values
-      html = h {
-        form_for("/books") do |f|
-          f.select "book.store", option_values, options: {class: "form-option"}
-        end
-      }
+      html = form_for("/books") do |f|
+        f.select "book.store", option_values, options: {class: "form-option"}
+      end
 
       expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" class="form-option">Italy</option><option value="us" class="form-option">United States</option></select>)
     end
 
     context "with option 'multiple'" do
       it "renders" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values, multiple: true
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values, multiple: true
+        end
 
         expect(html).to include %(<select name="book[store][]" id="book-store" multiple="multiple"><option value="it">Italy</option><option value="us">United States</option></select>)
       end
 
       it "allows to select values" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values, multiple: true, options: {selected: %w[it us]}
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values, multiple: true, options: {selected: %w[it us]}
+        end
 
         expect(html).to include %(<select name="book[store][]" id="book-store" multiple="multiple"><option value="it" selected="selected">Italy</option><option value="us" selected="selected">United States</option></select>)
       end
@@ -3006,12 +2519,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:option_values) { [%w[Italy it], ["United States", "us"]] }
 
       it "renders" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option></select>)
       end
@@ -3021,12 +2531,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val)    { "it" }
 
         it "renders with value" do
-          option_values = self.option_values
-          html = h {
-            form_for("/books") do |f|
-              f.select "book.store", option_values
-            end
-          }
+          html = form_for("/books") do |f|
+            f.select "book.store", option_values
+          end
 
           expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
         end
@@ -3036,12 +2543,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:option_values) { [%w[Italy it], ["United States", "us"], %w[Italy it]] }
 
         it "renders" do
-          option_values = self.option_values
-          html = h {
-            form_for("/books") do |f|
-              f.select "book.store", option_values
-            end
-          }
+          html = form_for("/books") do |f|
+            f.select "book.store", option_values
+          end
 
           expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option><option value="it">Italy</option></select>)
         end
@@ -3052,12 +2556,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:values) { [Store.new("it", "Italy"), Store.new("us", "United States")] }
 
       it "renders" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option></select>)
       end
@@ -3067,12 +2568,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val)    { "it" }
 
         it "renders with value" do
-          option_values = self.option_values
-          html = h {
-            form_for("/books") do |f|
-              f.select "book.store", option_values
-            end
-          }
+          html = form_for("/books") do |f|
+            f.select "book.store", option_values
+          end
 
           expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
         end
@@ -3084,12 +2582,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "it" }
 
       it "renders with value" do
-        values, option_values = self.values, self.option_values
-        html = h {
-          form_for("/books", values: values) do |f|
-            f.select "book.store", option_values
-          end
-        }
+        html = form_for("/books", values: values) do |f|
+          f.select "book.store", option_values
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
       end
@@ -3100,12 +2595,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "it" }
 
       it "renders with value" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
       end
@@ -3113,23 +2605,17 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
     context "with prompt option" do
       it "allows string" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values, options: {prompt: "Select a store"}
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values, options: {prompt: "Select a store"}
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled">Select a store</option><option value="it">Italy</option><option value="us">United States</option></select>)
       end
 
       it "allows blank string" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values, options: {prompt: ""}
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values, options: {prompt: ""}
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled"></option><option value="it">Italy</option><option value="us">United States</option></select>)
       end
@@ -3139,12 +2625,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val)    { "it" }
 
         it "renders with value" do
-          values, option_values = self.values, self.option_values
-          html = h {
-            form_for("/books", values: values) do |f|
-              f.select "book.store", option_values, options: {prompt: "Select a store"}
-            end
-          }
+          html = form_for("/books", values: values) do |f|
+            f.select "book.store", option_values, options: {prompt: "Select a store"}
+          end
 
           expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled">Select a store</option><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
         end
@@ -3156,12 +2639,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
           let(:val)    { "it" }
 
           it "renders with value" do
-            option_values = self.option_values
-            html = h {
-              form_for("/books") do |f|
-                f.select "book.store", option_values, options: {prompt: "Select a store"}
-              end
-            }
+            html = form_for("/books") do |f|
+              f.select "book.store", option_values, options: {prompt: "Select a store"}
+            end
 
             expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled">Select a store</option><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
           end
@@ -3173,12 +2653,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
           let(:val)    { "1" }
 
           it "renders" do
-            values = self.values
-            html = h {
-              form_for("/books") do |f|
-                f.select "bookshelf.book", values
-              end
-            }
+            html = form_for("/books") do |f|
+              f.select "bookshelf.book", values
+            end
 
             expect(html).to include %(<select name="bookshelf[book]" id="bookshelf-book"><option value="1" selected="selected">Brave new world</option><option value="2">Solaris</option></select>)
           end
@@ -3191,12 +2668,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:val)    { "it" }
 
       it "sets the selected attribute" do
-        val, option_values = self.val, self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values, options: {selected: val}
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values, options: {selected: val}
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
       end
@@ -3206,45 +2680,33 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:option_values) { {"Italy" => "it", "United States" => "us", "N/A" => nil} }
 
       it "sets nil option as selected by default" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option><option selected="selected">N/A</option></select>)
       end
 
       it "set as selected the option with nil value" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values, options: {selected: nil}
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values, options: {selected: nil}
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option><option selected="selected">N/A</option></select>)
       end
 
       it "set as selected the option with a value" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values, options: {selected: "it"}
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values, options: {selected: "it"}
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option value="it" selected="selected">Italy</option><option value="us">United States</option><option>N/A</option></select>)
       end
 
       it "allows to force the selection of none" do
-        option_values = self.option_values
-        html = h {
-          form_for("/books") do |f|
-            f.select "book.store", option_values, options: {selected: "none"}
-          end
-        }
+        html = form_for("/books") do |f|
+          f.select "book.store", option_values, options: {selected: "none"}
+        end
 
         expect(html).to include %(<select name="book[store]" id="book-store"><option value="it">Italy</option><option value="us">United States</option><option>N/A</option></select>)
       end
@@ -3255,12 +2717,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val)           { "horror" }
 
         it "sets correct value as selected" do
-          values, option_values = self.values, self.option_values
-          html = h {
-            form_for("/books", values: values) do |f|
-              f.select "book.category", option_values
-            end
-          }
+          html = form_for("/books", values: values) do |f|
+            f.select "book.category", option_values
+          end
 
           expect(html).to include %(<form action="/books" accept-charset="utf-8" method="POST"><select name="book[category]" id="book-category"><option>N/A</option><option value="horror" selected="selected">Horror</option><option value="scify">SciFy</option></select></form>)
         end
@@ -3272,12 +2731,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
         let(:val)           { 1 }
 
         it "sets correct value as selected" do
-          values, option_values = self.values, self.option_values
-          html = h {
-            form_for("/books", values: values) do |f|
-              f.select "book.category", option_values
-            end
-          }
+          html = form_for("/books", values: values) do |f|
+            f.select "book.category", option_values
+          end
 
           expect(html).to include %(<form action="/books" accept-charset="utf-8" method="POST"><select name="book[category]" id="book-category"><option value="1" selected="selected">Horror</option><option value="2">SciFy</option></select></form>)
         end
@@ -3289,67 +2745,49 @@ RSpec.describe Hanami::Helpers::FormHelper do
     let(:values) { ["Italy", "United States"] }
 
     it "renders" do
-      values = self.values
-      html = h {
-        form_for("/books") do |f|
-          f.datalist "book.store", values, "books"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datalist "book.store", values, "books"
+      end
 
       expect(html).to include %(<input type="text" name="book[store]" id="book-store" value="" list="books"><datalist id="books"><option value="Italy"></option><option value="United States"></option></datalist>)
     end
 
     it "just allows to override 'id' attribute of the text input" do
-      values = self.values
-      html = h {
-        form_for("/books") do |f|
-          f.datalist "book.store", values, "books", id: "store"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datalist "book.store", values, "books", id: "store"
+      end
 
       expect(html).to include %(<input type="text" name="book[store]" id="store" value="" list="books"><datalist id="books"><option value="Italy"></option><option value="United States"></option></datalist>)
     end
 
     it "allows to override 'name' attribute" do
-      values = self.values
-      html = h {
-        form_for("/books") do |f|
-          f.datalist "book.store", values, "books", name: "store"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datalist "book.store", values, "books", name: "store"
+      end
 
       expect(html).to include %(<input type="text" name="store" id="book-store" value="" list="books"><datalist id="books"><option value="Italy"></option><option value="United States"></option></datalist>)
     end
 
     it "allows to specify HTML attributes" do
-      values = self.values
-      html = h {
-        form_for("/books") do |f|
-          f.datalist "book.store", values, "books", class: "form-control"
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datalist "book.store", values, "books", class: "form-control"
+      end
 
       expect(html).to include %(<input type="text" name="book[store]" id="book-store" value="" class="form-control" list="books"><datalist id="books"><option value="Italy"></option><option value="United States"></option></datalist>)
     end
 
     it "allows to specify HTML attributes for options" do
-      values = self.values
-      html = h {
-        form_for("/books") do |f|
-          f.datalist "book.store", values, "books", options: {class: "form-option"}
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datalist "book.store", values, "books", options: {class: "form-option"}
+      end
 
       expect(html).to include %(<input type="text" name="book[store]" id="book-store" value="" list="books"><datalist id="books"><option value="Italy" class="form-option"></option><option value="United States" class="form-option"></option></datalist>)
     end
 
     it "allows to specify HTML attributes for datalist" do
-      values = self.values
-      html = h {
-        form_for("/books") do |f|
-          f.datalist "book.store", values, "books", datalist: {class: "form-option"}
-        end
-      }
+      html = form_for("/books") do |f|
+        f.datalist "book.store", values, "books", datalist: {class: "form-option"}
+      end
 
       expect(html).to include %(<input type="text" name="book[store]" id="book-store" value="" list="books"><datalist class="form-option" id="books"><option value="Italy"></option><option value="United States"></option></datalist>)
     end
@@ -3358,12 +2796,9 @@ RSpec.describe Hanami::Helpers::FormHelper do
       let(:values) { {"Italy" => "it", "United States" => "us"} }
 
       it "renders" do
-        values = self.values
-        html = h {
-          form_for("/books") do |f|
-            f.datalist "book.store", values, "books"
-          end
-        }
+        html = form_for("/books") do |f|
+          f.datalist "book.store", values, "books"
+        end
 
         expect(html).to include %(<input type="text" name="book[store]" id="book-store" value="" list="books"><datalist id="books"><option value="Italy">it</option><option value="United States">us</option></datalist>)
       end
