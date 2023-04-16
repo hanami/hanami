@@ -506,12 +506,6 @@ RSpec.describe Hanami::Helpers::FormHelper do
   # FIELDSET
   #
 
-  def squish(str)
-    str
-      .gsub(/[[:space:]]+/, " ")
-      .strip
-  end
-
   describe "#fieldset" do
     it "renders a fieldset" do
       # TODO: work out whether to keep or remove fields_for here %>
@@ -526,7 +520,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         <% end %>
       ERB
 
-      expect(squish(html)).to include squish(<<~HTML)
+      expect(html).to include_html <<~HTML
         <fieldset>
           <legend>Author</legend>
           <label for="author-name">Name</label>
@@ -606,7 +600,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
         <% end %>
       ERB
 
-      expect(squish(html)).to include squish(<<~HTML)
+      expect(html).to include_html <<~HTML
         <input type="checkbox" name="book[languages][]" value="italian">
         <input type="checkbox" name="book[languages][]" value="english">
       HTML
@@ -670,7 +664,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             <% end %>
           ERB
 
-          expect(squish(html)).to include squish(<<~HTML)
+          expect(html).to include_html <<~HTML
             <input type="checkbox" name="book[languages][]" value="italian" checked="checked">
             <input type="checkbox" name="book[languages][]" value="english">
           HTML
