@@ -90,7 +90,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           f.text_field "book.author.avatar.url"
         end
 
-        expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="">)
+        expect(html).to include %(<input type="text" name="book[author][avatar][url]" id="book-author-avatar-url" value="">)
       end
 
       context "using values from scope locals" do
@@ -108,7 +108,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             f.text_field "book.author.avatar.url"
           end
 
-          expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="#{val}">)
+          expect(html).to include %(<input type="text" name="book[author][avatar][url]" id="book-author-avatar-url" value="#{val}">)
         end
       end
 
@@ -121,7 +121,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             f.text_field "book.author.avatar.url"
           end
 
-          expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="#{val}">)
+          expect(html).to include %(<input type="text" name="book[author][avatar][url]" id="book-author-avatar-url" value="#{val}">)
         end
 
         it "allows to override 'value' attribute" do
@@ -129,7 +129,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             f.text_field "book.author.avatar.url", value: "https://hanami.test/another-avatar.jpg"
           end
 
-          expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="https://hanami.test/another-avatar.jpg">)
+          expect(html).to include %(<input type="text" name="book[author][avatar][url]" id="book-author-avatar-url" value="https://hanami.test/another-avatar.jpg">)
         end
       end
 
@@ -142,7 +142,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             f.text_field "book.author.avatar.url"
           end
 
-          expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="#{val}">)
+          expect(html).to include %(<input type="text" name="book[author][avatar][url]" id="book-author-avatar-url" value="#{val}">)
         end
 
         it "allows to override 'value' attribute" do
@@ -150,7 +150,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             f.text_field "book.author.avatar.url", value: "https://hanami.test/another-avatar.jpg"
           end
 
-          expect(html).to include %(<input type="text" name="book[author[avatar[url]]]" id="book-author-avatar-url" value="https://hanami.test/another-avatar.jpg">)
+          expect(html).to include %(<input type="text" name="book[author][avatar][url]" id="book-author-avatar-url" value="https://hanami.test/another-avatar.jpg">)
         end
       end
     end
@@ -310,75 +310,68 @@ RSpec.describe Hanami::Helpers::FormHelper do
     end
   end
 
-  xdescribe "#fields_for_collection" do
+  describe "#fields_for_collection" do
     let(:params) { {book: {categories: [{name: "foo", new: true, genre: nil}]}} }
 
     it "renders" do
-      html = h {
-        form_for("/books") do
-          fields_for_collection :categories do
-            text_field :name
-            hidden_field :name
-            text_area :name
-            check_box :new
-            select :genre, [%w[Terror terror], %w[Comedy comedy]]
-            color_field :name
-            date_field :name
-            datetime_field :name
-            datetime_local_field :name
-            time_field :name
-            month_field :name
-            week_field :name
-            email_field :name
-            url_field :name
-            tel_field :name
-            file_field :name
-            number_field :name
-            range_field :name
-            search_field :name
-            radio_button :name, "Fiction"
-            password_field :name
-            datalist :name, ["Italy", "United States"], "books"
-          end
-        end
-      }
+      html = render(<<~ERB)
+        <%= form_for("/books") do |f| %>
+          <% f.fields_for_collection "book.categories" do %>
+            <%= f.text_field :name %>
+            <%= f.hidden_field :name %>
+            <%= f.text_area :name %>
+            <%= f.check_box :new %>
+            <%= f.select :genre, [%w[Terror terror], %w[Comedy comedy]] %>
+            <%= f.color_field :name %>
+            <%= f.date_field :name %>
+            <%= f.datetime_field :name %>
+            <%= f.datetime_local_field :name %>
+            <%= f.time_field :name %>
+            <%= f.month_field :name %>
+            <%= f.week_field :name %>
+            <%= f.email_field :name %>
+            <%= f.url_field :name %>
+            <%= f.tel_field :name %>
+            <%= f.file_field :name %>
+            <%= f.number_field :name %>
+            <%= f.range_field :name %>
+            <%= f.search_field :name %>
+            <%= f.radio_button :name, "Fiction" %>
+            <%= f.password_field :name %>
+            <%= f.datalist :name, ["Italy", "United States"], "books" %>
+          <% end %>
+        <% end %>
+      ERB
 
-      expected = <<~END
-        <form action="/books" method="POST" accept-charset="utf-8" id="book-form">
-        <input type="text" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="hidden" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <textarea name="book[categories][][name]" id="book-categories-0-name">foo</textarea>
-        <input type="hidden" name="book[categories][][new]" value="0">
-        <input type="checkbox" name="book[categories][][new]" id="book-categories-0-new" value="1" checked="checked">
-        <select name="book[categories][][genre]" id="book-categories-0-genre">
-        <option value="terror">Terror</option>
-        <option value="comedy">Comedy</option>
-        </select>
-        <input type="color" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="date" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="datetime" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="datetime-local" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="time" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="month" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="week" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="email" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="url" name="book[categories][][name]" id="book-categories-0-name" value="">
-        <input type="tel" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="file" name="book[categories][][name]" id="book-categories-0-name">
-        <input type="number" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="range" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="search" name="book[categories][][name]" id="book-categories-0-name" value="foo">
-        <input type="radio" name="book[categories][][name]" value="Fiction">
-        <input type="password" name="book[categories][][name]" id="book-categories-0-name" value="">
-        <input type="text" name="book[categories][][name]" id="book-categories-0-name" value="foo" list="books">
-        <datalist id="books">
-        <option value="Italy"></option>
-        <option value="United States"></option>
-        </datalist>
+      expected = <<~HTML
+        <form action="/books" accept-charset="utf-8" method="POST">
+          <input type="text" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="hidden" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <textarea name="book[categories][][name]" id="book-categories-0-name">
+          foo</textarea>
+          <input type="hidden" name="book[categories][][new]" value="0"><input type="checkbox" name="book[categories][][new]" id="book-categories-0-new" value="1" checked="checked">
+          <select name="book[categories][][genre]" id="book-categories-0-genre"><option value="terror">Terror</option><option value="comedy">Comedy</option></select>
+          <input type="color" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="date" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="datetime" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="datetime-local" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="time" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="month" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="week" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="email" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="url" name="book[categories][][name]" id="book-categories-0-name" value="">
+          <input type="tel" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="file" name="book[categories][][name]" id="book-categories-0-name">
+          <input type="number" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="range" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="search" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+          <input type="radio" name="book[categories][][name]" value="Fiction">
+          <input type="password" name="book[categories][][name]" id="book-categories-0-name" value="">
+          <input type="text" name="book[categories][][name]" id="book-categories-0-name" value="foo" list="books"><datalist id="books"><option value="Italy"></option><option value="United States"></option></datalist>
         </form>
-      END
+      HTML
 
-      expect(html).to eq(expected.chomp)
+      expect(html).to eq_html(expected)
     end
   end
 
