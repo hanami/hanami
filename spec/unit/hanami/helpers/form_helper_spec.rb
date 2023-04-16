@@ -248,48 +248,64 @@ RSpec.describe Hanami::Helpers::FormHelper do
     end
   end
 
-  xdescribe "#fields_for" do
+  describe "#fields_for" do
     it "renders" do
-      html = h {
-        form_for("/books") do
-          fields_for :categories do
-            text_field :name
+      html = render(<<~ERB)
+        <%= form_for("/books") do |f| %>
+          <% f.fields_for "book.categories" do %>
+            <%= f.text_field :name %>
 
-            fields_for :subcategories do
-              text_field :name
-            end
+            <% f.fields_for :subcategories do %>
+              <%= f.text_field :name %>
+            <% end %>
 
-            text_field :name2
-          end
+            <%= f.text_field :name2 %>
+          <% end %>
 
-          text_field :title
-        end
-      }
+          <%= f.text_field "book.title" %>
+        <% end %>
+      ERB
 
-      expect(html).to eq %(<form action="/books" method="POST" accept-charset="utf-8" id="book-form"><input type="text" name="book[categories][name]" id="book-categories-name" value=""><input type="text" name="book[categories][subcategories][name]" id="book-categories-subcategories-name" value=""><input type="text" name="book[categories][name2]" id="book-categories-name2" value=""><input type="text" name="book[title]" id="book-title" value=""></form>)
+      # TODO: Do we want an id on the form tag still?
+      # <form action="/books" method="POST" accept-charset="utf-8" id="book-form">
+      expect(html).to eq_html <<~HTML
+        <form action="/books" accept-charset="utf-8" method="POST">
+          <input type="text" name="book[categories][name]" id="book-categories-name" value="">
+          <input type="text" name="book[categories][subcategories][name]" id="book-categories-subcategories-name" value="">
+          <input type="text" name="book[categories][name2]" id="book-categories-name2" value="">
+          <input type="text" name="book[title]" id="book-title" value="">
+        </form>
+      HTML
     end
 
     describe "with filled params" do
       let(:params) { {book: {title: "TDD", categories: {name: "foo", name2: "bar", subcategories: {name: "sub"}}}} }
 
       it "renders" do
-        html = h {
-          form_for("/books") do
-            fields_for :categories do
-              text_field :name
+        html = render(<<~ERB)
+          <%= form_for("/books") do |f| %>
+            <% f.fields_for "book.categories" do %>
+              <%= f.text_field :name %>
 
-              fields_for :subcategories do
-                text_field :name
-              end
+              <% f.fields_for :subcategories do %>
+                <%= f.text_field :name %>
+              <% end %>
 
-              text_field :name2
-            end
+              <%= f.text_field :name2 %>
+            <% end %>
 
-            text_field :title
-          end
-        }
+            <%= f.text_field "book.title" %>
+          <% end %>
+        ERB
 
-        expect(html).to eq %(<form action="/books" method="POST" accept-charset="utf-8" id="book-form"><input type="text" name="book[categories][name]" id="book-categories-name" value="foo"><input type="text" name="book[categories][subcategories][name]" id="book-categories-subcategories-name" value="sub"><input type="text" name="book[categories][name2]" id="book-categories-name2" value="bar"><input type="text" name="book[title]" id="book-title" value="TDD"></form>)
+        expect(html).to eq_html <<~HTML
+          <form action="/books" accept-charset="utf-8" method="POST">
+            <input type="text" name="book[categories][name]" id="book-categories-name" value="foo">
+            <input type="text" name="book[categories][subcategories][name]" id="book-categories-subcategories-name" value="sub">
+            <input type="text" name="book[categories][name2]" id="book-categories-name2" value="bar">
+            <input type="text" name="book[title]" id="book-title" value="TDD">
+          </form>
+        HTML
       end
     end
   end

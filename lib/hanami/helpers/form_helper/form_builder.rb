@@ -82,6 +82,16 @@ module Hanami
         include Hanami::View::Helpers::EscapeHelper
         include Hanami::View::Helpers::TagHelper
 
+        # @api private
+        # @since 2.0.0
+        attr_reader :base_name
+        private :base_name
+
+        # @api private
+        # @since 2.0.0
+        attr_reader :inflector
+        private :inflector
+
         # Instantiate a new form builder
         #
         # @param html [Hanami::Helpers::HtmlHelper::HtmlBuilder] an HTML builder
@@ -94,12 +104,23 @@ module Hanami
         #
         # @api private
         # @since 2.0.0
-        def initialize(inflector:, values: Values.new)
-          super()
-
+        def initialize(inflector:, base_name: nil, values: Values.new)
+          @base_name = base_name
           @values = values
           @inflector = inflector
         end
+
+        # @api public
+        # @since 2.0.0
+        def fields_for(name)
+          prev_base_name = @base_name
+          @base_name = [@base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
+
+          yield
+        ensure
+          @base_name = prev_base_name
+        end
+
 
         # @api private
         # @since 2.0.0
@@ -1367,10 +1388,6 @@ module Hanami
 
         # @api private
         # @since 2.0.0
-        attr_reader :inflector
-
-        # @api private
-        # @since 2.0.0
         def _form_method(attributes)
           attributes[:method] ||= DEFAULT_METHOD
           attributes[:method] = attributes[:method].to_s.upcase
@@ -1413,15 +1430,14 @@ module Hanami
         # @api private
         # @since 2.0.0
         def _input_name(name)
-          token, *tokens = name.split(INPUT_NAME_SEPARATOR)
+          token, *tokens = [*base_name.to_s.split(INPUT_NAME_SEPARATOR), *name.to_s.split(INPUT_NAME_SEPARATOR)].compact
           result = String.new(token)
 
           tokens.each do |t|
-            result << "["
-            result << t
+            result << "[#{t}]"
           end
 
-          result << ("]" * tokens.size)
+          # result << ("]" * tokens.size)
 
           result
         end
@@ -1431,7 +1447,7 @@ module Hanami
         # @api private
         # @since 2.0.0
         def _input_id(name)
-          name.tr("._", "-")
+          [base_name, name].compact.join(INPUT_NAME_SEPARATOR).to_s.tr("._", "-")
         end
 
         # Input <tt>value</tt> HTML attribute
