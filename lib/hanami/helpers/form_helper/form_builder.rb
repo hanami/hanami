@@ -101,6 +101,8 @@ module Hanami
           @inflector = inflector
         end
 
+        # @api private
+        # @since 2.0.0
         def call(content, **attributes)
           attributes["accept-charset"] ||= DEFAULT_CHARSET
 
@@ -1395,7 +1397,7 @@ module Hanami
         # Return a set of default HTML attributes
         #
         # @api private
-        # @since 0.2.0
+        # @since 2.0.0
         def _attributes(type, name, attributes)
           input_name = _input_name(name)
 
@@ -1409,7 +1411,7 @@ module Hanami
         # attributes.
         #
         # @api private
-        # @since 0.2.0
+        # @since 2.0.0
         def _input_name(name)
           token, *tokens = name.split(INPUT_NAME_SEPARATOR)
           result = String.new(token)
@@ -1427,7 +1429,7 @@ module Hanami
         # Input <tt>id</tt> HTML attribute
         #
         # @api private
-        # @since 0.2.0
+        # @since 2.0.0
         def _input_id(name)
           name.tr("._", "-")
         end
@@ -1435,7 +1437,7 @@ module Hanami
         # Input <tt>value</tt> HTML attribute
         #
         # @api private
-        # @since 0.2.0
+        # @since 2.0.0
         def _value(name)
           _value_from_input_name(_input_name(name))
         end
@@ -1443,7 +1445,7 @@ module Hanami
         # Input <tt>value</tt> HTML attribute
         #
         # @api private
-        # @since 0.2.0
+        # @since 2.0.0
         def _value_from_input_name(input_name)
           @values.get(
             *input_name.split(/[\[\]]+/).map(&:to_sym)
@@ -1453,7 +1455,7 @@ module Hanami
         # Input <tt>for</tt> HTML attribute
         #
         # @api private
-        # @since 0.2.0
+        # @since 2.0.0
         def _for(content, name)
           _input_id(name || content)
         end
@@ -1461,7 +1463,7 @@ module Hanami
         # Hidden field for check box
         #
         # @api private
-        # @since 0.2.0
+        # @since 2.0.0
         #
         # @see Hanami::Helpers::FormHelper::FormBuilder#check_box
         def _hidden_field_for_check_box(name, attributes)
@@ -1477,7 +1479,7 @@ module Hanami
         # HTML attributes for check box
         #
         # @api private
-        # @since 0.2.0
+        # @since 2.0.0
         #
         # @see Hanami::Helpers::FormHelper::FormBuilder#check_box
         def _attributes_for_check_box(name, attributes)
