@@ -29,7 +29,7 @@ module Hanami
       ROUTER_PARAMS = "router.params"
       private_constant :ROUTER_PARAMS
 
-      CONTENT_LENGTH = "Content-Length"
+      CONTENT_LENGTH = "CONTENT_LENGTH"
       private_constant :CONTENT_LENGTH
 
       MILISECOND = "ms"
