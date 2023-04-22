@@ -706,7 +706,7 @@ module Hanami
         #   <input type="file" name="user[resume]" id="user-resume" multiple="multiple">
         def file_field(name, **attributes)
           attributes[:accept] = Array(attributes[:accept]).join(ACCEPT_SEPARATOR) if attributes.key?(:accept)
-          attributes = {type: :file, name: _input_name(name), id: _input_id(name)}.merge(attributes)
+          attributes = {type: :file, name: _input_name(name), id: _input_id(name), **attributes}
 
           input(**attributes)
         end
@@ -829,7 +829,7 @@ module Hanami
             content    = nil
           end
 
-          attributes = {name: _input_name(name), id: _input_id(name)}.merge(attributes)
+          attributes = {name: _input_name(name), id: _input_id(name), **attributes}
           tag.textarea(content || _value(name), **attributes)
         end
 
@@ -941,7 +941,7 @@ module Hanami
         #   <input type="radio" name="book[category]" value="Fiction">
         #   <input type="radio" name="book[category]" value="Non-Fiction" checked>
         def radio_button(name, value, **attributes)
-          attributes = {type: :radio, name: _input_name(name), value: value}.merge(attributes)
+          attributes = {type: :radio, name: _input_name(name), value: value, **attributes}
           attributes[:checked] = true if _value(name).to_s == value.to_s
 
           input(**attributes)
@@ -963,7 +963,7 @@ module Hanami
         #   <!-- output -->
         #   <input type="password" name="signup[password]" id="signup-password" value="">
         def password_field(name, **attributes)
-          attrs = {type: :password, name: _input_name(name), id: _input_id(name), value: nil}.merge(attributes)
+          attrs = {type: :password, name: _input_name(name), id: _input_id(name), value: nil, **attributes}
           attrs[:value] = EMPTY_STRING if attrs[:value].nil?
 
           input(**attrs)
@@ -1221,7 +1221,7 @@ module Hanami
             output << tag.datalist(**datalist) {
               (+"").tap { |inner|
                 values.each do |value, content|
-                  inner << tag.option(content, **{value: value}.merge(options))
+                  inner << tag.option(content, value: value, **options)
                 end
               }.html_safe
             }
@@ -1361,7 +1361,7 @@ module Hanami
             content = nil
           end
 
-          attributes = {type: :submit}.merge(attributes)
+          attributes = {type: :submit, **attributes}
           tag.button(content, **attributes, &blk)
         end
 
@@ -1496,8 +1496,9 @@ module Hanami
             type: :checkbox,
             name: _input_name(name),
             id: _input_id(name),
-            value: (attributes.delete(:checked_value) || DEFAULT_CHECKED_VALUE).to_s
-          }.merge(attributes)
+            value: (attributes.delete(:checked_value) || DEFAULT_CHECKED_VALUE).to_s,
+            **attributes
+          }
 
           attributes[:checked] = true if _check_box_checked?(attributes[:value], _value(name))
 
