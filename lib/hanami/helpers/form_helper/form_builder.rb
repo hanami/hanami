@@ -1122,7 +1122,7 @@ module Hanami
         #     ...
         #     <option value="zw">Zimbabwe</option>
         #   </select>
-        def select(name, values, **attributes)
+        def select(name, values, **attributes) # rubocop:disable Metrics/AbcSize
           options     = attributes.delete(:options) { {} }
           multiple    = attributes[:multiple]
           attributes  = {name: _select_input_name(name, multiple), id: _input_id(name), **attributes}
