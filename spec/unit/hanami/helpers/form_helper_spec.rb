@@ -21,7 +21,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
   }
 
   let(:request) {
-    Hanami::Action::Request.new(env: rack_request, params: params, sessions_enabled: true)
+    Hanami::Action::Request.new(env: rack_request, params: params, session_enabled: true)
   }
 
   let(:rack_request) {
