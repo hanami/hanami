@@ -1500,7 +1500,7 @@ module Hanami
           input(
             type: :hidden,
             name: attributes[:name] || _displayed_input_name(name),
-            value: attributes.delete(:unchecked_value) || DEFAULT_UNCHECKED_VALUE
+            value: (attributes.delete(:unchecked_value) || DEFAULT_UNCHECKED_VALUE).to_s
           )
         end
 
