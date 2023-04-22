@@ -1520,8 +1520,8 @@ module Hanami
             value.to_s == input_value.to_s
           else
             (value == selected) ||
-              _is_in_selected_values?(multiple, selected, value) ||
               _is_current_value?(input_value, value) ||
+              _is_in_selected_values?(multiple, selected, value) ||
               _is_in_input_values?(multiple, input_value, value)
           end
         end
