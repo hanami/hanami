@@ -596,7 +596,7 @@ module Hanami
         #   <!-- output -->
         #   <input type="url" name="user[website]" id="user-website" value="" class="form-control">
         def url_field(name, **attributes)
-          attrs         = attributes.dup
+          attrs = attributes.dup
           attrs[:value] = sanitize_url(attrs.fetch(:value) { _value(name) })
 
           input(**_attributes(:url, name, attrs))
@@ -826,7 +826,7 @@ module Hanami
         def text_area(name, content = nil, **attributes)
           if content.respond_to?(:to_hash)
             attributes = content
-            content    = nil
+            content = nil
           end
 
           attributes = {name: _input_name(name), id: _input_id(name), **attributes}
@@ -1121,11 +1121,11 @@ module Hanami
         #     <option value="zw">Zimbabwe</option>
         #   </select>
         def select(name, values, **attributes) # rubocop:disable Metrics/AbcSize
-          options     = attributes.delete(:options) { {} }
-          multiple    = attributes[:multiple]
-          attributes  = {name: _select_input_name(name, multiple), id: _input_id(name), **attributes}
-          prompt      = options.delete(:prompt)
-          selected    = options.delete(:selected)
+          options = attributes.delete(:options) { {} }
+          multiple = attributes[:multiple]
+          attributes = {name: _select_input_name(name, multiple), id: _input_id(name), **attributes}
+          prompt = options.delete(:prompt)
+          selected = options.delete(:selected)
           input_value = _value(name)
 
           option_tags = []
@@ -1209,8 +1209,8 @@ module Hanami
         #     <option value="United States" class="form-control"></option>
         #   </datalist>
         def datalist(name, values, list, **attributes)
-          attrs    = attributes.dup
-          options  = attrs.delete(:options)  || {}
+          attrs = attributes.dup
+          options = attrs.delete(:options) || {}
           datalist = attrs.delete(:datalist) || {}
 
           attrs[:list]  = list
@@ -1306,7 +1306,7 @@ module Hanami
         #   <input name="image" width="50" type="image" src="https://hanamirb.org/assets/button.png">
         def image_button(source, **attributes)
           attributes[:type] = :image
-          attributes[:src]  = sanitize_url(source)
+          attributes[:src] = sanitize_url(source)
 
           input(**attributes)
         end
