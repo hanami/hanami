@@ -27,15 +27,6 @@ module Hanami
         EXCLUDED_CSRF_METHODS = %w[GET].freeze
         private_constant :EXCLUDED_CSRF_METHODS
 
-        # Checked attribute value
-        #
-        # @since 2.0.0
-        # @api private
-        #
-        # @see Hanami::Helpers::FormHelper::FormBuilder#radio_button
-        CHECKED = "checked"
-        private_constant :CHECKED
-
         # Separator for accept attribute of file input
         #
         # @since 2.0.0
@@ -1527,7 +1518,7 @@ module Hanami
             value: (attributes.delete(:checked_value) || DEFAULT_CHECKED_VALUE).to_s
           }.merge(attributes)
 
-          attributes[:checked] = CHECKED if _check_box_checked?(attributes[:value], _value(name))
+          attributes[:checked] = true if _check_box_checked?(attributes[:value], _value(name))
 
           attributes
         end
