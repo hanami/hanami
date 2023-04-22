@@ -10,8 +10,6 @@ module Hanami
       # Form builder
       #
       # @since 2.0.0
-      #
-      # @see Hanami::Helpers::HtmlHelper::HtmlBuilder
       class FormBuilder
         # Set of HTTP methods that are understood by web browsers
         #
@@ -32,7 +30,7 @@ module Hanami
         # @since 2.0.0
         # @api private
         #
-        # @see Hanami::Helpers::FormHelper::FormBuilder#file_input
+        # @see #file_input
         ACCEPT_SEPARATOR = ","
         private_constant :ACCEPT_SEPARATOR
 
@@ -41,7 +39,7 @@ module Hanami
         # @since 2.0.0
         # @api private
         #
-        # @see Hanami::Helpers::FormHelper::FormBuilder#check_box
+        # @see #check_box
         DEFAULT_UNCHECKED_VALUE = "0"
         private_constant :DEFAULT_UNCHECKED_VALUE
 
@@ -50,7 +48,7 @@ module Hanami
         # @since 2.0.0
         # @api private
         #
-        # @see Hanami::Helpers::FormHelper::FormBuilder#check_box
+        # @see #check_box
         DEFAULT_CHECKED_VALUE = "1"
         private_constant :DEFAULT_CHECKED_VALUE
 
@@ -66,7 +64,7 @@ module Hanami
         # @since 2.0.0
         # @api private
         #
-        # @see Hanami::Helpers::FormHelper::FormBuilder#password_field
+        # @see #password_field
         EMPTY_STRING = ""
         private_constant :EMPTY_STRING
 
@@ -788,7 +786,7 @@ module Hanami
         #   %>
         #
         #   <!-- output -->
-        #   <textarea name="user[hobby]" id="user-hobby"></textarea>
+        #   extarea name="user[hobby]" id="user-hobby"></textarea>
         #
         # @example Set content
         #   <%=
@@ -1149,7 +1147,7 @@ module Hanami
         # Datalist input
         #
         # @param name [String] the input name
-        # @param values [Array,Hash] a collection that is transformed into <tt><option></tt> tags.
+        # @param values [Array,Hash] a collection that is transformed into `<option>` tags.
         # @param list [String] the name of list for the text input, it"s also the id of datalist
         # @param attributes [Hash] HTML attributes to pass to the input tag
         #
@@ -1416,8 +1414,6 @@ module Hanami
           [true, values.csrf_token]
         end
 
-        # Return a set of default HTML attributes
-        #
         # @api private
         # @since 2.0.0
         def _attributes(type, name, attributes)
@@ -1432,9 +1428,6 @@ module Hanami
           attrs
         end
 
-        # Full input name, used to construct the input
-        # attributes.
-        #
         # @api private
         # @since 2.0.0
         def _input_name(name)
@@ -1452,16 +1445,12 @@ module Hanami
           result
         end
 
-        # Input <tt>id</tt> HTML attribute
-        #
         # @api private
         # @since 2.0.0
         def _input_id(name)
           [base_name, name].compact.join(INPUT_NAME_SEPARATOR).to_s.tr("._", "-")
         end
 
-        # Input <tt>value</tt> HTML attribute
-        #
         # @api private
         # @since 2.0.0
         def _value(name)
@@ -1478,20 +1467,16 @@ module Hanami
           ].compact
         end
 
-        # Input <tt>for</tt> HTML attribute
-        #
         # @api private
         # @since 2.0.0
         def _for(content, name)
           _input_id(name || content)
         end
 
-        # Hidden field for check box
-        #
         # @api private
         # @since 2.0.0
         #
-        # @see Hanami::Helpers::FormHelper::FormBuilder#check_box
+        # @see #check_box
         def _hidden_field_for_check_box(name, attributes)
           return unless attributes[:value].nil? || !attributes[:unchecked_value].nil?
 
@@ -1502,12 +1487,10 @@ module Hanami
           )
         end
 
-        # HTML attributes for check box
-        #
         # @api private
         # @since 2.0.0
         #
-        # @see Hanami::Helpers::FormHelper::FormBuilder#check_box
+        # @see #check_box
         def _attributes_for_check_box(name, attributes)
           attributes = {
             type: :checkbox,
