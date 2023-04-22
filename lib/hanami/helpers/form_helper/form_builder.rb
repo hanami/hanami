@@ -1131,10 +1131,9 @@ module Hanami
           input_value = _value(name)
 
           option_tags = []
-          already_selected = nil
-
           option_tags << tag.option(prompt, disabled: true) if prompt
 
+          already_selected = nil
           values.each do |content, value|
             if (multiple || !already_selected) &&
                (already_selected = _select_option_selected?(value, selected, input_value, multiple))
