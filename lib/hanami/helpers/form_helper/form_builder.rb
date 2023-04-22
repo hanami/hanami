@@ -1421,13 +1421,11 @@ module Hanami
         # @api private
         # @since 2.0.0
         def _attributes(type, name, attributes)
-          # input_name = _input_name(name)
-
           attrs = {
             type: type,
             name: _displayed_input_name(name),
             id: _input_id(name),
-            value: _value_from_input_name(_input_name(name))
+            value: _value(name)
           }
           attrs.merge!(attributes)
           attrs[:value] = escape_html(attrs[:value])
@@ -1467,17 +1465,17 @@ module Hanami
         # @api private
         # @since 2.0.0
         def _value(name)
-          _value_from_input_name(_input_name(name))
+          # TODO: to_sym should not be necessary here
+          @values.get(*_split_input_name(name).map(&:to_sym))
         end
 
-        # Input <tt>value</tt> HTML attribute
-        #
         # @api private
         # @since 2.0.0
-        def _value_from_input_name(input_name)
-          @values.get(
-            *input_name.split(/[\[\]]+/).map(&:to_sym)
-          )
+        def _split_input_name(name)
+          [
+            *base_name.to_s.split(INPUT_NAME_SEPARATOR),
+            *name.to_s.split(INPUT_NAME_SEPARATOR)
+          ].compact
         end
 
         # Input <tt>for</tt> HTML attribute
