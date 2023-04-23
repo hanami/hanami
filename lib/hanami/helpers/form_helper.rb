@@ -4,80 +4,17 @@ require "hanami/view/helpers/tag_helper"
 
 module Hanami
   module Helpers
-    # Form builder
+    # Helper methods for generating HTML forms.
     #
-    # By including <tt>Hanami::Helpers::FormHelper</tt> it will inject one public method: <tt>form_for</tt>.
-    # This is a HTML5 form builder.
+    # These helpers will be automatically available in your view templates, part classes and scope
+    # classes.
     #
-    # To understand the general HTML5 builder syntax of this framework, please
-    # consider to have a look at <tt>Hanami::Helpers::HtmlHelper</tt> documentation.
+    # This module provides one primary method: {#form_for}, yielding an HTML form builder. This
+    # integrates with request params and template locals to populate the form with appropriate
+    # values.
     #
-    # This builder is independent from any template engine.
-    # This was hard to achieve without a compromise: the form helper should be
-    # used in one output block in a template or as a method in a view (see the examples below).
-    #
-    # Features:
-    #
-    #   * Support for complex markup without the need of concatenation
-    #   * Auto closing HTML5 tags
-    #   * Support for view local variables
-    #   * Method override support (PUT/PATCH/DELETE HTTP verbs aren't understood by browsers)
-    #   * Automatic generation of HTML attributes for inputs: <tt>id</tt>, <tt>name</tt>, <tt>value</tt>
-    #   * Allow to override HTML attributes
-    #   * Extract values from request params and fill <tt>value</tt> attributes
-    #   * Automatic selection of current value for radio button and select inputs
-    #   * Infinite nested fields
-    #
-    # Supported tags and inputs:
-    #
-    #   * <tt>check_box</tt>
-    #   * <tt>color_field</tt>
-    #   * <tt>date_field</tt>
-    #   * <tt>datetime_field</tt>
-    #   * <tt>datetime_local_field</tt>
-    #   * <tt>email_field</tt>
-    #   * <tt>fields_for</tt>
-    #   * <tt>file_field</tt>
-    #   * <tt>form_for</tt>
-    #   * <tt>hidden_field</tt>
-    #   * <tt>label</tt>
-    #   * <tt>number_field</tt>
-    #   * <tt>password_field</tt>
-    #   * <tt>radio_button</tt>
-    #   * <tt>select</tt>
-    #   * <tt>submit</tt>
-    #   * <tt>text_area</tt>
-    #   * <tt>text_field</tt>
-    #
+    # @api public
     # @since 2.0.0
-    #
-    # @see Hanami::Helpers::FormHelper#form_for
-    # @see Hanami::Helpers::HtmlHelper
-    #
-    # @example One output block (template)
-    #   <%=
-    #     form_for :book, routes.books_path do
-    #       text_field :title
-    #
-    #       submit 'Create'
-    #     end
-    #   %>
-    #
-    # @example Method (view)
-    #   require 'hanami/helpers'
-    #
-    #   class MyView
-    #     include Hanami::Helpers::FormHelper
-    #
-    #     def my_form
-    #       form_for :book, routes.books_path do
-    #         text_field :title
-    #       end
-    #     end
-    #   end
-    #
-    #   <!-- use this in the template -->
-    #   <%= my_form %>
     module FormHelper
       require_relative "form_helper/form_builder"
 
@@ -103,38 +40,35 @@ module Hanami
 
       include Hanami::View::Helpers::TagHelper
 
-      # Instantiate a HTML5 form builder
+      # Yields a form builder for constructing an HTML form and returns the resulting form string.
       #
-      # @param name [Symbol] the toplevel name of the form, it's used to generate
-      #   input names, ids, and to lookup params to fill values.
-      # @param url [String] the form action URL
-      # @param values [Hash] An optional data payload to fill in form values
-      #   It is passed automatically by Hanami, using view's `locals`
-      # @option attributes [Hash] HTML attributes to pass to the form tag and form values
-      # @param blk [Proc] A block that describes the contents of the form
+      # See {FormHelper::FormBuilder} for the methods for building the form's fields.
       #
-      # @return [Hanami::Helpers::FormHelper::FormBuilder] the form builder
+      # @param url [String] the URL for submitting the form
+      # @param values [Hash] values to be used for populating form field values; optional, defaults
+      #   to the template's locals or to a part's `{name => self}`
+      # @param params [Hash] request param values to be used for populating form field values; these
+      #   are used in preference over the `values`; optional, defaults to the current request's
+      #   params
+      # @param attributes [Hash] the HTML attributes for the form tag
+      # @yieldparam [FormHelper::FormBuilder] f the form builder
       #
-      # @since 2.0.0
+      # @return [String] the form HTML
       #
-      # @see Hanami::Helpers::FormHelper
-      # @see Hanami::Helpers::FormHelper::Form
-      # @see Hanami::Helpers::FormHelper::FormBuilder
+      # @see FormHelper
+      # @see FormHelper::FormBuilder
       #
-      # @example Inline Values In Template
-      #   <%= form_for(routes.books_path, class: "form-horizontal") do |f| %>
+      # @example
+      #   <%= form_for("/books", class: "form-horizontal") do |f| %>
       #     <div>
       #       <%= f.label "book.title" %>
       #       <%= f.text_field "book.title", class: "form-control" %>
       #     </div>
       #
-      #     <div>
-      #       <%= f.submit "Create" %>
-      #     </div>
+      #     <%= f.submit "Create" %>
       #   <% end %>
       #
-      #   <!-- output -->
-      #
+      #   =>
       #   <form action="/books" method="POST" accept-charset="utf-8" class="form-horizontal">
       #     <input type="hidden" name="_csrf_token" value="920cd5bfaecc6e58368950e790f2f7b4e5561eeeab230aa1b7de1b1f40ea7d5d">
       #     <div>
@@ -145,52 +79,14 @@ module Hanami
       #     <button type="submit">Create</button>
       #   </form>
       #
-      #
-      #
-      # @example Use In A View
-      #
-      #   module Web::Views::Books
-      #     class New
-      #
-      #     def form
-      #       form_for :book, routes.books_path, class: 'form-horizontal' do
-      #         div do
-      #           label      :title
-      #           text_field :title, class: 'form-control'
-      #         end
-      #
-      #         submit 'Create'
-      #       end
-      #     end
-      #   end
-      #
-      #   <!-- in the corresponding template use this -->
-      #   <%= form %>
-      #
-      #   <!-- output -->
-      #
-      #   <form action="/books" method="POST" accept-charset="utf-8" id="book-form" class="form-horizontal">
-      #     <input type="hidden" name="_csrf_token" value="920cd5bfaecc6e58368950e790f2f7b4e5561eeeab230aa1b7de1b1f40ea7d5d">
-      #     <div>
-      #       <label for="book-title">Title</label>
-      #       <input type="text" name="book[title]" id="book-title" value="Test Driven Development">
-      #     </div>
-      #
-      #     <button type="submit">Create</button>
-      #   </form>
-      #
       # @example Method override
-      #   <%=
-      #     form_for(routes.book_path(id: book.id), method: :put) do |f|
-      #       f.text_field "book.title"
+      #   <%= form_for("/books/123", method: :put) do |f|
+      #     <%= f.text_field "book.title" %>
+      #     <%= f.submit "Update" %>
+      #   <% end %>
       #
-      #       f.submit "Update"
-      #     end
-      #   %>
-      #
-      #   <!-- output -->
-      #
-      #   <form action="/books/23" accept-charset="utf-8" id="book-form" method="POST">
+      #   =>
+      #   <form action="/books/123" accept-charset="utf-8" id="book-form" method="POST">
       #     <input type="hidden" name="_method" value="PUT">
       #     <input type="hidden" name="_csrf_token" value="920cd5bfaecc6e58368950e790f2f7b4e5561eeeab230aa1b7de1b1f40ea7d5d">
       #     <input type="text" name="book[title]" id="book-title" value="Test Driven Development">
@@ -198,44 +94,22 @@ module Hanami
       #     <button type="submit">Update</button>
       #   </form>
       #
-      # @example Nested fields
-      #   <%=
-      #     form_for routes.deliveries_path do |f|
-      #       f.text_field "delivery.customer_name"
+      # @example Overriding values
+      #   <%= form_for("/songs", values: {song: {title: "Envision"}}) do |f| %>
+      #     <%= f.text_field "song.title" %>
+      #     <%= f.submit "Create" %>
+      #   <%= end %>
       #
-      #       f.text_field "delivery.address.city"
-      #
-      #       f.submit "Create"
-      #     end
-      #   %>
-      #
-      #   <!-- output -->
-      #
-      #   <form action="/deliveries" accept-charset="utf-8" id="delivery-form" method="POST">
-      #     <input type="hidden" name="_csrf_token" value="920cd5bfaecc6e58368950e790f2f7b4e5561eeeab230aa1b7de1b1f40ea7d5d">
-      #     <input type="text" name="delivery[customer_name]" id="delivery-customer-name" value="">
-      #     <input type="text" name="delivery[address][city]" id="delivery-address-city" value="">
-      #
-      #     <button type="submit">Create</button>
-      #   </form>
-      #
-      # @example Override params
-      #   <%=
-      #     form_for(routes.songs_path, values: {params:{song:{title: "Envision"}}}) do |f|
-      #       f.text_field "song.title"
-      #
-      #       f.submit "Create"
-      #     end
-      #   %>
-      #
-      #   <!-- output -->
-      #
+      #   =>
       #   <form action="/songs" accept-charset="utf-8" method="POST">
       #     <input type="hidden" name="_csrf_token" value="920cd5bfaecc6e58368950e790f2f7b4e5561eeeab230aa1b7de1b1f40ea7d5d">
       #     <input type="text" name="song[title]" id="song-title" value="Envision">
       #
       #     <button type="submit">Create</button>
       #   </form>
+      #
+      # @api public
+      # @since 2.0.0
       def form_for(url, values: _form_for_values, params: _form_for_params, **attributes)
         attributes[:action] = url
 
@@ -245,6 +119,26 @@ module Hanami
         content = (block_given? ? yield(builder) : "").html_safe
 
         builder.call(content, **attributes)
+      end
+
+      # Returns CSRF meta tags for use via unobtrusive JavaScript (UJS) libraries.
+      #
+      # @return [String, nil] the tags, if a CSRF token is available, or nil
+      #
+      # @example
+      #   csrf_meta_tags
+      #
+      #   =>
+      #   <meta name="csrf-param" content="_csrf_token">
+      #   <meta name="csrf-token" content="4a038be85b7603c406dcbfad4b9cdf91ec6ca138ed6441163a07bb0fdfbe25b5">
+      #
+      # @api public
+      # @since 2.0.0
+      def csrf_meta_tags
+        return unless (token = _form_csrf_token)
+
+        tag.meta(name: "csrf-param", content: CSRF_TOKEN) +
+          tag.meta(name: "csrf-token", content: token)
       end
 
       # @api private
@@ -263,36 +157,6 @@ module Hanami
       # @since 2.0.0
       def _form_for_params
         _context.request.params
-      end
-
-      # Prints CSRF meta tags for Unobtrusive JavaScript (UJS) purposes.
-      #
-      # @return [Hanami::Helpers::HtmlHelper::HtmlBuilder,NilClass] the tags if `csrf_token` is not `nil`
-      #
-      # @since 2.0.0
-      #
-      # @example
-      #   <html>
-      #     <head>
-      #       <!-- ... -->
-      #       <%= csrf_meta_tags %>
-      #     </head>
-      #     <!-- ... -->
-      #   </html>
-      #
-      #   <html>
-      #     <head>
-      #       <!-- ... -->
-      #       <meta name="csrf-param" content="_csrf_token">
-      #       <meta name="csrf-token" content="4a038be85b7603c406dcbfad4b9cdf91ec6ca138ed6441163a07bb0fdfbe25b5">
-      #     </head>
-      #     <!-- ... -->
-      #   </html>
-      def csrf_meta_tags
-        return unless (token = _form_csrf_token)
-
-        tag.meta(name: "csrf-param", content: CSRF_TOKEN) +
-          tag.meta(name: "csrf-token", content: token)
       end
 
       # @since 2.0.0

@@ -7,10 +7,12 @@ require_relative "values"
 module Hanami
   module Helpers
     module FormHelper
-      # Form builder
+      # A range of convenient methods for building the fields within an HTML form, integrating with
+      # request params and template locals to populate the fields with appropriate values.
       #
       # @see FormHelper#form_for
       #
+      # @api public
       # @since 2.0.0
       class FormBuilder
         # Set of HTTP methods that are understood by web browsers
