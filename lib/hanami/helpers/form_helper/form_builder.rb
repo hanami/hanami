@@ -598,10 +598,9 @@ module Hanami
         #   <!-- output -->
         #   <input type="url" name="user[website]" id="user-website" value="" class="form-control">
         def url_field(name, **attributes)
-          attrs = attributes.dup
-          attrs[:value] = sanitize_url(attrs.fetch(:value) { _value(name) })
+          attributes[:value] = sanitize_url(attributes.fetch(:value) { _value(name) })
 
-          input(**_attributes(:url, name, attrs))
+          input(**_attributes(:url, name, attributes))
         end
 
         # Telephone input
@@ -1211,15 +1210,14 @@ module Hanami
         #     <option value="United States" class="form-control"></option>
         #   </datalist>
         def datalist(name, values, list, **attributes)
-          attrs = attributes.dup
-          options = attrs.delete(:options) || {}
-          datalist = attrs.delete(:datalist) || {}
+          options = attributes.delete(:options) || {}
+          datalist = attributes.delete(:datalist) || {}
 
-          attrs[:list]  = list
+          attributes[:list] = list
           datalist[:id] = list
 
           (+"").tap { |output|
-            output << text_field(name, **attrs)
+            output << text_field(name, **attributes)
             output << tag.datalist(**datalist) {
               (+"").tap { |inner|
                 values.each do |value, content|
