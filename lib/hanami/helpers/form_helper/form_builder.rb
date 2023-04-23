@@ -203,14 +203,16 @@ module Hanami
         #     <abbr title="optional" aria-label="optional">*</abbr>
         #   </label>
         def label(content = nil, **attributes, &blk)
+        def label(content = nil, **attributes, &block)
           for_attribute_given = attributes.key?(:for)
 
-          attributes[:for] = _for(content, attributes[:for])
+          attributes[:for] = _input_id(attributes[:for] || content)
+
           if content && !for_attribute_given
             content = inflector.humanize(content.split(INPUT_NAME_SEPARATOR).last)
           end
 
-          tag.label(content, **attributes, &blk)
+          tag.label(content, **attributes, &block)
         end
 
         # Fieldset
@@ -1465,12 +1467,6 @@ module Hanami
             *base_name.to_s.split(INPUT_NAME_SEPARATOR),
             *name.to_s.split(INPUT_NAME_SEPARATOR)
           ].compact
-        end
-
-        # @api private
-        # @since 2.0.0
-        def _for(content, name)
-          _input_id(name || content)
         end
 
         # @api private
