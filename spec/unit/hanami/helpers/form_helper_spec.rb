@@ -51,22 +51,22 @@ RSpec.describe Hanami::Helpers::FormHelper do
     it "allows to assign 'id' attribute" do
       html = form_for("/books", id: "book-form")
 
-      expect(html).to eq %(<form id="book-form" action="/books" accept-charset="utf-8" method="POST"></form>)
+      expect(html).to eq %(<form action="/books" id="book-form" accept-charset="utf-8" method="POST"></form>)
     end
 
     it "allows to override 'method' attribute ('get')" do
       html = form_for("/books", method: "get")
-      expect(html).to eq %(<form method="GET" action="/books" accept-charset="utf-8"></form>)
+      expect(html).to eq %(<form action="/books" method="GET" accept-charset="utf-8"></form>)
     end
 
     it "allows to override 'method' attribute (:get)" do
       html = form_for("/books", method: :get)
-      expect(html).to eq %(<form method="GET" action="/books" accept-charset="utf-8"></form>)
+      expect(html).to eq %(<form action="/books" method="GET" accept-charset="utf-8"></form>)
     end
 
     it "allows to override 'method' attribute ('GET')" do
       html = form_for("/books", method: "GET")
-      expect(html).to eq %(<form method="GET" action="/books" accept-charset="utf-8"></form>)
+      expect(html).to eq %(<form action="/books" method="GET" accept-charset="utf-8"></form>)
     end
 
     %i[patch put delete].each do |verb|
@@ -75,16 +75,38 @@ RSpec.describe Hanami::Helpers::FormHelper do
           f.text_field "book.title"
         end
 
-        expect(html).to eq %(<form method="POST" action="/books" accept-charset="utf-8"><input type="hidden" name="_method" value="#{verb.to_s.upcase}"><input type="text" name="book[title]" id="book-title" value=""></form>)
+        expect(html).to eq %(<form action="/books" method="POST" accept-charset="utf-8"><input type="hidden" name="_method" value="#{verb.to_s.upcase}"><input type="text" name="book[title]" id="book-title" value=""></form>)
       end
     end
 
     it "allows to specify HTML attributes" do
       html = form_for("/books", class: "form-horizonal")
-      expect(html).to eq %(<form class="form-horizonal" action="/books" accept-charset="utf-8" method="POST"></form>)
+      expect(html).to eq %(<form action="/books" class="form-horizonal" accept-charset="utf-8" method="POST"></form>)
     end
 
     context "input name" do
+      it "sets a base name" do
+        expected_html = <<~HTML
+          <form action="/books" accept-charset="utf-8" method="POST">
+            <input type="text" name="book[author][avatar][url]" id="book-author-avatar-url" value="">
+          </form>
+        HTML
+
+        html = form_for("book", "/books") do |f|
+          f.text_field("author.avatar.url")
+        end
+
+        expect(html).to eq_html expected_html
+
+        html = form_for("book", "/books") do |f|
+          f.fields_for("author.avatar") do
+            f.text_field("url")
+          end
+        end
+
+        expect(html).to eq_html expected_html
+      end
+
       it "renders nested field names" do
         html = form_for("/books") do |f|
           f.text_field "book.author.avatar.url"
@@ -179,14 +201,14 @@ RSpec.describe Hanami::Helpers::FormHelper do
       context "with csrf_token on get verb" do
         it "doesn't inject hidden field" do
           html = form_for("/books", method: "GET")
-          expect(html).to eq %(<form method="GET" action="/books" accept-charset="utf-8"></form>)
+          expect(html).to eq %(<form action="/books" method="GET" accept-charset="utf-8"></form>)
         end
       end
 
       %i[patch put delete].each do |verb|
-        it "it injects hidden field when Method Override (#{verb}) is active" do
+        it "it injects hidden field when method override (#{verb}) is active" do
           html = form_for("/books", method: verb)
-          expect(html).to eq %(<form method="POST" action="/books" accept-charset="utf-8"><input type="hidden" name="_method" value="#{verb.to_s.upcase}"><input type="hidden" name="_csrf_token" value="#{csrf_token}"></form>)
+          expect(html).to eq %(<form action="/books" method="POST" accept-charset="utf-8"><input type="hidden" name="_method" value="#{verb.to_s.upcase}"><input type="hidden" name="_csrf_token" value="#{csrf_token}"></form>)
         end
       end
     end
@@ -219,12 +241,12 @@ RSpec.describe Hanami::Helpers::FormHelper do
     context "remote: true" do
       it "adds data-remote=true to form attributes" do
         html = form_for("/books", "data-remote": true)
-        expect(html).to eq %(<form data-remote="true" action="/books" accept-charset="utf-8" method="POST"></form>)
+        expect(html).to eq %(<form action="/books" data-remote="true" accept-charset="utf-8" method="POST"></form>)
       end
 
       it "adds data-remote=false to form attributes" do
         html = form_for("/books", "data-remote": false)
-        expect(html).to eq %(<form data-remote="false" action="/books" accept-charset="utf-8" method="POST"></form>)
+        expect(html).to eq %(<form action="/books" data-remote="false" accept-charset="utf-8" method="POST"></form>)
       end
 
       it "adds data-remote= to form attributes" do

@@ -44,25 +44,61 @@ module Hanami
       #
       # See {FormHelper::FormBuilder} for the methods for building the form's fields.
       #
-      # @param url [String] the URL for submitting the form
-      # @param values [Hash] values to be used for populating form field values; optional, defaults
-      #   to the template's locals or to a part's `{name => self}`
-      # @param params [Hash] request param values to be used for populating form field values; these
-      #   are used in preference over the `values`; optional, defaults to the current request's
-      #   params
-      # @param attributes [Hash] the HTML attributes for the form tag
-      # @yieldparam [FormHelper::FormBuilder] f the form builder
+      # @overload form_for(base_name, url, values: _form_for_values, params: _form_for_params, **attributes)
+      #   Builds the form using the given base name for all fields.
+      #
+      #   @param base_name [String] the base
+      #   @param url [String] the URL for submitting the form
+      #   @param values [Hash] values to be used for populating form field values; optional,
+      #     defaults to the template's locals or to a part's `{name => self}`
+      #   @param params [Hash] request param values to be used for populating form field values;
+      #     these are used in preference over the `values`; optional, defaults to the current
+      #     request's params
+      #   @param attributes [Hash] the HTML attributes for the form tag
+      #   @yieldparam [FormHelper::FormBuilder] f the form builder
+      #
+      # @overload form_for(url, values: _form_for_values, params: _form_for_params, **attributes)
+      #   @param url [String] the URL for submitting the form
+      #   @param values [Hash] values to be used for populating form field values; optional,
+      #     defaults to the template's locals or to a part's `{name => self}`
+      #   @param params [Hash] request param values to be used for populating form field values;
+      #     these are used in preference over the `values`; optional, defaults to the current
+      #     request's params
+      #   @param attributes [Hash] the HTML attributes for the form tag
+      #   @yieldparam [FormHelper::FormBuilder] f the form builder
       #
       # @return [String] the form HTML
       #
       # @see FormHelper
       # @see FormHelper::FormBuilder
       #
-      # @example
+      # @example Basic usage
+      #   <%= form_for("book", "/books", class: "form-horizontal") do |f| %>
+      #     <div>
+      #       <%= f.label "title" %>
+      #       <%= f.text_field "title", class: "form-control" %>
+      #     </div>
+      #
+      #     <%= f.submit "Create" %>
+      #   <% end %>
+      #
+      #   =>
+      #   <form action="/books" method="POST" accept-charset="utf-8" class="form-horizontal">
+      #     <input type="hidden" name="_csrf_token" value="920cd5bfaecc6e58368950e790f2f7b4e5561eeeab230aa1b7de1b1f40ea7d5d">
+      #     <div>
+      #       <label for="book-title">Title</label>
+      #       <input type="text" name="book[title]" id="book-title" value="Test Driven Development">
+      #     </div>
+      #
+      #     <button type="submit">Create</button>
+      #   </form>
+      #
+      # @example Without base name
+      #
       #   <%= form_for("/books", class: "form-horizontal") do |f| %>
       #     <div>
-      #       <%= f.label "book.title" %>
-      #       <%= f.text_field "book.title", class: "form-control" %>
+      #       <%= f.label "books.title" %>
+      #       <%= f.text_field "books.title", class: "form-control" %>
       #     </div>
       #
       #     <%= f.submit "Create" %>
@@ -110,15 +146,15 @@ module Hanami
       #
       # @api public
       # @since 2.0.0
-      def form_for(url, values: _form_for_values, params: _form_for_params, **attributes)
-        attributes[:action] = url
+      def form_for(base_name, url = nil, values: _form_for_values, params: _form_for_params, **attributes)
+        url, base_name = base_name, nil if url.nil?
 
         values = Values.new(values: values, params: params, csrf_token: _form_csrf_token)
-        builder = FormBuilder.new(values: values, inflector: _context.inflector)
+        builder = FormBuilder.new(base_name: base_name, values: values, inflector: _context.inflector)
 
         content = (block_given? ? yield(builder) : "").html_safe
 
-        builder.call(content, **attributes)
+        builder.call(content, action: url, **attributes)
       end
 
       # Returns CSRF meta tags for use via unobtrusive JavaScript (UJS) libraries.
