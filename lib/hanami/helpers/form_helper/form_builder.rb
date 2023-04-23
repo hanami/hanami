@@ -9,6 +9,8 @@ module Hanami
     module FormHelper
       # Form builder
       #
+      # @see FormHelper#form_for
+      #
       # @since 2.0.0
       class FormBuilder
         # Set of HTTP methods that are understood by web browsers
@@ -81,15 +83,15 @@ module Hanami
         attr_reader :inflector
         private :inflector
 
-        # Instantiate a new form builder
+        # Returns a new form builder.
         #
-        # @param html [Hanami::Helpers::HtmlHelper::HtmlBuilder] an HTML builder
-        # @param values [Hanami::Helpers::HtmlHelper::Values] form values
-        # @param inflector [Dry::Inflector] string inflector
-        # @param attributes [Hash] HTML attributes for the `<form>` tag
-        # @param blk [Proc] the block to build the form
+        # @param inflector [Dry::Inflector] the app inflector
+        # @param base_name [String, nil] the base name to use for all fields in the form
+        # @param values [Hanami::Helpers::FormHelper::Values] the values for the form
         #
-        # @return [Hanami::Helpers::FormHelper::FormBuilder]
+        # @return [self]
+        #
+        # @see Hanami::Helpers::FormHelper#form_for
         #
         # @api private
         # @since 2.0.0
@@ -97,32 +99,6 @@ module Hanami
           @base_name = base_name
           @values = values
           @inflector = inflector
-        end
-
-        # @api public
-        # @since 2.0.0
-        def fields_for(name, value = nil)
-          prev_base_name = @base_name
-          @base_name = [@base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
-
-          yield(name, value)
-        ensure
-          @base_name = prev_base_name
-        end
-
-        # @api public
-        # @since 2.0.0
-        def fields_for_collection(name, &block)
-          collection = _value(name)
-
-          prev_base_name = @base_name
-          @base_name = [@base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
-
-          collection.each_with_index do |value, index|
-            fields_for(index, value, &block)
-          end
-        ensure
-          @base_name = prev_base_name
         end
 
         # @api private
@@ -142,67 +118,164 @@ module Hanami
           end
         end
 
-        # Label tag
+        # Applies the base input name to all fields within the given block.
         #
-        # The first param (`content`) MUST be a `String` that indicates the
-        # target field (e.g. `"book.extended_title"`).
+        # This can be helpful when generating a set of nested fields.
         #
-        # @param content [String] the field name
-        # @param attributes [Hash] HTML attributes to pass to the label tag
+        # This is a convenience only. You can achieve the same result by including the base name at
+        # the beginning of each input name.
         #
-        # @since 2.0.0
+        # @param name [String] the base name to be used for all fields in the block
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.label "book.extended_title"
-        #   %>
+        #   <% f.fields_for "address" %>
+        #     <%= f.text_field "street" %>
+        #     <%= f.text_field "suburb" %>
+        #   <% end %>
         #
-        #   <!-- output -->
-        #   <label for="book-extended-title">Extended title</label>
+        #   # A convenience for:
+        #   # <%= f.text_field "address.street" %>
+        #   # <%= f.text_field "address.suburb" %>
         #
-        # @example HTML attributes
-        #   <%=
-        #     # ...
-        #     f.label "book.title", class: "form-label"
-        #   %>
+        #   =>
+        #   <input type="text" name="delivery[customer_name]" id="delivery-customer-name" value="">
+        #   <input type="text" name="delivery[address][street]" id="delivery-address-street" value="">
         #
-        #   <!-- output -->
-        #   <label for="book-title" class="form-label">Title</label>
+        # @example Multiple levels of nesting
+        #   <% f.fields_for "address" %>
+        #     <%= f.text_field "street" %>
         #
-        # @example Custom content
-        #   <%=
-        #     # ...
-        #     f.label "Title", for: "book.extended_title"
-        #   %>
+        #     <% f.fields_for "location" %>
+        #       <%= f.text_field "city" %>
+        #     <% end %>
+        #   <% end %>
         #
-        #   <!-- output -->
-        #   <label for="book-extended-title">Title</label>
+        #   =>
+        #   <input type="text" name="delivery[address][street]" id="delivery-address-street" value="">
+        #   <input type="text" name="delivery[address][location][city]" id="delivery-address-location-city" value="">
         #
-        # @example Custom "for" attribute
-        #   <%=
-        #     # ...
-        #     f.label "book.extended_title", for: "ext-title"
-        #   %>
+        # @api public
+        # @since 2.0.0
+        def fields_for(name, value = nil)
+          prev_base_name = @base_name
+          @base_name = [@base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
+
+          yield(name, value)
+        ensure
+          @base_name = prev_base_name
+        end
+
+        # Yields to the given block for each element in the matching collection value, and applies
+        # the base input name to all fields within the block.
         #
-        #   <!-- output -->
-        #   <label for="ext-title">Extended title</label>
+        # Use this whenever generating form fields for an collection of nested fields.
         #
-        # @example Block syntax
-        #   <%=
-        #     # ...
-        #     f.label for: "book.free_shipping" do
-        #       f.text "Free shipping"
-        #       f.abbr "*", title: "optional", "aria-label": "optional"
-        #     end
-        #   %>
+        # @param name [String] the input name, also used as the base input name for all fields
+        #   within the block
+        # @yieldparam [Integer] the index of the iteration over the colletion, starting from zero
+        # @yieldparam [Object] the value of the element from the collection
         #
-        #   <!-- output -->
-        #   <label for="book-free-shipping">
-        #     Free Shipping
-        #     <abbr title="optional" aria-label="optional">*</abbr>
-        #   </label>
-        def label(content = nil, **attributes, &blk)
+        # @example Basic usage
+        #   <% f.fields_for_collection("addresses") do %>
+        #     <%= f.text_field("street") %>
+        #   <% end %>
+        #
+        #   =>
+        #   <input type="text" name="delivery[addresses][][street]" id="delivery-address-0-street" value="">
+        #   <input type="text" name="delivery[addresses][][street]" id="delivery-address-1-street" value="">
+        #
+        # @example Yielding index and value
+        #   <% f.fields_for_collection("bill.addresses") do |i, address| %>
+        #     <div class="form-group">
+        #       Address id: <%= address.id %>
+        #       <%= f.label("street") %>
+        #       <%= f.text_field("street", data: {index: i.to_s}) %>
+        #     </div>
+        #   <% end %>
+        #
+        #   =>
+        #   <div class="form-group">
+        #     Address id: 23
+        #     <label for="bill-addresses-0-street">Street</label>
+        #     <input type="text" name="bill[addresses][][street]" id="bill-addresses-0-street" value="5th Ave" data-index="0">
+        #   </div>
+        #   <div class="form-group">
+        #     Address id: 42
+        #     <label for="bill-addresses-1-street">Street</label>
+        #     <input type="text" name="bill[addresses][][street]" id="bill-addresses-1-street" value="4th Ave" data-index="1">
+        #   </div>
+        #
+        # @api public
+        # @since 2.0.0
+        def fields_for_collection(name, &block)
+          collection = _value(name)
+
+          prev_base_name = @base_name
+          @base_name = [@base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
+
+          collection.each_with_index do |value, index|
+            fields_for(index, value, &block)
+          end
+        ensure
+          @base_name = prev_base_name
+        end
+
+        # Returns a label tag.
+        #
+        # @return [String] the tag
+        #
+        # @overload label(field_name, **attributes)
+        #   Returns a label tag for the given field name, with a humanized version of the field name
+        #   as the tag's content.
+        #
+        #   @param field_name [String] the field name
+        #   @param attributes [Hash] the tag attributes
+        #
+        #   @example
+        #     <%= f.label("book.extended_title") %>
+        #     # => <label for="book-extended-title">Extended title</label>
+        #
+        #   @example HTML attributes
+        #     <%= f.label("book.title", class: "form-label") %>
+        #     # => <label for="book-title" class="form-label">Title</label>
+        #
+        # @overload label(content, **attributes)
+        #   Returns a label tag for the field name given as `for:`, with the given content string as
+        #   the tag's content.
+        #
+        #   @param content [String] the tag's content
+        #   @param for [String] the field name
+        #   @param attributes [Hash] the tag attributes
+        #
+        #   @example
+        #     <%= f.label("Title", for: "book.extended_title") %>
+        #     # => <label for="book-extended-title">Title</label>
+        #
+        #     f.label("book.extended_title", for: "ext-title")
+        #     # => <label for="ext-title">Extended title</label>
+        #
+        # @overload label(field_name, **attributes, &block)
+        #   Returns a label tag for the given field name, with the return value of the given block
+        #   as the tag's content.
+        #
+        #   @param field_name [String] the field name
+        #   @param attributes [Hash] the tag attributes
+        #   @yieldreturn [String] the tag content
+        #
+        #   @example
+        #     <%= f.label for: "book.free_shipping" do %>
+        #       Free shipping
+        #       <abbr title="optional" aria-label="optional">*</abbr>
+        #     <% end %>
+        #
+        #     # =>
+        #     <label for="book-free-shipping">
+        #       Free shipping
+        #       <abbr title="optional" aria-label="optional">*</abbr>
+        #     </label>
+        #
+        # @api public
+        # @since 2.0.0
         def label(content = nil, **attributes, &block)
           for_attribute_given = attributes.key?(:for)
 
@@ -215,133 +288,109 @@ module Hanami
           tag.label(content, **attributes, &block)
         end
 
-        # Fieldset
+        # @overload fieldset(**attributes, &block)
+        #   Returns a fieldset tag.
         #
-        # @param content [String,NilClass] the content
-        # @param attributes [Hash] HTML attributes to pass to the label tag
+        #   @param attributes [Hash] the tag's HTML attributes
+        #   @yieldreturn [String] the tag's content
+        #
+        #   @return [String] the tag
+        #
+        #   @example
+        #     <%= f.fieldset do %>
+        #       <%= f.legend("Author") %>
+        #       <%= f.label("author.name") %>
+        #       <%= f.text_field("author.name") %>
+        #     <% end %>
+        #
+        #     # =>
+        #     <fieldset>
+        #       <legend>Author</legend>
+        #       <label for="book-author-name">Name</label>
+        #       <input type="text" name="book[author][name]" id="book-author-name" value="">
+        #     </fieldset>
         #
         # @since 2.0.0
-        #
-        # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.fieldset do
-        #       f.legend "Author"
-        #
-        #       f.label "author.name"
-        #       f.text_field "author.name"
-        #     end
-        #   %>
-        #
-        #   <!-- output -->
-        #   <fieldset>
-        #     <legend>Author</legend>
-        #     <label for="book-author-name">Name</label>
-        #     <input type="text" name="book[author][name]" id="book-author-name" value="">
-        #   </fieldset>
+        # @api public
         def fieldset(...)
           # This is here only for documentation purposes
           tag.fieldset(...)
         end
 
-        # Check box
+        # Returns the tags for a check box.
         #
-        # It renders a check box input.
+        # When editing a resource, the form automatically assigns the `checked` HTML attribute for
+        # the check box tag.
         #
-        # When a form is submitted, browsers don"t send the value of unchecked
-        # check boxes. If an user unchecks a check box, their browser won"t send
-        # the unchecked value. On the server side the corresponding value is
-        # missing, so the application will assume that the user action never
-        # happened.
-        #
-        # To solve this problem the form renders a hidden field with the
-        # "unchecked value". When the user unchecks the input, the browser will
-        # ignore it, but it will still send the value of the hidden input. See
-        # the examples below.
-        #
-        # When editing a resource, the form automatically assigns the
-        # `checked` HTML attribute.
+        # Returns a hidden input tag in preceding the check box input tag. This ensures that
+        # unchecked values are submitted with the form.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the HTML attributes for the check box tag
         # @option attributes [String] :checked_value (defaults to "1")
         # @option attributes [String] :unchecked_value (defaults to "0")
         #
-        # @since 2.0.0
+        # @return [String] the tags
         #
         # @example Basic usage
-        #   <%=
-        #     f.check_box "delivery.free_shipping"
-        #   %>
+        #   f.check_box("delivery.free_shipping")
         #
-        #   <!-- output -->
+        #   # =>
         #   <input type="hidden" name="delivery[free_shipping]" value="0">
         #   <input type="checkbox" name="delivery[free_shipping]" id="delivery-free-shipping" value="1">
         #
         # @example HTML Attributes
-        #   <%=
-        #     f.check_box "delivery.free_shipping", class: "form-check-input"
-        #   %>
+        #   f.check_box("delivery.free_shipping", class: "form-check-input")
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="hidden" name="delivery[free_shipping]" value="0">
         #   <input type="checkbox" name="delivery[free_shipping]" id="delivery-free-shipping" value="1" class="form-check-input">
         #
-        # @example Specify (un)checked values
-        #   <%=
-        #     f.check_box "delivery.free_shipping", checked_value: "true", unchecked_value: "false"
-        #   %>
+        # @example Specifying checked and unchecked values
+        #   f.check_box("delivery.free_shipping", checked_value: "true", unchecked_value: "false")
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="hidden" name="delivery[free_shipping]" value="false">
         #   <input type="checkbox" name="delivery[free_shipping]" id="delivery-free-shipping" value="true">
         #
         # @example Automatic "checked" attribute
-        #   # For this example the params are:
-        #   #
-        #   #  { delivery: { free_shipping: "1" } }
-        #   <%=
-        #     f.check_box "delivery.free_shipping"
-        #   %>
+        #   # Given the request params:
+        #   # {delivery: {free_shipping: "1"}}
+        #   f.check_box("delivery.free_shipping")
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="hidden" name="delivery[free_shipping]" value="0">
-        #   <input type="checkbox" name="delivery[free_shipping]" id="delivery-free-shipping" value="1" checked>
+        #   <input type="checkbox" name="delivery[free_shipping]" id="delivery-free-shipping" value="1" checked="checked">
         #
-        # @example Force "checked" attribute
-        #   # For this example the params are:
-        #   #
-        #   #  { delivery: { free_shipping: "0" } }
-        #   <%=
-        #     f.check_box "deliver.free_shipping", checked: "checked"
-        #   %>
+        # @example Forcing the "checked" attribute
+        #   # Given the request params:
+        #   # {delivery: {free_shipping: "0"}}
+        #   f.check_box("deliver.free_shipping", checked: "checked")
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="hidden" name="delivery[free_shipping]" value="0">
-        #   <input type="checkbox" name="delivery[free_shipping]" id="delivery-free-shipping" value="1" checked>
+        #   <input type="checkbox" name="delivery[free_shipping]" id="delivery-free-shipping" value="1" checked="checked">
         #
-        # @example Multiple check boxes
-        #   <%=
-        #     f.check_box "book.languages", name: "book[languages][]", value: "italian", id: nil
-        #     f.check_box "book.languages", name: "book[languages][]", value: "english", id: nil
-        #   %>
+        # @example Multiple check boxes for an array of values
+        #   f.check_box("book.languages", name: "book[languages][]", value: "italian", id: nil)
+        #   f.check_box("book.languages", name: "book[languages][]", value: "english", id: nil)
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="checkbox" name="book[languages][]" value="italian">
         #   <input type="checkbox" name="book[languages][]" value="english">
         #
-        # @example Automatic "checked" attribute for multiple check boxes
-        #   # For this example the params are:
-        #   #
-        #   #  { book: { languages: ["italian"] } }
-        #   <%=
-        #     f.check_box "book.languages", name: "book[languages][]", value: "italian", id: nil
-        #     f.check_box "book.languages", name: "book[languages][]", value: "english", id: nil
-        #   %>
+        # @example Automatic "checked" attribute for an array of values
+        #   # Given the request params:
+        #   # {book: {languages: ["italian"]}}
+        #   f.check_box("book.languages", name: "book[languages][]", value: "italian", id: nil)
+        #   f.check_box("book.languages", name: "book[languages][]", value: "english", id: nil)
         #
-        #   <!-- output -->
-        #   <input type="checkbox" name="book[languages][]" value="italian" checked>
+        #   =>
+        #   <input type="checkbox" name="book[languages][]" value="italian" checked="checked">
         #   <input type="checkbox" name="book[languages][]" value="english">
+        #
+        # @api public
+        # @since 2.0.0
         def check_box(name, **attributes)
           (+"").tap { |output|
             output << _hidden_field_for_check_box(name, attributes).to_s
@@ -349,362 +398,268 @@ module Hanami
           }.html_safe
         end
 
-        # Color input
+        # Returns a color input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.color_field "user.background"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="color" name="user[background]" id="user-background" value="">
+        #   f.color_field("user.background")
+        #   => <input type="color" name="user[background]" id="user-background" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.color_field "user.background", class: "form-control"
-        #   %>
+        #   f.color_field("user.background", class: "form-control")
+        #   => <input type="color" name="user[background]" id="user-background" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="color" name="user[background]" id="user-background" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def color_field(name, **attributes)
           input(**_attributes(:color, name, attributes))
         end
 
-        # Date input
+        # Returns a date input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.date_field "user.birth_date"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="date" name="user[birth_date]" id="user-birth-date" value="">
+        #   f.date_field("user.birth_date")
+        #   # => <input type="date" name="user[birth_date]" id="user-birth-date" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.date_field "user.birth_date", class: "form-control"
-        #   %>
+        #   f.date_field("user.birth_date", class: "form-control")
+        #   => <input type="date" name="user[birth_date]" id="user-birth-date" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="date" name="user[birth_date]" id="user-birth-date" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def date_field(name, **attributes)
           input(**_attributes(:date, name, attributes))
         end
 
-        # Datetime input
+        # Returns a datetime input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.datetime_field "delivery.delivered_at"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="datetime" name="delivery[delivered_at]" id="delivery-delivered-at" value="">
+        #   f.datetime_field("delivery.delivered_at")
+        #   => <input type="datetime" name="delivery[delivered_at]" id="delivery-delivered-at" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.datetime_field "delivery.delivered_at", class: "form-control"
-        #   %>
+        #   f.datetime_field("delivery.delivered_at", class: "form-control")
+        #   => <input type="datetime" name="delivery[delivered_at]" id="delivery-delivered-at" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="datetime" name="delivery[delivered_at]" id="delivery-delivered-at" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def datetime_field(name, **attributes)
           input(**_attributes(:datetime, name, attributes))
         end
 
-        # Datetime Local input
+        # Returns a datetime-local input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.datetime_local_field "delivery.delivered_at"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="datetime-local" name="delivery[delivered_at]" id="delivery-delivered-at" value="">
+        #   f.datetime_local_field("delivery.delivered_at")
+        #   => <input type="datetime-local" name="delivery[delivered_at]" id="delivery-delivered-at" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.datetime_local_field "delivery.delivered_at", class: "form-control"
-        #   %>
+        #   f.datetime_local_field("delivery.delivered_at", class: "form-control")
+        #   => <input type="datetime-local" name="delivery[delivered_at]" id="delivery-delivered-at" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="datetime-local" name="delivery[delivered_at]" id="delivery-delivered-at" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def datetime_local_field(name, **attributes)
           input(**_attributes(:"datetime-local", name, attributes))
         end
 
-        # Time field
+        # Returns a time input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.time_field "book.release_hour"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="time" name="book[release_hour]" id="book-release-hour" value="">
+        #   f.time_field("book.release_hour")
+        #   => <input type="time" name="book[release_hour]" id="book-release-hour" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.time_field "book.release_hour", class: "form-control"
-        #   %>
+        #   f.time_field("book.release_hour", class: "form-control")
+        #   => <input type="time" name="book[release_hour]" id="book-release-hour" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="time" name="book[release_hour]" id="book-release-hour" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def time_field(name, **attributes)
           input(**_attributes(:time, name, attributes))
         end
 
-        # Month field
+        # Returns a month input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.month_field "book.release_month"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="month" name="book[release_month]" id="book-release-month" value="">
+        #   f.month_field("book.release_month")
+        #   => <input type="month" name="book[release_month]" id="book-release-month" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.month_field "book.release_month", class: "form-control"
-        #   %>
+        #   f.month_field("book.release_month", class: "form-control")
+        #   => <input type="month" name="book[release_month]" id="book-release-month" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="month" name="book[release_month]" id="book-release-month" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def month_field(name, **attributes)
           input(**_attributes(:month, name, attributes))
         end
 
-        # Week field
+        # Returns a week input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.week_field "book.release_week"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="week" name="book[release_week]" id="book-release-week" value="">
+        #   f.week_field("book.release_week")
+        #   => <input type="week" name="book[release_week]" id="book-release-week" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.week_field "book.release_week", class: "form-control"
-        #   %>
+        #   f.week_field("book.release_week", class: "form-control")
+        #   => <input type="week" name="book[release_week]" id="book-release-week" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="week" name="book[release_week]" id="book-release-week" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def week_field(name, **attributes)
           input(**_attributes(:week, name, attributes))
         end
 
-        # Email input
+        # Returns an email input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.email_field "user.email"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="email" name="user[email]" id="user-email" value="">
+        #   f.email_field("user.email")
+        #   => <input type="email" name="user[email]" id="user-email" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.email_field "user.email", class: "form-control"
-        #   %>
+        #   f.email_field("user.email", class: "form-control")
+        #   => <input type="email" name="user[email]" id="user-email" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="email" name="user[email]" id="user-email" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def email_field(name, **attributes)
           input(**_attributes(:email, name, attributes))
         end
 
-        # URL input
+        # Returns a URL input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.url_field "user.website"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="url" name="user[website]" id="user-website" value="">
+        #   f.url_field("user.website")
+        #   => <input type="url" name="user[website]" id="user-website" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.url_field "user.website", class: "form-control"
-        #   %>
+        #   f.url_field("user.website", class: "form-control")
+        #   => <input type="url" name="user[website]" id="user-website" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="url" name="user[website]" id="user-website" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def url_field(name, **attributes)
           attributes[:value] = sanitize_url(attributes.fetch(:value) { _value(name) })
 
           input(**_attributes(:url, name, attributes))
         end
 
-        # Telephone input
+        # Returns a telephone input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
-        # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.tel_field "user.telephone"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="tel" name="user[telephone]" id="user-telephone" value="">
+        # @example
+        #   f.tel_field("user.telephone")
+        #   => <input type="tel" name="user[telephone]" id="user-telephone" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.tel_field "user.telephone", class: "form-control"
-        #   %>
+        #   f.tel_field("user.telephone", class: "form-control")
+        #   => <input type="tel" name="user[telephone]" id="user-telephone" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="tel" name="user[telephone]" id="user-telephone" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def tel_field(name, **attributes)
           input(**_attributes(:tel, name, attributes))
         end
 
-        # Hidden input
+        # Returns a hidden input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
+        # @return [String] the tag
+        #
+        # @example
+        #   f.hidden_field("delivery.customer_id")
+        #   => <input type="hidden" name="delivery[customer_id]" id="delivery-customer-id" value="">
+        #
+        # @api public
         # @since 2.0.0
-        #
-        # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.hidden_field "delivery.customer_id"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="hidden" name="delivery[customer_id]" id="delivery-customer-id" value="">
         def hidden_field(name, **attributes)
           input(**_attributes(:hidden, name, attributes))
         end
 
-        # File input
+        # Returns a file input tag.
         #
-        # **PLEASE REMEMBER TO ADD `enctype: "multipart/form-data"` ATTRIBUTE TO THE FORM**
+        # When using a field field, **remember to add `enctype: "multipart/form-data"` to your
+        # `form_for` call**.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
-        # @option attributes [String,Array] :accept Optional set of accepted MIME Types
-        # @option attributes [TrueClass,FalseClass] :multiple Optional, allow multiple file upload
+        # @param attributes [Hash] the tag's HTML attributes
+        # @option attributes [String, Array] :accept Optional set of accepted MIME Types
+        # @option attributes [Boolean] :multiple allow multiple file upload
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.file_field "user.avatar"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="file" name="user[avatar]" id="user-avatar">
+        #   f.file_field("user.avatar")
+        #   => <input type="file" name="user[avatar]" id="user-avatar">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.file_field "user.avatar", class: "avatar-upload"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="file" name="user[avatar]" id="user-avatar" class="avatar-upload">
+        #   f.file_field("user.avatar", class: "avatar-upload")
+        #   => <input type="file" name="user[avatar]" id="user-avatar" class="avatar-upload">
         #
         # @example Accepted MIME Types
-        #   <%=
-        #     # ...
-        #     f.file_field "user-resume", accept: "application/pdf,application/ms-word"
-        #   %>
+        #   f.file_field("user.resume", accept: "application/pdf,application/ms-word")
+        #   => <input type="file" name="user[resume]" id="user-resume" accept="application/pdf,application/ms-word">
         #
-        #   <!-- output -->
-        #   <input type="file" name="user[resume]" id="user-resume" accept="application/pdf,application/ms-word">
+        #   f.file_field("user.resume", accept: ["application/pdf", "application/ms-word"])
+        #   => <input type="file" name="user[resume]" id="user-resume" accept="application/pdf,application/ms-word">
         #
-        # @example Accepted MIME Types (as array)
-        #   <%=
-        #     # ...
-        #     f.file_field "user.resume", accept: ["application/pdf", "application/ms-word"]
-        #   %>
+        # @example Accept multiple file uploads
+        #   f.file_field("user.resume", multiple: true)
+        #   => <input type="file" name="user[resume]" id="user-resume" multiple="multiple">
         #
-        #   <!-- output -->
-        #   <input type="file" name="user[resume]" id="user-resume" accept="application/pdf,application/ms-word">
-        #
-        # @example Accepted multiple file upload (as array)
-        #   <%=
-        #     # ...
-        #     f.file_field "user.resume", multiple: true
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="file" name="user[resume]" id="user-resume" multiple="multiple">
+        # @api public
+        # @since 2.0.0
         def file_field(name, **attributes)
           attributes[:accept] = Array(attributes[:accept]).join(ACCEPT_SEPARATOR) if attributes.key?(:accept)
           attributes = {type: :file, name: _input_name(name), id: _input_id(name), **attributes}
@@ -712,118 +667,75 @@ module Hanami
           input(**attributes)
         end
 
-        # Number input
+        # Returns a number input tag.
         #
-        # You can also make use of the `max`, `min`, and `step` attributes for
-        # the HTML5 number field.
+        # For this tag, you can make use of the `max`, `min`, and `step` HTML attributes.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the number input
+        # @param attributes [Hash] the tag's HTML attributes
+        #
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.number_field "book.percent_read"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="number" name="book[percent_read]" id="book-percent-read" value="">
+        #   f.number_field("book.percent_read")
+        #   => <input type="number" name="book[percent_read]" id="book-percent-read" value="">
         #
         # @example Advanced attributes
-        #   <%=
-        #     # ...
-        #     f.number_field "book.percent_read", min: 1, max: 100, step: 1
-        #   %>
+        #   f.number_field("book.percent_read", min: 1, max: 100, step: 1)
+        #   => <input type="number" name="book[percent_read]" id="book-precent-read" value="" min="1" max="100" step="1">
         #
-        #   <!-- output -->
-        #   <input type="number" name="book[percent_read]" id="book-precent-read" value="" min="1" max="100" step="1">
+        # @api public
+        # @since 2.0.0
         def number_field(name, **attributes)
           input(**_attributes(:number, name, attributes))
         end
 
-        # Range input
+        # Returns a range input tag.
         #
-        # You can also make use of the `max`, `min`, and `step` attributes for
-        # the HTML5 number field.
+        # For this tag, you can make use of the `max`, `min`, and `step` HTML attributes.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the number input
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.range_field "book.discount_percentage"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="">
+        #   f.range_field("book.discount_percentage")
+        #   => <input type="range" name="book[discount_percentage]" id="book-discount-percentage" value="">
         #
         # @example Advanced attributes
-        #   <%=
-        #     # ...
-        #     f.range_field "book.discount_percentage", min: 1, max: 1'0, step: 1
-        #   %>
+        #   f.range_field("book.discount_percentage", min: 1, max: 1'0, step: 1)
+        #   => <input type="number" name="book[discount_percentage]" id="book-discount-percentage" value="" min="1" max="100" step="1">
         #
-        #   <!-- output -->
-        #   <input type="number" name="book[discount_percentage]" id="book-discount-percentage" value="" min="1" max="100" step="1">
+        # @api public
+        # @since 2.0.0
         def range_field(name, **attributes)
           input(**_attributes(:range, name, attributes))
         end
 
-        # Text-area input
+        # Returns a textarea tag.
         #
         # @param name [String] the input name
         # @param content [String] the content of the textarea
-        # @param attributes [Hash] HTML attributes to pass to the textarea tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.text_area "user.hobby"
-        #   %>
+        #   f.text_area("user.hobby")
+        #   => <textarea name="user[hobby]" id="user-hobby"></textarea>
         #
-        #   <!-- output -->
-        #   extarea name="user[hobby]" id="user-hobby"></textarea>
+        #   f.text_area "user.hobby", "Football"
+        #   =>
+        #   <textarea name="user[hobby]" id="user-hobby">
+        #   Football</textarea>
         #
-        # @example Set content
-        #   <%=
-        #     # ...
-        #     f.text_area "user.hobby", "Football"
-        #   %>
+        # @example HTML attributes
+        #   f.text_area "user.hobby", class: "form-control"
+        #   => <textarea name="user[hobby]" id="user-hobby" class="form-control"></textarea>
         #
-        #   <!-- output -->
-        #   <textarea name="user[hobby]" id="user-hobby">Football</textarea>
-        #
-        # @example Set content and HTML attributes
-        #   <%=
-        #     # ...
-        #     f.text_area "user.hobby", "Football", class: "form-control"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <textarea name="user[hobby]" id="user-hobby" class="form-control">Football</textarea>
-        #
-        # @example Omit content and specify HTML attributes
-        #   <%=
-        #     # ...
-        #     f.text_area "user.hobby", class: "form-control"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <textarea name="user[hobby]" id="user-hobby" class="form-control"></textarea>
-        #
-        # @example Force blank value
-        #   <%=
-        #     # ...
-        #     f.text_area "user.hobby", "", class: "form-control"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <textarea name="user[hobby]" id="user-hobby" class="form-control"></textarea>
+        # @api public
+        # @since 2.0.0
         def text_area(name, content = nil, **attributes)
           if content.respond_to?(:to_hash)
             attributes = content
@@ -834,113 +746,88 @@ module Hanami
           tag.textarea(content || _value(name), **attributes)
         end
 
-        # Text input
+        # Returns a text input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.text_field "user.first_name"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="text" name="user[first_name]" id="user-first-name" value="">
+        #   f.text_field("user.first_name")
+        #   => <input type="text" name="user[first_name]" id="user-first-name" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.text_field "user.first_name", class: "form-control"
-        #   %>
+        #   f.text_field("user.first_name", class: "form-control")
+        #   => <input type="text" name="user[first_name]" id="user-first-name" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="text" name="user[first_name]" id="user-first-name" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def text_field(name, **attributes)
           input(**_attributes(:text, name, attributes))
         end
         alias_method :input_text, :text_field
 
-        # Search input
+        # Returns a search input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.search_field "search.q"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="search" name="search[q]" id="search-q" value="">
+        #   f.search_field("search.q")
+        #   => <input type="search" name="search[q]" id="search-q" value="">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.search_field "search.q", class: "form-control"
-        #   %>
+        #   f.search_field("search.q", class: "form-control")
+        #   => <input type="search" name="search[q]" id="search-q" value="" class="form-control">
         #
-        #   <!-- output -->
-        #   <input type="search" name="search[q]" id="search-q" value="" class="form-control">
+        # @api public
+        # @since 2.0.0
         def search_field(name, **attributes)
           input(**_attributes(:search, name, attributes))
         end
 
-        # Radio input
+        # Returns a radio input tag.
         #
-        # If request params have a value that corresponds to the given value,
-        # it automatically sets the `checked` attribute.
-        # This `hanami-controller` integration happens without any developer intervention.
+        # When editing a resource, the form automatically assigns the `checked` HTML attribute for
+        # the tag.
         #
         # @param name [String] the input name
         # @param value [String] the input value
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.radio_button "book.category", "Fiction"
-        #     f.radio_button "book.category", "Non-Fiction"
-        #   %>
+        #   f.radio_button("book.category", "Fiction")
+        #   f.radio_button("book.category", "Non-Fiction")
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="radio" name="book[category]" value="Fiction">
         #   <input type="radio" name="book[category]" value="Non-Fiction">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.radio_button "book.category", "Fiction", class: "form-check"
-        #     f.radio_button "book.category", "Non-Fiction", class: "form-check"
-        #   %>
+        #   f.radio_button("book.category", "Fiction", class: "form-check")
+        #   f.radio_button("book.category", "Non-Fiction", class: "form-check")
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="radio" name="book[category]" value="Fiction" class="form-check">
         #   <input type="radio" name="book[category]" value="Non-Fiction" class="form-check">
         #
         # @example Automatic checked value
-        #   # Given the following params:
-        #   #
-        #   # book: {
-        #   #   category: "Non-Fiction"
-        #   # }
+        #   # Given the request params:
+        #   # {book: {category: "Non-Fiction"}}
+        #   f.radio_button("book.category", "Fiction")
+        #   f.radio_button("book.category", "Non-Fiction")
         #
-        #   <%=
-        #     # ...
-        #     f.radio_button "book.category", "Fiction"
-        #     f.radio_button "book.category", "Non-Fiction"
-        #   %>
-        #
-        #   <!-- output -->
+        #   =>
         #   <input type="radio" name="book[category]" value="Fiction">
-        #   <input type="radio" name="book[category]" value="Non-Fiction" checked>
+        #   <input type="radio" name="book[category]" value="Non-Fiction" checked="checked">
+        #
+        # @api public
+        # @since 2.0.0
         def radio_button(name, value, **attributes)
           attributes = {type: :radio, name: _input_name(name), value: value, **attributes}
           attributes[:checked] = true if _value(name).to_s == value.to_s
@@ -948,21 +835,19 @@ module Hanami
           input(**attributes)
         end
 
-        # Password input
+        # Returns a password input tag.
         #
         # @param name [String] the input name
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.password_field "signup.password"
-        #   %>
+        #   f.password_field("signup.password")
+        #   => <input type="password" name="signup[password]" id="signup-password" value="">
         #
-        #   <!-- output -->
-        #   <input type="password" name="signup[password]" id="signup-password" value="">
+        # @api public
+        # @since 2.0.0
         def password_field(name, **attributes)
           attrs = {type: :password, name: _input_name(name), id: _input_id(name), value: nil, **attributes}
           attrs[:value] = EMPTY_STRING if attrs[:value].nil?
@@ -970,148 +855,115 @@ module Hanami
           input(**attrs)
         end
 
-        # Select input
+        # Returns a select input tag containing option tags for the given values.
+        #
+        # The values should be an enumerable of pairs of content (the displayed text for the option)
+        # and value (the value for the option) strings.
+        #
+        # When editing a resource, automatically assigns the `selected` HTML attribute for any
+        # option tags matching the resource's values.
         #
         # @param name [String] the input name
         # @param values [Hash] a Hash to generate `<option>` tags.
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # Values is used to generate the list of `<option>` tags, it is an
-        # `Enumerable` of pairs of content (the displayed text) and value (the tag's
-        # attribute), in that respective order (please refer to the examples for more clarity).
-        #
-        # If request params have a value that corresponds to one of the given values,
-        # it automatically sets the `selected` attribute on the `<option>` tag.
-        # This `hanami-controller` integration happens without any developer intervention.
-        #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     values = Hash["Italy" => "it", "United States" => "us"]
-        #     f.select "book.store", values
-        #   %>
+        #   values = {"Italy" => "it", "Australia" => "au"}
+        #   f.select("book.store", values)
         #
-        #   <!-- output -->
+        #   =>
         #   <select name="book[store]" id="book-store">
         #     <option value="it">Italy</option>
-        #     <option value="us">United States</option>
+        #     <option value="au">Australia</option>
         #   </select>
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     values = Hash["Italy" => "it", "United States" => "us"]
-        #     f.select "book.store", values, class: "form-control"
-        #   %>
+        #   values = {"Italy" => "it", "Australia" => "au"}
+        #   f.select("book.store", values, class: "form-control")
         #
-        #   <!-- output -->
+        #   =>
         #   <select name="book[store]" id="book-store" class="form-control">
         #     <option value="it">Italy</option>
-        #     <option value="us">United States</option>
+        #     <option value="au">Australia</option>
         #   </select>
         #
-        # @example Automatic selected option
-        #   # Given the following params:
-        #   #
-        #   # book: {
-        #   #   store: "it"
-        #   # }
+        # @example Selected options
+        #   # Given the following request params:
+        #   # {book: {store: "it"}}
+        #   values = {"Italy" => "it", "Australia" => "au"}
+        #   f.select("book.store", values)
         #
-        #   <%=
-        #     # ...
-        #     values = Hash["Italy" => "it", "United States" => "us"]
-        #     f.select "book.store", values
-        #   %>
-        #
-        #   <!-- output -->
+        #   =>
         #   <select name="book[store]" id="book-store">
         #     <option value="it" selected="selected">Italy</option>
-        #     <option value="us">United States</option>
+        #     <option value="au">Australia</option>
         #   </select>
         #
         # @example Prompt option
-        #   <%=
-        #     # ...
-        #     values = Hash["Italy" => "it", "United States" => "us"]
-        #     f.select "book.store", values, options: { prompt: "Select a store" }
-        #   %>
+        #   values = {"Italy" => "it", "Australia" => "au"}
+        #   f.select("book.store", values, options: {prompt: "Select a store"})
         #
-        #   <!-- output -->
+        #   =>
         #   <select name="book[store]" id="book-store">
         #     <option>Select a store</option>
         #     <option value="it">Italy</option>
-        #     <option value="us">United States</option>
+        #     <option value="au">Australia</option>
         #   </select>
         #
         # @example Selected option
-        #   <%=
-        #     # ...
-        #     values = Hash["Italy" => "it", "United States" => "us"]
-        #     f.select "book.store", values, options: { selected: book.store }
-        #   %>
+        #   values = {"Italy" => "it", "Australia" => "au"}
+        #   f.select("book.store", values, options: {selected: "it"})
         #
-        #   <!-- output -->
+        #   =>
         #   <select name="book[store]" id="book-store">
         #     <option value="it" selected="selected">Italy</option>
-        #     <option value="us">United States</option>
+        #     <option value="au">Australia</option>
         #   </select>
         #
         # @example Prompt option and HTML attributes
-        #   <%=
-        #     # ...
-        #     values = Hash["Italy" => "it", "United States" => "us"]
-        #     f.select "book.store", values, options: { prompt: "Select a store" }, class: "form-control"
-        #   %>
+        #   values = {"Italy" => "it", "Australia" => "au"}
+        #   f.select("book.store", values, options: {prompt: "Select a store"}, class: "form-control")
         #
-        #   <!-- output -->
+        #   =>
         #   <select name="book[store]" id="book-store" class="form-control">
         #     <option disabled="disabled">Select a store</option>
         #     <option value="it">Italy</option>
-        #     <option value="us">United States</option>
+        #     <option value="au">Australia</option>
         #   </select>
         #
         # @example Multiple select
-        #   <%=
-        #     # ...
-        #     values = Hash["Italy" => "it", "United States" => "us"]
-        #     f.select "book.stores", values, multiple: true
-        #   %>
+        #   values = {"Italy" => "it", "Australia" => "au"}
+        #   f.select("book.stores", values, multiple: true)
         #
-        #   <!-- output -->
+        #   =>
         #   <select name="book[store][]" id="book-store" multiple="multiple">
         #    <option value="it">Italy</option>
-        #     <option value="us">United States</option>
+        #     <option value="au">Australia</option>
         #   </select>
         #
         # @example Multiple select and HTML attributes
-        #   <%=
-        #     # ...
-        #     values = Hash["Italy" => "it", "United States" => "us"]
-        #     f.select "book.stores", values, multiple: true, class: "form-control"
-        #   %>
+        #   values = {"Italy" => "it", "Australia" => "au"}
+        #   f.select("book.stores", values, multiple: true, class: "form-control")
         #
-        #   <!-- output -->
+        #   =>
         #   <select name="book[store][]" id="book-store" multiple="multiple" class="form-control">
         #     <option value="it">Italy</option>
-        #     <option value="us">United States</option>
+        #     <option value="au">Australia</option>
         #   </select>
         #
-        # @example Array with repeated entries
-        #   <%=
-        #     # ...
-        #     values = [["Italy", "it"],
-        #               ["---", ""],
-        #               ["Afghanistan", "af"],
-        #               ...
-        #               ["Italy", "it"],
-        #               ...
-        #               ["Zimbabwe", "zw"]]
-        #     f.select "book.stores", values
-        #   %>
+        # @example Values as an array, supporting repeated entries
+        #   values = [["Italy", "it"],
+        #             ["---", ""],
+        #             ["Afghanistan", "af"],
+        #             ...
+        #             ["Italy", "it"],
+        #             ...
+        #             ["Zimbabwe", "zw"]]
+        #   f.select("book.stores", values)
         #
-        #   <!-- output -->
+        #   =>
         #   <select name="book[store]" id="book-store">
         #     <option value="it">Italy</option>
         #     <option value="">---</option>
@@ -1121,6 +973,9 @@ module Hanami
         #     ...
         #     <option value="zw">Zimbabwe</option>
         #   </select>
+        #
+        # @api public
+        # @since 2.0.0
         def select(name, values, **attributes) # rubocop:disable Metrics/AbcSize
           options = attributes.delete(:options) { {} }
           multiple = attributes[:multiple]
@@ -1145,70 +1000,61 @@ module Hanami
           tag.select(option_tags.join.html_safe, **attributes)
         end
 
-        # Datalist input
+        # Returns a datalist input tag.
         #
         # @param name [String] the input name
-        # @param values [Array,Hash] a collection that is transformed into `<option>` tags.
-        # @param list [String] the name of list for the text input, it"s also the id of datalist
-        # @param attributes [Hash] HTML attributes to pass to the input tag
+        # @param values [Array,Hash] a collection that is transformed into `<option>` tags
+        # @param list [String] the name of list for the text input; also the id of datalist
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic Usage
-        #   <%=
-        #     # ...
-        #     values = ["Italy", "United States"]
-        #     f.datalist "book.stores", values, "books"
-        #   %>
+        #   values = ["Italy", "Australia"]
+        #   f.datalist("book.stores", values, "books")
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="text" name="book[store]" id="book-store" value="" list="books">
         #   <datalist id="books">
         #     <option value="Italy"></option>
-        #     <option value="United States"></option>
+        #     <option value="Australia"></option>
         #   </datalist>
         #
         # @example Options As Hash
-        #   <%=
-        #     # ...
-        #     values = Hash["Italy" => "it", "United States" => "us"]
-        #     f.datalist "book.stores", values, "books"
-        #   %>
+        #   values = Hash["Italy" => "it", "Australia" => "au"]
+        #   f.datalist("book.stores", values, "books")
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="text" name="book[store]" id="book-store" value="" list="books">
         #   <datalist id="books">
         #     <option value="Italy">it</option>
-        #     <option value="United States">us</option>
+        #     <option value="Australia">au</option>
         #   </datalist>
         #
-        # @example Specify Custom Attributes For Datalist Input
-        #   <%=
-        #     # ...
-        #     values = ["Italy", "United States"]
-        #     f.datalist "book.stores", values, "books", datalist: { class: "form-control" }
-        #   %>
+        # @example Specifying custom attributes for the datalist input
+        #   values = ["Italy", "Australia"]
+        #   f.datalist "book.stores", values, "books", datalist: {class: "form-control"}
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="text" name="book[store]" id="book-store" value="" list="books">
         #   <datalist id="books" class="form-control">
         #     <option value="Italy"></option>
-        #     <option value="United States"></option>
+        #     <option value="Australia"></option>
         #   </datalist>
         #
-        # @example Specify Custom Attributes For Options List
-        #   <%=
-        #     # ...
-        #     values = ["Italy", "United States"]
-        #     f.datalist "book.stores", values, "books", options: { class: "form-control" }
-        #   %>
+        # @example Specifying custom attributes for the options list
+        #   values = ["Italy", "Australia"]
+        #   f.datalist("book.stores", values, "books", options: {class: "form-control"})
         #
-        #   <!-- output -->
+        #   =>
         #   <input type="text" name="book[store]" id="book-store" value="" list="books">
         #   <datalist id="books">
         #     <option value="Italy" class="form-control"></option>
-        #     <option value="United States" class="form-control"></option>
+        #     <option value="Australia" class="form-control"></option>
         #   </datalist>
+        #
+        # @api public
+        # @since 2.0.0
         def datalist(name, values, list, **attributes)
           options = attributes.delete(:options) || {}
           datalist = attributes.delete(:datalist) || {}
@@ -1228,82 +1074,65 @@ module Hanami
           }.html_safe
         end
 
-        # Button
+        # Returns a button tag.
+        #
+        # @return [String] the tag
         #
         # @overload button(content, **attributes)
-        #   Use string content
-        #   @param content [String] The content
-        #   @param attributes [Hash] HTML attributes to pass to the button tag
+        #   Returns a button tag with the given content.
         #
-        # @overload button(**attributes, &blk)
-        #   Use block content
-        #   @param attributes [Hash] HTML attributes to pass to the button tag
-        #   @param blk [Proc] the block content
+        #   @param content [String] the content for the tag
+        #   @param attributes [Hash] the tag's HTML attributes
         #
-        # @since 2.0.0
+        # @overload button(**attributes, &block)
+        #   Returns a button tag with the return value of the given block as the tag's content.
+        #
+        #   @param attributes [Hash] the tag's HTML attributes
+        #   @yieldreturn [String] the tag content
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.button "Click me"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <button>Click me</button>
+        #   f.button("Click me")
+        #   => <button>Click me</button>
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.button "Click me", class: "btn btn-secondary"
-        #   %>
+        #   f.button("Click me", class: "btn btn-secondary")
+        #   => <button class="btn btn-secondary">Click me</button>
         #
-        #   <!-- output -->
-        #   <button class="btn btn-secondary">Click me</button>
+        # @example Returning content from a block
+        #   <%= f.button class: "btn btn-secondary" do %>
+        #     <span class="oi oi-check">
+        #   <% end %>
         #
-        # @example Block
-        #   <%=
-        #     # ...
-        #     f.button class: "btn btn-secondary" do
-        #       f.span class: "oi oi-check"
-        #     end
-        #   %>
-        #
-        #   <!-- output -->
+        #   =>
         #   <button class="btn btn-secondary">
         #     <span class="oi oi-check"></span>
         #   </button>
+        #
+        # @api public
+        # @since 2.0.0
         def button(...)
           tag.button(...)
         end
 
-        # Image button
+        # Returns an image input tag, to be used as a visual button for the form.
         #
-        # Visual submit button
+        # For security reasons, you should use the absolute URL of the given image.
         #
-        # **Please note:** for security reasons, please use the absolute URL of the image
+        # @param source [String] The absolute URL of the image
+        # @param attributes [Hash] the tag's HTML attributes
         #
-        # @param source [String] The **absolute URL** of the image
-        # @param attributes [Hash] HTML attributes to pass to the button tag
-        #
-        # @since 2.0.0
+        # @return [String] the tag
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.image_button "https://hanamirb.org/assets/button.png"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <input type="image" src="https://hanamirb.org/assets/button.png">
+        #   f.image_button("https://hanamirb.org/assets/button.png")
+        #   => <input type="image" src="https://hanamirb.org/assets/button.png">
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.image_button "https://hanamirb.org/assets/button.png", name: "image", width: "50"
-        #   %>
+        #   f.image_button("https://hanamirb.org/assets/button.png", name: "image", width: "50")
+        #   => <input name="image" width="50" type="image" src="https://hanamirb.org/assets/button.png">
         #
-        #   <!-- output -->
-        #   <input name="image" width="50" type="image" src="https://hanamirb.org/assets/button.png">
+        # @api public
+        # @since 2.0.0
         def image_button(source, **attributes)
           attributes[:type] = :image
           attributes[:src] = sanitize_url(source)
@@ -1311,50 +1140,43 @@ module Hanami
           input(**attributes)
         end
 
-        # Submit button
+        # Returns a submit button tag.
+        #
+        # @return [String] the tag
         #
         # @overload submit(content, **attributes)
-        #   Use string content
-        #   @param content [String] The content
-        #   @param attributes [Hash] HTML attributes to pass to the button tag
+        #   Returns a submit button tag with the given content.
+        #
+        #   @param content [String] the content for the tag
+        #   @param attributes [Hash] the tag's HTML attributes
         #
         # @overload submit(**attributes, &blk)
-        #   Use block content
-        #   @param attributes [Hash] HTML attributes to pass to the button tag
-        #   @param blk [Proc] the block content
+        #   Returns a submit button tag with the return value of the given block as the tag's
+        #   content.
         #
-        # @since 2.0.0
+        #   @param attributes [Hash] the tag's HTML attributes
+        #   @yieldreturn [String] the tag content
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.submit "Create"
-        #   %>
-        #
-        #   <!-- output -->
-        #   <button type="submit">Create</button>
+        #   f.submit("Create")
+        #   => <button type="submit">Create</button>
         #
         # @example HTML Attributes
-        #   <%=
-        #     # ...
-        #     f.submit "Create", class: "btn btn-primary"
-        #   %>
+        #   f.submit("Create", class: "btn btn-primary")
+        #   => <button type="submit" class="btn btn-primary">Create</button>
         #
-        #   <!-- output -->
-        #   <button type="submit" class="btn btn-primary">Create</button>
+        # @example Returning content from a block
+        #   <%= f.submit(class: "btn btn-primary") do %>
+        #     <span class="oi oi-check">
+        #   <% end %>
         #
-        # @example Block
-        #   <%=
-        #     # ...
-        #     f.submit class: "btn btn-primary" do
-        #       f.span class: "oi oi-check"
-        #     end
-        #   %>
-        #
-        #   <!-- output -->
+        #   =>
         #   <button type="submit" class="btn btn-primary">
         #     <span class="oi oi-check"></span>
         #   </button>
+        #
+        # @api public
+        # @since 2.0.0
         def submit(content = nil, **attributes, &blk)
           if content.is_a?(::Hash)
             attributes = content
@@ -1365,24 +1187,25 @@ module Hanami
           tag.button(content, **attributes, &blk)
         end
 
-        # Form input
+        # Returns an input tag.
         #
-        # It generates markup for the given HTML attributes.
-        # For advanced features, please use the other methods of form builder.
+        # Generates an input tag without any special handling. For more convenience and other
+        # advanced features, see the other methods of the form builder.
         #
-        # @param attributes [Hash] HTML attributes
-        # @param blk [Proc] optional block for nested costants
+        # @param attributes [Hash] the tag's HTML attributes
+        # @yieldreturn [String] the tag content
+        #
+        # @return [String] the tag
         #
         # @since 2.0.0
         # @api public
         #
         # @example Basic usage
-        #   <%=
-        #     # ...
-        #     f.input(type: :text, name: "book[title]", id: "book-title", value: book.title)
-        #   %>
-        #   <!-- output -->
-        #   <input type="text" name="book[title]" id="book-title" value="Hanami book">
+        #   f.input(type: :text, name: "book[title]", id: "book-title", value: book.title)
+        #   => <input type="text" name="book[title]" id="book-title" value="Hanami book">
+        #
+        # @api public
+        # @since 2.0.0
         def input(...)
           tag.input(...)
         end
