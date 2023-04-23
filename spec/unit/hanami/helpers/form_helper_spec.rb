@@ -366,7 +366,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
       ERB
 
       expected = <<~HTML
-        <form action="/books" accept-charset="utf-8" method="POST">
+        <form action="/books" enctype="multipart/form-data" accept-charset="utf-8" method="POST">
           <input type="text" name="book[categories][][name]" id="book-categories-0-name" value="foo">
           <input type="hidden" name="book[categories][][name]" id="book-categories-0-name" value="foo">
           <textarea name="book[categories][][name]" id="book-categories-0-name">
@@ -1605,25 +1605,24 @@ RSpec.describe Hanami::Helpers::FormHelper do
       expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover">)
     end
 
-    it "sets 'enctype' attribute to the form"
-    # it "sets 'enctype' attribute to the form" do
-    #   html = form_for("/books") do |f|
-    #     f.file_field "book.image_cover"
-    #   end
+    # it "sets 'enctype' attribute to the form"
+    it "sets 'enctype' attribute to the form" do
+      html = form_for("/books") do |f|
+        f.file_field "book.image_cover"
+      end
 
-    #   expect(html).to include(%(<form action="/books" id="book-form" method="POST" enctype="multipart/form-data">))
-    # end
+      expect(html).to include %(<form action="/books" enctype="multipart/form-data" accept-charset="utf-8" method="POST">)
+    end
 
-    it "sets 'enctype' attribute to the form when there are nested fields"
-    # it "sets 'enctype' attribute to the form when there are nested fields" do
-    #   html = form_for("/books") do |f|
-    #     fields_for :images do
-    #       f.file_field :cover
-    #     end
-    #   end
+    it "sets 'enctype' attribute to the form when there are nested fields" do
+      html = form_for("/books") do |f|
+        f.fields_for("images") do
+          f.file_field("cover")
+        end
+      end
 
-    #   expect(html).to include(%(<form action="/books" id="book-form" method="POST" enctype="multipart/form-data">))
-    # end
+      expect(html).to include %(<form action="/books" enctype="multipart/form-data" accept-charset="utf-8" method="POST">)
+    end
 
     it "allows to override 'id' attribute" do
       html = form_for("/books") do |f|

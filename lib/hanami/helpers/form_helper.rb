@@ -150,7 +150,13 @@ module Hanami
         url, base_name = base_name, nil if url.nil?
 
         values = Values.new(values: values, params: params, csrf_token: _form_csrf_token)
-        builder = FormBuilder.new(base_name: base_name, values: values, inflector: _context.inflector)
+
+        builder = FormBuilder.new(
+          base_name: base_name,
+          values: values,
+          inflector: _context.inflector,
+          form_attributes: attributes
+        )
 
         content = (block_given? ? yield(builder) : "").html_safe
 

@@ -85,6 +85,11 @@ module Hanami
         attr_reader :inflector
         private :inflector
 
+        # @api private
+        # @since 2.0.0
+        attr_reader :form_attributes
+        private :form_attributes
+
         # Returns a new form builder.
         #
         # @param inflector [Dry::Inflector] the app inflector
@@ -97,9 +102,10 @@ module Hanami
         #
         # @api private
         # @since 2.0.0
-        def initialize(inflector:, base_name: nil, values: Values.new)
+        def initialize(inflector:, form_attributes:, base_name: nil, values: Values.new)
           @base_name = base_name
           @values = values
+          @form_attributes = form_attributes
           @inflector = inflector
         end
 
@@ -631,9 +637,6 @@ module Hanami
 
         # Returns a file input tag.
         #
-        # When using a field field, **remember to add `enctype: "multipart/form-data"` to your
-        # `form_for` call**.
-        #
         # @param name [String] the input name
         # @param attributes [Hash] the tag's HTML attributes
         # @option attributes [String, Array] :accept Optional set of accepted MIME Types
@@ -663,6 +666,8 @@ module Hanami
         # @api public
         # @since 2.0.0
         def file_field(name, **attributes)
+          form_attributes[:enctype] = "multipart/form-data"
+
           attributes[:accept] = Array(attributes[:accept]).join(ACCEPT_SEPARATOR) if attributes.key?(:accept)
           attributes = {type: :file, name: _input_name(name), id: _input_id(name), **attributes}
 
