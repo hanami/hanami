@@ -12,6 +12,7 @@ module Hanami
           super
 
           scope_class.extend(Hanami::SliceConfigurable)
+          scope_class.include(StandardHelpers)
           scope_class.extend(ClassMethods)
         end
 

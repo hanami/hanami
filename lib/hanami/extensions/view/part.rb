@@ -12,6 +12,7 @@ module Hanami
           super
 
           part_class.extend(Hanami::SliceConfigurable)
+          part_class.include(StandardHelpers)
           part_class.extend(ClassMethods)
         end
 
