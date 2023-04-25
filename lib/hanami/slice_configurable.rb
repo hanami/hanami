@@ -44,7 +44,7 @@ module Hanami
 
             unless subclass.configured_for_slice?(slice)
               subclass.configure_for_slice(slice)
-              subclass.configured_for_slices << slice # WIP
+              subclass.configured_for_slices << slice
             end
           end
         end
