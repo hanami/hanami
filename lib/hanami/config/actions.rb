@@ -82,10 +82,6 @@ module Hanami
       #   @api private
       setting :name_inference_base, default: "actions"
 
-      # @!attribute [rw] view_context_identifier
-      #   @api private
-      setting :view_context_identifier, default: "views.context"
-
       # @!attribute [rw] view_name_inferrer
       #   @api private
       setting :view_name_inferrer, default: Slice::ViewNameInferrer

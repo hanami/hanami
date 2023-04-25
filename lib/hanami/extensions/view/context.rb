@@ -13,99 +13,130 @@ module Hanami
       #
       # @api private
       module Context
-        def self.included(context_class)
-          super
+        class << self
+          # Returns a context class for the given slice. If a context class is not defined, defines
+          # a class named `Views::Context` within the slice's namespace.
+          #
+          # @api private
+          def context_class(slice)
+            views_namespace = views_namespace(slice)
 
-          context_class.extend(Hanami::SliceConfigurable)
-          context_class.extend(ClassMethods)
-          context_class.prepend(InstanceMethods)
-        end
+            if views_namespace.const_defined?(:Context)
+              return views_namespace.const_get(:Context)
+            end
 
-        module ClassMethods
-          def configure_for_slice(slice)
-            extend SliceConfiguredContext.new(slice)
+            views_namespace.const_set(:Context, Class.new(Hanami::View::Context).tap { |klass|
+              klass.configure_for_slice(slice)
+            })
+          end
+
+          private
+
+          # TODO: this could be moved into the top-level Extensions::View
+          def views_namespace(slice)
+            if slice.namespace.const_defined?(:Views)
+              slice.namespace.const_get(:Views)
+            else
+              slice.namespace.const_set(:Views, Module.new)
+            end
           end
         end
 
-        module InstanceMethods
-          attr_reader :inflector
-
-          attr_reader :settings
-
-          attr_reader :routes
-
-          attr_reader :request
-
-          # @see SliceConfiguredContext#define_new
-          def initialize( # rubocop:disable Metrics/ParameterLists
-            inflector: nil,
-            settings: nil,
-            routes: nil,
-            assets: nil,
-            request: nil,
-            **args
-          )
-            @inflector = inflector
-            @settings = settings
-            @routes = routes
-            @assets = assets
-            @request = request
-
-            @content_for = {}
-
-            super(**args)
-          end
-
-          def initialize_copy(source)
+        module ClassExtension
+          def self.included(context_class)
             super
 
-            # Dup objects that may be mutated over a given rendering
-            @content_for = source.instance_variable_get(:@content_for).dup
+            context_class.extend(Hanami::SliceConfigurable)
+            context_class.extend(ClassMethods)
+            context_class.prepend(InstanceMethods)
           end
 
-          def with(**args)
-            self.class.new(
-              inflector: @inflector,
-              settings: @settings,
-              assets: @assets,
-              routes: @routes,
-              request: @request,
+          module ClassMethods
+            def configure_for_slice(slice)
+              extend SliceConfiguredContext.new(slice)
+            end
+          end
+
+          module InstanceMethods
+            attr_reader :inflector
+
+            attr_reader :settings
+
+            attr_reader :routes
+
+            attr_reader :request
+
+            # @see SliceConfiguredContext#define_new
+            def initialize( # rubocop:disable Metrics/ParameterLists
+              inflector: nil,
+              settings: nil,
+              routes: nil,
+              assets: nil,
+              request: nil,
               **args
             )
-          end
+              @inflector = inflector
+              @settings = settings
+              @routes = routes
+              @assets = assets
+              @request = request
 
-          def assets
-            unless @assets
-              raise Hanami::ComponentLoadError, "hanami-assets gem is required to access assets"
+              @content_for = {}
+
+              super(**args)
             end
 
-            @assets
-          end
+            def initialize_copy(source)
+              super
 
-          def content_for(key, value = nil)
-            if block_given?
-              @content_for[key] = yield
-            elsif value
-              @content_for[key] = value
-            else
-              @content_for[key]
+              # Dup objects that may be mutated over a given rendering
+              @content_for = source.instance_variable_get(:@content_for).dup
             end
-          end
 
-          def current_path
-            request.fullpath
-          end
+            def with(**args)
+              self.class.new(
+                inflector: @inflector,
+                settings: @settings,
+                assets: @assets,
+                routes: @routes,
+                request: @request,
+                **args
+              )
+            end
 
-          def csrf_token
-            request.session[Hanami::Action::CSRFProtection::CSRF_TOKEN]
-          end
+            def assets
+              unless @assets
+                raise Hanami::ComponentLoadError, "hanami-assets gem is required to access assets"
+              end
 
-          def session
-            request.session
-          end
+              @assets
+            end
 
-          def flash
-            request.flash
+            def content_for(key, value = nil)
+              if block_given?
+                @content_for[key] = yield
+              elsif value
+                @content_for[key] = value
+              else
+                @content_for[key]
+              end
+            end
+
+            def current_path
+              request.fullpath
+            end
+
+            def csrf_token
+              request.session[Hanami::Action::CSRFProtection::CSRF_TOKEN]
+            end
+
+            def session
+              request.session
+            end
+
+            def flash
+              request.flash
+            end
           end
         end
       end
@@ -113,4 +144,4 @@ module Hanami
   end
 end
 
-Hanami::View::Context.include(Hanami::Extensions::View::Context)
+Hanami::View::Context.include(Hanami::Extensions::View::Context::ClassExtension)

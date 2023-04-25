@@ -127,13 +127,9 @@ module Hanami
         end
 
         def resolve_view_context
-          identifier = actions_config.view_context_identifier
+          return unless Extensions.const_defined?(:View)
 
-          if slice.key?(identifier)
-            slice[identifier]
-          elsif slice.app.key?(identifier)
-            slice.app[identifier]
-          end
+          Extensions::View::Context.context_class(slice).new
         end
 
         def resolve_routes

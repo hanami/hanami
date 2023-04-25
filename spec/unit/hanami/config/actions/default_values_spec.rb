@@ -13,10 +13,6 @@ RSpec.describe Hanami::Config::Actions, "default values" do
     specify { expect(config.name_inference_base).to eq "actions" }
   end
 
-  describe "view_context_identifier" do
-    specify { expect(config.view_context_identifier).to eq "views.context" }
-  end
-
   describe "view_name_inferrer" do
     specify { expect(config.view_name_inferrer).to eq Hanami::Slice::ViewNameInferrer }
   end

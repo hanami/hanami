@@ -22,19 +22,6 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
         end
       RUBY
 
-      # FIXME: Having this file should not be necessary. Remove this once we auto-generate this
-      # class.
-      write "app/views/context.rb", <<~RUBY
-        require "hanami/view/context"
-
-        module TestApp
-          module Views
-            class Context < Hanami::View::Context
-            end
-          end
-        end
-      RUBY
-
       write "app/views/helpers.rb", <<~'RUBY'
         # auto_register: false
 
