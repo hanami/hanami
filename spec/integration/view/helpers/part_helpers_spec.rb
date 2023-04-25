@@ -65,7 +65,7 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
       ERB
     end
 
-    it "makes default helpers available in templates" do
+    it "makes default helpers available in parts" do
       post = OpenStruct.new(title: "Hello world")
       output = TestApp::App["views.posts.show"].call(post: post).to_s.strip
 
@@ -115,7 +115,7 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
       ERB
     end
 
-    it "makes default helpers available in templates" do
+    it "makes default helpers available in parts" do
       post = OpenStruct.new(title: "Hello world")
       output = Main::Slice["views.posts.show"].call(post: post).to_s.strip
 
