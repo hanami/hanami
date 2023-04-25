@@ -23,22 +23,20 @@ module Hanami
         private
 
         def include_helpers(klass)
-          klass.include(slice_helpers_module) if slice_helpers_module
-        end
+          if mod = helpers_module(slice.app)
+            klass.include(mod)
+          end
 
-        def slice_helpers_module
-          if views_namespace.const_defined?(:Helpers)
-            views_namespace.const_get(:Helpers)
+          if mod = helpers_module(slice)
+            klass.include(mod)
           end
         end
 
-        def views_namespace
-          @views_namespace ||=
-            if slice.namespace.const_defined?(:Views)
-              slice.namespace.const_get(:Views)
-            else
-              slice.namespace.const_set(:Views, Module.new)
-            end
+        def helpers_module(slice)
+          return unless slice.namespace.const_defined?(:Views)
+          return unless slice.namespace.const_get(:Views).const_defined?(:Helpers)
+
+          slice.namespace.const_get(:Views).const_get(:Helpers)
         end
       end
     end

@@ -22,14 +22,6 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
         end
       RUBY
 
-      before_app if respond_to?(:before_app)
-
-      require "hanami/prepare"
-    end
-  end
-
-  describe "app view" do
-    def before_app
       write "app/views/helpers.rb", <<~'RUBY'
         # auto_register: false
 
@@ -44,6 +36,14 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
         end
       RUBY
 
+      before_app if respond_to?(:before_app)
+
+      require "hanami/prepare"
+    end
+  end
+
+  describe "app view" do
+    def before_app
       write "app/views/posts/show.rb", <<~RUBY
         module TestApp
           module Views
@@ -104,12 +104,17 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
 
       write "slices/main/templates/posts/show.html.erb", <<~ERB
         <h1><%= exclaim_from_slice("Hello world") %></h1>
+        <h2><%= exclaim_from_app("Hello world") %></h2>
       ERB
     end
 
-    it "makes default helpers available in templates" do
-      output = Main::Slice["views.posts.show"].call.to_s.strip
-      expect(output).to eq "<h1>Hello world! (slice helper)</h1>"
+    it "makes user-defined helpers (from app as well as slice) available in templates" do
+      output = Main::Slice["views.posts.show"].call.to_s
+
+      expect(output).to eq <<~HTML
+        <h1>Hello world! (slice helper)</h1>
+        <h2>Hello world! (app helper)</h2>
+      HTML
     end
   end
 end

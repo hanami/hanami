@@ -26,14 +26,6 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
         end
       RUBY
 
-      before_app if respond_to?(:before_app)
-
-      require "hanami/prepare"
-    end
-  end
-
-  describe "app view and parts" do
-    def before_app
       write "app/views/helpers.rb", <<~'RUBY'
         # auto_register: false
 
@@ -48,6 +40,14 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
         end
       RUBY
 
+      before_app if respond_to?(:before_app)
+
+      require "hanami/prepare"
+    end
+  end
+
+  describe "app view and parts" do
+    def before_app
       write "app/views/posts/show.rb", <<~RUBY
         module TestApp
           module Views
@@ -79,7 +79,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
       ERB
     end
 
-    it "makes default helpers available in parts" do
+    it "makes user-defined helpers available in parts" do
       post = OpenStruct.new(title: "Hello world")
       output = TestApp::App["views.posts.show"].call(post: post).to_s.strip
 
@@ -132,6 +132,10 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
                 def title
                   exclaim_from_slice(value.title)
                 end
+
+                def title_from_app
+                  exclaim_from_app(value.title)
+                end
               end
             end
           end
@@ -140,14 +144,18 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
 
       write "slices/main/templates/posts/show.html.erb", <<~ERB
         <h1><%= post.title %></h1>
+        <h2><%= post.title_from_app %></h2>
       ERB
     end
 
-    it "makes default helpers available in parts" do
+    it "makes user-defined helpers (from app as well as slice) available in parts" do
       post = OpenStruct.new(title: "Hello world")
-      output = Main::Slice["views.posts.show"].call(post: post).to_s.strip
+      output = Main::Slice["views.posts.show"].call(post: post).to_s
 
-      expect(output).to eq "<h1>Hello world! (slice helper)</h1>"
+      expect(output).to eq <<~HTML
+        <h1>Hello world! (slice helper)</h1>
+        <h2>Hello world! (app helper)</h2>
+      HTML
     end
   end
 end
