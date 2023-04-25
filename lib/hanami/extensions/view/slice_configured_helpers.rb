@@ -20,7 +20,25 @@ module Hanami
           "#<#{self.class.name}[#{slice.name}]>"
         end
 
+        private
+
         def include_helpers(klass)
+          klass.include(slice_helpers_module) if slice_helpers_module
+        end
+
+        def slice_helpers_module
+          if views_namespace.const_defined?(:Helpers)
+            views_namespace.const_get(:Helpers)
+          end
+        end
+
+        def views_namespace
+          @views_namespace ||=
+            if slice.namespace.const_defined?(:Views)
+              slice.namespace.const_get(:Views)
+            else
+              slice.namespace.const_set(:Views, Module.new)
+            end
         end
       end
     end
