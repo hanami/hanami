@@ -51,8 +51,8 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
           module Views
             module Parts
               class Post < TestApp::Views::Part
-                def title
-                  exclaim(value.title)
+                def number
+                  format_number(value.number)
                 end
               end
             end
@@ -61,15 +61,15 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
       RUBY
 
       write "app/templates/posts/show.html.erb", <<~ERB
-        <h1><%= post.title %></h1>
+        <h1><%= post.number %></h1>
       ERB
     end
 
     it "makes default helpers available in parts" do
-      post = OpenStruct.new(title: "Hello world")
+      post = OpenStruct.new(number: 12_345)
       output = TestApp::App["views.posts.show"].call(post: post).to_s.strip
 
-      expect(output).to eq "<h1>Hello world!</h1>"
+      expect(output).to eq "<h1>12,345</h1>"
     end
   end
 
@@ -101,8 +101,8 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
           module Views
             module Parts
               class Post < Main::Views::Part
-                def title
-                  exclaim(value.title)
+                def number
+                  format_number(value.number)
                 end
               end
             end
@@ -111,15 +111,17 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
       RUBY
 
       write "slices/main/templates/posts/show.html.erb", <<~ERB
-        <h1><%= post.title %></h1>
+        <h1><%= post.number %></h1>
       ERB
     end
 
     it "makes default helpers available in parts" do
-      post = OpenStruct.new(title: "Hello world")
+      post = OpenStruct.new(number: 12_345)
       output = Main::Slice["views.posts.show"].call(post: post).to_s.strip
 
-      expect(output).to eq "<h1>Hello world!</h1>"
+      expect(output).to eq "<h1>12,345</h1>"
     end
   end
 end
+
+# rubocop:enable Style/OpenStructUse

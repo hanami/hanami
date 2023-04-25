@@ -42,13 +42,13 @@ RSpec.describe "App view / Helpers / Scope helpers", :app_integration do
       RUBY
 
       write "app/templates/posts/show.html.erb", <<~ERB
-        <h1><%= exclaim("Post") %></h1>
+        <h1><%= format_number(12_345) %></h1>
       ERB
     end
 
     it "makes default helpers available in templates" do
       output = TestApp::App["views.posts.show"].call.to_s.strip
-      expect(output).to eq "<h1>Post!</h1>"
+      expect(output).to eq "<h1>12,345</h1>"
     end
   end
 
@@ -75,13 +75,13 @@ RSpec.describe "App view / Helpers / Scope helpers", :app_integration do
       RUBY
 
       write "slices/main/templates/posts/show.html.erb", <<~ERB
-        <h1><%= exclaim("Post") %></h1>
+        <h1><%= format_number(12_345) %></h1>
       ERB
     end
 
     it "makes default helpers available in templates" do
       output = Main::Slice["views.posts.show"].call.to_s.strip
-      expect(output).to eq "<h1>Post!</h1>"
+      expect(output).to eq "<h1>12,345</h1>"
     end
   end
 end
