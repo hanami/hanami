@@ -22,6 +22,19 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
         end
       RUBY
 
+      # FIXME: Having this file should not be necessary. Remove this once we auto-generate this
+      # class.
+      write "app/views/context.rb", <<~RUBY
+        require "hanami/view/context"
+
+        module TestApp
+          module Views
+            class Context < Hanami::View::Context
+            end
+          end
+        end
+      RUBY
+
       write "app/views/helpers.rb", <<~'RUBY'
         # auto_register: false
 
@@ -29,7 +42,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
           module Views
             module Helpers
               def exclaim_from_app(str)
-                "#{str}! (app helper)"
+                tag.h1("#{str}! (app helper)")
               end
             end
           end
@@ -56,7 +69,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
       RUBY
 
       write "app/templates/posts/show.html.erb", <<~ERB
-        <h1><%= exclaim_from_app("Hello world") %></h1>
+        <%= exclaim_from_app("Hello world") %>
       ERB
     end
 
@@ -84,7 +97,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
           module Views
             module Helpers
               def exclaim_from_slice(str)
-                "#{str}! (slice helper)"
+                tag.h1("#{str}! (slice helper)")
               end
             end
           end
@@ -103,8 +116,8 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
       RUBY
 
       write "slices/main/templates/posts/show.html.erb", <<~ERB
-        <h1><%= exclaim_from_slice("Hello world") %></h1>
-        <h2><%= exclaim_from_app("Hello world") %></h2>
+        <%= exclaim_from_slice("Hello world") %>
+        <%= exclaim_from_app("Hello world") %>
       ERB
     end
 
@@ -113,7 +126,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
 
       expect(output).to eq <<~HTML
         <h1>Hello world! (slice helper)</h1>
-        <h2>Hello world! (app helper)</h2>
+        <h1>Hello world! (app helper)</h1>
       HTML
     end
   end

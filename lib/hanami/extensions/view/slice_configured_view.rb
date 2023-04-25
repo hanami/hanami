@@ -100,6 +100,7 @@ module Hanami
           view_class.config.inflector = inflector
           view_class.config.paths = prepare_paths(slice, view_class.config.paths)
           view_class.config.template = template_name(view_class)
+          view_class.config.default_context = resolve_context
           view_class.config.part_class = part_class
           view_class.config.scope_class = scope_class
 
@@ -160,6 +161,19 @@ module Hanami
 
         def inflector
           slice.inflector
+        end
+
+        def resolve_context
+          key = "views.context" # TODO: put this in a constant somewhere?
+
+          if slice.key?(key)
+            slice[key]
+          elsif slice.app != slice && slice.app.key?(key)
+            slice.app[key]
+          else
+            # TODO: this else case should not be needed once we generate this class/component
+            Hanami::View::Context.new
+          end
         end
 
         def part_class
