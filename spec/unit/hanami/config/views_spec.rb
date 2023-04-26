@@ -61,10 +61,6 @@ RSpec.describe Hanami::Config, "#views" do
         expect(views).to be_frozen
       end
 
-      it "does not allow changes to locally defined settings" do
-        expect { views.parts_path = "parts" }.to raise_error(Dry::Configurable::FrozenConfigError)
-      end
-
       it "does not allow changes to base view settings" do
         expect { views.paths = [] }.to raise_error(Dry::Configurable::FrozenConfigError)
       end

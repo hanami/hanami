@@ -12,6 +12,8 @@ module Hanami
       # @since 2.0.0
       class SliceConfiguredView < Module
         TEMPLATES_DIR = "templates"
+        VIEWS_DIR = "views"
+        PARTS_DIR = "parts"
 
         attr_reader :slice
 
@@ -118,8 +120,7 @@ module Hanami
           view_class.config.part_class = part_class
           view_class.config.scope_class = scope_class
 
-          # TODO: parts_path probably doesn't need to be configurable
-          if (part_namespace = namespace_from_path(slice.config.views.parts_path))
+          if (part_namespace = namespace_from_path("#{VIEWS_DIR}/#{PARTS_DIR}"))
             view_class.config.part_namespace = part_namespace
           end
         end
