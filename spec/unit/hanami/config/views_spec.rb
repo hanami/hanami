@@ -39,12 +39,6 @@ RSpec.describe Hanami::Config, "#views" do
     end
 
     describe "specialised default values" do
-      describe "template_inference_base" do
-        it 'is "views"' do
-          expect(views.template_inference_base).to eq "views"
-        end
-      end
-
       describe "layout" do
         it 'is "app"' do
           expect(views.layout).to eq "app"

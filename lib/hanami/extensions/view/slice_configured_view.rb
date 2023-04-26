@@ -159,11 +159,10 @@ module Hanami
         end
 
         def template_name(view_class)
-          slice
-            .inflector
+          inflector
             .underscore(view_class.name)
             .sub(/^#{slice.slice_name.path}\//, "")
-            .sub(/^#{view_class.config.template_inference_base}\//, "")
+            .sub(/^#{VIEWS_DIR}\//, "")
         end
 
         def inflector
