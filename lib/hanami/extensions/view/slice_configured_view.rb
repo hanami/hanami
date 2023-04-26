@@ -14,6 +14,7 @@ module Hanami
         TEMPLATES_DIR = "templates"
         VIEWS_DIR = "views"
         PARTS_DIR = "parts"
+        SCOPES_DIR = "scopes"
 
         attr_reader :slice
 
@@ -122,6 +123,9 @@ module Hanami
 
           if (part_namespace = namespace_from_path("#{VIEWS_DIR}/#{PARTS_DIR}"))
             view_class.config.part_namespace = part_namespace
+          end
+          if (scope_namespace = namespace_from_path("#{VIEWS_DIR}/#{SCOPES_DIR}"))
+            view_class.config.scope_namespace = scope_namespace
           end
         end
         # rubocop:enable Metrics/AbcSize
