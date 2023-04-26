@@ -78,8 +78,6 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
       write "slices/main/view.rb", <<~RUBY
         module Main
           class View < TestApp::View
-            # FIXME: base slice views should override paths from the base app view
-            config.paths = [File.join(File.expand_path(__dir__), "templates")]
           end
         end
       RUBY

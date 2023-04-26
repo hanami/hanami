@@ -11,6 +11,8 @@ module Hanami
       # @api private
       # @since 2.0.0
       class SliceConfiguredView < Module
+        TEMPLATES_DIR = "templates"
+
         attr_reader :slice
 
         def initialize(slice)
@@ -98,9 +100,21 @@ module Hanami
           end
 
           view_class.config.inflector = inflector
-          view_class.config.paths = prepare_paths(slice, view_class.config.paths)
+
+          # Configure the paths for this view if:
+          #   - We are the app, and a user hasn't provided custom `paths` (in this case, we need to
+          #     set the defaults)
+          #   - We are a slice, and the view's inherited `paths` is identical to the parent's config
+          #     (which would result in the view in a slice erroneously trying to find templates in
+          #     the app)
+          if (!slice.parent && view_class.config.paths.empty?) ||
+             (slice.parent && view_class.config.paths.map(&:dir) == [templates_path(slice.parent)])
+            view_class.config.paths = templates_path(slice)
+          end
+
           view_class.config.template = template_name(view_class)
           view_class.config.default_context = Extensions::View::Context.context_class(slice).new
+
           view_class.config.part_class = part_class
           view_class.config.scope_class = scope_class
 
@@ -120,20 +134,12 @@ module Hanami
           end
         end
 
-        def prepare_paths(slice, configured_paths)
-          configured_paths.map { |path|
-            if path.dir.relative?
-              if slice.app.equal?(slice)
-                # App-level templates are in app/
-                slice.root.join(APP_DIR, path.dir)
-              else
-                # Other slice templates are in the root slice dir
-                slice.root.join(path.dir)
-              end
-            else
-              path
-            end
-          }
+        def templates_path(slice)
+          if slice.app.equal?(slice)
+            slice.root.join(APP_DIR, TEMPLATES_DIR)
+          else
+            slice.root.join(TEMPLATES_DIR)
+          end
         end
 
         def namespace_from_path(path)

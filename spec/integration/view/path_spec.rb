@@ -24,33 +24,19 @@ RSpec.describe "App view / Path", :app_integration do
 
   subject(:paths) { view_class.config.paths }
 
-  context "default path" do
-    it "is 'templates' appended to the slice's root path" do
-      expect(paths.map { |path| path.dir.to_s }).to eq ["/test_app/app/templates"]
-    end
+  it "is 'templates' appended to the slice's root path" do
+    expect(paths.map { |path| path.dir.to_s }).to eq ["/test_app/app/templates"]
   end
 
-  context "relative path provided in app config" do
+  context "custom path provided in app config" do
     let(:app_hook) {
       proc do
-        config.views.paths = ["my_templates"]
+        config.views.paths = ["/custom/path"]
       end
     }
 
-    it "configures the path as the relative path appended to the slice's root path" do
-      expect(paths.map { |path| path.dir.to_s }).to eq ["/test_app/app/my_templates"]
-    end
-  end
-
-  context "absolute path provided in app config" do
-    let(:app_hook) {
-      proc do
-        config.views.paths = ["/absolute/path"]
-      end
-    }
-
-    it "leaves the absolute path in place" do
-      expect(paths.map { |path| path.dir.to_s }).to eq ["/absolute/path"]
+    it "is the custom path" do
+      expect(paths.map { |path| path.dir.to_s }).to eq ["/custom/path"]
     end
   end
 end

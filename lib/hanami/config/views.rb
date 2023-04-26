@@ -46,7 +46,6 @@ module Hanami
       private
 
       def configure_defaults
-        self.paths = ["templates"]
         self.template_inference_base = "views"
         self.layout = "app"
       end

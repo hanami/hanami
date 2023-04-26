@@ -39,14 +39,6 @@ RSpec.describe Hanami::Config, "#views" do
     end
 
     describe "specialised default values" do
-      describe "paths" do
-        it 'is ["templates"]' do
-          expect(views.paths).to match [
-            an_object_satisfying { |path| path.dir.to_s == "templates" }
-          ]
-        end
-      end
-
       describe "template_inference_base" do
         it 'is "views"' do
           expect(views.template_inference_base).to eq "views"
