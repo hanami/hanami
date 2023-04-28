@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "hanami/utils/hash"
-
 module Hanami
   module Helpers
     module FormHelper
