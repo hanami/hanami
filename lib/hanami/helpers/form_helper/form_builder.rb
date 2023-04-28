@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "dry-inflector"
 require "hanami/view/helpers/escape_helper"
 require_relative "values"
 
