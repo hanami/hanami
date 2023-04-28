@@ -21,6 +21,7 @@ gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 gem "dry-types"
 
 group :test do
+  gem "capybara"
   gem "dotenv"
   gem "saharspec"
   gem "slim"

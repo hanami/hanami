@@ -210,10 +210,11 @@ RSpec.describe "Hanami web app", :app_integration do
     let(:app) { Main::Slice.rack_app }
 
     around do |example|
+      @prev_hanami_env = ENV["HANAMI_ENV"]
       ENV["HANAMI_ENV"] = "production"
       example.run
     ensure
-      ENV["HANAMI_ENV"] = "test"
+      ENV["HANAMI_ENV"] = @prev_hanami_env
     end
 
     specify "Has rack monitor preconfigured with default request logging (when used via a slice)" do
