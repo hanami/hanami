@@ -122,7 +122,7 @@ module Hanami
       #   <% end %>
       #
       #   =>
-      #   <form action="/books/123" accept-charset="utf-8" id="book-form" method="POST">
+      #   <form action="/books/123" accept-charset="utf-8" method="POST">
       #     <input type="hidden" name="_method" value="PUT">
       #     <input type="hidden" name="_csrf_token" value="920cd5bfaecc6e58368950e790f2f7b4e5561eeeab230aa1b7de1b1f40ea7d5d">
       #     <input type="text" name="book[title]" id="book-title" value="Test Driven Development">
