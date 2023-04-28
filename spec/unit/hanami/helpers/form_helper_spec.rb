@@ -99,8 +99,8 @@ RSpec.describe Hanami::Helpers::FormHelper do
         expect(html).to eq_html expected_html
 
         html = form_for("book", "/books") do |f|
-          f.fields_for("author.avatar") do
-            f.text_field("url")
+          f.fields_for("author.avatar") do |fa|
+            fa.text_field("url")
           end
         end
 
@@ -274,22 +274,20 @@ RSpec.describe Hanami::Helpers::FormHelper do
     it "renders" do
       html = render(<<~ERB)
         <%= form_for("/books") do |f| %>
-          <% f.fields_for "book.categories" do %>
-            <%= f.text_field :name %>
+          <% f.fields_for "book.categories" do |fa| %>
+            <%= fa.text_field :name %>
 
-            <% f.fields_for :subcategories do %>
-              <%= f.text_field :name %>
+            <% fa.fields_for :subcategories do |fb| %>
+              <%= fb.text_field :name %>
             <% end %>
 
-            <%= f.text_field :name2 %>
+            <%= fa.text_field :name2 %>
           <% end %>
 
           <%= f.text_field "book.title" %>
         <% end %>
       ERB
 
-      # TODO: Do we want an id on the form tag still?
-      # <form action="/books" method="POST" accept-charset="utf-8" id="book-form">
       expect(html).to eq_html <<~HTML
         <form action="/books" accept-charset="utf-8" method="POST">
           <input type="text" name="book[categories][name]" id="book-categories-name" value="">
@@ -306,14 +304,14 @@ RSpec.describe Hanami::Helpers::FormHelper do
       it "renders" do
         html = render(<<~ERB)
           <%= form_for("/books") do |f| %>
-            <% f.fields_for "book.categories" do %>
-              <%= f.text_field :name %>
+            <% f.fields_for "book.categories" do |fa| %>
+              <%= fa.text_field :name %>
 
-              <% f.fields_for :subcategories do %>
-                <%= f.text_field :name %>
+              <% fa.fields_for :subcategories do |fb| %>
+                <%= fb.text_field :name %>
               <% end %>
 
-              <%= f.text_field :name2 %>
+              <%= fa.text_field :name2 %>
             <% end %>
 
             <%= f.text_field "book.title" %>
@@ -338,29 +336,29 @@ RSpec.describe Hanami::Helpers::FormHelper do
     it "renders" do
       html = render(<<~ERB)
         <%= form_for("/books") do |f| %>
-          <% f.fields_for_collection "book.categories" do %>
-            <%= f.text_field :name %>
-            <%= f.hidden_field :name %>
-            <%= f.text_area :name %>
-            <%= f.check_box :new %>
-            <%= f.select :genre, [%w[Terror terror], %w[Comedy comedy]] %>
-            <%= f.color_field :name %>
-            <%= f.date_field :name %>
-            <%= f.datetime_field :name %>
-            <%= f.datetime_local_field :name %>
-            <%= f.time_field :name %>
-            <%= f.month_field :name %>
-            <%= f.week_field :name %>
-            <%= f.email_field :name %>
-            <%= f.url_field :name %>
-            <%= f.tel_field :name %>
-            <%= f.file_field :name %>
-            <%= f.number_field :name %>
-            <%= f.range_field :name %>
-            <%= f.search_field :name %>
-            <%= f.radio_button :name, "Fiction" %>
-            <%= f.password_field :name %>
-            <%= f.datalist :name, ["Italy", "United States"], "books" %>
+          <% f.fields_for_collection "book.categories" do |fa| %>
+            <%= fa.text_field :name %>
+            <%= fa.hidden_field :name %>
+            <%= fa.text_area :name %>
+            <%= fa.check_box :new %>
+            <%= fa.select :genre, [%w[Terror terror], %w[Comedy comedy]] %>
+            <%= fa.color_field :name %>
+            <%= fa.date_field :name %>
+            <%= fa.datetime_field :name %>
+            <%= fa.datetime_local_field :name %>
+            <%= fa.time_field :name %>
+            <%= fa.month_field :name %>
+            <%= fa.week_field :name %>
+            <%= fa.email_field :name %>
+            <%= fa.url_field :name %>
+            <%= fa.tel_field :name %>
+            <%= fa.file_field :name %>
+            <%= fa.number_field :name %>
+            <%= fa.range_field :name %>
+            <%= fa.search_field :name %>
+            <%= fa.radio_button :name, "Fiction" %>
+            <%= fa.password_field :name %>
+            <%= fa.datalist :name, ["Italy", "United States"], "books" %>
           <% end %>
         <% end %>
       ERB
@@ -392,6 +390,10 @@ RSpec.describe Hanami::Helpers::FormHelper do
           <input type="text" name="book[categories][][name]" id="book-categories-0-name" value="foo" list="books"><datalist id="books"><option value="Italy"></option><option value="United States"></option></datalist>
         </form>
       HTML
+
+      puts html
+      puts
+      puts expected
 
       expect(html).to eq_html(expected)
     end
@@ -1605,7 +1607,6 @@ RSpec.describe Hanami::Helpers::FormHelper do
       expect(html).to include %(<input type="file" name="book[image_cover]" id="book-image-cover">)
     end
 
-    # it "sets 'enctype' attribute to the form"
     it "sets 'enctype' attribute to the form" do
       html = form_for("/books") do |f|
         f.file_field "book.image_cover"

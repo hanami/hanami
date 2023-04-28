@@ -82,6 +82,11 @@ module Hanami
 
         # @api private
         # @since 2.0.0
+        attr_reader :values
+        private :values
+
+        # @api private
+        # @since 2.0.0
         attr_reader :inflector
         private :inflector
 
@@ -115,7 +120,7 @@ module Hanami
           attributes["accept-charset"] ||= DEFAULT_CHARSET
 
           method_override, original_form_method = _form_method(attributes)
-          csrf_token, token = _csrf_token(@values, attributes)
+          csrf_token, token = _csrf_token(values, attributes)
 
           tag.form(**attributes) do
             (+"").tap { |inner|
@@ -134,11 +139,12 @@ module Hanami
         # the beginning of each input name.
         #
         # @param name [String] the base name to be used for all fields in the block
+        # @yieldparam [FormBuilder] the form builder for the nested fields
         #
         # @example Basic usage
-        #   <% f.fields_for "address" %>
-        #     <%= f.text_field "street" %>
-        #     <%= f.text_field "suburb" %>
+        #   <% f.fields_for "address" do |fa| %>
+        #     <%= fa.text_field "street" %>
+        #     <%= fa.text_field "suburb" %>
         #   <% end %>
         #
         #   # A convenience for:
@@ -150,11 +156,11 @@ module Hanami
         #   <input type="text" name="delivery[address][street]" id="delivery-address-street" value="">
         #
         # @example Multiple levels of nesting
-        #   <% f.fields_for "address" %>
-        #     <%= f.text_field "street" %>
+        #   <% f.fields_for "address" do |fa| %>
+        #     <%= fa.text_field "street" %>
         #
-        #     <% f.fields_for "location" %>
-        #       <%= f.text_field "city" %>
+        #     <% fa.fields_for "location" do |fl| %>
+        #       <%= fl.text_field "city" %>
         #     <% end %>
         #   <% end %>
         #
@@ -164,13 +170,17 @@ module Hanami
         #
         # @api public
         # @since 2.0.0
-        def fields_for(name, value = nil)
-          prev_base_name = @base_name
-          @base_name = [@base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
+        def fields_for(name, *yield_args)
+          new_base_name = [base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
 
-          yield(name, value)
-        ensure
-          @base_name = prev_base_name
+          builder = self.class.new(
+            base_name: new_base_name,
+            values: values,
+            form_attributes: form_attributes,
+            inflector: inflector
+          )
+
+          yield(builder, *yield_args)
         end
 
         # Yields to the given block for each element in the matching collection value, and applies
@@ -180,12 +190,13 @@ module Hanami
         #
         # @param name [String] the input name, also used as the base input name for all fields
         #   within the block
+        # @yieldparam [FormBuilder] the form builder for the nested fields
         # @yieldparam [Integer] the index of the iteration over the colletion, starting from zero
         # @yieldparam [Object] the value of the element from the collection
         #
         # @example Basic usage
-        #   <% f.fields_for_collection("addresses") do %>
-        #     <%= f.text_field("street") %>
+        #   <% f.fields_for_collection("addresses") do |fa| %>
+        #     <%= fa.text_field("street") %>
         #   <% end %>
         #
         #   =>
@@ -193,11 +204,11 @@ module Hanami
         #   <input type="text" name="delivery[addresses][][street]" id="delivery-address-1-street" value="">
         #
         # @example Yielding index and value
-        #   <% f.fields_for_collection("bill.addresses") do |i, address| %>
+        #   <% f.fields_for_collection("bill.addresses") do |fa, i, address| %>
         #     <div class="form-group">
         #       Address id: <%= address.id %>
-        #       <%= f.label("street") %>
-        #       <%= f.text_field("street", data: {index: i.to_s}) %>
+        #       <%= fa.label("street") %>
+        #       <%= fa.text_field("street", data: {index: i.to_s}) %>
         #     </div>
         #   <% end %>
         #
@@ -216,16 +227,11 @@ module Hanami
         # @api public
         # @since 2.0.0
         def fields_for_collection(name, &block)
-          collection = _value(name)
+          collection_base_name = [base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
 
-          prev_base_name = @base_name
-          @base_name = [@base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
-
-          collection.each_with_index do |value, index|
-            fields_for(index, value, &block)
+          _value(name).each_with_index do |value, index|
+            fields_for("#{collection_base_name}.#{index}", index, value, &block)
           end
-        ensure
-          @base_name = prev_base_name
         end
 
         # Returns a label tag.
@@ -1285,7 +1291,7 @@ module Hanami
         # @since 2.0.0
         def _value(name)
           # TODO: to_sym should not be necessary here
-          @values.get(*_split_input_name(name).map(&:to_sym))
+          values.get(*_split_input_name(name).map(&:to_sym))
         end
 
         # @api private
