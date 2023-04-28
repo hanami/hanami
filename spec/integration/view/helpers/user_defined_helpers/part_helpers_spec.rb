@@ -4,7 +4,7 @@ require "ostruct"
 
 # rubocop:disable Style/OpenStructUse
 
-RSpec.describe "App view / Helpers / Part helpers", :app_integration do
+RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app_integration do
   before do
     with_directory(make_tmp_directory) do
       write "config/app.rb", <<~RUBY
@@ -22,6 +22,20 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
         module TestApp
           class View < Hanami::View
             config.layout = nil
+          end
+        end
+      RUBY
+
+      write "app/views/helpers.rb", <<~'RUBY'
+        # auto_register: false
+
+        module TestApp
+          module Views
+            module Helpers
+              def exclaim_from_app(str)
+                tag.h1("#{str}! (app helper)")
+              end
+            end
           end
         end
       RUBY
@@ -51,8 +65,8 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
           module Views
             module Parts
               class Post < TestApp::Views::Part
-                def number
-                  format_number(value.number)
+                def title
+                  exclaim_from_app(value.title)
                 end
               end
             end
@@ -61,15 +75,15 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
       RUBY
 
       write "app/templates/posts/show.html.erb", <<~ERB
-        <h1><%= post.number %></h1>
+        <%= post.title %>
       ERB
     end
 
-    it "makes default helpers available in parts" do
-      post = OpenStruct.new(number: 12_345)
+    it "makes user-defined helpers available in parts" do
+      post = OpenStruct.new(title: "Hello world")
       output = TestApp::App["views.posts.show"].call(post: post).to_s.strip
 
-      expect(output).to eq "<h1>12,345</h1>"
+      expect(output).to eq "<h1>Hello world! (app helper)</h1>"
     end
   end
 
@@ -80,6 +94,20 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
           class View < TestApp::View
             # FIXME: base slice views should override paths from the base app view
             config.paths = [File.join(File.expand_path(__dir__), "templates")]
+          end
+        end
+      RUBY
+
+      write "slices/main/views/helpers.rb", <<~'RUBY'
+        # auto_register: false
+
+        module Main
+          module Views
+            module Helpers
+              def exclaim_from_slice(str)
+                tag.h1("#{str}! (slice helper)")
+              end
+            end
           end
         end
       RUBY
@@ -101,8 +129,12 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
           module Views
             module Parts
               class Post < Main::Views::Part
-                def number
-                  format_number(value.number)
+                def title
+                  exclaim_from_slice(value.title)
+                end
+
+                def title_from_app
+                  exclaim_from_app(value.title)
                 end
               end
             end
@@ -111,15 +143,19 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
       RUBY
 
       write "slices/main/templates/posts/show.html.erb", <<~ERB
-        <h1><%= post.number %></h1>
+        <%= post.title %>
+        <%= post.title_from_app %>
       ERB
     end
 
-    it "makes default helpers available in parts" do
-      post = OpenStruct.new(number: 12_345)
-      output = Main::Slice["views.posts.show"].call(post: post).to_s.strip
+    it "makes user-defined helpers (from app as well as slice) available in parts" do
+      post = OpenStruct.new(title: "Hello world")
+      output = Main::Slice["views.posts.show"].call(post: post).to_s
 
-      expect(output).to eq "<h1>12,345</h1>"
+      expect(output).to eq <<~HTML
+        <h1>Hello world! (slice helper)</h1>
+        <h1>Hello world! (app helper)</h1>
+      HTML
     end
   end
 end

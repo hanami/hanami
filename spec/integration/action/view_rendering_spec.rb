@@ -32,17 +32,6 @@ RSpec.describe "App action / View rendering", :app_integration do
         end
       RUBY
 
-      write "app/views/context.rb", <<~RUBY
-        require "hanami/view/context"
-
-        module TestApp
-          module Views
-            class Context < Hanami::View::Context
-            end
-          end
-        end
-      RUBY
-
       write "app/actions/users/show.rb", <<~RUBY
         module TestApp
           module Actions

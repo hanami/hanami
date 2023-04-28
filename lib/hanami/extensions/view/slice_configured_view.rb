@@ -21,7 +21,6 @@ module Hanami
         def extended(view_class)
           load_app_view
           configure_view(view_class)
-          include_helpers
           define_inherited
         end
 
@@ -101,6 +100,7 @@ module Hanami
           view_class.config.inflector = inflector
           view_class.config.paths = prepare_paths(slice, view_class.config.paths)
           view_class.config.template = template_name(view_class)
+          view_class.config.default_context = Extensions::View::Context.context_class(slice).new
           view_class.config.part_class = part_class
           view_class.config.scope_class = scope_class
 
@@ -110,19 +110,6 @@ module Hanami
           end
         end
         # rubocop:enable Metrics/AbcSize
-
-        def include_helpers
-          include_helpers_in(part_class)
-          include_helpers_in(scope_class)
-        end
-
-        def include_helpers_in(klass)
-          require "hanami/helpers/example_helper"
-          klass.include Helpers::ExampleHelper
-
-          require "hanami/helpers/form_helper"
-          klass.include Helpers::FormHelper
-        end
 
         def define_inherited
           template_name = method(:template_name)
@@ -181,7 +168,11 @@ module Hanami
             if views_namespace.const_defined?(:Part)
               views_namespace.const_get(:Part)
             else
-              views_namespace.const_set(:Part, Class.new(part_superclass))
+              views_namespace.const_set(:Part, Class.new(part_superclass).tap { |klass|
+                # Give the slice to `configure_for_slice`, since it cannot be inferred when it is
+                # called via `.inherited`, since the class is anonymous at this point
+                klass.configure_for_slice(slice)
+              })
             end
         end
 
@@ -189,7 +180,6 @@ module Hanami
           return Hanami::View::Part if app?
 
           begin
-            # slice.app.namespace.const_get(:Views, false).const_get(:Part, false)
             inflector.constantize(inflector.camelize("#{slice.app.slice_name.name}/views/part"))
           rescue NameError
             Hanami::View::Part
@@ -201,7 +191,11 @@ module Hanami
             if views_namespace.const_defined?(:Scope)
               views_namespace.const_get(:Scope)
             else
-              views_namespace.const_set(:Scope, Class.new(scope_superclass))
+              views_namespace.const_set(:Scope, Class.new(scope_superclass).tap { |klass|
+                # Give the slice to `configure_for_slice`, since it cannot be inferred when it is
+                # called via `.inherited`, since the class is anonymous at this point
+                klass.configure_for_slice(slice)
+              })
             end
         end
 
