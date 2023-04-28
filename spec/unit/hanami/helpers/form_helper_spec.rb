@@ -391,10 +391,6 @@ RSpec.describe Hanami::Helpers::FormHelper do
         </form>
       HTML
 
-      puts html
-      puts
-      puts expected
-
       expect(html).to eq_html(expected)
     end
   end
