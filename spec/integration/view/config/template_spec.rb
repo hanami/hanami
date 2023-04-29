@@ -2,7 +2,7 @@
 
 require "hanami"
 
-RSpec.describe "App view / Template", :app_integration do
+RSpec.describe "App view / Config / Template", :app_integration do
   before do
     module TestApp
       class App < Hanami::App

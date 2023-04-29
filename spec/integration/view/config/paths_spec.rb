@@ -2,7 +2,7 @@
 
 require "hanami"
 
-RSpec.describe "App view / Paths", :app_integration do
+RSpec.describe "App view / Config / Paths", :app_integration do
   before do
     with_directory(make_tmp_directory) do
       write "config/app.rb", <<~RUBY

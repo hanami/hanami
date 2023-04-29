@@ -2,7 +2,7 @@
 
 require "hanami"
 
-RSpec.describe "App view / Scope namespace", :app_integration do
+RSpec.describe "App view / Config / Part namespace", :app_integration do
   before do
     with_directory(make_tmp_directory) do
       write "config/app.rb", <<~RUBY
@@ -28,24 +28,24 @@ RSpec.describe "App view / Scope namespace", :app_integration do
     end
   end
 
-  subject(:scope_namespace) { view_class.config.scope_namespace }
+  subject(:part_namespace) { view_class.config.part_namespace }
 
   describe "app view" do
     let(:view_class) { TestApp::View }
 
-    describe "no scope namespace defined" do
+    describe "no part namespace defined" do
       it "is nil" do
-        expect(scope_namespace).to be nil
+        expect(part_namespace).to be nil
       end
     end
 
-    describe "scope namespace defined" do
+    describe "part namespace defined" do
       def before_prepare
-        write "app/views/scopes/player.rb", <<~RUBY
+        write "app/views/parts/post.rb", <<~RUBY
           module TestApp
             module Views
-              module Scopes
-                class Player < Hanami::View::Scope
+              module Parts
+                class Post < Hanami::View::Part
                 end
               end
             end
@@ -53,8 +53,8 @@ RSpec.describe "App view / Scope namespace", :app_integration do
         RUBY
       end
 
-      it "is the Views::Scopes namespace within the app" do
-        expect(scope_namespace).to eq TestApp::Views::Scopes
+      it "is the Views::Parts namespace within the app" do
+        expect(part_namespace).to eq TestApp::Views::Parts
       end
     end
   end
@@ -73,21 +73,21 @@ RSpec.describe "App view / Scope namespace", :app_integration do
 
     let(:view_class) { Main::View }
 
-    describe "no scope namespace defined" do
+    describe "no part namespace defined" do
       it "is nil" do
-        expect(scope_namespace).to be nil
+        expect(part_namespace).to be nil
       end
     end
 
-    describe "scope namespace defined" do
+    describe "part namespace defined" do
       def before_prepare
         super
 
-        write "slices/main/views/scopes/player.rb", <<~RUBY
+        write "slices/main/views/parts/post.rb", <<~RUBY
           module Main
             module Views
-              module Scopes
-                class Player < Hanami::View::Scope
+              module Parts
+                class Post < Hanami::View::Part
                 end
               end
             end
@@ -95,8 +95,8 @@ RSpec.describe "App view / Scope namespace", :app_integration do
         RUBY
       end
 
-      it "is the Views::Scopes namespace within the slice" do
-        expect(scope_namespace).to eq Main::Views::Scopes
+      it "is the Views::Parts namespace within the slice" do
+        expect(part_namespace).to eq Main::Views::Parts
       end
     end
   end
