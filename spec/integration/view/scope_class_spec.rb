@@ -21,8 +21,7 @@ RSpec.describe "App view / Scope class", :app_integration do
         end
       RUBY
 
-      before_app if respond_to?(:before_app)
-
+      before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"
     end
   end
@@ -38,7 +37,7 @@ RSpec.describe "App view / Scope class", :app_integration do
     end
 
     describe "concrete app scope class defined" do
-      def before_app
+      def before_prepare
         write "app/views/scope.rb", <<~RUBY
           # auto_register: false
 
@@ -64,7 +63,7 @@ RSpec.describe "App view / Scope class", :app_integration do
   describe "slice view" do
     let(:view_class) { Main::View }
 
-    def before_app
+    def before_prepare
       write "slices/main/view.rb", <<~RUBY
         # auto_register: false
 
@@ -83,7 +82,7 @@ RSpec.describe "App view / Scope class", :app_integration do
     end
 
     describe "concrete app scope class defined" do
-      def before_app
+      def before_prepare
         super
 
         write "slices/main/views/scope.rb", <<~RUBY
@@ -108,7 +107,7 @@ RSpec.describe "App view / Scope class", :app_integration do
     end
 
     context "view not inheriting from app view, no concrete scope class" do
-      def before_app
+      def before_prepare
         write "slices/main/view.rb", <<~RUBY
           # auto_register: false
 
@@ -126,7 +125,7 @@ RSpec.describe "App view / Scope class", :app_integration do
     end
 
     context "no app view class defined" do
-      def before_app
+      def before_prepare
         FileUtils.rm "app/view.rb"
 
         write "slices/main/view.rb", <<~RUBY
