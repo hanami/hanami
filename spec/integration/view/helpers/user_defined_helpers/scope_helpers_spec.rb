@@ -36,14 +36,13 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
         end
       RUBY
 
-      before_app if respond_to?(:before_app)
-
+      before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"
     end
   end
 
   describe "app view" do
-    def before_app
+    def before_prepare
       write "app/views/posts/show.rb", <<~RUBY
         module TestApp
           module Views
@@ -67,7 +66,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
   end
 
   describe "slice view" do
-    def before_app
+    def before_prepare
       write "slices/main/view.rb", <<~RUBY
         module Main
           class View < TestApp::View

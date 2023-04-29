@@ -113,8 +113,7 @@ RSpec.describe "Helpers / FormHelper", :app_integration do
         <% end %>
       ERB
 
-      before_app if respond_to?(:before_app)
-
+      before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"
     end
   end
@@ -152,7 +151,7 @@ RSpec.describe "Helpers / FormHelper", :app_integration do
   end
 
   context "sessions enabled" do
-    def before_app
+    def before_prepare
       write "config/app.rb", <<~RUBY
         module TestApp
           class App < Hanami::App

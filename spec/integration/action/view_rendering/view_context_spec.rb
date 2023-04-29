@@ -27,8 +27,7 @@ RSpec.describe "App action / View rendering / View context", :app_integration do
         end
       RUBY
 
-      before_app if respond_to?(:before_app)
-
+      before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"
     end
   end
@@ -36,7 +35,7 @@ RSpec.describe "App action / View rendering / View context", :app_integration do
   describe "app action" do
     let(:action) { TestApp::App["actions.posts.show"] }
 
-    def before_app
+    def before_prepare
       write "app/actions/posts/show.rb", <<~RUBY
         module TestApp
           module Actions
@@ -80,7 +79,7 @@ RSpec.describe "App action / View rendering / View context", :app_integration do
     end
 
     context "context class defined" do
-      def before_app
+      def before_prepare
         super()
 
         write "app/views/context.rb", <<~RUBY
@@ -108,7 +107,7 @@ RSpec.describe "App action / View rendering / View context", :app_integration do
   describe "slice action" do
     let(:action) { Main::Slice["actions.posts.show"] }
 
-    def before_app
+    def before_prepare
       write "slices/main/action.rb", <<~RUBY
         module Main
           class Action < TestApp::Action
@@ -154,7 +153,7 @@ RSpec.describe "App action / View rendering / View context", :app_integration do
     end
 
     context "context class defined" do
-      def before_app
+      def before_prepare
         super()
 
         write "slices/main/views/context.rb", <<~RUBY

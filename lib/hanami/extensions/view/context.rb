@@ -25,12 +25,26 @@ module Hanami
               return views_namespace.const_get(:Context)
             end
 
-            views_namespace.const_set(:Context, Class.new(Hanami::View::Context).tap { |klass|
+            views_namespace.const_set(:Context, Class.new(context_superclass(slice)).tap { |klass|
               klass.configure_for_slice(slice)
             })
           end
 
           private
+
+          def context_superclass(slice)
+            return Hanami::View::Context if Hanami.app.equal?(slice)
+
+            begin
+              slice.inflector.constantize(
+                slice.inflector.camelize("#{slice.app.slice_name.name}/views/context")
+              )
+            rescue NameError => e
+              raise e unless %i[Views Context].include?(e.name)
+
+              Hanami::View::Context
+            end
+          end
 
           # TODO: this could be moved into the top-level Extensions::View
           def views_namespace(slice)

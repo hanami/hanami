@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "App view / Scope class", :app_integration do
+RSpec.describe "App view / Config / Scope class", :app_integration do
   before do
     with_directory(@dir = make_tmp_directory) do
       write "config/app.rb", <<~RUBY
@@ -21,8 +21,7 @@ RSpec.describe "App view / Scope class", :app_integration do
         end
       RUBY
 
-      before_app if respond_to?(:before_app)
-
+      before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"
     end
   end
@@ -38,7 +37,7 @@ RSpec.describe "App view / Scope class", :app_integration do
     end
 
     describe "concrete app scope class defined" do
-      def before_app
+      def before_prepare
         write "app/views/scope.rb", <<~RUBY
           # auto_register: false
 
@@ -64,7 +63,7 @@ RSpec.describe "App view / Scope class", :app_integration do
   describe "slice view" do
     let(:view_class) { Main::View }
 
-    def before_app
+    def before_prepare
       write "slices/main/view.rb", <<~RUBY
         # auto_register: false
 
@@ -75,15 +74,15 @@ RSpec.describe "App view / Scope class", :app_integration do
       RUBY
     end
 
-    describe "no concrete app scope class defined" do
-      it "generates an app scope class and configures it as the view's scope_class" do
+    describe "no concrete slice scope class defined" do
+      it "generates a slice scope class and configures it as the view's scope_class" do
         expect(view_class.config.scope_class).to be Main::Views::Scope
         expect(view_class.config.scope_class.superclass).to be TestApp::Views::Scope
       end
     end
 
-    describe "concrete app scope class defined" do
-      def before_app
+    describe "concrete slice scope class defined" do
+      def before_prepare
         super
 
         write "slices/main/views/scope.rb", <<~RUBY
@@ -101,14 +100,14 @@ RSpec.describe "App view / Scope class", :app_integration do
         RUBY
       end
 
-      it "configures the app scope class as the view's scope_class" do
+      it "configures the slice scope class as the view's scope_class" do
         expect(view_class.config.scope_class).to eq Main::Views::Scope
         expect(view_class.config.scope_class).to be_concrete
       end
     end
 
-    context "view not inheriting from app view, no concrete scope class" do
-      def before_app
+    context "view not inheriting from app view, no concrete scope class defined" do
+      def before_prepare
         write "slices/main/view.rb", <<~RUBY
           # auto_register: false
 
@@ -126,7 +125,7 @@ RSpec.describe "App view / Scope class", :app_integration do
     end
 
     context "no app view class defined" do
-      def before_app
+      def before_prepare
         FileUtils.rm "app/view.rb"
 
         write "slices/main/view.rb", <<~RUBY

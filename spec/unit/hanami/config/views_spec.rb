@@ -39,20 +39,6 @@ RSpec.describe Hanami::Config, "#views" do
     end
 
     describe "specialised default values" do
-      describe "paths" do
-        it 'is ["templates"]' do
-          expect(views.paths).to match [
-            an_object_satisfying { |path| path.dir.to_s == "templates" }
-          ]
-        end
-      end
-
-      describe "template_inference_base" do
-        it 'is "views"' do
-          expect(views.template_inference_base).to eq "views"
-        end
-      end
-
       describe "layout" do
         it 'is "app"' do
           expect(views.layout).to eq "app"
@@ -67,10 +53,6 @@ RSpec.describe Hanami::Config, "#views" do
 
       it "is frozen" do
         expect(views).to be_frozen
-      end
-
-      it "does not allow changes to locally defined settings" do
-        expect { views.parts_path = "parts" }.to raise_error(Dry::Configurable::FrozenConfigError)
       end
 
       it "does not allow changes to base view settings" do

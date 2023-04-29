@@ -3,7 +3,7 @@
 RSpec.describe "App view / Slice configuration", :app_integration do
   before do
     with_directory(@dir = make_tmp_directory) do
-      write "config/app.rb", <<~'RUBY'
+      write "config/app.rb", <<~RUBY
         require "hanami"
 
         module TestApp
@@ -12,7 +12,7 @@ RSpec.describe "App view / Slice configuration", :app_integration do
         end
       RUBY
 
-      write "app/view.rb", <<~'RUBY'
+      write "app/view.rb", <<~RUBY
         require "hanami/view"
 
         module TestApp
@@ -60,7 +60,7 @@ RSpec.describe "App view / Slice configuration", :app_integration do
     describe "subclass in app" do
       before do
         with_directory(@dir) do
-          write "app/views/articles/index.rb", <<~'RUBY'
+          write "app/views/articles/index.rb", <<~RUBY
             module TestApp
               module Views
                 module Articles
@@ -100,7 +100,7 @@ RSpec.describe "App view / Slice configuration", :app_integration do
     describe "subclass in slice" do
       before do
         with_directory(@dir) do
-          write "slices/admin/views/articles/index.rb", <<~'RUBY'
+          write "slices/admin/views/articles/index.rb", <<~RUBY
             module Admin
               module Views
                 module Articles
@@ -141,7 +141,7 @@ RSpec.describe "App view / Slice configuration", :app_integration do
   describe "inheriting from a slice-level base class, in turn inheriting from an app-level base class" do
     before do
       with_directory(@dir) do
-        write "slices/admin/view.rb", <<~'RUBY'
+        write "slices/admin/view.rb", <<~RUBY
           module Admin
             class View < TestApp::View
             end
@@ -177,7 +177,7 @@ RSpec.describe "App view / Slice configuration", :app_integration do
       context "slice views config present" do
         before do
           with_directory(@dir) do
-            write "config/slices/admin.rb", <<~'RUBY'
+            write "config/slices/admin.rb", <<~RUBY
               module Admin
                 class Slice < Hanami::Slice
                   config.views.layout = "slice_layout"
@@ -215,7 +215,7 @@ RSpec.describe "App view / Slice configuration", :app_integration do
     describe "subclass in slice" do
       before do
         with_directory(@dir) do
-          write "slices/admin/views/articles/index.rb", <<~'RUBY'
+          write "slices/admin/views/articles/index.rb", <<~RUBY
             module Admin
               module Views
                 module Articles
@@ -245,7 +245,7 @@ RSpec.describe "App view / Slice configuration", :app_integration do
 
       it "applies views config from the slice" do
         with_directory(@dir) do
-          write "config/slices/admin.rb", <<~'RUBY'
+          write "config/slices/admin.rb", <<~RUBY
             module Admin
               class Slice < Hanami::Slice
                 config.views.layout = "slice_layout"
@@ -269,7 +269,7 @@ RSpec.describe "App view / Slice configuration", :app_integration do
 
       it "prefers config from the slice base class over views config from the slice" do
         with_directory(@dir) do
-          write "config/slices/admin.rb", <<~'RUBY'
+          write "config/slices/admin.rb", <<~RUBY
             module Admin
               class Slice < Hanami::Slice
                 config.views.layout = "slice_layout"

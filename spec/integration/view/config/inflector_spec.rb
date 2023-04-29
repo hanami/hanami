@@ -2,7 +2,7 @@
 
 require "hanami"
 
-RSpec.describe "App view / Inflector", :app_integration do
+RSpec.describe "App view / Config / Inflector", :app_integration do
   before do
     module TestApp
       class App < Hanami::App

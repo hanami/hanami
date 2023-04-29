@@ -13,8 +13,6 @@ module Hanami
     class Views
       include Dry::Configurable
 
-      setting :parts_path, default: "views/parts"
-
       attr_reader :base_config
       protected :base_config
 
@@ -46,8 +44,6 @@ module Hanami
       private
 
       def configure_defaults
-        self.paths = ["templates"]
-        self.template_inference_base = "views"
         self.layout = "app"
       end
 
