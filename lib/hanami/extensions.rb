@@ -10,3 +10,7 @@ if Hanami.bundled?("hanami-view")
   require_relative "extensions/view/part"
   require_relative "extensions/view/scope"
 end
+
+if Hanami.bundled?("hanami-router")
+  require_relative "extensions/router/errors"
+end

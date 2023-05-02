@@ -948,23 +948,37 @@ module Hanami
 
         require_relative "slice/router"
 
+        slice = self
         config = self.config
         rack_monitor = self["rack.monitor"]
 
+        # TODO: update hanami-router to handle `not_allowed` like `not_found`
         Slice::Router.new(
           inspector: inspector,
           routes: routes,
           resolver: config.router.resolver.new(slice: self),
+          not_found: ROUTER_NOT_FOUND_HANDLER,
           **config.router.options
         ) do
           use(rack_monitor)
-          if Hanami.bundled?("hanami-controller")
-            use(*config.actions.sessions.middleware) if config.actions.sessions.enabled?
+
+          use(
+            Hanami::Middleware::RenderExceptions,
+            Hanami::Middleware::PublicExceptionsApp.new(slice.root.join("public"))
+          )
+
+          if Hanami.bundled?("hanami-controller") && config.actions.sessions.enabled?
+            use(*config.actions.sessions.middleware)
           end
 
           middleware_stack.update(config.middleware_stack)
         end
       end
+
+      ROUTER_NOT_FOUND_HANDLER = -> env {
+        raise Hanami::Router::NotFoundError.new(env)
+      }.freeze
+      private_constant :ROUTER_NOT_FOUND_HANDLER
 
       # rubocop:enable Metrics/AbcSize
     end
