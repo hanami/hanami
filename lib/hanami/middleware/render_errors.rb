@@ -6,10 +6,10 @@ require "rack"
 
 module Hanami
   module Middleware
-    class RenderExceptions
-      def initialize(app, exceptions_app)
+    class RenderErrors
+      def initialize(app, errors_app)
         @app = app
-        @exceptions_app = exceptions_app
+        @errors_app = errors_app
       end
 
       def call(env)
@@ -38,7 +38,7 @@ module Hanami
         request.path_info = "/#{status}"
         request.set_header(Rack::REQUEST_METHOD, "GET")
 
-        @exceptions_app.call(request.env)
+        @errors_app.call(request.env)
       rescue Exception => failsafe_error
         # rubocop:disable Style/StderrPuts
         $stderr.puts "Error during exception rendering: #{failsafe_error}\n  #{failsafe_error.backtrace * "\n  "}"

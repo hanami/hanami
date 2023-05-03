@@ -4,7 +4,7 @@ require "rack"
 
 module Hanami
   module Middleware
-    class PublicExceptionsApp
+    class PublicErrorsApp
       attr_reader :public_path
 
       def initialize(public_path)
