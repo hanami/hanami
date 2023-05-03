@@ -7,8 +7,9 @@ require "rack"
 module Hanami
   module Middleware
     class RenderErrors
-      def initialize(app, errors_app)
+      def initialize(app, enabled, errors_app)
         @app = app
+        @enabled = enabled
         @errors_app = errors_app
       end
 
@@ -17,7 +18,7 @@ module Hanami
       rescue Exception => exception
         request = Rack::Request.new(env)
 
-        if render_exceptions?(request)
+        if @enabled
           render_exception(request, exception)
         else
           raise exception
@@ -25,11 +26,6 @@ module Hanami
       end
 
       private
-
-      def render_exceptions?(request)
-        # TODO: make configurable, store in request
-        true
-      end
 
       def render_exception(request, exception)
         wrapper = RenderableException.new(exception)

@@ -962,12 +962,11 @@ module Hanami
         ) do
           use(rack_monitor)
 
-          if config.render_errors
-            use(
-              Hanami::Middleware::RenderErrors,
-              Hanami::Middleware::PublicErrorsApp.new(slice.root.join("public"))
-            )
-          end
+          use(
+            Hanami::Middleware::RenderErrors,
+            config.render_errors,
+            Hanami::Middleware::PublicErrorsApp.new(slice.root.join("public"))
+          )
 
           if Hanami.bundled?("hanami-controller") && config.actions.sessions.enabled?
             use(*config.actions.sessions.middleware)
