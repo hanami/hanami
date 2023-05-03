@@ -127,6 +127,19 @@ module Hanami
     #   @since 2.0.0
     setting :base_url, default: "http://0.0.0.0:2300", constructor: ->(url) { URI(url) }
 
+    # @!attribute [rw] render_errors
+    #   Sets whether to catch exceptions and render error pages.
+    #
+    #   For HTML responses, these error pages are in `public/{404,500}.html`.
+    #
+    #   Defaults to `true` in production mode, `false` in all others.
+    #
+    #   @return [Boolean]
+    #
+    #   @api public
+    #   @since 2.1.0
+    setting :render_errors, default: false
+
     # Returns the app or slice's {Hanami::SliceName slice_name}.
     #
     # This is useful for default config values that depend on this name.
@@ -217,6 +230,7 @@ module Hanami
 
       # Apply default values that are only knowable at initialize-time (vs require-time)
       self.root = Dir.pwd
+      self.render_errors = (env == :production)
       load_from_env
 
       @logger = Config::Logger.new(env: env, app_name: app_name)

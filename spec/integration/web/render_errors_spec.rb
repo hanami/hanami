@@ -16,6 +16,7 @@ RSpec.describe "Web / Rendering errors", :app_integration do
         module TestApp
           class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
+            config.render_errors = true
           end
         end
       RUBY
@@ -40,22 +41,21 @@ RSpec.describe "Web / Rendering errors", :app_integration do
         end
       RUBY
 
+      before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"
     end
   end
 
   describe "HTML request" do
     context "error pages present" do
-      before do
-        with_directory(@dir) do
-          write "public/404.html", <<~HTML
-            <h1>Not found</h1>
-          HTML
+      def before_prepare
+        write "public/404.html", <<~HTML
+          <h1>Not found</h1>
+        HTML
 
-          write "public/500.html", <<~HTML
-            <h1>Error</h1>
-          HTML
-        end
+        write "public/500.html", <<~HTML
+          <h1>Error</h1>
+        HTML
       end
 
       it "responds with the HTML for a 404" do
@@ -115,6 +115,38 @@ RSpec.describe "Web / Rendering errors", :app_integration do
       expect(last_response.body.strip).to eq %({"status":500,"error":"Internal Server Error"})
       expect(last_response.get_header("Content-Type")).to eq "application/json; charset=utf-8"
       expect(last_response.get_header("Content-Length")).to eq "46"
+    end
+  end
+
+  describe "render_errors config disabled" do
+    def before_prepare
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+            config.logger.stream = File.new("/dev/null", "w")
+            config.render_errors = false
+          end
+        end
+      RUBY
+
+      # Include error pages here to prove they are _not_ used
+      write "public/404.html", <<~HTML
+        <h1>Not found</h1>
+      HTML
+
+      write "public/500.html", <<~HTML
+        <h1>Error</h1>
+      HTML
+    end
+
+    it "raises a Hanami::Router::NotFoundError for a 404" do
+      expect { get "/foo" }.to raise_error(Hanami::Router::NotFoundError)
+    end
+
+    it "raises the original error for a 500" do
+      expect { get "/error" }.to raise_error(RuntimeError, "oops")
     end
   end
 end
