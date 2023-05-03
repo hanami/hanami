@@ -140,6 +140,31 @@ module Hanami
     #   @since 2.1.0
     setting :render_errors, default: false
 
+    # @!attribute [rw] render_error_responses
+    #   Sets a mapping of exception class names (as strings) to symbolic response status codes used
+    #   for rendering error responses.
+    #
+    #   The response status codes will be passed to `Rack::Utils.status_code`.
+    #
+    #   In ordinary usage, you should not replace this hash. Instead, add keys and values for the
+    #   errors you want handled.
+    #
+    #   @example
+    #     config.render_error_responses
+    #     # => {"Hanami::Router::NotFoundError" => :not_found}
+    #
+    #     config.render_error_responses["MyNotFoundError"] = :not_found
+    #
+    #   @return [Hash{String => Symbol}]
+    #
+    #   @see #render_errors
+    #
+    #   @api public
+    #   @since 2.1.0
+    setting :render_error_responses, default: Hash.new(:internal_server_error).merge!(
+      "Hanami::Router::NotFoundError" => :not_found
+    )
+
     # Returns the app or slice's {Hanami::SliceName slice_name}.
     #
     # This is useful for default config values that depend on this name.

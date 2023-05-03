@@ -964,7 +964,7 @@ module Hanami
 
           use(
             Hanami::Middleware::RenderErrors,
-            config.render_errors,
+            config,
             Hanami::Middleware::PublicErrorsApp.new(slice.root.join("public"))
           )
 

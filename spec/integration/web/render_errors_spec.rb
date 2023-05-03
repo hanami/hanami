@@ -118,6 +118,47 @@ RSpec.describe "Web / Rendering errors", :app_integration do
     end
   end
 
+  describe "configuring error responses" do
+    def before_prepare
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          CustomNotFoundError = Class.new(StandardError)
+
+          class App < Hanami::App
+            config.logger.stream = File.new("/dev/null", "w")
+            config.render_errors = true
+            config.render_error_responses["TestApp::CustomNotFoundError"] = :not_found
+          end
+        end
+      RUBY
+
+      write "app/actions/error.rb", <<~RUBY
+        module TestApp
+          module Actions
+            class Error < Hanami::Action
+              def handle(*)
+                raise CustomNotFoundError
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "public/404.html", <<~HTML
+        <h1>Not found</h1>
+      HTML
+    end
+
+    it "uses the configured errors to determine the response" do
+      get "/error"
+
+      expect(last_response.status).to eq 404
+      expect(last_response.body.strip).to eq "<h1>Not found</h1>"
+    end
+  end
+
   describe "render_errors config disabled" do
     def before_prepare
       write "config/app.rb", <<~RUBY
