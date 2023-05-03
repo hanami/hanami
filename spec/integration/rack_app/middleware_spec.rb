@@ -244,6 +244,7 @@ RSpec.describe "Hanami web app", :app_integration do
         module TestApp
           class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
+            config.render_errors = true
           end
         end
       RUBY
@@ -330,12 +331,12 @@ RSpec.describe "Hanami web app", :app_integration do
         expect(last_response.headers).to have_key("X-Auth-User-ID")
       end
 
-      it "uses Rack middleware for not found paths" do
+      it "does not uses the Rack middleware for not found paths" do
         get "/admin/users"
 
         expect(last_response.status).to be(404)
         expect(last_response.body).to eq "Not Found"
-        expect(last_response.headers).to have_key("X-Auth-User-ID")
+        expect(last_response.headers).not_to have_key("X-Auth-User-ID")
       end
     end
   end
@@ -350,6 +351,7 @@ RSpec.describe "Hanami web app", :app_integration do
         module TestApp
           class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
+            config.render_errors = true
           end
         end
       RUBY
@@ -597,15 +599,15 @@ RSpec.describe "Hanami web app", :app_integration do
       expect(last_response.headers).to_not have_key("X-API-Version")
     end
 
-    it "uses Rack middleware for other paths" do
-      get "/foo"
+    it "does not use Rack middleware for other paths" do
+      get "/__not_found__"
 
       expect(last_response.status).to be(404)
-      expect(last_response.headers["X-Identifier-Root"]).to eq("true")
-      expect(last_response.headers).to have_key("X-Elapsed")
-      expect(last_response.headers).to_not have_key("X-Auth-User-ID")
-      expect(last_response.headers).to_not have_key("X-API-Rate-Limit-Quota")
-      expect(last_response.headers).to_not have_key("X-API-Version")
+      expect(last_response.headers).not_to have_key("X-Identifier-Root")
+      expect(last_response.headers).not_to have_key("X-Elapsed")
+      expect(last_response.headers).not_to have_key("X-Auth-User-ID")
+      expect(last_response.headers).not_to have_key("X-API-Rate-Limit-Quota")
+      expect(last_response.headers).not_to have_key("X-API-Version")
     end
 
     context "scoped" do
@@ -621,15 +623,15 @@ RSpec.describe "Hanami web app", :app_integration do
       end
 
       it "uses Rack middleware for other paths" do
-        get "/admin/users"
+        get "/admin/__not_found__"
 
         expect(last_response.status).to be(404)
-        expect(last_response.headers["X-Identifier-Admin"]).to eq("true")
-        expect(last_response.headers).to have_key("X-Elapsed")
-        expect(last_response.headers).to have_key("X-Elapsed")
-        expect(last_response.headers).to have_key("X-Auth-User-ID")
-        expect(last_response.headers).to_not have_key("X-API-Rate-Limit-Quota")
-        expect(last_response.headers).to_not have_key("X-API-Version")
+        expect(last_response.headers).not_to have_key("X-Identifier-Admin")
+        expect(last_response.headers).not_to have_key("X-Elapsed")
+        expect(last_response.headers).not_to have_key("X-Elapsed")
+        expect(last_response.headers).not_to have_key("X-Auth-User-ID")
+        expect(last_response.headers).not_to have_key("X-API-Rate-Limit-Quota")
+        expect(last_response.headers).not_to have_key("X-API-Version")
       end
 
       # See: https://github.com/hanami/api/issues/8
