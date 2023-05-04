@@ -6,6 +6,14 @@ require "rack"
 
 module Hanami
   module Middleware
+    # Rack middleware that rescues errors raised by the app renders friendly error responses, via a
+    # given "errors app".
+    #
+    # By default, this is enabled only in production mode.
+    #
+    # @see Hanami::Config#render_errors
+    # @see Hanani::Middleware::PublicErrorsApp
+    #
     # @api private
     # @since 2.1.0
     class RenderErrors

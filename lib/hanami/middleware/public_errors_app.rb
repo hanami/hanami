@@ -4,13 +4,26 @@ require "rack"
 
 module Hanami
   module Middleware
+    # The errors app given to {Hanami::Middleware::RenderErrors}, which renders a error responses
+    # from HTML pages kept in `public/` or as simple JSON structures.
+    #
+    # @see Hanami::Middleware::RenderErrors
+    #
+    # @api private
+    # @since 2.1.0
     class PublicErrorsApp
+      # @api private
+      # @since 2.1.0
       attr_reader :public_path
 
+      # @api private
+      # @since 2.1.0
       def initialize(public_path)
         @public_path = public_path
       end
 
+      # @api private
+      # @since 2.1.0
       def call(env)
         request = Rack::Request.new(env)
         status = request.path_info[1..].to_i
