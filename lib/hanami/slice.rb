@@ -957,6 +957,7 @@ module Hanami
           inspector: inspector,
           routes: routes,
           resolver: config.router.resolver.new(slice: self),
+          not_allowed: ROUTER_NOT_ALLOWED_HANDLER,
           not_found: ROUTER_NOT_FOUND_HANDLER,
           **config.router.options
         ) do
@@ -975,6 +976,11 @@ module Hanami
           middleware_stack.update(config.middleware_stack)
         end
       end
+
+      ROUTER_NOT_ALLOWED_HANDLER = -> env, allowed_http_methods {
+        raise Hanami::Router::NotAllowedError.new(env, allowed_http_methods)
+      }.freeze
+      private_constant :ROUTER_NOT_ALLOWED_HANDLER
 
       ROUTER_NOT_FOUND_HANDLER = -> env {
         raise Hanami::Router::NotFoundError.new(env)

@@ -24,7 +24,20 @@ RSpec.describe "Web / Rendering errors", :app_integration do
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
+            get "index", to: "index"
             get "error", to: "error"
+          end
+        end
+      RUBY
+
+      write "app/actions/index.rb", <<~RUBY
+        module TestApp
+          module Actions
+            class Index < Hanami::Action
+              def handle(*, response)
+                response.body = "Hello"
+              end
+            end
           end
         end
       RUBY
@@ -58,8 +71,17 @@ RSpec.describe "Web / Rendering errors", :app_integration do
         HTML
       end
 
-      it "responds with the HTML for a 404" do
+      it "responds with the HTML for a 404 from a not found error" do
         get "/__not_found__"
+
+        expect(last_response.status).to eq 404
+        expect(last_response.body.strip).to eq "<h1>Not found</h1>"
+        expect(last_response.get_header("Content-Type")).to eq "text/html; charset=utf-8"
+        expect(last_response.get_header("Content-Length")).to eq "19"
+      end
+
+      it "responds with the HTML for a 404 from a method not allowed error" do
+        post "/index"
 
         expect(last_response.status).to eq 404
         expect(last_response.body.strip).to eq "<h1>Not found</h1>"
@@ -78,8 +100,17 @@ RSpec.describe "Web / Rendering errors", :app_integration do
     end
 
     context "error pages missing" do
-      it "responds with default text for a 404" do
+      it "responds with default text for a 404 from a not found error" do
         get "/__not_found__"
+
+        expect(last_response.status).to eq 404
+        expect(last_response.body.strip).to eq "Not Found"
+        expect(last_response.get_header("Content-Type")).to eq "text/html; charset=utf-8"
+        expect(last_response.get_header("Content-Length")).to eq "9"
+      end
+
+      it "responds with default text for a 404 from a metohd not allowed error" do
+        post "/index"
 
         expect(last_response.status).to eq 404
         expect(last_response.body.strip).to eq "Not Found"
@@ -99,8 +130,17 @@ RSpec.describe "Web / Rendering errors", :app_integration do
   end
 
   describe "JSON request" do
-    it "renders a JSON response for a 404" do
+    it "renders a JSON response for a 404 from a not found error" do
       get "/__not_found__", {}, "HTTP_ACCEPT" => "application/json"
+
+      expect(last_response.status).to eq 404
+      expect(last_response.body.strip).to eq %({"status":404,"error":"Not Found"})
+      expect(last_response.get_header("Content-Type")).to eq "application/json; charset=utf-8"
+      expect(last_response.get_header("Content-Length")).to eq "34"
+    end
+
+    it "renders a JSON response for a 404 from a metnod not allowed error" do
+      post "/index", {}, "HTTP_ACCEPT" => "application/json"
 
       expect(last_response.status).to eq 404
       expect(last_response.body.strip).to eq %({"status":404,"error":"Not Found"})
@@ -184,6 +224,10 @@ RSpec.describe "Web / Rendering errors", :app_integration do
 
     it "raises a Hanami::Router::NotFoundError for a 404" do
       expect { get "/__not_found__" }.to raise_error(Hanami::Router::NotFoundError)
+    end
+
+    it "raises a Hanami::Router::NotAllowedError for a 405" do
+      expect { post "/index" }.to raise_error(Hanami::Router::NotAllowedError)
     end
 
     it "raises the original error for a 500" do
