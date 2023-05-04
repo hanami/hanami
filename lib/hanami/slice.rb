@@ -952,7 +952,6 @@ module Hanami
         config = self.config
         rack_monitor = self["rack.monitor"]
 
-        # TODO: update hanami-router to handle `not_allowed` like `not_found`
         Slice::Router.new(
           inspector: inspector,
           routes: routes,
