@@ -42,7 +42,7 @@ RSpec.describe Hanami::Web::RackLogger do
       verb = "POST"
 
       env = Rack::MockRequest.env_for(path, method: verb)
-      env["Content-Length"] = content_length
+      env["CONTENT_LENGTH"] = content_length
       env["REMOTE_ADDR"] = ip
 
       params = {"user" => {"password" => "secret"}}
