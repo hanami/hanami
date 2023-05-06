@@ -570,6 +570,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.render_detailed_errors = false
           end
         end
       RUBY
@@ -601,6 +602,8 @@ RSpec.describe "Hanami web app", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.render_detailed_errors = false
+
             register_slice :admin
           end
         end

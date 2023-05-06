@@ -968,6 +968,11 @@ module Hanami
             Hanami::Middleware::PublicErrorsApp.new(slice.root.join("public"))
           )
 
+          if config.render_detailed_errors && Hanami.bundled?("hanami-webconsole")
+            require "hanami/webconsole"
+            use(Hanami::Webconsole::Middleware)
+          end
+
           if Hanami.bundled?("hanami-controller") && config.actions.sessions.enabled?
             use(*config.actions.sessions.middleware)
           end

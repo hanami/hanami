@@ -140,6 +140,19 @@ module Hanami
     #   @since 2.1.0
     setting :render_errors, default: false
 
+    # @!attribute [rw] render_detailed_errors
+    #   Sets whether to catch exceptions and render detailed, interactive error pages.
+    #
+    #   Requires the hanami-webconsole gem to be available.
+    #
+    #   Defaults to `false` in production mode, `true` in all others.
+    #
+    #   @return [Boolean]
+    #
+    #   @api public
+    #   @since 2.1.0
+    setting :render_detailed_errors, default: false
+
     # @!attribute [rw] render_error_responses
     #   Sets a mapping of exception class names (as strings) to symbolic response status codes used
     #   for rendering error responses.
@@ -257,6 +270,7 @@ module Hanami
       # Apply default values that are only knowable at initialize-time (vs require-time)
       self.root = Dir.pwd
       self.render_errors = (env == :production)
+      self.render_detailed_errors = (env != :production)
       load_from_env
 
       @logger = Config::Logger.new(env: env, app_name: app_name)

@@ -17,6 +17,7 @@ RSpec.describe "Web / Rendering errors", :app_integration do
           class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
             config.render_errors = true
+            config.render_detailed_errors = false
           end
         end
       RUBY
@@ -170,6 +171,7 @@ RSpec.describe "Web / Rendering errors", :app_integration do
             config.logger.stream = File.new("/dev/null", "w")
             config.render_errors = true
             config.render_error_responses["TestApp::CustomNotFoundError"] = :not_found
+            config.render_detailed_errors = false
           end
         end
       RUBY
@@ -208,6 +210,7 @@ RSpec.describe "Web / Rendering errors", :app_integration do
           class App < Hanami::App
             config.logger.stream = File.new("/dev/null", "w")
             config.render_errors = false
+            config.render_detailed_errors = false
           end
         end
       RUBY
