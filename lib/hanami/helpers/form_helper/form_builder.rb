@@ -1259,7 +1259,7 @@ module Hanami
             value: _value(name)
           }
           attrs.merge!(attributes)
-          attrs[:value] = escape_html(attrs[:value])
+          attrs[:value] = escape_html(attrs[:value]).html_safe
           attrs
         end
 
