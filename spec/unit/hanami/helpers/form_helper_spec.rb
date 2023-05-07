@@ -537,8 +537,6 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#fieldset" do
     it "renders a fieldset" do
-      # TODO: work out whether to keep or remove fields_for here %>
-      # <% fields_for :author do %>
       html = render(<<~ERB)
         <%= form_for "/books" do |f| %>
           <%= f.fieldset do %>

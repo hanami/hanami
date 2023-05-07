@@ -1289,7 +1289,6 @@ module Hanami
         # @api private
         # @since 2.0.0
         def _value(name)
-          # TODO: to_sym should not be necessary here
           values.get(*_split_input_name(name).map(&:to_sym))
         end
 
