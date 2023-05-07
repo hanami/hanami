@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "hanami/view/helpers/tag_helper"
+require "hanami/view"
 
 module Hanami
   module Helpers

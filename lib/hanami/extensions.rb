@@ -5,6 +5,7 @@ if Hanami.bundled?("hanami-controller")
 end
 
 if Hanami.bundled?("hanami-view")
+  require "hanami/view"
   require_relative "extensions/view"
   require_relative "extensions/view/context"
   require_relative "extensions/view/part"
