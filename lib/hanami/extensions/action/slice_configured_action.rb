@@ -121,9 +121,11 @@ module Hanami
             slice: slice,
           )
 
-          view_identifiers.detect do |identifier|
-            break slice[identifier] if slice.key?(identifier)
+          view_identifiers.each do |identifier|
+            return slice[identifier] if slice.key?(identifier)
           end
+
+          nil
         end
 
         def resolve_view_context
