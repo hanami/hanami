@@ -76,10 +76,6 @@ module Hanami
 
             attr_reader :settings
 
-            attr_reader :routes
-
-            attr_reader :request
-
             # @see SliceConfiguredContext#define_new
             def initialize( # rubocop:disable Metrics/ParameterLists
               inflector: nil,
@@ -101,9 +97,12 @@ module Hanami
             end
 
             def initialize_copy(source)
+              # The standard implementation of initialize_copy will make shallow copies of all
+              # instance variables from the source. This is fine for most of our ivars.
               super
 
-              # Dup objects that may be mutated over a given rendering
+              # Dup any objects that will be mutated over a given rendering to ensure no leakage of
+              # state across distinct view renderings.
               @content_for = source.instance_variable_get(:@content_for).dup
             end
 
@@ -120,10 +119,26 @@ module Hanami
 
             def assets
               unless @assets
-                raise Hanami::ComponentLoadError, "hanami-assets gem is required to access assets"
+                raise Hanami::ComponentLoadError, "the hanami-assets gem is required to access assets"
               end
 
               @assets
+            end
+
+            def request
+              unless @request
+                raise Hanami::ComponentLoadError, "only views rendered from Hanami::Action instances have a request"
+              end
+
+              @request
+            end
+
+            def routes
+              unless @routes
+                raise Hanami::ComponentLoadError, "the hanami-router gem is required to access routes"
+              end
+
+              @routes
             end
 
             def content_for(key, value = nil)
