@@ -97,9 +97,12 @@ module Hanami
             end
 
             def initialize_copy(source)
+              # The standard implementation of initialize_copy will make shallow copies of all
+              # instance variables from the source. This is fine for most of our ivars.
               super
 
-              # Dup objects that may be mutated over a given rendering
+              # Dup any objects that will be mutated over a given rendering to ensure no leakage of
+              # state across distinct view renderings.
               @content_for = source.instance_variable_get(:@content_for).dup
             end
 
