@@ -537,8 +537,6 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
   describe "#fieldset" do
     it "renders a fieldset" do
-      # TODO: work out whether to keep or remove fields_for here %>
-      # <% fields_for :author do %>
       html = render(<<~ERB)
         <%= form_for "/books" do |f| %>
           <%= f.fieldset do %>
@@ -2193,14 +2191,14 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
     context "with values" do
       let(:values) { {book: Struct.new(:title).new(val)} }
-      let(:val)    { "PPoEA" }
+      let(:val)    { "Learn some <html>!" }
 
       it "renders with value" do
         html = form_for("/books", values: values) do |f|
           f.text_field "book.title"
         end
 
-        expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="PPoEA">)
+        expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="Learn some &lt;html&gt;!">)
       end
 
       it "allows to override 'value' attribute" do
@@ -2214,14 +2212,14 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
     context "with filled params" do
       let(:params) { {book: {title: val}} }
-      let(:val)    { "PPoEA" }
+      let(:val)    { "Learn some <html>!" }
 
       it "renders with value" do
         html = form_for("/books") do |f|
           f.text_field "book.title"
         end
 
-        expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="PPoEA">)
+        expect(html).to include %(<input type="text" name="book[title]" id="book-title" value="Learn some &lt;html&gt;!">)
       end
 
       it "allows to override 'value' attribute" do

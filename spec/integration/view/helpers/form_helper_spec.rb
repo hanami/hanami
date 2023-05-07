@@ -90,7 +90,7 @@ RSpec.describe "Helpers / FormHelper", :app_integration do
             module Posts
               class Edit < TestApp::View
                 expose :post do
-                  Struct.new(:title, :body).new("Hello world", "This is the post.")
+                  Struct.new(:title, :body).new("Hello <world>", "This is the post.")
                 end
               end
             end
@@ -132,7 +132,7 @@ RSpec.describe "Helpers / FormHelper", :app_integration do
     html = Capybara.string(last_response.body)
 
     title_field = html.find("input[name='post[title]']")
-    expect(title_field.value).to eq "Hello world"
+    expect(title_field.value).to eq "Hello <world>"
 
     body_field = html.find("textarea[name='post[body]']")
     expect(body_field.value).to eq "This is the post."
