@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "hanami/view/helpers/escape_helper"
+require "hanami/view"
 require_relative "values"
 
 module Hanami
