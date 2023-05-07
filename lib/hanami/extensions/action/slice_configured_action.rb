@@ -121,15 +121,27 @@ module Hanami
             slice: slice,
           )
 
-          view_identifiers.detect do |identifier|
-            break slice[identifier] if slice.key?(identifier)
+          view_identifiers.each do |identifier|
+            return slice[identifier] if slice.key?(identifier)
           end
+
+          nil
         end
 
         def resolve_view_context
-          return unless Extensions.const_defined?(:View)
+          if Hanami.bundled?("hanami-view")
+            return Extensions::View::Context.context_class(slice).new
+          end
 
-          Extensions::View::Context.context_class(slice).new
+          # If hanami-view isn't bundled, try and find a possible third party context class with the
+          # same `Views::Context` name (but don't fall back to automatically defining one).
+          if slice.namespace.const_defined?(:Views)
+            views_namespace = slice.namespace.const_get(:Views)
+
+            if views_namespace.const_defined?(:Context)
+              views_namespace.const_get(:Context).new
+            end
+          end
         end
 
         def resolve_routes

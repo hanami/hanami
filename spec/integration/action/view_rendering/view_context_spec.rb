@@ -4,7 +4,7 @@ RSpec.describe "App action / View rendering / View context", :app_integration do
   subject(:context) {
     # We capture the context during rendering via our view spies; see the view classes below
     action.call("REQUEST_METHOD" => "GET", "QUERY_STRING" => "/mock_request")
-    action.view.called_with.fetch(:context)
+    action.view.called_with[:context]
   }
 
   before do
@@ -100,6 +100,47 @@ RSpec.describe "App action / View rendering / View context", :app_integration do
       it "uses the defined context class" do
         expect(context).to be_an_instance_of TestApp::Views::Context
         expect(context).to be_a_concrete_app_context
+      end
+    end
+
+    context "hanami-view not bundled" do
+      before do
+        allow(Hanami).to receive(:bundled?).and_call_original
+        expect(Hanami).to receive(:bundled?).with("hanami-view").and_return false
+      end
+
+      it "does not provide a context" do
+        expect(context).to be nil
+      end
+
+      context "context class defined" do
+        def before_prepare
+          super()
+
+          write "app/views/context.rb", <<~RUBY
+            module TestApp
+              module Views
+                class Context
+                  def initialize(**)
+                  end
+
+                  def with(**)
+                    self
+                  end
+
+                  def concrete_app_context?
+                    true
+                  end
+                end
+              end
+            end
+          RUBY
+        end
+
+        it "uses the defined context class" do
+          expect(context).to be_an_instance_of TestApp::Views::Context
+          expect(context).to be_a_concrete_app_context
+        end
       end
     end
   end
