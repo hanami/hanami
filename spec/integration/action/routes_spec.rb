@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "App action / Routes", :app_integration do
   specify "Access app routes from an action" do
     with_tmp_directory(Dir.mktmpdir) do

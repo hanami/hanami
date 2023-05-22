@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "pathname"
 require "zeitwerk"
 require_relative "hanami/constants"

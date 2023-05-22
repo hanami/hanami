@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Slices", :app_integration do
   it "Loading a slice uses a defined slice class" do
     with_tmp_directory(Dir.mktmpdir) do

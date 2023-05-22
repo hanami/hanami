@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "dry/core/constants"
 require "dry/configurable"
 require_relative "errors"
@@ -18,8 +16,6 @@ module Hanami
   #
   # @example
   #   # config/settings.rb
-  #   # frozen_string_literal: true
-  #
   #   module MyApp
   #     class Settings < Hanami::Settings
   #       Secret = Types::String.constrained(min_size: 20)

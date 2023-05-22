@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "App view / Config / Scope class", :app_integration do
   before do
     with_directory(@dir = make_tmp_directory) do

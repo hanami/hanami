@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Container imports", :app_integration do
   xspecify "App container is imported into slice containers by default" do
     with_tmp_directory(Dir.mktmpdir) do

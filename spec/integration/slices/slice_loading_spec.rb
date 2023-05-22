@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "rack/test"
 
 RSpec.describe "Slices / Slice loading", :app_integration, :aggregate_failures do

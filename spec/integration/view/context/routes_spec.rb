@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami"
 
 RSpec.describe "App view / Context / Routes", :app_integration do

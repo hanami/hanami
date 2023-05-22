@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami/settings"
 
 RSpec.describe Hanami::Settings do

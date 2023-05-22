@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami"
 
 RSpec.describe "App action / View rendering / Paired view inference", :app_integration do

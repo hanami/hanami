@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "uri"
 require "pathname"
 require "dry/configurable"

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app_integration do
   before do
     with_directory(make_tmp_directory) do

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Container / Provider lifecycle", :app_integration do
   let!(:slice) {
     module TestApp

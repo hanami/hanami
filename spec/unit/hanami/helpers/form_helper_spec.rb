@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami/helpers/form_helper"
 require "hanami/view/erb/template"
 

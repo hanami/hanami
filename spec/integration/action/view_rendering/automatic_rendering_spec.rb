@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "App action / View rendering / Automatic rendering", :app_integration do
   it "Renders a view automatically, passing all params and exposures" do
     within_app do

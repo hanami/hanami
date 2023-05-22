@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "stringio"
 
 RSpec.describe "Slices / Slice configuration", :app_integration do

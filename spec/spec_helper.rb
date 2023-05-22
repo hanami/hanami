@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "pathname"
 
 SPEC_ROOT = File.expand_path(__dir__).freeze

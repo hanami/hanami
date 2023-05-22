@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Slice Registrations", :app_integration do
   matcher :have_key do |name, value|
     match do |slice|

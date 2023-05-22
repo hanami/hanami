@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Hanami
   # @api private
   CONTAINER_KEY_DELIMITER = "."

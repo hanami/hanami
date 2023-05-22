@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Hanami
   # @since 2.0.1
   # @api private

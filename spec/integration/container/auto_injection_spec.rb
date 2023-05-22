@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Container auto-injection (aka \"Deps\") mixin", :app_integration do
   # rubocop:disable Metrics/MethodLength
   def with_app

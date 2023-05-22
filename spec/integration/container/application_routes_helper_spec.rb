@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "stringio"
 
 RSpec.describe "App routes helper", :app_integration do

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative "constants"
 require_relative "errors"
 
@@ -11,8 +9,6 @@ module Hanami
   #
   # @example
   #   # config/routes.rb
-  #   # frozen_string_literal: true
-  #
   #   require "hanami/routes"
   #
   #   module MyApp

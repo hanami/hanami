@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami/config/actions"
 
 RSpec.describe Hanami::Config::Actions, "#content_security_policy" do

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "App action / View rendering / View context", :app_integration do
   subject(:context) {
     # We capture the context during rendering via our view spies; see the view classes below

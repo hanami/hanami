@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami/settings"
 
 RSpec.describe "Settings / Using types", :app_integration do

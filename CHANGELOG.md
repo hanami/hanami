@@ -611,8 +611,6 @@ The web, with simplicity.
 - [Marc Busqué] App settings are defined within a concrete class rather than an anonymous block, to allow for users to leverage the typical behavior of Ruby classes, such as for defining their own types module to use for coercing setting values. This class also relies on dry-configurable for its settings implementation, so the standard dry-configurable `setting` API is available, such as the `constructor:` and `default:` options.
 
   ```ruby
-  # frozen_string_literal: true
-
   require "dry/types"
   require "hanami/application/settings"
 
@@ -632,8 +630,6 @@ The web, with simplicity.
 - [Marc Busqué] Routes are defined within a concrete class rather than an anonymous block, to provide consistency with the settings (noted above), as well a place for additional behavior (in future releases):
 
   ```ruby
-  # frozen_string_literal: true
-
   require "hanami/application/routes"
 
   module MyApp
@@ -659,8 +655,6 @@ The web, with simplicity.
 - [Tim Riley] Dynamically create an auto-injection mixin (e.g. `Bookshelf::Deps`)
 
   ```ruby
-  # frozen_string_literal: true
-
   module Bookshelf
     class CreateThing
       include Deps[service_client: "some_service.client"]
@@ -723,8 +717,6 @@ The web, with simplicity.
 - [Luca Guidi] Main routes must be configured at `config/routes.rb`:
 
 ```ruby
-# frozen_string_literal: true
-
 Hanami.application.routes do
   mount :web, at: "/" do
     root to: "home#index"

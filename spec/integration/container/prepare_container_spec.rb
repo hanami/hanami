@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Container / prepare_container", :app_integration do
   # (Most of) the examples below make their expectations on a `container_to_prepare`,
   # which is the container yielded to the `Slice.prepare_container` block _at the moment

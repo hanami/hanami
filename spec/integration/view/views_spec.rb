@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Hanami view integration", :app_integration do
   specify "Views take their configuration from their slice in which they are defined" do
     with_tmp_directory(Dir.mktmpdir) do

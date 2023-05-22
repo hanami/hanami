@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Container auto-registration", :app_integration do
   specify "Auto-registering files in slice source directories" do
     with_tmp_directory(Dir.mktmpdir) do

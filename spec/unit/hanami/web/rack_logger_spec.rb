@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami/web/rack_logger"
 require "dry/logger"
 require "stringio"

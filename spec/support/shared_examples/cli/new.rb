@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami/utils/string"
 
 RSpec.shared_examples "a new project" do

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # rubocop:disable Style/FetchEnvVar
 
 RSpec.describe "Dotenv loading", :app_integration do

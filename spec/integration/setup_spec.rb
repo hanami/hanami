@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Hanami setup", :app_integration do
   describe "Hanami.setup" do
     shared_examples "hanami setup" do

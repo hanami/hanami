@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe Hanami, ".env" do
   subject(:env) { described_class.env }
 

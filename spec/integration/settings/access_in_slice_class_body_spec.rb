@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Settings / Access within slice class bodies", :app_integration do
   before do
     @env = ENV.to_h

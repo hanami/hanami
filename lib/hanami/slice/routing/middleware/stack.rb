@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami/router"
 require "hanami/middleware"
 require "hanami/middleware/app"

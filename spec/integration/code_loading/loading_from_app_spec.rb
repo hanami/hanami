@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Code loading / Loading from app directory", :app_integration do
   before :context do
     with_directory(@dir = make_tmp_directory) do

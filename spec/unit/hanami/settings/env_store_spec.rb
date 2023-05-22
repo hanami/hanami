@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami/settings/env_store"
 
 RSpec.describe Hanami::Settings::EnvStore do

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Code loading / Loading from lib directory", :app_integration do
   describe "default root" do
     before :context do

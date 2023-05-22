@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Settings / Slice registration", :app_integration do
   specify "Settings are registered for each slice with a settings file" do
     with_tmp_directory(Dir.mktmpdir) do
@@ -16,8 +14,6 @@ RSpec.describe "Settings / Slice registration", :app_integration do
 
       # The main slice has settings
       write "slices/main/config/settings.rb", <<~RUBY
-        # frozen_string_literal: true
-
         require "hanami/settings"
 
         module Main
@@ -53,8 +49,6 @@ RSpec.describe "Settings / Slice registration", :app_integration do
           RUBY
 
           write "config/settings.rb", <<~'RUBY'
-            # frozen_string_literal: true
-
             require "hanami/settings"
 
             module TestApp
@@ -65,8 +59,6 @@ RSpec.describe "Settings / Slice registration", :app_integration do
           RUBY
 
           write "slices/main/config/settings.rb", <<~RUBY
-            # frozen_string_literal: true
-
             require "hanami/settings"
 
             module Main
@@ -104,8 +96,6 @@ RSpec.describe "Settings / Slice registration", :app_integration do
           RUBY
 
           write "config/settings.rb", <<~'RUBY'
-            # frozen_string_literal: true
-
             require "hanami/settings"
 
             module TestApp
@@ -116,8 +106,6 @@ RSpec.describe "Settings / Slice registration", :app_integration do
           RUBY
 
           write "slices/main/config/settings.rb", <<~RUBY
-            # frozen_string_literal: true
-
             require "hanami/settings"
 
             module Main

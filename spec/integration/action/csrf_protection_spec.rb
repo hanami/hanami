@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "App action / CSRF protection", :app_integration do
   before do
     module TestApp

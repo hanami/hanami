@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe "Settings / Component loading", :app_integration do
   describe "Settings are loaded from a class defined in config/settings.rb" do
     specify "in app" do

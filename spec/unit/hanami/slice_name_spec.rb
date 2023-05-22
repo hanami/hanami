@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "hanami/slice_name"
 
 require "dry/inflector"
