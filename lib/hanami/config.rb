@@ -164,6 +164,8 @@ module Hanami
     # @since 2.0.0
     attr_reader :actions
 
+    attr_reader :assets
+
     # Returns the app's middleware stack, or nil if hanami-router is not bundled.
     #
     # Use this to configure middleware that should apply to all routes.
@@ -223,7 +225,7 @@ module Hanami
 
       # TODO: Make assets config dependent
       require "hanami/assets/app_config"
-      @assets = Hanami::Assets::AppConfig.new
+      # @assets = Hanami::Assets::AppConfig.new
 
       @actions = load_dependent_config("hanami-controller") {
         require_relative "config/actions"
@@ -239,6 +241,20 @@ module Hanami
       @views = load_dependent_config("hanami-view") {
         require_relative "config/views"
         Views.new
+      }
+
+      @assets = load_dependent_config("hanami-assets") {
+        require "hanami/assets"
+
+        sources = root.join("app", "assets")
+        public_dir = root.join("public")
+        destination = public_dir.join("assets")
+        manifest = public_dir.join("assets.json")
+
+        Hanami::Assets::Configuration.new(manifest: manifest) do |config|
+          config.sources = sources
+          config.destination = destination
+        end
       }
 
       yield self if block_given?
@@ -268,7 +284,7 @@ module Hanami
     # @api private
     def finalize!
       # Finalize nested configs
-      assets.finalize!
+      # assets.finalize!
       actions.finalize!
       views.finalize!
       logger.finalize!
