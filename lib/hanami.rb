@@ -18,7 +18,7 @@ module Hanami
   def self.loader
     @loader ||= Zeitwerk::Loader.for_gem.tap do |loader|
       loader.ignore(
-        "#{loader.dirs.first}/hanami/{constants,boot,errors,prepare,rake_tasks,setup}.rb"
+        "#{loader.dirs.first}/hanami/{constants,boot,errors,extensions/router/errors,prepare,rake_tasks,setup}.rb"
       )
     end
   end
