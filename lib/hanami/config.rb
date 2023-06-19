@@ -252,10 +252,7 @@ module Hanami
         destination = public_dir.join("assets")
         manifest = public_dir.join("assets.json")
 
-        Hanami::Assets::Configuration.new(manifest: manifest) do |config|
-          config.sources = sources
-          config.destination = destination
-        end
+        Hanami::Assets::Configuration.new(sources: sources, destination: destination, manifest: manifest)
       }
 
       yield self if block_given?
