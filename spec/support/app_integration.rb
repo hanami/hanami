@@ -16,6 +16,41 @@ module RSpec
         end
       end
     end
+
+    module AssetsIntegration
+      def self.included(base)
+        super
+
+        base.class_eval do
+          let!(:node_modules) { File.join(Dir.pwd, "node_modules") }
+        end
+      end
+
+      private
+
+      def link_node_modules
+        return if File.exist?(File.join(root, "node_modules", "hanami-assets", "dist", "hanami-assets.js"))
+
+        FileUtils.ln_s(node_modules, root)
+      rescue Errno::EEXIST
+      end
+
+      def with_retry(exception)
+        attempts = 1
+        max_attempts = 10
+
+        begin
+          link_node_modules
+          yield
+        rescue exception
+          raise if attempts > max_attempts
+
+          sleep 0.5 ** attempts
+          attempts += 1
+          retry
+        end
+      end
+    end
   end
 end
 
@@ -35,6 +70,7 @@ end
 RSpec.configure do |config|
   config.include RSpec::Support::Files, :app_integration
   config.include RSpec::Support::WithTmpDirectory, :app_integration
+  config.include RSpec::Support::AssetsIntegration, :assets_integration
   config.include_context "Application integration", :app_integration
 
   config.before :each, :app_integration do
