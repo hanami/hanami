@@ -224,10 +224,6 @@ module Hanami
 
       @logger = Config::Logger.new(env: env, app_name: app_name)
 
-      # TODO: Make assets config dependent
-      require "hanami/assets/app_config"
-      # @assets = Hanami::Assets::AppConfig.new
-
       @actions = load_dependent_config("hanami-controller") {
         require_relative "config/actions"
         Actions.new
