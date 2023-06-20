@@ -2,6 +2,27 @@
 
 The web, with simplicity.
 
+## v2.1.0.beta1
+
+### Added
+
+- [Tim Riley] Introduce `Hanami::View` extensions to use alongside hanami-view v2.1.0.beta1 (#1292)
+- [Tim Riley] Enable standard helpers (from hanami-view) for all view parts and scopes (#1303,
+  #1307)
+- [Tim Riley] Add `Hanami::Helpers::FormHelper` and include in all view parts and scopes (#1305,
+  #1307)
+- [Tim Riley] Include user defined helpers (at `MyApp::Views::Helpers` or `MySlice::Views::Helpers`)
+  in all view parts and scopes (#1307)
+- [Tim Riley] Introduce `Hanami::Middleware::RenderErrors` middleware to render error responses (in HTML or JSON) when errors are raised. For HTML responses, the error pages are expected to be found in `public/{404,500}.html` (#1309)
+- [Tim Riley] Use hanami-webconsole (if bundled) to render detailed error pages in development mode (#1311).
+
+### Fixed
+
+- [Tim Riley] Prevent matching incorrect slice names (due to partial matches) in `Hanami::SliceConfigurable`. This ensures appropriate config is applied to actions and views within their respective slices. (#1302)
+- [Masanori Ohnishi] Ensure content-length properly appears in rack logs (#1306)
+
+
+
 ## v2.0.3 - 2023-02-01
 
 ### Added
