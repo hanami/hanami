@@ -2,7 +2,7 @@
 
 The web, with simplicity.
 
-## v2.1.0.beta1
+## v2.1.0.beta1 - 2023-06-29
 
 ### Added
 
@@ -20,8 +20,6 @@ The web, with simplicity.
 
 - [Tim Riley] Prevent matching incorrect slice names (due to partial matches) in `Hanami::SliceConfigurable`. This ensures appropriate config is applied to actions and views within their respective slices. (#1302)
 - [Masanori Ohnishi] Ensure content-length properly appears in rack logs (#1306)
-
-
 
 ## v2.0.3 - 2023-02-01
 

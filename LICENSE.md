@@ -1,4 +1,4 @@
-Copyright © 2014-2021 Luca Guidi
+Copyright © 2014 Hanami Team
 
 MIT License
 
