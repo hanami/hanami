@@ -300,9 +300,9 @@ module Hanami
         sources = root.join("app", "assets")
         public_dir = root.join("public")
         destination = public_dir.join("assets")
-        manifest = public_dir.join("assets.json")
+        manifest_path = public_dir.join("assets.json")
 
-        Hanami::Assets::Configuration.new(sources: sources, destination: destination, manifest: manifest)
+        Hanami::Assets::Configuration.new(sources: sources, destination: destination, manifest_path: manifest_path)
       }
 
       yield self if block_given?
