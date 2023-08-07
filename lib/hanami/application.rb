@@ -150,7 +150,7 @@ module Hanami
     # @api private
     def initialize
       @renderer   = RenderingPolicy.new(configuration)
-      @middleware = configuration.middleware
+      @middleware = configuration.middleware.to_app
     end
 
     # Process a request.

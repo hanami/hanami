@@ -39,17 +39,11 @@ module Hanami
       self
     end
 
-    # Process a request.
-    # This method makes the middleware stack compatible with the Rack protocol.
+    # Return the rack application.
     #
-    # @param env [Hash] a Rack env
-    #
-    # @return [Array] a serialized Rack response
-    #
-    # @since 0.1.0
     # @api private
-    def call(env)
-      builder.call(env)
+    def to_app
+      builder.to_app
     end
 
     # Append a middleware to the stack.
