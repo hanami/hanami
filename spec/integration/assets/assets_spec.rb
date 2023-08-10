@@ -76,7 +76,6 @@ RSpec.describe "Assets / Base test", :app_integration, :assets_integration do
       with_retry(Hanami::Assets::PrecompileError) do
         precompiler.call
       end
-      Hanami.app.config.assets.finalize!
     end
 
     assets = Hanami.app["assets"]

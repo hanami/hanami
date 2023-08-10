@@ -297,12 +297,12 @@ module Hanami
       @assets = load_dependent_config("hanami-assets") {
         require "hanami/assets"
 
-        sources = root.join("app", "assets")
+        sources_path = root.join("app", "assets")
         public_dir = root.join("public")
         destination = public_dir.join("assets")
         manifest_path = public_dir.join("assets.json")
 
-        Hanami::Assets::Configuration.new(sources: sources, destination: destination, manifest_path: manifest_path)
+        Hanami::Assets::Configuration.new(sources: sources_path, destination: destination, manifest_path: manifest_path)
       }
 
       yield self if block_given?
@@ -332,7 +332,7 @@ module Hanami
     # @api private
     def finalize!
       # Finalize nested configs
-      # assets.finalize!
+      assets.finalize!
       actions.finalize!
       views.finalize!
       logger.finalize!
