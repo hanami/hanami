@@ -33,7 +33,6 @@ module Hanami
         assets = Hanami::Assets.new(configuration: config)
         helpers = Hanami::Assets::Helpers.new(
           assets: assets,
-          configuration: config,
           inflector: slice.inflector,
         )
 
