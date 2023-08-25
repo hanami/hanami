@@ -70,7 +70,7 @@ RSpec.describe "Assets / Base test", :app_integration, :assets_integration do
 
   it "registers assets in container" do
     require "hanami/assets/precompiler"
-    precompiler = Hanami::Assets::Precompiler.new(configuration: Hanami.app.config.assets)
+    precompiler = Hanami::Assets::Precompiler.new(config: Hanami.app.config.assets)
 
     with_directory(root) do
       with_retry(Hanami::Assets::PrecompileError) do
@@ -79,7 +79,7 @@ RSpec.describe "Assets / Base test", :app_integration, :assets_integration do
     end
 
     assets = Hanami.app["assets"]
-    expect(assets.js("app")).to match("script")
+    expect(assets["app.js"].path).to match(%r{^/assets/app-.+.js$})
   end
 
   # it "uses the value from the view's locals" do

@@ -29,14 +29,9 @@ module Hanami
 
       # @api private
       def start
-        config = slice.config.assets
-        assets = Hanami::Assets.new(configuration: config)
-        helpers = Hanami::Assets::Helpers.new(
-          assets: assets,
-          inflector: slice.inflector,
-        )
+        assets = Hanami::Assets.new(config: slice.config.assets)
 
-        register(:assets, helpers)
+        register(:assets, assets)
       end
 
       private
