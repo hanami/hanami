@@ -62,7 +62,7 @@ RSpec.describe "Assets / Helpers test", :app_integration, :assets_integration do
       RUBY
 
       write "app/templates/posts/show.html.erb", <<~ERB
-        <%= javascript("app") %>
+        <%= javascript_tag("app") %>
       ERB
 
       write "app/assets/javascripts/app.ts", <<~TS
@@ -84,13 +84,12 @@ RSpec.describe "Assets / Helpers test", :app_integration, :assets_integration do
 
   it "registers assets in container" do
     require "hanami/assets/precompiler"
-    precompiler = Hanami::Assets::Precompiler.new(configuration: Hanami.app.config.assets)
+    precompiler = Hanami::Assets::Precompiler.new(config: Hanami.app.config.assets)
 
     with_directory(root) do
       with_retry(Hanami::Assets::PrecompileError) do
         precompiler.call
       end
-      Hanami.app.config.assets.finalize!
     end
 
     output = TestApp::App["views.posts.show"].call.to_s.strip
