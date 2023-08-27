@@ -217,8 +217,6 @@ module Hanami
     # @since 2.0.0
     attr_reader :actions
 
-    attr_reader :assets
-
     # Returns the app's middleware stack, or nil if hanami-router is not bundled.
     #
     # Use this to configure middleware that should apply to all routes.
@@ -266,6 +264,7 @@ module Hanami
     attr_reader :assets
 
     # @api private
+    # rubocop:disable Metrics/AbcSize
     def initialize(app_name:, env:)
       @app_name = app_name
       @env = env
@@ -297,16 +296,18 @@ module Hanami
       @assets = load_dependent_config("hanami-assets") {
         require "hanami/assets"
 
-        sources_path = root.join("app", "assets")
         public_dir = root.join("public")
-        destination = public_dir.join("assets")
-        manifest_path = public_dir.join("assets.json")
 
-        Hanami::Assets::Config.new(sources: sources_path, destination: destination, manifest_path: manifest_path)
+        Hanami::Assets::Config.new(
+          sources: root.join("app", "assets"),
+          destination: public_dir.join("assets"),
+          manifest_path: public_dir.join("assets.json")
+        )
       }
 
       yield self if block_given?
     end
+    # rubocop:enable Metrics/AbcSize
 
     # @api private
     def initialize_copy(source)
