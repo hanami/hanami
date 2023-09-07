@@ -2,9 +2,8 @@
 
 require "rack/test"
 require "stringio"
-require "fileutils"
 
-RSpec.describe "Assets / Base test", :app_integration do
+RSpec.describe "Assets", :app_integration do
   include Rack::Test::Methods
   let(:app) { Hanami.app }
   let(:root) { make_tmp_directory }
@@ -51,6 +50,24 @@ RSpec.describe "Assets / Base test", :app_integration do
         end
       RUBY
 
+      write "app/views/posts/show.rb", <<~RUBY
+        module TestApp
+          module Views
+            module Posts
+              class Show < TestApp::View
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "app/templates/posts/show.html.erb", <<~ERB
+        <%= stylesheet_link_tag("app") %>
+        <%= css("app") %>
+        <%= javascript_tag("app") %>
+        <%= js("app") %>
+      ERB
+
       write "app/assets/javascripts/app.ts", <<~TS
         import "../stylesheets/app.css";
 
@@ -68,56 +85,21 @@ RSpec.describe "Assets / Base test", :app_integration do
     end
   end
 
-  it "registers assets in container" do
+  specify "assets are available in helpers and in `assets` component" do
     precompile_assets!
 
+    output = Hanami.app["views.posts.show"].call.to_s
+
+    expect(output).to eq <<~HTML
+      <link href="/assets/app-BDJPH3XR.css" type="text/css" rel="stylesheet">
+      <link href="/assets/app-BDJPH3XR.css" type="text/css" rel="stylesheet">
+      <script src="/assets/app-RK4IHAM3.js" type="text/javascript"></script>
+      <script src="/assets/app-RK4IHAM3.js" type="text/javascript"></script>
+    HTML
+
     assets = Hanami.app["assets"]
-    expect(assets["app.js"].path).to match(%r{^/assets/app-.+.js$})
+
+    expect(assets["app.css"].to_s).to eq "/assets/app-BDJPH3XR.css"
+    expect(assets["app.js"].to_s).to eq "/assets/app-RK4IHAM3.js"
   end
-
-  # it "uses the value from the view's locals" do
-  #   get "/posts/123/edit"
-
-  #   html = Capybara.string(last_response.body)
-
-  #   title_field = html.find("input[name='post[title]']")
-  #   expect(title_field.value).to eq "Hello <world>"
-
-  #   body_field = html.find("textarea[name='post[body]']")
-  #   expect(body_field.value).to eq "This is the post."
-  # end
-
-  # it "prefers the values from the request params" do
-  #   put "/posts/123", post: {title: "", body: "This is the UPDATED post."}
-
-  #   html = Capybara.string(last_response.body)
-
-  #   title_field = html.find("input[name='post[title]']")
-  #   expect(title_field.value).to eq ""
-
-  #   body_field = html.find("textarea[name='post[body]']")
-  #   expect(body_field.value).to eq "This is the UPDATED post."
-  # end
-
-  # context "sessions enabled" do
-  #   def before_prepare
-  #     write "config/app.rb", <<~RUBY
-  #       module TestApp
-  #         class App < Hanami::App
-  #           config.logger.stream = StringIO.new
-  #           config.actions.sessions = :cookie, {secret: "xyz"}
-  #         end
-  #       end
-  #     RUBY
-  #   end
-
-  #   it "inserts a CSRF token field" do
-  #     get "/posts/123/edit"
-
-  #     html = Capybara.string(last_response.body)
-
-  #     csrf_field = html.find("input[type='hidden'][name='_csrf_token']", visible: false)
-  #     expect(csrf_field.value).to match(/[a-z0-9]{10,}/i)
-  #   end
-  # end
 end
