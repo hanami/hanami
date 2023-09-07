@@ -173,6 +173,10 @@ module Hanami
         end
       end
 
+      # @api public
+      # @since 2.1.0
+      alias_method :js, :javascript_tag
+
       # Generate `link` tag for given source(s)
       #
       # It accepts one or more strings representing the name of the asset, if it
@@ -266,6 +270,10 @@ module Hanami
           tag.link(**attributes).to_s
         end
       end
+
+      # @api public
+      # @since 2.1.0
+      alias_method :css, :stylesheet_link_tag
 
       # Generate `img` tag for given source
       #
