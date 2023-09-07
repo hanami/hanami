@@ -17,44 +17,41 @@ module RSpec
       end
     end
 
-    module AssetsIntegration
+    module App
       def self.included(base)
         super
 
         base.class_eval do
-          let!(:node_modules) { File.join(Dir.pwd, "node_modules") }
+          let!(:node_modules_path) { File.join(Dir.pwd, "node_modules") }
         end
       end
 
       private
 
-      def link_node_modules
-        return if File.exist?(File.join(root, "node_modules", "hanami-assets", "dist", "hanami-assets.js"))
+      def precompile_assets!
+        link_node_modules
 
-        FileUtils.ln_s(node_modules, root)
-      rescue Errno::EEXIST
+        require "hanami/assets/precompiler"
+        precompiler = Hanami::Assets::Precompiler.new(config: Hanami.app.config.assets)
+
+        with_directory(Hanami.app.root) do
+          precompiler.call
+        end
       end
 
-      def with_retry(exception)
-        attempts = 1
-        max_attempts = 10
+      def link_node_modules
+        root = Hanami.app.root
 
-        begin
-          link_node_modules
-          yield
-        rescue exception
-          raise if attempts > max_attempts
+        return if File.exist?(File.join(root, "node_modules", "hanami-assets", "dist", "hanami-assets.js"))
 
-          sleep 0.5 ** attempts
-          attempts += 1
-          retry
-        end
+        FileUtils.ln_s(node_modules_path, root)
+      rescue Errno::EEXIST # rubocop:disable Lint/SuppressedException
       end
     end
   end
 end
 
-RSpec.shared_context "Application integration" do
+RSpec.shared_context "App integration" do
   let(:app_modules) { %i[TestApp Admin Main Search] }
 end
 
@@ -70,8 +67,8 @@ end
 RSpec.configure do |config|
   config.include RSpec::Support::Files, :app_integration
   config.include RSpec::Support::WithTmpDirectory, :app_integration
-  config.include RSpec::Support::AssetsIntegration, :assets_integration
-  config.include_context "Application integration", :app_integration
+  config.include RSpec::Support::App, :app_integration
+  config.include_context "App integration", :app_integration
 
   config.before :each, :app_integration do
     # Conditionally assign these in case they have been assigned earlier for specific

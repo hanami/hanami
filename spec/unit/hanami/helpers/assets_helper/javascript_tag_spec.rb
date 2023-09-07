@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-# TODO: zeitwerkify hanami-assets
-require "hanami/assets/precompiler"
-
-RSpec.describe Hanami::Helpers::AssetsHelper, "#javascript_tag", :app_integration, :assets_integration do
+RSpec.describe Hanami::Helpers::AssetsHelper, "#javascript_tag", :app_integration do
   subject(:obj) {
     helpers = described_class
     Class.new {
@@ -65,22 +62,6 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#javascript_tag", :app_integratio
     end
   end
 
-  def precompile!
-    with_directory(root) do
-      # TODO: It would be nice for the Hanami app to vend this precompiler in a nicer way.
-      #
-      # Maybe `Hanami.app["assets.precompiler"]`
-      # or possibly better and more self-contained: `Hanami.app["assets"].precompiler`
-      # or just expose it as a method: `Hanami.app["assets"].precompile`
-      precompiler = Hanami::Assets::Precompiler.new(config: Hanami.app.config.assets)
-
-      # FIXME: `with_retry` is really not clear that it's an assets-specific helper; rename.
-      with_retry(Hanami::Assets::PrecompileError) do
-        precompiler.call
-      end
-    end
-  end
-
   it "returns an instance of SafeString" do
     actual = javascript_tag("feature-a")
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
@@ -133,7 +114,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#javascript_tag", :app_integratio
       Hanami.app.config.assets.subresource_integrity = [:sha384]
     end
 
-    before { precompile! }
+    before { precompile_assets! }
 
     it "includes subresource_integrity and crossorigin attributes" do
       actual = javascript_tag("app")

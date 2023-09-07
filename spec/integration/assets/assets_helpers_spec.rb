@@ -3,7 +3,7 @@
 require "rack/test"
 require "stringio"
 
-RSpec.describe "Assets / Helpers test", :app_integration, :assets_integration do
+RSpec.describe "Assets / Helpers test", :app_integration do
   include Rack::Test::Methods
   let(:app) { Hanami.app }
   let(:root) { make_tmp_directory }
@@ -83,14 +83,7 @@ RSpec.describe "Assets / Helpers test", :app_integration, :assets_integration do
   end
 
   it "registers assets in container" do
-    require "hanami/assets/precompiler"
-    precompiler = Hanami::Assets::Precompiler.new(config: Hanami.app.config.assets)
-
-    with_directory(root) do
-      with_retry(Hanami::Assets::PrecompileError) do
-        precompiler.call
-      end
-    end
+    precompile_assets!
 
     output = TestApp::App["views.posts.show"].call.to_s.strip
     expect(output).to match(%(script))
