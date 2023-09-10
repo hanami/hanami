@@ -42,5 +42,19 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+      - name: Cache node_modules
+        id: cache-modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: node-${{ runner.OS }}-build-${{ hashFiles('package.json') }}
+      - name: Install NPM Modules
+        if: steps.cache-modules.outputs.cache-hit != 'true'
+        run: npm install
+      - name: Setup Node ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
+          registry-url: 'https://registry.npmjs.org'
       - name: Run the test suite
         run: bundle exec rake

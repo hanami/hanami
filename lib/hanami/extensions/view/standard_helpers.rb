@@ -8,6 +8,10 @@ module Hanami
         include Hanami::View::Helpers::NumberFormattingHelper
         include Hanami::View::Helpers::TagHelper
         include Helpers::FormHelper
+
+        if Hanami.bundled?("hanami-assets")
+          include Helpers::AssetsHelper
+        end
       end
     end
   end

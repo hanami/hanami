@@ -16,10 +16,42 @@ module RSpec
         end
       end
     end
+
+    module App
+      def self.included(base)
+        super
+
+        base.class_eval do
+          let!(:node_modules_path) { File.join(Dir.pwd, "node_modules") }
+        end
+      end
+
+      private
+
+      def precompile_assets!
+        link_node_modules
+
+        require "hanami/assets/precompiler"
+        precompiler = Hanami::Assets::Precompiler.new(config: Hanami.app.config.assets)
+
+        with_directory(Hanami.app.root) do
+          precompiler.call
+        end
+      end
+
+      def link_node_modules
+        root = Hanami.app.root
+
+        return if File.exist?(File.join(root, "node_modules", "hanami-assets", "dist", "hanami-assets.js"))
+
+        FileUtils.ln_s(node_modules_path, root)
+      rescue Errno::EEXIST # rubocop:disable Lint/SuppressedException
+      end
+    end
   end
 end
 
-RSpec.shared_context "Application integration" do
+RSpec.shared_context "App integration" do
   let(:app_modules) { %i[TestApp Admin Main Search] }
 end
 
@@ -35,7 +67,8 @@ end
 RSpec.configure do |config|
   config.include RSpec::Support::Files, :app_integration
   config.include RSpec::Support::WithTmpDirectory, :app_integration
-  config.include_context "Application integration", :app_integration
+  config.include RSpec::Support::App, :app_integration
+  config.include_context "App integration", :app_integration
 
   config.before :each, :app_integration do
     # Conditionally assign these in case they have been assigned earlier for specific

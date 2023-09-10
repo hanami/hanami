@@ -99,6 +99,7 @@ module Hanami
       rack.monitor
       routes
       settings
+      assets
     ]
 
     # @!attribute [rw] no_auto_register_paths
@@ -263,6 +264,7 @@ module Hanami
     attr_reader :assets
 
     # @api private
+    # rubocop:disable Metrics/AbcSize
     def initialize(app_name:, env:)
       @app_name = app_name
       @env = env
@@ -274,10 +276,6 @@ module Hanami
       load_from_env
 
       @logger = Config::Logger.new(env: env, app_name: app_name)
-
-      # TODO: Make assets config dependent
-      require "hanami/assets/app_config"
-      @assets = Hanami::Assets::AppConfig.new
 
       @actions = load_dependent_config("hanami-controller") {
         require_relative "config/actions"
@@ -295,8 +293,21 @@ module Hanami
         Views.new
       }
 
+      @assets = load_dependent_config("hanami-assets") {
+        require "hanami/assets"
+
+        public_dir = root.join("public")
+
+        Hanami::Assets::Config.new(
+          sources: root.join("app", "assets"),
+          destination: public_dir.join("assets"),
+          manifest_path: public_dir.join("assets.json")
+        )
+      }
+
       yield self if block_given?
     end
+    # rubocop:enable Metrics/AbcSize
 
     # @api private
     def initialize_copy(source)

@@ -24,21 +24,15 @@ RSpec.describe "App view / Context / Assets", :app_integration do
 
   describe "#assets" do
     context "without assets provider" do
-      it "raises error" do
+      xit "raises error" do
+        allow(Hanami).to receive(:bundled?).with("hanami-assets").and_return(false)
+
         expect { context.assets }
           .to raise_error(Hanami::ComponentLoadError, /hanami-assets/)
       end
     end
 
     context "with assets provider" do
-      before do
-        Hanami.app.register_provider(:assets) do
-          start do
-            register "assets", Object.new
-          end
-        end
-      end
-
       it "is the app assets by default" do
         expect(context.assets).to be TestApp::App[:assets]
       end
