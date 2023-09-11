@@ -99,58 +99,58 @@ module Hanami
       #
       # @example Single Asset
       #
-      #   <%= assets.js "application" %>
+      #   <%= js "application" %>
       #
       #   # <script src="/assets/application.js" type="text/javascript"></script>
       #
       # @example Multiple Assets
       #
-      #   <%= assets.js "application", "dashboard" %>
+      #   <%= js "application", "dashboard" %>
       #
       #   # <script src="/assets/application.js" type="text/javascript"></script>
       #   # <script src="/assets/dashboard.js" type="text/javascript"></script>
       #
       # @example Asynchronous Execution
       #
-      #   <%= assets.js "application", async: true %>
+      #   <%= js "application", async: true %>
       #
       #   # <script src="/assets/application.js" type="text/javascript" async="async"></script>
       #
       # @example Subresource Integrity
       #
-      #   <%= assets.js "application" %>
+      #   <%= js "application" %>
       #
       #   # <script src="/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.js"
       #   #         type="text/javascript" integrity="sha384-oqVu...Y8wC" crossorigin="anonymous"></script>
       #
       # @example Subresource Integrity for 3rd Party Scripts
       #
-      #   <%= assets.js "https://example.com/assets/example.js", integrity: "sha384-oqVu...Y8wC" %>
+      #   <%= js "https://example.com/assets/example.js", integrity: "sha384-oqVu...Y8wC" %>
       #
       #   # <script src="https://example.com/assets/example.js" type="text/javascript"
       #   #         integrity="sha384-oqVu...Y8wC" crossorigin="anonymous"></script>
       #
       # @example Deferred Execution
       #
-      #   <%= assets.js "application", defer: true %>
+      #   <%= js "application", defer: true %>
       #
       #   # <script src="/assets/application.js" type="text/javascript" defer="defer"></script>
       #
       # @example Absolute URL
       #
-      #   <%= assets.js "https://code.jquery.com/jquery-2.1.4.min.js" %>
+      #   <%= js "https://code.jquery.com/jquery-2.1.4.min.js" %>
       #
       #   # <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
       #
       # @example Fingerprint Mode
       #
-      #   <%= assets.js "application" %>
+      #   <%= js "application" %>
       #
       #   # <script src="/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.js" type="text/javascript"></script>
       #
       # @example CDN Mode
       #
-      #   <%= assets.js "application" %>
+      #   <%= js "application" %>
       #
       #   # <script src="https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.js"
       #   #         type="text/javascript"></script>
@@ -207,47 +207,47 @@ module Hanami
       #
       # @example Single Asset
       #
-      #   <%= assets.css "application" %>
+      #   <%= css "application" %>
       #
       #   # <link href="/assets/application.css" type="text/css" rel="stylesheet">
       #
       # @example Multiple Assets
       #
-      #   <%= assets.css "application", "dashboard" %>
+      #   <%= css "application", "dashboard" %>
       #
       #   # <link href="/assets/application.css" type="text/css" rel="stylesheet">
       #   # <link href="/assets/dashboard.css" type="text/css" rel="stylesheet">
       #
       # @example Subresource Integrity
       #
-      #   <%= assets.css "application" %>
+      #   <%= css "application" %>
       #
       #   # <link href="/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.css"
       #   #       type="text/css" integrity="sha384-oqVu...Y8wC" crossorigin="anonymous"></script>
       #
       # @example Subresource Integrity for 3rd Party Assets
       #
-      #   <%= assets.css "https://example.com/assets/example.css", integrity: "sha384-oqVu...Y8wC" %>
+      #   <%= css "https://example.com/assets/example.css", integrity: "sha384-oqVu...Y8wC" %>
       #
       #   # <link href="https://example.com/assets/example.css"
       #   #       type="text/css" rel="stylesheet" integrity="sha384-oqVu...Y8wC" crossorigin="anonymous"></script>
       #
       # @example Absolute URL
       #
-      #   <%= assets.css "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" %>
+      #   <%= css "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" %>
       #
       #   # <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
       #   #       type="text/css" rel="stylesheet">
       #
       # @example Fingerprint Mode
       #
-      #   <%= assets.css "application" %>
+      #   <%= css "application" %>
       #
       #   # <link href="/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.css" type="text/css" rel="stylesheet">
       #
       # @example CDN Mode
       #
-      #   <%= assets.css "application" %>
+      #   <%= css "application" %>
       #
       #   # <link href="https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.css"
       #   #       type="text/css" rel="stylesheet">
@@ -305,37 +305,37 @@ module Hanami
       #
       # @example Basic Usage
       #
-      #   <%= assets.img "logo.png" %>
+      #   <%= image_tag "logo.png" %>
       #
       #   # <img src="/assets/logo.png" alt="Logo">
       #
       # @example Custom alt Attribute
       #
-      #   <%= assets.img "logo.png", alt: "Application Logo" %>
+      #   <%= image_tag "logo.png", alt: "Application Logo" %>
       #
       #   # <img src="/assets/logo.png" alt="Application Logo">
       #
       # @example Custom HTML Attributes
       #
-      #   <%= assets.img "logo.png", id: "logo", class: "image" %>
+      #   <%= image_tag "logo.png", id: "logo", class: "image" %>
       #
       #   # <img src="/assets/logo.png" alt="Logo" id="logo" class="image">
       #
       # @example Absolute URL
       #
-      #   <%= assets.img "https://example-cdn.com/images/logo.png" %>
+      #   <%= image_tag "https://example-cdn.com/images/logo.png" %>
       #
       #   # <img src="https://example-cdn.com/images/logo.png" alt="Logo">
       #
       # @example Fingerprint Mode
       #
-      #   <%= assets.img "logo.png" %>
+      #   <%= image_tag "logo.png" %>
       #
       #   # <img src="/assets/logo-28a6b886de2372ee3922fcaf3f78f2d8.png" alt="Logo">
       #
       # @example CDN Mode
       #
-      #   <%= assets.img "logo.png" %>
+      #   <%= image_tag "logo.png" %>
       #
       #   # <img src="https://assets.bookshelf.org/assets/logo-28a6b886de2372ee3922fcaf3f78f2d8.png" alt="Logo">
       def image_tag(source, options = {})
@@ -376,31 +376,31 @@ module Hanami
       #
       # @example Basic Usage
       #
-      #   <%= assets.favicon %>
+      #   <%= favicon_link_tag %>
       #
       #   # <link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
       #
       # @example Custom Path
       #
-      #   <%= assets.favicon "fav.ico" %>
+      #   <%= favicon_link_tag "fav.ico" %>
       #
       #   # <link href="/assets/fav.ico" rel="shortcut icon" type="image/x-icon">
       #
       # @example Custom HTML Attributes
       #
-      #   <%= assets.favicon "favicon.ico", id: "fav" %>
+      #   <%= favicon_link_tag "favicon.ico", id: "fav" %>
       #
       #   # <link id: "fav" href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
       #
       # @example Fingerprint Mode
       #
-      #   <%= assets.favicon %>
+      #   <%= favicon_link_tag %>
       #
       #   # <link href="/assets/favicon-28a6b886de2372ee3922fcaf3f78f2d8.ico" rel="shortcut icon" type="image/x-icon">
       #
       # @example CDN Mode
       #
-      #   <%= assets.favicon %>
+      #   <%= favicon_link_tag %>
       #
       #   # <link href="https://assets.bookshelf.org/assets/favicon-28a6b886de2372ee3922fcaf3f78f2d8.ico"
       #           rel="shortcut icon" type="image/x-icon">
@@ -450,26 +450,26 @@ module Hanami
       #
       # @example Basic Usage
       #
-      #   <%= assets.video "movie.mp4" %>
+      #   <%= video_tag "movie.mp4" %>
       #
       #   # <video src="/assets/movie.mp4"></video>
       #
       # @example Absolute URL
       #
-      #   <%= assets.video "https://example-cdn.com/assets/movie.mp4" %>
+      #   <%= video_tag "https://example-cdn.com/assets/movie.mp4" %>
       #
       #   # <video src="https://example-cdn.com/assets/movie.mp4"></video>
       #
       # @example Custom HTML Attributes
       #
-      #   <%= assets.video("movie.mp4", autoplay: true, controls: true) %>
+      #   <%= video_tag("movie.mp4", autoplay: true, controls: true) %>
       #
       #   # <video src="/assets/movie.mp4" autoplay="autoplay" controls="controls"></video>
       #
       # @example Fallback Content
       #
       #   <%=
-      #     assets.video("movie.mp4") do
+      #     video_tag("movie.mp4") do
       #       "Your browser does not support the video tag"
       #     end
       #   %>
@@ -481,7 +481,7 @@ module Hanami
       # @example Tracks
       #
       #   <%=
-      #     assets.video("movie.mp4") do
+      #     video_tag("movie.mp4") do
       #       tag.track(kind: "captions", src: assets.path("movie.en.vtt"),
       #             srclang: "en", label: "English")
       #     end
@@ -493,25 +493,25 @@ module Hanami
       #
       # @example Without Any Argument
       #
-      #   <%= assets.video %>
+      #   <%= video_tag %>
       #
       #   # ArgumentError
       #
       # @example Without src And Without Block
       #
-      #   <%= assets.video(content: true) %>
+      #   <%= video_tag(content: true) %>
       #
       #   # ArgumentError
       #
       # @example Fingerprint Mode
       #
-      #   <%= assets.video "movie.mp4" %>
+      #   <%= video_tag "movie.mp4" %>
       #
       #   # <video src="/assets/movie-28a6b886de2372ee3922fcaf3f78f2d8.mp4"></video>
       #
       # @example CDN Mode
       #
-      #   <%= assets.video "movie.mp4" %>
+      #   <%= video_tag "movie.mp4" %>
       #
       #   # <video src="https://assets.bookshelf.org/assets/movie-28a6b886de2372ee3922fcaf3f78f2d8.mp4"></video>
       def video_tag(source = nil, options = {}, &blk)
@@ -552,26 +552,26 @@ module Hanami
       #
       # @example Basic Usage
       #
-      #   <%= assets.audio "song.ogg" %>
+      #   <%= audio_tag "song.ogg" %>
       #
       #   # <audio src="/assets/song.ogg"></audio>
       #
       # @example Absolute URL
       #
-      #   <%= assets.audio "https://example-cdn.com/assets/song.ogg" %>
+      #   <%= audio_tag "https://example-cdn.com/assets/song.ogg" %>
       #
       #   # <audio src="https://example-cdn.com/assets/song.ogg"></audio>
       #
       # @example Custom HTML Attributes
       #
-      #   <%= assets.audio("song.ogg", autoplay: true, controls: true) %>
+      #   <%= audio_tag("song.ogg", autoplay: true, controls: true) %>
       #
       #   # <audio src="/assets/song.ogg" autoplay="autoplay" controls="controls"></audio>
       #
       # @example Fallback Content
       #
       #   <%=
-      #     assets.audio("song.ogg") do
+      #     audio_tag("song.ogg") do
       #       "Your browser does not support the audio tag"
       #     end
       #   %>
@@ -583,7 +583,7 @@ module Hanami
       # @example Tracks
       #
       #   <%=
-      #     assets.audio("song.ogg") do
+      #     audio_tag("song.ogg") do
       #       tag.track(kind: "captions", src: assets.path("song.pt-BR.vtt"),
       #             srclang: "pt-BR", label: "Portuguese")
       #     end
@@ -595,25 +595,25 @@ module Hanami
       #
       # @example Without Any Argument
       #
-      #   <%= assets.audio %>
+      #   <%= audio_tag %>
       #
       #   # ArgumentError
       #
       # @example Without src And Without Block
       #
-      #   <%= assets.audio(controls: true) %>
+      #   <%= audio_tag(controls: true) %>
       #
       #   # ArgumentError
       #
       # @example Fingerprint Mode
       #
-      #   <%= assets.audio "song.ogg" %>
+      #   <%= audio_tag "song.ogg" %>
       #
       #   # <audio src="/assets/song-28a6b886de2372ee3922fcaf3f78f2d8.ogg"></audio>
       #
       # @example CDN Mode
       #
-      #   <%= assets.audio "song.ogg" %>
+      #   <%= audio_tag "song.ogg" %>
       #
       #   # <audio src="https://assets.bookshelf.org/assets/song-28a6b886de2372ee3922fcaf3f78f2d8.ogg"></audio>
       def audio_tag(source = nil, options = {}, &blk)
