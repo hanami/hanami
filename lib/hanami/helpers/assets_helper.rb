@@ -482,7 +482,7 @@ module Hanami
       #
       #   <%=
       #     video_tag("movie.mp4") do
-      #       tag.track(kind: "captions", src: assets.path("movie.en.vtt"),
+      #       tag.track(kind: "captions", src: asset_url("movie.en.vtt"),
       #             srclang: "en", label: "English")
       #     end
       #   %>
@@ -584,7 +584,7 @@ module Hanami
       #
       #   <%=
       #     audio_tag("song.ogg") do
-      #       tag.track(kind: "captions", src: assets.path("song.pt-BR.vtt"),
+      #       tag.track(kind: "captions", src: asset_url("song.pt-BR.vtt"),
       #             srclang: "pt-BR", label: "Portuguese")
       #     end
       #   %>
