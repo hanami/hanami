@@ -952,16 +952,18 @@ module Hanami
         config = self.config
         rack_monitor = self["rack.monitor"]
 
-        render_errors =
-          config.render_errors ||
-          (config.render_detailed_errors && Hanami.bundled?("hanami-webconsole"))
+        error_handlers = {}.tap do |hsh|
+          if render_errors?
+            hsh[:not_allowed] = ROUTER_NOT_ALLOWED_HANDLER
+            hsh[:not_found] = ROUTER_NOT_FOUND_HANDLER
+          end
+        end
 
         Slice::Router.new(
           inspector: inspector,
           routes: routes,
           resolver: config.router.resolver.new(slice: self),
-          not_allowed: ROUTER_NOT_ALLOWED_HANDLER.curry[render_errors],
-          not_found: ROUTER_NOT_FOUND_HANDLER.curry[render_errors],
+          **error_handlers,
           **config.router.options
         ) do
           use(rack_monitor)
@@ -985,21 +987,18 @@ module Hanami
         end
       end
 
-      ROUTER_NOT_ALLOWED_HANDLER = -> render_errors, env, allowed_http_methods {
-        if render_errors
-          raise Hanami::Router::NotAllowedError.new(env, allowed_http_methods)
-        end
+      def render_errors?
+        config.render_errors ||
+          (config.render_detailed_errors && Hanami.bundled?("hanami-webconsole"))
+      end
 
-        Hanami::Router::NOT_ALLOWED.call(env, allowed_http_methods)
+      ROUTER_NOT_ALLOWED_HANDLER = -> env, allowed_http_methods {
+        raise Hanami::Router::NotAllowedError.new(env, allowed_http_methods)
       }.freeze
       private_constant :ROUTER_NOT_ALLOWED_HANDLER
 
-      ROUTER_NOT_FOUND_HANDLER = -> render_errors, env {
-        if render_errors
-          raise Hanami::Router::NotFoundError.new(env)
-        end
-
-        Hanami::Router::NOT_FOUND.call(env)
+      ROUTER_NOT_FOUND_HANDLER = -> env {
+        raise Hanami::Router::NotFoundError.new(env)
       }.freeze
       private_constant :ROUTER_NOT_FOUND_HANDLER
 
