@@ -56,18 +56,15 @@ module Hanami
       def call(env)
         @app.call(env)
       rescue Exception => exception
-        request = Rack::Request.new(env)
+        raise unless @config.render_errors
 
-        if @config.render_errors
-          render_exception(request, exception)
-        else
-          raise exception
-        end
+        render_exception(env, exception)
       end
 
       private
 
-      def render_exception(request, exception)
+      def render_exception(env, exception)
+        request = Rack::Request.new(env)
         renderable = RenderableException.new(exception, responses: @config.render_error_responses)
 
         status = renderable.status_code
