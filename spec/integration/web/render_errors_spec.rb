@@ -225,12 +225,14 @@ RSpec.describe "Web / Rendering errors", :app_integration do
       HTML
     end
 
-    it "raises a Hanami::Router::NotFoundError for a 404" do
-      expect { get "/__not_found__" }.to raise_error(Hanami::Router::NotFoundError)
+    it "renders the hanami-router default 404 response for a not found error" do
+      get "/__not_found__"
+      expect(last_response.status).to eq 404
     end
 
-    it "raises a Hanami::Router::NotAllowedError for a 405" do
-      expect { post "/index" }.to raise_error(Hanami::Router::NotAllowedError)
+    it "renders the hanami-router default 405 response for a not allowed error" do
+      post "/index"
+      expect(last_response.status).to eq 405
     end
 
     it "raises the original error for a 500" do
