@@ -952,8 +952,11 @@ module Hanami
         config = self.config
         rack_monitor = self["rack.monitor"]
 
+        render_errors = render_errors?
+        render_detailed_errors = render_detailed_errors?
+
         error_handlers = {}.tap do |hsh|
-          if render_errors?
+          if render_errors || render_detailed_errors
             hsh[:not_allowed] = ROUTER_NOT_ALLOWED_HANDLER
             hsh[:not_found] = ROUTER_NOT_FOUND_HANDLER
           end
@@ -974,7 +977,7 @@ module Hanami
             Hanami::Middleware::PublicErrorsApp.new(slice.root.join("public"))
           )
 
-          if config.render_detailed_errors && Hanami.bundled?("hanami-webconsole")
+          if render_detailed_errors
             require "hanami/webconsole"
             use(Hanami::Webconsole::Middleware, config)
           end
@@ -988,8 +991,11 @@ module Hanami
       end
 
       def render_errors?
-        config.render_errors ||
-          (config.render_detailed_errors && Hanami.bundled?("hanami-webconsole"))
+        config.render_errors
+      end
+
+      def render_detailed_errors?
+        config.render_detailed_errors && Hanami.bundled?("hanami-webconsole")
       end
 
       ROUTER_NOT_ALLOWED_HANDLER = -> env, allowed_http_methods {
