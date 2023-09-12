@@ -976,7 +976,7 @@ module Hanami
 
           if config.render_detailed_errors && Hanami.bundled?("hanami-webconsole")
             require "hanami/webconsole"
-            use(Hanami::Webconsole::Middleware)
+            use(Hanami::Webconsole::Middleware, config)
           end
 
           if Hanami.bundled?("hanami-controller") && config.actions.sessions.enabled?

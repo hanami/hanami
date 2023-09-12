@@ -15,7 +15,7 @@ gem "hanami-controller", github: "hanami/controller", branch: "main"
 gem "hanami-cli",        github: "hanami/cli",        branch: "main"
 gem "hanami-view",       github: "hanami/view",       branch: "main"
 gem "hanami-assets",     github: "hanami/assets",     branch: "main"
-gem "hanami-webconsole", github: "hanami/webconsole", branch: "main"
+gem "hanami-webconsole", github: "hanami/webconsole", branch: "correct-status-codes"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
