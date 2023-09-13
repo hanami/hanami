@@ -56,6 +56,15 @@ RSpec.describe "Web / Rendering detailed errors", :app_integration do
       expect(html).to have_selector("header", text: "RuntimeError at /error")
       expect(html).to have_selector("ul.frames li.application", text: "app/actions/error.rb")
     end
+
+    it "renders a detailed HTML error page and returns a 404 status for a not found error" do
+      get "/__not_found__", {}, "HTTP_ACCEPT" => "text/html"
+
+      expect(last_response.status).to eq 404
+
+      html = Capybara.string(last_response.body)
+      expect(html).to have_selector("header", text: "Hanami::Router::NotFoundError at /__not_found__")
+    end
   end
 
   describe "Other request types" do
@@ -66,6 +75,14 @@ RSpec.describe "Web / Rendering detailed errors", :app_integration do
 
       expect(last_response.body).to include "RuntimeError at /error"
       expect(last_response.body).to match %r{App backtrace.+app/actions/error.rb}m
+    end
+
+    it "renders a detailed error page in text and returns a 404 status for a not found error" do
+      get "/__not_found__", {}, "HTTP_ACCEPT" => "text/html"
+
+      expect(last_response.status).to eq 404
+
+      expect(last_response.body).to include "Hanami::Router::NotFoundError at /__not_found__"
     end
   end
 
