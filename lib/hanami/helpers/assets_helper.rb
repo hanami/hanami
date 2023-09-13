@@ -417,6 +417,10 @@ module Hanami
         tag.link(**attributes)
       end
 
+      # @api public
+      # @since 2.1.0
+      alias_method :favicon, :favicon_link_tag
+
       # Generate `video` tag for given source
       #
       # It accepts one string representing the name of the asset, if it comes
