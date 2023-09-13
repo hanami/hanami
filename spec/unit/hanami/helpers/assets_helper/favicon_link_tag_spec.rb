@@ -50,9 +50,13 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#favicon_link_tag", :app_integrat
     end
   end
 
-  it "returns an instance of HtmlBuilder" do
+  it "returns an instance of SafeString" do
     actual = favicon_link_tag
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
+  end
+
+  it "is aliased as `favicon`" do
+    expect(subject.favicon).to eq favicon_link_tag
   end
 
   it "renders <link> tag" do

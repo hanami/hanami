@@ -67,6 +67,10 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#stylesheet_link_tag", :app_integ
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
   end
 
+  it "is aliased as `css`" do
+    expect(subject.css("main")).to eq stylesheet_link_tag("main")
+  end
+
   it "renders <link> tag" do
     actual = stylesheet_link_tag("main")
     expect(actual).to eq(%(<link href="/assets/main.css" type="text/css" rel="stylesheet">))
