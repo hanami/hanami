@@ -67,6 +67,10 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#javascript_tag", :app_integratio
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
   end
 
+  it "is aliased as `js`" do
+    expect(subject.js("feature-a")).to eq javascript_tag("feature-a")
+  end
+
   it "renders <script> tag" do
     actual = javascript_tag("feature-a")
     expect(actual).to eq(%(<script src="/assets/feature-a.js" type="text/javascript"></script>))
