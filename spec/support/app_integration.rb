@@ -28,14 +28,16 @@ module RSpec
 
       private
 
-      def precompile_assets!
+      def compile_assets!
         link_node_modules
 
-        require "hanami/assets/precompiler"
-        precompiler = Hanami::Assets::Precompiler.new(config: Hanami.app.config.assets)
+        require "hanami/cli/command"
+        require "hanami/cli/commands/app/command"
+        require "hanami/cli/commands/app/assets/compile"
+        compiler = Hanami::CLI::Commands::App::Assets::Compile.new(config: Hanami.app.config.assets)
 
         with_directory(Hanami.app.root) do
-          precompiler.call
+          compiler.call
         end
       end
 

@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "hanami-assets": "github:hanami/assets-js"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
   }
 }

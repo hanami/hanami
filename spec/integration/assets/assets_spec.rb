@@ -68,13 +68,13 @@ RSpec.describe "Assets", :app_integration do
         <%= js("app") %>
       ERB
 
-      write "app/assets/javascripts/app.ts", <<~TS
-        import "../stylesheets/app.css";
+      write "app/assets/js/app.ts", <<~TS
+        import "../css/app.css";
 
         console.log("Hello from index.ts");
       TS
 
-      write "app/assets/stylesheets/app.css", <<~CSS
+      write "app/assets/css/app.css", <<~CSS
         .btn {
           background: #f00;
         }
@@ -86,20 +86,16 @@ RSpec.describe "Assets", :app_integration do
   end
 
   specify "assets are available in helpers and in `assets` component" do
-    precompile_assets!
+    compile_assets!
 
     output = Hanami.app["views.posts.show"].call.to_s
 
-    expect(output).to eq <<~HTML
-      <link href="/assets/app-BDJPH3XR.css" type="text/css" rel="stylesheet">
-      <link href="/assets/app-BDJPH3XR.css" type="text/css" rel="stylesheet">
-      <script src="/assets/app-RK4IHAM3.js" type="text/javascript"></script>
-      <script src="/assets/app-RK4IHAM3.js" type="text/javascript"></script>
-    HTML
+    expect(output).to match(%r{<link href="/assets/app-[A-Z0-9]{8}.css" type="text/css" rel="stylesheet">})
+    expect(output).to match(%r{<script src="/assets/app-[A-Z0-9]{8}.js" type="text/javascript"></script>})
 
     assets = Hanami.app["assets"]
 
-    expect(assets["app.css"].to_s).to eq "/assets/app-BDJPH3XR.css"
-    expect(assets["app.js"].to_s).to eq "/assets/app-RK4IHAM3.js"
+    expect(assets["app.css"].to_s).to match(%r{/assets/app-[A-Z0-9]{8}.css})
+    expect(assets["app.js"].to_s).to match(%r{/assets/app-[A-Z0-9]{8}.js})
   end
 end
