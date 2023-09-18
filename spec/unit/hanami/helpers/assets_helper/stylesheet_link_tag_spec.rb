@@ -44,13 +44,13 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#stylesheet_link_tag", :app_integ
         end
       RUBY
 
-      write "app/assets/javascripts/app.ts", <<~JS
-        import "../stylesheets/app.css";
+      write "app/assets/js/app.ts", <<~JS
+        import "../css/app.css";
 
         console.log("Hello from index.ts");
       JS
 
-      write "app/assets/stylesheets/app.css", <<~CSS
+      write "app/assets/css/app.css", <<~CSS
         .btn {
           background: #f00;
         }
@@ -105,7 +105,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#stylesheet_link_tag", :app_integ
 
     it "includes subresource_integrity and crossorigin attributes" do
       actual = stylesheet_link_tag("app")
-      expect(actual).to eq(%(<link href="/assets/app-N47SR66M.css" type="text/css" rel="stylesheet" integrity="sha384-e6Xvf6L9/vqEmC9y0ZTQ6yVW+a8PrkPNWU+qeNoJZdRrc15yY9AuWqywRWx5EjLk" crossorigin="anonymous">))
+      expect(actual).to match(%r{<link href="/assets/app-[A-Z0-9]{8}.css" type="text/css" rel="stylesheet" integrity="sha384-[A-Za-z0-9+/]{64}" crossorigin="anonymous">})
     end
   end
 

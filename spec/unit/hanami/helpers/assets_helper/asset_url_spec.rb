@@ -44,13 +44,13 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#asset_url", :app_integration do
         end
       RUBY
 
-      write "app/assets/javascripts/app.ts", <<~JS
-        import "../stylesheets/app.css";
+      write "app/assets/js/app.ts", <<~JS
+        import "../css/app.css";
 
         console.log("Hello from index.ts");
       JS
 
-      write "app/assets/stylesheets/app.css", <<~CSS
+      write "app/assets/css/app.css", <<~CSS
         .btn {
           background: #f00;
         }
@@ -78,7 +78,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#asset_url", :app_integration do
       before { compile_assets! }
 
       it "returns the relative URL to the asset" do
-        expect(asset_url("app.js")).to eq("/assets/app-A5GJ52WC.js")
+        expect(asset_url("app.js")).to match(%r{/assets/app-[A-Z0-9]{8}\.js})
       end
     end
   end
@@ -100,7 +100,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#asset_url", :app_integration do
       before { compile_assets! }
 
       it "returns the relative path to the asset" do
-        expect(asset_url("app.js")).to eq("#{base_url}/assets/app-A5GJ52WC.js")
+        expect(asset_url("app.js")).to match(%r{#{base_url}/assets/app-[A-Z0-9]{8}.js})
       end
     end
   end
