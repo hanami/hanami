@@ -75,10 +75,10 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#asset_url", :app_integration do
     end
 
     context "with manifest" do
-      before { precompile_assets! }
+      before { compile_assets! }
 
       it "returns the relative URL to the asset" do
-        expect(asset_url("app.js")).to eq("/assets/app-RK4IHAM3.js")
+        expect(asset_url("app.js")).to eq("/assets/app-A5GJ52WC.js")
       end
     end
   end
@@ -97,10 +97,10 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#asset_url", :app_integration do
     end
 
     context "with manifest" do
-      before { precompile_assets! }
+      before { compile_assets! }
 
       it "returns the relative path to the asset" do
-        expect(asset_url("app.js")).to eq("#{base_url}/assets/app-RK4IHAM3.js")
+        expect(asset_url("app.js")).to eq("#{base_url}/assets/app-A5GJ52WC.js")
       end
     end
   end

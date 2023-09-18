@@ -86,20 +86,20 @@ RSpec.describe "Assets", :app_integration do
   end
 
   specify "assets are available in helpers and in `assets` component" do
-    precompile_assets!
+    compile_assets!
 
     output = Hanami.app["views.posts.show"].call.to_s
 
     expect(output).to eq <<~HTML
-      <link href="/assets/app-BDJPH3XR.css" type="text/css" rel="stylesheet">
-      <link href="/assets/app-BDJPH3XR.css" type="text/css" rel="stylesheet">
-      <script src="/assets/app-RK4IHAM3.js" type="text/javascript"></script>
-      <script src="/assets/app-RK4IHAM3.js" type="text/javascript"></script>
+      <link href="/assets/app-N47SR66M.css" type="text/css" rel="stylesheet">
+      <link href="/assets/app-N47SR66M.css" type="text/css" rel="stylesheet">
+      <script src="/assets/app-A5GJ52WC.js" type="text/javascript"></script>
+      <script src="/assets/app-A5GJ52WC.js" type="text/javascript"></script>
     HTML
 
     assets = Hanami.app["assets"]
 
-    expect(assets["app.css"].to_s).to eq "/assets/app-BDJPH3XR.css"
-    expect(assets["app.js"].to_s).to eq "/assets/app-RK4IHAM3.js"
+    expect(assets["app.css"].to_s).to eq "/assets/app-N47SR66M.css"
+    expect(assets["app.js"].to_s).to eq "/assets/app-A5GJ52WC.js"
   end
 end

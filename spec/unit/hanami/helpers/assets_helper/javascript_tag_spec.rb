@@ -118,11 +118,11 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#javascript_tag", :app_integratio
       Hanami.app.config.assets.subresource_integrity = [:sha384]
     end
 
-    before { precompile_assets! }
+    before { compile_assets! }
 
     it "includes subresource_integrity and crossorigin attributes" do
       actual = javascript_tag("app")
-      expect(actual).to eq(%(<script src="/assets/app-RK4IHAM3.js" type="text/javascript" integrity="sha384-OHwNxsqZvXwlOpBI/328GLPtT1FqOUA+/6UO3V0wAv/GGMqsHUkApSQwTGAijwww" crossorigin="anonymous"></script>))
+      expect(actual).to eq(%(<script src="/assets/app-A5GJ52WC.js" type="text/javascript" integrity="sha384-cf36d5R7yH+P7TOpN7kJN9DMKPlsVbYntmPdAwgvL/01Z2nFTN86JaIrfwA3us5N" crossorigin="anonymous"></script>))
     end
   end
 
