@@ -144,8 +144,8 @@ module Hanami
   #
   # @api public
   # @since 2.0.0
-  def self.env
-    ENV.fetch("HANAMI_ENV") { ENV.fetch("RACK_ENV", "development") }.to_sym
+  def self.env(e: ENV)
+    e.fetch("HANAMI_ENV") { e.fetch("RACK_ENV", "development") }.to_sym
   end
 
   # Returns true if {.env} matches any of the given names
