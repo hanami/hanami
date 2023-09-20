@@ -44,6 +44,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#image_tag", :app_integration do
         end
       RUBY
 
+      stub_assets("application.jpg")
+
       require "hanami/setup"
       before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"
