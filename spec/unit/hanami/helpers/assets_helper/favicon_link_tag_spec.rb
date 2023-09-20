@@ -44,6 +44,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#favicon_link_tag", :app_integrat
         end
       RUBY
 
+      stub_assets("favicon.ico", "favicon.png")
+
       require "hanami/setup"
       before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"

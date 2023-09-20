@@ -44,6 +44,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video_tag", :app_integration do
         end
       RUBY
 
+      stub_assets("movie.mp4", "movie.en.vtt")
+
       require "hanami/setup"
       before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"

@@ -56,6 +56,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#asset_url", :app_integration do
         }
       CSS
 
+      stub_assets("app.js")
+
       require "hanami/setup"
       before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"
