@@ -44,6 +44,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#audio_tag", :app_integration do
         end
       RUBY
 
+      stub_assets("song.ogg", "song.pt-BR.vtt")
+
       require "hanami/setup"
       before_prepare if respond_to?(:before_prepare)
       require "hanami/prepare"

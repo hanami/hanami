@@ -2,6 +2,7 @@
 
 require "hanami/devtools/integration/files"
 require "hanami/devtools/integration/with_tmp_directory"
+require "json"
 require "tmpdir"
 require "zeitwerk"
 
@@ -27,6 +28,14 @@ module RSpec
       end
 
       private
+
+      def stub_assets(*assets)
+        manifest_hash = assets.each_with_object({}) { |source_path, hsh|
+          hsh[source_path] = {url: File.join("/assets", source_path)}
+        }
+
+        write "public/assets.json", JSON.generate(manifest_hash)
+      end
 
       def compile_assets!
         link_node_modules
