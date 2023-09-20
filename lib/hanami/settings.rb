@@ -45,7 +45,7 @@ module Hanami
   #
   # Setting values are loaded from a configurable store, which defaults to
   # {Hanami::Settings::EnvStore}, which fetches the values from equivalent upper-cased keys in
-  # `ENV`. You can configue an alternative store via {Hanami::Config#settings_store}. Setting stores
+  # `ENV`. You can configure an alternative store via {Hanami::Config#settings_store}. Setting stores
   # must implement a `#fetch` method with the same signature as `Hash#fetch`.
   #
   # [dry-c]: https://dry-rb.org/gems/dry-configurable/

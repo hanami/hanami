@@ -986,6 +986,10 @@ module Hanami
             use(*config.actions.sessions.middleware)
           end
 
+          if Hanami.bundled?("hanami-assets") && config.assets.serve
+            use(Hanami::Middleware::Assets)
+          end
+
           middleware_stack.update(config.middleware_stack)
         end
       end

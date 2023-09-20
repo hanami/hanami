@@ -7,6 +7,7 @@ RSpec.describe "Serve Static Assets", :app_integration do
   include Rack::Test::Methods
   let(:app) { Hanami.app }
   let(:root) { make_tmp_directory }
+  let!(:env) { ENV.to_h }
 
   before do
     with_directory(root) do
@@ -14,7 +15,6 @@ RSpec.describe "Serve Static Assets", :app_integration do
         module TestApp
           class App < Hanami::App
             config.logger.stream = StringIO.new
-            config.middleware.use Hanami::Middleware::Assets
           end
         end
       RUBY
@@ -30,29 +30,123 @@ RSpec.describe "Serve Static Assets", :app_integration do
       write "public/assets/app.js", <<~JS
         console.log("Hello from app.js");
       JS
-
-      require "hanami/boot"
     end
   end
 
-  it "serves static assets" do
-    get "/assets/app.js"
-
-    expect(last_response.status).to eq(200)
-    expect(last_response.body).to match(/Hello/)
+  after do
+    ENV.replace(env)
   end
 
-  it "returns 404 for missing asset" do
-    get "/assets/missing.js"
+  context "with default configuration" do
+    before do
+      with_directory(root) do
+        require "hanami/boot"
+      end
+    end
 
-    expect(last_response.status).to eq(404)
-    expect(last_response.body).to match(/Not Found/i)
+    it "serves static assets" do
+      get "/assets/app.js"
+
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to match(/Hello/)
+    end
+
+    it "returns 404 for missing asset" do
+      get "/assets/missing.js"
+
+      expect(last_response.status).to eq(404)
+      expect(last_response.body).to match(/Not Found/i)
+    end
+
+    it "doesn't escape from root directory" do
+      get "/assets/../../config/app.rb"
+
+      expect(last_response.status).to eq(404)
+      expect(last_response.body).to match(/Not Found/i)
+    end
   end
 
-  it "doesn't escape from root directory" do
-    get "/assets/../../config/app.rb"
+  context "when configuration is set to false" do
+    before do
+      with_directory(root) do
+        write "config/app.rb", <<~RUBY
+          module TestApp
+            class App < Hanami::App
+              config.logger.stream = StringIO.new
+              config.assets.serve = false
+            end
+          end
+        RUBY
 
-    expect(last_response.status).to eq(404)
-    expect(last_response.body).to match(/Not Found/i)
+        require "hanami/boot"
+      end
+    end
+
+    it "doesn't serve static assets" do
+      get "/assets/app.js"
+
+      expect(last_response.status).to eq(404)
+    end
+  end
+
+  context "when env var is set to true" do
+    before do
+      with_directory(root) do
+        ENV["HANAMI_SERVE_ASSETS"] = "true"
+        require "hanami/boot"
+      end
+    end
+
+    it "serves static assets" do
+      get "/assets/app.js"
+
+      expect(last_response.status).to eq(200)
+    end
+  end
+
+  context "when env var is set to false" do
+    before do
+      with_directory(root) do
+        ENV["HANAMI_SERVE_ASSETS"] = "false"
+        require "hanami/boot"
+      end
+    end
+
+    it "doesn't serve static assets" do
+      get "/assets/app.js"
+
+      expect(last_response.status).to eq(404)
+    end
+  end
+
+  context "when Hanami.env is not :development or :test" do
+    before do
+      with_directory(root) do
+        ENV["HANAMI_ENV"] = "production"
+        require "hanami/boot"
+      end
+    end
+
+    it "doesn't serve static assets" do
+      get "/assets/app.js"
+
+      expect(last_response.status).to eq(404)
+    end
+  end
+
+  context "when Hanami.env is not :development or :test, but env var is set to true" do
+    before do
+      with_directory(root) do
+        ENV["HANAMI_ENV"] = "production"
+        ENV["HANAMI_SERVE_ASSETS"] = "true"
+        require "hanami/boot"
+      end
+    end
+
+    it "serves static assets" do
+      get "/assets/app.js"
+
+      expect(last_response.status).to eq(200)
+    end
   end
 end

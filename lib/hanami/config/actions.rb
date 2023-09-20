@@ -99,6 +99,7 @@ module Hanami
         super()
 
         @base_config = Hanami::Action.config.dup
+        @base_config.root_directory = options[:root_directory] if options.key?(:root_directory)
         @content_security_policy = ContentSecurityPolicy.new do |csp|
           if assets_server_url = options[:assets_server_url]
             csp[:script_src] += " #{assets_server_url}"

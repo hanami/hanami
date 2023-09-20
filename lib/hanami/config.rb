@@ -279,7 +279,7 @@ module Hanami
 
       @actions = load_dependent_config("hanami-controller") {
         require_relative "config/actions"
-        Actions.new
+        Actions.new(root_directory: root)
       }
 
       @router = load_dependent_config("hanami-router") {
@@ -294,11 +294,12 @@ module Hanami
       }
 
       @assets = load_dependent_config("hanami-assets") {
-        require "hanami/assets"
+        require_relative "config/assets"
 
         public_dir = root.join("public")
 
-        Hanami::Assets::Config.new(
+        Hanami::Config::Assets.new(
+          # TODO: check if `sources` are still needed
           sources: root.join("app", "assets"),
           destination: public_dir.join("assets"),
           manifest_path: public_dir.join("assets.json")
