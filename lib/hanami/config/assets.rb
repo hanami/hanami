@@ -48,7 +48,7 @@ module Hanami
       def initialize(*, **options)
         super()
 
-        @base_config = Hanami::Assets::Config.new
+        @base_config = Hanami::Assets::Config.new(**options)
 
         configure_defaults
       end
