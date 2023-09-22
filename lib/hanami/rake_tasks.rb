@@ -10,7 +10,7 @@ Hanami::CLI::RakeTasks.register_tasks do
 
   # Ruby ecosystem compatibility
   #
-  # Most of the SaaS automatic tasks are designed after Ruby on Rails.
+  # Most of the hosting SaaS automatic tasks are designed after Ruby on Rails.
   # They expect the following Rake tasks to be present:
   #
   #   * db:migrate
@@ -20,31 +20,32 @@ Hanami::CLI::RakeTasks.register_tasks do
   #
   # ===
   #
-  # These Rake tasks aren't listed when someone runs `rake -T`, because we
-  # want to encourage developers to use `hanami` commands.
+  # These Rake tasks are **NOT** listed when someone runs `rake -T`, because we
+  # want to encourage developers to use `hanami` CLI commands.
   #
-  # In order to migrate the database or precompile assets a developer should
-  # use:
+  # In order to migrate the database or compile assets a developer should use:
   #
   #   * hanami db migrate
-  #   * hanami assets precompile
+  #   * hanami assets compile
   #
   # This is the preferred way to run Hanami command line tasks.
   # Please use them when you're in control of your deployment environment.
   #
   # If you're not in control and your deployment requires these "standard"
   # Rake tasks, they are here to solve this only specific problem.
-  namespace :db do
-    task :migrate do
-      # TODO(@jodosha): Enable when we'll integrate with ROM
-      # run_hanami_command("db migrate")
-    end
-  end
+  #
+  # namespace :db do
+  #   task :migrate do
+  #     # TODO(@jodosha): Enable when we'll integrate with ROM
+  #     # run_hanami_command("db migrate")
+  #   end
+  # end
 
-  namespace :assets do
-    task :precompile do
-      # TODO(@jodosha): Enable when we'll integrate with hanami-assets
-      # run_hanami_command("assets precompile")
+  if Hanami.bundled?("hanami-assets")
+    namespace :assets do
+      task :precompile do
+        run_hanami_command("assets compile")
+      end
     end
   end
 
@@ -53,7 +54,7 @@ Hanami::CLI::RakeTasks.register_tasks do
   @_hanami_cli_bundler = Hanami::CLI::Bundler.new
 
   def run_hanami_command(command)
-    @_hanami_cli_bundler.exec(command)
+    @_hanami_cli_bundler.hanami_exec(command)
   end
 end
 
