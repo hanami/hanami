@@ -57,7 +57,6 @@ module Hanami
 
       private
 
-      # Apply defaults for base config
       def configure_defaults
         self.serve =
           if ENV.key?("HANAMI_SERVE_ASSETS")
