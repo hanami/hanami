@@ -335,7 +335,7 @@ module Hanami
     def finalize!
       # Finalize nested configs
       assets.finalize!
-      actions.finalize!
+      actions.finalize!(self)
       views.finalize!
       logger.finalize!
       router.finalize!

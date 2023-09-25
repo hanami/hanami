@@ -3,7 +3,8 @@
 require "hanami/config/actions"
 
 RSpec.describe Hanami::Config::Actions, "default values" do
-  subject(:config) { described_class.new }
+  let(:app_config) { Hanami::Config.new(app_name: "MyApp::App", env: :development) }
+  subject(:config) { app_config.actions }
 
   describe "sessions" do
     specify { expect(config.sessions).not_to be_enabled }
@@ -28,7 +29,7 @@ RSpec.describe Hanami::Config::Actions, "default values" do
 
     describe "default_headers" do
       specify {
-        config.finalize!
+        app_config.finalize!
 
         expect(config.default_headers).to eq(
           "X-Frame-Options" => "DENY",

@@ -100,12 +100,7 @@ module Hanami
 
         @base_config = Hanami::Action.config.dup
         @base_config.root_directory = options[:root_directory] if options.key?(:root_directory)
-        @content_security_policy = ContentSecurityPolicy.new do |csp|
-          if assets_server_url = options[:assets_server_url]
-            csp[:script_src] += " #{assets_server_url}"
-            csp[:style_src] += " #{assets_server_url}"
-          end
-        end
+        @content_security_policy = ContentSecurityPolicy.new
 
         configure_defaults
       end
@@ -119,7 +114,7 @@ module Hanami
       private :initialize_copy
 
       # @api private
-      def finalize!
+      def finalize!(app_config)
         # A nil value for `csrf_protection` means it has not been explicitly configured
         # (neither true nor false), so we can default it to whether sessions are enabled
         self.csrf_protection = sessions.enabled? if csrf_protection.nil?
