@@ -16,11 +16,6 @@ module Hanami
     class Assets
       include Dry::Configurable
 
-      # @since 2.1.0
-      # @api private
-      UNDEFINED = Object.new.freeze
-      private_constant :UNDEFINED
-
       # @!attribute [rw] serve
       #   Serve static assets.
       #
@@ -38,7 +33,7 @@ module Hanami
       #
       #   @api public
       #   @since 2.1.0
-      setting :serve, default: UNDEFINED
+      setting :serve, default: Dry::Core::Constants::Undefined
 
       # @api private
       attr_reader :base_config
@@ -62,20 +57,18 @@ module Hanami
 
       # @api private
       def finalize!
-        if serve.equal?(UNDEFINED)
-          should_serve_by_hanami_env = Hanami.env?(:development, :test)
-          should_serve_by_env = ENV["HANAMI_SERVE_ASSETS"] == "true"
-          missing_serve_env_var = !ENV.key?("HANAMI_SERVE_ASSETS")
-
-          self.serve = should_serve_by_env ||
-            (missing_serve_env_var && should_serve_by_hanami_env)
-        end
       end
 
       private
 
       # Apply defaults for base config
       def configure_defaults
+        self.serve =
+          if ENV.key?("HANAMI_SERVE_ASSETS")
+            ENV["HANAMI_SERVE_ASSETS"] == "true"
+          else
+            Hanami.env?(:development, :test)
+          end
       end
 
       def method_missing(name, *args, &block)
