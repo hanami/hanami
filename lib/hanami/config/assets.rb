@@ -33,7 +33,7 @@ module Hanami
       #
       #   @api public
       #   @since 2.1.0
-      setting :serve, default: Dry::Core::Constants::Undefined
+      setting :serve
 
       # @api private
       attr_reader :base_config
