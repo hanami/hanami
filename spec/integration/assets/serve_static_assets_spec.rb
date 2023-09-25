@@ -40,7 +40,7 @@ RSpec.describe "Serve Static Assets", :app_integration do
   context "with default configuration" do
     before do
       with_directory(root) do
-        require "hanami/boot"
+        require "hanami/prepare"
       end
     end
 
