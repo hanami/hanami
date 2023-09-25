@@ -3,7 +3,8 @@
 require "hanami/config/actions"
 
 RSpec.describe Hanami::Config::Actions, "#csrf_protection" do
-  let(:config) { described_class.new }
+  let(:app_config) { Hanami::Config.new(app_name: "MyApp::App", env: :development) }
+  let(:config) { app_config.actions }
   subject(:value) { config.csrf_protection }
 
   context "non-finalized config" do
@@ -26,7 +27,7 @@ RSpec.describe Hanami::Config::Actions, "#csrf_protection" do
     context "sessions enabled" do
       before do
         config.sessions = :cookie, {secret: "abc"}
-        config.finalize!
+        app_config.finalize!
       end
 
       it "is true" do
@@ -46,7 +47,7 @@ RSpec.describe Hanami::Config::Actions, "#csrf_protection" do
 
     context "sessions not enabled" do
       before do
-        config.finalize!
+        app_config.finalize!
       end
 
       it "is true" do
