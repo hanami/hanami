@@ -55,10 +55,6 @@ module Hanami
       end
       private :initialize_copy
 
-      # @api private
-      def finalize!
-      end
-
       private
 
       # Apply defaults for base config
