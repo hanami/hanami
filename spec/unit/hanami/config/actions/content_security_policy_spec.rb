@@ -3,43 +3,31 @@
 require "hanami/config/actions"
 
 RSpec.describe Hanami::Config::Actions, "#content_security_policy" do
-  let(:config) { described_class.new }
+  let(:app_config) { Hanami::Config.new(app_name: "MyApp::App", env: :development) }
+  let(:config) { app_config.actions }
   subject(:content_security_policy) { config.content_security_policy }
 
   context "no CSP config specified" do
-    context "without assets_server_url" do
+    it "has defaults" do
+      expect(content_security_policy[:base_uri]).to eq("'self'")
 
-      it "has defaults" do
-        expect(content_security_policy[:base_uri]).to eq("'self'")
+      expected = [
+        %(base-uri 'self'),
+        %(child-src 'self'),
+        %(connect-src 'self'),
+        %(default-src 'none'),
+        %(font-src 'self'),
+        %(form-action 'self'),
+        %(frame-ancestors 'self'),
+        %(frame-src 'self'),
+        %(img-src 'self' https: data:),
+        %(media-src 'self'),
+        %(object-src 'none'),
+        %(script-src 'self'),
+        %(style-src 'self' 'unsafe-inline' https:)
+      ].join(";")
 
-        expected = [
-          %(base-uri 'self'),
-          %(child-src 'self'),
-          %(connect-src 'self'),
-          %(default-src 'none'),
-          %(font-src 'self'),
-          %(form-action 'self'),
-          %(frame-ancestors 'self'),
-          %(frame-src 'self'),
-          %(img-src 'self' https: data:),
-          %(media-src 'self'),
-          %(object-src 'none'),
-          %(script-src 'self'),
-          %(style-src 'self' 'unsafe-inline' https:)
-        ].join(";")
-
-        expect(content_security_policy.to_s).to eq(expected)
-      end
-    end
-
-    context "with assets_server_url" do
-      let(:config) { described_class.new(assets_server_url: assets_server_url) }
-      let(:assets_server_url) { "http://localhost:8080" }
-
-      it "includes server url" do
-        expect(content_security_policy[:script_src]).to eq("'self' #{assets_server_url}")
-        expect(content_security_policy[:style_src]).to eq("'self' 'unsafe-inline' https: #{assets_server_url}")
-      end
+      expect(content_security_policy.to_s).to eq(expected)
     end
   end
 
@@ -84,7 +72,7 @@ RSpec.describe Hanami::Config::Actions, "#content_security_policy" do
 
   context "with CSP enabled" do
     it "sets default header" do
-      config.finalize!
+      app_config.finalize!
 
       expect(config.default_headers.fetch("Content-Security-Policy")).to eq(content_security_policy.to_s)
     end
@@ -93,7 +81,7 @@ RSpec.describe Hanami::Config::Actions, "#content_security_policy" do
   context "with CSP disabled" do
     it "doesn't set default header" do
       config.content_security_policy = false
-      config.finalize!
+      app_config.finalize!
 
       expect(config.default_headers.key?("Content-Security-Policy")).to be(false)
     end

@@ -294,11 +294,12 @@ module Hanami
       }
 
       @assets = load_dependent_config("hanami-assets") {
-        require "hanami/assets"
+        require_relative "config/assets"
 
         public_dir = root.join("public")
 
-        Hanami::Assets::Config.new(
+        Hanami::Config::Assets.new(
+          # TODO: check if `sources` are still needed
           sources: root.join("app", "assets"),
           destination: public_dir.join("assets"),
           manifest_path: public_dir.join("assets.json")
@@ -334,7 +335,7 @@ module Hanami
     def finalize!
       # Finalize nested configs
       assets.finalize!
-      actions.finalize!
+      actions.finalize!(self)
       views.finalize!
       logger.finalize!
       router.finalize!
