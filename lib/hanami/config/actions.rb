@@ -99,7 +99,6 @@ module Hanami
         super()
 
         @base_config = Hanami::Action.config.dup
-        @base_config.root_directory = options[:root_directory] if options.key?(:root_directory)
         @content_security_policy = ContentSecurityPolicy.new
 
         configure_defaults
@@ -115,6 +114,8 @@ module Hanami
 
       # @api private
       def finalize!(app_config)
+        @base_config.root_directory = app_config.root
+
         # A nil value for `csrf_protection` means it has not been explicitly configured
         # (neither true nor false), so we can default it to whether sessions are enabled
         self.csrf_protection = sessions.enabled? if csrf_protection.nil?

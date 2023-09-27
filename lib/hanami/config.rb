@@ -279,7 +279,7 @@ module Hanami
 
       @actions = load_dependent_config("hanami-controller") {
         require_relative "config/actions"
-        Actions.new(root_directory: root)
+        Actions.new
       }
 
       @router = load_dependent_config("hanami-router") {
