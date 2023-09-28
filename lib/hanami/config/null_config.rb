@@ -9,6 +9,9 @@ module Hanami
     # loaded)
     class NullConfig
       include Dry::Configurable
+
+      def finalize!(*)
+      end
     end
   end
 end
