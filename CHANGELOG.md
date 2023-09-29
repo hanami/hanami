@@ -2,6 +2,16 @@
 
 The web, with simplicity.
 
+## v2.1.0.beta2 - 2023-10-04
+
+### Added
+
+- [Luca Guidi] Reimplement assets integration (#1319, #1332, #1333, #1336)
+
+### Fixed
+
+- [Tim Riley] Return appropriate response statuses based on error type (#1330)
+
 ## v2.1.0.beta1 - 2023-06-29
 
 ### Added
@@ -22,10 +32,6 @@ The web, with simplicity.
 - [Masanori Ohnishi] Ensure content-length properly appears in rack logs (#1306)
 
 ## v2.0.3 - 2023-02-01
-
-### Added
-
-- [Luca Guidi] Official support for Ruby 3.2
 
 ### Fixed
 
