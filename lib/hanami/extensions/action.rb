@@ -94,10 +94,12 @@ module Hanami
         end
 
         # @api private
-        def _handle_exception(request, _response, exception)
+        def _handle_exception(request, _response, _exception)
+          super
+        rescue StandardError => exception
           rack_monitor&.instrument(:error, exception: exception, env: request.env)
 
-          super
+          raise
         end
 
         # @api private
