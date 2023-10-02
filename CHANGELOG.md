@@ -8,7 +8,7 @@ The web, with simplicity.
 
 - [Luca Guidi, Tim Riley] Reimplement assets integration (#1319, #1332, #1333, #1336)
 - [Tim Riley] Introduce `Hanami::Helpers::AssetsHelper`, automatically included in view templates, scopes and parts when hanami-assets is bundled (#1319)
-- [Tim Riley, Luca Guidi] Added assets helpers aliases (#1319):
+- [Tim Riley, Luca Guidi] Added assets helpers aliases (#1319, #1339):
   - Added `#js` and `#javascript_tag` as alias for `#javascript`
   - Added `#css` and `#stylesheet_link_tag` as alias for `#stylesheet`
   - Added `#image_tag` as alias for `#image`
