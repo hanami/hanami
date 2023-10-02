@@ -6,7 +6,17 @@ The web, with simplicity.
 
 ### Added
 
-- [Luca Guidi] Reimplement assets integration (#1319, #1332, #1333, #1336)
+- [Luca Guidi, Tim Riley] Reimplement assets integration (#1319, #1332, #1333, #1336)
+- [Tim Riley] Introduce `Hanami::Helpers::AssetsHelper`, automatically included in view templates, scopes and parts when hanami-assets is bundled (#1319)
+- [Tim Riley] Renamed assets helpers (#1319):
+  - Removed `#asset_path` in favour of `#asset_url` only
+  - Renamed `#javascript` to `#javascript_tag`, retaining `#js` alias
+  - Renamed `#stylesheet` to `#stylesheet_link_tag`, retaining `#css` alias
+  - Renamed `#image` to `#image_tag`
+  - Renamed `#favicon` to `#favicon_link_tag`, with `#favicon` retained as an alias
+  - Renamed `#video` to `#video_tag`
+  - Renamed `#audio` to `#audio_tag`
+
 
 ### Fixed
 
