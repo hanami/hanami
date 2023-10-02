@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Hanami::Helpers::AssetsHelper, "#favicon_link_tag", :app_integration do
+RSpec.describe Hanami::Helpers::AssetsHelper, "#favicon", :app_integration do
   subject(:obj) {
     helpers = described_class
     Class.new {
@@ -14,8 +14,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#favicon_link_tag", :app_integrat
     }.new(context)
   }
 
-  def favicon_link_tag(...)
-    obj.instance_eval { favicon_link_tag(...) }
+  def favicon(...)
+    obj.instance_eval { favicon(...) }
   end
 
   let(:root) { make_tmp_directory }
@@ -53,26 +53,26 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#favicon_link_tag", :app_integrat
   end
 
   it "returns an instance of SafeString" do
-    actual = favicon_link_tag
+    actual = favicon
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
   end
 
-  it "is aliased as `favicon`" do
-    expect(subject.favicon).to eq favicon_link_tag
+  it "is aliased as #favicon_link_tag" do
+    expect(subject.favicon_link_tag).to eq(favicon)
   end
 
   it "renders <link> tag" do
-    actual = favicon_link_tag.to_s
+    actual = favicon.to_s
     expect(actual).to eq(%(<link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">))
   end
 
   it "renders with HTML attributes" do
-    actual = favicon_link_tag("favicon.png", rel: "icon", type: "image/png").to_s
+    actual = favicon("favicon.png", rel: "icon", type: "image/png").to_s
     expect(actual).to eq(%(<link href="/assets/favicon.png" rel="icon" type="image/png">))
   end
 
   it "ignores href passed as an option" do
-    actual = favicon_link_tag("favicon.png", href: "wrong").to_s
+    actual = favicon("favicon.png", href: "wrong").to_s
     expect(actual).to eq(%(<link href="/assets/favicon.png" rel="shortcut icon" type="image/x-icon">))
   end
 
@@ -84,7 +84,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#favicon_link_tag", :app_integrat
     end
 
     it "returns absolute url for href attribute" do
-      actual = favicon_link_tag.to_s
+      actual = favicon.to_s
       expect(actual).to eq(%(<link href="#{base_url}/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">))
     end
   end

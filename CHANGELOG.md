@@ -8,19 +8,21 @@ The web, with simplicity.
 
 - [Luca Guidi, Tim Riley] Reimplement assets integration (#1319, #1332, #1333, #1336)
 - [Tim Riley] Introduce `Hanami::Helpers::AssetsHelper`, automatically included in view templates, scopes and parts when hanami-assets is bundled (#1319)
-- [Tim Riley] Renamed assets helpers (#1319):
-  - Removed `#asset_path` in favour of `#asset_url` only
-  - Renamed `#javascript` to `#javascript_tag`, retaining `#js` alias
-  - Renamed `#stylesheet` to `#stylesheet_link_tag`, retaining `#css` alias
-  - Renamed `#image` to `#image_tag`
-  - Renamed `#favicon` to `#favicon_link_tag`, with `#favicon` retained as an alias
-  - Renamed `#video` to `#video_tag`
-  - Renamed `#audio` to `#audio_tag`
-
+- [Tim Riley, Luca Guidi] Added assets helpers aliases (#1319):
+  - Added `#js` and `#javascript_tag` as alias for `#javascript`
+  - Added `#css` and `#stylesheet_link_tag` as alias for `#stylesheet`
+  - Added `#image_tag` as alias for `#image`
+  - Added `#favicon_link_tag` as alias for `#favicon`
+  - Added `#video_tag` as alias for `#video`
+  - Added `#audio_tag` as alias for `#audio`
 
 ### Fixed
 
 - [Tim Riley] Return appropriate response statuses based on error type (#1330)
+
+### Changed
+
+- [Tim Riley] Removed `#asset_path` in favour of `#asset_url` only (#1319)
 
 ## v2.1.0.beta1 - 2023-06-29
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Hanami::Helpers::AssetsHelper, "#image_tag", :app_integration do
+RSpec.describe Hanami::Helpers::AssetsHelper, "#image", :app_integration do
   subject(:obj) {
     helpers = described_class
     Class.new {
@@ -14,8 +14,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#image_tag", :app_integration do
     }.new(context)
   }
 
-  def image_tag(...)
-    subject.image_tag(...)
+  def image(...)
+    subject.image(...)
   end
 
   let(:root) { make_tmp_directory }
@@ -53,27 +53,31 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#image_tag", :app_integration do
   end
 
   it "returns an instance of HtmlBuilder" do
-    actual = image_tag("application.jpg")
+    actual = image("application.jpg")
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
   end
 
   it "renders an <img> tag" do
-    actual = image_tag("application.jpg").to_s
+    actual = image("application.jpg").to_s
     expect(actual).to eq(%(<img src="/assets/application.jpg" alt="Application">))
   end
 
+  it "is aliased as #image_tag" do
+    expect(subject.image_tag("application.jpg")).to eq image("application.jpg")
+  end
+
   it "custom alt" do
-    actual = image_tag("application.jpg", alt: "My Alt").to_s
+    actual = image("application.jpg", alt: "My Alt").to_s
     expect(actual).to eq(%(<img src="/assets/application.jpg" alt="My Alt">))
   end
 
   it "custom data attribute" do
-    actual = image_tag("application.jpg", "data-user-id" => 5).to_s
+    actual = image("application.jpg", "data-user-id" => 5).to_s
     expect(actual).to eq(%(<img src="/assets/application.jpg" alt="Application" data-user-id="5">))
   end
 
   it "ignores src passed as an option" do
-    actual = image_tag("application.jpg", src: "wrong").to_s
+    actual = image("application.jpg", src: "wrong").to_s
     expect(actual).to eq(%(<img src="/assets/application.jpg" alt="Application">))
   end
 
@@ -85,7 +89,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#image_tag", :app_integration do
     end
 
     it "returns absolute url for src attribute" do
-      actual = image_tag("application.jpg").to_s
+      actual = image("application.jpg").to_s
       expect(actual).to eq(%(<img src="#{base_url}/assets/application.jpg" alt="Application">))
     end
   end

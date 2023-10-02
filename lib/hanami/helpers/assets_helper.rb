@@ -154,7 +154,7 @@ module Hanami
       #
       #   # <script src="https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.js"
       #   #         type="text/javascript"></script>
-      def javascript_tag(*source_paths, **options)
+      def javascript(*source_paths, **options)
         options = options.reject { |k, _| k.to_sym == :src }
 
         _safe_tags(*source_paths) do |source|
@@ -175,7 +175,11 @@ module Hanami
 
       # @api public
       # @since 2.1.0
-      alias_method :js, :javascript_tag
+      alias_method :js, :javascript
+
+      # @api public
+      # @since 2.1.0
+      alias_method :javascript_tag, :javascript
 
       # Generate `link` tag for given source(s)
       #
@@ -251,7 +255,7 @@ module Hanami
       #
       #   # <link href="https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.css"
       #   #       type="text/css" rel="stylesheet">
-      def stylesheet_link_tag(*source_paths, **options)
+      def stylesheet(*source_paths, **options)
         options = options.reject { |k, _| k.to_sym == :href }
 
         _safe_tags(*source_paths) do |source_path|
@@ -273,7 +277,11 @@ module Hanami
 
       # @api public
       # @since 2.1.0
-      alias_method :css, :stylesheet_link_tag
+      alias_method :css, :stylesheet
+
+      # @api public
+      # @since 2.1.0
+      alias_method :stylesheet_link_tag, :stylesheet
 
       # Generate `img` tag for given source
       #
@@ -305,40 +313,40 @@ module Hanami
       #
       # @example Basic Usage
       #
-      #   <%= image_tag "logo.png" %>
+      #   <%= image "logo.png" %>
       #
       #   # <img src="/assets/logo.png" alt="Logo">
       #
       # @example Custom alt Attribute
       #
-      #   <%= image_tag "logo.png", alt: "Application Logo" %>
+      #   <%= image "logo.png", alt: "Application Logo" %>
       #
       #   # <img src="/assets/logo.png" alt="Application Logo">
       #
       # @example Custom HTML Attributes
       #
-      #   <%= image_tag "logo.png", id: "logo", class: "image" %>
+      #   <%= image "logo.png", id: "logo", class: "image" %>
       #
       #   # <img src="/assets/logo.png" alt="Logo" id="logo" class="image">
       #
       # @example Absolute URL
       #
-      #   <%= image_tag "https://example-cdn.com/images/logo.png" %>
+      #   <%= image "https://example-cdn.com/images/logo.png" %>
       #
       #   # <img src="https://example-cdn.com/images/logo.png" alt="Logo">
       #
       # @example Fingerprint Mode
       #
-      #   <%= image_tag "logo.png" %>
+      #   <%= image "logo.png" %>
       #
       #   # <img src="/assets/logo-28a6b886de2372ee3922fcaf3f78f2d8.png" alt="Logo">
       #
       # @example CDN Mode
       #
-      #   <%= image_tag "logo.png" %>
+      #   <%= image "logo.png" %>
       #
       #   # <img src="https://assets.bookshelf.org/assets/logo-28a6b886de2372ee3922fcaf3f78f2d8.png" alt="Logo">
-      def image_tag(source, options = {})
+      def image(source, options = {})
         options = options.reject { |k, _| k.to_sym == :src }
         attributes = {
           src: asset_url(source),
@@ -348,6 +356,10 @@ module Hanami
 
         tag.img(**attributes)
       end
+
+      # @api public
+      # @since 2.1.0
+      alias_method :image_tag, :image
 
       # Generate `link` tag application favicon.
       #
@@ -376,35 +388,35 @@ module Hanami
       #
       # @example Basic Usage
       #
-      #   <%= favicon_link_tag %>
+      #   <%= favicon %>
       #
       #   # <link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
       #
       # @example Custom Path
       #
-      #   <%= favicon_link_tag "fav.ico" %>
+      #   <%= favicon "fav.ico" %>
       #
       #   # <link href="/assets/fav.ico" rel="shortcut icon" type="image/x-icon">
       #
       # @example Custom HTML Attributes
       #
-      #   <%= favicon_link_tag "favicon.ico", id: "fav" %>
+      #   <%= favicon "favicon.ico", id: "fav" %>
       #
       #   # <link id: "fav" href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
       #
       # @example Fingerprint Mode
       #
-      #   <%= favicon_link_tag %>
+      #   <%= favicon %>
       #
       #   # <link href="/assets/favicon-28a6b886de2372ee3922fcaf3f78f2d8.ico" rel="shortcut icon" type="image/x-icon">
       #
       # @example CDN Mode
       #
-      #   <%= favicon_link_tag %>
+      #   <%= favicon %>
       #
       #   # <link href="https://assets.bookshelf.org/assets/favicon-28a6b886de2372ee3922fcaf3f78f2d8.ico"
       #           rel="shortcut icon" type="image/x-icon">
-      def favicon_link_tag(source = DEFAULT_FAVICON, options = {})
+      def favicon(source = DEFAULT_FAVICON, options = {})
         options = options.reject { |k, _| k.to_sym == :href }
 
         attributes = {
@@ -419,7 +431,7 @@ module Hanami
 
       # @api public
       # @since 2.1.0
-      alias_method :favicon, :favicon_link_tag
+      alias_method :favicon_link_tag, :favicon
 
       # Generate `video` tag for given source
       #
@@ -454,26 +466,26 @@ module Hanami
       #
       # @example Basic Usage
       #
-      #   <%= video_tag "movie.mp4" %>
+      #   <%= video "movie.mp4" %>
       #
       #   # <video src="/assets/movie.mp4"></video>
       #
       # @example Absolute URL
       #
-      #   <%= video_tag "https://example-cdn.com/assets/movie.mp4" %>
+      #   <%= video "https://example-cdn.com/assets/movie.mp4" %>
       #
       #   # <video src="https://example-cdn.com/assets/movie.mp4"></video>
       #
       # @example Custom HTML Attributes
       #
-      #   <%= video_tag("movie.mp4", autoplay: true, controls: true) %>
+      #   <%= video("movie.mp4", autoplay: true, controls: true) %>
       #
       #   # <video src="/assets/movie.mp4" autoplay="autoplay" controls="controls"></video>
       #
       # @example Fallback Content
       #
       #   <%=
-      #     video_tag("movie.mp4") do
+      #     video("movie.mp4") do
       #       "Your browser does not support the video tag"
       #     end
       #   %>
@@ -485,7 +497,7 @@ module Hanami
       # @example Tracks
       #
       #   <%=
-      #     video_tag("movie.mp4") do
+      #     video("movie.mp4") do
       #       tag.track(kind: "captions", src: asset_url("movie.en.vtt"),
       #             srclang: "en", label: "English")
       #     end
@@ -497,31 +509,35 @@ module Hanami
       #
       # @example Without Any Argument
       #
-      #   <%= video_tag %>
+      #   <%= video %>
       #
       #   # ArgumentError
       #
       # @example Without src And Without Block
       #
-      #   <%= video_tag(content: true) %>
+      #   <%= video(content: true) %>
       #
       #   # ArgumentError
       #
       # @example Fingerprint Mode
       #
-      #   <%= video_tag "movie.mp4" %>
+      #   <%= video "movie.mp4" %>
       #
       #   # <video src="/assets/movie-28a6b886de2372ee3922fcaf3f78f2d8.mp4"></video>
       #
       # @example CDN Mode
       #
-      #   <%= video_tag "movie.mp4" %>
+      #   <%= video "movie.mp4" %>
       #
       #   # <video src="https://assets.bookshelf.org/assets/movie-28a6b886de2372ee3922fcaf3f78f2d8.mp4"></video>
-      def video_tag(source = nil, options = {}, &blk)
+      def video(source = nil, options = {}, &blk)
         options = _source_options(source, options, &blk)
         tag.video(**options, &blk)
       end
+
+      # @api public
+      # @since 2.1.0
+      alias_method :video_tag, :video
 
       # Generate `audio` tag for given source
       #
@@ -556,26 +572,26 @@ module Hanami
       #
       # @example Basic Usage
       #
-      #   <%= audio_tag "song.ogg" %>
+      #   <%= audio "song.ogg" %>
       #
       #   # <audio src="/assets/song.ogg"></audio>
       #
       # @example Absolute URL
       #
-      #   <%= audio_tag "https://example-cdn.com/assets/song.ogg" %>
+      #   <%= audio "https://example-cdn.com/assets/song.ogg" %>
       #
       #   # <audio src="https://example-cdn.com/assets/song.ogg"></audio>
       #
       # @example Custom HTML Attributes
       #
-      #   <%= audio_tag("song.ogg", autoplay: true, controls: true) %>
+      #   <%= audio("song.ogg", autoplay: true, controls: true) %>
       #
       #   # <audio src="/assets/song.ogg" autoplay="autoplay" controls="controls"></audio>
       #
       # @example Fallback Content
       #
       #   <%=
-      #     audio_tag("song.ogg") do
+      #     audio("song.ogg") do
       #       "Your browser does not support the audio tag"
       #     end
       #   %>
@@ -587,7 +603,7 @@ module Hanami
       # @example Tracks
       #
       #   <%=
-      #     audio_tag("song.ogg") do
+      #     audio("song.ogg") do
       #       tag.track(kind: "captions", src: asset_url("song.pt-BR.vtt"),
       #             srclang: "pt-BR", label: "Portuguese")
       #     end
@@ -599,31 +615,35 @@ module Hanami
       #
       # @example Without Any Argument
       #
-      #   <%= audio_tag %>
+      #   <%= audio %>
       #
       #   # ArgumentError
       #
       # @example Without src And Without Block
       #
-      #   <%= audio_tag(controls: true) %>
+      #   <%= audio(controls: true) %>
       #
       #   # ArgumentError
       #
       # @example Fingerprint Mode
       #
-      #   <%= audio_tag "song.ogg" %>
+      #   <%= audio "song.ogg" %>
       #
       #   # <audio src="/assets/song-28a6b886de2372ee3922fcaf3f78f2d8.ogg"></audio>
       #
       # @example CDN Mode
       #
-      #   <%= audio_tag "song.ogg" %>
+      #   <%= audio "song.ogg" %>
       #
       #   # <audio src="https://assets.bookshelf.org/assets/song-28a6b886de2372ee3922fcaf3f78f2d8.ogg"></audio>
-      def audio_tag(source = nil, options = {}, &blk)
+      def audio(source = nil, options = {}, &blk)
         options = _source_options(source, options, &blk)
         tag.audio(**options, &blk)
       end
+
+      # @api public
+      # @since 2.1.0
+      alias_method :audio_tag, :audio
 
       # It generates the relative or absolute URL for the given asset.
       # It automatically decides if it has to use the relative or absolute

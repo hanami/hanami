@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Hanami::Helpers::AssetsHelper, "#video_tag", :app_integration do
+RSpec.describe Hanami::Helpers::AssetsHelper, "#audio", :app_integration do
   subject(:obj) {
     helpers = described_class
     Class.new {
@@ -14,8 +14,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video_tag", :app_integration do
     }.new(context)
   }
 
-  def video_tag(...)
-    subject.video_tag(...)
+  def audio(...)
+    subject.audio(...)
   end
 
   let(:context) { TestApp::Views::Context.new }
@@ -44,7 +44,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video_tag", :app_integration do
         end
       RUBY
 
-      stub_assets("movie.mp4", "movie.en.vtt")
+      stub_assets("song.ogg", "song.pt-BR.vtt")
 
       require "hanami/setup"
       before_prepare if respond_to?(:before_prepare)
@@ -53,49 +53,53 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video_tag", :app_integration do
   end
 
   it "returns an instance of HtmlBuilder" do
-    actual = video_tag("movie.mp4")
+    actual = audio("song.ogg")
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
   end
 
-  it "renders <video> tag" do
-    actual = video_tag("movie.mp4").to_s
-    expect(actual).to eq(%(<video src="/assets/movie.mp4"></video>))
+  it "renders <audio> tag" do
+    actual = audio("song.ogg").to_s
+    expect(actual).to eq(%(<audio src="/assets/song.ogg"></audio>))
+  end
+
+  it "is aliased as #audio_tag" do
+    expect(subject.audio_tag("song.ogg")).to eq(audio("song.ogg"))
   end
 
   it "renders with html attributes" do
-    actual = video_tag("movie.mp4", autoplay: true, controls: true).to_s
-    expect(actual).to eq(%(<video autoplay="autoplay" controls="controls" src="/assets/movie.mp4"></video>))
+    actual = audio("song.ogg", autoplay: true, controls: true).to_s
+    expect(actual).to eq(%(<audio autoplay="autoplay" controls="controls" src="/assets/song.ogg"></audio>))
   end
 
   it "renders with fallback content" do
-    actual = video_tag("movie.mp4") do
-      "Your browser does not support the video tag"
+    actual = audio("song.ogg") do
+      "Your browser does not support the audio tag"
     end.to_s
 
-    expect(actual).to eq(%(<video src="/assets/movie.mp4">Your browser does not support the video tag</video>))
+    expect(actual).to eq(%(<audio src="/assets/song.ogg">Your browser does not support the audio tag</audio>))
   end
 
   it "renders with tracks" do
-    actual = video_tag("movie.mp4") do
-      tag.track kind: "captions", src: subject.asset_url("movie.en.vtt"), srclang: "en", label: "English"
+    actual = audio("song.ogg") do
+      tag.track kind: "captions", src: subject.asset_url("song.pt-BR.vtt"), srclang: "pt-BR", label: "Portuguese"
     end.to_s
 
-    expect(actual).to eq(%(<video src="/assets/movie.mp4"><track kind="captions" src="/assets/movie.en.vtt" srclang="en" label="English"></video>))
+    expect(actual).to eq(%(<audio src="/assets/song.ogg"><track kind="captions" src="/assets/song.pt-BR.vtt" srclang="pt-BR" label="Portuguese"></audio>))
   end
 
   xit "renders with sources" do
-    actual = subject.video do
-      tag.text "Your browser does not support the video tag"
-      tag.source src: subject.asset_url("movie.mp4"), type: "video/mp4"
-      tag.source src: subject.asset_url("movie.ogg"), type: "video/ogg"
+    actual = audio do
+      tag.text "Your browser does not support the audio tag"
+      tag.source src: subject.asset_url("song.ogg"), type: "audio/ogg"
+      tag.source src: subject.asset_url("song.wav"), type: "audio/wav"
     end.to_s
 
-    expect(actual).to eq(%(<video>Your browser does not support the video tag<source src="/assets/movie.mp4" type="video/mp4"><source src="/assets/movie.ogg" type="video/ogg"></video>))
+    expect(actual).to eq(%(<audio>Your browser does not support the audio tag<source src="/assets/song.ogg" type="audio/ogg"><source src="/assets/song.wav" type="audio/wav"></audio>))
   end
 
   it "raises an exception when no arguments" do
     expect do
-      video_tag
+      audio
     end.to raise_error(
       ArgumentError,
       "You should provide a source via `src` option or with a `source` HTML tag"
@@ -104,7 +108,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video_tag", :app_integration do
 
   it "raises an exception when no src and no block" do
     expect do
-      video_tag(content: true)
+      audio(controls: true)
     end.to raise_error(
       ArgumentError,
       "You should provide a source via `src` option or with a `source` HTML tag"
@@ -115,12 +119,12 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video_tag", :app_integration do
     let(:base_url) { "https://hanami.test" }
 
     def before_prepare
-      Hanami.app.config.assets.base_url = "https://hanami.test"
+      Hanami.app.config.assets.base_url = base_url
     end
 
     it "returns absolute url for src attribute" do
-      actual = video_tag("movie.mp4").to_s
-      expect(actual).to eq(%(<video src="#{base_url}/assets/movie.mp4"></video>))
+      actual = audio("song.ogg").to_s
+      expect(actual).to eq(%(<audio src="#{base_url}/assets/song.ogg"></audio>))
     end
   end
 

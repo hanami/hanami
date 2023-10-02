@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Hanami::Helpers::AssetsHelper, "#stylesheet_link_tag", :app_integration do
+RSpec.describe Hanami::Helpers::AssetsHelper, "#stylesheet", :app_integration do
   subject(:obj) {
     helpers = described_class
     Class.new {
@@ -14,8 +14,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#stylesheet_link_tag", :app_integ
     }.new(context)
   }
 
-  def stylesheet_link_tag(...)
-    subject.stylesheet_link_tag(...)
+  def stylesheet(...)
+    subject.stylesheet(...)
   end
 
   let(:context) { TestApp::Views::Context.new }
@@ -65,36 +65,40 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#stylesheet_link_tag", :app_integ
   end
 
   it "returns an instance of SafeString" do
-    actual = stylesheet_link_tag("main")
+    actual = stylesheet("main")
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
   end
 
-  it "is aliased as `css`" do
-    expect(subject.css("main")).to eq stylesheet_link_tag("main")
+  it "is aliased as #css" do
+    expect(subject.css("main")).to eq stylesheet("main")
+  end
+
+  it "is aliased as #stylesheet_link_tag" do
+    expect(subject.stylesheet_link_tag("main")).to eq stylesheet("main")
   end
 
   it "renders <link> tag" do
-    actual = stylesheet_link_tag("main")
+    actual = stylesheet("main")
     expect(actual).to eq(%(<link href="/assets/main.css" type="text/css" rel="stylesheet">))
   end
 
   xit "renders <link> tag without appending ext after query string" do
-    actual = stylesheet_link_tag("fonts?font=Helvetica")
+    actual = stylesheet("fonts?font=Helvetica")
     expect(actual).to eq(%(<link href="/assets/fonts?font=Helvetica" type="text/css" rel="stylesheet">))
   end
 
   it "renders <link> tag with an integrity attribute" do
-    actual = stylesheet_link_tag("main", integrity: "sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC")
+    actual = stylesheet("main", integrity: "sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC")
     expect(actual).to eq(%(<link href="/assets/main.css" type="text/css" rel="stylesheet" integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC" crossorigin="anonymous">))
   end
 
   it "renders <link> tag with a crossorigin attribute" do
-    actual = stylesheet_link_tag("main", integrity: "sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC", crossorigin: "use-credentials")
+    actual = stylesheet("main", integrity: "sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC", crossorigin: "use-credentials")
     expect(actual).to eq(%(<link href="/assets/main.css" type="text/css" rel="stylesheet" integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC" crossorigin="use-credentials">))
   end
 
   it "ignores href passed as an option" do
-    actual = stylesheet_link_tag("main", href: "wrong")
+    actual = stylesheet("main", href: "wrong")
     expect(actual).to eq(%(<link href="/assets/main.css" type="text/css" rel="stylesheet">))
   end
 
@@ -106,7 +110,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#stylesheet_link_tag", :app_integ
     before { compile_assets! }
 
     it "includes subresource_integrity and crossorigin attributes" do
-      actual = stylesheet_link_tag("app")
+      actual = stylesheet("app")
       expect(actual).to match(%r{<link href="/assets/app-[A-Z0-9]{8}.css" type="text/css" rel="stylesheet" integrity="sha384-[A-Za-z0-9+/]{64}" crossorigin="anonymous">})
     end
   end
@@ -119,7 +123,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#stylesheet_link_tag", :app_integ
     end
 
     it "returns absolute url for href attribute" do
-      actual = stylesheet_link_tag("main")
+      actual = stylesheet("main")
       expect(actual).to eq(%(<link href="#{base_url}/assets/main.css" type="text/css" rel="stylesheet">))
     end
   end
