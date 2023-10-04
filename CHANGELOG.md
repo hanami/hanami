@@ -2,12 +2,10 @@
 
 The web, with simplicity.
 
-## v2.1.0.beta2 - 2023-10-04
+## v2.1.0.beta2.1 - 2023-10-04
 
 ### Added
 
-- [Luca Guidi, Tim Riley] Reimplement assets integration (#1319, #1332, #1333, #1336)
-- [Tim Riley] Introduce `Hanami::Helpers::AssetsHelper`, automatically included in view templates, scopes and parts when hanami-assets is bundled (#1319)
 - [Tim Riley, Luca Guidi] Added assets helpers aliases (#1319, #1339):
   - Added `#js` and `#javascript_tag` as alias for `#javascript`
   - Added `#css` and `#stylesheet_link_tag` as alias for `#stylesheet`
@@ -15,6 +13,13 @@ The web, with simplicity.
   - Added `#favicon_link_tag` as alias for `#favicon`
   - Added `#video_tag` as alias for `#video`
   - Added `#audio_tag` as alias for `#audio`
+
+## v2.1.0.beta2 - 2023-10-04
+
+### Added
+
+- [Luca Guidi, Tim Riley] Reimplement assets integration (#1319, #1332, #1333, #1336)
+- [Tim Riley] Introduce `Hanami::Helpers::AssetsHelper`, automatically included in view templates, scopes and parts when hanami-assets is bundled (#1319)
 
 ### Fixed
 
