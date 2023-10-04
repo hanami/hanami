@@ -74,6 +74,20 @@ module Hanami
       # @since 2.0.0
       attr_accessor :content_security_policy
 
+      # @!attribute [rw] method_override
+      #   Sets or returns whether HTTP method override should be enabled for action classes.
+      #
+      #   Defaults to true. You can override this by explicitly setting a
+      #   true or false value.
+      #
+      #   When true, this will mount `Rack::MethodOverride` in the Rack middleware stack of the App.
+      #
+      #   @return [Boolean]
+      #
+      #   @api public
+      #   @since 2.1.0
+      setting :method_override, default: true
+
       # The following settings are for view and assets integration with actions, and are NOT
       # publicly released as of 2.0.0. We'll make full documentation available when these become
       # public in a subsequent release.

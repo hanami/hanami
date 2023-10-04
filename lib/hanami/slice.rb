@@ -982,8 +982,15 @@ module Hanami
             use(Hanami::Webconsole::Middleware, config)
           end
 
-          if Hanami.bundled?("hanami-controller") && config.actions.sessions.enabled?
-            use(*config.actions.sessions.middleware)
+          if Hanami.bundled?("hanami-controller")
+            if config.actions.method_override
+              require "rack/method_override"
+              use(Rack::MethodOverride)
+            end
+
+            if config.actions.sessions.enabled?
+              use(*config.actions.sessions.middleware)
+            end
           end
 
           if Hanami.bundled?("hanami-assets") && config.assets.serve
