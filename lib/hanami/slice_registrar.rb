@@ -97,16 +97,12 @@ module Hanami
       parent.eql?(parent.app) ? Object : parent.namespace
     end
 
-    # Runs when a slice file has been found at `config/slices/[slice_name].rb`, or a slice directory
-    # at `slices/[slice_name]`. Attempts to require the slice class, if defined, before registering
-    # the slice. If a slice class is not found, registering the slice will generate the slice class.
+    # Runs when a slice file has been found at `config/slices/[slice_name].rb`, or else inside
+    # the slice at `slices/[slice_name]/config/slice.rb`, or a slice directory at `slices/[slice_name]`.
+    # Attempts to require the slice class, if defined, before registering the slice.
+    # If a slice class is not found, registering the slice will generate the slice class.
     def load_slice(slice_name)
-      slice_require_path = root.join(CONFIG_DIR, SLICES_DIR, slice_name).to_s
-      begin
-        require(slice_require_path)
-      rescue LoadError => e
-        raise e unless e.path == slice_require_path
-      end
+      maybe_require_slice_definition_file(slice_name)
 
       slice_class =
         begin
@@ -116,6 +112,24 @@ module Hanami
         end
 
       register(slice_name, slice_class)
+    end
+
+    def maybe_require_slice_definition_file(slice_name)
+      slice_require_path = find_slice_require_path(slice_name)
+      return unless slice_require_path
+
+      begin
+        require slice_require_path
+      rescue LoadError => e
+        raise e unless e.path == slice_require_path
+      end
+    end
+
+    def find_slice_require_path(slice_name)
+      [
+        root.join(CONFIG_DIR, SLICES_DIR, slice_name),
+        root.join(SLICES_DIR, slice_name, CONFIG_DIR, "slice")
+      ].find { _1.sub_ext(RB_EXT).file? }&.to_s
     end
 
     def build_slice(slice_name, &block)

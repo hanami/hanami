@@ -2,6 +2,10 @@
 
 The web, with simplicity.
 
+### Changed
+
+- [Philip Arndt] Add support for a slice's class definition file to exist inside either `config/slices/[slice_name].rb` or `slices/[slice_name]/config/slice.rb`, in that order of precedence, so that a slice can provide its own definition which the app can override if needed.
+
 ## v2.1.0.beta2.1 - 2023-10-04
 
 ### Added
