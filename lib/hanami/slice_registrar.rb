@@ -86,7 +86,7 @@ module Hanami
       list = []
       ancestor = parent
       while ancestor
-        list.unshift(ancestor)
+        list.prepend(ancestor)
         ancestor = ancestor.parent
       end
       list
