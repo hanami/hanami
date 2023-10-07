@@ -94,9 +94,12 @@ module Hanami
       parent.eql?(parent.app) ? Object : parent.namespace
     end
 
-    # Runs when a slice file has been found at `config/slices/[slice_name].rb`, or else inside
-    # the slice at `slices/[slice_name]/config/slice.rb`, or a slice directory at `slices/[slice_name]`.
-    # Attempts to require the slice class, if defined, before registering the slice.
+    # Runs when a slice file has been found inside the app at `config/slices/[slice_name].rb`,
+    # or when a slice directory exists at `slices/[slice_name]`.
+    #
+    # If a slice definition file is found by `find_slice_require_path`, then `load_slice` will
+    # require the file before registering the slice class.
+    #
     # If a slice class is not found, registering the slice will generate the slice class.
     def load_slice(slice_name)
       slice_require_path = find_slice_require_path(slice_name)
