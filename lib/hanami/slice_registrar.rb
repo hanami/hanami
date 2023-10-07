@@ -108,10 +108,9 @@ module Hanami
         raise e unless e.path == slice_require_path
       end
 
-      slice_module_name = inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
       slice_class =
         begin
-          inflector.constantize("#{slice_module_name}#{MODULE_DELIMITER}Slice")
+          inflector.constantize("#{slice_module_name(slice_name)}#{MODULE_DELIMITER}Slice")
         rescue NameError => e
           raise e unless e.name.to_s == inflector.camelize(slice_name) || e.name.to_s == :Slice
         end
@@ -120,15 +119,18 @@ module Hanami
     end
 
     def build_slice(slice_name, &block)
-      slice_module_name = inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
       slice_module =
         begin
-          inflector.constantize(slice_module_name)
+          inflector.constantize(slice_module_name(slice_name))
         rescue NameError
           parent_slice_namespace.const_set(inflector.camelize(slice_name), Module.new)
         end
 
       slice_module.const_set(:Slice, Class.new(Hanami::Slice, &block))
+    end
+
+    def slice_module_name(slice_name)
+      inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
     end
 
     def configure_slice(slice_name, slice)
