@@ -46,19 +46,16 @@ module Hanami
     end
 
     def load_slices
-      slice_configs = Dir[root.join(CONFIG_DIR, SLICES_DIR, "*#{RB_EXT}")]
-        .map { |file| File.basename(file, RB_EXT) }
+      slice_configs = root.join(CONFIG_DIR, SLICES_DIR).glob("*#{RB_EXT}")
+        .map { _1.basename(RB_EXT) }
 
-      slice_dirs = Dir[File.join(root, SLICES_DIR, "*")]
-        .select { |path| File.directory?(path) }
-        .map { |path| File.basename(path) }
+      slice_dirs = root.join(SLICES_DIR).glob("*")
+        .select(&:directory?)
+        .map { _1.basename }
 
-      slice_names = (slice_dirs + slice_configs).uniq.sort
+      (slice_dirs + slice_configs).uniq.sort
         .then { filter_slice_names(_1) }
-
-      slice_names.each do |slice_name|
-        load_slice(slice_name)
-      end
+        .each(&method(:load_slice))
 
       self
     end
@@ -85,6 +82,16 @@ module Hanami
 
     private
 
+    def ancestors
+      list = []
+      ancestor = parent
+      while ancestor
+        list.unshift(ancestor)
+        ancestor = ancestor.parent
+      end
+      list
+    end
+
     def root
       parent.root
     end
@@ -102,7 +109,8 @@ module Hanami
     # Attempts to require the slice class, if defined, before registering the slice.
     # If a slice class is not found, registering the slice will generate the slice class.
     def load_slice(slice_name)
-      maybe_require_slice_definition_file(slice_name)
+      slice_require_path = find_slice_require_path(slice_name)
+      require slice_require_path if slice_require_path
 
       slice_class =
         begin
@@ -114,22 +122,13 @@ module Hanami
       register(slice_name, slice_class)
     end
 
-    def maybe_require_slice_definition_file(slice_name)
-      slice_require_path = find_slice_require_path(slice_name)
-      return unless slice_require_path
-
-      begin
-        require slice_require_path
-      rescue LoadError => e
-        raise e unless e.path == slice_require_path
-      end
-    end
-
     def find_slice_require_path(slice_name)
-      [
-        root.join(CONFIG_DIR, SLICES_DIR, slice_name),
-        root.join(SLICES_DIR, slice_name, CONFIG_DIR, "slice")
-      ].find { _1.sub_ext(RB_EXT).file? }&.to_s
+      ancestors
+        .map { _1.root.join(CONFIG_DIR, SLICES_DIR, slice_name) }
+        .push(root.join(SLICES_DIR, slice_name, CONFIG_DIR, "slice"))
+        .uniq
+        .find { _1.sub_ext(RB_EXT).file? }
+        &.to_s
     end
 
     def build_slice(slice_name, &block)
