@@ -123,7 +123,7 @@ RSpec.describe "Slices", :app_integration do
 
         module Main
           class Slice < Hanami::Slice
-            config.actions.format :html
+            config.actions.format :json
           end
         end
       RUBY
@@ -131,7 +131,7 @@ RSpec.describe "Slices", :app_integration do
       write "slices/main/config/slice.rb", <<~RUBY
         module Main
           class Slice < Hanami::Slice
-            config.actions.format :json
+            raise "This should not be called"
           end
         end
       RUBY
@@ -139,7 +139,7 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main]).to be Main::Slice
-      expect(Hanami.app.slices[:main].config.actions.format).to eq([:html])
+      expect(Hanami.app.slices[:main].config.actions.format).to eq([:json])
     end
   end
 
@@ -188,7 +188,7 @@ RSpec.describe "Slices", :app_integration do
         module Main
           module Nested
             class Slice < Hanami::Slice
-              config.actions.format :html
+              config.actions.format :json
             end
           end
         end
@@ -198,7 +198,7 @@ RSpec.describe "Slices", :app_integration do
         module Main
           module Nested
             class Slice < Hanami::Slice
-              config.actions.format :json
+              raise "This should not be called"
             end
           end
         end
@@ -207,7 +207,7 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main]).to be Main::Slice
-      expect(Hanami.app.slices[:main].slices[:nested].config.actions.format).to eq([:html])
+      expect(Hanami.app.slices[:main].slices[:nested].config.actions.format).to eq([:json])
     end
   end
 
@@ -222,13 +222,13 @@ RSpec.describe "Slices", :app_integration do
         end
       RUBY
 
-      write "config/slices/nested.rb", <<~RUBY
+      write "config/slices/main/nested.rb", <<~RUBY
         require "hanami"
 
         module Main
           module Nested
             class Slice < Hanami::Slice
-              config.actions.format :csv
+              config.actions.format :json
             end
           end
         end
@@ -240,7 +240,7 @@ RSpec.describe "Slices", :app_integration do
         module Main
           module Nested
             class Slice < Hanami::Slice
-              config.actions.format :html
+              raise "This should not be called"
             end
           end
         end
@@ -250,7 +250,7 @@ RSpec.describe "Slices", :app_integration do
         module Main
           module Nested
             class Slice < Hanami::Slice
-              config.actions.format :json
+              raise "This should not be called"
             end
           end
         end
@@ -259,7 +259,7 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main]).to be Main::Slice
-      expect(Hanami.app.slices[:main].slices[:nested].config.actions.format).to eq([:csv])
+      expect(Hanami.app.slices[:main].slices[:nested].config.actions.format).to eq([:json])
     end
   end
 

@@ -82,16 +82,6 @@ module Hanami
 
     private
 
-    def ancestors
-      list = []
-      ancestor = parent
-      while ancestor
-        list.prepend(ancestor)
-        ancestor = ancestor.parent
-      end
-      list
-    end
-
     def root
       parent.root
     end
@@ -122,10 +112,27 @@ module Hanami
       register(slice_name, slice_class)
     end
 
+    # Finds the path to the slice's definition file, if it exists, in the following order:
+    #
+    # 1. `config/slices/[slice_name].rb`
+    # 2. `slices/[parent_slice_name]/config/[slice_name].rb` (unless parent is the app)
+    # 3. `slices/[slice_name]/config/slice.rb`
+    #
+    # If the slice is nested under another slice then it will look in the following order:
+    #
+    # 1. `config/slices/[parent_slice_name]/[slice_name].rb`
+    # 2. `slices/[parent_slice_name]/config/[slice_name].rb`
+    # 3. `slices/[parent_slice_name]/[slice_name]/config/slice.rb`
     def find_slice_require_path(slice_name)
+      app_slice_file_path = [slice_name]
+      app_slice_file_path.prepend(parent.slice_name) unless parent.eql?(parent.app)
+      ancestors = [
+        parent.app.root.join(CONFIG_DIR, SLICES_DIR, app_slice_file_path.join(File::SEPARATOR)),
+        parent.root.join(CONFIG_DIR, SLICES_DIR, slice_name),
+        root.join(SLICES_DIR, slice_name, CONFIG_DIR, "slice")
+      ]
+
       ancestors
-        .map { _1.root.join(CONFIG_DIR, SLICES_DIR, slice_name) }
-        .push(root.join(SLICES_DIR, slice_name, CONFIG_DIR, "slice"))
         .uniq
         .find { _1.sub_ext(RB_EXT).file? }
         &.to_s
