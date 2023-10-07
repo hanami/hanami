@@ -101,12 +101,8 @@ module Hanami
     # at `slices/[slice_name]`. Attempts to require the slice class, if defined, before registering
     # the slice. If a slice class is not found, registering the slice will generate the slice class.
     def load_slice(slice_name)
-      slice_require_path = root.join(CONFIG_DIR, SLICES_DIR, slice_name).to_s
-      begin
-        require(slice_require_path)
-      rescue LoadError => e
-        raise e unless e.path == slice_require_path
-      end
+      slice_require_path = root.join(CONFIG_DIR, SLICES_DIR, slice_name)
+      require(slice_require_path.to_s) if slice_require_path.sub_ext(RB_EXT).file?
 
       slice_class =
         begin
