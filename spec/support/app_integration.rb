@@ -39,15 +39,14 @@ module RSpec
 
       def compile_assets!
         link_node_modules
+        generate_assets_config
 
         require "hanami/cli/command"
         require "hanami/cli/commands/app/command"
         require "hanami/cli/commands/app/assets/compile"
-        compiler = Hanami::CLI::Commands::App::Assets::Compile.new(config: Hanami.app.config.assets)
+        assets_compile = Hanami::CLI::Commands::App::Assets::Compile.new(config: Hanami.app.config.assets)
 
-        with_directory(Hanami.app.root) do
-          compiler.call
-        end
+        with_directory(Hanami.app.root) { assets_compile.call }
       end
 
       def link_node_modules
@@ -57,6 +56,25 @@ module RSpec
 
         FileUtils.ln_s(node_modules_path, root)
       rescue Errno::EEXIST # rubocop:disable Lint/SuppressedException
+      end
+
+      def generate_assets_config
+        root = Hanami.app.root
+
+        with_directory(root) do
+          write("config/assets.mjs", <<~JS) unless root.join("config", "assets.mjs").exist?
+            import * as assets from "hanami-assets";
+            await assets.run();
+          JS
+
+          write("package.json", <<~JSON) unless root.join("package.json").exist?
+            {
+              "scripts": {
+                "assets": "node config/assets.mjs"
+              }
+            }
+          JSON
+        end
       end
     end
   end

@@ -18,6 +18,19 @@ RSpec.describe "Assets", :app_integration do
         end
       RUBY
 
+      write "config/assets.mjs", <<~JS
+        import * as assets from "hanami-assets";
+        await assets.run();
+      JS
+
+      write "package.json", <<~JSON
+        {
+          "scripts": {
+            "assets": "node config/assets.mjs"
+          }
+        }
+      JSON
+
       write "config/routes.rb", <<~RUBY
         module TestApp
           class Routes < Hanami::Routes
