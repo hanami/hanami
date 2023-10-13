@@ -11,6 +11,8 @@ RSpec.describe "Logging / Request logging", :app_integration do
 
   let(:logger_stream) { StringIO.new }
 
+  let(:root) { make_tmp_directory }
+
   def configure_logger
     Hanami.app.config.logger.stream = logger_stream
   end
@@ -20,7 +22,7 @@ RSpec.describe "Logging / Request logging", :app_integration do
   end
 
   before do
-    with_directory(make_tmp_directory) do
+    with_directory(root) do
       write "config/app.rb", <<~RUBY
         module TestApp
           class App < Hanami::App
@@ -123,6 +125,52 @@ RSpec.describe "Logging / Request logging", :app_integration do
           elapsed_unit: a_string_matching(/(µs|ms)/),
         )
       end
+    end
+  end
+
+  context "when using ::Logger from Ruby stdlib" do
+    def before_prepare
+      with_directory(root) do
+        write "config/routes.rb", <<~RUBY
+          module TestApp
+            class Routes < Hanami::Routes
+              root to: ->(env) { [200, {}, ["OK"]] }
+            end
+          end
+        RUBY
+
+        write "config/providers/logger.rb", <<~RUBY
+          Hanami.app.register_provider :logger do
+            prepare do
+              require "logger"
+              require "pathname"
+
+              # Stream is located at `[root]/log/test.log`.
+              # Where `root` is the temporary directory created by the test suite.
+              # see `let(:root)` at the top of this file.
+              @stream = Pathname.new(#{root.to_s.inspect}).join("log").tap(&:mkpath).join("test.log").to_s
+            end
+
+            start do
+              register :logger, ::Logger.new(@stream)
+            end
+          end
+        RUBY
+      end
+    end
+
+    let(:logs) do
+      Pathname.new(root).join("log", "test.log").readlines
+    end
+
+    it "logs the requests" do
+      get "/"
+
+      request_log = logs.last
+
+      expect(request_log).to match(%r{INFO})
+      expect(request_log).to match(%r{GET})
+      expect(request_log).to match(%r{200})
     end
   end
 end

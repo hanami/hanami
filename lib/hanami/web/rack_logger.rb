@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "delegate"
+
 module Hanami
   # @api private
   module Web
@@ -53,10 +55,33 @@ module Hanami
         end
       end
 
+      # @since 2.1.0
+      # @api private
+      class TaggedLogger < SimpleDelegator
+        # @since 2.1.0
+        # @api private
+        def self.call(logger)
+          return logger if logger.respond_to?(:tagged)
+          new(logger)
+        end
+
+        class << self
+          # @since 2.1.0
+          # @api private
+          alias [] call
+        end
+
+        # @since 2.1.0
+        # @api private
+        def tagged(*, &blk)
+          blk.call
+        end
+      end
+
       # @api private
       # @since 2.0.0
       def initialize(logger, env: :development)
-        @logger = logger
+        @logger = TaggedLogger[logger]
         extend(Development) if %i[development test].include?(env)
       end
 
