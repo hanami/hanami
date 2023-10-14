@@ -152,7 +152,7 @@ RSpec.describe "Logging / Request logging", :app_integration do
             end
 
             start do
-              register :logger, ::Logger.new(@stream)
+              register :logger, ::Logger.new(@stream, progname: "custom-logger-app")
             end
           end
         RUBY
@@ -163,14 +163,24 @@ RSpec.describe "Logging / Request logging", :app_integration do
       Pathname.new(root).join("log", "test.log").readlines
     end
 
-    it "logs the requests" do
+    it "logs the requests with the payload serialized as JSON" do
       get "/"
 
       request_log = logs.last
 
-      expect(request_log).to match(%r{INFO})
-      expect(request_log).to match(%r{GET})
-      expect(request_log).to match(%r{200})
+      # Expected log line follows the standard Logger structure:
+      #
+      # I, [2023-10-14T14:55:16.638753 #94836]  INFO -- custom-logger-app: {"verb":"GET", ...}
+      expect(request_log).to match(%r{INFO -- custom-logger-app:})
+
+      # The log message should be JSON, after the progname
+      log_message = request_log.split("custom-logger-app: ").last
+      log_payload = JSON.parse(log_message, symbolize_names: true)
+
+      expect(log_payload).to include(
+        verb: "GET",
+        status: 200
+      )
     end
   end
 end
