@@ -64,7 +64,7 @@ module Hanami
     # method that returns true if no routes were defined.
     #
     # This is useful when needing to determine behaviour based on the presence of user-defined
-    # routes, such as when determining to show the Hanami welcome page in {Slice#load_router}.
+    # routes, such as determining whether to show the Hanami welcome page in {Slice#load_router}.
     #
     # @api private
     # @since 2.1.0
