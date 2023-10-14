@@ -952,6 +952,7 @@ module Hanami
         config = self.config
         rack_monitor = self["rack.monitor"]
 
+        show_welcome = Hanami.env?(:development) && routes.empty?
         render_errors = render_errors?
         render_detailed_errors = render_detailed_errors?
 
@@ -970,6 +971,8 @@ module Hanami
           **config.router.options
         ) do
           use(rack_monitor)
+
+          use(Hanami::Web::Welcome) if show_welcome
 
           use(
             Hanami::Middleware::RenderErrors,

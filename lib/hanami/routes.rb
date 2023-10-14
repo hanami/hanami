@@ -60,6 +60,35 @@ module Hanami
       end
     end
 
+    # Wrapper class for the (otherwise opqaque) proc returned from {.routes}, adding an `#empty?`
+    # method that returns true if no routes were defined.
+    #
+    # This is useful when needing to determine behaviour based on the presence of user-defined
+    # routes, such as when determining to show the Hanami welcome page in {Slice#load_router}.
+    #
+    # @api private
+    # @since 2.1.0
+    class RoutesProc < DelegateClass(Proc)
+      # @api private
+      # @since 2.1.0
+      def self.empty
+        new(proc {}, empty: true)
+      end
+
+      # @api private
+      # @since 2.1.0
+      def initialize(proc, empty: false)
+        @empty = empty
+        super(proc)
+      end
+
+      # @api private
+      # @since 2.1.0
+      def empty?
+        !!@empty
+      end
+    end
+
     # @api private
     def self.routes
       @routes ||= build_routes
@@ -68,9 +97,9 @@ module Hanami
     class << self
       # @api private
       def build_routes(definitions = self.definitions)
-        return if definitions.empty?
+        return RoutesProc.empty if definitions.empty?
 
-        proc do
+        routes_proc = proc do
           definitions.each do |(name, args, kwargs, block)|
             if block
               public_send(name, *args, **kwargs, &block)
@@ -79,6 +108,8 @@ module Hanami
             end
           end
         end
+
+        RoutesProc.new(routes_proc)
       end
 
       # @api private
