@@ -79,7 +79,7 @@ module Hanami
           end
 
           def accepts_entry_payload?(logger)
-            logger.method(:add).parameters.last.then { |type, _| type == :keyrest }
+            logger.method(:info).parameters.last.then { |type, _| type == :keyrest }
           end
         end
 
@@ -106,9 +106,18 @@ module Hanami
         #
         # @since 2.1.0
         # @api private
-        def add(severity, message = nil, **payload)
+        def info(message = nil, **payload)
           payload[:message] = message if message
-          logger.add(severity, JSON.fast_generate(payload))
+          logger.info(JSON.fast_generate(payload))
+        end
+
+        # @see info
+        #
+        # @since 2.1.0
+        # @api private
+        def error(message = nil, **payload)
+          payload[:message] = message if message
+          logger.info(JSON.fast_generate(payload))
         end
       end
 
@@ -136,11 +145,7 @@ module Hanami
       # @since 2.0.0
       def log_request(env, status, elapsed)
         logger.tagged(:rack) do
-          logger.add(
-            ::Logger::Severity::INFO,
-            nil,
-            **data(env, status: status, elapsed: elapsed),
-          )
+          logger.info(**data(env, status: status, elapsed: elapsed))
         end
       end
 
@@ -148,11 +153,7 @@ module Hanami
       # @since 2.0.0
       def log_exception(env, exception, status, elapsed)
         logger.tagged(:rack) do
-          logger.add(
-            ::Logger::Severity::ERROR,
-            exception,
-            **data(env, status: status, elapsed: elapsed)
-          )
+          logger.error(exception, **data(env, status: status, elapsed: elapsed))
         end
       end
 
