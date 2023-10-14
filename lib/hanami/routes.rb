@@ -60,7 +60,7 @@ module Hanami
       end
     end
 
-    # Wrapper class for the (otherwise opqaque) proc returned from {.routes}, adding an `#empty?`
+    # Wrapper class for the (otherwise opaque) proc returned from {.routes}, adding an `#empty?`
     # method that returns true if no routes were defined.
     #
     # This is useful when needing to determine behaviour based on the presence of user-defined
