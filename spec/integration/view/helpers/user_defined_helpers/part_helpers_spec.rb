@@ -33,7 +33,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
           module Views
             module Helpers
               def exclaim_from_app(str)
-                tag.h1("#{str}! (app helper)")
+                tag.h1("#{str}! (app #{_context.inflector.pluralize('helper')})")
               end
             end
           end
@@ -65,7 +65,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
             module Parts
               class Post < TestApp::Views::Part
                 def title
-                  exclaim_from_app(value.title)
+                  helpers.exclaim_from_app(value.title)
                 end
               end
             end
@@ -78,11 +78,11 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
       ERB
     end
 
-    it "makes user-defined helpers available in parts" do
+    it "makes user-defined helpers available in parts via a `helpers` object" do
       post = OpenStruct.new(title: "Hello world")
       output = TestApp::App["views.posts.show"].call(post: post).to_s.strip
 
-      expect(output).to eq "<h1>Hello world! (app helper)</h1>"
+      expect(output).to eq "<h1>Hello world! (app helpers)</h1>"
     end
   end
 
@@ -104,7 +104,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
           module Views
             module Helpers
               def exclaim_from_slice(str)
-                tag.h1("#{str}! (slice helper)")
+                tag.h1("#{str}! (slice #{_context.inflector.pluralize('helper')})")
               end
             end
           end
@@ -129,11 +129,11 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
             module Parts
               class Post < Main::Views::Part
                 def title
-                  exclaim_from_slice(value.title)
+                  helpers.exclaim_from_slice(value.title)
                 end
 
                 def title_from_app
-                  exclaim_from_app(value.title)
+                  helpers.exclaim_from_app(value.title)
                 end
               end
             end
@@ -147,13 +147,13 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
       ERB
     end
 
-    it "makes user-defined helpers (from app as well as slice) available in parts" do
+    it "makes user-defined helpers (from app as well as slice) available in parts via a `helpers` object" do
       post = OpenStruct.new(title: "Hello world")
       output = Main::Slice["views.posts.show"].call(post: post).to_s
 
       expect(output).to eq <<~HTML
-        <h1>Hello world! (slice helper)</h1>
-        <h1>Hello world! (app helper)</h1>
+        <h1>Hello world! (slice helpers)</h1>
+        <h1>Hello world! (app helpers)</h1>
       HTML
     end
   end
