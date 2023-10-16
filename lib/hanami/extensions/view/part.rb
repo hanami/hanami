@@ -57,7 +57,7 @@ module Hanami
         attr_reader :_context
 
         # @api public
-        # @since 2.1.10
+        # @since 2.1.0
         alias_method :context, :_context
 
         # @api private
