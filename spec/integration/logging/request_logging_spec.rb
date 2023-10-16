@@ -11,6 +11,8 @@ RSpec.describe "Logging / Request logging", :app_integration do
 
   let(:logger_stream) { StringIO.new }
 
+  let(:root) { make_tmp_directory }
+
   def configure_logger
     Hanami.app.config.logger.stream = logger_stream
   end
@@ -19,14 +21,18 @@ RSpec.describe "Logging / Request logging", :app_integration do
     @logs ||= (logger_stream.rewind and logger_stream.read)
   end
 
+  def generate_app
+    write "config/app.rb", <<~RUBY
+    module TestApp
+      class App < Hanami::App
+      end
+    end
+    RUBY
+  end
+
   before do
-    with_directory(make_tmp_directory) do
-      write "config/app.rb", <<~RUBY
-        module TestApp
-          class App < Hanami::App
-          end
-        end
-      RUBY
+    with_directory(root) do
+      generate_app
 
       require "hanami/setup"
       configure_logger
@@ -123,6 +129,58 @@ RSpec.describe "Logging / Request logging", :app_integration do
           elapsed_unit: a_string_matching(/(µs|ms)/),
         )
       end
+    end
+  end
+
+  context "when using ::Logger from Ruby stdlib" do
+    def generate_app
+      write "config/app.rb", <<~RUBY
+        require "logger"
+        require "pathname"
+
+        module TestApp
+          class App < Hanami::App
+            stream = Pathname.new(#{root.to_s.inspect}).join("log").tap(&:mkpath).join("test.log").to_s
+            config.logger = ::Logger.new(stream, progname: "custom-logger-app")
+          end
+        end
+      RUBY
+    end
+
+    def before_prepare
+      with_directory(root) do
+        write "config/routes.rb", <<~RUBY
+          module TestApp
+            class Routes < Hanami::Routes
+              root to: ->(env) { [200, {}, ["OK"]] }
+            end
+          end
+        RUBY
+      end
+    end
+
+    let(:logs) do
+      Pathname.new(root).join("log", "test.log").readlines
+    end
+
+    it "logs the requests with the payload serialized as JSON" do
+      get "/"
+
+      request_log = logs.last
+
+      # Expected log line follows the standard Logger structure:
+      #
+      # I, [2023-10-14T14:55:16.638753 #94836]  INFO -- custom-logger-app: {"verb":"GET", ...}
+      expect(request_log).to match(%r{INFO -- custom-logger-app:})
+
+      # The log message should be JSON, after the progname
+      log_message = request_log.split("custom-logger-app: ").last
+      log_payload = JSON.parse(log_message, symbolize_names: true)
+
+      expect(log_payload).to include(
+        verb: "GET",
+        status: 200
+      )
     end
   end
 end
