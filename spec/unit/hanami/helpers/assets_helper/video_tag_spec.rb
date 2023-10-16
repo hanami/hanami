@@ -14,8 +14,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video", :app_integration do
     }.new(context)
   }
 
-  def video(...)
-    subject.video(...)
+  def video_tag(...)
+    subject.video_tag(...)
   end
 
   let(:context) { TestApp::Views::Context.new }
@@ -53,26 +53,26 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video", :app_integration do
   end
 
   it "returns an instance of HtmlBuilder" do
-    actual = video("movie.mp4")
+    actual = video_tag("movie.mp4")
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
   end
 
   it "renders <video> tag" do
-    actual = video("movie.mp4").to_s
+    actual = video_tag("movie.mp4").to_s
     expect(actual).to eq(%(<video src="/assets/movie.mp4"></video>))
   end
 
   it "is aliased as #video_tag" do
-    expect(video("movie.mp4")).to eq(subject.video_tag("movie.mp4"))
+    expect(video_tag("movie.mp4")).to eq(subject.video_tag("movie.mp4"))
   end
 
   it "renders with html attributes" do
-    actual = video("movie.mp4", autoplay: true, controls: true).to_s
+    actual = video_tag("movie.mp4", autoplay: true, controls: true).to_s
     expect(actual).to eq(%(<video autoplay="autoplay" controls="controls" src="/assets/movie.mp4"></video>))
   end
 
   it "renders with fallback content" do
-    actual = video("movie.mp4") do
+    actual = video_tag("movie.mp4") do
       "Your browser does not support the video tag"
     end.to_s
 
@@ -80,7 +80,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video", :app_integration do
   end
 
   it "renders with tracks" do
-    actual = video("movie.mp4") do
+    actual = video_tag("movie.mp4") do
       tag.track kind: "captions", src: subject.asset_url("movie.en.vtt"), srclang: "en", label: "English"
     end.to_s
 
@@ -99,7 +99,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video", :app_integration do
 
   it "raises an exception when no arguments" do
     expect do
-      video
+      video_tag
     end.to raise_error(
       ArgumentError,
       "You should provide a source via `src` option or with a `source` HTML tag"
@@ -108,7 +108,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video", :app_integration do
 
   it "raises an exception when no src and no block" do
     expect do
-      video(content: true)
+      video_tag(content: true)
     end.to raise_error(
       ArgumentError,
       "You should provide a source via `src` option or with a `source` HTML tag"
@@ -123,7 +123,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#video", :app_integration do
     end
 
     it "returns absolute url for src attribute" do
-      actual = video("movie.mp4").to_s
+      actual = video_tag("movie.mp4").to_s
       expect(actual).to eq(%(<video src="#{base_url}/assets/movie.mp4"></video>))
     end
   end

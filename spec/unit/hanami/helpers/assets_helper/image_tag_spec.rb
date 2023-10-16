@@ -14,8 +14,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#image", :app_integration do
     }.new(context)
   }
 
-  def image(...)
-    subject.image(...)
+  def image_tag(...)
+    subject.image_tag(...)
   end
 
   let(:root) { make_tmp_directory }
@@ -53,31 +53,27 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#image", :app_integration do
   end
 
   it "returns an instance of HtmlBuilder" do
-    actual = image("application.jpg")
+    actual = image_tag("application.jpg")
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
   end
 
   it "renders an <img> tag" do
-    actual = image("application.jpg").to_s
+    actual = image_tag("application.jpg").to_s
     expect(actual).to eq(%(<img src="/assets/application.jpg" alt="Application">))
   end
 
-  it "is aliased as #image_tag" do
-    expect(subject.image_tag("application.jpg")).to eq image("application.jpg")
-  end
-
   it "custom alt" do
-    actual = image("application.jpg", alt: "My Alt").to_s
+    actual = image_tag("application.jpg", alt: "My Alt").to_s
     expect(actual).to eq(%(<img src="/assets/application.jpg" alt="My Alt">))
   end
 
   it "custom data attribute" do
-    actual = image("application.jpg", "data-user-id" => 5).to_s
+    actual = image_tag("application.jpg", "data-user-id" => 5).to_s
     expect(actual).to eq(%(<img src="/assets/application.jpg" alt="Application" data-user-id="5">))
   end
 
   it "ignores src passed as an option" do
-    actual = image("application.jpg", src: "wrong").to_s
+    actual = image_tag("application.jpg", src: "wrong").to_s
     expect(actual).to eq(%(<img src="/assets/application.jpg" alt="Application">))
   end
 
@@ -89,7 +85,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#image", :app_integration do
     end
 
     it "returns absolute url for src attribute" do
-      actual = image("application.jpg").to_s
+      actual = image_tag("application.jpg").to_s
       expect(actual).to eq(%(<img src="#{base_url}/assets/application.jpg" alt="Application">))
     end
   end
