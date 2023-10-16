@@ -21,14 +21,18 @@ RSpec.describe "Logging / Request logging", :app_integration do
     @logs ||= (logger_stream.rewind and logger_stream.read)
   end
 
+  def generate_app
+    write "config/app.rb", <<~RUBY
+    module TestApp
+      class App < Hanami::App
+      end
+    end
+    RUBY
+  end
+
   before do
     with_directory(root) do
-      write "config/app.rb", <<~RUBY
-        module TestApp
-          class App < Hanami::App
-          end
-        end
-      RUBY
+      generate_app
 
       require "hanami/setup"
       configure_logger
@@ -129,30 +133,26 @@ RSpec.describe "Logging / Request logging", :app_integration do
   end
 
   context "when using ::Logger from Ruby stdlib" do
+    def generate_app
+      write "config/app.rb", <<~RUBY
+        require "logger"
+        require "pathname"
+
+        module TestApp
+          class App < Hanami::App
+            stream = Pathname.new(#{root.to_s.inspect}).join("log").tap(&:mkpath).join("test.log").to_s
+            config.logger = ::Logger.new(stream, progname: "custom-logger-app")
+          end
+        end
+      RUBY
+    end
+
     def before_prepare
       with_directory(root) do
         write "config/routes.rb", <<~RUBY
           module TestApp
             class Routes < Hanami::Routes
               root to: ->(env) { [200, {}, ["OK"]] }
-            end
-          end
-        RUBY
-
-        write "config/providers/logger.rb", <<~RUBY
-          Hanami.app.register_provider :logger do
-            prepare do
-              require "logger"
-              require "pathname"
-
-              # Stream is located at `[root]/log/test.log`.
-              # Where `root` is the temporary directory created by the test suite.
-              # see `let(:root)` at the top of this file.
-              @stream = Pathname.new(#{root.to_s.inspect}).join("log").tap(&:mkpath).join("test.log").to_s
-            end
-
-            start do
-              register :logger, ::Logger.new(@stream, progname: "custom-logger-app")
             end
           end
         RUBY
