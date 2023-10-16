@@ -14,8 +14,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#favicon", :app_integration do
     }.new(context)
   }
 
-  def favicon_link_tag(...)
-    obj.instance_eval { favicon_link_tag(...) }
+  def favicon_tag(...)
+    obj.instance_eval { favicon_tag(...) }
   end
 
   let(:root) { make_tmp_directory }
@@ -53,22 +53,22 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#favicon", :app_integration do
   end
 
   it "returns an instance of SafeString" do
-    actual = favicon_link_tag
+    actual = favicon_tag
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
   end
 
   it "renders <link> tag" do
-    actual = favicon_link_tag.to_s
+    actual = favicon_tag.to_s
     expect(actual).to eq(%(<link href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">))
   end
 
   it "renders with HTML attributes" do
-    actual = favicon_link_tag("favicon.png", rel: "icon", type: "image/png").to_s
+    actual = favicon_tag("favicon.png", rel: "icon", type: "image/png").to_s
     expect(actual).to eq(%(<link href="/assets/favicon.png" rel="icon" type="image/png">))
   end
 
   it "ignores href passed as an option" do
-    actual = favicon_link_tag("favicon.png", href: "wrong").to_s
+    actual = favicon_tag("favicon.png", href: "wrong").to_s
     expect(actual).to eq(%(<link href="/assets/favicon.png" rel="shortcut icon" type="image/x-icon">))
   end
 
@@ -80,7 +80,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#favicon", :app_integration do
     end
 
     it "returns absolute url for href attribute" do
-      actual = favicon_link_tag.to_s
+      actual = favicon_tag.to_s
       expect(actual).to eq(%(<link href="#{base_url}/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">))
     end
   end

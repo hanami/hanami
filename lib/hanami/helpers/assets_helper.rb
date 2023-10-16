@@ -247,7 +247,7 @@ module Hanami
       #
       #   # <link href="https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.css"
       #   #       type="text/css" rel="stylesheet">
-      def stylesheet_link_tag(*source_paths, **options)
+      def stylesheet_tag(*source_paths, **options)
         options = options.reject { |k, _| k.to_sym == :href }
 
         _safe_tags(*source_paths) do |source_path|
@@ -396,7 +396,7 @@ module Hanami
       #
       #   # <link href="https://assets.bookshelf.org/assets/favicon-28a6b886de2372ee3922fcaf3f78f2d8.ico"
       #           rel="shortcut icon" type="image/x-icon">
-      def favicon_link_tag(source = DEFAULT_FAVICON, options = {})
+      def favicon_tag(source = DEFAULT_FAVICON, options = {})
         options = options.reject { |k, _| k.to_sym == :href }
 
         attributes = {

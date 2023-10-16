@@ -75,7 +75,7 @@ RSpec.describe "Assets", :app_integration do
       RUBY
 
       write "app/templates/posts/show.html.erb", <<~ERB
-        <%= stylesheet_link_tag("app") %>
+        <%= stylesheet_tag("app") %>
         <%= javascript_tag("app") %>
       ERB
 
