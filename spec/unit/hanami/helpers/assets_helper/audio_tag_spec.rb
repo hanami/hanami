@@ -14,8 +14,8 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#audio", :app_integration do
     }.new(context)
   }
 
-  def audio(...)
-    subject.audio(...)
+  def audio_tag(...)
+    subject.audio_tag(...)
   end
 
   let(:context) { TestApp::Views::Context.new }
@@ -53,26 +53,22 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#audio", :app_integration do
   end
 
   it "returns an instance of HtmlBuilder" do
-    actual = audio("song.ogg")
+    actual = audio_tag("song.ogg")
     expect(actual).to be_instance_of(::Hanami::View::HTML::SafeString)
   end
 
   it "renders <audio> tag" do
-    actual = audio("song.ogg").to_s
+    actual = audio_tag("song.ogg").to_s
     expect(actual).to eq(%(<audio src="/assets/song.ogg"></audio>))
   end
 
-  it "is aliased as #audio_tag" do
-    expect(subject.audio_tag("song.ogg")).to eq(audio("song.ogg"))
-  end
-
   it "renders with html attributes" do
-    actual = audio("song.ogg", autoplay: true, controls: true).to_s
+    actual = audio_tag("song.ogg", autoplay: true, controls: true).to_s
     expect(actual).to eq(%(<audio autoplay="autoplay" controls="controls" src="/assets/song.ogg"></audio>))
   end
 
   it "renders with fallback content" do
-    actual = audio("song.ogg") do
+    actual = audio_tag("song.ogg") do
       "Your browser does not support the audio tag"
     end.to_s
 
@@ -80,7 +76,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#audio", :app_integration do
   end
 
   it "renders with tracks" do
-    actual = audio("song.ogg") do
+    actual = audio_tag("song.ogg") do
       tag.track kind: "captions", src: subject.asset_url("song.pt-BR.vtt"), srclang: "pt-BR", label: "Portuguese"
     end.to_s
 
@@ -99,7 +95,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#audio", :app_integration do
 
   it "raises an exception when no arguments" do
     expect do
-      audio
+      audio_tag
     end.to raise_error(
       ArgumentError,
       "You should provide a source via `src` option or with a `source` HTML tag"
@@ -108,7 +104,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#audio", :app_integration do
 
   it "raises an exception when no src and no block" do
     expect do
-      audio(controls: true)
+      audio_tag(controls: true)
     end.to raise_error(
       ArgumentError,
       "You should provide a source via `src` option or with a `source` HTML tag"
@@ -123,7 +119,7 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#audio", :app_integration do
     end
 
     it "returns absolute url for src attribute" do
-      actual = audio("song.ogg").to_s
+      actual = audio_tag("song.ogg").to_s
       expect(actual).to eq(%(<audio src="#{base_url}/assets/song.ogg"></audio>))
     end
   end
