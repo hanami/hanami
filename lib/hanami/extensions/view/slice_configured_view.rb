@@ -108,7 +108,7 @@ module Hanami
           #   - We are a slice, and the view's inherited `paths` is identical to the parent's config
           #     (which would result in the view in a slice erroneously trying to find templates in
           #     the app)
-          if (!slice.parent && view_class.config.paths.empty?) ||
+          if view_class.config.paths.empty? ||
              (slice.parent && view_class.config.paths.map(&:dir) == [templates_path(slice.parent)])
             view_class.config.paths = templates_path(slice)
           end
@@ -178,7 +178,7 @@ module Hanami
             else
               views_namespace.const_set(:Part, Class.new(part_superclass).tap { |klass|
                 # Give the slice to `configure_for_slice`, since it cannot be inferred when it is
-                # called via `.inherited`, since the class is anonymous at this point
+                # called via `.inherited`, because the class is anonymous at this point
                 klass.configure_for_slice(slice)
               })
             end

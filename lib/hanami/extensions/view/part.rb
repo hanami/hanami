@@ -15,6 +15,8 @@ module Hanami
 
         module ClassMethods
           def configure_for_slice(slice)
+            extend SliceConfiguredPart.new(slice)
+
             const_set :PartHelpers, Class.new(PartHelpers) { |klass|
               klass.configure_for_slice(slice)
             }
