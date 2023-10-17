@@ -51,7 +51,7 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
             module Parts
               class Post < TestApp::Views::Part
                 def number
-                  format_number(value.number)
+                  helpers.format_number(value.number)
                 end
               end
             end
@@ -99,7 +99,7 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
             module Parts
               class Post < Main::Views::Part
                 def number
-                  format_number(value.number)
+                  helpers.format_number(value.number)
                 end
               end
             end
