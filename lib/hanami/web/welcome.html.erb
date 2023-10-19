@@ -1,5 +1,204 @@
-<h1>Hello world from Hanami</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Hanami</title>
+	<style>
+		:root {
+			--max-width: 1024px;
+			--foreground-rgb: 0, 0, 0;
+			--background-rgb: 255, 255, 255;
+			--card-border-rgb: 200, 200, 200;
+			--card-background-rgb: 100, 100, 100;
+			--font-sans: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+			--gradient: radial-gradient(circle at 50% 125%, rgba(255,202,212,1) 0%, rgba(255,202,212,0) 40%);
+		}
 
-<p>Hanami version: <%= hanami_version %></p>
+		@media (prefers-color-scheme: dark) {
+			:root {
+				--foreground-rgb: 255, 255, 255;
+				--background-rgb: 0, 0, 0;
+				--card-border-rgb: 200, 200, 200;
+				--card-background-rgb: 100, 100, 100;
+				--gradient: radial-gradient(circle at 50% 125%, rgba(255,73,108,0.75) 0%, rgba(255,73,108,0) 40%);
+			}
+		}
 
-<p>Ruby version: <%= ruby_version %></p>
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body,
+		html {
+			max-width: 100vw;
+			overflow-x: hidden;
+			font-size: 100%;
+		}
+
+		body {
+			color: rgb(var(--foreground-rgb));
+			background: var(--gradient) rgb(var(--background-rgb));
+			font-family: var(--font-sans);
+			font-style: normal;
+		}
+
+		main {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 2rem 8vw;
+			min-height: 100vh;
+		}
+
+		a {
+			text-decoration: none;
+			color: rgb(var(--foreground-rgb));
+		}
+
+		.welcome {
+			display: flex;
+			flex-direction: column;
+			gap: 2vh;
+			justify-content: center;
+			flex-grow: 3;
+			align-items: center;
+			text-align: center;
+			position: relative;
+			margin-bottom: 4vh;
+		}
+
+		.welcome .logo {
+			display: block;
+			width: 120px;
+			height: 120px;
+		}
+
+		.welcome h1 {
+			font-size: 2.625rem;
+			font-weight: 500;
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			column-gap: 20px;
+			max-width: 100%;
+			margin-bottom: 8vh;
+			width: var(--max-width);
+		}
+
+		.card {
+			padding: 1rem;
+			border-radius: 12px;
+			border: 1px solid rgba(var(--card-border-rgb), 0.3);
+			background: rgba(var(--card-background-rgb), 0);
+			transition: background 200ms, border 200ms;
+		}
+
+		.card:hover {
+			background: rgba(var(--card-background-rgb), 0.05);
+		}
+
+		.card h2 {
+			font-size: 1.5rem;
+			font-weight: 500;
+			margin-bottom: 0.8rem;
+		}
+
+		.card p {
+			line-height: 1.5;
+			opacity: 0.6;
+		}
+
+		.meta {
+			text-align: center;
+			opacity: 50%;
+		}
+
+		/* Mobile */
+		@media (max-width: 700px) {
+
+			.welcome {
+				justify-content: top;
+				flex-grow: 0;
+				margin-bottom: 4rem;
+			}
+
+			.welcome .logo {
+				width: 90px;
+				height: 90px;
+			}
+
+			.welcome h1 {
+				font-size: 2rem;
+			}
+
+			.grid {
+				grid-template-columns: 1fr;
+				row-gap: 20px;
+			}
+
+			.card {
+				text-align: center;
+			}
+		}
+
+		/* Tablet and Smaller Desktop */
+		@media (min-width: 701px) and (max-width: 1120px) {
+			.grid {
+				grid-template-columns: repeat(2, 1fr);
+				gap: 20px;
+			}
+		}
+
+		@media (prefers-color-scheme: dark) {
+			html {
+				color-scheme: dark;
+			}
+			.card {
+				border: 1px solid rgba(var(--card-border-rgb), 0.15);
+				background: rgba(var(--card-background-rgb), 0);
+			}
+
+			.card:hover {
+				background: rgba(var(--card-background-rgb), 0.1);
+			}
+
+		}
+
+	</style>
+</head>
+<body>
+	<main>
+		<div class="welcome">
+			<img src="data:image/svg+xml,%3Csvg height='840' width='840' viewBox='0 0 840 840' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cmask id='a' fill='%23fff'%3E%3Cpath d='m0 0h840v840h-840z' fill='%23fff' fill-rule='evenodd'/%3E%3C/mask%3E%3Cg fill='none' fill-rule='evenodd' mask='url(%23a)'%3E%3Cg transform='translate(-115.9919 -103.9919)'%3E%3Cg fill='%23dc3610'%3E%3Cpath d='m523.491853 126.991853 377.093909 273.974762-144.037057 443.300476h-466.113705l-144.037056-443.300476z' opacity='.6' transform='matrix(.91354546 .40673664 -.40673664 .91354546 258.181591 -167.665085)'/%3E%3Cpath d='m525.491853 129.991853 377.093909 273.974762-144.037057 443.300476h-466.113705l-144.037056-443.300476z' opacity='.8' transform='matrix(.97437006 .22495105 -.22495105 .97437006 131.903231 -104.716004)'/%3E%3Cpath d='m535.491853 130.991853 377.093909 273.974762-144.037057 443.300476h-466.113705l-144.037056-443.300476z'/%3E%3C/g%3E%3Cpath d='m534.991853 370.991853c86.156421 0 156 69.843579 156 156s-69.843579 156-156 156-156-69.843579-156-156 69.843579-156 156-156zm0 35c-66.826455 0-121 54.173545-121 121s54.173545 121 121 121 121-54.173545 121-121-54.173545-121-121-121z' fill='%23fff'/%3E%3Cpath d='m535.947441 478.991853 74.023116 90.999216-20.023116 27h-108l-19.978704-27z' fill='%23fff' transform='matrix(-1 0 0 -1 1071.9392 1075.983)'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E" alt="Hanani logo" class="logo">
+			<h1>Welcome to Hanami</h1>
+		</div>
+		<div class="grid">
+			<a href="/" class="card">
+				<h2>Guides</h2>
+				<p>Get started with the Hanami Guides</p>
+			</a>
+			<a href="/" class="card">
+				<h2>Docs</h2>
+				<p>Learn more through the API Docs</p>
+			</a>
+			<a href="/" class="card">
+				<h2>Code</h2>
+				<p>Contribute to the Source Code</p>
+			</a>
+			<a href="/" class="card">
+				<h2>Forum</h2>
+				<p>Join the conversation on the forums</p>
+			</a>
+		</div>
+		<p class="meta">
+			Hanami version: <%= hanami_version %> • Ruby version: <%= ruby_version %>
+		</p>
+	</main>
+</body>
+</html>
