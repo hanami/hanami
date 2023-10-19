@@ -39,7 +39,7 @@ module Hanami
       # @api private
       # @since 2.1.0
       def ruby_version
-        RUBY_VERSION
+        RUBY_DESCRIPTION
       end
     end
   end
