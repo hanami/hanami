@@ -37,9 +37,9 @@ RSpec.describe "Web / Welcome view", :app_integration do
       get "/"
 
       body = last_response.body.strip
-      expect(body).to include "<h1>Hello world from Hanami</h1>"
+      expect(body).to include "<h1>Welcome to Hanami</h1>"
       expect(body).to include "Hanami version: #{Hanami::VERSION}"
-      expect(body).to include "Ruby version: #{RUBY_VERSION}"
+      expect(body).to include "Ruby version: #{RUBY_DESCRIPTION}"
 
       expect(last_response.status).to eq 200
     end
