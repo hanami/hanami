@@ -104,17 +104,6 @@ module Hanami
               @content_for = source.instance_variable_get(:@content_for).dup
             end
 
-            def with(**args)
-              self.class.new(
-                inflector: @inflector,
-                settings: @settings,
-                assets: @assets,
-                routes: @routes,
-                request: @request,
-                **args
-              )
-            end
-
             def assets
               unless @assets
                 raise Hanami::ComponentLoadError, "the hanami-assets gem is required to access assets"
