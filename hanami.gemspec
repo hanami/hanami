@@ -23,7 +23,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'hanami-utils',       '~> 1.3'
   spec.add_dependency 'hanami-validations', '>= 1.3', '< 3'
-  spec.add_dependency 'hanami-controller',  '~> 1.3', '>= 1.3.3'
   spec.add_dependency 'hanami-view',        '~> 1.3'
   spec.add_dependency 'hanami-helpers',     '~> 1.3'
   spec.add_dependency 'hanami-mailer',      '~> 1.3'
