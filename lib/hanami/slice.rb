@@ -307,7 +307,7 @@ module Hanami
 
         prepare
 
-        container.finalize!
+        container.finalize!(freeze: false).freeze
         slices.each(&:boot)
 
         @booted = true
