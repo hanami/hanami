@@ -40,7 +40,7 @@ module Hanami
         attr_reader :view
 
         # @api private
-        attr_reader :view_context
+        attr_reader :view_context_class
 
         # Returns the app or slice's {Hanami::Slice::RoutesHelper RoutesHelper} for use within
         # action instance methods.
@@ -70,9 +70,9 @@ module Hanami
         #
         #   @api public
         #   @since 2.0.0
-        def initialize(view: nil, view_context: nil, rack_monitor: nil, routes: nil, **kwargs)
+        def initialize(view: nil, view_context_class: nil, rack_monitor: nil, routes: nil, **kwargs)
           @view = view
-          @view_context = view_context
+          @view_context_class = view_context_class
           @routes = routes
           @rack_monitor = rack_monitor
 
@@ -104,7 +104,7 @@ module Hanami
 
         # @api private
         def view_options(request, response)
-          {context: view_context&.with(**view_context_options(request, response))}.compact
+          {context: view_context_class&.new(**view_context_options(request, response))}.compact
         end
 
         # @api private

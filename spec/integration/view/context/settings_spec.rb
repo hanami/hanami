@@ -41,14 +41,6 @@ RSpec.describe "App view / Context / Settings", :app_integration do
       it "is the injected settings" do
         expect(context.settings).to be settings
       end
-
-      context "rebuilt context" do
-        subject(:new_context) { context.with }
-
-        it "retains the injected settings" do
-          expect(new_context.settings).to be settings
-        end
-      end
     end
   end
 end
