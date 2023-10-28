@@ -167,6 +167,41 @@ RSpec.describe "Slices", :app_integration do
     end
   end
 
+  it "Loading a deeply nested slice with its own defined slice class" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      # It does NOT look up "grandparent" (or above) configs; only the parent and the app
+      write "slices/main/config/slices/deeply/nested.rb", <<~RUBY
+        raise "This should not be loaded"
+      RUBY
+
+      write "slices/main/slices/deeply/slices/nested/config/slice.rb", <<~RUBY
+        module Main
+          module Deeply
+            module Nested
+              class Slice < Hanami::Slice
+                config.actions.format :json
+              end
+            end
+          end
+        end
+      RUBY
+
+      require "hanami/prepare"
+
+      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested]).to be Main::Deeply::Nested::Slice
+      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested].config.actions.format).to eq([:json])
+    end
+  end
+
   it "Loading a nested slice with its own defined slice class prefers the parent slice's defined slice class" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
@@ -198,6 +233,45 @@ RSpec.describe "Slices", :app_integration do
 
       expect(Hanami.app.slices[:main]).to be Main::Slice
       expect(Hanami.app.slices[:main].slices[:nested].config.actions.format).to eq([:json])
+    end
+  end
+
+  it "Loading a deeply nested slice with its own defined slice class prefers the parent slice's defined slice class" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      # It does NOT look up "grandparent" (or above) configs; only the parent and the app
+      write "slices/main/config/slices/deeply/nested.rb", <<~RUBY
+        raise "This should not be loaded"
+      RUBY
+
+      write "slices/main/slices/deeply/config/slices/nested.rb", <<~RUBY
+        module Main
+          module Deeply
+            module Nested
+              class Slice < Hanami::Slice
+                config.actions.format :json
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/slices/deeply/slices/nested/config/slice.rb", <<~RUBY
+        raise "This should not be loaded"
+      RUBY
+
+      require "hanami/prepare"
+
+      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested]).to be Main::Deeply::Nested::Slice
+      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested].config.actions.format).to eq([:json])
     end
   end
 
@@ -236,6 +310,44 @@ RSpec.describe "Slices", :app_integration do
 
       expect(Hanami.app.slices[:main]).to be Main::Slice
       expect(Hanami.app.slices[:main].slices[:nested].config.actions.format).to eq([:json])
+    end
+  end
+
+  it "Loading a deeply nested slice (with locally defined slice classes along the chain) prefers the app-level defined slice class" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      write "config/slices/main/deeply/nested.rb", <<~RUBY
+        module Main
+          module Deeply
+            module Nested
+              class Slice < Hanami::Slice
+                config.actions.format :json
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/config/slices/deeply/nested.rb", <<~RUBY
+        raise "This should not be loaded"
+      RUBY
+
+      write "slices/main/slices/deeply/slices/nested/config/slice.rb", <<~RUBY
+        raise "This should not be loaded"
+      RUBY
+
+      require "hanami/prepare"
+
+      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested]).to be Main::Deeply::Nested::Slice
+      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested].config.actions.format).to eq([:json])
     end
   end
 
