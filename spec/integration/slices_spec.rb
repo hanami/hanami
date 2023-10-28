@@ -129,11 +129,7 @@ RSpec.describe "Slices", :app_integration do
       RUBY
 
       write "slices/main/config/slice.rb", <<~RUBY
-        module Main
-          class Slice < Hanami::Slice
-            raise "This should not be called"
-          end
-        end
+        raise "This should not be loaded"
       RUBY
 
       require "hanami/prepare"
@@ -195,13 +191,7 @@ RSpec.describe "Slices", :app_integration do
       RUBY
 
       write "slices/main/slices/nested/config/slice.rb", <<~RUBY
-        module Main
-          module Nested
-            class Slice < Hanami::Slice
-              raise "This should not be called"
-            end
-          end
-        end
+        raise "This should not be loaded"
       RUBY
 
       require "hanami/prepare"
@@ -235,25 +225,11 @@ RSpec.describe "Slices", :app_integration do
       RUBY
 
       write "slices/main/config/slices/nested.rb", <<~RUBY
-        require "hanami"
-
-        module Main
-          module Nested
-            class Slice < Hanami::Slice
-              raise "This should not be called"
-            end
-          end
-        end
+        raise "This should not be loaded"
       RUBY
 
       write "slices/main/slices/nested/config/slice.rb", <<~RUBY
-        module Main
-          module Nested
-            class Slice < Hanami::Slice
-              raise "This should not be called"
-            end
-          end
-        end
+        raise "This should not be loaded"
       RUBY
 
       require "hanami/prepare"
