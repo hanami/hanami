@@ -952,6 +952,7 @@ module Hanami
         config = self.config
         rack_monitor = self["rack.monitor"]
 
+        show_welcome = Hanami.env?(:development) && routes.empty?
         render_errors = render_errors?
         render_detailed_errors = render_detailed_errors?
 
@@ -971,6 +972,8 @@ module Hanami
         ) do
           use(rack_monitor)
 
+          use(Hanami::Web::Welcome) if show_welcome
+
           use(
             Hanami::Middleware::RenderErrors,
             config,
@@ -982,8 +985,15 @@ module Hanami
             use(Hanami::Webconsole::Middleware, config)
           end
 
-          if Hanami.bundled?("hanami-controller") && config.actions.sessions.enabled?
-            use(*config.actions.sessions.middleware)
+          if Hanami.bundled?("hanami-controller")
+            if config.actions.method_override
+              require "rack/method_override"
+              use(Rack::MethodOverride)
+            end
+
+            if config.actions.sessions.enabled?
+              use(*config.actions.sessions.middleware)
+            end
           end
 
           if Hanami.bundled?("hanami-assets") && config.assets.serve
