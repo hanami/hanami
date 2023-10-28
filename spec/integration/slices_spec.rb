@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe "Slices", :app_integration do
-  it "Loading a slice uses a defined slice class" do
+  specify "Loading a slice from a slice class in the app's config dir" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -31,7 +31,7 @@ RSpec.describe "Slices", :app_integration do
     end
   end
 
-  it "Loading a slice with a defined slice class but no slice dir" do
+  specify "Loading a slice from a slice class in the app's config dir, even when no slice dir exists" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -55,7 +55,7 @@ RSpec.describe "Slices", :app_integration do
     end
   end
 
-  specify "Loading a nested slice with a defined slice class" do
+  specify "Loading a nested slice from a slice class in its parent's config dir" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -81,7 +81,7 @@ RSpec.describe "Slices", :app_integration do
     end
   end
 
-  it "Loading a slice with its own defined slice class" do
+  specify "Loading a slice from a slice class in its own config dir" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -95,7 +95,7 @@ RSpec.describe "Slices", :app_integration do
       write "slices/main/config/slice.rb", <<~RUBY
         module Main
           class Slice < Hanami::Slice
-            config.actions.format :json
+            def self.loaded_from = "own config dir"
           end
         end
       RUBY
@@ -103,11 +103,11 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main]).to be Main::Slice
-      expect(Hanami.app.slices[:main].config.actions.format).to eq([:json])
+      expect(Hanami.app.slices[:main].loaded_from).to eq "own config dir"
     end
   end
 
-  it "Loading a slice with its own defined slice class prefers the app's defined slice class" do
+  specify "Loading a slice from a slice class in the app's config dir, in preference to a slice class in its own config dir" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -123,7 +123,7 @@ RSpec.describe "Slices", :app_integration do
 
         module Main
           class Slice < Hanami::Slice
-            config.actions.format :json
+            def self.loaded_from = "app config dir"
           end
         end
       RUBY
@@ -135,11 +135,11 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main]).to be Main::Slice
-      expect(Hanami.app.slices[:main].config.actions.format).to eq([:json])
+      expect(Hanami.app.slices[:main].loaded_from).to eq "app config dir"
     end
   end
 
-  it "Loading a nested slice with its own defined slice class" do
+  specify "Loading a nested slice from a slice class in its own config dir" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -154,7 +154,7 @@ RSpec.describe "Slices", :app_integration do
         module Main
           module Nested
             class Slice < Hanami::Slice
-              config.actions.format :json
+              def self.loaded_from = "own config dir"
             end
           end
         end
@@ -163,11 +163,11 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main]).to be Main::Slice
-      expect(Hanami.app.slices[:main].slices[:nested].config.actions.format).to eq([:json])
+      expect(Hanami.app.slices[:main].slices[:nested].loaded_from).to eq "own config dir"
     end
   end
 
-  it "Loading a deeply nested slice with its own defined slice class" do
+  specify "Loading a deeply nested slice from a slice class in its own config dir" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -188,7 +188,7 @@ RSpec.describe "Slices", :app_integration do
           module Deeply
             module Nested
               class Slice < Hanami::Slice
-                config.actions.format :json
+                def self.loaded_from = "own config dir"
               end
             end
           end
@@ -198,11 +198,11 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested]).to be Main::Deeply::Nested::Slice
-      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested].config.actions.format).to eq([:json])
+      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested].loaded_from).to eq "own config dir"
     end
   end
 
-  it "Loading a nested slice with its own defined slice class prefers the parent slice's defined slice class" do
+  specify "Loading a nested slice from a slice class in its parent's config dir, in preference to a slice class in its own config dir" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -219,7 +219,7 @@ RSpec.describe "Slices", :app_integration do
         module Main
           module Nested
             class Slice < Hanami::Slice
-              config.actions.format :json
+              def self.loaded_from = "parent config dir"
             end
           end
         end
@@ -232,11 +232,11 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main]).to be Main::Slice
-      expect(Hanami.app.slices[:main].slices[:nested].config.actions.format).to eq([:json])
+      expect(Hanami.app.slices[:main].slices[:nested].loaded_from).to eq "parent config dir"
     end
   end
 
-  it "Loading a deeply nested slice with its own defined slice class prefers the parent slice's defined slice class" do
+  specify "Loading a deeply nested slice from a slice class in its parent's config dir, in preference to a slice class in its own config dir" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -257,7 +257,7 @@ RSpec.describe "Slices", :app_integration do
           module Deeply
             module Nested
               class Slice < Hanami::Slice
-                config.actions.format :json
+                def self.loaded_from = "parent config dir"
               end
             end
           end
@@ -271,11 +271,11 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested]).to be Main::Deeply::Nested::Slice
-      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested].config.actions.format).to eq([:json])
+      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested].loaded_from).to eq "parent config dir"
     end
   end
 
-  it "Loading a nested slice with its own defined slice class and a parent slice's defined slice class prefers the app's defined slice class" do
+  specify "Loading a nested slice from a slice class in the app's config dir, in preference to a slice class in the slice's parent config dir or the slice's own config dir" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -292,7 +292,7 @@ RSpec.describe "Slices", :app_integration do
         module Main
           module Nested
             class Slice < Hanami::Slice
-              config.actions.format :json
+              def self.loaded_from = "app config dir"
             end
           end
         end
@@ -309,11 +309,11 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main]).to be Main::Slice
-      expect(Hanami.app.slices[:main].slices[:nested].config.actions.format).to eq([:json])
+      expect(Hanami.app.slices[:main].slices[:nested].loaded_from).to eq "app config dir"
     end
   end
 
-  it "Loading a deeply nested slice (with locally defined slice classes along the chain) prefers the app-level defined slice class" do
+  specify "Loading a deeply nested slice from a slice class in the app's config dir, in preference to a slice class in the slice's parent config dir or the slice's own config dir" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -329,7 +329,7 @@ RSpec.describe "Slices", :app_integration do
           module Deeply
             module Nested
               class Slice < Hanami::Slice
-                config.actions.format :json
+                def self.loaded_from = "app config dir"
               end
             end
           end
@@ -347,11 +347,11 @@ RSpec.describe "Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested]).to be Main::Deeply::Nested::Slice
-      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested].config.actions.format).to eq([:json])
+      expect(Hanami.app.slices[:main].slices[:deeply].slices[:nested].loaded_from).to eq "app config dir"
     end
   end
 
-  it "Loading a slice generates a slice class if none is defined" do
+  specify "Loading a slice generates a slice class if none is defined" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -448,7 +448,7 @@ RSpec.describe "Slices", :app_integration do
     end
   end
 
-  it "Registering a slice with a block creates a slice class and evals the block" do
+  specify "Registering a slice with a block creates a slice class and evals the block" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
