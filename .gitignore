@@ -33,3 +33,4 @@ vendor
 .byebug_history
 .rubocop-*
 node_modules
+package-lock.json
