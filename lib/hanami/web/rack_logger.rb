@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "delegate"
+require "json"
+
 module Hanami
   # @api private
   module Web
@@ -53,10 +56,75 @@ module Hanami
         end
       end
 
+      # @since 2.1.0
+      # @api private
+      class UniversalLogger
+        class << self
+          # @since 2.1.0
+          # @api private
+          def call(logger)
+            return logger if compatible_logger?(logger)
+
+            new(logger)
+          end
+
+          # @since 2.1.0
+          # @api private
+          alias_method :[], :call
+
+          private
+
+          def compatible_logger?(logger)
+            logger.respond_to?(:tagged) && accepts_entry_payload?(logger)
+          end
+
+          def accepts_entry_payload?(logger)
+            logger.method(:info).parameters.last.then { |type, _| type == :keyrest }
+          end
+        end
+
+        # @since 2.1.0
+        # @api private
+        attr_reader :logger
+
+        # @since 2.1.0
+        # @api private
+        def initialize(logger)
+          @logger = logger
+        end
+
+        # @since 2.1.0
+        # @api private
+        def tagged(*, &blk)
+          blk.call
+        end
+
+        # Logs the entry as JSON.
+        #
+        # This ensures a reasonable (and parseable) representation of our log payload structures for
+        # loggers that are configured to wholly replace Hanami's default logger.
+        #
+        # @since 2.1.0
+        # @api private
+        def info(message = nil, **payload)
+          payload[:message] = message if message
+          logger.info(JSON.fast_generate(payload))
+        end
+
+        # @see info
+        #
+        # @since 2.1.0
+        # @api private
+        def error(message = nil, **payload)
+          payload[:message] = message if message
+          logger.info(JSON.fast_generate(payload))
+        end
+      end
+
       # @api private
       # @since 2.0.0
       def initialize(logger, env: :development)
-        @logger = logger
+        @logger = UniversalLogger[logger]
         extend(Development) if %i[development test].include?(env)
       end
 
@@ -77,7 +145,7 @@ module Hanami
       # @since 2.0.0
       def log_request(env, status, elapsed)
         logger.tagged(:rack) do
-          logger.info(data(env, status: status, elapsed: elapsed))
+          logger.info(**data(env, status: status, elapsed: elapsed))
         end
       end
 

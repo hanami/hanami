@@ -2,6 +2,31 @@
 
 The web, with simplicity.
 
+## v2.1.0.rc1 - 2023-11-01
+
+### Added
+
+- [Aaron Moodie & Tim Riley] Render a welcome page when no routes are defined (#1353)
+- [Luca Guidi] Allow _Method Override_ by default, by mounting `Rack::MethodOverride` middleware. (#1344)
+
+### Fixed
+
+- [Luca Guidi] Ensure compatibility with Ruby Logger from stdlib (#1352)
+
+### Changed
+
+- [Philip Arndt] Add support for a slice's class definition file to exist inside either `config/slices/[slice_name].rb` or `slices/[slice_name]/config/slice.rb`, in that order of precedence, so that a slice can provide its own definition which the app, or the slice's parent slice if that exists, can override if needed.
+- [Tim Riley] Use `helpers` prefix to access helper methods from view parts (e.g. `helpers.format_number`)
+- [Tim Riley] Make it possible to directly initialize view parts to ease their unit tests (#1357)
+- [Tim Riley] Remove short names for assets helpers (#1356):
+  - Keep `javascript_tag` (remove `javascript` and `js` aliases)
+  - Keep `stylesheet_tag` (renamed from `stylesheet_link_tag`; remove `stylesheet` and `css` aliases)
+  - Keep `favicon_tag` (renamed from `favicon_link_tag`; remove `favicon` alias)
+  - Keep `image_tag` (remove `image` alias)
+  - Keep `video_tag` (remove `video` alias)
+  - Keep `audio_tag` (remove `audio` alias)
+
+
 ## v2.1.0.beta2.1 - 2023-10-04
 
 ### Added

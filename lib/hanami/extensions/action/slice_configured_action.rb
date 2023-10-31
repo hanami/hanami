@@ -31,14 +31,14 @@ module Hanami
         # @see Hanami::Extensions::Action::InstanceMethods#initialize
         def define_new
           resolve_view = method(:resolve_paired_view)
-          resolve_view_context = method(:resolve_view_context)
+          view_context_class = method(:view_context_class)
           resolve_routes = method(:resolve_routes)
           resolve_rack_monitor = method(:resolve_rack_monitor)
 
           define_method(:new) do |**kwargs|
             super(
               view: kwargs.fetch(:view) { resolve_view.(self) },
-              view_context: kwargs.fetch(:view_context) { resolve_view_context.() },
+              view_context_class: kwargs.fetch(:view_context_class) { view_context_class.() },
               routes: kwargs.fetch(:routes) { resolve_routes.() },
               rack_monitor: kwargs.fetch(:rack_monitor) { resolve_rack_monitor.() },
               **kwargs,
@@ -128,9 +128,9 @@ module Hanami
           nil
         end
 
-        def resolve_view_context
+        def view_context_class
           if Hanami.bundled?("hanami-view")
-            return Extensions::View::Context.context_class(slice).new
+            return Extensions::View::Context.context_class(slice)
           end
 
           # If hanami-view isn't bundled, try and find a possible third party context class with the
@@ -139,7 +139,7 @@ module Hanami
             views_namespace = slice.namespace.const_get(:Views)
 
             if views_namespace.const_defined?(:Context)
-              views_namespace.const_get(:Context).new
+              views_namespace.const_get(:Context)
             end
           end
         end

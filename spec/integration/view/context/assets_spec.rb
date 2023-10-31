@@ -47,14 +47,6 @@ RSpec.describe "App view / Context / Assets", :app_integration do
         it "is the injected assets" do
           expect(context.assets).to be assets
         end
-
-        context "rebuilt context" do
-          subject(:new_context) { context.with }
-
-          it "retains the injected assets" do
-            expect(new_context.assets).to be assets
-          end
-        end
       end
     end
   end

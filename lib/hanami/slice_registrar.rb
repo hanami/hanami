@@ -46,19 +46,16 @@ module Hanami
     end
 
     def load_slices
-      slice_configs = Dir[root.join(CONFIG_DIR, SLICES_DIR, "*#{RB_EXT}")]
-        .map { |file| File.basename(file, RB_EXT) }
+      slice_configs = root.join(CONFIG_DIR, SLICES_DIR).glob("*#{RB_EXT}")
+        .map { _1.basename(RB_EXT) }
 
-      slice_dirs = Dir[File.join(root, SLICES_DIR, "*")]
-        .select { |path| File.directory?(path) }
-        .map { |path| File.basename(path) }
+      slice_dirs = root.join(SLICES_DIR).glob("*")
+        .select(&:directory?)
+        .map { _1.basename }
 
-      slice_names = (slice_dirs + slice_configs).uniq.sort
+      (slice_dirs + slice_configs).uniq.sort
         .then { filter_slice_names(_1) }
-
-      slice_names.each do |slice_name|
-        load_slice(slice_name)
-      end
+        .each(&method(:load_slice))
 
       self
     end
@@ -97,21 +94,20 @@ module Hanami
       parent.eql?(parent.app) ? Object : parent.namespace
     end
 
-    # Runs when a slice file has been found at `config/slices/[slice_name].rb`, or a slice directory
-    # at `slices/[slice_name]`. Attempts to require the slice class, if defined, before registering
-    # the slice. If a slice class is not found, registering the slice will generate the slice class.
+    # Runs when a slice file has been found inside the app at `config/slices/[slice_name].rb`,
+    # or when a slice directory exists at `slices/[slice_name]`.
+    #
+    # If a slice definition file is found by `find_slice_require_path`, then `load_slice` will
+    # require the file before registering the slice class.
+    #
+    # If a slice class is not found, registering the slice will generate the slice class.
     def load_slice(slice_name)
-      slice_require_path = root.join(CONFIG_DIR, SLICES_DIR, slice_name).to_s
-      begin
-        require(slice_require_path)
-      rescue LoadError => e
-        raise e unless e.path == slice_require_path
-      end
+      slice_require_path = find_slice_require_path(slice_name)
+      require slice_require_path if slice_require_path
 
-      slice_module_name = inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
       slice_class =
         begin
-          inflector.constantize("#{slice_module_name}#{MODULE_DELIMITER}Slice")
+          inflector.constantize("#{slice_module_name(slice_name)}#{MODULE_DELIMITER}Slice")
         rescue NameError => e
           raise e unless e.name.to_s == inflector.camelize(slice_name) || e.name.to_s == :Slice
         end
@@ -119,16 +115,45 @@ module Hanami
       register(slice_name, slice_class)
     end
 
+    # Finds the path to the slice's definition file, if it exists, in the following order:
+    #
+    # 1. `config/slices/[slice_name].rb`
+    # 2. `slices/[parent_slice_name]/config/[slice_name].rb` (unless parent is the app)
+    # 3. `slices/[slice_name]/config/slice.rb`
+    #
+    # If the slice is nested under another slice then it will look in the following order:
+    #
+    # 1. `config/slices/[parent_slice_name]/[slice_name].rb`
+    # 2. `slices/[parent_slice_name]/config/[slice_name].rb`
+    # 3. `slices/[parent_slice_name]/[slice_name]/config/slice.rb`
+    def find_slice_require_path(slice_name)
+      app_slice_file_path = [slice_name]
+      app_slice_file_path.prepend(parent.slice_name) unless parent.eql?(parent.app)
+      ancestors = [
+        parent.app.root.join(CONFIG_DIR, SLICES_DIR, app_slice_file_path.join(File::SEPARATOR)),
+        parent.root.join(CONFIG_DIR, SLICES_DIR, slice_name),
+        root.join(SLICES_DIR, slice_name, CONFIG_DIR, "slice")
+      ]
+
+      ancestors
+        .uniq
+        .find { _1.sub_ext(RB_EXT).file? }
+        &.to_s
+    end
+
     def build_slice(slice_name, &block)
-      slice_module_name = inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
       slice_module =
         begin
-          inflector.constantize(slice_module_name)
+          inflector.constantize(slice_module_name(slice_name))
         rescue NameError
           parent_slice_namespace.const_set(inflector.camelize(slice_name), Module.new)
         end
 
       slice_module.const_set(:Slice, Class.new(Hanami::Slice, &block))
+    end
+
+    def slice_module_name(slice_name)
+      inflector.camelize("#{parent_slice_namespace.name}#{PATH_DELIMITER}#{slice_name}")
     end
 
     def configure_slice(slice_name, slice)
