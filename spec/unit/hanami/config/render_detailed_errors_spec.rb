@@ -15,7 +15,7 @@ RSpec.describe Hanami::Config, "#render_detailed_errors" do
 
   context "test mode" do
     let(:env) { :test }
-    it { is_expected.to be true }
+    it { is_expected.to be false }
   end
 
   context "production mode" do
