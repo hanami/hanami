@@ -296,13 +296,8 @@ module Hanami
       @assets = load_dependent_config("hanami-assets") {
         require_relative "config/assets"
 
-        public_dir = root.join("public")
-
         Hanami::Config::Assets.new(
-          # TODO: check if `sources` are still needed
-          sources: root.join("app", "assets"),
-          destination: public_dir.join("assets"),
-          manifest_path: public_dir.join("assets.json")
+          manifest_path: root.join("public", "assets.json")
         )
       }
 
