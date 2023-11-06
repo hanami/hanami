@@ -218,10 +218,6 @@ module Hanami
               end
             end
 
-            def current_path
-              request.fullpath
-            end
-
             # Returns the current request's CSRF token.
             #
             # @return [String] the token
