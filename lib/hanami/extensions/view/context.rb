@@ -138,10 +138,6 @@ module Hanami
               end
             end
 
-            def current_path
-              request.fullpath
-            end
-
             def csrf_token
               request.session[Hanami::Action::CSRFProtection::CSRF_TOKEN]
             end
