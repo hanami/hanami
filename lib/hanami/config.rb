@@ -272,7 +272,7 @@ module Hanami
       # Apply default values that are only knowable at initialize-time (vs require-time)
       self.root = Dir.pwd
       self.render_errors = (env == :production)
-      self.render_detailed_errors = (env != :production)
+      self.render_detailed_errors = (env == :development)
       load_from_env
 
       @logger = Config::Logger.new(env: env, app_name: app_name)
