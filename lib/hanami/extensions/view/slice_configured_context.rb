@@ -3,35 +3,39 @@
 module Hanami
   module Extensions
     module View
-      # Provides slice-specific configuration and behavior for any view context class
-      # defined within a slice's module namespace.
+      # Provides slice-specific configuration and behavior for any view context class defined within
+      # a slice's module namespace.
       #
-      # @api private
-      # @since 2.0.0
+      # @api public
+      # @since 2.1.0
       class SliceConfiguredContext < Module
         attr_reader :slice
 
+        # @api private
+        # @since 2.1.0
         def initialize(slice)
           super()
           @slice = slice
         end
 
+        # @api private
+        # @since 2.1.0
         def extended(_context_class)
           define_new
         end
 
+        # @api public
+        # @since 2.1.0
         def inspect
           "#<#{self.class.name}[#{slice.name}]>"
         end
 
         private
 
-        # Defines a {.new} method on the context class that resolves key components from
-        # the app container and provides them to {#initialize} as injected
-        # dependencies.
+        # Defines a {.new} method on the context class that resolves key components from the app
+        # container and provides them to {#initialize} as injected dependencies.
         #
         # This includes the following app components:
-        #
         #   - the configured inflector as `inflector`
         #   - "settings" from the app container as `settings`
         #   - "routes" from the app container as `routes`

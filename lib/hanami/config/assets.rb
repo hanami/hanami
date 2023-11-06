@@ -9,7 +9,7 @@ module Hanami
     #
     # This exposes all the settings from the standalone `Hanami::Assets` class, pre-configured with
     # sensible defaults for actions within a full Hanami app. It also provides additional settings
-    # for further integration of actions with other full stack app components.
+    # for further integration of assets with other full stack app components.
     #
     # @since 2.1.0
     # @api public

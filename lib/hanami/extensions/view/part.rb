@@ -3,9 +3,11 @@
 module Hanami
   module Extensions
     module View
-      # @api private
+      # @api public
       # @since 2.1.0
       module Part
+        # @api private
+        # @since 2.1.0
         def self.included(part_class)
           super
 
@@ -13,7 +15,11 @@ module Hanami
           part_class.extend(ClassMethods)
         end
 
+        # @api private
+        # @since 2.1.0
         module ClassMethods
+          # @api private
+          # @since 2.1.0
           def configure_for_slice(slice)
             extend SliceConfiguredPart.new(slice)
 
@@ -28,7 +34,7 @@ module Hanami
         #
         # Use this when you need to access helpers inside your part classes.
         #
-        # @return PartHelpers
+        # @return [Object] the helpers object
         #
         # @api public
         # @since 2.1.0
@@ -50,10 +56,16 @@ module Hanami
 
         include StandardHelpers
 
+        # @api private
+        # @since 2.1.0
         def self.configure_for_slice(slice)
           extend SliceConfiguredHelpers.new(slice)
         end
 
+        # Returns the context for the current view rendering.
+        #
+        # @return [Hanami::View::Context] the context
+        #
         # @api public
         # @since 2.1.0
         attr_reader :_context

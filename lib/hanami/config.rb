@@ -251,16 +251,30 @@ module Hanami
 
     # Returns the app's views config, or a null config if hanami-view is not bundled.
     #
-    # This is NOT RELEASED as of 2.0.0.
+    # @example When hanami-view is bundled
+    #   config.views.paths # => [...]
     #
-    # @api private
+    # @example When hanami-view is not bundled
+    #   config.views.paths # => NoMethodError
+    #
+    # @return [Hanami::Config::Views, Hanami::Config::NullConfig]
+    #
+    # @api public
+    # @since 2.1.0
     attr_reader :views
 
-    # Returns the app's assets config.
+    # Returns the app's views config, or a null config if hanami-view is not bundled.
     #
-    # This is NOT RELEASED as of 2.0.0.
+    # @example When hanami-view is bundled
+    #   config.views.paths # => [...]
     #
-    # @api private
+    # @example When hanami-view is not bundled
+    #   config.views.paths # => NoMethodError
+    #
+    # @return [Hanami::Config::Assets, Hanami::Config::NullConfig]
+    #
+    # @api public
+    # @since 2.1.0
     attr_reader :assets
 
     # @api private

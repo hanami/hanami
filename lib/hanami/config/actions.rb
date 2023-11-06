@@ -88,20 +88,19 @@ module Hanami
       #   @since 2.1.0
       setting :method_override, default: true
 
-      # The following settings are for view and assets integration with actions, and are NOT
-      # publicly released as of 2.0.0. We'll make full documentation available when these become
-      # public in a subsequent release.
-
       # @!attribute [rw] name_inference_base
       #   @api private
+      #   @since 2.1.0
       setting :name_inference_base, default: "actions"
 
       # @!attribute [rw] view_name_inferrer
       #   @api private
+      #   @since 2.1.0
       setting :view_name_inferrer, default: Slice::ViewNameInferrer
 
       # @!attribute [rw] view_name_inference_base
       #   @api private
+      #   @since 2.1.0
       setting :view_name_inference_base, default: "views"
 
       # @api private

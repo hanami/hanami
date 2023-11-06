@@ -7,13 +7,13 @@ module Hanami
   module Extensions
     # Integrated behavior for `Hanami::View` classes within Hanami apps.
     #
-    # This is NOT RELEASED as of 2.0.0.
-    #
     # @see Hanami::View
     #
-    # @api private
+    # @api public
+    # @since 2.1.0
     module View
       # @api private
+      # @since 2.1.0
       def self.included(view_class)
         super
 
@@ -22,8 +22,10 @@ module Hanami
       end
 
       # @api private
+      # @since 2.1.0
       module ClassMethods
         # @api private
+        # @since 2.1.0
         def configure_for_slice(slice)
           extend SliceConfiguredView.new(slice)
         end
