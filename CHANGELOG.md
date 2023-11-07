@@ -4,7 +4,8 @@ The web, with simplicity.
 
 ## Changed
 
-- [Tim Riley] Enable config.render_detailed_errors in development mode only by default.
+- [Tim Riley] Enable `config.render_detailed_errors` in development mode only by default. (#1365)
+- [Tim Riley] Remove current_path from context (#1362)
 
 ## v2.1.0.rc1 - 2023-11-01
 
