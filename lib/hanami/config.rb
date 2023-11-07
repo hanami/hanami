@@ -251,16 +251,30 @@ module Hanami
 
     # Returns the app's views config, or a null config if hanami-view is not bundled.
     #
-    # This is NOT RELEASED as of 2.0.0.
+    # @example When hanami-view is bundled
+    #   config.views.paths # => [...]
     #
-    # @api private
+    # @example When hanami-view is not bundled
+    #   config.views.paths # => NoMethodError
+    #
+    # @return [Hanami::Config::Views, Hanami::Config::NullConfig]
+    #
+    # @api public
+    # @since 2.1.0
     attr_reader :views
 
-    # Returns the app's assets config.
+    # Returns the app's views config, or a null config if hanami-view is not bundled.
     #
-    # This is NOT RELEASED as of 2.0.0.
+    # @example When hanami-view is bundled
+    #   config.views.paths # => [...]
     #
-    # @api private
+    # @example When hanami-view is not bundled
+    #   config.views.paths # => NoMethodError
+    #
+    # @return [Hanami::Config::Assets, Hanami::Config::NullConfig]
+    #
+    # @api public
+    # @since 2.1.0
     attr_reader :assets
 
     # @api private
@@ -272,7 +286,7 @@ module Hanami
       # Apply default values that are only knowable at initialize-time (vs require-time)
       self.root = Dir.pwd
       self.render_errors = (env == :production)
-      self.render_detailed_errors = (env != :production)
+      self.render_detailed_errors = (env == :development)
       load_from_env
 
       @logger = Config::Logger.new(env: env, app_name: app_name)
@@ -296,13 +310,8 @@ module Hanami
       @assets = load_dependent_config("hanami-assets") {
         require_relative "config/assets"
 
-        public_dir = root.join("public")
-
         Hanami::Config::Assets.new(
-          # TODO: check if `sources` are still needed
-          sources: root.join("app", "assets"),
-          destination: public_dir.join("assets"),
-          manifest_path: public_dir.join("assets.json")
+          manifest_path: root.join("public", "assets.json")
         )
       }
 

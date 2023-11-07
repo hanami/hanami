@@ -7,16 +7,22 @@ module Hanami
   class Config
     # Hanami views config
     #
-    # This is NOT RELEASED as of 2.0.0.
+    # This exposes all the settings from the standalone `Hanami::View` class, pre-configured with
+    # sensible defaults for actions within a full Hanami app. It also provides additional settings
+    # for further integration of views with other full stack app components.
     #
-    # @api private
+    # @since 2.1.0
+    # @api public
     class Views
       include Dry::Configurable
 
+      # @api private
+      # @since 2.1.0
       attr_reader :base_config
       protected :base_config
 
       # @api private
+      # @since 2.1.0
       def initialize(*)
         super
 
@@ -26,6 +32,7 @@ module Hanami
       end
 
       # @api private
+      # @since 2.1.0
       def initialize_copy(source)
         super
         @base_config = source.base_config.dup
@@ -33,6 +40,7 @@ module Hanami
       private :initialize_copy
 
       # @api private
+      # @since 2.1.0
       def finalize!
         return self if frozen?
 

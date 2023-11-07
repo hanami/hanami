@@ -6,7 +6,7 @@ module Hanami
       # Provides slice-specific configuration and behavior for any view part class defined within a
       # slice's module namespace.
       #
-      # @api private
+      # @api public
       # @since 2.1.0
       class SliceConfiguredPart < Module
         attr_reader :slice
@@ -24,7 +24,9 @@ module Hanami
           define_new
         end
 
-        # @api private
+        # @return [String]
+        #
+        # @api public
         # @since 2.1.0
         def inspect
           "#<#{self.class.name}[#{slice.name}]>"
@@ -49,9 +51,6 @@ module Hanami
         #   # Useful when unit testing parts
         #   part = MyApp::Views::Parts::Post.new(value: hello_world_post)
         #   part.title_tag # => "<h1>Hello world</h1>"
-        #
-        # @api private
-        # @since 2.1.0
         def define_new
           slice = self.slice
 

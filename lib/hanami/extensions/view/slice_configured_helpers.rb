@@ -3,19 +3,30 @@
 module Hanami
   module Extensions
     module View
-      # @api private
+      # Provides slice-specific helper methods any view object requiring access to helpers.
+      #
+      # @api public
+      # @since 2.1.0
       class SliceConfiguredHelpers < Module
         attr_reader :slice
 
+        # @api private
+        # @since 2.1.0
         def initialize(slice)
           super()
           @slice = slice
         end
 
+        # @api private
+        # @since 2.1.0
         def extended(klass)
           include_helpers(klass)
         end
 
+        # @return [String]
+        #
+        # @api public
+        # @since 2.1.0
         def inspect
           "#<#{self.class.name}[#{slice.name}]>"
         end
