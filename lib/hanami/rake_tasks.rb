@@ -44,17 +44,9 @@ Hanami::CLI::RakeTasks.register_tasks do
   if Hanami.bundled?("hanami-assets")
     namespace :assets do
       task :precompile do
-        run_hanami_command("assets compile")
+        Hanami::CLI::Commands::App::Assets::Compile.new.call
       end
     end
-  end
-
-  private
-
-  @_hanami_cli_bundler = Hanami::CLI::Bundler.new
-
-  def run_hanami_command(command)
-    @_hanami_cli_bundler.hanami_exec(command)
   end
 end
 
