@@ -11,47 +11,47 @@ module Hanami
     #
     # Inject these helpers in a view
     #
-    # @since 0.1.0
+    # @since 2.1.0
     #
     # @see http://www.rubydoc.info/gems/hanami-helpers/Hanami/Helpers/HtmlHelper
     module AssetsHelper
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       NEW_LINE_SEPARATOR = "\n"
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       WILDCARD_EXT = ".*"
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       JAVASCRIPT_EXT = ".js"
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       STYLESHEET_EXT = ".css"
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       JAVASCRIPT_MIME_TYPE = "text/javascript"
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       STYLESHEET_MIME_TYPE = "text/css"
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       FAVICON_MIME_TYPE = "image/x-icon"
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       STYLESHEET_REL = "stylesheet"
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       FAVICON_REL = "shortcut icon"
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       DEFAULT_FAVICON = "favicon.ico"
 
@@ -85,7 +85,7 @@ module Hanami
       # name of the algorithm, then a hyphen, then the hash value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
-      # @param sources [Array<String>] one or more assets by name or absolute URL
+      # @param source_paths [Array<String>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
       #
@@ -93,7 +93,7 @@ module Hanami
       # `subresource_integrity` modes are on and the javascript file is missing
       # from the manifest
       #
-      # @since 0.1.0
+      # @since 2.1.0
       #
       # @see Hanami::Assets::Helpers#path
       #
@@ -189,7 +189,7 @@ module Hanami
       # name of the algorithm, then a hyphen, then the hashed value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
-      # @param sources [Array<String>] one or more assets by name or absolute URL
+      # @param source_paths [Array<String>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
       #
@@ -197,7 +197,7 @@ module Hanami
       # `subresource_integrity` modes are on and the stylesheet file is missing
       # from the manifest
       #
-      # @since 0.1.0
+      # @since 2.1.0
       #
       # @see Hanami::Assets::Helpers#path
       #
@@ -291,7 +291,7 @@ module Hanami
       # `subresource_integrity` modes are on and the image file is missing
       # from the manifest
       #
-      # @since 0.1.0
+      # @since 2.1.0
       #
       # @see Hanami::Assets::Helpers#path
       #
@@ -362,7 +362,7 @@ module Hanami
       # `subresource_integrity` modes are on and the favicon is file missing
       # from the manifest
       #
-      # @since 0.1.0
+      # @since 2.1.0
       #
       # @see Hanami::Assets::Helpers#path
       #
@@ -436,7 +436,7 @@ module Hanami
       # @raise [ArgumentError] if source isn"t specified both as argument or
       #   tag inside the given block
       #
-      # @since 0.1.0
+      # @since 2.1.0
       #
       # @see Hanami::Assets::Helpers#path
       #
@@ -538,7 +538,7 @@ module Hanami
       # @raise [ArgumentError] if source isn"t specified both as argument or
       #   tag inside the given block
       #
-      # @since 0.1.0
+      # @since 2.1.0
       #
       # @see Hanami::Assets::Helpers#path
       #
@@ -626,7 +626,7 @@ module Hanami
       #
       # If CDN mode is on, it returns the absolute URL of the asset.
       #
-      # @param source [String] the asset name
+      # @param source_path [String] the asset name
       #
       # @return [String] the asset path
       #
@@ -634,7 +634,7 @@ module Hanami
       # `subresource_integrity` modes are on and the asset is missing
       # from the manifest
       #
-      # @since 0.1.0
+      # @since 2.1.0
       #
       # @example Basic Usage
       #
@@ -673,7 +673,7 @@ module Hanami
 
       private
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       def _safe_tags(*source_paths, &blk)
         ::Hanami::View::HTML::SafeString.new(
@@ -696,7 +696,7 @@ module Hanami
         _context.assets[source_path].sri
       end
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       def _absolute_url?(source)
         ABSOLUTE_URL_MATCHER.match(source)
@@ -710,7 +710,7 @@ module Hanami
         _context.assets.crossorigin?(source)
       end
 
-      # @since 0.1.0
+      # @since 2.1.0
       # @api private
       def _source_options(src, options, &blk)
         options ||= {}
