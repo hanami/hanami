@@ -2,6 +2,14 @@
 
 The web, with simplicity.
 
+## v2.1.0 - 2023-11-14
+
+## Fixed
+
+- [Tim Riley] Ensure assets Rake task for Heroku works (#1368)
+
+## v2.1.0.rc2 - 2023-11-08
+
 ## Changed
 
 - [Tim Riley] Enable `config.render_detailed_errors` in development mode only by default. (#1365)

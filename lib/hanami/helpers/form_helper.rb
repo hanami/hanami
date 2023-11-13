@@ -14,19 +14,19 @@ module Hanami
     # values.
     #
     # @api public
-    # @since 2.0.0
+    # @since 2.1.0
     module FormHelper
       require_relative "form_helper/form_builder"
 
       # Default HTTP method for form
       #
-      # @since 2.0.0
+      # @since 2.1.0
       # @api private
       DEFAULT_METHOD = "POST"
 
       # Default charset
       #
-      # @since 2.0.0
+      # @since 2.1.0
       # @api private
       DEFAULT_CHARSET = "utf-8"
 
@@ -34,7 +34,7 @@ module Hanami
       #
       # This name of this key is shared with the hanami and hanami-controller gems.
       #
-      # @since 2.0.0
+      # @since 2.1.0
       # @api private
       CSRF_TOKEN = :_csrf_token
 
@@ -145,7 +145,7 @@ module Hanami
       #   </form>
       #
       # @api public
-      # @since 2.0.0
+      # @since 2.1.0
       def form_for(base_name, url = nil, values: _form_for_values, params: _form_for_params, **attributes)
         url, base_name = base_name, nil if url.nil?
 
@@ -175,7 +175,7 @@ module Hanami
       #   <meta name="csrf-token" content="4a038be85b7603c406dcbfad4b9cdf91ec6ca138ed6441163a07bb0fdfbe25b5">
       #
       # @api public
-      # @since 2.0.0
+      # @since 2.1.0
       def csrf_meta_tags
         return unless (token = _form_csrf_token)
 
@@ -184,7 +184,7 @@ module Hanami
       end
 
       # @api private
-      # @since 2.0.0
+      # @since 2.1.0
       def _form_for_values
         if respond_to?(:_locals) # Scope
           _locals
@@ -196,12 +196,12 @@ module Hanami
       end
 
       # @api private
-      # @since 2.0.0
+      # @since 2.1.0
       def _form_for_params
         _context.request.params
       end
 
-      # @since 2.0.0
+      # @since 2.1.0
       # @api private
       def _form_csrf_token
         return unless _context.request.session_enabled?

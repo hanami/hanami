@@ -12,25 +12,25 @@ module Hanami
       # @see FormHelper#form_for
       #
       # @api public
-      # @since 2.0.0
+      # @since 2.1.0
       class FormBuilder
         # Set of HTTP methods that are understood by web browsers
         #
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         BROWSER_METHODS = %w[GET POST].freeze
         private_constant :BROWSER_METHODS
 
         # Set of HTTP methods that should NOT generate CSRF token
         #
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         EXCLUDED_CSRF_METHODS = %w[GET].freeze
         private_constant :EXCLUDED_CSRF_METHODS
 
         # Separator for accept attribute of file input
         #
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         #
         # @see #file_input
@@ -39,7 +39,7 @@ module Hanami
 
         # Default value for unchecked check box
         #
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         #
         # @see #check_box
@@ -48,7 +48,7 @@ module Hanami
 
         # Default value for checked check box
         #
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         #
         # @see #check_box
@@ -57,14 +57,14 @@ module Hanami
 
         # Input name separator
         #
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         INPUT_NAME_SEPARATOR = "."
         private_constant :INPUT_NAME_SEPARATOR
 
         # Empty string
         #
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         #
         # @see #password_field
@@ -75,22 +75,22 @@ module Hanami
         include Hanami::View::Helpers::TagHelper
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         attr_reader :base_name
         private :base_name
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         attr_reader :values
         private :values
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         attr_reader :inflector
         private :inflector
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         attr_reader :form_attributes
         private :form_attributes
 
@@ -105,7 +105,7 @@ module Hanami
         # @see Hanami::Helpers::FormHelper#form_for
         #
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         def initialize(inflector:, form_attributes:, base_name: nil, values: Values.new)
           @base_name = base_name
           @values = values
@@ -114,7 +114,7 @@ module Hanami
         end
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         def call(content, **attributes)
           attributes["accept-charset"] ||= DEFAULT_CHARSET
 
@@ -168,7 +168,7 @@ module Hanami
         #   <input type="text" name="delivery[address][location][city]" id="delivery-address-location-city" value="">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def fields_for(name, *yield_args)
           new_base_name = [base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
 
@@ -224,7 +224,7 @@ module Hanami
         #   </div>
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def fields_for_collection(name, &block)
           collection_base_name = [base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
 
@@ -288,7 +288,7 @@ module Hanami
         #     </label>
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def label(content = nil, **attributes, &block)
           for_attribute_given = attributes.key?(:for)
 
@@ -323,7 +323,7 @@ module Hanami
         #       <input type="text" name="book[author][name]" id="book-author-name" value="">
         #     </fieldset>
         #
-        # @since 2.0.0
+        # @since 2.1.0
         # @api public
         def fieldset(...)
           # This is here only for documentation purposes
@@ -403,7 +403,7 @@ module Hanami
         #   <input type="checkbox" name="book[languages][]" value="english">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def check_box(name, **attributes)
           (+"").tap { |output|
             output << _hidden_field_for_check_box(name, attributes).to_s
@@ -427,7 +427,7 @@ module Hanami
         #   => <input type="color" name="user[background]" id="user-background" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def color_field(name, **attributes)
           input(**_attributes(:color, name, attributes))
         end
@@ -448,7 +448,7 @@ module Hanami
         #   => <input type="date" name="user[birth_date]" id="user-birth-date" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def date_field(name, **attributes)
           input(**_attributes(:date, name, attributes))
         end
@@ -469,7 +469,7 @@ module Hanami
         #   => <input type="datetime" name="delivery[delivered_at]" id="delivery-delivered-at" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def datetime_field(name, **attributes)
           input(**_attributes(:datetime, name, attributes))
         end
@@ -490,7 +490,7 @@ module Hanami
         #   => <input type="datetime-local" name="delivery[delivered_at]" id="delivery-delivered-at" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def datetime_local_field(name, **attributes)
           input(**_attributes(:"datetime-local", name, attributes))
         end
@@ -511,7 +511,7 @@ module Hanami
         #   => <input type="time" name="book[release_hour]" id="book-release-hour" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def time_field(name, **attributes)
           input(**_attributes(:time, name, attributes))
         end
@@ -532,7 +532,7 @@ module Hanami
         #   => <input type="month" name="book[release_month]" id="book-release-month" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def month_field(name, **attributes)
           input(**_attributes(:month, name, attributes))
         end
@@ -553,7 +553,7 @@ module Hanami
         #   => <input type="week" name="book[release_week]" id="book-release-week" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def week_field(name, **attributes)
           input(**_attributes(:week, name, attributes))
         end
@@ -574,7 +574,7 @@ module Hanami
         #   => <input type="email" name="user[email]" id="user-email" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def email_field(name, **attributes)
           input(**_attributes(:email, name, attributes))
         end
@@ -595,7 +595,7 @@ module Hanami
         #   => <input type="url" name="user[website]" id="user-website" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def url_field(name, **attributes)
           attributes[:value] = sanitize_url(attributes.fetch(:value) { _value(name) })
 
@@ -618,7 +618,7 @@ module Hanami
         #   => <input type="tel" name="user[telephone]" id="user-telephone" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def tel_field(name, **attributes)
           input(**_attributes(:tel, name, attributes))
         end
@@ -635,7 +635,7 @@ module Hanami
         #   => <input type="hidden" name="delivery[customer_id]" id="delivery-customer-id" value="">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def hidden_field(name, **attributes)
           input(**_attributes(:hidden, name, attributes))
         end
@@ -669,7 +669,7 @@ module Hanami
         #   => <input type="file" name="user[resume]" id="user-resume" multiple="multiple">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def file_field(name, **attributes)
           form_attributes[:enctype] = "multipart/form-data"
 
@@ -697,7 +697,7 @@ module Hanami
         #   => <input type="number" name="book[percent_read]" id="book-precent-read" value="" min="1" max="100" step="1">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def number_field(name, **attributes)
           input(**_attributes(:number, name, attributes))
         end
@@ -720,7 +720,7 @@ module Hanami
         #   => <input type="number" name="book[discount_percentage]" id="book-discount-percentage" value="" min="1" max="100" step="1">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def range_field(name, **attributes)
           input(**_attributes(:range, name, attributes))
         end
@@ -747,7 +747,7 @@ module Hanami
         #   => <textarea name="user[hobby]" id="user-hobby" class="form-control"></textarea>
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def text_area(name, content = nil, **attributes)
           if content.respond_to?(:to_hash)
             attributes = content
@@ -774,7 +774,7 @@ module Hanami
         #   => <input type="text" name="user[first_name]" id="user-first-name" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def text_field(name, **attributes)
           input(**_attributes(:text, name, attributes))
         end
@@ -796,7 +796,7 @@ module Hanami
         #   => <input type="search" name="search[q]" id="search-q" value="" class="form-control">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def search_field(name, **attributes)
           input(**_attributes(:search, name, attributes))
         end
@@ -839,7 +839,7 @@ module Hanami
         #   <input type="radio" name="book[category]" value="Non-Fiction" checked="checked">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def radio_button(name, value, **attributes)
           attributes = {type: :radio, name: _input_name(name), value: value, **attributes}
           attributes[:checked] = true if _value(name).to_s == value.to_s
@@ -859,7 +859,7 @@ module Hanami
         #   => <input type="password" name="signup[password]" id="signup-password" value="">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def password_field(name, **attributes)
           attrs = {type: :password, name: _input_name(name), id: _input_id(name), value: nil, **attributes}
           attrs[:value] = EMPTY_STRING if attrs[:value].nil?
@@ -987,7 +987,7 @@ module Hanami
         #   </select>
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def select(name, values, **attributes) # rubocop:disable Metrics/AbcSize
           options = attributes.delete(:options) { {} }
           multiple = attributes[:multiple]
@@ -1066,7 +1066,7 @@ module Hanami
         #   </datalist>
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def datalist(name, values, list, **attributes)
           options = attributes.delete(:options) || {}
           datalist = attributes.delete(:datalist) || {}
@@ -1121,7 +1121,7 @@ module Hanami
         #   </button>
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def button(...)
           tag.button(...)
         end
@@ -1144,7 +1144,7 @@ module Hanami
         #   => <input name="image" width="50" type="image" src="https://hanamirb.org/assets/button.png">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def image_button(source, **attributes)
           attributes[:type] = :image
           attributes[:src] = sanitize_url(source)
@@ -1188,7 +1188,7 @@ module Hanami
         #   </button>
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def submit(content = nil, **attributes, &blk)
           if content.is_a?(::Hash)
             attributes = content
@@ -1209,7 +1209,7 @@ module Hanami
         #
         # @return [String] the tag
         #
-        # @since 2.0.0
+        # @since 2.1.0
         # @api public
         #
         # @example Basic usage
@@ -1217,7 +1217,7 @@ module Hanami
         #   => <input type="text" name="book[title]" id="book-title" value="Hanami book">
         #
         # @api public
-        # @since 2.0.0
+        # @since 2.1.0
         def input(...)
           tag.input(...)
         end
@@ -1225,7 +1225,7 @@ module Hanami
         private
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         def _form_method(attributes)
           attributes[:method] ||= DEFAULT_METHOD
           attributes[:method] = attributes[:method].to_s.upcase
@@ -1240,7 +1240,7 @@ module Hanami
         end
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         def _csrf_token(values, attributes)
           return [] if values.csrf_token.nil?
 
@@ -1250,7 +1250,7 @@ module Hanami
         end
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         def _attributes(type, name, attributes)
           attrs = {
             type: type,
@@ -1264,7 +1264,7 @@ module Hanami
         end
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         def _input_name(name)
           tokens = _split_input_name(name)
           result = tokens.shift
@@ -1281,19 +1281,19 @@ module Hanami
         end
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         def _input_id(name)
           [base_name, name].compact.join(INPUT_NAME_SEPARATOR).to_s.tr("._", "-")
         end
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         def _value(name)
           values.get(*_split_input_name(name).map(&:to_sym))
         end
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         def _split_input_name(name)
           [
             *base_name.to_s.split(INPUT_NAME_SEPARATOR),
@@ -1302,7 +1302,7 @@ module Hanami
         end
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         #
         # @see #check_box
         def _hidden_field_for_check_box(name, attributes)
@@ -1316,7 +1316,7 @@ module Hanami
         end
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         #
         # @see #check_box
         def _attributes_for_check_box(name, attributes)
