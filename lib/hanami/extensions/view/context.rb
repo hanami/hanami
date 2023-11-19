@@ -194,7 +194,7 @@ module Hanami
             #     content_for(:page_title, "Hello world")
             #
             #   @example In a template
-            #     <% content_for :page_title do %>
+            #     <%= content_for :page_title do %>
             #       <h1>Hello world</h1>
             #     <% end %>
             #
@@ -211,8 +211,10 @@ module Hanami
             def content_for(key, value = nil)
               if block_given?
                 @content_for[key] = yield
+                nil
               elsif value
                 @content_for[key] = value
+                nil
               else
                 @content_for[key]
               end
