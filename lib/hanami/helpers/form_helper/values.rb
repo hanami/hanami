@@ -8,18 +8,18 @@ module Hanami
       # It's responsible to populate input values with data coming from params
       # and inline values specified via form helpers like `text_field`.
       #
-      # @since 2.0.0
+      # @since 2.1.0
       # @api private
       class Values
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         GET_SEPARATOR = "."
 
         # @api private
-        # @since 2.0.0
+        # @since 2.1.0
         attr_reader :csrf_token
 
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         def initialize(values: {}, params: {}, csrf_token: nil)
           @values = values.to_h
@@ -30,7 +30,7 @@ module Hanami
         # Returns the value (if present) for the given key.
         # Nested values are expressed with an array if symbols.
         #
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         def get(*keys)
           get_from_params(*keys) || get_from_values(*keys)
@@ -38,14 +38,14 @@ module Hanami
 
         private
 
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         def get_from_params(*keys)
           keys.map! { |key| /\A\d+\z/.match?(key.to_s) ? key.to_s.to_i : key }
           @params.dig(*keys)
         end
 
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         def get_from_values(*keys)
           head, *tail = *keys
@@ -60,7 +60,7 @@ module Hanami
           result
         end
 
-        # @since 2.0.0
+        # @since 2.1.0
         # @api private
         def dig(base, key)
           case base
