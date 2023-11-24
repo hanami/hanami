@@ -2,15 +2,21 @@
 
 The web, with simplicity.
 
-## v2.1.0 - 2023-11-14
+## Unreleased
 
+### Changed
+
+- [Tim Riley] Return `nil` when setting content via `#content_for` on the app's view context. This
+  allows it to be used with tempalte output tags (such as ERB's `<%=`) that capture a block for the
+  given content. (#1369)
+  
 ## Fixed
 
 - [Tim Riley] Ensure assets Rake task for Heroku works (#1368)
 
 ## v2.1.0.rc2 - 2023-11-08
 
-## Changed
+### Changed
 
 - [Tim Riley] Enable `config.render_detailed_errors` in development mode only by default. (#1365)
 - [Tim Riley] Remove current_path from context (#1362)
