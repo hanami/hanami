@@ -91,16 +91,16 @@ module Hanami
           #
           # @api public
           # @since 2.0.0
-          def use(spec, *args, path_prefix: ::Hanami::Router::DEFAULT_PREFIX, before: nil, after: nil, &blk)
+          def use(spec, *args, path_prefix: ::Hanami::Router::DEFAULT_PREFIX, before: nil, after: nil, **kwargs, &blk)
             middleware = resolve_middleware_class(spec)
-            item = [middleware, args, blk]
+            item = [middleware, args, kwargs, blk]
 
             if before
               @stack[path_prefix].insert((idx = index_of(before, path_prefix)).zero? ? 0 : idx - 1, item)
             elsif after
               @stack[path_prefix].insert(index_of(after, path_prefix) + 1, item)
             else
-              @stack[path_prefix].push([middleware, args, blk])
+              @stack[path_prefix].push(item)
             end
 
             self
