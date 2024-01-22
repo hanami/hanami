@@ -29,12 +29,13 @@ module RSpec
 
       private
 
+      # TODO: make slice-aware
       def stub_assets(*assets)
         manifest_hash = assets.each_with_object({}) { |source_path, hsh|
           hsh[source_path] = {url: File.join("/assets", source_path)}
         }
 
-        write "public/assets.json", JSON.generate(manifest_hash)
+        write "public/assets/assets.json", JSON.generate(manifest_hash)
       end
 
       def compile_assets!
@@ -62,15 +63,16 @@ module RSpec
         root = Hanami.app.root
 
         with_directory(root) do
-          write("config/assets.mjs", <<~JS) unless root.join("config", "assets.mjs").exist?
+          write("config/assets.js", <<~JS) unless root.join("config", "assets.js").exist?
             import * as assets from "hanami-assets";
             await assets.run();
           JS
 
           write("package.json", <<~JSON) unless root.join("package.json").exist?
             {
+              "type": "module",
               "scripts": {
-                "assets": "node config/assets.mjs"
+                "assets": "node config/assets.js"
               }
             }
           JSON

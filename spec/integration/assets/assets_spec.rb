@@ -18,7 +18,7 @@ RSpec.describe "Assets", :app_integration do
         end
       RUBY
 
-      write "config/assets.mjs", <<~JS
+      write "config/assets.js", <<~JS
         import * as assets from "hanami-assets";
         await assets.run();
       JS
@@ -26,7 +26,7 @@ RSpec.describe "Assets", :app_integration do
       write "package.json", <<~JSON
         {
           "scripts": {
-            "assets": "node config/assets.mjs"
+            "assets": "node config/assets.js"
           }
         }
       JSON

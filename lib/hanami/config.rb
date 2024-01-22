@@ -309,10 +309,7 @@ module Hanami
 
       @assets = load_dependent_config("hanami-assets") {
         require_relative "config/assets"
-
-        Hanami::Config::Assets.new(
-          manifest_path: root.join("public", "assets.json")
-        )
+        Hanami::Config::Assets.new
       }
 
       yield self if block_given?

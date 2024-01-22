@@ -895,6 +895,11 @@ module Hanami
           require_relative "providers/routes"
           register_provider(:routes, source: Providers::Routes.for_slice(self))
         end
+
+        if Hanami.bundled?("hanami-assets")
+          require_relative "providers/assets"
+          register_provider(:assets, source: Providers::Assets.for_slice(self))
+        end
       end
 
       def prepare_autoloader

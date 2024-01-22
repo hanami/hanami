@@ -161,11 +161,6 @@ module Hanami
           require_relative "providers/rack"
           register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
         end
-
-        if Hanami.bundled?("hanami-assets")
-          require_relative "providers/assets"
-          register_provider(:assets, source: Providers::Assets.for_slice(self))
-        end
       end
 
       def prepare_autoloader

@@ -3,6 +3,6 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "hanami-assets": "github:hanami/assets-js#main"
+    "hanami-assets": "github:hanami/assets-js#single-assets-dir-only"
   }
 }
