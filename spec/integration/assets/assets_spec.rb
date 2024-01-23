@@ -25,6 +25,7 @@ RSpec.describe "Assets", :app_integration do
 
       write "package.json", <<~JSON
         {
+          "type": "module",
           "scripts": {
             "assets": "node config/assets.js"
           }
