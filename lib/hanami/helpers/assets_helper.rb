@@ -666,6 +666,7 @@ module Hanami
       #
       #   # "https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.js"
       def asset_url(source_path)
+        return source_path.url if source_path.respond_to?(:url)
         return source_path if _absolute_url?(source_path)
 
         _context.assets[source_path].url
@@ -684,7 +685,7 @@ module Hanami
       # @since 2.1.0
       # @api private
       def _typed_path(source, ext)
-        source = "#{source}#{ext}" if _append_extension?(source, ext)
+        source = "#{source}#{ext}" if source.is_a?(String) && _append_extension?(source, ext)
         asset_url(source)
       end
 
