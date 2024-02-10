@@ -1223,7 +1223,7 @@ end
 
 ### Added
 
-- [Lines Coelho & Rosa Faria] Introduced mailers support
+- [Ines Coelho & Rosa Faria] Introduced mailers support
 - [Theo Felippe] Added configuration entries: `#default_request_format` and `default_response_format`
 - [Rodrigo Panachi] Introduced `logger` configuration for applications, to be used like this: `Web::Logger.debug`
 - [Ben Lovell] Simpler and less verbose RSpec tests
