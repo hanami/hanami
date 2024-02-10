@@ -31,7 +31,7 @@ RSpec.describe "App view / Context / Request", :app_integration do
     end
   end
 
-  describe "#sesion" do
+  describe "#session" do
     let(:session) { double(:session) }
 
     before do

@@ -7,7 +7,7 @@ The web, with simplicity.
 ### Changed
 
 - [Tim Riley] Return `nil` when setting content via `#content_for` on the app's view context. This
-  allows it to be used with tempalte output tags (such as ERB's `<%=`) that capture a block for the
+  allows it to be used with template output tags (such as ERB's `<%=`) that capture a block for the
   given content. (#1369)
   
 ## Fixed
@@ -144,7 +144,7 @@ The web, with simplicity.
 ### Fixed
 
 - [Luca Guidi] Ensure to properly mount Rack middleware in routing scope and slice
-- [Tim Riley] Simplify and clarify usage of `Hanami::Config#enviroment`
+- [Tim Riley] Simplify and clarify usage of `Hanami::Config#environment`
 - [Tim Riley] Improve error message for missing action class
 - [Tim Riley] Expect nested slices to use parent’s namespace
 
@@ -804,7 +804,7 @@ The web, with simplicity.
 - [Luca Guidi] Main configuration is available at `config/application.rb` instead of `config/enviroment.rb`
 - [Luca Guidi] Removed `Hanami.configure` in favor of main application configuration (e.g. `Bookshelf::Application.config`)
 - [Luca Guidi] Removed DSL syntax for main configuration (from `cookies max_age: 600` to `config.cookies = { max_age: 600 }`)
-- [Luca Guidi] Per enviroment settings must be wrapped in a block (e.g. `config.enviroment(:production) { |c| c.logger = {} }`)
+- [Luca Guidi] Per environment settings must be wrapped in a block (e.g. `config.environment(:production) { |c| c.logger = {} }`)
 - [Luca Guidi] Concrete applications are no longer supported (e.g. `Web::Application` in `apps/web/application.rb`)
 - [Luca Guidi] Main routes must be configured at `config/routes.rb`:
 
@@ -1120,7 +1120,7 @@ end
 - [Mahesh] Fix destroy action for application architecture
 - [Karim Tarek & akhramov] Reference rendering errors in Rack env's `rack.exception` variable. This enables compatibility with exception reporting SaaS.
 - [Luca Guidi] Detect assets dependencies changes in development (Sass/SCSS)
-- [Luca Guidi & Lucas Amorim] Make model generator not dependendent on the current directory name, but to the project name stored in `.hanamirc`
+- [Luca Guidi & Lucas Amorim] Make model generator not dependent on the current directory name, but to the project name stored in `.hanamirc`
 
 ### Changed
 
@@ -1223,7 +1223,7 @@ end
 
 ### Added
 
-- [Ines Coelho & Rosa Faria] Introduced mailers support
+- [Lines Coelho & Rosa Faria] Introduced mailers support
 - [Theo Felippe] Added configuration entries: `#default_request_format` and `default_response_format`
 - [Rodrigo Panachi] Introduced `logger` configuration for applications, to be used like this: `Web::Logger.debug`
 - [Ben Lovell] Simpler and less verbose RSpec tests
@@ -1375,7 +1375,7 @@ end
 - [Piotr Kurek] Allow to yield multiple configurations per application, according to the current environment
 - [David Celis] Allow to configure Rack middleware stack (`middleware` configuration)
 - [David Celis] Introduced `lotus console` command. It runs the REPL configured in `Gemfile` (eg. pry or ripl). Defaults to IRb.
-- [Luca Guidi] Introduced `Lotus::Environment` which holds the informations about the current environment, and CLI arguments
+- [Luca Guidi] Introduced `Lotus::Environment` which holds the information about the current environment, and CLI arguments
 - [Luca Guidi] Introduced `Lotus::Application.load!` to load and configure an application without requiring user defined code (controllers, views, etc.)
 - [Leonard Garvey] Introduced `lotus server` command. It runs the application with the Rack server declared in `Gemfile` (eg. puma, thin, unicorn). It defaults to `WEBRick`.
 - [Luca Guidi] Official support for MRI 2.1 and 2.2
