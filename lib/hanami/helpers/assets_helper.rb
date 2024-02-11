@@ -85,7 +85,7 @@ module Hanami
       # name of the algorithm, then a hyphen, then the hash value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
-      # @param source_paths [Array<String>] one or more assets by name or absolute URL
+      # @param source_paths [Array<String, #url>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
       #
@@ -189,7 +189,7 @@ module Hanami
       # name of the algorithm, then a hyphen, then the hashed value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
-      # @param source_paths [Array<String>] one or more assets by name or absolute URL
+      # @param source_paths [Array<String, #url>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
       #
@@ -282,7 +282,7 @@ module Hanami
       # If the "CDN mode" is on, the `src` is an absolute URL of the
       # application CDN.
       #
-      # @param source [String] asset name or absolute URL
+      # @param source [String, #url] asset name, absolute URL, or asset object
       # @param options [Hash] HTML 5 attributes
       #
       # @return [Hanami::View::HTML::SafeString] the markup
@@ -353,7 +353,7 @@ module Hanami
       # If the "CDN mode" is on, the `href` is an absolute URL of the
       # application CDN.
       #
-      # @param source [String] asset name
+      # @param source [String, #url] asset name or asset object
       # @param options [Hash] HTML 5 attributes
       #
       # @return [Hanami::View::HTML::SafeString] the markup
@@ -424,7 +424,7 @@ module Hanami
       # If the "CDN mode" is on, the `src` is an absolute URL of the
       # application CDN.
       #
-      # @param source [String] asset name or absolute URL
+      # @param source [String, #url] asset name, absolute URL or asset object
       # @param options [Hash] HTML 5 attributes
       #
       # @return [Hanami::View::HTML::SafeString] the markup
@@ -526,7 +526,7 @@ module Hanami
       # If the "CDN mode" is on, the `src` is an absolute URL of the
       # application CDN.
       #
-      # @param source [String] asset name or absolute URL
+      # @param source [String, #url] asset name, absolute URL or asset object
       # @param options [Hash] HTML 5 attributes
       #
       # @return [Hanami::View::HTML::SafeString] the markup
@@ -626,7 +626,7 @@ module Hanami
       #
       # If CDN mode is on, it returns the absolute URL of the asset.
       #
-      # @param source_path [String] the asset name
+      # @param source_path [String, #url] the asset name or asset object
       #
       # @return [String] the asset path
       #
