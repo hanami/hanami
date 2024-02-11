@@ -106,10 +106,6 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#stylesheet", :app_integration do
     before { compile_assets! }
 
     it "includes subresource_integrity and crossorigin attributes" do
-      # FIXME: this is failing because the manifest has "app.ts" instead of "app.js":
-      # subject._context.assets.send(:manifest)
-      # {"app.ts"=>{"url"=>"/assets/app-CLORMJFW.js", "sri"=>["sha384-xQc/enxgzz+DzkeSCBawOFpNynZnuBLq2BQcUfI0zS7ll4vSWq3pAh7Aqk7wLQZ3"]}}
-
       actual = stylesheet_tag("app")
       expect(actual).to match(%r{<link href="/assets/app-[A-Z0-9]{8}.css" type="text/css" rel="stylesheet" integrity="sha384-[A-Za-z0-9+/]{64}" crossorigin="anonymous">})
     end
