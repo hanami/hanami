@@ -45,7 +45,11 @@ module RSpec
         require "hanami/cli/command"
         require "hanami/cli/commands/app/command"
         require "hanami/cli/commands/app/assets/compile"
-        assets_compile = Hanami::CLI::Commands::App::Assets::Compile.new(config: Hanami.app.config.assets)
+        assets_compile = Hanami::CLI::Commands::App::Assets::Compile.new(
+          config: Hanami.app.config.assets,
+          out: File.new(File::NULL, "w"),
+          err: File.new(File::NULL, "w"),
+        )
 
         with_directory(Hanami.app.root) { assets_compile.call }
       end
