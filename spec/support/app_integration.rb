@@ -77,10 +77,7 @@ module RSpec
 
           write("package.json", <<~JSON) unless root.join("package.json").exist?
             {
-              "type": "module",
-              "scripts": {
-                "assets": "node config/assets.js"
-              }
+              "type": "module"
             }
           JSON
         end
