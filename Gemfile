@@ -12,9 +12,9 @@ end
 gem "hanami-utils",      github: "hanami/utils",      branch: "main"
 gem "hanami-router",     github: "hanami/router",     branch: "main"
 gem "hanami-controller", github: "hanami/controller", branch: "main"
-gem "hanami-cli",        github: "hanami/cli",        branch: "multiple-assets-processes"
+gem "hanami-cli",        github: "hanami/cli",        branch: "main"
 gem "hanami-view",       github: "hanami/view",       branch: "main"
-gem "hanami-assets",     github: "hanami/assets",     branch: "require-assets-root"
+gem "hanami-assets",     github: "hanami/assets",     branch: "main"
 gem "hanami-webconsole", github: "hanami/webconsole", branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
