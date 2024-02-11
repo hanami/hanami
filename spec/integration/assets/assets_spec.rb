@@ -18,38 +18,16 @@ RSpec.describe "Assets", :app_integration do
         end
       RUBY
 
-      write "config/assets.mjs", <<~JS
+      write "config/assets.js", <<~JS
         import * as assets from "hanami-assets";
         await assets.run();
       JS
 
       write "package.json", <<~JSON
         {
-          "scripts": {
-            "assets": "node config/assets.mjs"
-          }
+          "type": "module"
         }
       JSON
-
-      write "config/routes.rb", <<~RUBY
-        module TestApp
-          class Routes < Hanami::Routes
-            get "posts/:id/edit", to: "posts.edit"
-            put "posts/:id", to: "posts.update"
-          end
-        end
-      RUBY
-
-      write "app/action.rb", <<~RUBY
-        # auto_register: false
-
-        require "hanami/action"
-
-        module TestApp
-          class Action < Hanami::Action
-          end
-        end
-      RUBY
 
       write "app/view.rb", <<~RUBY
         # auto_register: false
@@ -108,5 +86,70 @@ RSpec.describe "Assets", :app_integration do
 
     expect(assets["app.css"].to_s).to match(%r{/assets/app-[A-Z0-9]{8}.css})
     expect(assets["app.js"].to_s).to match(%r{/assets/app-[A-Z0-9]{8}.js})
+  end
+
+  describe "slice with assets" do
+    def before_prepare
+      write "slices/main/view.rb", <<~RUBY
+        # auto_register: false
+
+        module Main
+          class View < TestApp::View
+          end
+        end
+      RUBY
+
+      write "slices/main/views/posts/show.rb", <<~RUBY
+        module Main
+          module Views
+            module Posts
+              class Show < Main::View
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/templates/posts/show.html.erb", <<~ERB
+        <%= stylesheet_tag("app") %>
+        <%= javascript_tag("app") %>
+      ERB
+
+      write "slices/main/assets/js/app.ts", <<~TS
+        import "../css/app.css";
+
+        console.log("Hello from main slice index.ts");
+      TS
+
+      write "slices/main/assets/css/app.css", <<~CSS
+        .btn {
+          background: #f00;
+        }
+      CSS
+    end
+
+    specify "the slice's assets are available in its own and distinct `assets` component" do
+      compile_assets!
+
+      output = Main::Slice["views.posts.show"].call.to_s
+
+      expect(output).to match(%r{<link href="/assets/main/app-[A-Z0-9]{8}.css" type="text/css" rel="stylesheet">})
+      expect(output).to match(%r{<script src="/assets/main/app-[A-Z0-9]{8}.js" type="text/javascript"></script>})
+
+      assets = Main::Slice["assets"]
+
+      expect(assets["app.css"].to_s).to match(%r{/assets/main/app-[A-Z0-9]{8}.css})
+      expect(assets["app.js"].to_s).to match(%r{/assets/main/app-[A-Z0-9]{8}.js})
+    end
+  end
+
+  describe "slice without assets" do
+    def before_prepare
+      write "slices/main/.keep", ""
+    end
+
+    it "does not have an assets component" do
+      expect(Main::Slice.key?("assets")).to be false
+    end
   end
 end
