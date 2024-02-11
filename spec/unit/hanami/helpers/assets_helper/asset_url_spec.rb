@@ -106,4 +106,15 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#asset_url", :app_integration do
       end
     end
   end
+
+  context "given an asset object" do
+    it "returns the URL for the asset" do
+      asset = Hanami::Assets::Asset.new(
+        path: "/foo/bar.js",
+        base_url: Hanami.app.config.assets.base_url
+      )
+
+      expect(asset_url(asset)).to eq "/foo/bar.js"
+    end
+  end
 end
