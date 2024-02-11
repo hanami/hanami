@@ -896,7 +896,7 @@ module Hanami
           register_provider(:routes, source: Providers::Routes.for_slice(self))
         end
 
-        if Hanami.bundled?("hanami-assets")
+        if assets_dir? && Hanami.bundled?("hanami-assets")
           require_relative "providers/assets"
           register_provider(:assets, source: Providers::Assets.for_slice(self))
         end
@@ -1026,6 +1026,11 @@ module Hanami
         raise Hanami::Router::NotFoundError.new(env)
       }.freeze
       private_constant :ROUTER_NOT_FOUND_HANDLER
+
+      def assets_dir?
+        assets_path = app.eql?(self) ? root.join("app", "assets") : root.join("assets")
+        assets_path.directory?
+      end
 
       # rubocop:enable Metrics/AbcSize
     end

@@ -99,7 +99,6 @@ module Hanami
       rack.monitor
       routes
       settings
-      assets
     ]
 
     # @!attribute [rw] no_auto_register_paths

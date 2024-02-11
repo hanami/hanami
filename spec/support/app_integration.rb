@@ -36,6 +36,9 @@ module RSpec
         }
 
         write "public/assets/assets.json", JSON.generate(manifest_hash)
+
+        # An assets dir isrequired to load the assets provider
+        write "app/assets/.keep", ""
       end
 
       def compile_assets!
