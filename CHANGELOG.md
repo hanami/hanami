@@ -2,14 +2,14 @@
 
 The web, with simplicity.
 
-## Unreleased
+## v2.1.0.rc3 - 2024-02-16
 
 ### Changed
 
 - [Tim Riley] Return `nil` when setting content via `#content_for` on the app's view context. This
   allows it to be used with tempalte output tags (such as ERB's `<%=`) that capture a block for the
   given content. (#1369)
-  
+
 ## Fixed
 
 - [Tim Riley] Ensure assets Rake task for Heroku works (#1368)
