@@ -147,6 +147,72 @@ RSpec.describe "Hanami web app", :app_integration do
     expect(last_response.body).to eql("one.two")
   end
 
+  specify "Setting a middleware that requires keyword arguments" do
+    write "config/app.rb", <<~RUBY
+      require "hanami"
+
+      module TestApp
+        class TestMiddleware
+          def initialize(app, key:, value:)
+            @app = app
+            @key = key
+            @value = value
+          end
+
+          def call(env)
+            env[@key] = @value
+            @app.call(env)
+          end
+        end
+
+        class App < Hanami::App
+          config.logger.stream = StringIO.new
+
+          # Test middleware with keywords inside config
+          config.middleware.use(TestApp::TestMiddleware, key: "from_config", value: "config")
+        end
+      end
+    RUBY
+
+    write "config/routes.rb", <<~RUBY
+      require "hanami/router"
+
+      module TestApp
+        class Routes < Hanami::Routes
+          slice :main, at: "/" do
+            # Also test middleware with keywords inside routes
+            use TestApp::TestMiddleware, key: "from_routes", value: "routes"
+
+            root to: "home.index"
+          end
+        end
+      end
+    RUBY
+
+    write "slices/main/actions/home/index.rb", <<~RUBY
+      require "hanami/action"
+
+      module Main
+        module Actions
+          module Home
+            class Index < Hanami::Action
+              def handle(request, response)
+                response.body = [request.env["from_config"], request.env["from_routes"]].join(", ")
+              end
+            end
+          end
+        end
+      end
+    RUBY
+
+    require "hanami/boot"
+
+    get "/"
+
+    expect(last_response).to be_successful
+    expect(last_response.body).to eq "config, routes"
+  end
+
   specify "Setting a middleware that requires a block" do
     write "config/app.rb", <<~RUBY
       require "hanami"
