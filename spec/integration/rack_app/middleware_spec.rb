@@ -153,13 +153,14 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class TestMiddleware
-          def initialize(app, value:)
+          def initialize(app, key:, value:)
             @app = app
+            @key = key
             @value = value
           end
 
           def call(env)
-            env["tested"] = @value
+            env[@key] = @value
             @app.call(env)
           end
         end
@@ -167,7 +168,8 @@ RSpec.describe "Hanami web app", :app_integration do
         class App < Hanami::App
           config.logger.stream = StringIO.new
 
-          config.middleware.use(TestApp::TestMiddleware, value: "yes")
+          # Test middleware with keywords inside config
+          config.middleware.use(TestApp::TestMiddleware, key: "from_config", value: "config")
         end
       end
     RUBY
@@ -178,6 +180,9 @@ RSpec.describe "Hanami web app", :app_integration do
       module TestApp
         class Routes < Hanami::Routes
           slice :main, at: "/" do
+            # Also test middleware with keywords inside routes
+            use TestApp::TestMiddleware, key: "from_routes", value: "routes"
+
             root to: "home.index"
           end
         end
@@ -191,8 +196,8 @@ RSpec.describe "Hanami web app", :app_integration do
         module Actions
           module Home
             class Index < Hanami::Action
-              def handle(req, res)
-                res.body = req.env["tested"]
+              def handle(request, response)
+                response.body = [request.env["from_config"], request.env["from_routes"]].join(", ")
               end
             end
           end
@@ -205,7 +210,7 @@ RSpec.describe "Hanami web app", :app_integration do
     get "/"
 
     expect(last_response).to be_successful
-    expect(last_response.body).to eql("yes")
+    expect(last_response.body).to eq "config, routes"
   end
 
   specify "Setting a middleware that requires a block" do
