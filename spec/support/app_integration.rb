@@ -37,7 +37,7 @@ module RSpec
 
         write "public/assets/assets.json", JSON.generate(manifest_hash)
 
-        # An assets dir isrequired to load the assets provider
+        # An assets dir is required to load the assets provider
         write "app/assets/.keep", ""
       end
 
