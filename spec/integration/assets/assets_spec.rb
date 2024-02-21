@@ -133,13 +133,13 @@ RSpec.describe "Assets", :app_integration do
 
       output = Main::Slice["views.posts.show"].call.to_s
 
-      expect(output).to match(%r{<link href="/assets/main/app-[A-Z0-9]{8}.css" type="text/css" rel="stylesheet">})
-      expect(output).to match(%r{<script src="/assets/main/app-[A-Z0-9]{8}.js" type="text/javascript"></script>})
+      expect(output).to match(%r{<link href="/assets/_main/app-[A-Z0-9]{8}.css" type="text/css" rel="stylesheet">})
+      expect(output).to match(%r{<script src="/assets/_main/app-[A-Z0-9]{8}.js" type="text/javascript"></script>})
 
       assets = Main::Slice["assets"]
 
-      expect(assets["app.css"].to_s).to match(%r{/assets/main/app-[A-Z0-9]{8}.css})
-      expect(assets["app.js"].to_s).to match(%r{/assets/main/app-[A-Z0-9]{8}.js})
+      expect(assets["app.css"].to_s).to match(%r{/assets/_main/app-[A-Z0-9]{8}.css})
+      expect(assets["app.js"].to_s).to match(%r{/assets/_main/app-[A-Z0-9]{8}.js})
     end
   end
 
