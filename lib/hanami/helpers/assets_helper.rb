@@ -382,7 +382,7 @@ module Hanami
       #
       #   <%= favicon_tag "favicon.ico", id: "fav" %>
       #
-      #   # <link id: "fav" href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
+      #   # <link id="fav" href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
       #
       # @example Fingerprint Mode
       #
