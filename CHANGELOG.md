@@ -2,6 +2,13 @@
 
 The web, with simplicity.
 
+## v2.1.0 - 2024-02-27
+
+### Changed
+
+- [Pat Allan] Pass keyword arguments through to configured middleware
+- [Tim Riley] Expect underscored slice names in `public/assets/` to avoid naming conflicts with nested asset entry points. In this arrangement, an "admin" slice will have its assets compiled into `public/assets/_admin/`.
+
 ## v2.1.0.rc3 - 2024-02-16
 
 ### Changed
@@ -10,7 +17,7 @@ The web, with simplicity.
   allows it to be used with tempalte output tags (such as ERB's `<%=`) that capture a block for the
   given content. (#1369)
 
-## Fixed
+### Fixed
 
 - [Tim Riley] Ensure assets Rake task for Heroku works (#1368)
 
