@@ -404,7 +404,7 @@ module Hanami
       #   @param key [String] the component's key
       #   @param object [Object] the object to register as the component
       #
-      # @overload reigster(key, memoize: false, &block)
+      # @overload register(key, memoize: false, &block)
       #   Registers the given block as the component. When the component is resolved, the return
       #   value of the block will be returned.
       #
@@ -422,7 +422,7 @@ module Hanami
       #   @param memoize [Boolean]
       #   @yieldreturn [Object] the object to register as the component
       #
-      # @overload reigster(key, call: true, &block)
+      # @overload register(key, call: true, &block)
       #   Registers the given block as the component. When `call: false` is given, then the block
       #   itself will become the component.
       #
@@ -430,7 +430,7 @@ module Hanami
       #   object for that block will be returned.
       #
       #   @param key [String] the component's key
-      #   @param call [Booelan]
+      #   @param call [Boolean]
       #
       # @return [container]
       #
@@ -493,7 +493,7 @@ module Hanami
       #     namespace. May be an explicit string, or `true` for the namespace to be the provider's
       #     name
       #   @param from [Symbol, nil] the group for an external provider source to use, with the
-      #     provider source name inferred from `name` or passsed explicitly as `source:`
+      #     provider source name inferred from `name` or passed explicitly as `source:`
       #   @param source [Symbol, nil] the name of the external provider source to use, if different
       #     from the value provided as `name`
       #   @param if [Boolean] a boolean-returning expression to determine whether to register the

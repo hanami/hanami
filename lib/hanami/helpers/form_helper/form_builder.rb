@@ -190,7 +190,7 @@ module Hanami
         # @param name [String] the input name, also used as the base input name for all fields
         #   within the block
         # @yieldparam [FormBuilder] the form builder for the nested fields
-        # @yieldparam [Integer] the index of the iteration over the colletion, starting from zero
+        # @yieldparam [Integer] the index of the iteration over the collection, starting from zero
         # @yieldparam [Object] the value of the element from the collection
         #
         # @example Basic usage
@@ -694,7 +694,7 @@ module Hanami
         #
         # @example Advanced attributes
         #   f.number_field("book.percent_read", min: 1, max: 100, step: 1)
-        #   => <input type="number" name="book[percent_read]" id="book-precent-read" value="" min="1" max="100" step="1">
+        #   => <input type="number" name="book[percent_read]" id="book-percent-read" value="" min="1" max="100" step="1">
         #
         # @api public
         # @since 2.1.0

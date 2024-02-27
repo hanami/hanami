@@ -80,8 +80,8 @@ RSpec.describe Hanami::Helpers::FormHelper do
     end
 
     it "allows to specify HTML attributes" do
-      html = form_for("/books", class: "form-horizonal")
-      expect(html).to eq %(<form action="/books" class="form-horizonal" accept-charset="utf-8" method="POST"></form>)
+      html = form_for("/books", class: "form-horizontal")
+      expect(html).to eq %(<form action="/books" class="form-horizontal" accept-charset="utf-8" method="POST"></form>)
     end
 
     context "input name" do

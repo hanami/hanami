@@ -191,7 +191,7 @@ module Hanami
       end
 
       # @api private
-      def respond_to_missing?(name, _incude_all = false)
+      def respond_to_missing?(name, _include_all = false)
         config.respond_to?(name) || super
       end
     end

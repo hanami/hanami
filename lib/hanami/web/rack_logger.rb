@@ -35,8 +35,8 @@ module Hanami
       CONTENT_LENGTH = "CONTENT_LENGTH"
       private_constant :CONTENT_LENGTH
 
-      MILISECOND = "ms"
-      private_constant :MILISECOND
+      MILLISECOND = "ms"
+      private_constant :MILLISECOND
 
       MICROSECOND = "µs"
       private_constant :MICROSECOND

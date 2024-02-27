@@ -32,7 +32,7 @@ RSpec.describe "App view / Config / Template", :app_integration do
   subject(:template) { view_class.config.template }
   let(:view_class) { TestApp::Views::Article::Index }
 
-  it "configures the tempalte to match the class name" do
+  it "configures the template to match the class name" do
     expect(template).to eq "article/index"
   end
 end
