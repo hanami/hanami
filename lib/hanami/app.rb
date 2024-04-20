@@ -129,7 +129,7 @@ module Hanami
           end
         end
 
-        # When auto-registering components in app/, ignore files in `app/lib/` (these will be
+        # When auto-registering components in `app/`, ignore files in `app/lib/` (these will be
         # auto-registered as above), as well as the configured no_auto_register_paths
         no_auto_register_paths = ([LIB_DIR] + config.no_auto_register_paths)
           .map { |path|

@@ -3,7 +3,7 @@
 module Hanami
   module Extensions
     module View
-      # Provides slice-specific helper methods any view object requiring access to helpers.
+      # Provides slice-specific helper methods for any view object requiring access to helpers.
       #
       # @api public
       # @since 2.1.0

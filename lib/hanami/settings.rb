@@ -8,7 +8,7 @@ module Hanami
   # Provides user-defined settings for an Hanami app or slice.
   #
   # Define your own settings by inheriting from this class in `config/settings.rb` within an app or
-  # slice. Your settings will be loaded from matching ENV vars (with upper-cased names) and made
+  # slice. Your settings will be loaded from matching ENV vars (with upper-cased names) and be
   # registered as a component as part of the Hanami app {Hanami::Slice::ClassMethods#prepare
   # prepare} step.
   #
@@ -160,8 +160,8 @@ module Hanami
         value = store.fetch(name, Undefined)
 
         if value.eql?(Undefined)
-          # When a key is missing entirely from the store, _read_ its value from the config instead,
-          # which ensures its setting constructor runs (with a `nil` argument given) and raises any
+          # When a key is missing entirely from the store, _read_ its value from the config instead.
+          # This ensures its setting constructor runs (with a `nil` argument given) and raises any
           # necessary errors.
           public_send(name)
         else

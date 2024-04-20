@@ -156,7 +156,7 @@ module Hanami
               @assets
             end
 
-            # Returns the current request, if  the view is rendered from within an action.
+            # Returns the current request, if the view is rendered from within an action.
             #
             # @return [Hanami::Action::Request] the request
             #

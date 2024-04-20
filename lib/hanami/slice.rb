@@ -189,7 +189,7 @@ module Hanami
       # @api public
       # @since 2.0.0
       def root
-        # Provide a best guess for a root when it is not yet configured.
+        # Provides a best guess for a root when it is not yet configured.
         #
         # This is particularly useful for user-defined slice classes that access `settings` inside
         # the class body (since the root needed to find the settings file). In this case,
@@ -265,7 +265,7 @@ module Hanami
       #
       # @example
       #   module MySlice
-      #     class Sliice < Hanami::Slice
+      #     class Slice < Hanami::Slice
       #       prepare_container do |container|
       #         # ...
       #       end
