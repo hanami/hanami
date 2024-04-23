@@ -4,8 +4,8 @@ require "rack"
 
 module Hanami
   module Middleware
-    # The errors app given to {Hanami::Middleware::RenderErrors}, which renders a error responses
-    # from HTML pages kept in `public/` or as simple JSON structures.
+    # The errors app given to {Hanami::Middleware::RenderErrors}, which renders error responses
+    # from HTML pages kept in `public/` as simple JSON structures.
     #
     # @see Hanami::Middleware::RenderErrors
     #

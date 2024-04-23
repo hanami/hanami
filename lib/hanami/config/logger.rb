@@ -25,7 +25,7 @@ module Hanami
       attr_reader :env
 
       # @!attribute [rw] level
-      #   Sets or returns the logger level.
+      #   Sets or returns the logger's level.
       #
       #   Defaults to `:info` for the production environment and `:debug` for all others.
       #

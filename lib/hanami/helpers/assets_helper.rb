@@ -81,7 +81,7 @@ module Hanami
       # If the "CDN mode" is on, the `src` is an absolute URL of the
       # application CDN.
       #
-      # If the "subresource integrity mode" is on, `integriy` is the
+      # If the "subresource integrity mode" is on, `integrity` is the
       # name of the algorithm, then a hyphen, then the hash value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
@@ -185,7 +185,7 @@ module Hanami
       # If the "CDN mode" is on, the `href` is an absolute URL of the
       # application CDN.
       #
-      # If the "subresource integrity mode" is on, `integriy` is the
+      # If the "subresource integrity mode" is on, `integrity` is the
       # name of the algorithm, then a hyphen, then the hashed value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
@@ -270,7 +270,7 @@ module Hanami
       # Generate `img` tag for given source
       #
       # It accepts one string representing the name of the asset, if it comes
-      # from the application or third party gems. It also accepts string
+      # from the application or third party gems. It also accepts strings
       # representing absolute URLs in case of public CDN (eg. Bootstrap CDN).
       #
       # `alt` Attribute is auto generated from `src`.
@@ -412,7 +412,7 @@ module Hanami
       # Generate `video` tag for given source
       #
       # It accepts one string representing the name of the asset, if it comes
-      # from the application or third party gems. It also accepts string
+      # from the application or third party gems. It also accepts strings
       # representing absolute URLs in case of public CDN (eg. Bootstrap CDN).
       #
       # Alternatively, it accepts a block that allows to specify one or more
@@ -514,7 +514,7 @@ module Hanami
       # Generate `audio` tag for given source
       #
       # It accepts one string representing the name of the asset, if it comes
-      # from the application or third party gems. It also accepts string
+      # from the application or third party gems. It also accepts strings
       # representing absolute URLs in case of public CDN (eg. Bootstrap CDN).
       #
       # Alternatively, it accepts a block that allows to specify one or more

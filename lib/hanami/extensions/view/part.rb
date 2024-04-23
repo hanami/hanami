@@ -46,7 +46,7 @@ module Hanami
       # Standalone helpers class including both {StandardHelpers} as well as the user-defined
       # helpers for the slice.
       #
-      # Used used where helpers should be addressed via an intermediary object (i.e. in parts),
+      # Used where helpers should be addressed via an intermediary object (i.e. in parts),
       # rather than mixed into a class directly.
       #
       # @api private
