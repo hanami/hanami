@@ -18,6 +18,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class App < Hanami::App
+          config.logger.stream = StringIO.new
         end
       end
     RUBY
@@ -25,7 +26,7 @@ RSpec.describe "Hanami web app", :app_integration do
     write "config/routes.rb", <<~RUBY
       module TestApp
         class Routes < Hanami::Routes
-          put "/users/:id", to: "users.update"
+          patch "/users/:id", to: "users.update"
         end
       end
     RUBY
@@ -48,7 +49,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
     post(
       "/users/123",
-      {"_method" => "put", "name" => "Jane"},
+      {"_method" => "patch", "name" => "Jane"},
     )
 
     expect(last_response).to be_redirect
