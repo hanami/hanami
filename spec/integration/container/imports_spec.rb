@@ -1,37 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe "Container imports", :app_integration do
-  xspecify "App container is imported into slice containers by default" do
-    with_tmp_directory(Dir.mktmpdir) do
-      write "config/app.rb", <<~RUBY
-        require "hanami"
-
-        module TestApp
-          class App < Hanami::App
-          end
-        end
-      RUBY
-
-      write "config/slices/admin.rb", <<~RUBY
-        module Admin
-          class Slice < Hanami::Slice
-          end
-        end
-      RUBY
-
-      require "hanami/setup"
-
-      Hanami.prepare
-
-      shared_service = Object.new
-      TestApp::App.register("shared_service", shared_service)
-
-      Hanami.boot
-
-      expect(Admin::Slice["shared_service"]).to be shared_service
-    end
-  end
-
   specify "Slices can import other slices" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
