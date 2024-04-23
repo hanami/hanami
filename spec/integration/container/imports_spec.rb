@@ -81,6 +81,60 @@ RSpec.describe "Container imports", :app_integration do
     end
   end
 
+  describe "Slices can import specific components from the app" do
+    before do
+      with_directory(@dir = make_tmp_directory) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "config/slices/admin.rb", <<~RUBY
+          module Admin
+            class Slice < Hanami::Slice
+              import keys: ["app_service"], from: Hanami.app.container, as: :app
+            end
+          end
+        RUBY
+
+        write "app/app_service.rb", <<~RUBY
+          module TestApp
+            class AppService
+            end
+          end
+        RUBY
+      end
+    end
+
+    context "prepared app" do
+      before do
+        with_directory(@dir) do
+          require "hanami/prepare"
+        end
+      end
+
+      specify do
+        expect(Admin::Slice["app.app_service"]).to be_a TestApp::AppService
+      end
+    end
+
+    context "booted app" do
+      before do
+        with_directory(@dir) do
+          require "hanami/boot"
+        end
+      end
+
+      specify do
+        expect(Admin::Slice["app.app_service"]).to be_a TestApp::AppService
+      end
+    end
+  end
+
   specify "Slices can import from other slices with a custom import key namespace" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
