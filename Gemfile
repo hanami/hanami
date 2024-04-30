@@ -25,6 +25,12 @@ gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 # This is needed for settings specs to pass
 gem "dry-types"
 
+# For prototyping rom integration
+gem "pg"
+gem "rom"
+gem "rom-sql"
+gem "sqlite3"
+
 group :test do
   gem "capybara"
   gem "dotenv"

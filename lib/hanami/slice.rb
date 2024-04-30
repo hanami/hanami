@@ -908,6 +908,11 @@ module Hanami
           require_relative "providers/assets"
           register_provider(:assets, source: Providers::Assets)
         end
+
+        if db_dir? # && Hanami.bundled?("hanami-rom")
+          require_relative "providers/db"
+          register_provider(:db, namespace: true, source: Providers::DB.for_slice(self))
+        end
       end
 
       def prepare_autoloader
@@ -1038,6 +1043,11 @@ module Hanami
       def assets_dir?
         assets_path = app.eql?(self) ? root.join("app", "assets") : root.join("assets")
         assets_path.directory?
+      end
+
+      def db_dir?
+        db_path = app.eql?(self) ? root.join("app", "db") : root.join("db")
+        db_path.directory?
       end
 
       # rubocop:enable Metrics/AbcSize
