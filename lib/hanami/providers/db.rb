@@ -22,17 +22,19 @@ module Hanami
         @slice || Hanami.app
       end
 
+      setting :database_url
+      setting :extensions, default: [:error_sql]
+
       # @api private
       def prepare
         require "sequel"
         require "rom"
         require "rom/sql"
 
-        @config = ROM::Configuration.new(
-          :sql,
-          ENV["DATABASE_URL"], # TODO: more database_url logic
-          extensions: %i[error_sql], # TODO: provider source setting for extensions
-        )
+        # TODO: more database_url logic
+        database_url = config.database_url || ENV["DATABASE_URL"]
+
+        @config = ROM::Configuration.new(:sql, database_url, extensions: config.extensions)
 
         register "config", @config
         register "connection", @config.gateways[:default]
