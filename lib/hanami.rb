@@ -17,6 +17,7 @@ module Hanami
   # @since 2.0.0
   def self.loader
     @loader ||= Zeitwerk::Loader.for_gem.tap do |loader|
+      loader.inflector.inflect "db" => "DB"
       loader.ignore(
         "#{loader.dirs.first}/hanami/{constants,boot,errors,extensions/router/errors,prepare,rake_tasks,setup}.rb"
       )
