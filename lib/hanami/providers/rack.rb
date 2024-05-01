@@ -21,7 +21,7 @@ module Hanami
         # rack extension (activated above) does register these globally, but if the notifications
         # bus has been used before this provider loads, then it will have created its own separate
         # local copy of all registered events as of that moment in time, which will not be included
-        # in the Rack events globally reigstered above.
+        # in the Rack events globally registered above.
         notifications = target["notifications"]
         notifications.register_event(Dry::Monitor::Rack::Middleware::REQUEST_START)
         notifications.register_event(Dry::Monitor::Rack::Middleware::REQUEST_STOP)

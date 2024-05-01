@@ -8,7 +8,7 @@ RSpec.describe Hanami::Slice, :app_integration do
     end
   end
 
-  describe ".environemnt" do
+  describe ".environment" do
     subject(:slice) { Hanami.app.register_slice(:main) }
 
     before do
