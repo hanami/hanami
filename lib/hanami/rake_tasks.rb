@@ -32,7 +32,7 @@ Hanami::CLI::RakeTasks.register_tasks do
   # Please use them when you're in control of your deployment environment.
   #
   # If you're not in control and your deployment requires these "standard"
-  # Rake tasks, they are here to solve this only specific problem.
+  # Rake tasks, they are here only to solve this specific problem.
   #
   # namespace :db do
   #   task :migrate do

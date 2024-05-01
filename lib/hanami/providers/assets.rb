@@ -29,7 +29,9 @@ module Hanami
 
       # @api private
       def start
-        assets = Hanami::Assets.new(config: slice.config.assets)
+        root = slice.app.root.join("public", "assets", Hanami::Assets.public_assets_dir(slice).to_s)
+
+        assets = Hanami::Assets.new(config: slice.config.assets, root: root)
 
         register(:assets, assets)
       end

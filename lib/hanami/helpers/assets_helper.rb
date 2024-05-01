@@ -81,11 +81,11 @@ module Hanami
       # If the "CDN mode" is on, the `src` is an absolute URL of the
       # application CDN.
       #
-      # If the "subresource integrity mode" is on, `integriy` is the
+      # If the "subresource integrity mode" is on, `integrity` is the
       # name of the algorithm, then a hyphen, then the hash value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
-      # @param source_paths [Array<String>] one or more assets by name or absolute URL
+      # @param source_paths [Array<String, #url>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
       #
@@ -185,11 +185,11 @@ module Hanami
       # If the "CDN mode" is on, the `href` is an absolute URL of the
       # application CDN.
       #
-      # If the "subresource integrity mode" is on, `integriy` is the
+      # If the "subresource integrity mode" is on, `integrity` is the
       # name of the algorithm, then a hyphen, then the hashed value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
-      # @param source_paths [Array<String>] one or more assets by name or absolute URL
+      # @param source_paths [Array<String, #url>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
       #
@@ -270,7 +270,7 @@ module Hanami
       # Generate `img` tag for given source
       #
       # It accepts one string representing the name of the asset, if it comes
-      # from the application or third party gems. It also accepts string
+      # from the application or third party gems. It also accepts strings
       # representing absolute URLs in case of public CDN (eg. Bootstrap CDN).
       #
       # `alt` Attribute is auto generated from `src`.
@@ -282,7 +282,7 @@ module Hanami
       # If the "CDN mode" is on, the `src` is an absolute URL of the
       # application CDN.
       #
-      # @param source [String] asset name or absolute URL
+      # @param source [String, #url] asset name, absolute URL, or asset object
       # @param options [Hash] HTML 5 attributes
       #
       # @return [Hanami::View::HTML::SafeString] the markup
@@ -353,7 +353,7 @@ module Hanami
       # If the "CDN mode" is on, the `href` is an absolute URL of the
       # application CDN.
       #
-      # @param source [String] asset name
+      # @param source [String, #url] asset name or asset object
       # @param options [Hash] HTML 5 attributes
       #
       # @return [Hanami::View::HTML::SafeString] the markup
@@ -382,7 +382,7 @@ module Hanami
       #
       #   <%= favicon_tag "favicon.ico", id: "fav" %>
       #
-      #   # <link id: "fav" href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
+      #   # <link id="fav" href="/assets/favicon.ico" rel="shortcut icon" type="image/x-icon">
       #
       # @example Fingerprint Mode
       #
@@ -412,7 +412,7 @@ module Hanami
       # Generate `video` tag for given source
       #
       # It accepts one string representing the name of the asset, if it comes
-      # from the application or third party gems. It also accepts string
+      # from the application or third party gems. It also accepts strings
       # representing absolute URLs in case of public CDN (eg. Bootstrap CDN).
       #
       # Alternatively, it accepts a block that allows to specify one or more
@@ -424,7 +424,7 @@ module Hanami
       # If the "CDN mode" is on, the `src` is an absolute URL of the
       # application CDN.
       #
-      # @param source [String] asset name or absolute URL
+      # @param source [String, #url] asset name, absolute URL or asset object
       # @param options [Hash] HTML 5 attributes
       #
       # @return [Hanami::View::HTML::SafeString] the markup
@@ -514,7 +514,7 @@ module Hanami
       # Generate `audio` tag for given source
       #
       # It accepts one string representing the name of the asset, if it comes
-      # from the application or third party gems. It also accepts string
+      # from the application or third party gems. It also accepts strings
       # representing absolute URLs in case of public CDN (eg. Bootstrap CDN).
       #
       # Alternatively, it accepts a block that allows to specify one or more
@@ -526,7 +526,7 @@ module Hanami
       # If the "CDN mode" is on, the `src` is an absolute URL of the
       # application CDN.
       #
-      # @param source [String] asset name or absolute URL
+      # @param source [String, #url] asset name, absolute URL or asset object
       # @param options [Hash] HTML 5 attributes
       #
       # @return [Hanami::View::HTML::SafeString] the markup
@@ -626,7 +626,7 @@ module Hanami
       #
       # If CDN mode is on, it returns the absolute URL of the asset.
       #
-      # @param source_path [String] the asset name
+      # @param source_path [String, #url] the asset name or asset object
       #
       # @return [String] the asset path
       #
@@ -666,6 +666,7 @@ module Hanami
       #
       #   # "https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.js"
       def asset_url(source_path)
+        return source_path.url if source_path.respond_to?(:url)
         return source_path if _absolute_url?(source_path)
 
         _context.assets[source_path].url
@@ -684,7 +685,7 @@ module Hanami
       # @since 2.1.0
       # @api private
       def _typed_path(source, ext)
-        source = "#{source}#{ext}" if _append_extension?(source, ext)
+        source = "#{source}#{ext}" if source.is_a?(String) && _append_extension?(source, ext)
         asset_url(source)
       end
 

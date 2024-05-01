@@ -189,7 +189,7 @@ module Hanami
       # @api public
       # @since 2.0.0
       def root
-        # Provide a best guess for a root when it is not yet configured.
+        # Provides a best guess for a root when it is not yet configured.
         #
         # This is particularly useful for user-defined slice classes that access `settings` inside
         # the class body (since the root needed to find the settings file). In this case,
@@ -265,7 +265,7 @@ module Hanami
       #
       # @example
       #   module MySlice
-      #     class Sliice < Hanami::Slice
+      #     class Slice < Hanami::Slice
       #       prepare_container do |container|
       #         # ...
       #       end
@@ -895,6 +895,11 @@ module Hanami
           require_relative "providers/routes"
           register_provider(:routes, source: Providers::Routes.for_slice(self))
         end
+
+        if assets_dir? && Hanami.bundled?("hanami-assets")
+          require_relative "providers/assets"
+          register_provider(:assets, source: Providers::Assets.for_slice(self))
+        end
       end
 
       def prepare_autoloader
@@ -1021,6 +1026,11 @@ module Hanami
         raise Hanami::Router::NotFoundError.new(env)
       }.freeze
       private_constant :ROUTER_NOT_FOUND_HANDLER
+
+      def assets_dir?
+        assets_path = app.eql?(self) ? root.join("app", "assets") : root.join("assets")
+        assets_path.directory?
+      end
 
       # rubocop:enable Metrics/AbcSize
     end

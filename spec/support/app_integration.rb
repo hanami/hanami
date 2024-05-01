@@ -29,12 +29,16 @@ module RSpec
 
       private
 
+      # TODO: make slice-aware
       def stub_assets(*assets)
         manifest_hash = assets.each_with_object({}) { |source_path, hsh|
           hsh[source_path] = {url: File.join("/assets", source_path)}
         }
 
-        write "public/assets.json", JSON.generate(manifest_hash)
+        write "public/assets/assets.json", JSON.generate(manifest_hash)
+
+        # An assets dir is required to load the assets provider
+        write "app/assets/.keep", ""
       end
 
       def compile_assets!
@@ -44,7 +48,11 @@ module RSpec
         require "hanami/cli/command"
         require "hanami/cli/commands/app/command"
         require "hanami/cli/commands/app/assets/compile"
-        assets_compile = Hanami::CLI::Commands::App::Assets::Compile.new(config: Hanami.app.config.assets)
+        assets_compile = Hanami::CLI::Commands::App::Assets::Compile.new(
+          config: Hanami.app.config.assets,
+          out: File.new(File::NULL, "w"),
+          err: File.new(File::NULL, "w"),
+        )
 
         with_directory(Hanami.app.root) { assets_compile.call }
       end
@@ -62,16 +70,14 @@ module RSpec
         root = Hanami.app.root
 
         with_directory(root) do
-          write("config/assets.mjs", <<~JS) unless root.join("config", "assets.mjs").exist?
+          write("config/assets.js", <<~JS) unless root.join("config", "assets.js").exist?
             import * as assets from "hanami-assets";
             await assets.run();
           JS
 
           write("package.json", <<~JSON) unless root.join("package.json").exist?
             {
-              "scripts": {
-                "assets": "node config/assets.mjs"
-              }
+              "type": "module"
             }
           JSON
         end

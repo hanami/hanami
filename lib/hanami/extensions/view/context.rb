@@ -143,13 +143,20 @@ module Hanami
             # @since 2.1.0
             def assets
               unless @assets
-                raise Hanami::ComponentLoadError, "the hanami-assets gem is required to access assets"
+                msg =
+                  if Hanami.bundled?("hanami-assets")
+                    "Have you put files into your assets directory?"
+                  else
+                    "The hanami-assets gem is required to access assets."
+                  end
+
+                raise Hanami::ComponentLoadError, "Assets not available. #{msg}"
               end
 
               @assets
             end
 
-            # Returns the current request, if  the view is rendered from within an action.
+            # Returns the current request, if the view is rendered from within an action.
             #
             # @return [Hanami::Action::Request] the request
             #
@@ -159,7 +166,7 @@ module Hanami
             # @since 2.1.0
             def request
               unless @request
-                raise Hanami::ComponentLoadError, "only views rendered from Hanami::Action instances have a request"
+                raise Hanami::ComponentLoadError, "Request not available. Only views rendered from Hanami::Action instances have a request."
               end
 
               @request

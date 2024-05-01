@@ -129,7 +129,7 @@ module Hanami
           end
         end
 
-        # When auto-registering components in app/, ignore files in `app/lib/` (these will be
+        # When auto-registering components in `app/`, ignore files in `app/lib/` (these will be
         # auto-registered as above), as well as the configured no_auto_register_paths
         no_auto_register_paths = ([LIB_DIR] + config.no_auto_register_paths)
           .map { |path|
@@ -160,11 +160,6 @@ module Hanami
         if Hanami.bundled?("rack")
           require_relative "providers/rack"
           register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
-        end
-
-        if Hanami.bundled?("hanami-assets")
-          require_relative "providers/assets"
-          register_provider(:assets, source: Providers::Assets.for_slice(self))
         end
       end
 
