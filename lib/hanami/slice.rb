@@ -901,12 +901,12 @@ module Hanami
         # point we're still in the process of preparing.
         if routes
           require_relative "providers/routes"
-          register_provider(:routes, source: Providers::Routes.for_slice(self))
+          register_provider(:routes, source: Providers::Routes)
         end
 
         if assets_dir? && Hanami.bundled?("hanami-assets")
           require_relative "providers/assets"
-          register_provider(:assets, source: Providers::Assets.for_slice(self))
+          register_provider(:assets, source: Providers::Assets)
         end
       end
 
