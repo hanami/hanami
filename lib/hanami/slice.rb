@@ -559,6 +559,13 @@ module Hanami
         container.key?(...)
       end
 
+      # Required for the slice to act as a provider target
+      # @api public
+      # @since 2.2.0
+      def registered?(...)
+        container.registered?(...)
+      end
+
       # Returns an array of keys for all currently registered components in the container.
       #
       # For a prepared slice, this will be the set of components that have been previously resolved.
@@ -842,6 +849,7 @@ module Hanami
       def prepare_container_base_config
         container.config.name = slice_name.to_sym
         container.config.root = root
+        container.config.provider_registrar = ProviderRegistrar.for_slice(self)
         container.config.provider_dirs = [File.join("config", "providers")]
         container.config.registrations_dir = File.join("config", "registrations")
 
