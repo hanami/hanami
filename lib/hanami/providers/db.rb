@@ -3,25 +3,7 @@
 module Hanami
   # @api private
   module Providers
-    # Provider source to register routes helper component in Hanami slices.
-    #
-    # @see Hanami::Slice::RoutesHelper
-    #
-    # @api private
-    # @since 2.0.0
     class DB < Dry::System::Provider::Source
-      # @api private
-      def self.for_slice(slice)
-        Class.new(self) do |klass|
-          klass.instance_variable_set(:@slice, slice)
-        end
-      end
-
-      # @api private
-      def self.slice
-        @slice || Hanami.app
-      end
-
       setting :database_url
       setting :extensions, default: [:error_sql]
 
@@ -33,6 +15,9 @@ module Hanami
 
         # TODO: more database_url logic
         database_url = config.database_url || ENV["DATABASE_URL"]
+
+        # TODO: proper error
+        raise "database_url must be configured" unless database_url
 
         @config = ROM::Configuration.new(:sql, database_url, extensions: config.extensions)
 
@@ -47,7 +32,7 @@ module Hanami
           puts relation_file
 
           relation_name = relation_file.relative_path_from(db_path).basename(relation_file.extname).to_s
-          relation_class = slice.namespace.const_get(:DB).const_get(slice.inflector.camelize(relation_name))
+          relation_class = target.namespace.const_get(:DB).const_get(target.inflector.camelize(relation_name))
 
           @config.register_relation(relation_class)
         end
@@ -63,13 +48,11 @@ module Hanami
 
       private
 
-      def slice
-        self.class.slice
-      end
-
       def db_path
-        slice.app.eql?(slice) ? slice.root.join("app", "db") : slice.root.join("db")
+        target.app.eql?(target) ? target.root.join("app", "db") : target.root.join("db")
       end
     end
+
+    Dry::System.register_provider_source(:db, source: DB, group: :hanami)
   end
 end

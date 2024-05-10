@@ -911,7 +911,7 @@ module Hanami
 
         if db_dir? # && Hanami.bundled?("hanami-rom")
           require_relative "providers/db"
-          register_provider(:db, namespace: true, source: Providers::DB.for_slice(self))
+          register_provider(:db, namespace: true, source: Providers::DB)
         end
       end
 
