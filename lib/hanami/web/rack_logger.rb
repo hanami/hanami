@@ -79,7 +79,7 @@ module Hanami
           end
 
           def accepts_entry_payload?(logger)
-            logger.method(:info).parameters.last.then { |type, _| type == :keyrest }
+            logger.method(:info).parameters.any? { |(type, _)| type == :keyrest }
           end
         end
 
