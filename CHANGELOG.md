@@ -2,6 +2,12 @@
 
 The web, with simplicity.
 
+## v2.1.1 - 2024-05-12
+
+### Fixed
+
+- [Tim Riley] Ensure Rack logging continues to work when upgrading to dry-logger 1.0.4 (#1384)
+
 ## v2.1.0 - 2024-02-27
 
 ### Changed
@@ -51,7 +57,6 @@ The web, with simplicity.
   - Keep `image_tag` (remove `image` alias)
   - Keep `video_tag` (remove `video` alias)
   - Keep `audio_tag` (remove `audio` alias)
-
 
 ## v2.1.0.beta2.1 - 2023-10-04
 
