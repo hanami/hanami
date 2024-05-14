@@ -19,7 +19,7 @@ gem "hanami-webconsole", github: "hanami/webconsole", branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
-gem "dry-system", github: "dry-rb/dry-system", branch: "allow-custom-provider-targets"
+gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 
 # This is needed for settings specs to pass
 gem "dry-types"
