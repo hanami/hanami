@@ -53,6 +53,11 @@ module Hanami
       end
     end
 
-    Dry::System.register_provider_source(:db, source: DB, group: :hanami)
+    Dry::System.register_provider_source(
+      :db,
+      source: DB,
+      group: :hanami,
+      provider_options: {namespace: true}
+    )
   end
 end

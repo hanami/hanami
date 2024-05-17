@@ -87,7 +87,7 @@ RSpec.describe "ROM", :app_integration do
       RUBY
 
       write "config/providers/db.rb", <<~RUBY
-        Hanami.app.register_provider :db, namespace: true, from: :hanami do
+        Hanami.app.configure_provider :db do
           configure do |config|
             # In this test, we're not setting an ENV["DATABASE_URL"], and instead configuring
             # it via the provider source config, to prove that this works

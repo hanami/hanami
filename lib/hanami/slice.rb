@@ -507,6 +507,12 @@ module Hanami
         container.register_provider(...)
       end
 
+      # @api public
+      # @since 2.1.0
+      def configure_provider(*args, **kwargs, &block)
+        container.register_provider(*args, **kwargs, from: :hanami, &block)
+      end
+
       # @overload start(provider_name)
       #   Starts a provider.
       #
