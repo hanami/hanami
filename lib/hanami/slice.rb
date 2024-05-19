@@ -918,9 +918,14 @@ module Hanami
         if db_dir? # && Hanami.bundled?("hanami-rom")
           require_relative "providers/db"
 
-          # Only register a provider if the user doesn't have one
+          # Only register providers if the user hasn't provided their own
           unless container.providers.find_and_load_provider(:db)
             register_provider(:db, namespace: true, source: Providers::DB)
+          end
+
+          # TODO: only register this provider if a relations/ directory exists
+          unless container.providers.find_and_load_provider(:relations)
+            register_provider(:relations, namespace: true, source: Providers::Relations)
           end
         end
       end
@@ -1057,7 +1062,8 @@ module Hanami
 
       def db_dir?
         db_path = app.eql?(self) ? root.join("app", "db") : root.join("db")
-        db_path.directory?
+        relations_path = app.eql?(self) ? root.join("app", "relations") : root.join("relations")
+        db_path.directory? || relations_path.directory?
       end
 
       # rubocop:enable Metrics/AbcSize

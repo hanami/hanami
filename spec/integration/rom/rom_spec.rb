@@ -25,9 +25,9 @@ RSpec.describe "ROM", :app_integration do
         end
       RUBY
 
-      write "app/db/posts.rb", <<~RUBY
+      write "app/relations/posts.rb", <<~RUBY
         module TestApp
-          module DB
+          module Relations
             class Posts < ROM::Relation[:sql]
               schema :posts, infer: true
             end
@@ -57,7 +57,7 @@ RSpec.describe "ROM", :app_integration do
       Hanami.app.boot
 
       expect(Hanami.app["db.rom"].relations[:posts].to_a).to eq [{id: 1, title: "Together breakfast"}]
-      expect(Hanami.app["db.posts"]).to be Hanami.app["db.rom"].relations[:posts]
+      expect(Hanami.app["relations.posts"]).to be Hanami.app["db.rom"].relations[:posts]
     end
   end
 
@@ -76,9 +76,9 @@ RSpec.describe "ROM", :app_integration do
         end
       RUBY
 
-      write "app/db/posts.rb", <<~RUBY
+      write "app/relations/posts.rb", <<~RUBY
         module TestApp
-          module DB
+          module Relations
             class Posts < ROM::Relation[:sql]
               schema :posts, infer: true
             end
@@ -117,7 +117,7 @@ RSpec.describe "ROM", :app_integration do
       Hanami.app.boot
 
       expect(Hanami.app["db.rom"].relations[:posts].to_a).to eq [{id: 1, title: "Together breakfast"}]
-      expect(Hanami.app["db.posts"]).to be Hanami.app["db.rom"].relations[:posts]
+      expect(Hanami.app["relations.posts"]).to be Hanami.app["db.rom"].relations[:posts]
     end
   end
 end
