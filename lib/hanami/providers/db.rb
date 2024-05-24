@@ -3,33 +3,40 @@
 module Hanami
   module Providers
     # @api private
+    # @since 2.2.0
     class DB < Dry::System::Provider::Source
       setting :database_url
+
+      setting :adapter, default: :sql
+
+      # TODO: Determine ideal default extensions
+      # TODO: Switch extensions based on configured adapter
       setting :extensions, default: [:error_sql]
 
       setting :relations_path, default: "relations"
 
       # @api private
       def prepare
-        require "sequel"
-        require "rom"
-        require "rom/sql"
+        require "hanami-db"
 
-        # TODO: more database_url logic
+        # TODO: Add more logic around fetching database URL:
+        # - Loading the database URL from settings (if defined)
+        # - Check per-slice ENV vars before falling back to DATABASE_URL
         database_url = config.database_url || ENV["DATABASE_URL"]
 
-        # TODO: proper error
-        raise "database_url must be configured" unless database_url
+        unless database_url
+          raise Hanami::ComponentLoadError, "A database_url is required to start :db."
+        end
 
-        @config = ROM::Configuration.new(:sql, database_url, extensions: config.extensions)
+        @rom_config = ROM::Configuration.new(config.adapter, database_url, extensions: config.extensions)
 
-        register "config", @config
-        register "connection", @config.gateways[:default]
+        register "config", @rom_config
+        register "connection", @rom_config.gateways[:default]
       end
 
       # @api private
       def start
-        # Loop over relations
+        # Find and register relations
         relations_path.glob("*.rb").each do |relation_file|
           relation_name = relation_file
             .relative_path_from(relations_path)
@@ -40,12 +47,12 @@ module Hanami
             .const_get(:Relations) # TODO don't hardcode
             .const_get(target.inflector.camelize(relation_name))
 
-          # binding.irb
-
-          @config.register_relation(relation_class)
+          @rom_config.register_relation(relation_class)
         end
 
-        rom = ROM.container(@config)
+        # TODO: register mappers & commands
+
+        rom = ROM.container(@rom_config)
 
         register "rom", rom
       end
@@ -53,7 +60,11 @@ module Hanami
       private
 
       def db_path
-        target.app.eql?(target) ? target.root.join("app", "db") : target.root.join("db")
+        if target.app.eql?(target)
+          target.root.join("app", "db")
+        else
+          target.root.join("db")
+        end
       end
 
       def relations_path
