@@ -507,6 +507,12 @@ module Hanami
         container.register_provider(...)
       end
 
+      # @api public
+      # @since 2.1.0
+      def configure_provider(*args, **kwargs, &block)
+        container.register_provider(*args, **kwargs, from: :hanami, &block)
+      end
+
       # @overload start(provider_name)
       #   Starts a provider.
       #
@@ -908,6 +914,21 @@ module Hanami
           require_relative "providers/assets"
           register_provider(:assets, source: Providers::Assets)
         end
+
+        if (relations_dir? || db_dir?) && Hanami.bundled?("hanami-db")
+          # Explicit require here to ensure the provider source registers itself, to allow the user
+          # to configure it within their own concrete provider file.
+          require_relative "providers/db"
+
+          # Only register providers if the user hasn't provided their own
+          if !container.providers.find_and_load_provider(:db)
+            register_provider(:db, namespace: true, source: Providers::DB)
+          end
+
+          if relations_dir? && !container.providers.find_and_load_provider(:relations)
+            register_provider(:relations, namespace: true, source: Providers::Relations)
+          end
+        end
       end
 
       def prepare_autoloader
@@ -1038,6 +1059,16 @@ module Hanami
       def assets_dir?
         assets_path = app.eql?(self) ? root.join("app", "assets") : root.join("assets")
         assets_path.directory?
+      end
+
+      def db_dir?
+        db_path = app.eql?(self) ? root.join("app", "db") : root.join("db")
+        db_path.directory?
+      end
+
+      def relations_dir?
+        relations_path = app.eql?(self) ? root.join("app", "relations") : root.join("relations")
+        relations_path.directory?
       end
 
       # rubocop:enable Metrics/AbcSize
