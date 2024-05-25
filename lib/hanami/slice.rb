@@ -101,6 +101,16 @@ module Hanami
         Hanami.app
       end
 
+      # Returns true if the slice is Hanami.app
+      #
+      # @return [Boolean]
+      #
+      # @api public
+      # @since 2.2.0
+      def app?
+        eql?(app)
+      end
+
       # Returns the slice's config.
       #
       # A slice's config is copied from the app config at time of first access.

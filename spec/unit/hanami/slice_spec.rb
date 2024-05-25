@@ -8,6 +8,26 @@ RSpec.describe Hanami::Slice, :app_integration do
     end
   end
 
+  describe ".app" do
+    subject(:slice) { Hanami.app.register_slice(:main) }
+
+    it "returns the top-level Hanami App slice" do
+      expect(slice.app).to eq Hanami.app
+    end
+  end
+
+  describe ".app?" do
+    it "returns true if the slice is Hanami.app" do
+      subject = Hanami.app
+      expect(subject.app?).to eq true
+    end
+
+    it "returns false if the slice is not Hanami.app" do
+      subject = Hanami.app.register_slice(:main)
+      expect(subject.app?).to eq false
+    end
+  end
+
   describe ".environment" do
     subject(:slice) { Hanami.app.register_slice(:main) }
 
