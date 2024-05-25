@@ -66,4 +66,16 @@ RSpec.describe Hanami::Slice, :app_integration do
         .to raise_error Hanami::SliceLoadError, /Slice must have a class name/
     end
   end
+
+  describe ".source_path" do
+    it "provides a path to the app directory for Hanami.app" do
+      subject = Hanami.app
+      expect(subject.source_path).to eq Hanami.app.root.join("app")
+    end
+
+    it "provides a path to the slice root for a Slice" do
+      subject = Hanami.app.register_slice(:main)
+      expect(subject.source_path).to eq subject.root
+    end
+  end
 end
