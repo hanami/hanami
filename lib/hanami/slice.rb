@@ -213,7 +213,7 @@ module Hanami
         config.root || app.root.join(SLICES_DIR, slice_name.to_s)
       end
 
-      # Return's the slice's root component directory, accounting for App as a special case.
+      # Returns the slice's root component directory, accounting for App as a special case.
       #
       # @return [Pathname]
       #
