@@ -220,7 +220,7 @@ module Hanami
       # @api public
       # @since 2.2.0
       def source_path
-        app? ? root.join("app") : root
+        app? ? root.join(APP_DIR) : root
       end
 
       # Returns the slice's configured inflector.
