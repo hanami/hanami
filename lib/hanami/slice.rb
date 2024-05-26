@@ -101,6 +101,16 @@ module Hanami
         Hanami.app
       end
 
+      # Returns true if the slice is Hanami.app
+      #
+      # @return [Boolean]
+      #
+      # @api public
+      # @since 2.2.0
+      def app?
+        eql?(app)
+      end
+
       # Returns the slice's config.
       #
       # A slice's config is copied from the app config at time of first access.
@@ -201,6 +211,16 @@ module Hanami
         # explicitly configured at the beginning of the slice class body, before any calls to
         # `settings`.
         config.root || app.root.join(SLICES_DIR, slice_name.to_s)
+      end
+
+      # Returns the slice's root component directory, accounting for App as a special case.
+      #
+      # @return [Pathname]
+      #
+      # @api public
+      # @since 2.2.0
+      def source_path
+        app? ? root.join(APP_DIR) : root
       end
 
       # Returns the slice's configured inflector.
@@ -1057,18 +1077,15 @@ module Hanami
       private_constant :ROUTER_NOT_FOUND_HANDLER
 
       def assets_dir?
-        assets_path = app.eql?(self) ? root.join("app", "assets") : root.join("assets")
-        assets_path.directory?
+        source_path.join("assets").directory?
       end
 
       def db_dir?
-        db_path = app.eql?(self) ? root.join("app", "db") : root.join("db")
-        db_path.directory?
+        source_path.join("db").directory?
       end
 
       def relations_dir?
-        relations_path = app.eql?(self) ? root.join("app", "relations") : root.join("relations")
-        relations_path.directory?
+        source_path.join("relations").directory?
       end
 
       # rubocop:enable Metrics/AbcSize

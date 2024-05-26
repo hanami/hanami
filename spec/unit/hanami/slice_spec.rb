@@ -8,6 +8,26 @@ RSpec.describe Hanami::Slice, :app_integration do
     end
   end
 
+  describe ".app" do
+    subject(:slice) { Hanami.app.register_slice(:main) }
+
+    it "returns the top-level Hanami App slice" do
+      expect(slice.app).to eq Hanami.app
+    end
+  end
+
+  describe ".app?" do
+    it "returns true if the slice is Hanami.app" do
+      subject = Hanami.app
+      expect(subject.app?).to eq true
+    end
+
+    it "returns false if the slice is not Hanami.app" do
+      subject = Hanami.app.register_slice(:main)
+      expect(subject.app?).to eq false
+    end
+  end
+
   describe ".environment" do
     subject(:slice) { Hanami.app.register_slice(:main) }
 
@@ -44,6 +64,18 @@ RSpec.describe Hanami::Slice, :app_integration do
     it "raises an error if the slice class is anonymous" do
       expect { Class.new(described_class).prepare }
         .to raise_error Hanami::SliceLoadError, /Slice must have a class name/
+    end
+  end
+
+  describe ".source_path" do
+    it "provides a path to the app directory for Hanami.app" do
+      subject = Hanami.app
+      expect(subject.source_path).to eq Hanami.app.root.join("app")
+    end
+
+    it "provides a path to the slice root for a Slice" do
+      subject = Hanami.app.register_slice(:main)
+      expect(subject.source_path).to eq subject.root
     end
   end
 end
