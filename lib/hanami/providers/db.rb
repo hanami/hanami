@@ -19,6 +19,8 @@ module Hanami
 
       # @api private
       def prepare
+        prepare_and_import_parent_db and return if import_from_parent?
+
         require "hanami-db"
 
         # TODO: Add more logic around fetching database URL:
@@ -39,6 +41,8 @@ module Hanami
 
       # @api private
       def start
+        start_and_import_parent_db and return if import_from_parent?
+
         # Find and register relations
         relations_path.glob("*.rb").each do |relation_file|
           relation_name = relation_file
@@ -77,7 +81,7 @@ module Hanami
       def apply_parent_config(rom_config)
         return unless config.share_parent_config
         return unless (parent = target.parent)
-        return unless parent.container.providers.find_and_load_provider(:db)
+        return unless parent_db_provider?
 
         parent.prepare :db
         parent_rom_config = parent["db.config"]
@@ -85,6 +89,32 @@ module Hanami
         parent_rom_config.setup.plugins.each do |plugin|
           rom_config.register_plugin(plugin)
         end
+      end
+
+      def import_from_parent?
+        target.parent && target.config.db.import_from_parent
+      end
+
+      def parent_db_provider?
+        target.parent && target.parent.container.providers.find_and_load_provider(:db)
+      end
+
+      def prepare_and_import_parent_db
+        return unless parent_db_provider?
+
+        target.parent.prepare :db
+        @rom_config = target.parent["db.config"]
+
+        register "config", (@rom_config = target.parent["db.config"])
+        register "connection", target.parent["db.connection"]
+      end
+
+      def start_and_import_parent_db
+        return unless parent_db_provider?
+
+        target.parent.start :db
+
+        register "rom", target.parent["db.rom"]
       end
     end
 

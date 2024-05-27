@@ -6,12 +6,25 @@ module Hanami
     # @since 2.2.0
     class Relations < Dry::System::Provider::Source
       def start
-        target.start(:db)
+        start_and_import_parent_relations and return if target.parent && target.config.db.import_from_parent
 
-        rom = target["db.rom"]
+        target.start :db
+
+        register_relations target["db.rom"]
+      end
+
+      private
+
+      def register_relations(rom)
         rom.relations.each do |name, _|
-          register(name) { rom.relations[name] }
+          register name, rom.relations[name]
         end
+      end
+
+      def start_and_import_parent_relations
+        target.parent.start :relations
+
+        register_relations target.parent["db.rom"]
       end
     end
   end

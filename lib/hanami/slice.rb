@@ -935,7 +935,7 @@ module Hanami
           register_provider(:assets, source: Providers::Assets)
         end
 
-        if (db_provider? || relations_dir? || db_dir?) && Hanami.bundled?("hanami-db")
+        if Hanami.bundled?("hanami-db") && register_db_provider?
           # Explicit require here to ensure the provider source registers itself, to allow the user
           # to configure it within their own concrete provider file.
           require_relative "providers/db"
@@ -945,7 +945,7 @@ module Hanami
             register_provider(:db, namespace: true, source: Providers::DB)
           end
 
-          if relations_dir? && !container.providers.find_and_load_provider(:relations)
+          if !container.providers.find_and_load_provider(:relations)
             register_provider(:relations, namespace: true, source: Providers::Relations)
           end
         end
@@ -1080,16 +1080,26 @@ module Hanami
         source_path.join("assets").directory?
       end
 
-      def db_provider?
+      def register_db_provider?
+        concrete_db_provider? || relations_dir? || db_dir? || import_db_from_parent?
+      end
+
+      def concrete_db_provider?
         root.join(CONFIG_DIR, "providers", "db.rb").exist?
+      end
+
+      def relations_dir?
+        source_path.join("relations").directory?
       end
 
       def db_dir?
         source_path.join("db").directory?
       end
 
-      def relations_dir?
-        source_path.join("relations").directory?
+      def import_db_from_parent?
+        parent &&
+          config.db.import_from_parent &&
+          parent.container.providers.find_and_load_provider(:db)
       end
 
       # rubocop:enable Metrics/AbcSize

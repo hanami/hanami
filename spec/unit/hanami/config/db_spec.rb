@@ -2,23 +2,17 @@
 
 require "hanami/config"
 
-RSpec.describe Hanami::Config, "#router" do
+RSpec.describe Hanami::Config, "#db" do
   let(:config) { described_class.new(app_name: app_name, env: :development) }
-  let(:app_name) { "MyApp::app" }
+  let(:app_name) { "MyApp::App" }
 
-  subject(:router) { config.router }
+  subject(:db) { config.db }
 
   context "hanami-router is bundled" do
     it "is a full router configuration" do
-      is_expected.to be_an_instance_of(Hanami::Config::Router)
+      is_expected.to be_an_instance_of(Hanami::Config::DB)
 
-      is_expected.to respond_to(:resolver)
-    end
-
-    it "loads the middleware stack" do
-      subject
-
-      expect(config.middleware_stack).not_to be_nil
+      is_expected.to respond_to(:import_from_parent)
     end
 
     it "can be finalized" do
@@ -26,15 +20,15 @@ RSpec.describe Hanami::Config, "#router" do
     end
   end
 
-  context "hanami-router is not bundled" do
+  context "hanami-db is not bundled" do
     before do
       allow(Hanami).to receive(:bundled?).and_call_original
-      allow(Hanami).to receive(:bundled?).with("hanami-router").and_return(false)
+      allow(Hanami).to receive(:bundled?).with("hanami-db").and_return(false)
     end
 
     it "does not expose any settings" do
       is_expected.to be_an_instance_of(Hanami::Config::NullConfig)
-      is_expected.not_to respond_to(:resolver)
+      is_expected.not_to respond_to(:import_from_parent)
     end
 
     it "can be finalized" do
