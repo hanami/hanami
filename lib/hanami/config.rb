@@ -216,6 +216,20 @@ module Hanami
     # @since 2.0.0
     attr_reader :actions
 
+    # Returns the app's db config, or a null config if hanami-db is not bundled.
+    #
+    # @example When hanami-db is bundled
+    #   config.db.import_from_parent # => false
+    #
+    # @example When hanami-db is not bundle
+    #   config.db.import_from_parent # => NoMethodError
+    #
+    # @return [Hanami::Config::DB, Hanami::Config::NullConfig]
+    #
+    # @api public
+    # @since 2.2.0
+    attr_reader :db
+
     # Returns the app's middleware stack, or nil if hanami-router is not bundled.
     #
     # Use this to configure middleware that should apply to all routes.
@@ -288,27 +302,33 @@ module Hanami
       self.render_detailed_errors = (env == :development)
       load_from_env
 
-      @logger = Config::Logger.new(env: env, app_name: app_name)
 
       @actions = load_dependent_config("hanami-controller") {
         require_relative "config/actions"
         Actions.new
       }
 
+      @assets = load_dependent_config("hanami-assets") {
+        require_relative "config/assets"
+        Hanami::Config::Assets.new
+      }
+
+      @db = load_dependent_config("hanami-db") { DB.new }
+
+      @logger = Config::Logger.new(env: env, app_name: app_name)
+
+      @middleware = load_dependent_config("hanami-router") {
+        Slice::Routing::Middleware::Stack.new
+      }
+
       @router = load_dependent_config("hanami-router") {
         require_relative "config/router"
-        @middleware = Slice::Routing::Middleware::Stack.new
         Router.new(self)
       }
 
       @views = load_dependent_config("hanami-view") {
         require_relative "config/views"
         Views.new
-      }
-
-      @assets = load_dependent_config("hanami-assets") {
-        require_relative "config/assets"
-        Hanami::Config::Assets.new
       }
 
       yield self if block_given?
@@ -321,8 +341,10 @@ module Hanami
 
       @app_name = app_name.dup
 
-      @assets = source.assets.dup
       @actions = source.actions.dup
+      @assets = source.assets.dup
+      @db = source.db.dup
+      @logger = source.logger.dup
       @middleware = source.middleware.dup
       @router = source.router.dup.tap do |router|
         router.instance_variable_set(:@base_config, self)
