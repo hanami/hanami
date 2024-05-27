@@ -23,11 +23,6 @@ module Hanami
 
         require "hanami-db"
 
-        # TODO: Add more logic around fetching database URL:
-        # - Loading the database URL from settings (if defined)
-        # - Check per-slice ENV vars before falling back to DATABASE_URL
-        database_url = config.database_url || ENV["DATABASE_URL"]
-
         unless database_url
           raise Hanami::ComponentLoadError, "A database_url is required to start :db."
         end
@@ -72,6 +67,15 @@ module Hanami
         else
           target.root.join(config.relations_path)
         end
+      end
+
+      def database_url
+        return @database_url if instance_variable_defined?(:@database_url)
+
+        # For "main" slice, expect MAIN__DATABASE_URL
+        slice_url_var = "#{target.slice_name.name.gsub("/", "__").upcase}__DATABASE_URL"
+
+        @database_url = config.database_url || ENV[slice_url_var] || ENV["DATABASE_URL"]
       end
 
       # Applies config from the parent slice's ROM config.

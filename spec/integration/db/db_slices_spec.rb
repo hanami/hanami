@@ -144,4 +144,88 @@ RSpec.describe "DB / Slices", :app_integration do
       expect(Admin::Slice["db.config"].setup.plugins.length).to eq 0
     end
   end
+
+  specify "slices using separate databases" do
+    with_tmp_directory(@dir = Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      write "slices/admin/relations/posts.rb", <<~RUBY
+        module Admin
+          module Relations
+            class Posts < Hanami::DB::Relation
+              schema :posts, infer: true
+            end
+          end
+        end
+      RUBY
+
+      write "slices/admin/slices/super/relations/posts.rb", <<~RUBY
+        module Admin
+          module Super
+            module Relations
+              class Posts < Hanami::DB::Relation
+                schema :posts, infer: true
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/relations/posts.rb", <<~RUBY
+        module Main
+          module Relations
+            class Posts < Hanami::DB::Relation
+              schema :posts, infer: true
+            end
+          end
+        end
+      RUBY
+
+      ENV["ADMIN__DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("admin.db").to_s
+      ENV["ADMIN__SUPER__DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("admin_super.db").to_s
+      ENV["MAIN__DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("main.db").to_s
+
+      require "hanami/prepare"
+
+      Admin::Slice.prepare :db
+      Admin::Super::Slice.prepare :db
+      Main::Slice.prepare :db
+
+      # Manually run a migration and add a test record in each slice's database
+      gateways = [
+        Admin::Slice["db.connection"],
+        Admin::Super::Slice["db.connection"],
+        Main::Slice["db.connection"]
+      ]
+      gateways.each do |gateway|
+        migration = gateway.migration do
+          change do
+            create_table :posts do
+              primary_key :id
+              column :title, :text, null: false
+            end
+
+            create_table :authors do
+              primary_key :id
+            end
+          end
+        end
+        migration.apply(gateway, :up)
+      end
+      gateways[0].connection.execute("INSERT INTO posts (title) VALUES ('Gem glow')")
+      gateways[1].connection.execute("INSERT INTO posts (title) VALUES ('Cheeseburger backpack')")
+      gateways[2].connection.execute("INSERT INTO posts (title) VALUES ('Together breakfast')")
+
+      expect(Admin::Slice["relations.posts"].to_a).to eq [{id: 1, title: "Gem glow"}]
+      expect(Admin::Super::Slice["relations.posts"].to_a).to eq [{id: 1, title: "Cheeseburger backpack"}]
+      expect(Main::Slice["relations.posts"].to_a).to eq [{id: 1, title: "Together breakfast"}]
+    end
+  end
 end
