@@ -15,6 +15,8 @@ module Hanami
 
       setting :relations_path, default: "relations"
 
+      setting :share_parent_config, default: true
+
       # @api private
       def prepare
         require "hanami-db"
@@ -29,6 +31,7 @@ module Hanami
         end
 
         @rom_config = ROM::Configuration.new(config.adapter, database_url, extensions: config.extensions)
+        apply_parent_config @rom_config
 
         register "config", @rom_config
         register "connection", @rom_config.gateways[:default]
@@ -59,19 +62,28 @@ module Hanami
 
       private
 
-      def db_path
-        if target.app.eql?(target)
-          target.root.join("app", "db")
-        else
-          target.root.join("db")
-        end
-      end
-
       def relations_path
         if target.app.eql?(target)
           target.root.join("app", config.relations_path)
         else
           target.root.join(config.relations_path)
+        end
+      end
+
+      # Applies config from the parent slice's ROM config.
+      #
+      # Plugins are the only reusable pieces of ROM config across slices. Relations, commands and
+      # mappers will always be distinct per-slice.
+      def apply_parent_config(rom_config)
+        return unless config.share_parent_config
+        return unless (parent = target.parent)
+        return unless parent.container.providers.find_and_load_provider(:db)
+
+        parent.prepare :db
+        parent_rom_config = parent["db.config"]
+
+        parent_rom_config.setup.plugins.each do |plugin|
+          rom_config.register_plugin(plugin)
         end
       end
     end
