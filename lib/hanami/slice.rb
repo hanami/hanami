@@ -935,7 +935,7 @@ module Hanami
           register_provider(:assets, source: Providers::Assets)
         end
 
-        if (relations_dir? || db_dir?) && Hanami.bundled?("hanami-db")
+        if (db_provider? || relations_dir? || db_dir?) && Hanami.bundled?("hanami-db")
           # Explicit require here to ensure the provider source registers itself, to allow the user
           # to configure it within their own concrete provider file.
           require_relative "providers/db"
@@ -1078,6 +1078,10 @@ module Hanami
 
       def assets_dir?
         source_path.join("assets").directory?
+      end
+
+      def db_provider?
+        root.join(CONFIG_DIR, "providers", "db.rb").exist?
       end
 
       def db_dir?
