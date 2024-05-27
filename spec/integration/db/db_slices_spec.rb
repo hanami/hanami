@@ -10,6 +10,65 @@ RSpec.describe "DB / Slices", :app_integration do
     ENV.replace(@env)
   end
 
+  specify "slices using the same database_url and extensions share a gateway/connection" do
+    with_tmp_directory(@dir = Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      write "slices/admin/relations/.keep", ""
+      write "slices/main/relations/.keep", ""
+
+      ENV["DATABASE_URL"] = "sqlite::memory"
+
+      require "hanami/prepare"
+
+      expect(Admin::Slice["db.rom"].gateways[:default]).to be Main::Slice["db.rom"].gateways[:default]
+    end
+  end
+
+  specify "slices using the same database_url but different extensions have distinct gateways/connections" do
+    with_tmp_directory(@dir = Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      write "slices/admin/config/providers/db.rb", <<~RUBY
+        Admin::Slice.configure_provider :db do
+          config.extensions = []
+        end
+      RUBY
+
+      write "slices/main/config/providers/db.rb", <<~RUBY
+        Main::Slice.configure_provider :db do
+          config.extensions = [:error_sql]
+        end
+      RUBY
+
+      ENV["DATABASE_URL"] = "sqlite::memory"
+
+      require "hanami/prepare"
+
+      # Different gateways, due to the distinct extensions
+      expect(Admin::Slice["db.rom"].gateways[:default]).not_to be Main::Slice["db.rom"].gateways[:default]
+
+      # Even though their URIs are the same
+      expect(Admin::Slice["db.rom"].gateways[:default].connection.opts[:uri])
+        .to eq Main::Slice["db.rom"].gateways[:default].connection.opts[:uri]
+    end
+
+  end
+
   specify "using separate relations per slice, while sharing config from the app" do
     with_tmp_directory(@dir = Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY

@@ -118,6 +118,9 @@ RSpec.configure do |config|
     Hanami.instance_variable_set(:@_bundled, {})
     Hanami.remove_instance_variable(:@_app) if Hanami.instance_variable_defined?(:@_app)
 
+    # Clear cached DB gateways across slices
+    Hanami::Providers::DB.cache.clear
+
     $LOAD_PATH.replace(@load_paths)
 
     # Remove example-specific LOADED_FEATURES added when running each example
