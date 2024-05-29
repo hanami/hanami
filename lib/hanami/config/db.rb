@@ -11,6 +11,8 @@ module Hanami
     class DB
       include Dry::Configurable
 
+      setting :configure_from_parent, default: true
+
       setting :import_from_parent, default: false
 
       private
