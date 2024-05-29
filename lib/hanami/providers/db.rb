@@ -44,7 +44,7 @@ module Hanami
         apply_parent_config @rom_config
 
         register "config", @rom_config
-        register "connection", gateway
+        register "gateway", gateway
       end
 
       # @api private
@@ -127,7 +127,7 @@ module Hanami
         @rom_config = target.parent["db.config"]
 
         register "config", (@rom_config = target.parent["db.config"])
-        register "connection", target.parent["db.connection"]
+        register "gateway", target.parent["db.gateway"]
       end
 
       def start_and_import_parent_db
