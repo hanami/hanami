@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
+require "dry/core"
+
 module Hanami
   module Providers
     # @api private
     # @since 2.2.0
     class DB < Dry::System::Provider::Source
+      extend Dry::Core::Cache
+
       setting :database_url
 
       setting :adapter, default: :sql
@@ -27,11 +31,20 @@ module Hanami
           raise Hanami::ComponentLoadError, "A database_url is required to start :db."
         end
 
-        @rom_config = ROM::Configuration.new(config.adapter, database_url, extensions: config.extensions)
+        # Avoid making spurious connections by reusing identically configured gateways across slices
+        gateway = fetch_or_store(database_url, config.extensions) {
+          ROM::Gateway.setup(
+            config.adapter,
+            database_url,
+            extensions: config.extensions
+          )
+        }
+
+        @rom_config = ROM::Configuration.new(gateway)
         apply_parent_config @rom_config
 
         register "config", @rom_config
-        register "connection", @rom_config.gateways[:default]
+        register "connection", gateway
       end
 
       # @api private
