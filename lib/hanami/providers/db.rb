@@ -19,11 +19,11 @@ module Hanami
 
       setting :relations_path, default: "relations"
 
-      setting :share_parent_config, default: true
-
       # @api private
       def prepare
         prepare_and_import_parent_db and return if import_from_parent?
+
+        apply_parent_provider_config
 
         require "hanami-db"
 
@@ -41,7 +41,7 @@ module Hanami
         }
 
         @rom_config = ROM::Configuration.new(gateway)
-        apply_parent_config @rom_config
+        apply_parent_rom_config(@rom_config)
 
         register "config", @rom_config
         register "gateway", gateway
@@ -95,33 +95,48 @@ module Hanami
         @database_url = config.database_url || ENV[slice_url_var] || ENV["DATABASE_URL"]
       end
 
+      def apply_parent_provider_config
+        return unless apply_parent_config?
+
+        self.class.settings.keys.each do |key|
+          next if config.configured?(key)
+
+          config[key] = parent_db_provider.source.config[key]
+        end
+      end
+
       # Applies config from the parent slice's ROM config.
       #
       # Plugins are the only reusable pieces of ROM config across slices. Relations, commands and
       # mappers will always be distinct per-slice.
-      def apply_parent_config(rom_config)
-        return unless config.share_parent_config
-        return unless (parent = target.parent)
-        return unless parent_db_provider?
+      def apply_parent_rom_config(rom_config)
+        return unless apply_parent_config?
 
-        parent.prepare :db
-        parent_rom_config = parent["db.config"]
+        target.parent.prepare :db
+        parent_rom_config = target.parent["db.config"]
 
         parent_rom_config.setup.plugins.each do |plugin|
           rom_config.register_plugin(plugin)
         end
       end
 
-      def import_from_parent?
-        target.parent && target.config.db.import_from_parent
+      def apply_parent_config?
+        target.config.db.configure_from_parent && parent_db_provider
       end
 
-      def parent_db_provider?
-        target.parent && target.parent.container.providers.find_and_load_provider(:db)
+      def parent_db_provider
+        return @parent_db_provider if instance_variable_defined?(:@parent_db_provider)
+
+        @parent_db_provider = target.parent &&
+          target.parent.container.providers.find_and_load_provider(:db)
+      end
+
+      def import_from_parent?
+        target.config.db.import_from_parent && target.parent
       end
 
       def prepare_and_import_parent_db
-        return unless parent_db_provider?
+        return unless parent_db_provider
 
         target.parent.prepare :db
         @rom_config = target.parent["db.config"]
@@ -131,7 +146,7 @@ module Hanami
       end
 
       def start_and_import_parent_db
-        return unless parent_db_provider?
+        return unless parent_db_provider
 
         target.parent.start :db
 

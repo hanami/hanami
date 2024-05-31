@@ -82,6 +82,8 @@ RSpec.describe "DB / Slices", :app_integration do
 
       write "config/providers/db.rb", <<~RUBY
         Hanami.app.configure_provider :db do
+          config.extensions += [:exclude_or_null]
+
           after(:prepare) do
             @rom_config.plugin(:sql, relations: :auto_restrictions)
           end
@@ -105,6 +107,12 @@ RSpec.describe "DB / Slices", :app_integration do
               schema :authors, infer: true
             end
           end
+        end
+      RUBY
+
+      write "slices/main/config/providers/db.rb", <<~RUBY
+        Main::Slice.configure_provider :db do
+          config.extensions = []
         end
       RUBY
 
@@ -162,6 +170,11 @@ RSpec.describe "DB / Slices", :app_integration do
       expect(Main::Slice["db.rom"].relations.elements.keys).not_to include :authors
       expect(Main::Slice["relations.posts"]).not_to be Admin::Slice["relations.posts"]
 
+      # Config in the app's db provider is copied to child slice providers
+      expect(Admin::Slice["db.gateway"].options[:extensions]).to include :exclude_or_null
+      # Except when it has been explicitly configured in a child slice provider
+      expect(Main::Slice["db.gateway"].options[:extensions]).to eq []
+
       # Plugins configured in the app's db provider are copied to child slice providers
       expect(Admin::Slice["db.config"].setup.plugins.length).to eq 1
       expect(Admin::Slice["db.config"].setup.plugins).to include an_object_satisfying { |plugin|
@@ -190,9 +203,17 @@ RSpec.describe "DB / Slices", :app_integration do
         end
       RUBY
 
+      write "config/slices/admin.rb", <<~RUBY
+        module Admin
+          class Slice < Hanami::Slice
+            config.db.configure_from_parent = false
+          end
+        end
+      RUBY
+
       write "slices/admin/config/providers/db.rb", <<~RUBY
         Admin::Slice.configure_provider :db do
-          config.share_parent_config = false
+          config.extensions = []
         end
       RUBY
 
@@ -201,6 +222,7 @@ RSpec.describe "DB / Slices", :app_integration do
       require "hanami/prepare"
 
       expect(Admin::Slice["db.config"].setup.plugins.length).to eq 0
+      expect(Admin::Slice["db.gateway"].options[:extensions]).to eq []
     end
   end
 
