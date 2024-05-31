@@ -72,6 +72,10 @@ module Hanami
         register "rom", rom
       end
 
+      def stop
+        target["db.rom"].disconnect
+      end
+
       private
 
       def relations_path
