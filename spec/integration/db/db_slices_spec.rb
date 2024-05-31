@@ -125,17 +125,17 @@ RSpec.describe "DB / Slices", :app_integration do
       Main::Slice.prepare :db
 
       expect(Main::Slice["db.config"]).to be_an_instance_of ROM::Configuration
-      expect(Main::Slice["db.connection"]).to be_an_instance_of ROM::SQL::Gateway
+      expect(Main::Slice["db.gateway"]).to be_an_instance_of ROM::SQL::Gateway
 
       expect(Admin::Slice.registered?("db.config")).to be false
 
       Admin::Slice.prepare :db
 
       expect(Admin::Slice["db.config"]).to be_an_instance_of ROM::Configuration
-      expect(Admin::Slice["db.connection"]).to be_an_instance_of ROM::SQL::Gateway
+      expect(Admin::Slice["db.gateway"]).to be_an_instance_of ROM::SQL::Gateway
 
       # Manually run a migration and add a test record
-      gateway = Admin::Slice["db.connection"]
+      gateway = Admin::Slice["db.gateway"]
       migration = gateway.migration do
         change do
           create_table :posts do
@@ -259,9 +259,9 @@ RSpec.describe "DB / Slices", :app_integration do
 
       # Manually run a migration and add a test record in each slice's database
       gateways = [
-        Admin::Slice["db.connection"],
-        Admin::Super::Slice["db.connection"],
-        Main::Slice["db.connection"]
+        Admin::Slice["db.gateway"],
+        Admin::Super::Slice["db.gateway"],
+        Main::Slice["db.gateway"]
       ]
       gateways.each do |gateway|
         migration = gateway.migration do

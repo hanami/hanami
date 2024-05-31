@@ -38,10 +38,10 @@ RSpec.describe "DB", :app_integration do
       Hanami.app.prepare :db
 
       expect(Hanami.app["db.config"]).to be_an_instance_of ROM::Configuration
-      expect(Hanami.app["db.connection"]).to be_an_instance_of ROM::SQL::Gateway
+      expect(Hanami.app["db.gateway"]).to be_an_instance_of ROM::SQL::Gateway
 
       # Manually run a migration and add a test record
-      gateway = Hanami.app["db.connection"]
+      gateway = Hanami.app["db.gateway"]
       migration = gateway.migration do
         change do
           # drop_table? :posts
@@ -89,10 +89,10 @@ RSpec.describe "DB", :app_integration do
       Hanami.app.prepare :db
 
       expect(Hanami.app["db.config"]).to be_an_instance_of ROM::Configuration
-      expect(Hanami.app["db.connection"]).to be_an_instance_of ROM::SQL::Gateway
+      expect(Hanami.app["db.gateway"]).to be_an_instance_of ROM::SQL::Gateway
 
       # Manually run a migration and add a test record
-      gateway = Hanami.app["db.connection"]
+      gateway = Hanami.app["db.gateway"]
       migration = gateway.migration do
         change do
           # drop_table? :posts
@@ -166,7 +166,7 @@ RSpec.describe "DB", :app_integration do
       require "hanami/prepare"
 
       Hanami.app.prepare :db
-      gateway = Hanami.app["db.connection"]
+      gateway = Hanami.app["db.gateway"]
       migration = gateway.migration do
         change do
           # drop_table? :posts

@@ -70,7 +70,7 @@ RSpec.describe "DB / Slices / Importing from app", :app_integration do
       Hanami.app.prepare :db
 
       # Manually run a migration and add a test record
-      gateway = Hanami.app["db.connection"]
+      gateway = Hanami.app["db.gateway"]
       migration = gateway.migration do
         change do
           # drop_table? :posts
