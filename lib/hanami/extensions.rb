@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+if Hanami.bundled?("hanami-db")
+  require_relative "extensions/db/repo"
+end
+
 if Hanami.bundled?("hanami-controller")
   require_relative "extensions/action"
 end
