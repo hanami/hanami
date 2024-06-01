@@ -103,7 +103,7 @@ RSpec.describe "DB / Repo", :app_integration do
     end
   end
 
-  specify "repos use only the relations from their own slice" do
+  specify "repos use relations and structs only from their own slice" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -115,6 +115,15 @@ RSpec.describe "DB / Repo", :app_integration do
       RUBY
 
       ENV["DATABASE_URL"] = "sqlite::memory"
+
+      write "slices/admin/db/struct.rb", <<~RUBY
+        module Admin
+          module DB
+            class Struct < Hanami::DB::Struct
+            end
+          end
+        end
+      RUBY
 
       write "slices/admin/relations/posts.rb", <<~RUBY
         module Admin
@@ -137,6 +146,15 @@ RSpec.describe "DB / Repo", :app_integration do
         module Admin
           module Repos
             class PostRepo < Repo
+            end
+          end
+        end
+      RUBY
+
+      write "slices/admin/structs/post.rb", <<~RUBY
+        module Admin
+          module Structs
+            class Post < DB::Struct
             end
           end
         end
@@ -184,9 +202,14 @@ RSpec.describe "DB / Repo", :app_integration do
         end
       end
       migration.apply(gateway, :up)
+      gateway.connection.execute("INSERT INTO posts (title) VALUES ('Together breakfast')")
 
       expect(Admin::Slice["repos.post_repo"].posts).to eql Admin::Slice["relations.posts"]
+      expect(Admin::Slice["repos.post_repo"].posts.by_pk(1).one!.class).to be < Admin::Structs::Post
+
       expect(Main::Slice["repos.post_repo"].posts).to eql Main::Slice["relations.posts"]
+      # Slice struct namespace used even when no concrete struct classes are defined
+      expect(Main::Slice["repos.post_repo"].posts.by_pk(1).one!.class).to be < Main::Structs::Post
     end
   end
 end
