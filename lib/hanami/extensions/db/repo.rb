@@ -38,6 +38,7 @@ module Hanami
 
         def extended(repo_class)
           define_inherited
+          configure_repo(repo_class)
           define_new
         end
 
@@ -60,6 +61,10 @@ module Hanami
           end
         end
 
+        def configure_repo(repo_class)
+          repo_class.struct_namespace struct_namespace
+        end
+
         def define_new
           resolve_rom = method(:resolve_rom)
 
@@ -80,6 +85,15 @@ module Hanami
             .then { _1.gsub(/_repo$/, "") }
             .then { slice.inflector.pluralize(_1) }
             .then { _1.to_sym }
+        end
+
+        def struct_namespace
+          @struct_namespace ||=
+            if slice.namespace.const_defined?(:Structs)
+              slice.namespace.const_get(:Structs)
+            else
+              slice.namespace.const_set(:Structs, Module.new)
+            end
         end
       end
     end
