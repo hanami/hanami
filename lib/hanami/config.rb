@@ -110,7 +110,12 @@ module Hanami
     #
     #   @api public
     #   @since 2.0.0
-    setting :no_auto_register_paths, default: %w[entities]
+    setting :no_auto_register_paths, default: [
+      "db",
+      "entities",
+      "relations",
+      "structs"
+    ]
 
     # @!attribute [rw] base_url
     #   Sets the base URL for app's web server.
