@@ -12,7 +12,7 @@ RSpec.describe "Slices / Slice configuration", :app_integration do
           class App < Hanami::App
             config.logger.stream = StringIO.new
 
-            config.no_auto_register_paths << "structs"
+            config.no_auto_register_paths = ["structs"]
           end
         end
       RUBY
@@ -34,9 +34,9 @@ RSpec.describe "Slices / Slice configuration", :app_integration do
 
       require "hanami/prepare"
 
-      expect(TestApp::App.config.no_auto_register_paths).to eq %w[entities structs]
-      expect(Main::Slice.config.no_auto_register_paths).to eq %w[entities structs schemas]
-      expect(Search::Slice.config.no_auto_register_paths).to eq %w[entities structs]
+      expect(TestApp::App.config.no_auto_register_paths).to eq %w[structs]
+      expect(Main::Slice.config.no_auto_register_paths).to eq %w[structs schemas]
+      expect(Search::Slice.config.no_auto_register_paths).to eq %w[structs]
     end
   end
 end
