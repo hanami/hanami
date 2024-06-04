@@ -38,8 +38,9 @@ gem install hanami
 ## Usage
 
 ```shell
+bundle install
 hanami new bookshelf
-cd bookshelf && bundle
+cd bookshelf
 bundle exec hanami server # visit http://localhost:2300
 ```
 
