@@ -110,7 +110,7 @@ RSpec.describe "DB", :app_integration do
     end
   end
 
-  it "raises an error when now database URL is provided" do
+  it "raises an error when no database URL is provided" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -183,6 +183,38 @@ RSpec.describe "DB", :app_integration do
 
       expect(Hanami.app["db.rom"].relations[:posts].to_a).to eq [{id: 1, title: "Together breakfast"}]
       expect(Hanami.app["relations.posts"]).to be Hanami.app["db.rom"].relations[:posts]
+    end
+  end
+
+  it "transforms the database URL in test mode" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      write "app/relations/posts.rb", <<~RUBY
+        module TestApp
+          module Relations
+            class Posts < Hanami::DB::Relation
+              schema :posts, infer: true
+            end
+          end
+        end
+      RUBY
+
+      ENV["HANAMI_ENV"] = "test"
+      ENV["DATABASE_URL"] = "sqlite://./development.db"
+
+      require "hanami/prepare"
+
+      Hanami.app.prepare :db
+
+      expect(Hanami.app["db.gateway"].connection.url).to eq "sqlite://./test.db"
     end
   end
 end

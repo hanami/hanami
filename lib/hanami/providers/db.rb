@@ -92,8 +92,10 @@ module Hanami
 
         # For "main" slice, expect MAIN__DATABASE_URL
         slice_url_var = "#{target.slice_name.name.gsub("/", "__").upcase}__DATABASE_URL"
+        chosen_url = config.database_url || ENV[slice_url_var] || ENV["DATABASE_URL"]
+        chosen_url &&= Hanami::DB::Testing.database_url(chosen_url) if Hanami.env?(:test)
 
-        @database_url = config.database_url || ENV[slice_url_var] || ENV["DATABASE_URL"]
+        @database_url = chosen_url
       end
 
       def apply_parent_provider_config
