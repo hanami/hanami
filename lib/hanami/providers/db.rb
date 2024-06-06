@@ -24,6 +24,7 @@ module Hanami
         prepare_and_import_parent_db and return if import_from_parent?
 
         apply_parent_provider_config
+        override_rom_inflector
 
         require "hanami-db"
 
@@ -151,6 +152,20 @@ module Hanami
         target.parent.start :db
 
         register "rom", target.parent["db.rom"]
+      end
+
+      # ROM 5.3 doesn't have a configurable inflector.
+      #
+      # This is a problem in Hanami because using different
+      # inflection rules for ROM will lead to constant loading
+      # errors.
+      def override_rom_inflector
+        return if ROM::Inflector == Hanami.app["inflector"]
+
+        ROM.instance_eval {
+          remove_const :Inflector
+          const_set :Inflector, Hanami.app["inflector"]
+        }
       end
     end
 
