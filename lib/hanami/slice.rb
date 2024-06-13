@@ -941,11 +941,11 @@ module Hanami
           require_relative "providers/db"
 
           # Only register providers if the user hasn't provided their own
-          if !container.providers.find_and_load_provider(:db)
+          if !container.providers[:db]
             register_provider(:db, namespace: true, source: Providers::DB)
           end
 
-          if !container.providers.find_and_load_provider(:relations)
+          if !container.providers[:relations]
             register_provider(:relations, namespace: true, source: Providers::Relations)
           end
         end
@@ -1099,7 +1099,7 @@ module Hanami
       def import_db_from_parent?
         parent &&
           config.db.import_from_parent &&
-          parent.container.providers.find_and_load_provider(:db)
+          parent.container.providers[:db]
       end
 
       # rubocop:enable Metrics/AbcSize
