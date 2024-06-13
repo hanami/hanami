@@ -77,16 +77,7 @@ module Hanami
         target["db.rom"].disconnect
       end
 
-      private
-
-      def relations_path
-        if target.app.eql?(target)
-          target.root.join("app", config.relations_path)
-        else
-          target.root.join(config.relations_path)
-        end
-      end
-
+      # @api private
       def database_url
         return @database_url if instance_variable_defined?(:@database_url)
 
@@ -96,6 +87,16 @@ module Hanami
         chosen_url &&= Hanami::DB::Testing.database_url(chosen_url) if Hanami.env?(:test)
 
         @database_url = chosen_url
+      end
+
+      private
+
+      def relations_path
+        if target.app.eql?(target)
+          target.root.join("app", config.relations_path)
+        else
+          target.root.join(config.relations_path)
+        end
       end
 
       def apply_parent_provider_config
