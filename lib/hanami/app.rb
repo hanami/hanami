@@ -152,7 +152,7 @@ module Hanami
         register_provider(:inflector, source: Hanami::Providers::Inflector)
 
         # Allow logger to be replaced by users with a manual provider, for advanced cases
-        unless container.providers.find_and_load_provider(:logger)
+        unless container.providers[:logger]
           require_relative "providers/logger"
           register_provider(:logger, source: Hanami::Providers::Logger)
         end

@@ -131,7 +131,7 @@ module Hanami
         return @parent_db_provider if instance_variable_defined?(:@parent_db_provider)
 
         @parent_db_provider = target.parent &&
-          target.parent.container.providers.find_and_load_provider(:db)
+          target.parent.container.providers[:db]
       end
 
       def import_from_parent?
