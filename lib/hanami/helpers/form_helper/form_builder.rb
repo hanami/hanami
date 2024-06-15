@@ -226,10 +226,8 @@ module Hanami
         # @api public
         # @since 2.1.0
         def fields_for_collection(name, &block)
-          collection_base_name = [base_name, name.to_s].compact.join(INPUT_NAME_SEPARATOR)
-
           _value(name).each_with_index do |value, index|
-            fields_for("#{collection_base_name}.#{index}", index, value, &block)
+            fields_for("#{name}.#{index}", index, value, &block)
           end
         end
 
