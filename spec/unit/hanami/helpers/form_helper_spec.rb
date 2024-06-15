@@ -404,6 +404,14 @@ RSpec.describe Hanami::Helpers::FormHelper do
       expect(html).to include %(<label for="book-free-shipping">Free shipping</label>)
     end
 
+    it "accepts a symbol" do
+      html = form_for("/books") do |f|
+        f.label :free_shipping
+      end
+
+      expect(html).to include %(<label for="free-shipping">Free shipping</label>)
+    end
+
     it "accepts a string as custom content" do
       html = form_for("/books") do |f|
         f.label "Free Shipping!", for: "book.free_shipping"
