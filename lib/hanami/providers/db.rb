@@ -53,6 +53,7 @@ module Hanami
         start_and_import_parent_db and return if import_from_parent?
 
         # Find and register relations
+        relations_path = target.source_path.join(config.relations_path)
         relations_path.glob("*.rb").each do |relation_file|
           relation_name = relation_file
             .relative_path_from(relations_path)
@@ -90,14 +91,6 @@ module Hanami
       end
 
       private
-
-      def relations_path
-        if target.app.eql?(target)
-          target.root.join("app", config.relations_path)
-        else
-          target.root.join(config.relations_path)
-        end
-      end
 
       def apply_parent_config
         return unless apply_parent_config?
