@@ -175,12 +175,15 @@ RSpec.describe "DB / Slices", :app_integration do
       # Except when it has been explicitly configured in a child slice provider
       expect(Main::Slice["db.gateway"].options[:extensions]).to eq []
 
+      # TODO: Find a way to configure plugins via provider config, so we can share them without
+      # preparing a parent's :db provider (which can lead to establishing unwanted db connections).
+      #
       # Plugins configured in the app's db provider are copied to child slice providers
-      expect(Admin::Slice["db.config"].setup.plugins.length).to eq 1
-      expect(Admin::Slice["db.config"].setup.plugins).to include an_object_satisfying { |plugin|
-        plugin.name == :auto_restrictions && plugin.type == :relation
-      }
-      expect(Admin::Slice["db.config"].setup.plugins).to eq (Main::Slice["db.config"].setup.plugins)
+      # expect(Admin::Slice["db.config"].setup.plugins.length).to eq 1
+      # expect(Admin::Slice["db.config"].setup.plugins).to include an_object_satisfying { |plugin|
+      #   plugin.name == :auto_restrictions && plugin.type == :relation
+      # }
+      # expect(Admin::Slice["db.config"].setup.plugins).to eq (Main::Slice["db.config"].setup.plugins)
     end
   end
 
