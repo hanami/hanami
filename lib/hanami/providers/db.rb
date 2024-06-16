@@ -23,8 +23,9 @@ module Hanami
       def prepare
         prepare_and_import_parent_db and return if import_from_parent?
 
-        apply_parent_provider_config
         override_rom_inflector
+
+        apply_parent_config
 
         require "hanami-db"
 
@@ -42,7 +43,6 @@ module Hanami
         }
 
         @rom_config = ROM::Configuration.new(gateway)
-        apply_parent_rom_config(@rom_config)
 
         register "config", @rom_config
         register "gateway", gateway
@@ -99,28 +99,13 @@ module Hanami
         end
       end
 
-      def apply_parent_provider_config
+      def apply_parent_config
         return unless apply_parent_config?
 
         self.class.settings.keys.each do |key|
           next if config.configured?(key)
 
           config[key] = parent_db_provider.source.config[key]
-        end
-      end
-
-      # Applies config from the parent slice's ROM config.
-      #
-      # Plugins are the only reusable pieces of ROM config across slices. Relations, commands and
-      # mappers will always be distinct per-slice.
-      def apply_parent_rom_config(rom_config)
-        return unless apply_parent_config?
-
-        target.parent.prepare :db
-        parent_rom_config = target.parent["db.config"]
-
-        parent_rom_config.setup.plugins.each do |plugin|
-          rom_config.register_plugin(plugin)
         end
       end
 
