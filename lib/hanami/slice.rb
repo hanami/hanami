@@ -1081,18 +1081,26 @@ module Hanami
       end
 
       def register_db_provider?
-        concrete_db_provider? || relations_dir? || db_dir? || import_db_from_parent?
+        concrete_db_provider? ||
+          db_config_dir? ||
+          relations_dir? ||
+          db_source_dir? ||
+          import_db_from_parent?
       end
 
       def concrete_db_provider?
         root.join(CONFIG_DIR, "providers", "db.rb").exist?
       end
 
+      def db_config_dir?
+        root.join("config", "db").directory?
+      end
+
       def relations_dir?
         source_path.join("relations").directory?
       end
 
-      def db_dir?
+      def db_source_dir?
         source_path.join("db").directory?
       end
 
