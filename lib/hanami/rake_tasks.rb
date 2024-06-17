@@ -33,13 +33,14 @@ Hanami::CLI::RakeTasks.register_tasks do
   #
   # If you're not in control and your deployment requires these "standard"
   # Rake tasks, they are here only to solve this specific problem.
-  #
-  # namespace :db do
-  #   task :migrate do
-  #     # TODO(@jodosha): Enable when we'll integrate with ROM
-  #     # run_hanami_command("db migrate")
-  #   end
-  # end
+
+  if Hanami.bundled?("hanami-db")
+    namespace :db do
+      task :migrate do
+        Hanami::CLI::Commands::App::DB::Migrate.new.call
+      end
+    end
+  end
 
   if Hanami.bundled?("hanami-assets")
     namespace :assets do
