@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "dry/configurable"
 require "dry/core"
 
 module Hanami
@@ -8,6 +9,8 @@ module Hanami
     # @since 2.2.0
     class DB < Dry::System::Provider::Source
       extend Dry::Core::Cache
+
+      include Dry::Configurable(config_class: Providers::DB::Config)
 
       setting :database_url
 
