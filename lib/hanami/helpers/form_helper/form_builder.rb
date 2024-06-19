@@ -293,7 +293,7 @@ module Hanami
           attributes[:for] = _input_id(attributes[:for] || content)
 
           if content && !for_attribute_given
-            content = inflector.humanize(content.split(INPUT_NAME_SEPARATOR).last)
+            content = inflector.humanize(content.to_s.split(INPUT_NAME_SEPARATOR).last)
           end
 
           tag.label(content, **attributes, &block)
