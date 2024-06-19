@@ -393,6 +393,29 @@ RSpec.describe Hanami::Helpers::FormHelper do
 
       expect(html).to eq_html(expected)
     end
+
+    context "with base name" do
+      let(:params) { {book: {categories: [{name: "foo"}, {name: "bar"}]}} }
+
+      it "renders" do
+        html = render(<<~ERB)
+          <%= form_for("book", "/books") do |f| %>
+            <% f.fields_for_collection "categories" do |fa| %>
+              <%= fa.text_field :name %>
+            <% end %>
+          <% end %>
+        ERB
+
+        expected = <<~HTML
+          <form action="/books" accept-charset="utf-8" method="POST">
+            <input type="text" name="book[categories][][name]" id="book-categories-0-name" value="foo">
+            <input type="text" name="book[categories][][name]" id="book-categories-1-name" value="bar">
+          </form>
+        HTML
+
+        expect(html).to eq_html(expected)
+      end
+    end
   end
 
   describe "#label" do
