@@ -16,6 +16,8 @@ module Hanami
 
       setting :adapter, default: :sql
 
+      setting :adapters, default: {}
+
       # TODO: Determine ideal default extensions
       # TODO: Switch extensions based on configured adapter
       setting :extensions, default: [:error_sql]
