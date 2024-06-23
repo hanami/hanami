@@ -14,11 +14,7 @@ module Hanami
 
       setting :database_url
       setting :adapter, default: :sql
-      setting :adapters, mutable: true, default: Adapters.new.tap { |a|
-        a[:sql].tap do |sql|
-          sql.extension :error_sql
-        end
-      }
+      setting :adapters, mutable: true, default: Adapters.new
       setting :relations_path, default: "relations"
 
       # @api private
@@ -28,6 +24,8 @@ module Hanami
         override_rom_inflector
 
         apply_parent_config
+        configure_for_database
+        # mark as configured?, i.e. freeze config? might be a good idea
 
         require "hanami-db"
 
@@ -102,11 +100,18 @@ module Hanami
 
       private
 
+      def parent_db_provider
+        return @parent_db_provider if instance_variable_defined?(:@parent_db_provider)
+
+        @parent_db_provider = target.parent &&
+          target.parent.container.providers[:db]
+      end
+
       def apply_parent_config
         return unless apply_parent_config?
 
         self.class.settings.keys.each do |key|
-          next if config.configured?(key)
+          next if config.configured?(key) # TODO: will this work with rich `adapters` config?
 
           config[key] = parent_db_provider.source.config[key]
         end
@@ -116,11 +121,8 @@ module Hanami
         target.config.db.configure_from_parent && parent_db_provider
       end
 
-      def parent_db_provider
-        return @parent_db_provider if instance_variable_defined?(:@parent_db_provider)
-
-        @parent_db_provider = target.parent &&
-          target.parent.container.providers[:db]
+      def configure_for_database
+        config.adapter(config.adapter_name).configure_for_database(database_url)
       end
 
       def import_from_parent?

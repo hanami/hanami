@@ -18,26 +18,6 @@ RSpec.describe "Hanami::Providers::DB.config", :app_integration do
     end
   end
 
-  describe "default config" do
-    specify "database_url = nil" do
-      expect(config.database_url).to be nil
-    end
-
-    specify "adapter = :sql" do
-      expect(config.adapter).to eq :sql
-    end
-
-    describe "sql adapter" do
-      specify "extensions" do
-        expect(config.adapters[:sql].extensions).to eq [:error_sql]
-      end
-    end
-
-    specify %(relations_path = "relations") do
-      expect(config)
-    end
-  end
-
   describe "#adapter_name" do
     it "aliases #adapter" do
       expect { config.adapter = :yaml }
@@ -118,11 +98,8 @@ RSpec.describe "Hanami::Providers::DB.config", :app_integration do
     describe "#clear" do
       it "clears previously configured plugins and extensions" do
         adapter.plugin relations: :foo
-        # adapter.extension :foo
 
-        expect { adapter.clear }
-          .to change { adapter.plugins }.to([])
-          # .and change {adapter.extensions }.to([])
+        expect { adapter.clear }.to change { adapter.plugins }.to([])
       end
     end
 

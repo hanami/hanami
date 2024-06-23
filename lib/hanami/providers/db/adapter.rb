@@ -14,6 +14,10 @@ module Hanami
         # @since 2.2.0
         setting :plugins, default: []
 
+        # @api private
+        def configure_for_database(database_url)
+        end
+
         # @api public
         # @since 2.2.0
         def plugin(**plugin_spec, &config_block)
@@ -27,18 +31,16 @@ module Hanami
         end
 
         # @api private
-        # @since 2.2.0
         def gateway_cache_keys
           gateway_options
         end
 
         # @api private
-        # @since 2.2.0
         def gateway_options
           {}
         end
 
-        # @api private
+        # @api public
         # @since 2.2.0
         def clear
           config.plugins.clear
