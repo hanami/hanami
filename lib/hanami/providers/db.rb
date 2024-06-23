@@ -47,12 +47,11 @@ module Hanami
         @rom_config = ROM::Configuration.new(gateway)
 
         config.each_plugin do |plugin_spec, config_block|
-          @rom_config.plugin(
-            config.adapter,
-            plugin_spec
-          )
-
-          # TODO: figure out what to do with the blocks!!!
+          if config_block
+            @rom_config.plugin(config.adapter, plugin_spec, &config_block)
+          else
+            @rom_config.plugin(config.adapter, plugin_spec)
+          end
         end
 
         register "config", @rom_config

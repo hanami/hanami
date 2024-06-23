@@ -10,6 +10,47 @@ RSpec.describe "DB / Provider / Config", :app_integration do
     ENV.replace(@env)
   end
 
+  it "evaluates plugin config blocks in the context of the provider" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      write "config/providers/db.rb", <<~RUBY
+        Hanami.app.configure_provider :db do
+          config.adapter :sql do |a|
+            a.plugins.clear
+
+            a.plugin relations: :instrumentation do |plugin|
+              plugin.notifications = target["custom_notifications"]
+            end
+          end
+        end
+      RUBY
+
+      write "app/custom_notifications.rb", <<~RUBY
+        module TestApp
+          class CustomNotifications
+          end
+        end
+      RUBY
+
+      ENV["DATABASE_URL"] = "sqlite::memory"
+
+      require "hanami/prepare"
+
+      Hanami.app.prepare :db
+
+      plugin = Hanami.app["db.config"].setup.plugins.find { _1.name == :instrumentation }
+      expect(plugin.config.notifications).to be_an_instance_of TestApp::CustomNotifications
+    end
+  end
+
   it "is a Hanami::Providers::DB::Config" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
