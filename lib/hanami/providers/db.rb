@@ -13,15 +13,12 @@ module Hanami
       include Dry::Configurable(config_class: Providers::DB::Config)
 
       setting :database_url
-
       setting :adapter, default: :sql
-
-      setting :adapters, default: {}
-
-      # TODO: Determine ideal default extensions
-      # TODO: Switch extensions based on configured adapter
-      setting :extensions, default: [:error_sql]
-
+      setting :adapters, mutable: true, default: Adapters.new.tap { |a|
+        a[:sql].tap do |sql|
+          sql.extension :error_sql
+        end
+      }
       setting :relations_path, default: "relations"
 
       # @api private
@@ -39,15 +36,24 @@ module Hanami
         end
 
         # Avoid making spurious connections by reusing identically configured gateways across slices
-        gateway = fetch_or_store(database_url, config.extensions) {
+        gateway = fetch_or_store(database_url, config.gateway_cache_keys) {
           ROM::Gateway.setup(
             config.adapter,
             database_url,
-            extensions: config.extensions
+            **config.gateway_options
           )
         }
 
         @rom_config = ROM::Configuration.new(gateway)
+
+        config.each_plugin do |plugin_spec, config_block|
+          @rom_config.plugin(
+            config.adapter,
+            plugin_spec
+          )
+
+          # TODO: figure out what to do with the blocks!!!
+        end
 
         register "config", @rom_config
         register "gateway", gateway

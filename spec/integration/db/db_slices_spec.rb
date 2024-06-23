@@ -45,13 +45,18 @@ RSpec.describe "DB / Slices", :app_integration do
 
       write "slices/admin/config/providers/db.rb", <<~RUBY
         Admin::Slice.configure_provider :db do
-          config.extensions = []
+          config.adapter :sql do |a|
+            a.extensions.clear
+          end
         end
       RUBY
 
       write "slices/main/config/providers/db.rb", <<~RUBY
         Main::Slice.configure_provider :db do
-          config.extensions = [:error_sql]
+          config.adapter :sql do |a|
+            a.extensions.clear
+            a.extension :error_sql
+          end
         end
       RUBY
 
@@ -82,7 +87,9 @@ RSpec.describe "DB / Slices", :app_integration do
 
       write "config/providers/db.rb", <<~RUBY
         Hanami.app.configure_provider :db do
-          config.extensions += [:exclude_or_null]
+          config.adapter :sql do |a|
+            a.extension :exclude_or_null
+          end
 
           after(:prepare) do
             @rom_config.plugin(:sql, relations: :auto_restrictions)
@@ -112,7 +119,9 @@ RSpec.describe "DB / Slices", :app_integration do
 
       write "slices/main/config/providers/db.rb", <<~RUBY
         Main::Slice.configure_provider :db do
-          config.extensions = []
+          config.adapter :sql do |a|
+            a.extensions.clear
+          end
         end
       RUBY
 
@@ -216,7 +225,9 @@ RSpec.describe "DB / Slices", :app_integration do
 
       write "slices/admin/config/providers/db.rb", <<~RUBY
         Admin::Slice.configure_provider :db do
-          config.extensions = []
+          config.adapter :sql do |a|
+            a.extensions.clear
+          end
         end
       RUBY
 
