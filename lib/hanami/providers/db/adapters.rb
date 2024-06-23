@@ -6,6 +6,13 @@ module Hanami
       # @api public
       # @since 2.2.0
       class Adapters
+        # @api private
+        # @since 2.2.0
+        ADAPTER_CLASSES = Hash.new(Adapter).update(
+          sql: SQLAdapter
+        ).freeze
+        private_constant :ADAPTER_CLASSES
+
         extend Forwardable
 
         def_delegators :adapters, :[], :[]=, :each, :to_h
@@ -18,12 +25,7 @@ module Hanami
         # @since 2.2.0
         def initialize
           @adapters = Hash.new do |hsh, key|
-            hsh[key] =
-              if key == :sql
-                SQLAdapter.new
-              else
-                Adapter.new
-              end
+            hsh[key] = ADAPTER_CLASSES[key].new
           end
         end
 
