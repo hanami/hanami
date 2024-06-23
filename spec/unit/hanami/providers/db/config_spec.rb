@@ -103,71 +103,93 @@ RSpec.describe "Hanami::Providers::DB.config", :app_integration do
       end
     end
 
-    describe "#extension" do
-      it "adds an extension" do
-        expect { adapter.extension :foo }
-          .to change { adapter.extensions }
-          .to [:foo]
-      end
-
-      it "adds multiple extensions" do
-        expect { adapter.extension :foo, :bar }
-          .to change { adapter.extensions }
-          .to [:foo, :bar]
-      end
-    end
-
-    describe "#extensions" do
-      it "can be cleareed" do
-        adapter.extension :foo
-
-        expect { adapter.extensions.clear }
-          .to change { adapter.extensions }
-          .to []
-      end
-    end
-
     describe "#gateway_cache_keys" do
       it "includes the configured extensions" do
-        adapter.extension :foo, :bar
-        expect(adapter.gateway_cache_keys).to eq(extensions: [:foo, :bar])
+        expect(adapter.gateway_cache_keys).to eq({})
       end
     end
 
     describe "#gateway_options" do
-      it "includes the configured extensions" do
-        adapter.extension :foo, :bar
-        expect(adapter.gateway_options).to eq(extensions: [:foo, :bar])
+      specify do
+        expect(adapter.gateway_options).to eq({})
       end
     end
 
     describe "#clear" do
       it "clears previously configured plugins and extensions" do
         adapter.plugin relations: :foo
-        adapter.extension :foo
+        # adapter.extension :foo
 
         expect { adapter.clear }
           .to change { adapter.plugins }.to([])
-          .and change {adapter.extensions }.to([])
+          # .and change {adapter.extensions }.to([])
       end
+    end
+
+    describe ":sql adapter" do
+      subject(:adapter) { config.adapter(:sql) }
+
+      describe "#extension" do
+        it "adds an extension" do
+          adapter.clear
+          expect { adapter.extension :foo }
+            .to change { adapter.extensions }
+            .to [:foo]
+        end
+
+        it "adds multiple extensions" do
+          adapter.clear
+          expect { adapter.extension :foo, :bar }
+            .to change { adapter.extensions }
+            .to [:foo, :bar]
+        end
+      end
+
+      describe "#extensions" do
+        it "can be cleareed" do
+          adapter.extension :foo
+
+          expect { adapter.extensions.clear }
+            .to change { adapter.extensions }
+            .to []
+        end
+      end
+
+      describe "#gateway_cache_keys" do
+        it "includes the configured extensions" do
+          adapter.clear
+          adapter.extension :foo, :bar
+          expect(adapter.gateway_cache_keys).to eq(extensions: [:foo, :bar])
+        end
+      end
+
+      describe "#gateway_options" do
+        it "includes the configured extensions" do
+          adapter.clear
+          adapter.extension :foo, :bar
+          expect(adapter.gateway_options).to eq(extensions: [:foo, :bar])
+        end
+      end
+
+      # TODO clear
     end
   end
 
   describe "#gateway_cache_keys" do
     it "returns the cache keys from the currently configured adapter" do
-      config.adapter(:yaml) { |a| a.extension :foo }
-      config.adapter = :yaml
+      config.adapter(:sql) { |a| a.clear; a.extension :foo }
+      config.adapter = :sql
 
-      expect(config.gateway_cache_keys).to eq(config.adapter(:yaml).gateway_cache_keys)
+      expect(config.gateway_cache_keys).to eq(config.adapter(:sql).gateway_cache_keys)
     end
   end
 
   describe "#gateway_options" do
     it "returns the options from the currently configured adapter" do
-      config.adapter(:yaml) { |a| a.extension :foo }
-      config.adapter = :yaml
+      config.adapter(:sql) { |a| a.clear; a.extension :foo }
+      config.adapter = :sql
 
-      expect(config.gateway_options).to eq(config.adapter(:yaml).gateway_options)
+      expect(config.gateway_options).to eq(config.adapter(:sql).gateway_options)
     end
   end
 

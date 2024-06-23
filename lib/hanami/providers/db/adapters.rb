@@ -18,7 +18,12 @@ module Hanami
         # @since 2.2.0
         def initialize
           @adapters = Hash.new do |hsh, key|
-            hsh[key] = Adapter.new
+            hsh[key] =
+              if key == :sql
+                SQLAdapter.new
+              else
+                Adapter.new
+              end
           end
         end
 
