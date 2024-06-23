@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hanami
   module Providers
     class DB < Dry::System::Provider::Source
