@@ -132,7 +132,6 @@ module Hanami
 
         parent_db_provider.source.config.adapters.each do |adapter_name, parent_adapter|
           adapter = config.adapters[adapter_name]
-          # binding.irb if target == Main::Slice
 
           adapter.class.settings.keys.each do |key|
             next if adapter.config.configured?(key)

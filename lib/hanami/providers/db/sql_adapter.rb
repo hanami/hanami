@@ -8,18 +8,18 @@ module Hanami
       class SQLAdapter < Adapter
         # @api public
         # @since 2.2.0
-        setting :extensions, default: []
+        setting :extensions, mutable: true
 
         # @api public
         # @since 2.2.0
         def extension(*extensions)
-          config.extensions += extensions
+          self.extensions.concat(extensions)
         end
 
         # @api public
         # @since 2.2.0
         def extensions
-          config.extensions
+          config.extensions ||= []
         end
 
         # @api private
@@ -71,7 +71,7 @@ module Hanami
         # @api public
         # @since 2.2.0
         def clear
-          config.extensions.clear
+          extensions.clear
           super
         end
       end

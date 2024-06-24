@@ -12,7 +12,7 @@ module Hanami
 
         # @api public
         # @since 2.2.0
-        setting :plugins, default: []
+        setting :plugins, mutable: true
 
         # @api private
         def initialize(...)
@@ -37,13 +37,13 @@ module Hanami
         # @api public
         # @since 2.2.0
         def plugin(**plugin_spec, &config_block)
-          config.plugins << [plugin_spec, config_block]
+          plugins << [plugin_spec, config_block]
         end
 
         # @api public
         # @since 2.2.0
         def plugins
-          config.plugins
+          config.plugins ||= []
         end
 
         # @api private
@@ -59,7 +59,7 @@ module Hanami
         # @api public
         # @since 2.2.0
         def clear
-          config.plugins.clear
+          plugins.clear
           self
         end
       end
