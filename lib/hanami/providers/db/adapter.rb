@@ -15,6 +15,22 @@ module Hanami
         setting :plugins, default: []
 
         # @api private
+        def initialize(...)
+          @skip_defaults = Hash.new(false)
+        end
+
+        # @api public
+        # @since 2.2.0
+        def skip_defaults(setting_name = nil)
+          @skip_defaults[setting_name] = true
+        end
+
+        # @api private
+        private def skip_defaults?(setting_name = nil)
+          @skip_defaults[setting_name]
+        end
+
+        # @api private
         def configure_for_database(database_url)
         end
 

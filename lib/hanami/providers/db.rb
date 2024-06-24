@@ -17,15 +17,24 @@ module Hanami
       setting :adapters, mutable: true, default: Adapters.new
       setting :relations_path, default: "relations"
 
-      # @api private
+      def initialize(...)
+        super(...)
+
+        @configured_for_database = false
+      end
+
+      def finalize_config
+        apply_parent_config and return if apply_parent_config?
+
+        configure_for_database
+      end
+
       def prepare
         prepare_and_import_parent_db and return if import_from_parent?
 
         override_rom_inflector
 
-        apply_parent_config
-        configure_for_database
-        # mark as configured?, i.e. freeze config? might be a good idea
+        finalize_config
 
         require "hanami-db"
 
@@ -46,7 +55,9 @@ module Hanami
 
         config.each_plugin do |plugin_spec, config_block|
           if config_block
-            @rom_config.plugin(config.adapter, plugin_spec, &config_block)
+            @rom_config.plugin(config.adapter, plugin_spec) do |plugin_config|
+              instance_exec(plugin_config, &config_block)
+            end
           else
             @rom_config.plugin(config.adapter, plugin_spec)
           end
@@ -103,17 +114,31 @@ module Hanami
       def parent_db_provider
         return @parent_db_provider if instance_variable_defined?(:@parent_db_provider)
 
-        @parent_db_provider = target.parent &&
-          target.parent.container.providers[:db]
+        @parent_db_provider = target.parent && target.parent.container.providers[:db]
       end
 
       def apply_parent_config
-        return unless apply_parent_config?
+        parent_db_provider.source.finalize_config
 
         self.class.settings.keys.each do |key|
-          next if config.configured?(key) # TODO: will this work with rich `adapters` config?
+          # Preserve settings already configured locally
+          next if config.configured?(key)
+
+          # Skip adapter config, we handle this below
+          next if key == :adapters
 
           config[key] = parent_db_provider.source.config[key]
+        end
+
+        parent_db_provider.source.config.adapters.each do |adapter_name, parent_adapter|
+          adapter = config.adapters[adapter_name]
+          # binding.irb if target == Main::Slice
+
+          adapter.class.settings.keys.each do |key|
+            next if adapter.config.configured?(key)
+
+            adapter.config[key] = parent_adapter.config[key]
+          end
         end
       end
 
@@ -122,7 +147,10 @@ module Hanami
       end
 
       def configure_for_database
+        return if @configured_for_database
+
         config.adapter(config.adapter_name).configure_for_database(database_url)
+        @configured_for_database = true
       end
 
       def import_from_parent?

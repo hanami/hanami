@@ -33,7 +33,8 @@ module Hanami
         # @since 2.2.0
         def initialize_copy(source)
           @adapters = source.adapters.dup
-          @adapters.each do |key, val|
+
+          source.adapters.each do |key, val|
             @adapters[key] = val.dup
           end
         end
