@@ -216,8 +216,6 @@ RSpec.describe "DB / Slices", :app_integration do
       write "config/providers/db.rb", <<~RUBY
         Hanami.app.configure_provider :db do
           config.adapter :sql do |a|
-            # a.skip_defaults
-            # a.plugin relation: :auto_restrictions
             a.extension :exclude_or_null
           end
         end
