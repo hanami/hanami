@@ -71,7 +71,6 @@ RSpec.describe "DB / Slices", :app_integration do
       expect(Admin::Slice["db.rom"].gateways[:default].connection.opts[:uri])
         .to eq Main::Slice["db.rom"].gateways[:default].connection.opts[:uri]
     end
-
   end
 
   specify "using separate relations per slice, while sharing config from the app" do

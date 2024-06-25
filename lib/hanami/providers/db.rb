@@ -71,6 +71,10 @@ module Hanami
       def start
         start_and_import_parent_db and return if import_from_parent?
 
+        # Set up DB logging for the whole app. We share the app's notifications bus across all
+        # slices, so we only need to configure the subsciprtion for DB logging just once.
+        target.app.start :db_logging
+
         # Find and register relations
         relations_path = target.source_path.join(config.relations_path)
         relations_path.glob("*.rb").each do |relation_file|
