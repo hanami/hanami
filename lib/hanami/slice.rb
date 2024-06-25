@@ -875,8 +875,8 @@ module Hanami
       def prepare_container_base_config
         container.config.name = slice_name.to_sym
         container.config.root = root
-        container.config.provider_registrar = ProviderRegistrar.for_slice(self)
         container.config.provider_dirs = [File.join("config", "providers")]
+        container.config.provider_source_class = Provider::Source.for_slice(self)
         container.config.registrations_dir = File.join("config", "registrations")
 
         container.config.env = config.env
