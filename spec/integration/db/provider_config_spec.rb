@@ -10,19 +10,38 @@ RSpec.describe "DB / Provider / Config", :app_integration do
     ENV.replace(@env)
   end
 
-  # TODO
-  specify "default config" do
-    with_tmp_directory(Dir.mktmpdir) do
-      write "config/app.rb", <<~RUBY
-        require "hanami"
+  describe "default config" do
+    it "provides default plugins and extensions" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
 
-        module TestApp
-          class App < Hanami::App
+          module TestApp
+            class App < Hanami::App
+            end
           end
-        end
-      RUBY
+        RUBY
 
-      write "config/db/.keep", ""
+        write "config/db/.keep", ""
+
+        ENV["DATABASE_URL"] = "sqlite::memory"
+
+        require "hanami/prepare"
+
+        Hanami.app.prepare :db
+
+        plugins = Hanami.app["db.config"].setup.plugins
+        expect(plugins).to match [
+          an_object_satisfying {
+            _1.name == :instrumentation && _1.type == :relation &&
+              _1.config.notifications == Hanami.app["notifications"]
+          },
+          an_object_satisfying { _1.name == :auto_restrictions && _1.type == :relation }
+        ]
+
+        extensions = Hanami.app["db.gateway"].options[:extensions]
+        expect(extensions).to eq [:caller_logging, :error_sql, :sql_comments]
+      end
     end
   end
 
@@ -64,28 +83,6 @@ RSpec.describe "DB / Provider / Config", :app_integration do
 
       plugin = Hanami.app["db.config"].setup.plugins.find { _1.name == :instrumentation }
       expect(plugin.config.notifications).to be_an_instance_of TestApp::CustomNotifications
-    end
-  end
-
-  it "is a Hanami::Providers::DB::Config" do
-    with_tmp_directory(Dir.mktmpdir) do
-      write "config/app.rb", <<~RUBY
-        require "hanami"
-
-        module TestApp
-          class App < Hanami::App
-          end
-        end
-      RUBY
-
-      write "config/db/.keep", ""
-
-      ENV["DATABASE_URL"] = "sqlite::memory"
-
-      require "hanami/prepare"
-
-      provider = Hanami.app.container.providers[:db]
-      expect(provider.source.config).to be_an_instance_of Hanami::Providers::DB::Config
     end
   end
 end
