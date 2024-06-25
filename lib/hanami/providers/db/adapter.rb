@@ -59,7 +59,7 @@ module Hanami
         # @api public
         # @since 2.2.0
         def clear
-          plugins.clear
+          config.plugins = nil
           self
         end
       end

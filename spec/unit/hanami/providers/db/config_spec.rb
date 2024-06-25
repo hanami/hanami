@@ -96,7 +96,7 @@ RSpec.describe "Hanami::Providers::DB.config", :app_integration do
     end
 
     describe "#clear" do
-      it "clears previously configured plugins and extensions" do
+      it "clears previously configured plugins" do
         adapter.plugin relations: :foo
 
         expect { adapter.clear }.to change { adapter.plugins }.to([])
@@ -145,6 +145,17 @@ RSpec.describe "Hanami::Providers::DB.config", :app_integration do
           adapter.clear
           adapter.extension :foo, :bar
           expect(adapter.gateway_options).to eq(extensions: [:foo, :bar])
+        end
+      end
+
+      describe "#clear" do
+        it "clears previously configured plugins and extensions" do
+          adapter.plugin relations: :foo
+          adapter.extension :foo
+
+          expect { adapter.clear }
+            .to change { adapter.plugins }.to([])
+            .and change { adapter.extensions }.to([])
         end
       end
 

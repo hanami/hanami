@@ -71,7 +71,7 @@ module Hanami
         # @api public
         # @since 2.2.0
         def clear
-          extensions.clear
+          config.extensions = nil
           super
         end
       end
