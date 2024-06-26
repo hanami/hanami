@@ -6,7 +6,7 @@ module Hanami
   module Providers
     # @api private
     # @since 2.2.0
-    class DB < Dry::System::Provider::Source
+    class DB < Provider::Source
       extend Dry::Core::Cache
 
       setting :database_url

@@ -159,7 +159,7 @@ module Hanami
 
         if Hanami.bundled?("rack")
           require_relative "providers/rack"
-          register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
+          register_provider(:rack, source: Hanami::Providers::Rack.for_slice(self), namespace: true)
         end
       end
 

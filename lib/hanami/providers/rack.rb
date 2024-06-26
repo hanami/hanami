@@ -12,7 +12,7 @@ module Hanami
     #
     # @api private
     # @since 2.0.0
-    class Rack < Dry::System::Provider::Source
+    class Rack < Provider::Source
       # @api private
       def prepare
         Dry::Monitor.load_extensions(:rack)

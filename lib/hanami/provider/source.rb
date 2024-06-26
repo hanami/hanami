@@ -29,6 +29,7 @@ module Hanami
       # @since 2.2.0
       def slice = self.class.slice
       alias_method :target_container, :slice
+      alias_method :target, :slice
     end
   end
 end

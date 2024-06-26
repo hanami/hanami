@@ -927,12 +927,12 @@ module Hanami
         # point we're still in the process of preparing.
         if routes
           require_relative "providers/routes"
-          register_provider(:routes, source: Providers::Routes)
+          register_provider(:routes, source: Providers::Routes.for_slice(self))
         end
 
         if assets_dir? && Hanami.bundled?("hanami-assets")
           require_relative "providers/assets"
-          register_provider(:assets, source: Providers::Assets)
+          register_provider(:assets, source: Providers::Assets.for_slice(self))
         end
 
         if Hanami.bundled?("hanami-db") && register_db_provider?
@@ -942,11 +942,11 @@ module Hanami
 
           # Only register providers if the user hasn't provided their own
           if !container.providers[:db]
-            register_provider(:db, namespace: true, source: Providers::DB)
+            register_provider(:db, namespace: true, source: Providers::DB.for_slice(self))
           end
 
           if !container.providers[:relations]
-            register_provider(:relations, namespace: true, source: Providers::Relations)
+            register_provider(:relations, namespace: true, source: Providers::Relations.for_slice(self))
           end
         end
       end
