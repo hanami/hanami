@@ -9,7 +9,7 @@ module Hanami
     #
     # @api private
     # @since 2.0.0
-    class Logger < Dry::System::Provider::Source
+    class Logger < Hanami::Provider::Source
       # @api private
       def start
         register :logger, Hanami.app.config.logger_instance

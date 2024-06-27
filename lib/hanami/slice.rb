@@ -876,6 +876,7 @@ module Hanami
         container.config.name = slice_name.to_sym
         container.config.root = root
         container.config.provider_registrar = ProviderRegistrar.for_slice(self)
+        container.config.provider_source_class = Hanami::Provider::Source
         container.config.provider_dirs = [File.join("config", "providers")]
         container.config.registrations_dir = File.join("config", "registrations")
 
