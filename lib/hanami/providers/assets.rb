@@ -9,7 +9,7 @@ module Hanami
     #
     # @api private
     # @since 2.0.0
-    class Assets < Dry::System::Provider::Source
+    class Assets < Hanami::Provider::Source
       # @api private
       def prepare
         require "hanami/assets"
@@ -17,9 +17,9 @@ module Hanami
 
       # @api private
       def start
-        root = target.app.root.join("public", "assets", Hanami::Assets.public_assets_dir(target).to_s)
+        root = slice.app.root.join("public", "assets", Hanami::Assets.public_assets_dir(target).to_s)
 
-        assets = Hanami::Assets.new(config: target.config.assets, root: root)
+        assets = Hanami::Assets.new(config: slice.config.assets, root: root)
 
         register(:assets, assets)
       end

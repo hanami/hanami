@@ -22,5 +22,9 @@ module Hanami
     def target_container
       slice
     end
+
+    def provider_source_options
+      {slice: slice}
+    end
   end
 end

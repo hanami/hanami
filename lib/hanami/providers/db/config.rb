@@ -4,7 +4,7 @@ require "dry/core"
 
 module Hanami
   module Providers
-    class DB < Dry::System::Provider::Source
+    class DB < Hanami::Provider::Source
       # @api public
       # @since 2.2.0
       class Config < Dry::Configurable::Config

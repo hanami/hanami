@@ -12,7 +12,7 @@ module Hanami
     #
     # @api private
     # @since 2.0.0
-    class Rack < Dry::System::Provider::Source
+    class Rack < Hanami::Provider::Source
       # @api private
       def prepare
         Dry::Monitor.load_extensions(:rack)
@@ -30,14 +30,14 @@ module Hanami
 
       # @api private
       def start
-        target.start :logger
+        slice.start :logger
 
         monitor_middleware = Dry::Monitor::Rack::Middleware.new(
           target["notifications"],
           clock: Dry::Monitor::Clock.new(unit: :microsecond)
         )
 
-        rack_logger = Hanami::Web::RackLogger.new(target[:logger], env: target.container.env)
+        rack_logger = Hanami::Web::RackLogger.new(target[:logger], env: slice.container.env)
         rack_logger.attach(monitor_middleware)
 
         register "monitor", monitor_middleware

@@ -7,7 +7,7 @@ module Hanami
     #
     # @api private
     # @since 2.0.0
-    class Inflector < Dry::System::Provider::Source
+    class Inflector < Hanami::Provider::Source
       # @api private
       def start
         register :inflector, Hanami.app.inflector
