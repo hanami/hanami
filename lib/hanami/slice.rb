@@ -935,18 +935,20 @@ module Hanami
           register_provider(:assets, source: Providers::Assets)
         end
 
-        if Hanami.bundled?("hanami-db") && register_db_provider?
+        if Hanami.bundled?("hanami-db")
           # Explicit require here to ensure the provider source registers itself, to allow the user
           # to configure it within their own concrete provider file.
           require_relative "providers/db"
 
-          # Only register providers if the user hasn't provided their own
-          if !container.providers[:db]
-            register_provider(:db, namespace: true, source: Providers::DB)
-          end
+          if register_db_provider?
+            # Only register providers if the user hasn't provided their own
+            if !container.providers[:db]
+              register_provider(:db, namespace: true, source: Providers::DB)
+            end
 
-          if !container.providers[:relations]
-            register_provider(:relations, namespace: true, source: Providers::Relations)
+            if !container.providers[:relations]
+              register_provider(:relations, namespace: true, source: Providers::Relations)
+            end
           end
         end
       end

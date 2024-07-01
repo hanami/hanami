@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "dry/configurable"
 require "dry/core"
 
 module Hanami
@@ -9,23 +10,31 @@ module Hanami
     class DB < Dry::System::Provider::Source
       extend Dry::Core::Cache
 
+      include Dry::Configurable(config_class: Providers::DB::Config)
+
       setting :database_url
-
       setting :adapter, default: :sql
-
-      # TODO: Determine ideal default extensions
-      # TODO: Switch extensions based on configured adapter
-      setting :extensions, default: [:error_sql]
-
+      setting :adapters, mutable: true, default: Adapters.new
       setting :relations_path, default: "relations"
 
-      # @api private
+      def initialize(...)
+        super(...)
+
+        @configured_for_database = false
+      end
+
+      def finalize_config
+        apply_parent_config and return if apply_parent_config?
+
+        configure_for_database
+      end
+
       def prepare
         prepare_and_import_parent_db and return if import_from_parent?
 
         override_rom_inflector
 
-        apply_parent_config
+        finalize_config
 
         require "hanami-db"
 
@@ -34,15 +43,25 @@ module Hanami
         end
 
         # Avoid making spurious connections by reusing identically configured gateways across slices
-        gateway = fetch_or_store(database_url, config.extensions) {
+        gateway = fetch_or_store(database_url, config.gateway_cache_keys) {
           ROM::Gateway.setup(
             config.adapter,
             database_url,
-            extensions: config.extensions
+            **config.gateway_options
           )
         }
 
         @rom_config = ROM::Configuration.new(gateway)
+
+        config.each_plugin do |plugin_spec, config_block|
+          if config_block
+            @rom_config.plugin(config.adapter, plugin_spec) do |plugin_config|
+              instance_exec(plugin_config, &config_block)
+            end
+          else
+            @rom_config.plugin(config.adapter, plugin_spec)
+          end
+        end
 
         register "config", @rom_config
         register "gateway", gateway
@@ -92,13 +111,33 @@ module Hanami
 
       private
 
+      def parent_db_provider
+        return @parent_db_provider if instance_variable_defined?(:@parent_db_provider)
+
+        @parent_db_provider = target.parent && target.parent.container.providers[:db]
+      end
+
       def apply_parent_config
-        return unless apply_parent_config?
+        parent_db_provider.source.finalize_config
 
         self.class.settings.keys.each do |key|
+          # Preserve settings already configured locally
           next if config.configured?(key)
 
+          # Skip adapter config, we handle this below
+          next if key == :adapters
+
           config[key] = parent_db_provider.source.config[key]
+        end
+
+        parent_db_provider.source.config.adapters.each do |adapter_name, parent_adapter|
+          adapter = config.adapters[adapter_name]
+
+          adapter.class.settings.keys.each do |key|
+            next if adapter.config.configured?(key)
+
+            adapter.config[key] = parent_adapter.config[key]
+          end
         end
       end
 
@@ -106,11 +145,11 @@ module Hanami
         target.config.db.configure_from_parent && parent_db_provider
       end
 
-      def parent_db_provider
-        return @parent_db_provider if instance_variable_defined?(:@parent_db_provider)
+      def configure_for_database
+        return if @configured_for_database
 
-        @parent_db_provider = target.parent &&
-          target.parent.container.providers[:db]
+        config.adapter(config.adapter_name).configure_for_database(database_url)
+        @configured_for_database = true
       end
 
       def import_from_parent?
