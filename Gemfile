@@ -23,6 +23,7 @@ gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 gem "dry-configurable", github: "dry-rb/dry-configurable", branch: "allow-multiple-includes"
 gem "dry-inflector", github: "dry-rb/dry-inflector", branch: "main"
 gem "dry-system", github: "dry-rb/dry-system", branch: "main"
+gem "rom-sql", github: "rom-rb/rom-sql", branch: "release-3.6"
 
 # This is needed for settings specs to pass
 gem "dry-types"

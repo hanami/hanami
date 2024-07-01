@@ -161,6 +161,10 @@ module Hanami
           require_relative "providers/rack"
           register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
         end
+
+        if Hanami.bundled?("hanami-db")
+          register_provider(:db_logging, source: Hanami::Providers::DBLogging)
+        end
       end
 
       def prepare_autoloader
