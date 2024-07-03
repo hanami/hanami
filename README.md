@@ -29,7 +29,7 @@ These components are designed to be used independently or together in a Hanami a
 
 ## Installation
 
-__Hanami__ supports Ruby (MRI) 3.0+
+__Hanami__ supports Ruby (MRI) 3.1+
 
 ```shell
 gem install hanami
@@ -110,7 +110,7 @@ $ bundle exec rspec path/to/spec.rb
 
 ### Development Requirements
 
-  * Ruby >= 3.0
+  * Ruby >= 3.1
   * Bundler
   * Node.js (MacOS)
 
