@@ -29,7 +29,7 @@ These components are designed to be used independently or together in a Hanami a
 
 ## Installation
 
-__Hanami__ supports Ruby (MRI) 3.1+
+__Hanami__ supports Ruby (MRI) 3.1+.
 
 ```shell
 gem install hanami
@@ -120,4 +120,4 @@ __Hanami__ uses [Semantic Versioning 2.0.0](http://semver.org)
 
 ## Copyright
 
-Copyright © 2014 Hanami Team – Released under MIT License.
+Copyright © 2014–2024 Hanami Team – Released under MIT License.
