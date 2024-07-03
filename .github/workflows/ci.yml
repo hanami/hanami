@@ -47,7 +47,7 @@ jobs:
       - name: Setup Node ${{ matrix.node_version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 18.x
+          node-version: 20.x
           registry-url: 'https://registry.npmjs.org'
       - name: Run the test suite
         run: bundle exec rake
