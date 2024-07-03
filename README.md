@@ -25,6 +25,7 @@ These components are designed to be used independently or together in a Hanami a
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](https://badge.fury.io/rb/hanami)
 [![CI](https://github.com/hanami/hanami/actions/workflows/ci.yml/badge.svg)](https://github.com/hanami/hanami/actions?query=workflow%3Aci+branch%3Amain)
+[![Test Coverage](https://codecov.io/gh/hanami/hanami/branch/main/graph/badge.svg)](https://codecov.io/gh/hanami/hanami)
 [![Depfu](https://badges.depfu.com/badges/ba000e0f69e6ef1c44cd3038caaa1841/overview.svg)](https://depfu.com/github/hanami/hanami?project=Bundler)
 
 ## Installation
