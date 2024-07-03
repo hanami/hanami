@@ -28,13 +28,6 @@ jobs:
           - "3.2"
           - "3.1"
     steps:
-      - uses: ravsamhq/notify-slack-action@v1
-        if: always()
-        with:
-          status: ${{ job.status }}
-          notify_when: "failure"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       - name: Checkout
         uses: actions/checkout@v1
       - name: Set up Ruby
