@@ -14,9 +14,8 @@ This repository is for the full-stack framework, which provides the glue that ti
 
 * [**Hanami::Router**](https://github.com/hanami/router) - Rack compatible HTTP router for Ruby
 * [**Hanami::Controller**](https://github.com/hanami/controller) - Full featured, fast and testable actions for Rack
+* [**Hanami::Validations**](https://github.com/hanami/validations) - Parameter validations & coercion for actions
 * [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
-* [**Hanami::Helpers**](https://github.com/hanami/helpers) - View helpers for Ruby applications
-* [**Hanami::Mailer**](https://github.com/hanami/mailer) - Mail for Ruby applications
 * [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby
 
 These components are designed to be used independently or together in a Hanami application.
