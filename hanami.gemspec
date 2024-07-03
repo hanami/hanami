@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
   spec.add_dependency "bundler",          ">= 1.16", "< 3"
-  spec.add_dependency "dry-configurable", "~> 1.0", "< 2"
+  spec.add_dependency "dry-configurable", "~> 1.0", ">= 1.2.0", "< 2"
   spec.add_dependency "dry-core",         "~> 1.0", "< 2"
   spec.add_dependency "dry-inflector",    "~> 1.0", ">= 1.1.0", "< 2"
   spec.add_dependency "dry-monitor",      "~> 1.0", ">= 1.0.1", "< 2"
