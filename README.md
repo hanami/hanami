@@ -4,7 +4,7 @@ The web, with simplicity.
 
 ## Version
 
-**This branch contains the code for `hanami` 2.0.x.**
+**This branch contains the code for `hanami`: 2.2**
 
 ## Frameworks
 
