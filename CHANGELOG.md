@@ -13,6 +13,7 @@ The web, with simplicity.
 ### Changed
 
 - [Tim Riley] `target` inside providers is now the slice itself, instead of the slice's internal container (#1382)
+- Drop support for Ruby 3.0
 
 ### Fixed
 
