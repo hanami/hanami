@@ -2,6 +2,24 @@
 
 The web, with simplicity.
 
+## v2.2.0.beta1 - 2024-07-16
+
+### Added
+
+- [Tim Riley, Adam Lassek] Introduce database layer
+- [Adam Lassek] Add `Hanami::Slice.app?`, returning false for slices and true for the app (#1399)
+- [Tim Riley] Add `Slice#registered?`, an additional method delegating to the internal container. Returns true only if a component is already registered for the given, without triggering lazy loading (#1382)
+
+### Changed
+
+- [Tim Riley] `target` inside providers is now the slice itself, instead of the slice's internal container (#1382)
+
+### Fixed
+
+- [Damian C. Rossney] Allow form `label` helper to receive a symbol (#1423)
+- [Damian C. Rossney] Fix invalid input names generated when using form `fields_for_collection` helper (#1421)
+- [Tim Riley] Fix dry-logger compatibility check for versions of dry-logger >= 1.0.4 (#1384)
+
 ## v2.1.1 - 2024-05-12
 
 ### Fixed
