@@ -90,7 +90,22 @@ module Hanami
           @rom_config.register_relation(relation_class)
         end
 
-        # TODO: register mappers & commands
+        # Find and register commands
+        commands_path = target.source_path.join("db", "commands")
+        commands_path.glob("**/*.rb").each do |command_file|
+          command_name = command_file
+            .relative_path_from(commands_path)
+            .sub(Regexp.new("#{Regexp.escape(command_file.extname)}$"), "") # TODO: more efficient way?
+            .to_s
+
+          command_class = target.inflector.camelize(
+            "#{target.slice_name.name}/db/commands/#{command_name}"
+          ).then { target.inflector.constantize(_1) }
+
+          @rom_config.register_command(command_class)
+        end
+
+        # TODO: register mappers
 
         rom = ROM.container(@rom_config)
 
