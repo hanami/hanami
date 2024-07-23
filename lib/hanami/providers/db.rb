@@ -105,7 +105,20 @@ module Hanami
           @rom_config.register_command(command_class)
         end
 
-        # TODO: register mappers
+        # Find and register mappers
+        mappers_path = target.source_path.join("db", "mappers")
+        mappers_path.glob("**/*.rb").each do |mapper_file|
+          mapper_name = mapper_file
+            .relative_path_from(mappers_path)
+            .sub(Regexp.new("#{Regexp.escape(mapper_file.extname)}$"), "") # TODO: more efficient way?
+            .to_s
+
+          mapper_class = target.inflector.camelize(
+            "#{target.slice_name.name}/db/mappers/#{mapper_name}"
+          ).then { target.inflector.constantize(_1) }
+
+          @rom_config.register_mapper(mapper_class)
+        end
 
         rom = ROM.container(@rom_config)
 
