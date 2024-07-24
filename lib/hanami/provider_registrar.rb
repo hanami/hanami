@@ -23,6 +23,8 @@ module Hanami
       slice
     end
 
+    def provider_source_class = Hanami::Provider::Source
+
     def provider_source_options
       {slice: slice}
     end
