@@ -38,7 +38,7 @@ module Hanami
         action_constant = slice.inflector.camelize(
           "#{slice.inflector.underscore(slice.namespace.to_s)}#{PATH_DELIMITER}#{action_path}"
         )
-        action_file = slice.root.join("#{action_path}#{RB_EXT}")
+        action_file = "#{action_path}#{RB_EXT}"
 
         super(<<~MSG)
           Could not find action with key #{action_key.inspect} in #{slice}
