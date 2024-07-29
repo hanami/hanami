@@ -2659,7 +2659,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           f.select "book.store", option_values, options: {prompt: "Select a store"}
         end
 
-        expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled">Select a store</option><option value="it">Italy</option><option value="us">United States</option></select>)
+        expect(html).to include %(<select name="book[store]" id="book-store"><option>Select a store</option><option value="it">Italy</option><option value="us">United States</option></select>)
       end
 
       it "allows blank string" do
@@ -2667,7 +2667,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
           f.select "book.store", option_values, options: {prompt: ""}
         end
 
-        expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled"></option><option value="it">Italy</option><option value="us">United States</option></select>)
+        expect(html).to include %(<select name="book[store]" id="book-store"><option></option><option value="it">Italy</option><option value="us">United States</option></select>)
       end
 
       context "with values" do
@@ -2679,7 +2679,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
             f.select "book.store", option_values, options: {prompt: "Select a store"}
           end
 
-          expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled">Select a store</option><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
+          expect(html).to include %(<select name="book[store]" id="book-store"><option>Select a store</option><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
         end
       end
 
@@ -2693,7 +2693,7 @@ RSpec.describe Hanami::Helpers::FormHelper do
               f.select "book.store", option_values, options: {prompt: "Select a store"}
             end
 
-            expect(html).to include %(<select name="book[store]" id="book-store"><option disabled="disabled">Select a store</option><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
+            expect(html).to include %(<select name="book[store]" id="book-store"><option>Select a store</option><option value="it" selected="selected">Italy</option><option value="us">United States</option></select>)
           end
         end
 
