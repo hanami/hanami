@@ -124,7 +124,7 @@ module Hanami
         case env
         when :development, :test
           config.level = :debug
-          config.stream = File.join("log", "#{env}.log") if env == :test
+          config.stream = File.join("log", "#{env}.log")
           config.logger_constructor = method(:development_logger)
         else
           config.level = :info

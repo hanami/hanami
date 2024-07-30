@@ -40,17 +40,17 @@ RSpec.describe Hanami::Config::Logger do
   end
 
   describe "#stream" do
-    it "defaults to $stdout" do
-      expect(subject.stream).to eq($stdout)
+    it "defaults to file" do
+      expected = File.join("log", "#{subject.env}.log")
+
+      expect(subject.stream).to eq(expected)
     end
 
-    context "when :test environment" do
-      let(:env) { :test }
+    context "when :production environment" do
+      let(:env) { :production }
 
-      it "returns a file" do
-        expected = File.join("log", "test.log")
-
-        expect(subject.stream).to eq(expected)
+      it "writes to $stdout" do
+        expect(subject.stream).to eq($stdout)
       end
     end
   end
