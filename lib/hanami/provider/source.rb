@@ -5,13 +5,12 @@ module Hanami
     class Source < Dry::System::Provider::Source
       attr_reader :slice
 
-      alias_method :target_container, :slice
-      alias_method :target, :slice
-
       def initialize(slice:, **options, &block)
         @slice = slice
         super(**options, &block)
       end
+
+      def target_container = slice
     end
   end
 end
