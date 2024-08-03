@@ -2,6 +2,7 @@
 
 require "dry/configurable"
 require "dry/core"
+require_relative "../constants"
 
 module Hanami
   module Providers
@@ -15,7 +16,6 @@ module Hanami
       setting :database_url
       setting :adapter, default: :sql
       setting :adapters, mutable: true, default: Adapters.new
-      setting :relations_path, default: "relations"
 
       def initialize(...)
         super(...)
@@ -72,25 +72,13 @@ module Hanami
         start_and_import_parent_db and return if import_from_parent?
 
         # Set up DB logging for the whole app. We share the app's notifications bus across all
-        # slices, so we only need to configure the subsciprtion for DB logging just once.
+        # slices, so we only need to configure the subscription for DB logging just once.
         target.app.start :db_logging
 
-        # Find and register relations
-        relations_path = target.source_path.join(config.relations_path)
-        relations_path.glob("*.rb").each do |relation_file|
-          relation_name = relation_file
-            .relative_path_from(relations_path)
-            .basename(relation_file.extname)
-            .to_s
-
-          relation_class = target.namespace
-            .const_get(:Relations) # TODO don't hardcode
-            .const_get(target.inflector.camelize(relation_name))
-
-          @rom_config.register_relation(relation_class)
-        end
-
-        # TODO: register mappers & commands
+        # Register ROM components
+        register_rom_components :relation, "relations"
+        register_rom_components :command, File.join("db", "commands")
+        register_rom_components :mapper, File.join("db", "mappers")
 
         rom = ROM.container(@rom_config)
 
@@ -190,6 +178,22 @@ module Hanami
           remove_const :Inflector
           const_set :Inflector, Hanami.app["inflector"]
         }
+      end
+
+      def register_rom_components(component_type, path)
+        components_path = target.source_path.join(path)
+        components_path.glob("**/*.rb").each do |component_file|
+          component_name = component_file
+            .relative_path_from(components_path)
+            .sub(RB_EXT_REGEXP, "")
+            .to_s
+
+          component_class = target.inflector.camelize(
+            "#{target.slice_name.name}/#{path}/#{component_name}"
+          ).then { target.inflector.constantize(_1) }
+
+          @rom_config.public_send(:"register_#{component_type}", component_class)
+        end
       end
     end
 
