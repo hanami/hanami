@@ -52,4 +52,8 @@ module Hanami
   # @api private
   RB_EXT = ".rb"
   private_constant :RB_EXT
+
+  # @api private
+  RB_EXT_REGEXP = %r{.rb$}
+  private_constant :RB_EXT_REGEXP
 end

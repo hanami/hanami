@@ -2,6 +2,7 @@
 
 require "dry/configurable"
 require "dry/core"
+require_relative "../constants"
 
 module Hanami
   module Providers
@@ -95,7 +96,7 @@ module Hanami
         commands_path.glob("**/*.rb").each do |command_file|
           command_name = command_file
             .relative_path_from(commands_path)
-            .sub(Regexp.new("#{Regexp.escape(command_file.extname)}$"), "") # TODO: more efficient way?
+            .sub(RB_EXT_REGEXP, "")
             .to_s
 
           command_class = target.inflector.camelize(
@@ -110,7 +111,7 @@ module Hanami
         mappers_path.glob("**/*.rb").each do |mapper_file|
           mapper_name = mapper_file
             .relative_path_from(mappers_path)
-            .sub(Regexp.new("#{Regexp.escape(mapper_file.extname)}$"), "") # TODO: more efficient way?
+            .sub(RB_EXT_REGEXP, "")
             .to_s
 
           mapper_class = target.inflector.camelize(
