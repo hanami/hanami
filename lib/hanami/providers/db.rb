@@ -16,7 +16,6 @@ module Hanami
       setting :database_url
       setting :adapter, default: :sql
       setting :adapters, mutable: true, default: Adapters.new
-      setting :relations_path, default: "relations"
 
       def initialize(...)
         super(...)
@@ -77,16 +76,16 @@ module Hanami
         target.app.start :db_logging
 
         # Find and register relations
-        relations_path = target.source_path.join(config.relations_path)
-        relations_path.glob("*.rb").each do |relation_file|
+        relations_path = target.source_path.join("relations")
+        relations_path.glob("**/*.rb").each do |relation_file|
           relation_name = relation_file
             .relative_path_from(relations_path)
-            .basename(relation_file.extname)
+            .sub(RB_EXT_REGEXP, "")
             .to_s
 
-          relation_class = target.namespace
-            .const_get(:Relations) # TODO don't hardcode
-            .const_get(target.inflector.camelize(relation_name))
+          relation_class = target.inflector.camelize(
+            "#{target.slice_name.name}/relations/#{relation_name}"
+          ).then { target.inflector.constantize(_1) }
 
           @rom_config.register_relation(relation_class)
         end
