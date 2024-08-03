@@ -72,53 +72,13 @@ module Hanami
         start_and_import_parent_db and return if import_from_parent?
 
         # Set up DB logging for the whole app. We share the app's notifications bus across all
-        # slices, so we only need to configure the subsciprtion for DB logging just once.
+        # slices, so we only need to configure the subscription for DB logging just once.
         target.app.start :db_logging
 
-        # Find and register relations
-        relations_path = target.source_path.join("relations")
-        relations_path.glob("**/*.rb").each do |relation_file|
-          relation_name = relation_file
-            .relative_path_from(relations_path)
-            .sub(RB_EXT_REGEXP, "")
-            .to_s
-
-          relation_class = target.inflector.camelize(
-            "#{target.slice_name.name}/relations/#{relation_name}"
-          ).then { target.inflector.constantize(_1) }
-
-          @rom_config.register_relation(relation_class)
-        end
-
-        # Find and register commands
-        commands_path = target.source_path.join("db", "commands")
-        commands_path.glob("**/*.rb").each do |command_file|
-          command_name = command_file
-            .relative_path_from(commands_path)
-            .sub(RB_EXT_REGEXP, "")
-            .to_s
-
-          command_class = target.inflector.camelize(
-            "#{target.slice_name.name}/db/commands/#{command_name}"
-          ).then { target.inflector.constantize(_1) }
-
-          @rom_config.register_command(command_class)
-        end
-
-        # Find and register mappers
-        mappers_path = target.source_path.join("db", "mappers")
-        mappers_path.glob("**/*.rb").each do |mapper_file|
-          mapper_name = mapper_file
-            .relative_path_from(mappers_path)
-            .sub(RB_EXT_REGEXP, "")
-            .to_s
-
-          mapper_class = target.inflector.camelize(
-            "#{target.slice_name.name}/db/mappers/#{mapper_name}"
-          ).then { target.inflector.constantize(_1) }
-
-          @rom_config.register_mapper(mapper_class)
-        end
+        # Register ROM components
+        register_rom_components :relation, "relations"
+        register_rom_components :command, File.join("db", "commands")
+        register_rom_components :mapper, File.join("db", "mappers")
 
         rom = ROM.container(@rom_config)
 
@@ -218,6 +178,22 @@ module Hanami
           remove_const :Inflector
           const_set :Inflector, Hanami.app["inflector"]
         }
+      end
+
+      def register_rom_components(component_type, path)
+        components_path = target.source_path.join(path)
+        components_path.glob("**/*.rb").each do |component_file|
+          component_name = component_file
+            .relative_path_from(components_path)
+            .sub(RB_EXT_REGEXP, "")
+            .to_s
+
+          component_class = target.inflector.camelize(
+            "#{target.slice_name.name}/#{path}/#{component_name}"
+          ).then { target.inflector.constantize(_1) }
+
+          @rom_config.public_send(:"register_#{component_type}", component_class)
+        end
       end
     end
 
