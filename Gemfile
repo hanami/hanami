@@ -20,7 +20,7 @@ gem "hanami-webconsole", github: "hanami/webconsole", branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
-gem "dry-system", github: "alassek/dry-system", branch: 'provider-class-override'
+gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 gem "dry-inflector", github: "dry-rb/dry-inflector", branch: "main"
 
 # This is needed for settings specs to pass
