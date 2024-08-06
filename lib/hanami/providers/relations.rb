@@ -4,11 +4,11 @@ module Hanami
   module Providers
     # @api private
     # @since 2.2.0
-    class Relations < Dry::System::Provider::Source
+    class Relations < Hanami::Provider::Source
       def start
-        start_and_import_parent_relations and return if target.parent && target.config.db.import_from_parent
+        start_and_import_parent_relations and return if slice.parent && slice.config.db.import_from_parent
 
-        target.start :db
+        slice.start :db
 
         register_relations target["db.rom"]
       end
@@ -22,9 +22,9 @@ module Hanami
       end
 
       def start_and_import_parent_relations
-        target.parent.start :relations
+        slice.parent.start :relations
 
-        register_relations target.parent["db.rom"]
+        register_relations slice.parent["db.rom"]
       end
     end
   end

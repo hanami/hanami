@@ -19,8 +19,10 @@ module Hanami
       @slice = slice
     end
 
-    def target_container
-      slice
+    def provider_source_class = Hanami::Provider::Source
+
+    def provider_source_options
+      {slice: slice}
     end
   end
 end

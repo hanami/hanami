@@ -9,7 +9,7 @@ module Hanami
     #
     # @api private
     # @since 2.0.0
-    class Routes < Dry::System::Provider::Source
+    class Routes < Hanami::Provider::Source
       # @api private
       def prepare
         require "hanami/slice/routes_helper"
@@ -21,7 +21,7 @@ module Hanami
         # router during the process of booting. This ensures the router's resolver can run strict
         # action key checks once when it runs on a fully booted slice.
         register :routes do
-          Hanami::Slice::RoutesHelper.new(target.router)
+          Hanami::Slice::RoutesHelper.new(slice.router)
         end
       end
     end

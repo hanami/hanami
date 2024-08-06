@@ -8,7 +8,7 @@ module Hanami
   module Providers
     # @api private
     # @since 2.2.0
-    class DB < Dry::System::Provider::Source
+    class DB < Hanami::Provider::Source
       extend Dry::Core::Cache
 
       include Dry::Configurable(config_class: Providers::DB::Config)
@@ -72,8 +72,8 @@ module Hanami
         start_and_import_parent_db and return if import_from_parent?
 
         # Set up DB logging for the whole app. We share the app's notifications bus across all
-        # slices, so we only need to configure the subscription for DB logging just once.
-        target.app.start :db_logging
+        # slices, so we only need to configure the subsciprtion for DB logging just once.
+        slice.app.start :db_logging
 
         # Register ROM components
         register_rom_components :relation, "relations"
@@ -86,7 +86,7 @@ module Hanami
       end
 
       def stop
-        target["db.rom"].disconnect
+        slice["db.rom"].disconnect
       end
 
       # @api private
@@ -94,7 +94,7 @@ module Hanami
         return @database_url if instance_variable_defined?(:@database_url)
 
         # For "main" slice, expect MAIN__DATABASE_URL
-        slice_url_var = "#{target.slice_name.name.gsub("/", "__").upcase}__DATABASE_URL"
+        slice_url_var = "#{slice.slice_name.name.gsub("/", "__").upcase}__DATABASE_URL"
         chosen_url = config.database_url || ENV[slice_url_var] || ENV["DATABASE_URL"]
         chosen_url &&= Hanami::DB::Testing.database_url(chosen_url) if Hanami.env?(:test)
 
@@ -106,7 +106,7 @@ module Hanami
       def parent_db_provider
         return @parent_db_provider if instance_variable_defined?(:@parent_db_provider)
 
-        @parent_db_provider = target.parent && target.parent.container.providers[:db]
+        @parent_db_provider = slice.parent && slice.parent.container.providers[:db]
       end
 
       def apply_parent_config
@@ -134,7 +134,7 @@ module Hanami
       end
 
       def apply_parent_config?
-        target.config.db.configure_from_parent && parent_db_provider
+        slice.config.db.configure_from_parent && parent_db_provider
       end
 
       def configure_for_database
@@ -145,25 +145,25 @@ module Hanami
       end
 
       def import_from_parent?
-        target.config.db.import_from_parent && target.parent
+        slice.config.db.import_from_parent && slice.parent
       end
 
       def prepare_and_import_parent_db
         return unless parent_db_provider
 
-        target.parent.prepare :db
-        @rom_config = target.parent["db.config"]
+        slice.parent.prepare :db
+        @rom_config = slice.parent["db.config"]
 
-        register "config", (@rom_config = target.parent["db.config"])
-        register "gateway", target.parent["db.gateway"]
+        register "config", (@rom_config = slice.parent["db.config"])
+        register "gateway", slice.parent["db.gateway"]
       end
 
       def start_and_import_parent_db
         return unless parent_db_provider
 
-        target.parent.start :db
+        slice.parent.start :db
 
-        register "rom", target.parent["db.rom"]
+        register "rom", slice.parent["db.rom"]
       end
 
       # ROM 5.3 doesn't have a configurable inflector.

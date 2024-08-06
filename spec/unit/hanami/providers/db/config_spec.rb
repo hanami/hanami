@@ -7,6 +7,7 @@ RSpec.describe "Hanami::Providers::DB.config", :app_integration do
   subject(:config) { provider.source.config }
 
   let(:provider) {
+    Hanami.app.prepare
     Hanami.app.configure_provider(:db)
     Hanami.app.container.providers[:db]
   }
