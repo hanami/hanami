@@ -84,13 +84,9 @@ RSpec.describe "DB / Slices", :app_integration do
         end
       RUBY
 
-      write "config/db/.keep", ""
-
       write "config/providers/db.rb", <<~RUBY
         Hanami.app.configure_provider :db do
           config.adapter :sql do |a|
-            # a.skip_defaults
-            # a.plugin relation: :auto_restrictions
             a.extension :exclude_or_null
           end
         end
@@ -119,6 +115,7 @@ RSpec.describe "DB / Slices", :app_integration do
       write "slices/main/config/providers/db.rb", <<~RUBY
         Main::Slice.configure_provider :db do
           config.adapter :sql do |a|
+            a.skip_defaults :extensions
             a.extensions.clear
           end
         end
@@ -135,6 +132,9 @@ RSpec.describe "DB / Slices", :app_integration do
       RUBY
 
       ENV["DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("database.db").to_s
+
+      # Extra gateway for app only. Unlike other config, not copied to child slices.
+      ENV["DATABASE_URL__EXTRA"] = "sqlite://" + Pathname(@dir).realpath.join("extra.db").to_s
 
       require "hanami/prepare"
 
@@ -166,6 +166,11 @@ RSpec.describe "DB / Slices", :app_integration do
       end
       migration.apply(gateway, :up)
       gateway.connection.execute("INSERT INTO posts (title) VALUES ('Together breakfast')")
+
+      # Gateways on app are not passed down to child slices
+      expect(Hanami.app["db.rom"].gateways.keys).to eq [:extra, :default]
+      expect(Main::Slice["db.rom"].gateways.keys).to eq [:default]
+      expect(Admin::Slice["db.rom"].gateways.keys).to eq [:default]
 
       # Admin slice has appropriate relations registered, and can access data
       expect(Admin::Slice["db.rom"].relations[:posts].to_a).to eq [{id: 1, title: "Together breakfast"}]

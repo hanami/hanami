@@ -19,13 +19,19 @@ module Hanami
 
         # @api private
         # @since 2.2.0
+        def self.new_adapter(name)
+          ADAPTER_CLASSES[name].new
+        end
+
+        # @api private
+        # @since 2.2.0
         attr_reader :adapters
 
         # @api private
         # @since 2.2.0
         def initialize
           @adapters = Hash.new do |hsh, key|
-            hsh[key] = ADAPTER_CLASSES[key].new
+            hsh[key] = self.class.new_adapter(key)
           end
         end
 

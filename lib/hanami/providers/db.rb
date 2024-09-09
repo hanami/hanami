@@ -13,20 +13,25 @@ module Hanami
 
       include Dry::Configurable(config_class: Providers::DB::Config)
 
-      setting :database_url
-      setting :adapter, default: :sql
       setting :adapters, mutable: true, default: Adapters.new
+      setting :gateways, default: {}
 
       def initialize(...)
         super(...)
 
-        @configured_for_database = false
+        @config_finalized = false
       end
 
       def finalize_config
-        apply_parent_config and return if apply_parent_config?
+        return if @config_finalized
 
-        configure_for_database
+        apply_parent_config if apply_parent_config?
+
+        configure_gateways
+
+        @config_finalized = true
+
+        self
       end
 
       def prepare
@@ -38,36 +43,32 @@ module Hanami
 
         require "hanami-db"
 
-        unless database_url
-          raise Hanami::ComponentLoadError, "A database_url is required to start :db."
+        gateways = prepare_gateways
+
+        if gateways[:default]
+          register "gateway", gateways[:default]
+        elsif gateways.length == 1
+          register "gateway", gateways.values.first
+        end
+        gateways.each do |key, gateway|
+          register "gateways.#{key}", gateway
         end
 
-        # Avoid making spurious connections by reusing identically configured gateways across slices
-        gateway = fetch_or_store(database_url, config.gateway_cache_keys) {
-          ROM::Gateway.setup(
-            config.adapter,
-            database_url,
-            **config.gateway_options
-          )
-        }
+        @rom_config = ROM::Configuration.new(gateways)
 
-        @rom_config = ROM::Configuration.new(gateway)
-
-        config.each_plugin do |plugin_spec, config_block|
+        config.each_plugin do |adapter_name, plugin_spec, config_block|
           if config_block
-            @rom_config.plugin(config.adapter, plugin_spec) do |plugin_config|
+            @rom_config.plugin(adapter_name, plugin_spec) do |plugin_config|
               instance_exec(plugin_config, &config_block)
             end
           else
-            @rom_config.plugin(config.adapter, plugin_spec)
+            @rom_config.plugin(adapter_name, plugin_spec)
           end
         end
 
         register "config", @rom_config
-        register "gateway", gateway
       end
 
-      # @api private
       def start
         start_and_import_parent_db and return if import_from_parent?
 
@@ -90,15 +91,10 @@ module Hanami
       end
 
       # @api private
-      def database_url
-        return @database_url if instance_variable_defined?(:@database_url)
-
-        # For "main" slice, expect MAIN__DATABASE_URL
-        slice_url_var = "#{slice.slice_name.name.gsub("/", "__").upcase}__DATABASE_URL"
-        chosen_url = config.database_url || ENV[slice_url_var] || ENV["DATABASE_URL"]
-        chosen_url &&= Hanami::DB::Testing.database_url(chosen_url) if Hanami.env?(:test)
-
-        @database_url = chosen_url
+      # @since 2.2.0
+      def database_urls
+        finalize_config
+        config.gateways.transform_values { _1.database_url }
       end
 
       private
@@ -115,6 +111,9 @@ module Hanami
         self.class.settings.keys.each do |key|
           # Preserve settings already configured locally
           next if config.configured?(key)
+
+          # Do not copy gateways, these are always configured per slice
+          next if key == :gateways
 
           # Skip adapter config, we handle this below
           next if key == :adapters
@@ -135,13 +134,6 @@ module Hanami
 
       def apply_parent_config?
         slice.config.db.configure_from_parent && parent_db_provider
-      end
-
-      def configure_for_database
-        return if @configured_for_database
-
-        config.adapter(config.adapter_name).configure_for_database(database_url)
-        @configured_for_database = true
       end
 
       def import_from_parent?
@@ -178,6 +170,69 @@ module Hanami
           remove_const :Inflector
           const_set :Inflector, Hanami.app["inflector"]
         }
+      end
+
+      def configure_gateways
+        # Create gateway configs for gateways detected from database_url ENV vars
+        database_urls_from_env = detect_database_urls_from_env
+        database_urls_from_env.keys.each do |key|
+          config.gateways[key] ||= Gateway.new
+        end
+
+        # Create a single default gateway if none is configured or detected from database URLs
+        config.gateways[:default] = Gateway.new if config.gateways.empty?
+
+        config.gateways.each do |key, gw_config|
+          gw_config.database_url ||= database_urls_from_env.fetch(key) {
+            raise Hanami::ComponentLoadError, "A database_url for gateway #{key} is required to start :db."
+          }
+
+          gw_config.configure_adapter(config.adapters)
+        end
+      end
+
+      def prepare_gateways
+        config.gateways.transform_values { |gw_config|
+          # Avoid spurious connections by reusing identically configured gateways across slices
+          gateway = fetch_or_store(gw_config.cache_keys) {
+            ROM::Gateway.setup(
+              gw_config.adapter_name,
+              gw_config.database_url,
+              **gw_config.adapter.gateway_options
+            )
+          }
+        }
+      end
+
+      def detect_database_urls_from_env
+        database_urls = {}
+
+        env_var_prefix = slice.slice_name.name.gsub("/", "__").upcase + "__" unless slice.app?
+
+        # Build gateway URLs from ENV vars with specific gateway named suffixes
+        gateway_prefix = "#{env_var_prefix}DATABASE_URL__"
+        ENV.select { |(k, _)| k.start_with?(gateway_prefix) }
+          .each do |(var, _)|
+            gateway_name = var.split(gateway_prefix).last.downcase
+
+            database_urls[gateway_name.to_sym] = ENV[var]
+          end
+
+        # Set the default gateway from ENV var without suffix
+        if !database_urls.key?(:default)
+          fallback_vars = ["#{env_var_prefix}DATABASE_URL", "DATABASE_URL"].uniq
+
+          fallback_vars.each do |var|
+            url = ENV[var]
+            database_urls[:default] = url and break if url
+          end
+        end
+
+        if Hanami.env?(:test)
+          database_urls.transform_values! { Hanami::DB::Testing.database_url(_1) }
+        end
+
+        database_urls
       end
 
       def register_rom_components(component_type, path)

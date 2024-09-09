@@ -19,14 +19,6 @@ RSpec.describe "Hanami::Providers::DB / Config / Default config", :app_integrati
     end
   end
 
-  specify "database_url = nil" do
-    expect(config.database_url).to be nil
-  end
-
-  specify "adapter = :sql" do
-    expect(config.adapter).to eq :sql
-  end
-
   specify %(relations_path = "relations") do
     expect(config)
   end
