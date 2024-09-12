@@ -206,12 +206,13 @@ module Hanami
 
       def required_database_driver_gem(database_url)
         conn_string_gem_map = {
+          "sqlite": "sqlite3",
           "mysql": "mysql2",
           "postgres": "pg"
         }
 
         db_engine = database_url.split(":")[0]&.to_sym
-        required_gem = conn_string_gem_map.fetch(db_engine, "sqlite3")
+        required_gem = conn_string_gem_map.fetch(db_engine, "sqlite")
 
         required_gem
       end
