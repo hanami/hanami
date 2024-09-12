@@ -42,6 +42,10 @@ module Hanami
           raise Hanami::ComponentLoadError, "A database_url is required to start :db."
         end
 
+        unless db_driver_gem_installed?(database_url)
+          raise Hanami::MissingDatabaseDriverGem, "The \"#{required_database_driver_gem(database_url)}\" gem is not installed."
+        end
+
         # Avoid making spurious connections by reusing identically configured gateways across slices
         gateway = fetch_or_store(database_url, config.gateway_cache_keys) {
           ROM::Gateway.setup(
@@ -194,6 +198,22 @@ module Hanami
 
           @rom_config.public_send(:"register_#{component_type}", component_class)
         end
+      end
+
+      def db_driver_gem_installed?(database_url)
+        Gem.loaded_specs.has_key? required_database_driver_gem(database_url)
+      end
+
+      def required_database_driver_gem(database_url)
+        conn_string_gem_map = {
+          "mysql": "mysql2",
+          "postgres": "pg"
+        }
+
+        db_engine = database_url.split(":")[0]&.to_sym
+        required_gem = conn_string_gem_map.fetch(db_engine, "sqlite3")
+
+        required_gem
       end
     end
 

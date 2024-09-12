@@ -32,4 +32,12 @@ module Hanami
   # @api public
   # @since 2.0.0
   UnsupportedMiddlewareSpecError = Class.new(Error)
+
+  # Error raised required database driver gem is not bundled.
+  #
+  # @see Hanami::Providers::DB#prepare
+  #
+  # @api public
+  # @since 2.2.0
+  MissingDatabaseDriverGem = Class.new(Error)
 end
