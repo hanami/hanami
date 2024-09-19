@@ -168,7 +168,7 @@ RSpec.describe "DB / Slices", :app_integration do
       gateway.connection.execute("INSERT INTO posts (title) VALUES ('Together breakfast')")
 
       # Gateways on app are not passed down to child slices
-      expect(Hanami.app["db.rom"].gateways.keys).to eq [:extra, :default]
+      expect(Hanami.app["db.rom"].gateways.keys).to eq [:default, :extra]
       expect(Main::Slice["db.rom"].gateways.keys).to eq [:default]
       expect(Admin::Slice["db.rom"].gateways.keys).to eq [:default]
 

@@ -182,6 +182,12 @@ module Hanami
         # Create a single default gateway if none is configured or detected from database URLs
         config.gateways[:default] = Gateway.new if config.gateways.empty?
 
+        # Leave gateways in a stable order: :default first, followed by others in sort order
+        if config.gateways.length > 1
+          gateways = config.gateways
+          config.gateways = {default: gateways[:default], **gateways.sort.to_h}.compact
+        end
+
         config.gateways.each do |key, gw_config|
           gw_config.database_url ||= database_urls_from_env.fetch(key) {
             raise Hanami::ComponentLoadError, "A database_url for gateway #{key} is required to start :db."
