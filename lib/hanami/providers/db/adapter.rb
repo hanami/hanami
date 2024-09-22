@@ -31,6 +31,13 @@ module Hanami
         end
 
         # @api private
+        def configure_from_adapter(other_adapter)
+          return if skip_defaults?
+
+          plugins.concat(other_adapter.plugins).uniq! unless skip_defaults?(:plugins)
+        end
+
+        # @api private
         def configure_for_database(database_url)
         end
 

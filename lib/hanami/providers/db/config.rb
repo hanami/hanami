@@ -12,6 +12,14 @@ module Hanami
 
         # @api public
         # @since 2.2.0
+        def gateway(key)
+          gateway = (gateways[key] ||= Gateway.new)
+          yield gateway if block_given?
+          gateway
+        end
+
+        # @api public
+        # @since 2.2.0
         def adapter_name
           self[:adapter]
         end
@@ -30,34 +38,22 @@ module Hanami
         # @since 2.2.0
         def any_adapter
           adapter = (adapters[nil] ||= Adapter.new)
-          yield adapter  if block_given?
+          yield adapter if block_given?
           adapter
         end
 
         # @api private
-        # @since 2.2.0
-        def gateway_cache_keys
-          adapters[adapter_name].gateway_cache_keys
-        end
-
-        # @api private
-        # @since 2.2.0
-        def gateway_options
-          adapters[adapter_name].gateway_options
-        end
-
-        # @api public
-        # @since 2.2.0
         def each_plugin
-          universal_plugins = adapters[nil].plugins
-          adapter_plugins = adapters[adapter_name].plugins
-
-          plugins = universal_plugins + adapter_plugins
-
           return to_enum(__method__) unless block_given?
 
-          plugins.each do |plugin_spec, config_block|
-            yield plugin_spec, config_block
+          universal_plugins = adapters[nil].plugins
+
+          gateways.values.group_by(&:adapter_name).each do |adapter_name, adapter_gateways|
+            per_adapter_plugins = adapter_gateways.map { _1.adapter.plugins }.flatten(1)
+
+            (universal_plugins + per_adapter_plugins).uniq.each do |plugin_spec, config_block|
+              yield adapter_name, plugin_spec, config_block
+            end
           end
         end
       end

@@ -19,14 +19,6 @@ RSpec.describe "Hanami::Providers::DB.config", :app_integration do
     end
   end
 
-  describe "#adapter_name" do
-    it "aliases #adapter" do
-      expect { config.adapter = :yaml }
-        .to change { config.adapter_name }
-        .to :yaml
-    end
-  end
-
   describe "#adapter" do
     it "adds an adapter" do
       expect { config.adapter(:yaml) }
@@ -159,49 +151,6 @@ RSpec.describe "Hanami::Providers::DB.config", :app_integration do
             .and change { adapter.extensions }.to([])
         end
       end
-
-      # TODO clear
-    end
-  end
-
-  describe "#gateway_cache_keys" do
-    it "returns the cache keys from the currently configured adapter" do
-      config.adapter(:sql) { |a| a.clear; a.extension :foo }
-      config.adapter = :sql
-
-      expect(config.gateway_cache_keys).to eq(config.adapter(:sql).gateway_cache_keys)
-    end
-  end
-
-  describe "#gateway_options" do
-    it "returns the options from the currently configured adapter" do
-      config.adapter(:sql) { |a| a.clear; a.extension :foo }
-      config.adapter = :sql
-
-      expect(config.gateway_options).to eq(config.adapter(:sql).gateway_options)
-    end
-  end
-
-  describe "#each_plugin" do
-    before do
-      config.any_adapter { |a| a.plugin relations: :any_foo }
-      config.adapter(:yaml) { |a| a.plugin relations: :yaml_foo }
-      config.adapter = :yaml
-    end
-
-    it "yields the plugins specified for any adapter as well as the currently configured adapter" do
-      expect { |b| config.each_plugin(&b) }
-        .to yield_successive_args(
-          [{relations: :any_foo}, nil],
-          [{relations: :yaml_foo}, nil]
-        )
-    end
-
-    it "returns the plugins as an enumerator if no block is given" do
-      expect(config.each_plugin.to_a).to eq [
-        [{relations: :any_foo}, nil],
-        [{relations: :yaml_foo}, nil]
-      ]
     end
   end
 end

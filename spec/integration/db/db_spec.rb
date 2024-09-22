@@ -39,6 +39,7 @@ RSpec.describe "DB", :app_integration do
 
       expect(Hanami.app["db.config"]).to be_an_instance_of ROM::Configuration
       expect(Hanami.app["db.gateway"]).to be_an_instance_of ROM::SQL::Gateway
+      expect(Hanami.app["db.gateways.default"]).to be Hanami.app["db.gateway"]
 
       # Manually run a migration and add a test record
       gateway = Hanami.app["db.gateway"]
@@ -90,6 +91,7 @@ RSpec.describe "DB", :app_integration do
 
       expect(Hanami.app["db.config"]).to be_an_instance_of ROM::Configuration
       expect(Hanami.app["db.gateway"]).to be_an_instance_of ROM::SQL::Gateway
+      expect(Hanami.app["db.gateways.default"]).to be Hanami.app["db.gateway"]
 
       # Manually run a migration and add a test record
       gateway = Hanami.app["db.gateway"]
@@ -117,8 +119,6 @@ RSpec.describe "DB", :app_integration do
 
         module TestApp
           class App < Hanami::App
-            config.inflections do |inflections|
-            end
           end
         end
       RUBY
@@ -180,11 +180,10 @@ RSpec.describe "DB", :app_integration do
 
       write "config/providers/db.rb", <<~RUBY
         Hanami.app.configure_provider :db do
-          configure do |config|
-            # In this test, we're not setting an ENV["DATABASE_URL"], and instead configuring
-            # it via the provider source config, to prove that this works
-
-            config.database_url = "sqlite::memory"
+          # In this test, we're not setting an ENV["DATABASE_URL"], and instead configuring
+          # it via the provider source config, to prove that this works
+          config.gateway :default do |gw|
+            gw.database_url = "sqlite::memory"
           end
         end
       RUBY
