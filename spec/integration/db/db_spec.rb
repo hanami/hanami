@@ -132,6 +132,9 @@ RSpec.describe "DB", :app_integration do
   end
 
   it "raises an error when the database driver gem is missing" do
+    allow(Hanami).to receive(:bundled?).and_call_original
+    expect(Hanami).to receive(:bundled?).with("pg").and_return false
+
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"
@@ -148,7 +151,9 @@ RSpec.describe "DB", :app_integration do
 
       require "hanami/prepare"
 
-      expect { Hanami.app.prepare :db }.to raise_error(Hanami::MissingDatabaseDriverGem, /pg/)
+      expect { Hanami.app.prepare :db }.to raise_error(Hanami::ComponentLoadError) { |error|
+        expect(error.message).to include %(The "pg" gem is required)
+      }
     end
   end
 
