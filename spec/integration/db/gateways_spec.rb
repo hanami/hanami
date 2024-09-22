@@ -229,6 +229,8 @@ RSpec.describe "DB / Gateways", :app_integration do
 
       # Get the provider source and finalize config, because the tests here aren't set up to handle
       # connections to a running postgres database
+      allow(Hanami).to receive(:bundled?).and_call_original
+      allow(Hanami).to receive(:bundled?).with("pg").and_return true
       provider_source = Hanami.app.container.providers[:db].source
       provider_source.finalize_config
 
