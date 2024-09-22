@@ -23,6 +23,20 @@ module Hanami
         end
 
         # @api private
+        def configure_from_adapter(other_adapter)
+          super
+
+          return if skip_defaults?
+
+          # As part of gateway configuration, every gateway will receive the "any adapter" here,
+          # which is a plain `Adapter`, not an `SQLAdapter`. Its configuration will have been merged
+          # by `super`, so no further work is required.
+          return unless other_adapter.is_a?(self.class)
+
+          extensions.concat(other_adapter.extensions).uniq! unless skip_defaults?(:extensions)
+        end
+
+        # @api private
         def configure_for_database(database_url)
           return if skip_defaults?
 
@@ -34,12 +48,18 @@ module Hanami
         private def configure_plugins
           return if skip_defaults?(:plugins)
 
-          plugin relations: :instrumentation do |plugin|
-            plugin.notifications = target["notifications"]
-          end
+          # Configure the plugin via a frozen proc, so it can be properly uniq'ed when configured
+          # for multiple gateways. See `Hanami::Providers::DB::Config#each_plugin`.
+          plugin(relations: :instrumentation, &INSTRUMENTATION_PLUGIN_CONFIG)
 
           plugin relations: :auto_restrictions
         end
+
+        # @api private
+        INSTRUMENTATION_PLUGIN_CONFIG = -> plugin {
+          plugin.notifications = target["notifications"]
+        }.freeze
+        private_constant :INSTRUMENTATION_PLUGIN_CONFIG
 
         # @api private
         private def configure_extensions(database_url)
@@ -53,7 +73,7 @@ module Hanami
           )
 
           # Extensions for specific databases
-          if database_url.to_s.start_with?("postgresql://")
+          if database_url.to_s.start_with?(%r{postgres(ql)*://}) # FIXME: what is the canonical postgres URL?
             extension(
               :pg_array,
               :pg_enum,
