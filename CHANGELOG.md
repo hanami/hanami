@@ -2,6 +2,20 @@
 
 The web, with simplicity.
 
+## v2.2.0.beta2 - 2024-09-26
+
+### Added
+
+- [Tim Riley] Support multiple gateways within each slice's `:db` provider (#1452)
+- [Tim Riley] Register ROM commands and mappers in `db/commands/` and `db/mappers/`. Support registration of components from deeply nested files within these directories. (#1448)
+- [Adam Lassek, Tim Riley] Make `slice` available inside providers (as an alias for `target`) (#1446)
+
+### Changed
+
+- [Tim Riley] Register deeply nested relation files with ROM (#1448)
+- [Kyle Plump] Raise helpful error when preparing `:db` provider if the relevant driver gem for the configured database type is not installed (#1453)
+- [Sean Collins] Remove "disabled" attribute on the `<option>` generated via the `select` helper's `prompt:`, so it shows properly on the select box in the browser (#1444)
+
 ## v2.2.0.beta1 - 2024-07-16
 
 ### Added
