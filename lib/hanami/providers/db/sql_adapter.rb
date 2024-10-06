@@ -85,7 +85,7 @@ module Hanami
 
         # @api private
         def gateway_options
-          {extensions: config.extensions}
+          {extensions: extensions}
         end
 
         # @api public
