@@ -73,7 +73,7 @@ module Hanami
           )
 
           # Extensions for specific databases
-          if database_url.to_s.start_with?(%r{postgres(ql)*://}) # FIXME: what is the canonical postgres URL?
+          if database_url.to_s.start_with?(%r{postgres(ql)*://})
             extension(
               :pg_array,
               :pg_enum,
