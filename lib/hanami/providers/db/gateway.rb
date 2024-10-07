@@ -15,6 +15,7 @@ module Hanami
         setting :database_url
         setting :adapter_name, default: :sql
         setting :adapter, mutable: true
+        setting :connection_options, default: {}
 
         # @api public
         # @since 2.2.0
@@ -34,6 +35,22 @@ module Hanami
           end
         end
 
+        # @api public
+        # @since 2.2.0
+        def connection_options(**options)
+          if options.any?
+            config.connection_options.merge!(options)
+          end
+
+          config.connection_options
+        end
+
+        # @api public
+        # @since 2.2.0
+        def options
+          {**connection_options, **adapter.gateway_options}
+        end
+
         # @api private
         def configure_adapter(default_adapters)
           default_adapter = default_adapters[config.adapter_name]
@@ -48,7 +65,7 @@ module Hanami
 
         # @api private
         def cache_keys
-          [config.database_url, config.adapter.gateway_cache_keys]
+          [config.database_url, config.connection_options, config.adapter.gateway_cache_keys]
         end
 
         private

@@ -81,7 +81,48 @@ RSpec.describe "DB / Gateways", :app_integration do
     end
   end
 
+  it "configures connection options on their respective gateways" do
+    with_tmp_directory(@dir = Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
 
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      write "db/.keep", ""
+
+      write "config/providers/db.rb", <<~RUBY
+        Hanami.app.configure_provider :db do
+          config.gateway :default do |gw|
+            gw.connection_options timeout: 10_000
+
+            gw.adapter :sql do |a|
+              a.skip_defaults :extensions
+              a.extension :error_sql
+            end
+          end
+
+          config.gateway :extra do |gw|
+            gw.connection_options readonly: true
+          end
+        end
+      RUBY
+
+      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL__EXTRA"] = "sqlite::memory"
+
+      require "hanami/prepare"
+
+      default = Hanami.app["db.gateways.default"]
+      extra   = Hanami.app["db.gateways.extra"]
+
+      expect(default.options).to eq({timeout: 10_000, extensions: [:error_sql]})
+      expect(extra.options).to eq({readonly: true, extensions: %i[caller_logging error_sql sql_comments]})
+    end
+  end
 
   it "exposes all database URLs as #database_urls on the provider source (for CLI commands)" do
     with_tmp_directory(@dir = Dir.mktmpdir) do

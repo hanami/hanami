@@ -207,7 +207,7 @@ module Hanami
             ROM::Gateway.setup(
               gw_config.adapter_name,
               gw_config.database_url,
-              **gw_config.adapter.gateway_options
+              **gw_config.options
             )
           }
         }
