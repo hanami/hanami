@@ -25,6 +25,9 @@ gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 # This is needed for settings specs to pass
 gem "dry-types"
 
+# For testing operation integrations
+gem "dry-operation", github: "dry-rb/dry-operation", branch: "main"
+
 # For testing the DB layer
 gem "sqlite3"
 
