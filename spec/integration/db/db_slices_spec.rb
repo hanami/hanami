@@ -17,6 +17,7 @@ RSpec.describe "DB / Slices", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = File::NULL
           end
         end
       RUBY
@@ -39,6 +40,7 @@ RSpec.describe "DB / Slices", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = File::NULL
           end
         end
       RUBY
@@ -80,6 +82,7 @@ RSpec.describe "DB / Slices", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = File::NULL
           end
         end
       RUBY
@@ -213,6 +216,7 @@ RSpec.describe "DB / Slices", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = File::NULL
           end
         end
       RUBY
@@ -253,6 +257,7 @@ RSpec.describe "DB / Slices", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = File::NULL
           end
         end
       RUBY
