@@ -20,15 +20,7 @@ module Hanami
 
         # @api public
         # @since 2.2.0
-        def adapter_name
-          self[:adapter]
-        end
-
-        # @api public
-        # @since 2.2.0
-        def adapter(name = Undefined)
-          return adapter_name if name.eql?(Undefined)
-
+        def adapter(name)
           adapter = (adapters[name] ||= Adapter.new)
           yield adapter if block_given?
           adapter
