@@ -34,24 +34,14 @@ module Hanami
           adapter
         end
 
-        # @api public
-        # @since 2.2.0
-        def any_adapter
-          adapter = (adapters[nil] ||= Adapter.new)
-          yield adapter if block_given?
-          adapter
-        end
-
         # @api private
         def each_plugin
           return to_enum(__method__) unless block_given?
 
-          universal_plugins = adapters[nil].plugins
-
           gateways.values.group_by(&:adapter_name).each do |adapter_name, adapter_gateways|
-            per_adapter_plugins = adapter_gateways.map { _1.adapter.plugins }.flatten(1)
+            per_adapter_plugins = adapter_gateways.map { _1.adapter.plugins }.flatten(1).uniq
 
-            (universal_plugins + per_adapter_plugins).uniq.each do |plugin_spec, config_block|
+            per_adapter_plugins.each do |plugin_spec, config_block|
               yield adapter_name, plugin_spec, config_block
             end
           end

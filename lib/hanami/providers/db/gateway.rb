@@ -57,7 +57,7 @@ module Hanami
           config.adapter ||= default_adapter.dup
 
           config.adapter.configure_from_adapter(default_adapter)
-          config.adapter.configure_from_adapter(default_adapters[nil])
+
           config.adapter.configure_for_database(config.database_url)
 
           self
