@@ -21,7 +21,7 @@ module Hanami
         # @api public
         # @since 2.2.0
         def adapter(name)
-          adapter = (adapters[name] ||= Adapter.new)
+          adapter = adapters.adapter(name)
           yield adapter if block_given?
           adapter
         end

@@ -53,7 +53,7 @@ module Hanami
 
         # @api private
         def configure_adapter(default_adapters)
-          default_adapter = default_adapters[config.adapter_name]
+          default_adapter = default_adapters.find(config.adapter_name)
           config.adapter ||= default_adapter.dup
 
           config.adapter.configure_from_adapter(default_adapter)
