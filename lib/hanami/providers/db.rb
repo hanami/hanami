@@ -203,7 +203,7 @@ module Hanami
       def prepare_gateways
         config.gateways.transform_values { |gw_config|
           # Avoid spurious connections by reusing identically configured gateways across slices
-          gateway = fetch_or_store(gw_config.cache_keys) {
+          fetch_or_store(gw_config.cache_keys) {
             ROM::Gateway.setup(
               gw_config.adapter_name,
               gw_config.database_url,
