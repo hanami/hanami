@@ -48,7 +48,7 @@ module Hanami
         # @api public
         # @since 2.2.0
         def options
-          {**connection_options, **adapter.gateway_options}
+          {**connection_options, **config.adapter.gateway_options}
         end
 
         # @api private
