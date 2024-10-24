@@ -13,7 +13,7 @@ module Hanami
         # @api public
         # @since 2.2.0
         def extension(*extensions)
-          self.extensions.concat(extensions)
+          self.extensions.concat(extensions).uniq!
         end
 
         # @api public

@@ -48,16 +48,16 @@ module Hanami
         # @api public
         # @since 2.2.0
         def options
-          {**connection_options, **adapter.gateway_options}
+          {**connection_options, **config.adapter.gateway_options}
         end
 
         # @api private
         def configure_adapter(default_adapters)
-          default_adapter = default_adapters[config.adapter_name]
+          default_adapter = default_adapters.find(config.adapter_name)
           config.adapter ||= default_adapter.dup
 
           config.adapter.configure_from_adapter(default_adapter)
-          config.adapter.configure_from_adapter(default_adapters[nil])
+
           config.adapter.configure_for_database(config.database_url)
 
           self

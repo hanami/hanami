@@ -32,19 +32,6 @@ RSpec.describe "Hanami::Providers::DB.config", :app_integration do
     end
   end
 
-  describe "#any_adapter" do
-    it "adds an adapter keyed without a name" do
-      expect { config.any_adapter }
-        .to change { config.adapters.to_h }
-        .to hash_including(nil)
-    end
-
-    it "yields the adapter for configuration" do
-      expect { |b| config.any_adapter(&b) }
-        .to yield_with_args(an_instance_of(Hanami::Providers::DB::Adapter))
-    end
-  end
-
   describe "adapters" do
     subject(:adapter) { config.adapter(:yaml) }
 

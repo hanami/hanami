@@ -30,9 +30,7 @@ module Hanami
         # @api private
         # @since 2.2.0
         def initialize
-          @adapters = Hash.new do |hsh, key|
-            hsh[key] = self.class.new_adapter(key)
-          end
+          @adapters = {}
         end
 
         # @api private
@@ -43,6 +41,24 @@ module Hanami
           source.adapters.each do |key, val|
             @adapters[key] = val.dup
           end
+        end
+
+        # @api private
+        # @since 2.2.0
+        def adapter(key)
+          adapters[key] ||= new(key)
+        end
+
+        # @api private
+        # @since 2.2.0
+        def find(key)
+          adapters.fetch(key) { new(key) }
+        end
+
+        # @api private
+        # @since 2.2.0
+        def new(key)
+          self.class.new_adapter(key)
         end
       end
     end
