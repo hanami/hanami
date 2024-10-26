@@ -196,7 +196,7 @@ RSpec.describe "DB / Gateways", :app_integration do
     end
   end
 
-  it "combines ROM plugins from the default adapter and all gateways" do
+  it "combines ROM plugins from both default adapter and gateway-configured adapters" do
     with_tmp_directory(@dir = Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"

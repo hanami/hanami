@@ -113,7 +113,7 @@ module Hanami
           # Preserve settings already configured locally
           next if config.configured?(key)
 
-          # Do not copy gateways, these are always configured per slice
+          # Skip gateway config, we handle this in #configure_gateways
           next if key == :gateways
 
           # Skip adapter config, we handle this below
@@ -123,12 +123,12 @@ module Hanami
         end
 
         parent_db_provider.source.config.adapters.each do |adapter_name, parent_adapter|
-          adapter = config.adapters[adapter_name]
+          adapter = config.adapter(adapter_name)
 
           adapter.class.settings.keys.each do |key|
             next if adapter.config.configured?(key)
 
-            adapter.config[key] = parent_adapter.config[key]
+            adapter.config[key] = parent_adapter.config[key].dup
           end
         end
       end
@@ -196,7 +196,29 @@ module Hanami
 
           ensure_database_gem(gw_config.database_url)
 
+          apply_parent_gateway_config(key, gw_config) if apply_parent_config?
+
           gw_config.configure_adapter(config.adapters)
+        end
+      end
+
+      def apply_parent_gateway_config(key, gw_config)
+        parent_gw_config = parent_db_provider.source.config.gateways[key]
+
+        # Only copy config from a parent gateway with the same name _and_ database URL
+        return unless parent_gw_config&.database_url == gw_config.database_url
+
+        # Copy config from matching parent gateway
+        (gw_config.class.settings.keys - [:adapter]).each do |key|
+          next if gw_config.config.configured?(key)
+
+          gw_config.config[key] = parent_gw_config.config[key].dup
+        end
+
+        # If there is an adapter configured within this slice, prefer that, and do not copy the
+        # adapter from the parent gateway
+        unless config.adapters[gw_config.adapter_name] || gw_config.configured?(:adapter)
+          gw_config.adapter = parent_gw_config.adapter.dup
         end
       end
 

@@ -17,6 +17,7 @@ RSpec.describe "DB / Slices", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = File::NULL
           end
         end
       RUBY
@@ -32,6 +33,67 @@ RSpec.describe "DB / Slices", :app_integration do
     end
   end
 
+  specify "slices using a parent gateway with connection options share a gateway/connection" do
+    with_tmp_directory(@dir = Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+            config.logger.stream = File::NULL
+          end
+        end
+      RUBY
+
+      write "config/providers/db.rb", <<~RUBY
+        Hanami.app.configure_provider :db do
+          config.gateway :default do |gw|
+            gw.connection_options timeout: 10_000
+          end
+
+          config.gateway :extra do |gw|
+            gw.connection_options timeout: 20_000
+          end
+        end
+      RUBY
+
+      write "slices/main/config/providers/db.rb", <<~RUBY
+        Main::Slice.configure_provider :db do
+          config.gateway :bonus do |gw|
+            gw.connection_options timeout: 5_000
+          end
+        end
+      RUBY
+
+      write "db/.keep", ""
+      write "slices/admin/relations/.keep", ""
+      write "slices/main/relations/.keep", ""
+
+      ENV["DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("app.sqlite").to_s
+      ENV["DATABASE_URL__EXTRA"] = "sqlite://" + Pathname(@dir).realpath.join("extra.sqlite").to_s
+      ENV["DATABASE_URL__BONUS"] = "sqlite://" + Pathname(@dir).realpath.join("bonus.sqlite").to_s
+
+      # "extra" gateway in admin slice, same URL as app
+      ENV["ADMIN__DATABASE_URL__EXTRA"] = ENV["DATABASE_URL__EXTRA"]
+      # "extra" gatway in main slice, different URL
+      ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://" + Pathname(@dir).realpath.join("extra-main.sqlite").to_s
+      # "bonus" gateway in admin slice, same URL as app
+      ENV["ADMIN__DATABASE_URL__BONUS"] = ENV["DATABASE_URL__BONUS"]
+      # "bonus" gateway in main slice, same URL as app; different connection options in provider
+      ENV["MAIN__DATABASE_URL__BONUS"] = ENV["DATABASE_URL__BONUS"]
+
+      require "hanami/prepare"
+
+      expect(Admin::Slice["db.gateway"]).to be Hanami.app["db.gateway"]
+
+      expect(Admin::Slice["db.gateways.extra"]).to be Hanami.app["db.gateways.extra"]
+      expect(Main::Slice["db.gateways.extra"]).not_to be Hanami.app["db.gateways.extra"]
+
+      expect(Admin::Slice["db.gateways.bonus"]).to be Hanami.app["db.gateways.bonus"]
+      expect(Main::Slice["db.gateways.bonus"]).not_to be Hanami.app["db.gateways.bonus"]
+    end
+  end
+
   specify "slices using the same database_url but different extensions have distinct gateways/connections" do
     with_tmp_directory(@dir = Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
@@ -39,6 +101,7 @@ RSpec.describe "DB / Slices", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = File::NULL
           end
         end
       RUBY
@@ -80,6 +143,7 @@ RSpec.describe "DB / Slices", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = File::NULL
           end
         end
       RUBY
@@ -213,6 +277,7 @@ RSpec.describe "DB / Slices", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = File::NULL
           end
         end
       RUBY
@@ -253,6 +318,7 @@ RSpec.describe "DB / Slices", :app_integration do
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = File::NULL
           end
         end
       RUBY
