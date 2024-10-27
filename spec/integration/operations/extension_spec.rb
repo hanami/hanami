@@ -13,12 +13,12 @@ RSpec.describe "Operation / Extensions", :app_integration do
   specify "Transaction interface is made available automatically" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
-          require "hanami"
+        require "hanami"
 
-          module TestApp
-            class App < Hanami::App
-            end
+        module TestApp
+          class App < Hanami::App
           end
+        end
       RUBY
 
       write "app/operation.rb", <<~RUBY
