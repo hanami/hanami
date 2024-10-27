@@ -27,8 +27,7 @@ module Hanami
         # @api private
         # @since 2.2.0
         def configure_for_slice(slice)
-          namespace = slice.slice_name.namespace
-          include namespace::Deps["db.rom"]
+          include slice.namespace::Deps["db.rom"]
         end
 
         # @api private
