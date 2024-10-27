@@ -51,8 +51,9 @@ RSpec.describe "Operation / Extensions", :app_integration do
 
       expect(app).to respond_to(:transaction)
 
-      expect(app.rom.object_id).to eq TestApp::App["db.rom"].object_id
-      expect(app.rom.object_id).to_not eq Main::Slice["db.rom"].object_id
+      expect(app.rom).to be TestApp::App["db.rom"]
+      expect(app.rom).not_to be Main::Slice["db.rom"]
+      expect(main.rom).to be Main::Slice["db.rom"]
     end
   end
 end
