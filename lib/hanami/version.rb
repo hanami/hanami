@@ -7,7 +7,7 @@ module Hanami
   # @api private
   module Version
     # @api public
-    VERSION = "2.2.0.beta2"
+    VERSION = "2.2.0.rc1"
 
     # @since 0.9.0
     # @api private

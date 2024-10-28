@@ -2,6 +2,18 @@
 
 The web, with simplicity.
 
+## v2.2.0.rc1 - 2024-10-29
+
+### Added
+
+- [Adam Lassek] Add `#connection_options` to db gateways. These are a hash of options that will be passed to the lower-level driver when the gateway connects. For SQL databases, this means [Sequel's connection options](https://sequel.jeremyevans.net/rdoc/files/doc/opening_databases_rdoc.html) (#1450)
+- [Adam Lassek] Automatically configure `Dry::Operation` subclasses within Hanami apps for `transaction` support using the app's ROM container. (#1456)
+
+### Changed
+
+- [Tim Riley] Apply config from matching gateways in parent slices (#1459)
+- [Tim Riley] Remove `config.any_adapter` from DB provider (#1459)
+
 ## v2.2.0.beta2 - 2024-09-26
 
 ### Added
