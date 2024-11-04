@@ -40,6 +40,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dry-logger",       "~> 1.0", "< 2"
   spec.add_dependency "hanami-cli",       "= 2.2.0.rc1"
   spec.add_dependency "hanami-utils",     "~> 2.2.rc"
+  spec.add_dependency "json",             ">= 2.7.2"
   spec.add_dependency "zeitwerk",         "~> 2.6"
 
   spec.add_development_dependency "rspec",     "~> 3.8"
