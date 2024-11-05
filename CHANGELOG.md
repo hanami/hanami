@@ -2,6 +2,13 @@
 
 The web, with simplicity.
 
+## v2.2.0 - 2024-11-05
+
+### Changed
+
+- [Tim Riley] Depend on dry-system v1.1, the stable release featuring the changes supporting the provider improvements introduced in beta1 and beta2 (#1467)
+- [Tim Riley] Added specific "json" gem dependency to gemspec in order to suppress bundled gem deprecation warnings appearing in Ruby 3.3.5 (#1469)
+
 ## v2.2.0.rc1 - 2024-10-29
 
 ### Added
