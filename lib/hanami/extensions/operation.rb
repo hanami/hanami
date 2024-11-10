@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "dry/operation"
-require "dry/operation/extensions/rom"
 
 module Hanami
   module Extensions
@@ -38,6 +37,7 @@ module Hanami
           return unless subclass.superclass == self
           return unless Hanami.bundled?("hanami-db")
 
+          require "dry/operation/extensions/rom"
           subclass.include Dry::Operation::Extensions::ROM
         end
       end
