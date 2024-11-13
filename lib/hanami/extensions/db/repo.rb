@@ -79,7 +79,9 @@ module Hanami
         end
 
         def root_for_repo_class(repo_class)
-          return unless repo_class.to_s.end_with?("Repo")
+          repo_class_name = repo_class.to_s
+          return if repo_class_name == "Repo"
+          return unless repo_class_name.end_with?("Repo")
 
           slice.inflector.demodulize(repo_class)
             .then { slice.inflector.underscore(_1) }
