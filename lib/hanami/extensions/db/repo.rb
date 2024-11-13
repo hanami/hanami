@@ -79,7 +79,7 @@ module Hanami
         end
 
         def root_for_repo_class(repo_class)
-          repo_class_name = repo_class.to_s
+          repo_class_name = repo_class.to_s.split("::").last
           return if repo_class_name == "Repo"
           return unless repo_class_name.end_with?("Repo")
 
