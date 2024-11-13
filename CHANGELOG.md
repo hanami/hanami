@@ -2,6 +2,16 @@
 
 The web, with simplicity.
 
+## v2.2.1 - 2024-11-12
+
+### Changed
+
+- [Tim Riley] Depend on matching minor version of hanami-cli (a version spec of `"~> 2.2.1"` instead of `"~> 2.2"`). This ensures that future bumps to the minor version of hanami-cli will not be inadvertently installed on user machines (#1471)
+
+### Fixed
+
+- [Tim Riley] Allow base operation class to load when a Hanami app is generated with `--skip-db` (i.e. when the "rom-sql" gem is not in the bundle) (#1475)
+
 ## v2.2.0 - 2024-11-05
 
 ### Changed
