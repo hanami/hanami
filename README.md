@@ -1,12 +1,6 @@
 # Hanami :cherry_blossom:
 
-The web, with simplicity.
-
-## Version
-
-**This branch contains the code for `hanami`: 2.2**
-
-## Frameworks
+**A flexible framework for maintainable Ruby apps.**
 
 Hanami is a **full-stack** Ruby web framework. It's made up of smaller, single-purpose libraries.
 
@@ -16,6 +10,7 @@ This repository is for the full-stack framework, which provides the glue that ti
 * [**Hanami::Controller**](https://github.com/hanami/controller) - Full featured, fast and testable actions for Rack
 * [**Hanami::Validations**](https://github.com/hanami/validations) - Parameter validations & coercion for actions
 * [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
+* [**Hanami::DB**](https://github.com/hanami/db) - Database integration, complete with migrations, repositories, relations, and structs
 * [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby
 
 These components are designed to be used independently or together in a Hanami application.
