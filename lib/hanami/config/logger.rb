@@ -101,7 +101,7 @@ module Hanami
       #   Sets or returns a hash of options to pass to the {logger_constructor} when initializing
       #   the logger.
       #
-      #   Defaults to `[]`
+      #   Defaults to `{}`
       #
       #   @return [Hash]
       #
