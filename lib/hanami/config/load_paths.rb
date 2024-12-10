@@ -7,10 +7,10 @@ module Hanami
     #
     # @since 0.1.0
     # @api private
-    class LoadPaths < Utils::LoadPaths
-      # Overrides Utils::LoadPath initialize method
+    class LoadPaths < CygUtils::LoadPaths
+      # Overrides CygUtils::LoadPath initialize method
       #
-      # @see Hanami::Utils::LoadPaths#initialize
+      # @see Hanami::CygUtils::LoadPaths#initialize
       #
       # @since 0.1.0
       # @api private
@@ -19,9 +19,9 @@ module Hanami
         @root = root
       end
 
-      # Requires relative @pats [Utils::Kernel.Array] variable via each method
+      # Requires relative @pats [CygUtils::Kernel.Array] variable via each method
       #
-      # @see Hanami::Utils::LoadPaths#each
+      # @see Hanami::CygUtils::LoadPaths#each
       #
       # @since 0.1.0
       # @api private
@@ -33,9 +33,9 @@ module Hanami
 
       protected
 
-      # Overrides Utils::LoadPath realpath method
+      # Overrides CygUtils::LoadPath realpath method
       #
-      # @see Hanami::Utils::LoadPaths#realpath
+      # @see Hanami::CygUtils::LoadPaths#realpath
       #
       # @api private
       def realpath(path)

@@ -23,7 +23,7 @@ module Hanami
           # rubocop:disable Metrics/AbcSize
           # rubocop:disable Metrics/MethodLength
           def call(app:, application_base_url: nil, **options)
-            app      = Utils::String.underscore(app)
+            app      = CygUtils::String.underscore(app)
             template = options.fetch(:template)
             base_url = application_base_url || "/#{app}"
             context  = Context.new(app: app, base_url: base_url, test: options.fetch(:test), template: template, options: options)
@@ -59,7 +59,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def assert_valid_base_url!(context)
-            if Utils::Blank.blank?(context.base_url) # rubocop:disable Style/GuardClause
+            if CygUtils::Blank.blank?(context.base_url) # rubocop:disable Style/GuardClause
               warn "`' is not a valid URL"
               exit(1)
             end

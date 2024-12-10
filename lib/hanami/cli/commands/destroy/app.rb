@@ -16,7 +16,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(app:, **options) # rubocop:disable Metrics/MethodLength
-            app     = Utils::String.underscore(app)
+            app     = CygUtils::String.underscore(app)
             context = Context.new(app: app, options: options)
 
             assert_valid_app!(context)

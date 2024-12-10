@@ -139,7 +139,7 @@ module Hanami
       #
       # @api private
       def missing_csrf_token?
-        Hanami::Utils::Blank.blank?(params[CSRF_TOKEN])
+        Hanami::CygUtils::Blank.blank?(params[CSRF_TOKEN])
       end
 
       # Generates a random CSRF Token

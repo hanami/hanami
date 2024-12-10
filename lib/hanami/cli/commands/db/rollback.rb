@@ -1,4 +1,4 @@
-require "hanami/utils/kernel"
+require "hanami/cyg_utils/kernel"
 
 module Hanami
   class CLI
@@ -32,7 +32,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def assert_valid_steps!(context)
-            context = context.with(steps: Utils::Kernel.Integer(context.steps.to_s))
+            context = context.with(steps: CygUtils::Kernel.Integer(context.steps.to_s))
             handle_error(context) unless context.steps.positive?
             context
           rescue TypeError

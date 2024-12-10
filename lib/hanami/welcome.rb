@@ -1,7 +1,7 @@
 require 'erb'
 require 'pathname'
 require 'hanami/environment'
-require 'hanami/utils/string'
+require 'hanami/cyg_utils/string'
 
 module Hanami
   # @api private

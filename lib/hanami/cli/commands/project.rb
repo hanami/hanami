@@ -1,4 +1,4 @@
-require "hanami/utils/file_list"
+require "hanami/cyg_utils/file_list"
 require "securerandom"
 
 module Hanami
@@ -399,7 +399,7 @@ module Hanami
         # @since 1.1.0
         # @api private
         def self.list(pattern)
-          Hanami::Utils::FileList[pattern]
+          Hanami::CygUtils::FileList[pattern]
         end
 
         # @since 1.1.0

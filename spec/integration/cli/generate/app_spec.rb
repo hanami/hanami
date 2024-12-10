@@ -1,4 +1,4 @@
-require 'hanami/utils/string'
+require 'hanami/cyg_utils/string'
 
 RSpec.describe "hanami generate", type: :integration do
   describe "app" do
@@ -30,7 +30,7 @@ RSpec.describe "hanami generate", type: :integration do
       it "generates app" do
         with_project('bookshelf_generate_app_without_require_relative') do
           app      = "no_req_relative"
-          app_name = Hanami::Utils::String.new(app).classify
+          app_name = Hanami::CygUtils::String.new(app).classify
           output   = [
             "insert  config/environment.rb"
           ]
@@ -60,7 +60,7 @@ RSpec.describe "hanami generate", type: :integration do
       it "generates app" do
         with_project('bookshelf_generate_app_application_base_url') do
           app      = "api"
-          app_name = Hanami::Utils::String.new(app).classify
+          app_name = Hanami::CygUtils::String.new(app).classify
           output   = [
             "insert  config/environment.rb"
           ]
@@ -87,7 +87,7 @@ RSpec.describe "hanami generate", type: :integration do
       it "generates app" do
         with_project('bookshelf_generate_app_erb', template: :erb) do
           app      = "admin"
-          app_name = Hanami::Utils::String.new(app).classify
+          app_name = Hanami::CygUtils::String.new(app).classify
           output   = [
             "create  apps/#{app}/templates/application.html.erb"
           ]
@@ -121,7 +121,7 @@ END
       it "generates app" do
         with_project('bookshelf_generate_app_haml', template: :haml) do
           app      = "admin"
-          app_name = Hanami::Utils::String.new(app).classify
+          app_name = Hanami::CygUtils::String.new(app).classify
           output   = [
             "create  apps/#{app}/templates/application.html.haml"
           ]
@@ -153,7 +153,7 @@ END
       it "generates app" do
         with_project('bookshelf_generate_app_slim', template: :slim) do
           app      = "admin"
-          app_name = Hanami::Utils::String.new(app).classify
+          app_name = Hanami::CygUtils::String.new(app).classify
           output   = [
             "create  apps/#{app}/templates/application.html.slim"
           ]

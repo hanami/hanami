@@ -1,14 +1,14 @@
-require 'hanami/utils/string'
+require 'hanami/cyg_utils/string'
 
 RSpec.shared_examples "a new app" do
-  let(:app) { Hanami::Utils::String.new(input).underscore.to_s }
+  let(:app) { Hanami::CygUtils::String.new(input).underscore.to_s }
 
   it 'generates vanilla app' do
     project = "bookshelf_generate_app_#{Random.rand(100_000_000)}"
 
     with_project(project) do
-      app_name   = Hanami::Utils::String.new(app).classify
-      app_upcase = Hanami::Utils::String.new(app).upcase
+      app_name   = Hanami::CygUtils::String.new(app).classify
+      app_upcase = Hanami::CygUtils::String.new(app).upcase
       output     = <<-OUT
       create  apps/#{app}/application.rb
       create  apps/#{app}/config/routes.rb

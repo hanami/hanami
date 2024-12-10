@@ -32,7 +32,7 @@ module Hanami
               port             config.port
 
               public_directory Hanami.public_directory
-              prefix           Utils::PathPrefix.new('/assets').join(config.path_prefix)
+              prefix           CygUtils::PathPrefix.new('/assets').join(config.path_prefix)
 
               manifest         Hanami.public_directory.join('assets.json')
               compile          true

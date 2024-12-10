@@ -1,4 +1,4 @@
-require 'hanami/utils/class'
+require 'hanami/cyg_utils/class'
 require 'hanami/views/default'
 require 'hanami/views/null_view'
 require 'hanami/action/rack/errors'
@@ -85,7 +85,7 @@ module Hanami
     def view_for(action, response)
       view = if response[BODY].respond_to?(:empty?) && response[BODY].empty?
         captures = @controller_pattern.match(action.class.name)
-        Utils::Class.load(@configuration.view_pattern % { controller: captures[:controller], action: captures[:action] }, @configuration.namespace)
+        CygUtils::Class.load(@configuration.view_pattern % { controller: captures[:controller], action: captures[:action] }, @configuration.namespace)
       end
 
       view || Views::NullView.new

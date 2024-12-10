@@ -1,5 +1,5 @@
 require 'pathname'
-require 'hanami/utils/hash'
+require 'hanami/cyg_utils/hash'
 
 module Hanami
   # Read the .hanamirc file in the root of the application
@@ -93,7 +93,7 @@ module Hanami
     #
     # @see Hanami::Hanamirc#options
     def default_options
-      @default_options ||= Utils::Hash.symbolize({
+      @default_options ||= CygUtils::Hash.symbolize({
                                            PROJECT_NAME     => project_name,
                                            TEST_KEY         => DEFAULT_TEST_SUITE,
                                            TEMPLATE_KEY     => DEFAULT_TEMPLATE
@@ -114,7 +114,7 @@ module Hanami
 
     # @api private
     def symbolize(hash)
-      Utils::Hash.symbolize(hash)
+      CygUtils::Hash.symbolize(hash)
     end
 
     # Returns options from hanamirc file

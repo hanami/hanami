@@ -1,11 +1,11 @@
-require 'hanami/utils/string'
+require 'hanami/cyg_utils/string'
 
 RSpec.shared_examples "a new model" do
-  let(:model) { Hanami::Utils::String.new(input).underscore.to_s }
+  let(:model) { Hanami::CygUtils::String.new(input).underscore.to_s }
 
   it 'generates model' do
-    class_name = Hanami::Utils::String.new(model).classify
-    table_name = Hanami::Utils::String.new(model).pluralize
+    class_name = Hanami::CygUtils::String.new(model).classify
+    table_name = Hanami::CygUtils::String.new(model).pluralize
     project    = "bookshelf_generate_model_#{Random.rand(100_000_000)}"
 
     with_project(project) do

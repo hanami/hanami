@@ -1,4 +1,4 @@
-require 'hanami/utils/escape'
+require 'hanami/cyg_utils/escape'
 
 module Hanami
   # Routes factory
@@ -27,7 +27,7 @@ module Hanami
     # @param args [Array,nil] an optional set of arguments that is passed down
     #   to the wrapped route set.
     #
-    # @return [Hanami::Utils::Escape::SafeString] the corresponding relative URL
+    # @return [Hanami::CygUtils::Escape::SafeString] the corresponding relative URL
     #
     # @raise Hanami::Routing::InvalidRouteException
     #
@@ -73,7 +73,7 @@ module Hanami
     #   Web.routes.login_path(return_to: '/dashboard')
     #     # => '/login?return_to=%2Fdashboard'
     def path(name, *args)
-      Utils::Escape::SafeString.new(@routes.path(name, *args))
+      CygUtils::Escape::SafeString.new(@routes.path(name, *args))
     end
 
     # Return an absolute path for the given route name
@@ -82,7 +82,7 @@ module Hanami
     # @param args [Array,nil] an optional set of arguments that is passed down
     #   to the wrapped route set.
     #
-    # @return [Hanami::Utils::Escape::SafeString] the corresponding absolute URL
+    # @return [Hanami::CygUtils::Escape::SafeString] the corresponding absolute URL
     #
     # @raise Hanami::Routing::InvalidRouteException
     #
@@ -134,7 +134,7 @@ module Hanami
     #   Web.routes.login_url(return_to: '/dashboard')
     #     # => 'https://bookshelf.org/login?return_to=%2Fdashboard'
     def url(name, *args)
-      Utils::Escape::SafeString.new(@routes.url(name, *args))
+      CygUtils::Escape::SafeString.new(@routes.url(name, *args))
     end
 
     # Recognize a route from a Rack env.

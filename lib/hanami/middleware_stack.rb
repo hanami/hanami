@@ -1,5 +1,5 @@
 require 'rack/builder'
-require 'hanami/utils/class'
+require 'hanami/cyg_utils/class'
 
 module Hanami
   # Rack middleware stack for an application
@@ -125,7 +125,7 @@ module Hanami
     def load_middleware(middleware)
       case middleware
       when String
-        Utils::Class.load!(middleware)
+        CygUtils::Class.load!(middleware)
       else
         middleware
       end

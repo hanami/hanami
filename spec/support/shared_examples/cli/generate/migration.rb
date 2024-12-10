@@ -1,7 +1,7 @@
-require 'hanami/utils/string'
+require 'hanami/cyg_utils/string'
 
 RSpec.shared_examples "a new migration" do
-  let(:migration) { Hanami::Utils::String.new(input).underscore.to_s }
+  let(:migration) { Hanami::CygUtils::String.new(input).underscore.to_s }
 
   it 'generates migration' do
     project = "bookshelf_generate_migration_#{Random.rand(100_000_000)}"

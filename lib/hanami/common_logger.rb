@@ -1,5 +1,5 @@
 require 'rack/common_logger'
-require 'hanami/utils/hash'
+require 'hanami/cyg_utils/hash'
 
 module Hanami
   # Rack logger for Hanami.app
@@ -86,7 +86,7 @@ module Hanami
     def extract_params(env)
       result = env.fetch(QUERY_HASH, {})
       result.merge!(env.fetch(FORM_HASH, {}))
-      result.merge!(Utils::Hash.deep_stringify(env.fetch(ROUTER_PARAMS, {})))
+      result.merge!(CygUtils::Hash.deep_stringify(env.fetch(ROUTER_PARAMS, {})))
       result
     end
 

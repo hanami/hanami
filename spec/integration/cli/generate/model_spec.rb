@@ -1,4 +1,4 @@
-require 'hanami/utils/string'
+require 'hanami/cyg_utils/string'
 
 RSpec.describe "hanami generate", type: :integration do
   describe "model" do
@@ -186,7 +186,7 @@ END
 
         with_project(project, test: :minitest) do
           model      = "book"
-          class_name = Hanami::Utils::String.new(model).classify
+          class_name = Hanami::CygUtils::String.new(model).classify
           output     = [
             "create  spec/#{project}/entities/#{model}_spec.rb",
             "create  spec/#{project}/repositories/#{model}_repository_spec.rb"
@@ -225,7 +225,7 @@ END
 
         with_project(project, test: :rspec) do
           model      = "book"
-          class_name = Hanami::Utils::String.new(model).classify
+          class_name = Hanami::CygUtils::String.new(model).classify
           output     = [
             "create  spec/#{project}/entities/#{model}_spec.rb",
             "create  spec/#{project}/repositories/#{model}_repository_spec.rb"

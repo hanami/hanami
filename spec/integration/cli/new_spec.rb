@@ -250,7 +250,7 @@ Hanami.configure do
 end
 END
 
-      project_module = Hanami::Utils::String.new(project).classify
+      project_module = Hanami::CygUtils::String.new(project).classify
       #
       # lib/<project>.rb
       #

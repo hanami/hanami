@@ -1,7 +1,7 @@
 require 'concurrent'
 require 'hanami/application'
-require 'hanami/utils/class'
-require 'hanami/utils/string'
+require 'hanami/cyg_utils/class'
+require 'hanami/cyg_utils/string'
 
 module Hanami
   # @api private

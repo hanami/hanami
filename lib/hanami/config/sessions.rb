@@ -1,5 +1,5 @@
 require 'ipaddr'
-require 'hanami/utils/string'
+require 'hanami/cyg_utils/string'
 
 module Hanami
   # @since 0.2.0
@@ -59,7 +59,7 @@ module Hanami
       def middleware
         middleware = case @adapter
                      when Symbol
-                       RACK_NAMESPACE % Utils::String.classify(@adapter)
+                       RACK_NAMESPACE % CygUtils::String.classify(@adapter)
                      else
                        @adapter
                      end

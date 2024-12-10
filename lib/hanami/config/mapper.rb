@@ -1,4 +1,4 @@
-require 'hanami/utils/kernel'
+require 'hanami/cyg_utils/kernel'
 
 module Hanami
   # @since 0.1.0
@@ -32,7 +32,7 @@ module Hanami
       # @since 0.1.0
       # @api private
       def realpath
-        Utils::Kernel.Pathname("#{ @path }#{ EXTNAME }").realpath
+        CygUtils::Kernel.Pathname("#{ @path }#{ EXTNAME }").realpath
       rescue Errno::ENOENT
         raise ArgumentError, error_message
       end

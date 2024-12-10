@@ -1,4 +1,4 @@
-require 'hanami/utils/string'
+require 'hanami/cyg_utils/string'
 
 module Hanami
   # An application name.
@@ -102,7 +102,7 @@ module Hanami
     # @since 0.2.1
     # @api private
     def sanitize(name)
-      Utils::String.transform(name.strip, :namespace, :underscore)
+      CygUtils::String.transform(name.strip, :namespace, :underscore)
     end
   end
 end

@@ -22,7 +22,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(model:, **options)
-            model     = Utils::String.underscore(model)
+            model     = CygUtils::String.underscore(model)
             relation  = relation_name(options, model)
             migration = "create_#{relation}"
             context   = Context.new(model: model, relation: relation, migration: migration, test: options.fetch(:test), override_relation_name: override_relation_name?(options), options: options)
@@ -39,7 +39,7 @@ module Hanami
           private
 
           def assert_valid_relation!(context)
-            if Utils::Blank.blank?(context.relation)
+            if CygUtils::Blank.blank?(context.relation)
               warn "`#{context.relation}' is not a valid relation name"
               exit(1)
             end
@@ -107,9 +107,9 @@ module Hanami
           # @api private
           def relation_name(options, model)
             if override_relation_name?(options)
-              Utils::String.underscore(options[:relation])
+              CygUtils::String.underscore(options[:relation])
             else
-              Utils::String.pluralize(model)
+              CygUtils::String.pluralize(model)
             end
           end
 

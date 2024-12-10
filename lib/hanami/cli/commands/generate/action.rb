@@ -152,7 +152,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def assert_valid_route_url!(context)
-            if context.options.key?(:url) && Utils::Blank.blank?(context.options[:url]) # rubocop:disable Style/GuardClause
+            if context.options.key?(:url) && CygUtils::Blank.blank?(context.options[:url]) # rubocop:disable Style/GuardClause
               warn "`#{context.options[:url]}' is not a valid URL"
               exit(1)
             end
@@ -305,7 +305,7 @@ module Hanami
           # @api private
           def classified_controller(controller)
             controller.
-              map { |controller_name| Utils::String.new(controller_name).classify }.
+              map { |controller_name| CygUtils::String.new(controller_name).classify }.
               join("::")
           end
 

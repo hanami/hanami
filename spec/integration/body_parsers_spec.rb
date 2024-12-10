@@ -29,13 +29,13 @@ RSpec.describe "body parsers", type: :integration do
     generate "action web books#create --url=/books --method=POST"
 
     rewrite "apps/web/controllers/books/create.rb", <<-EOF
-require 'hanami/utils/json'
+require 'hanami/cyg_utils/json'
 module Web::Controllers::Books
   class Create
     include Web::Action
 
     def call(params)
-      self.body = Hanami::Utils::Json.generate(params.to_hash)
+      self.body = Hanami::CygUtils::Json.generate(params.to_hash)
     end
   end
 end

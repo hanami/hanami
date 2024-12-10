@@ -284,7 +284,7 @@ module Hanami
         def call(project:, **options)
           project_name = project
           pwd = ::File.basename(Dir.pwd) if project == "."
-          project         = Utils::String.underscore(pwd || project)
+          project         = CygUtils::String.underscore(pwd || project)
           database_config = DatabaseConfig.new(options[:database], project)
           test_framework  = TestFramework.new(hanamirc, options[:test])
           template_engine = TemplateEngine.new(hanamirc, options[:template])
@@ -304,7 +304,7 @@ module Hanami
             hanami_model_version: '~> 1.3',
             code_reloading: code_reloading?,
             hanami_version: hanami_version,
-            project_module: Utils::String.classify(project),
+            project_module: CygUtils::String.classify(project),
             options: options
           )
 

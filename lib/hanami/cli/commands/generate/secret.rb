@@ -1,4 +1,4 @@
-require "hanami/utils/blank"
+require "hanami/cyg_utils/blank"
 require "securerandom"
 
 module Hanami
@@ -34,7 +34,7 @@ module Hanami
           def generate_secret(context)
             secret = project.app_sessions_secret
 
-            if Hanami::Utils::Blank.blank?(context.app)
+            if Hanami::CygUtils::Blank.blank?(context.app)
               puts secret
             else
               puts "Set the following environment variable to provide the secret token:"

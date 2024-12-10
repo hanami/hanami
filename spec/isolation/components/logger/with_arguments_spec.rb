@@ -16,7 +16,7 @@ EOF
 
       bundle_exec "ruby script/components"
 
-      logs = Hanami::Utils::FileList['log/development.log*']
+      logs = Hanami::CygUtils::FileList['log/development.log*']
       expect(logs.count).to eq(count)
     end
   end

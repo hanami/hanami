@@ -65,7 +65,7 @@ module Hanami
         # @api private
         def initialize(data)
           data = data.each_with_object({}) do |(k, v), result|
-            v = Utils::String.new(v) if v.is_a?(::String)
+            v = CygUtils::String.new(v) if v.is_a?(::String)
             result[k] = v
           end
 

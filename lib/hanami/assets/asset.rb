@@ -1,4 +1,4 @@
-require 'hanami/utils/file_list'
+require 'hanami/cyg_utils/file_list'
 
 module Hanami
   # @api private
@@ -63,7 +63,7 @@ module Hanami
       # @since 0.8.0
       # @api private
       def find_asset
-        Utils::FileList[PUBLIC_DIRECTORY].find do |asset|
+        CygUtils::FileList[PUBLIC_DIRECTORY].find do |asset|
           yield asset unless ::File.directory?(asset)
         end
       end

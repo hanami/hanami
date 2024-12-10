@@ -1,7 +1,7 @@
 require 'thread'
 require 'pathname'
 require 'hanami/utils'
-require 'hanami/utils/hash'
+require 'hanami/cyg_utils/hash'
 require 'hanami/env'
 require 'hanami/hanamirc'
 require 'hanami/components'
@@ -208,7 +208,7 @@ module Hanami
       opts     = options.to_h.dup
       @env     = Hanami::Env.new(env: opts.delete(:env) || ENV)
       @options = Hanami::Hanamirc.new(root).options
-      @options.merge! Utils::Hash.symbolize(opts.clone)
+      @options.merge! CygUtils::Hash.symbolize(opts.clone)
       LOCK.synchronize { set_env_vars! }
     end
 

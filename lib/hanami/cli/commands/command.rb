@@ -5,7 +5,7 @@ require 'dry/cli/command'
 require 'hanami/cli/commands/project'
 require 'hanami/cli/commands/templates'
 require 'concurrent'
-require 'hanami/utils/files'
+require 'hanami/cyg_utils/files'
 require 'erb'
 
 module Hanami
@@ -92,7 +92,7 @@ module Hanami
 
         # @since 1.1.0
         # @api private
-        def initialize(out: $stdout, files: Utils::Files)
+        def initialize(out: $stdout, files: CygUtils::Files)
           @out       = out
           @files     = files
           @templates = Templates.new(self.class)

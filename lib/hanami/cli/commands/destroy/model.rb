@@ -18,7 +18,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(model:, **options)
-            model   = Utils::String.transform(model, :underscore, :singularize)
+            model   = CygUtils::String.transform(model, :underscore, :singularize)
             context = Context.new(model: model, options: options)
 
             assert_valid_model!(context)

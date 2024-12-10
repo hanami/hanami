@@ -1,4 +1,4 @@
-require 'hanami/utils/kernel'
+require 'hanami/cyg_utils/kernel'
 require 'hanami/environment'
 require 'hanami/middleware_stack'
 require 'hanami/config/cookies'
@@ -152,7 +152,7 @@ module Hanami
       if value
         @root = value
       else
-        Utils::Kernel.Pathname(@root || Dir.pwd).realpath
+        CygUtils::Kernel.Pathname(@root || Dir.pwd).realpath
       end
     end
 
@@ -782,7 +782,7 @@ module Hanami
     #   Bookshelf::Application.configuration.default_request_format # => :json
     def default_request_format(format = nil)
       if format
-        @default_request_format = Utils::Kernel.Symbol(format)
+        @default_request_format = CygUtils::Kernel.Symbol(format)
       else
         @default_request_format || :html
       end
@@ -837,7 +837,7 @@ module Hanami
     #   Bookshelf::Application.configuration.default_response_format # => :json
     def default_response_format(format = nil)
       if format
-        @default_response_format = Utils::Kernel.Symbol(format)
+        @default_response_format = CygUtils::Kernel.Symbol(format)
       else
         @default_response_format
       end

@@ -17,7 +17,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(mailer:, **options)
-            mailer  = Utils::String.transform(mailer, :underscore, :singularize)
+            mailer  = CygUtils::String.transform(mailer, :underscore, :singularize)
             context = Context.new(mailer: mailer, options: options)
 
             assert_valid_mailer!(context)

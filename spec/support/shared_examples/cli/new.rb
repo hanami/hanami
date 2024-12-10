@@ -1,7 +1,7 @@
-require 'hanami/utils/string'
+require 'hanami/cyg_utils/string'
 
 RSpec.shared_examples "a new project" do
-  let(:project) { Hanami::Utils::String.new(input).underscore.to_s }
+  let(:project) { Hanami::CygUtils::String.new(input).underscore.to_s }
 
   it 'generates vanilla project' do
     run_cmd "hanami new #{input}"
@@ -40,7 +40,7 @@ RSpec.shared_examples "a new project" do
       #
       expect('config/environment.rb').to have_file_content %r{require_relative '../lib/#{project}'}
 
-      project_module = Hanami::Utils::String.new(project).classify
+      project_module = Hanami::CygUtils::String.new(project).classify
 
       #
       # lib/<project>.rb

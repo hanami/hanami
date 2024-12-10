@@ -17,7 +17,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(migration:, **options)
-            migration = Utils::String.underscore(migration)
+            migration = CygUtils::String.underscore(migration)
             context   = Context.new(migration: migration, options: options)
 
             generate_migration(context)

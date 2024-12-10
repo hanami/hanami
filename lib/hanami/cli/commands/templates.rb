@@ -4,7 +4,7 @@ module Hanami
       # @since 1.1.0
       # @api private
       class Templates
-        NAMESPACE = name.sub(Utils::String.demodulize(name), "").freeze
+        NAMESPACE = name.sub(CygUtils::String.demodulize(name), "").freeze
 
         # @since 1.1.0
         # @api private

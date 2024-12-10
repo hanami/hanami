@@ -18,7 +18,7 @@ module Hanami
           # @since 1.1.0
           # @api private
           def call(app:, action:, **options)
-            app                = Utils::String.underscore(app)
+            app                = CygUtils::String.underscore(app)
             *controller, action = controller_and_action(action)
             action_name        = controller_and_action_name(controller, action)
 
