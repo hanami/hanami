@@ -26,6 +26,8 @@ module Hanami
         # @api private
         # @since 2.2.0
         def configure_for_slice(slice)
+          return unless Hanami.bundled?("hanami-db")
+
           include slice.namespace::Deps["db.rom"]
         end
 
