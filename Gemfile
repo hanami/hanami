@@ -10,15 +10,15 @@ unless ENV["CI"]
 end
 
 gem "hanami-utils", github: "hanami/utils", branch: "main"
-gem "hanami-db", github: "hanami/db", branch: "main"
-gem "hanami-router", github: "hanami/router", branch: "main"
-gem "hanami-controller", github: "hanami/controller", branch: "main"
-gem "hanami-cli", github: "hanami/cli", branch: "main"
-gem "hanami-view", github: "hanami/view", branch: "main"
-gem "hanami-assets", github: "hanami/assets", branch: "main"
-gem "hanami-webconsole", github: "hanami/webconsole", branch: "main"
+gem "hanami-db", github: "hanami/db", branch: "add-ruby-3-4-support"
+gem "hanami-router", github: "hanami/router", branch: "add-ruby-3-4-support"
+gem "hanami-controller", github: "hanami/controller", branch: "add-ruby-3-4-support"
+gem "hanami-cli", github: "hanami/cli", branch: "add-ruby-3-4-support"
+gem "hanami-view", github: "hanami/view", branch: "add-ruby-3-4-support"
+gem "hanami-assets", github: "hanami/assets", branch: "add-ruby-3-4-support"
+gem "hanami-webconsole", github: "hanami/webconsole", branch: "add-ruby-3-4-support"
 
-gem "hanami-devtools", github: "hanami/devtools", branch: "main"
+gem "hanami-devtools", github: "hanami/devtools", branch: "add-ruby-3-4-support"
 
 # This is needed for settings specs to pass
 gem "dry-types"
