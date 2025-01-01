@@ -1,4 +1,4 @@
-Copyright © 2014 Hanami Team
+Copyright © 2025 Hanami Team
 
 MIT License
 
