@@ -2,6 +2,12 @@
 
 The web, with simplicity.
 
+## [Unreleased]
+
+### Deprecated
+
+- [Sven Schwyn] Add `APP_ENV` as a fallback of `HANAMI_ENV` (#1487)
+
 ## v2.2.1 - 2024-11-12
 
 ### Changed

@@ -138,17 +138,19 @@ module Hanami
     end
   end
 
-  # Returns the Hanami app environment as loaded from the `HANAMI_ENV` environment variable.
+  # Returns the Hanami app environment from the `HANAMI_ENV` environment
+  # variable or in this order one of the fallbacks `APP_ENV`, `RACK_ENV` and
+  # ultimately `:development`.
   #
   # @example
   #   Hanami.env # => :development
   #
-  # @return [Symbol] the environment name
+  # @return [Symbol] the environment name (default: :development)
   #
   # @api public
   # @since 2.0.0
   def self.env(e: ENV)
-    e.fetch("HANAMI_ENV") { e.fetch("RACK_ENV", "development") }.to_sym
+    (e["HANAMI_ENV"] || e["APP_ENV"] || e["RACK_ENV"] || :development).to_sym
   end
 
   # Returns true if {.env} matches any of the given names
