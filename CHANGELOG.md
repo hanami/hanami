@@ -2,6 +2,12 @@
 
 The web, with simplicity.
 
+## [Unreleased]
+
+### Deprecated
+
+- [Sven Schwyn] Deprecate `RACK_ENV` in favor of `APP_ENV` (#1487)
+
 ## v2.2.1 - 2024-11-12
 
 ### Changed
