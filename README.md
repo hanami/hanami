@@ -57,7 +57,7 @@ You can give back to Open Source, by supporting Hanami development via [GitHub S
 * Guides: https://guides.hanamirb.org
 * Snippets: https://snippets.hanamirb.org
 * Mailing List: http://hanamirb.org/mailing-list
-* API Doc: https://gemdocs.org/gems/hanami/latest
+* API Doc: https://gemdocs.org/gems/hanami
 * Bugs/Issues: https://github.com/hanami/hanami/issues
 * Stack Overflow: http://stackoverflow.com/questions/tagged/hanami
 * Forum: https://discourse.hanamirb.org
