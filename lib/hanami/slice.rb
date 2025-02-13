@@ -955,9 +955,9 @@ module Hanami
 
       def prepare_autoloader
         autoloader.tag = "hanami.slices.#{slice_name.to_s}"
-        # Component dirs are automatically pushed to the autoloader by dry-system's
-        # zeitwerk plugin. This method adds other dirs that are not otherwise configured
-        # as component dirs.
+
+        # Component dirs are automatically pushed to the autoloader by dry-system's zeitwerk plugin.
+        # This method adds other dirs that are not otherwise configured as component dirs.
 
         # Everything in the slice root can be autoloaded except `config/` and `slices/`,
         # which are framework-managed directories
