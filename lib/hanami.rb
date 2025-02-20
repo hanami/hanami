@@ -28,11 +28,15 @@ module Hanami
         # Ignore conditionally-loaded classes dependent on gems that may not be included in the
         # user's Gemfile
         "#{gem_lib}/hanami/config/{assets,router,views}.rb",
-        "#{gem_lib}/hanami/routes.rb",
         "#{gem_lib}/hanami/slice/router.rb",
+        "#{gem_lib}/hanami/slice/routing/resolver.rb",
         "#{gem_lib}/hanami/slice/routing/middleware/stack.rb",
         "#{gem_lib}/hanami/extensions/**/*"
       )
+
+      unless Hanami.bundled?("hanami-router")
+        loader.ignore("#{gem_lib}/hanami/routes.rb")
+      end
     end
   end
 
