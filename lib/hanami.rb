@@ -21,8 +21,16 @@ module Hanami
       loader.inflector.inflect "db_logging" => "DBLogging"
       loader.inflector.inflect "slice_configured_db_operation" => "SliceConfiguredDBOperation"
       loader.inflector.inflect "sql_adapter" => "SQLAdapter"
+
+      gem_lib = loader.dirs.first
       loader.ignore(
-        "#{loader.dirs.first}/hanami/{constants,boot,errors,extensions/router/errors,prepare,rake_tasks,setup}.rb"
+        "#{gem_lib}/hanami/{constants,boot,errors,extensions/router/errors,prepare,rake_tasks,setup}.rb",
+        # Ignore conditionally-loaded classes dependent on gems that may not be included in the
+        # user's Gemfile
+        "#{gem_lib}/hanami/config/{assets,router,views}.rb",
+        "#{gem_lib}/hanami/slice/{router,routes}.rb",
+        "#{gem_lib}/hanami/slice/routing/middleware/stack.rb",
+        "#{gem_lib}/hanami/extensions/**/*"
       )
     end
   end
