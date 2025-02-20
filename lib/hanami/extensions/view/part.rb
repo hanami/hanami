@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative "standard_helpers"
+require_relative "slice_configured_part"
+
 module Hanami
   module Extensions
     module View
