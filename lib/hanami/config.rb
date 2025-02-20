@@ -307,7 +307,6 @@ module Hanami
       self.render_detailed_errors = (env == :development)
       load_from_env
 
-
       @actions = load_dependent_config("hanami-controller") {
         require_relative "config/actions"
         Actions.new
@@ -323,6 +322,7 @@ module Hanami
       @logger = Config::Logger.new(env: env, app_name: app_name)
 
       @middleware = load_dependent_config("hanami-router") {
+        require_relative "slice/routing/middleware/stack"
         Slice::Routing::Middleware::Stack.new
       }
 

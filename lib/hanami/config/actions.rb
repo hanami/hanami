@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/configurable"
+require "hanami/action"
 
 module Hanami
   class Config
