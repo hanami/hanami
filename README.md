@@ -8,7 +8,6 @@ This repository is for the full-stack framework, which provides the glue that ti
 
 * [**Hanami::Router**](https://github.com/hanami/router) - Rack compatible HTTP router for Ruby
 * [**Hanami::Controller**](https://github.com/hanami/controller) - Full featured, fast and testable actions for Rack
-* [**Hanami::Validations**](https://github.com/hanami/validations) - Parameter validations & coercion for actions
 * [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
 * [**Hanami::DB**](https://github.com/hanami/db) - Database integration, complete with migrations, repositories, relations, and structs
 * [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby
@@ -19,12 +18,10 @@ These components are designed to be used independently or together in a Hanami a
 
 [![Gem Version](https://badge.fury.io/rb/hanami.svg)](https://badge.fury.io/rb/hanami)
 [![CI](https://github.com/hanami/hanami/actions/workflows/ci.yml/badge.svg)](https://github.com/hanami/hanami/actions?query=workflow%3Aci+branch%3Amain)
-[![Test Coverage](https://codecov.io/gh/hanami/hanami/branch/main/graph/badge.svg)](https://codecov.io/gh/hanami/hanami)
-[![Depfu](https://badges.depfu.com/badges/ba000e0f69e6ef1c44cd3038caaa1841/overview.svg)](https://depfu.com/github/hanami/hanami?project=Bundler)
 
 ## Installation
 
-__Hanami__ supports Ruby (MRI) 3.1+.
+Hanami supports Ruby (MRI) 3.1+.
 
 ```shell
 gem install hanami
@@ -35,7 +32,8 @@ gem install hanami
 ```shell
 hanami new bookshelf
 cd bookshelf && bundle
-bundle exec hanami server # visit http://localhost:2300
+bundle exec hanami dev
+# Now visit http://localhost:2300
 ```
 
 Please follow along with the [Getting Started guide](https://guides.hanamirb.org/getting-started/).
@@ -44,30 +42,22 @@ Please follow along with the [Getting Started guide](https://guides.hanamirb.org
 
 You can give back to Open Source, by supporting Hanami development via [GitHub Sponsors](https://github.com/sponsors/hanami).
 
-### Supporters
-
-  * [Trung Lê](https://github.com/runlevel5)
-  * [James Carlson](https://github.com/jxxcarlson)
-  * [Creditas](https://www.creditas.com.br/)
-
 ## Contact
 
-* Home page: http://hanamirb.org
-* Community: http://hanamirb.org/community
-* Guides: https://guides.hanamirb.org
-* Snippets: https://snippets.hanamirb.org
-* Mailing List: http://hanamirb.org/mailing-list
-* API Doc: https://gemdocs.org/gems/hanami
-* Bugs/Issues: https://github.com/hanami/hanami/issues
-* Stack Overflow: http://stackoverflow.com/questions/tagged/hanami
-* Forum: https://discourse.hanamirb.org
-* **Chat**: http://chat.hanamirb.org
+* [Home page](http://hanamirb.org)
+* [Community](http://hanamirb.org/community)
+* [Guides](https://guides.hanamirb.org)
+* [Issues](https://github.com/hanami/hanami/issues)
+* [Forum](https://discourse.hanamirb.org)
+* [Chat](http://chat.hanamirb.org)
 
 ## Community
 
-We strive for an inclusive and helpful community. We have a [Code of Conduct](http://hanamirb.org/community/#code-of-conduct) to handle controversial cases. In general, we expect **you** to be **nice** with other people. Our hope is for a great software and a great Community.
+We care about building a friendly, inclusive and helpful community. We welcome people of all backgrounds, genders and experience levels, and respect you all equally.
 
-## Contributing [![Open Source Helpers](https://www.codetriage.com/hanami/hanami/badges/users.svg)](https://www.codetriage.com/hanami/hanami)
+We do not tolerate nazis, transphobes, racists, or any kind of bigotry. See our [code of conduct](http://hanamirb.org/community/#code-of-conduct) for more.
+
+## Contributing
 
 1. Fork it ( https://github.com/hanami/hanami/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
@@ -105,13 +95,13 @@ $ bundle exec rspec path/to/spec.rb
 
 ### Development Requirements
 
-  * Ruby >= 3.1
-  * Bundler
-  * Node.js (MacOS)
+* Ruby >= 3.1
+* Bundler
+* Node.js
 
 ## Versioning
 
-__Hanami__ uses [Semantic Versioning 2.0.0](http://semver.org)
+Hanami uses [Semantic Versioning 2.0.0](http://semver.org).
 
 ## Copyright
 
