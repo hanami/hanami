@@ -88,6 +88,11 @@ module Hanami
       # name of the algorithm, then a hyphen, then the hash value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
+      # If the `Hanami::Middleware::ContentSecurityPolicyNonce` middleware is
+      # in use, the nonce value of the current request is automatically added
+      # as an attribute. See {#content_security_policy_nonce} for how to
+      # configure this correctly.
+      #
       # @param source_paths [Array<String, #url>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
@@ -163,7 +168,8 @@ module Hanami
         _safe_tags(*source_paths) do |source|
           attributes = {
             src: _typed_path(source, JAVASCRIPT_EXT),
-            type: JAVASCRIPT_MIME_TYPE
+            type: JAVASCRIPT_MIME_TYPE,
+            nonce: content_security_policy_nonce
           }
           attributes.merge!(options)
 
@@ -191,6 +197,11 @@ module Hanami
       # If the "subresource integrity mode" is on, `integrity` is the
       # name of the algorithm, then a hyphen, then the hashed value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
+      #
+      # If the `Hanami::Middleware::ContentSecurityPolicyNonce` middleware is
+      # in use, the nonce value of the current request is automatically added
+      # as an attribute. See {#content_security_policy_nonce} for how to
+      # configure this correctly.
       #
       # @param source_paths [Array<String, #url>] one or more assets by name or absolute URL
       #
@@ -257,7 +268,8 @@ module Hanami
           attributes = {
             href: _typed_path(source_path, STYLESHEET_EXT),
             type: STYLESHEET_MIME_TYPE,
-            rel: STYLESHEET_REL
+            rel: STYLESHEET_REL,
+            nonce: content_security_policy_nonce
           }
           attributes.merge!(options)
 
@@ -673,6 +685,35 @@ module Hanami
         return source_path if _absolute_url?(source_path)
 
         _context.assets[source_path].url
+      end
+
+      # Random per request nonce value for Content Security Policy (CSP) rules.
+      #
+      # If the `Hanami::Middleware::ContentSecurityPolicyNonce` middleware is
+      # in use, this helper returns the nonce value for the current request
+      # or `nil` otherwise.
+      #
+      # For this policy to work in the browser, you have to add the `'nonce'`
+      # placeholder to the script and/or style source policy rule. It will be
+      # substituted by the current nonce value like `'nonce-A12OggyZ'.
+      #
+      # @return [String, nil] nonce value of the current request
+      #
+      # @since x.x.x
+      #
+      # @example App configuration
+      #
+      #   config.middleware.use Hanami::Middleware::ContentSecurityPolicyNonce
+      #   config.actions.content_security_policy[:script_src] = "'self' 'nonce'"
+      #   config.actions.content_security_policy[:style_src] = "'self' 'nonce'"
+      #
+      # @example View helper
+      #
+      #   <script nonce="<%= content_security_policy_nonce %>">
+      def content_security_policy_nonce
+        _context.request.env['hanami.content_security_policy_nonce']
+      rescue Hanami::ComponentLoadError
+        nil
       end
 
       private
