@@ -7,6 +7,7 @@ The web, with simplicity.
 ### Added
 
 - Check `ENV["APP_ENV"]` for the Hanami env if `ENV["HANAMI_ENV"]` is not set. The order of environment variable checks is now `HANAMI_ENV`->`APP_ENV`->`RACK_ENV` (@svoop in #1487).
+- Support optional nonce in Rack requests, CSP header rules and view helpers (@svoop in #1500)
 
 ## v2.2.1 - 2024-11-12
 
