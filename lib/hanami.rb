@@ -138,17 +138,28 @@ module Hanami
     end
   end
 
-  # Returns the Hanami app environment as loaded from the `HANAMI_ENV` environment variable.
+  # Returns the Hanami app environment as loaded from the `HANAMI_ENV` or as fallback
+  # the `APP_ENV` environment variable.
   #
   # @example
   #   Hanami.env # => :development
   #
-  # @return [Symbol] the environment name
+  # @return [Symbol] the environment name (default: :development)
   #
   # @api public
   # @since 2.0.0
   def self.env(e: ENV)
-    e.fetch("HANAMI_ENV") { e.fetch("RACK_ENV", "development") }.to_sym
+    # TODO: [#1487] remove RACK_ENV (next 9 lines)
+    if !e["HANAMI_ENV"] && e["RACK_ENV"]
+      require "hanami/utils/deprecation"
+      if %i(development deployment).include? e["RACK_ENV"].to_sym
+        Hanami::Utils::Deprecation.new('in case you have set RACK_ENV explicitly: please use APP_ENV instead')
+      else
+        Hanami::Utils::Deprecation.new('RACK_ENV is deprecated, please use APP_ENV')
+      end
+      return e["RACK_ENV"].to_sym
+    end
+    e.fetch("HANAMI_ENV") { e.fetch("APP_ENV", "development") }.to_sym
   end
 
   # Returns true if {.env} matches any of the given names
