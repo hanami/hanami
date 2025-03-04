@@ -2,6 +2,12 @@
 
 The web, with simplicity.
 
+## [Unreleased]
+
+### Added
+
+- [Sven Schwyn] Support optional nonce in Rack requests, CSP header rules and view helpers (#1500)
+
 ## v2.2.1 - 2024-11-12
 
 ### Changed
