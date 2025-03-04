@@ -50,3 +50,44 @@ Some things that will increase the chance that your pull request is accepted:
 * Use Hanami idioms
 * Include tests that fail without your code, and pass with it
 * Update the documentation, guides, etc.
+
+### Commit messages
+
+Make sure you author meaningful commit messages which match existing commit
+messages in style.
+
+### Changelog
+
+Please help us to keep the `CHANGELOG.md` files up to date. Add appropriate entries
+using the same style as existing entries which should follow the [keep a changelog suggestions](https://keepachangelog.com).
+New entries have to go in the top `[Unreleased]` section to be added if necessary:
+
+```
+# Hanami
+
+The web, with simplicity.
+
+## [Unreleased]
+
+### Added
+
+- [John Doe] Add "418 I'm a teapot" middleware for caffeine allergics (#9999)
+
+## [v2.2.1] - 2024-11-12
+
+### Changed
+
+- [Tim Riley] Depend on matching minor version of hanami-cli (a version spec of `"~> 2.2.1"` instead of `"~> 2.2"`). This ensures that future bumps to the minor version of hanami-cli will not be inadvertently installed on user machines (#1471)
+(...)
+```
+
+### YARD and @since
+
+Make sure you document your code with appropriate [YARD comments](https://yardoc.org/).
+Newly introduced constants and methods should feature a `@since` comment to keep track
+of when they were added. If the release version is uncertain or unknown, use the
+following placeholder instead which will be adjusted as part of the release preparations:
+
+```
+# @since x.x.x
+```
