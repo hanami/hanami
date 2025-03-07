@@ -104,7 +104,11 @@ module Hanami
     # @!attribute [rw] no_auto_register_paths
     #   Sets the paths to skip from container auto-registration.
     #
-    #   Defaults to `["entities"]`.
+    #   Paths are relative to the app root or the slice root.
+    #
+    #   The `/lib` directory is always excluded from auto-registration.
+    #
+    #   Defaults to `["db", "entities", "relations", "structs"]`.
     #
     #   @return [Array<String>] array of relative paths
     #
