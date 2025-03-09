@@ -36,19 +36,19 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - name: Cache node_modules
-        id: cache-modules
+      - name: Cache Node modules
+        id: cache-node-modules
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node-${{ runner.OS }}-build-${{ hashFiles('package.json') }}
+          key: node-modules-${{ runner.OS }}-${{ hashFiles('package-lock.json') }}
       - name: Install NPM Modules
         if: steps.cache-modules.outputs.cache-hit != 'true'
         run: npm install
-      - name: Setup Node ${{ matrix.node_version }}
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: https://registry.npmjs.org
       - name: Run the test suite
         run: bundle exec rake
