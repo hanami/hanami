@@ -2,23 +2,14 @@ name: ci
 
 on:
   push:
-    paths:
-      - ".github/workflows/ci.yml"
-      - "lib/**"
-      - "*.gemspec"
-      - "spec/**"
-      - "Rakefile"
-      - "Gemfile"
-      - ".rubocop.yml"
+    branches: ["main"]
   pull_request:
-    branches:
-      - main
+    branches: ["main"]
   schedule:
     - cron: "30 4 * * *"
-  create:
 
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -52,3 +43,11 @@ jobs:
           registry-url: https://registry.npmjs.org
       - name: Run the test suite
         run: bundle exec rake
+
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: liskin/gh-workflow-keepalive@v1
