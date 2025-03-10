@@ -104,7 +104,7 @@ module Hanami
     # @!attribute [rw] no_auto_register_paths
     #   Sets the paths to skip from container auto-registration.
     #
-    #   Paths are relative to the app root or the slice root.
+    #   Paths are relative to `/app` or a slice root.
     #
     #   The `/lib` directory is always excluded from auto-registration.
     #
