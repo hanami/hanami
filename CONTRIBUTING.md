@@ -37,7 +37,7 @@ We cannot add all suggested enhancements to Hanami, but we’re open to having c
 
 ### Submitting pull requests
 
-When you submit a pull request, be sure to consider the following:
+When you submit a pull request, consider the following:
 
 - Include tests for your change.
 - Ensure tests are passing on CI (see the “Actions” tab for each repo).
@@ -101,7 +101,7 @@ Feel free to take inspiration from existing changelog entries for how you format
 
 We use [YARD](https://yardoc.org) for our API docs.
 
-When adding or changing code, be sure to keep the API docs up to date. Only public API needs to be fully documented. Each API doc should include:
+When adding or changing code, keep the API docs up to date. Only public API needs to be fully documented. Each API doc should include:
 
 - A concise, one-line description, in present tense form (see [Ruby’s API docs](https://docs.ruby-lang.org/en/master/) for examples).
 - Additional paragraphs of documentation as required.
