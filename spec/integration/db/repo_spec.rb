@@ -114,6 +114,13 @@ RSpec.describe "DB / Repo", :app_integration do
         end
       RUBY
 
+      write "app/repo.rb", <<~RUBY
+        module TestApp
+          class Repo < Hanami::DB::Repo
+          end
+        end
+      RUBY
+
       ENV["DATABASE_URL"] = "sqlite::memory"
 
       write "slices/admin/db/struct.rb", <<~RUBY
@@ -137,7 +144,7 @@ RSpec.describe "DB / Repo", :app_integration do
 
       write "slices/admin/repo.rb", <<~RUBY
         module Admin
-          class Repo < Hanami::DB::Repo
+          class Repo < TestApp::Repo
           end
         end
       RUBY
@@ -172,7 +179,7 @@ RSpec.describe "DB / Repo", :app_integration do
 
       write "slices/main/repo.rb", <<~RUBY
         module Main
-          class Repo < Hanami::DB::Repo
+          class Repo < TestApp::Repo
           end
         end
       RUBY
@@ -204,6 +211,7 @@ RSpec.describe "DB / Repo", :app_integration do
       migration.apply(gateway, :up)
       gateway.connection.execute("INSERT INTO posts (title) VALUES ('Together breakfast')")
 
+      expect(Admin::Slice["repos.post_repo"].root).to eql Admin::Slice["relations.posts"]
       expect(Admin::Slice["repos.post_repo"].posts).to eql Admin::Slice["relations.posts"]
       expect(Admin::Slice["repos.post_repo"].posts.by_pk(1).one!.class).to be < Admin::Structs::Post
 
