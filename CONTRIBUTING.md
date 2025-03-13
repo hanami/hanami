@@ -18,7 +18,7 @@ Everyone interacting with Hanami codebases, issue trackers, chat rooms, and foru
 
 ### Fixing issues
 
-We maintain a range of ["help wanted"](https://github.com/issues?q=org%3Ahanami+is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) and ["good first issue"](https://github.com/issues?q=org%3Ahanami+is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) issues on GitHub. These are issues that we want to see addressed for Hanami, and are ready for you to work on.
+We maintain a range of [“help wanted”](https://github.com/issues?q=org%3Ahanami+is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) and [“good first issue”](https://github.com/issues?q=org%3Ahanami+is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) issues on GitHub. These are issues that we want to see addressed for Hanami, and are ready for you to work on.
 
 Feel free to choose an issue that looks interesting to you. Ask questions in the issue if anything is not clear. Once your work on fixing the issue is under way, you can [submit a pull request](#submitting-pull-requests).
 
