@@ -95,7 +95,7 @@ New entries can go in the `## [Unreleased]` section at the top of the file. For 
 - Depend on matching minor version of hanami-cli (a version spec of `"~> 2.2.1"` instead of `"~> 2.2"`). This ensures that future bumps to the minor version of hanami-cli will not be inadvertently installed on user machines (@timriley in #1471)
 ```
 
-Feel free to take inspiration from other changelog for how you format your own.
+Feel free to take inspiration from existing changelog entries for how you format your own.
 
 ### API docs
 
