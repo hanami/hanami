@@ -1,93 +1,120 @@
-Hanami is an open source project and we would love you to help us make it better.
+# Contributing to Hanami
 
-## Reporting Issues
+Thank you for your interest in contributing to Hanami! This document outlines the process for contributing, with tips to help you along the way.
 
-A well formatted issue is appreciated, and goes a long way in helping us help you.
+## Code of Conduct
 
-* Make sure you have a [GitHub account](https://github.com/signup/free)
-* Submit a [GitHub issue](./issues) by:
-  * Clearly describing the issue
-    * Provide a descriptive summary
-    * Explain the expected behavior
-    * Explain the actual behavior
-    * Provide steps to reproduce the actual behavior
-    * Provide your application's complete `Gemfile.lock` as text (in a [Gist](https://gist.github.com) for bonus points)
-    * Any relevant stack traces
+Everyone interacting with Hanami codebases, issue trackers, chat rooms, and forum is expected to follow our [Code of Conduct](./CODE_OF_CONDUCT.md).
 
-If you provide code, make sure it is formatted with the triple backticks (\`).
+## How to contribute
 
-At this point, we'd love to tell you how long it will take for us to respond,
-but we just don't know.
+### Reporting issues
 
-## Pull requests
+- Check [GitHub issues](https://github.com/issues?q=org%3Ahanami+is%3Aopen+is%3Aissue) to see if your issue has already been reported.
+- If you don't find an open issue, create a new one, either in [hanami/hanami](https://github.com/hanami/hanami/issues) or the [relevant repo](https://github.com/hanami).
+  - Include a clear title and description.
+  - Add as much relevant information as possible (such as your Hanami version,`Gemfile.lock`, Ruby version, OS, as well as code samples, error messages or stack traces).
+  - Include steps or code to reproduce the issue.
 
-We accept pull requests to Hanami for:
+### Fixing issues
 
-* Adding documentation
-* Fixing bugs
-* Adding new features
+We maintain a range of ["help wanted"](https://github.com/issues?q=org%3Ahanami+is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) and ["good first issue"](https://github.com/issues?q=org%3Ahanami+is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) issues on GitHub. These are issues that we want to see addressed for Hanami, and are ready for you to work on.
 
-Not all features proposed will be added but we are open to having a conversation
-about a feature you are championing.
+Feel free to choose an issue that looks interesting to you. Ask questions in the issue if anything is not clear. Once your work on fixing the issue is under way, you can [submit a pull request](#submitting-pull-requests).
 
-Here's a quick guide:
+### Suggesting enhancements
 
-1. Fork the repo.
+If you have a significant enhancement to suggest:
 
-2. Run the tests. This is to make sure your starting point works. Tests can be
-run via `rake`
+- [Create a proposal topic on our forum](https://discourse.hanamirb.org/c/proposals/6) describing your proposed enhancement.
+- Explain why this enhancement might be useful, focusing on real world use cases.
+- Consider how it fits with Hanami framework design, and how it might impact existing features or workflows.
+- We'll discuss discuss your proposal with you if/how it should be built.
 
-3. Create a new branch and make your changes. This includes tests for features!
+For smaller changes that are more easily demonstrated through code, feel free to [submit a pull request](#submitting-pull-requests).
 
-4. Push to your fork and submit a pull request. For more information, see
-[GitHub's pull request help section](https://help.github.com/articles/using-pull-requests/).
+We cannot add all suggested enhancements to Hanami, but we’re open to having constructive conversations with you about them, and learning from each other along the way.
 
-At this point you're waiting on us. Expect a conversation regarding your pull
-request; Questions, clarifications, and so on.
+### Submitting pull requests
 
-Some things that will increase the chance that your pull request is accepted:
+When you submit a pull request, be sure to consider the following:
 
-* Use Hanami idioms
-* Include tests that fail without your code, and pass with it
-* Update the documentation, guides, etc.
+- Include tests for your change.
+- Ensure tests are passing on CI (see the “Actions” tab for each repo).
+- Add or update API documentation for your change.
+- Update user guides and/or docs to reflect your change, via a pull request to [hanami/site](https://github.com/hanami/site).
+- Add an entry to [CHANGELOG.md](./CHANGELOG.md) for your change.
+- Follow the [conventions](#conventions) outlined below, plus any other idioms you see across the codebase.
+
+If you need help with any of these, please ask! Once your pull request is ready, we’ll review your change and have a conversation with you about it.
+
+## Development setup
+
+After cloning the repo:
+
+```bash
+bundle install
+npm install
+```
+
+To run the rests:
+
+```bash
+bundle exec rake
+# or
+bundle exec rspec
+```
+
+## Conventions
 
 ### Commit messages
 
-Make sure you author meaningful commit messages which match existing commit
-messages in style.
+Your pull request will be squashed into a single commit when merged. Break up your pull request into individual commits if it will help with review of the code.
+
+One of your commits should contain what the message that will become the commit message for the merged pull request.
+
+[Follow these guidelines](https://developer.vonage.com/en/blog/how-to-write-a-great-git-commit-message) for your commit messages. If in doubt, don’t worry too much, we can fix things when we merge your pull request.
 
 ### Changelog
 
-Please help us to keep the `CHANGELOG.md` files up to date. Add appropriate entries
-using the same style as existing entries which should follow the [keep a changelog suggestions](https://keepachangelog.com).
-New entries have to go in the top `[Unreleased]` section to be added if necessary:
+When you’re making a change that Hanami users should know about, please update the `CHANGELOG.md`. We follow the [keep a changelog](https://keepachangelog.com) conventions for our changelogs.
 
-```
-# Hanami
+New entries can go in the `## [Unreleased]` section at the top of the file. For example:
 
-The web, with simplicity.
-
+```md
 ## [Unreleased]
 
 ### Added
 
-- [John Doe] Add "418 I'm a teapot" middleware for caffeine allergics (#9999)
+- Add "418 I'm a teapot" middleware for caffeine allergics (@jane_doe in #9999)
 
 ## [v2.2.1] - 2024-11-12
 
 ### Changed
 
-- [Tim Riley] Depend on matching minor version of hanami-cli (a version spec of `"~> 2.2.1"` instead of `"~> 2.2"`). This ensures that future bumps to the minor version of hanami-cli will not be inadvertently installed on user machines (#1471)
-(...)
+- Depend on matching minor version of hanami-cli (a version spec of `"~> 2.2.1"` instead of `"~> 2.2"`). This ensures that future bumps to the minor version of hanami-cli will not be inadvertently installed on user machines (@timriley in #1471)
 ```
 
-### YARD and @since
+Feel free to take inspiration from other changelog for how you format your own.
 
-Make sure you document your code with appropriate [YARD comments](https://yardoc.org/).
-Newly introduced constants and methods should feature a `@since` comment to keep track
-of when they were added. If the release version is uncertain or unknown, use the
-following placeholder instead which will be adjusted as part of the release preparations:
+### API docs
 
-```
-# @since x.x.x
-```
+We use [YARD](https://yardoc.org) for our API docs.
+
+When adding or changing code, be sure to keep the API docs up to date. Only public API needs to be fully documented. Each API doc should include:
+
+- A concise, one-line description, in present tense form (see [Ruby's API docs](https://docs.ruby-lang.org/en/master/) for examples).
+- Additional paragraphs of documentation as required.
+- Examples (via the `@example`) if hepful.
+- `@param` and `@return` tags
+- An `@api` tag
+- A `@since` tag, formatted as `@since x.x.x` if the expected release version is unknown.
+
+See [`lib/hanami/slice.rb`](./lib/hanami/slice.rb) for good examples of our API docs.
+
+## Questions?
+
+We want to help you become a successful contributor to Hanami! If you have questions, please find us here:
+
+- [Forum](https://discourse.hanamirb.org/)
+- [Chat](https://discord.gg/KFCxDmk3JQ)
