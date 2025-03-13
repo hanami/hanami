@@ -11,7 +11,7 @@ Everyone interacting with Hanami codebases, issue trackers, chat rooms, and foru
 ### Reporting issues
 
 - Check [GitHub issues](https://github.com/issues?q=org%3Ahanami+is%3Aopen+is%3Aissue) to see if your issue has already been reported.
-- If you don't find an open issue, create a new one, either in [hanami/hanami](https://github.com/hanami/hanami/issues) or the [relevant repo](https://github.com/hanami).
+- If you don’t find an open issue, create a new one, either in [hanami/hanami](https://github.com/hanami/hanami/issues) or the [relevant repo](https://github.com/hanami).
   - Include a clear title and description.
   - Add as much relevant information as possible (such as your Hanami version,`Gemfile.lock`, Ruby version, OS, as well as code samples, error messages or stack traces).
   - Include steps or code to reproduce the issue.
@@ -29,7 +29,7 @@ If you have a significant enhancement to suggest:
 - [Create a proposal topic on our forum](https://discourse.hanamirb.org/c/proposals/6) describing your enhancement.
 - Explain why this enhancement might be useful, focusing on real world use cases.
 - Consider how it fits with Hanami framework design, and how it might impact existing features or workflows.
-- We'll discuss discuss your proposal with you if/how it should be built.
+- From there, we’ll discuss discuss your proposal with you if/how it should be built.
 
 For smaller changes that are more easily demonstrated through code, feel free to [submit a pull request](#submitting-pull-requests).
 
@@ -103,7 +103,7 @@ We use [YARD](https://yardoc.org) for our API docs.
 
 When adding or changing code, be sure to keep the API docs up to date. Only public API needs to be fully documented. Each API doc should include:
 
-- A concise, one-line description, in present tense form (see [Ruby's API docs](https://docs.ruby-lang.org/en/master/) for examples).
+- A concise, one-line description, in present tense form (see [Ruby’s API docs](https://docs.ruby-lang.org/en/master/) for examples).
 - Additional paragraphs of documentation as required.
 - Examples (via the `@example`) if hepful.
 - `@param` and `@return` tags
