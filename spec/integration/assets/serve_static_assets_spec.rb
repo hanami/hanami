@@ -62,7 +62,7 @@ RSpec.describe "Serve Static Assets", :app_integration do
       get "/assets/../../config/app.rb"
 
       expect(last_response.status).to eq(404)
-      expect(last_response.body).to match(/Not Found/i)
+      expect(last_response.body).to match("Hanami::Router::NotFoundError")
     end
   end
 
