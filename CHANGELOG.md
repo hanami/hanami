@@ -4,9 +4,9 @@ The web, with simplicity.
 
 ## [Unreleased]
 
-### Deprecated
+### Added
 
-- [Sven Schwyn] Add `APP_ENV` as a fallback of `HANAMI_ENV` (#1487)
+- Check `ENV["APP_ENV"]` for the Hanami env if `ENV["HANAMI_ENV"]` is not set. The order of environment variable checks is now `HANAMI_ENV`->`APP_ENV`->`RACK_ENV` (@svoop in #1487).
 
 ## v2.2.1 - 2024-11-12
 
