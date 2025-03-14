@@ -2,6 +2,12 @@
 
 The web, with simplicity.
 
+## [Unreleased]
+
+### Added
+
+- Check `ENV["APP_ENV"]` for the Hanami env if `ENV["HANAMI_ENV"]` is not set. The order of environment variable checks is now `HANAMI_ENV`->`APP_ENV`->`RACK_ENV` (@svoop in #1487).
+
 ## v2.2.1 - 2024-11-12
 
 ### Changed

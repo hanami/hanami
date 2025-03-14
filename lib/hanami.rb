@@ -138,7 +138,15 @@ module Hanami
     end
   end
 
-  # Returns the Hanami app environment as loaded from the `HANAMI_ENV` environment variable.
+  # Returns the Hanami app environment as determined from the environment.
+  #
+  # Checks the following environment variables in order:
+  #
+  # - `HANAMI_ENV`
+  # - `APP_ENV`
+  # - `RACK_ENV`
+  #
+  # Defaults to `:development` if no environment variable is set.
   #
   # @example
   #   Hanami.env # => :development
@@ -148,7 +156,7 @@ module Hanami
   # @api public
   # @since 2.0.0
   def self.env(e: ENV)
-    e.fetch("HANAMI_ENV") { e.fetch("RACK_ENV", "development") }.to_sym
+    (e["HANAMI_ENV"] || e["APP_ENV"] || e["RACK_ENV"] || :development).to_sym
   end
 
   # Returns true if {.env} matches any of the given names
