@@ -71,7 +71,7 @@ bundle exec rspec
 
 Your pull request will be squashed into a single commit when merged. Break up your pull request into individual commits if it will help with review of the code.
 
-One of your commits should contain what the message that will become the commit message for the merged pull request.
+One of your commits should contain the message that will become the commit message for the merged pull request.
 
 [Follow these guidelines](https://developer.vonage.com/en/blog/how-to-write-a-great-git-commit-message) for your commit messages. If in doubt, don’t worry too much, we can fix things when we merge your pull request.
 
