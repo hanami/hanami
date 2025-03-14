@@ -57,7 +57,7 @@ bundle install
 npm install
 ```
 
-To run the rests:
+To run the tests:
 
 ```bash
 bundle exec rake
