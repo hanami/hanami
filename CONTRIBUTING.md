@@ -29,7 +29,7 @@ If you have a significant enhancement to suggest:
 - [Create a proposal topic on our forum](https://discourse.hanamirb.org/c/proposals/6) describing your enhancement.
 - Explain why this enhancement might be useful, focusing on real world use cases.
 - Consider how it fits with Hanami framework design, and how it might impact existing features or workflows.
-- From there, we’ll discuss discuss your proposal with you if/how it should be built.
+- From there, we’ll discuss your proposal with you and if/how it should be built.
 
 For smaller changes that are more easily demonstrated through code, feel free to [submit a pull request](#submitting-pull-requests).
 
