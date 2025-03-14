@@ -1,6 +1,18 @@
 # Hanami
 
-The web, with simplicity.
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
 
 ## [Unreleased]
 
