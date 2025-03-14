@@ -138,14 +138,20 @@ module Hanami
     end
   end
 
-  # Returns the Hanami app environment from the `HANAMI_ENV` environment
-  # variable or in this order one of the fallbacks `APP_ENV`, `RACK_ENV` and
-  # ultimately `:development`.
+  # Returns the Hanami app environment as determined from the environment.
+  #
+  # Checks the following environment variables in order:
+  #
+  # - `HANAMI_ENV`
+  # - `APP_ENV`
+  # - `RACK_ENV`
+  #
+  # Defaults to `:development` if no environment variable is set.
   #
   # @example
   #   Hanami.env # => :development
   #
-  # @return [Symbol] the environment name (default: :development)
+  # @return [Symbol] the environment name
   #
   # @api public
   # @since 2.0.0
