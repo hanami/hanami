@@ -108,7 +108,7 @@ When adding or changing code, keep the API docs up to date. Only public API need
 - Examples (via the `@example`) if hepful.
 - `@param` and `@return` tags
 - An `@api` tag
-- A `@since` tag, formatted as `@since x.x.x` if the expected release version is unknown.
+- A `@since` tag, formatted as `@since x.x.x` for new entries (we'll add an appropriate version before the next release).
 
 See [`lib/hanami/slice.rb`](./lib/hanami/slice.rb) for good examples of our API docs.
 
