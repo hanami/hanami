@@ -20,6 +20,10 @@
 
 - Check `ENV["APP_ENV"]` for the Hanami env if `ENV["HANAMI_ENV"]` is not set. The order of environment variable checks is now `HANAMI_ENV`->`APP_ENV`->`RACK_ENV` (@svoop in #1487).
 
+### Changed
+
+- Allow absolute URLs + custom URL schemes in router redirects (@inouire in hanami/router/#282)
+
 ## v2.2.1 - 2024-11-12
 
 ### Changed
