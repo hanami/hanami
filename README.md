@@ -49,7 +49,7 @@ You can give back to Open Source, by supporting Hanami development via [GitHub S
 * [Guides](https://guides.hanamirb.org)
 * [Issues](https://github.com/hanami/hanami/issues)
 * [Forum](https://discourse.hanamirb.org)
-* [Chat](http://chat.hanamirb.org)
+* [Chat](https://discord.gg/KFCxDmk3JQ)
 
 ## Community
 
