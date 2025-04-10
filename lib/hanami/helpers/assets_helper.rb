@@ -61,7 +61,9 @@ module Hanami
 
       # @since 0.3.0
       # @api private
-      ABSOLUTE_URL_MATCHER = URI::DEFAULT_PARSER.make_regexp
+      ABSOLUTE_URL_MATCHER = (
+        defined?(URI::RFC2396_PARSER) ? URI::RFC2396_PARSER : URI::DEFAULT_PARSER
+      ).make_regexp
 
       # @since 1.1.0
       # @api private
