@@ -28,7 +28,7 @@ module Hanami
         if Hanami.app.config.actions.content_security_policy == false
           @app.call(env)
         else
-          env['hanami.content_security_policy_nonce'] = @nonce
+          env["hanami.content_security_policy_nonce"] = @nonce
           @app.call(env).tap do |response|
             headers = response[1]
             headers["Content-Security-Policy"] = sub_nonce headers["Content-Security-Policy"]
@@ -43,7 +43,7 @@ module Hanami
       end
 
       def sub_nonce(string)
-        string.gsub(/'nonce'/, "'nonce-#{@nonce}'")
+        string&.gsub("'nonce'", "'nonce-#{@nonce}'")
       end
     end
   end
