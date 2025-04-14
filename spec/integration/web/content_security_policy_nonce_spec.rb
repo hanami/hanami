@@ -82,6 +82,8 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
             class App < Hanami::App
               config.middleware.use Hanami::Middleware::ContentSecurityPolicyNonce
               config.actions.content_security_policy[:script_src] = "'self' 'nonce'"
+
+              config.logger.stream = File::NULL
             end
           end
         RUBY
@@ -131,6 +133,8 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
             class App < Hanami::App
               config.middleware.use Hanami::Middleware::ContentSecurityPolicyNonce
               config.actions.content_security_policy = false
+
+              config.logger.stream = File::NULL
             end
           end
         RUBY
