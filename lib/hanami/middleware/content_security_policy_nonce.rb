@@ -26,14 +26,12 @@ module Hanami
       # @api private
       # @since x.x.x
       def call(env)
-        if Hanami.app.config.actions.content_security_policy == false
-          @app.call(env)
-        else
-          env[CONTENT_SECURITY_POLICY_NONCE_REQUEST_KEY] = @nonce
-          @app.call(env).tap do |response|
-            headers = response[1]
-            headers["Content-Security-Policy"] = sub_nonce headers["Content-Security-Policy"]
-          end
+        return @app.call(env) unless Hanami.app.config.actions.content_security_policy?
+
+        env[CONTENT_SECURITY_POLICY_NONCE_REQUEST_KEY] = @nonce
+        @app.call(env).tap do |response|
+          headers = response[1]
+          headers["Content-Security-Policy"] = sub_nonce headers["Content-Security-Policy"]
         end
       end
 

@@ -138,6 +138,10 @@ module Hanami
         end
       end
 
+      # @api public
+      # @since x.x.x
+      def content_security_policy? = !!@content_security_policy
+
       private
 
       # Apply defaults for base config
