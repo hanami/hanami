@@ -2,6 +2,7 @@
 
 require "rack"
 require "securerandom"
+require "../constants"
 
 module Hanami
   module Middleware
@@ -28,7 +29,7 @@ module Hanami
         if Hanami.app.config.actions.content_security_policy == false
           @app.call(env)
         else
-          env["hanami.content_security_policy_nonce"] = @nonce
+          env[CONTENT_SECURITY_POLICY_NONCE_REQUEST_KEY] = @nonce
           @app.call(env).tap do |response|
             headers = response[1]
             headers["Content-Security-Policy"] = sub_nonce headers["Content-Security-Policy"]

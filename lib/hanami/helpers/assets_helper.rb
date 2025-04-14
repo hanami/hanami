@@ -2,6 +2,7 @@
 
 require "uri"
 require "hanami/view"
+require "../constants"
 
 # rubocop:disable Metrics/ModuleLength
 
@@ -713,7 +714,7 @@ module Hanami
       def content_security_policy_nonce
         return unless _context.request?
 
-        _context.request.env["hanami.content_security_policy_nonce"]
+        _context.request.env[CONTENT_SECURITY_POLICY_NONCE_REQUEST_KEY]
       end
 
       private
