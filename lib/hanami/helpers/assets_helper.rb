@@ -711,9 +711,9 @@ module Hanami
       #
       #   <script nonce="<%= content_security_policy_nonce %>">
       def content_security_policy_nonce
+        return unless _context.request?
+
         _context.request.env["hanami.content_security_policy_nonce"]
-      rescue Hanami::ComponentLoadError
-        nil
       end
 
       private

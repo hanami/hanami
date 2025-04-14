@@ -172,6 +172,16 @@ module Hanami
               @request
             end
 
+            # Returns true if the view is rendered from within an action and a request is available.
+            #
+            # @return [Boolean]
+            #
+            # @api public
+            # @since 2.1.0
+            def request?
+              !!@request
+            end
+
             # Returns the app's routes helper.
             #
             # @return [Hanami::Slice::RoutesHelper] the routes helper
