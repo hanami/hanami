@@ -2,7 +2,7 @@
 
 require "uri"
 require "hanami/view"
-require "../constants"
+require_relative "../constants"
 
 # rubocop:disable Metrics/ModuleLength
 

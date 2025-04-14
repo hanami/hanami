@@ -2,7 +2,7 @@
 
 require "rack"
 require "securerandom"
-require "../constants"
+require_relative "../constants"
 
 module Hanami
   module Middleware
