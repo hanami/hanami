@@ -90,7 +90,7 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
       it "sets hanami.content_security_policy_nonce in Rack env" do
         get "/index"
 
-        expect(last_request.env["hanami.content_security_policy_nonce"]).to match(/\A[a-z\d]{8}\z/i)
+        expect(last_request.env["hanami.content_security_policy_nonce"]).to match(/\A[A-Za-z0-9\-_]{22}\z/)
       end
 
       it "substitutes 'nonce' in the CSP header" do
@@ -104,21 +104,21 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
         get "/index"
         nonce = last_request.env["hanami.content_security_policy_nonce"]
 
-        expect(last_response.body).to match(/<style nonce="#{nonce}">/)
+        expect(last_response.body).to match(/<style nonce="#{Regexp.escape(nonce)}">/)
       end
 
       it "adds the nonce attribute to the javascript_tag helper" do
         get "/index"
         nonce = last_request.env["hanami.content_security_policy_nonce"]
 
-        expect(last_response.body).to match(/<script[^>]*\s+nonce="#{nonce}"/)
+        expect(last_response.body).to match(/<script[^>]*\s+nonce="#{Regexp.escape(nonce)}"/)
       end
 
       it "adds the nonce attribute to the stylesheet_tag helper" do
         get "/index"
         nonce = last_request.env["hanami.content_security_policy_nonce"]
 
-        expect(last_response.body).to match(/<link[^>]*\s+nonce="#{nonce}"/)
+        expect(last_response.body).to match(/<link[^>]*\s+nonce="#{Regexp.escape(nonce)}"/)
       end
     end
 

@@ -38,7 +38,7 @@ module Hanami
       private
 
       def random_nonce
-        SecureRandom.alphanumeric(8)
+        SecureRandom.urlsafe_base64(16)
       end
 
       def sub_nonce(string)
