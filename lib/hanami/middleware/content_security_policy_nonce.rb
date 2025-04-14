@@ -5,10 +5,10 @@ require "securerandom"
 
 module Hanami
   module Middleware
-    # Generate a random per request nonce value like `A12OggyZ`, write
-    # it to `hanami.content_security_policy_nonce` and replace all
-    # occurrences of `'nonce'` in the Content-Security-Policy header
-    # with `'nonce-A12OggyZ'`.
+    # Generates a random per request nonce value like `mSMnSwfVZVe+LyQy1SPCGw==`, stores it as
+    # `"hanami.content_security_policy_nonce"` in the Rack environment, and replaces all occurrences
+    # of `'nonce'` in the `Content-Security-Policy header with the actual nonce value for the
+    # request, e.g. `'nonce-mSMnSwfVZVe+LyQy1SPCGw=='`.
     #
     # @see Hanami::Middleware::ContentSecurityPolicyNonce
     #
