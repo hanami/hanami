@@ -177,7 +177,7 @@ module Hanami
             # @return [Boolean]
             #
             # @api public
-            # @since 2.1.0
+            # @since x.x.x
             def request?
               !!@request
             end
