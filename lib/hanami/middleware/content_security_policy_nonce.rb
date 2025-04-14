@@ -29,10 +29,12 @@ module Hanami
 
         request_nonce = generate_nonce
         env[CONTENT_SECURITY_POLICY_NONCE_REQUEST_KEY] = request_nonce
-        @app.call(env).tap do |response|
-          headers = response[1]
-          headers["Content-Security-Policy"] = sub_nonce(headers["Content-Security-Policy"], request_nonce)
-        end
+
+        _, headers, _ = response = @app.call(env)
+
+        headers["Content-Security-Policy"] = sub_nonce(headers["Content-Security-Policy"], request_nonce)
+
+        response
       end
 
       private
