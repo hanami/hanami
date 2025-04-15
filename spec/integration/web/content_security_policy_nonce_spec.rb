@@ -88,10 +88,17 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
         RUBY
       end
 
-      it "sets hanami.content_security_policy_nonce in Rack env" do
-        get "/index"
+      it "sets unique and per-request hanami.content_security_policy_nonce in Rack env" do
+        previous_nonces = []
+        3.times do
+          get "/index"
+          nonce = last_request.env["hanami.content_security_policy_nonce"]
 
-        expect(last_request.env["hanami.content_security_policy_nonce"]).to match(/\A[A-Za-z0-9\-_]{22}\z/)
+          expect(nonce).to match(/\A[A-Za-z0-9\-_]{22}\z/)
+          expect(previous_nonces).not_to include nonce
+
+          previous_nonces << nonce
+        end
       end
 
       it "substitutes 'nonce' in the CSP header" do
