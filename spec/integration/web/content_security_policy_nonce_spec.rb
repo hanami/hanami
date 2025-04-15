@@ -128,6 +128,13 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
 
         expect(last_response.body).to match(/<link[^>]*\s+nonce="#{Regexp.escape(nonce)}"/)
       end
+
+      it "behaves the same with explicitly added middleware" do
+        Hanami.app.config.middleware.use Hanami::Middleware::ContentSecurityPolicyNonce
+        get "/index"
+
+        expect(last_request.env["hanami.content_security_policy_nonce"]).to match(/\A[A-Za-z0-9\-_]{22}\z/)
+      end
     end
 
     context "CSP disabled" do
@@ -173,6 +180,13 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
         get "/index"
 
         expect(last_response.body).to match(/<link(?![^>]*\s+nonce=)/)
+      end
+
+      it "behaves the same with explicitly added middleware" do
+        Hanami.app.config.middleware.use Hanami::Middleware::ContentSecurityPolicyNonce
+        get "/index"
+
+        expect(last_response.headers).to_not have_key "Content-Security-Policy"
       end
     end
   end
