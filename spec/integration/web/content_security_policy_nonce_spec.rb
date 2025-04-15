@@ -101,6 +101,22 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
         end
       end
 
+      it "accepts custom nonce generator proc without arguments" do
+        Hanami.app.config.actions.content_security_policy_nonce_generator = -> { "foobar" }
+
+        get "/index"
+
+        expect(last_request.env["hanami.content_security_policy_nonce"]).to eql("foobar")
+      end
+
+      it "accepts custom nonce generator proc with Rack request as argument" do
+        Hanami.app.config.actions.content_security_policy_nonce_generator = ->(request) { request }
+
+        get "/index"
+
+        expect(last_request.env["hanami.content_security_policy_nonce"]).to be_a(Rack::Request)
+      end
+
       it "substitutes 'nonce' in the CSP header" do
         get "/index"
         nonce = last_request.env["hanami.content_security_policy_nonce"]

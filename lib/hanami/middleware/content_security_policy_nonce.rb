@@ -27,7 +27,9 @@ module Hanami
       def call(env)
         return @app.call(env) unless Hanami.app.config.actions.content_security_policy?
 
-        request_nonce = generate_nonce
+        args = nonce_generator.arity == 1 ? [Rack::Request.new(env)] : []
+        request_nonce = nonce_generator.call(*args)
+
         env[CONTENT_SECURITY_POLICY_NONCE_REQUEST_KEY] = request_nonce
 
         _, headers, _ = response = @app.call(env)
@@ -39,8 +41,8 @@ module Hanami
 
       private
 
-      def generate_nonce
-        SecureRandom.urlsafe_base64(16)
+      def nonce_generator
+        Hanami.app.config.actions.content_security_policy_nonce_generator
       end
 
       def sub_nonce(string, nonce)
