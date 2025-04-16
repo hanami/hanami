@@ -703,7 +703,7 @@ module Hanami
       # @since 2.1.0
       # @api private
       def _absolute_url?(source)
-        ABSOLUTE_URL_MATCHER.match(source)
+        ABSOLUTE_URL_MATCHER.match?(source)
       end
 
       # @since 1.2.0
