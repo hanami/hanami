@@ -89,10 +89,10 @@ module Hanami
       # name of the algorithm, then a hyphen, then the hash value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
-      # If the `Hanami::Middleware::ContentSecurityPolicyNonce` middleware is
-      # in use, the nonce value of the current request is automatically added
-      # as an attribute. See {#content_security_policy_nonce} for how to
-      # configure this correctly.
+      # If the Content Security Policy uses 'nonce' and the source is not
+      # absolute, the nonce value of the current request is automatically added
+      # as an attribute. You can override this with the `nonce: false` option.
+      # See {#content_security_policy_nonce} for more.
       #
       # @param sources [Array<String, #url>] one or more assets by name or absolute URL
       #
@@ -145,6 +145,10 @@ module Hanami
       #
       #   # <script src="/assets/application.js" type="text/javascript" defer="defer"></script>
       #
+      # @example Disable nonce
+      #
+      #   <%= javascript_tag "application", nonce: false %>
+      #
       # @example Absolute URL
       #
       #   <%= javascript_tag "https://code.jquery.com/jquery-2.1.4.min.js" %>
@@ -165,12 +169,13 @@ module Hanami
       #   #         type="text/javascript"></script>
       def javascript_tag(*sources, **options)
         options = options.reject { |k, _| k.to_sym == :src }
+        nonce_option = options.delete(:nonce)
 
         _safe_tags(*sources) do |source|
           attributes = {
             src: _typed_url(source, JAVASCRIPT_EXT),
             type: JAVASCRIPT_MIME_TYPE,
-            nonce: content_security_policy_nonce
+            nonce: _nonce(source, nonce_option)
           }
           attributes.merge!(options)
 
@@ -199,10 +204,10 @@ module Hanami
       # name of the algorithm, then a hyphen, then the hashed value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
-      # If the `Hanami::Middleware::ContentSecurityPolicyNonce` middleware is
-      # in use, the nonce value of the current request is automatically added
-      # as an attribute. See {#content_security_policy_nonce} for how to
-      # configure this correctly.
+      # If the Content Security Policy uses 'nonce' and the source is not
+      # absolute, the nonce value of the current request is automatically added
+      # as an attribute. You can override this with the `nonce: false` option.
+      # See {#content_security_policy_nonce} for more.
       #
       # @param sources [Array<String, #url>] one or more assets by name or absolute URL
       #
@@ -228,6 +233,10 @@ module Hanami
       #
       #   # <link href="/assets/application.css" type="text/css" rel="stylesheet">
       #   # <link href="/assets/dashboard.css" type="text/css" rel="stylesheet">
+      #
+      # @example Disable nonce
+      #
+      #   <%= stylesheet_tag "application", nonce: false %>
       #
       # @example Subresource Integrity
       #
@@ -264,13 +273,14 @@ module Hanami
       #   #       type="text/css" rel="stylesheet">
       def stylesheet_tag(*sources, **options)
         options = options.reject { |k, _| k.to_sym == :href }
+        nonce_option = options.delete(:nonce)
 
         _safe_tags(*sources) do |source|
           attributes = {
             href: _typed_url(source, STYLESHEET_EXT),
             type: STYLESHEET_MIME_TYPE,
             rel: STYLESHEET_REL,
-            nonce: content_security_policy_nonce
+            nonce: _nonce(source, nonce_option)
           }
           attributes.merge!(options)
 
@@ -745,7 +755,7 @@ module Hanami
       # @since 2.1.0
       # @api private
       def _absolute_url?(source)
-        ABSOLUTE_URL_MATCHER.match?(source)
+        ABSOLUTE_URL_MATCHER.match?(source.respond_to?(:url) ? source.url : source)
       end
 
       # @since 1.2.0
@@ -754,6 +764,18 @@ module Hanami
         return false unless _absolute_url?(source)
 
         _context.assets.crossorigin?(source)
+      end
+
+      # @since x.x.x
+      # @api private
+      def _nonce(source, nonce_option)
+        if nonce_option == false
+          nil
+        elsif nonce_option == true || (nonce_option.nil? && !_absolute_url?(source))
+          content_security_policy_nonce
+        else
+          nonce_option
+        end
       end
 
       # @since 2.1.0

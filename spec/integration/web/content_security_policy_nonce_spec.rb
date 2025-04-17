@@ -40,11 +40,19 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
         <!DOCTYPE html>
         <html lang="en">
           <head>
-            <%= stylesheet_tag "app" %>
+            <%= stylesheet_tag "app", class: "nonce-true", nonce: true %>
+            <%= stylesheet_tag "app", class: "nonce-false", nonce: false %>
+            <%= stylesheet_tag "app", class: "nonce-explicit", nonce: "explicit" %>
+            <%= stylesheet_tag "app", class: "nonce-generated" %>
+            <%= stylesheet_tag "https://example.com/app.css", class: "nonce-absolute" %>
           </head>
           <body>
             <style nonce="<%= content_security_policy_nonce %>"></style>
-            <%= javascript_tag "app" %>
+            <%= javascript_tag "app", class: "nonce-true", nonce: true %>
+            <%= javascript_tag "app", class: "nonce-false", nonce: false %>
+            <%= javascript_tag "app", class: "nonce-explicit", nonce: "explicit" %>
+            <%= javascript_tag "app", class: "nonce-generated" %>
+            <%= javascript_tag "https://example.com/app.js", class: "nonce-absolute" %>
           </body>
         </html>
       HTML
@@ -124,32 +132,46 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
         expect(last_response.get_header("Content-Security-Policy")).to match(/script-src 'self' 'nonce-#{nonce}'/)
       end
 
-      it "enables the content_security_policy_nonce helper" do
-        get "/index"
-        nonce = last_request.env["hanami.content_security_policy_nonce"]
-
-        expect(last_response.body).to match(/<style nonce="#{Regexp.escape(nonce)}">/)
-      end
-
-      it "adds the nonce attribute to the javascript_tag helper" do
-        get "/index"
-        nonce = last_request.env["hanami.content_security_policy_nonce"]
-
-        expect(last_response.body).to match(/<script[^>]*\s+nonce="#{Regexp.escape(nonce)}"/)
-      end
-
-      it "adds the nonce attribute to the stylesheet_tag helper" do
-        get "/index"
-        nonce = last_request.env["hanami.content_security_policy_nonce"]
-
-        expect(last_response.body).to match(/<link[^>]*\s+nonce="#{Regexp.escape(nonce)}"/)
-      end
-
       it "behaves the same with explicitly added middleware" do
         Hanami.app.config.middleware.use Hanami::Middleware::ContentSecurityPolicyNonce
         get "/index"
 
         expect(last_request.env["hanami.content_security_policy_nonce"]).to match(/\A[A-Za-z0-9\-_]{22}\z/)
+      end
+
+      describe "content_security_policy_nonce" do
+        it "renders the current nonce" do
+          get "/index"
+          nonce = last_request.env["hanami.content_security_policy_nonce"]
+
+          expect(last_response.body).to include(%(<style nonce="#{nonce}">))
+        end
+      end
+
+      describe "stylesheet_tag" do
+        it "renders the correct nonce unless remote URL or nonce set to false" do
+          get "/index"
+          nonce = last_request.env["hanami.content_security_policy_nonce"]
+
+          expect(last_response.body).to include(%(<link href="/assets/app-KUHJPSX7.css" type="text/css" rel="stylesheet" nonce="#{nonce}" class="nonce-true">))
+          expect(last_response.body).to include(%(<link href="/assets/app-KUHJPSX7.css" type="text/css" rel="stylesheet" class="nonce-false">))
+          expect(last_response.body).to include(%(<link href="/assets/app-KUHJPSX7.css" type="text/css" rel="stylesheet" nonce="explicit" class="nonce-explicit">))
+          expect(last_response.body).to include(%(<link href="/assets/app-KUHJPSX7.css" type="text/css" rel="stylesheet" nonce="#{nonce}" class="nonce-generated">))
+          expect(last_response.body).to include(%(<link href="https://example.com/app.css" type="text/css" rel="stylesheet" class="nonce-absolute">))
+        end
+      end
+
+      describe "javascript_tag" do
+        it "renders the correct nonce unless remote URL or nonce set to false" do
+          get "/index"
+          nonce = last_request.env["hanami.content_security_policy_nonce"]
+
+          expect(last_response.body).to include(%(<script src="/assets/app-LSLFPUMX.js" type="text/javascript" nonce="#{nonce}" class="nonce-true"></script>))
+          expect(last_response.body).to include(%(<script src="/assets/app-LSLFPUMX.js" type="text/javascript" class="nonce-false"></script>))
+          expect(last_response.body).to include(%(<script src="/assets/app-LSLFPUMX.js" type="text/javascript" nonce="explicit" class="nonce-explicit"></script>))
+          expect(last_response.body).to include(%(<script src="/assets/app-LSLFPUMX.js" type="text/javascript" nonce="#{nonce}" class="nonce-generated"></script>))
+          expect(last_response.body).to include(%(<script src="https://example.com/app.js" type="text/javascript" class="nonce-absolute"></script>))
+        end
       end
     end
 
@@ -186,23 +208,43 @@ RSpec.describe "Web / Content security policy nonce", :app_integration do
         expect(last_response.body).to match(/<style nonce="">/)
       end
 
-      it "doesn't add the nonce attribute to the javascript_tag helper" do
-        get "/index"
-
-        expect(last_response.body).to match(/<script(?![^>]*\s+nonce=)/)
-      end
-
-      it "doesn't add the nonce attribute to the stylesheet_tag helper" do
-        get "/index"
-
-        expect(last_response.body).to match(/<link(?![^>]*\s+nonce=)/)
-      end
-
       it "behaves the same with explicitly added middleware" do
         Hanami.app.config.middleware.use Hanami::Middleware::ContentSecurityPolicyNonce
         get "/index"
 
         expect(last_response.headers).to_not have_key "Content-Security-Policy"
+      end
+
+      describe "content_security_policy_nonce" do
+        it "renders nothing" do
+          get "/index"
+
+          expect(last_response.body).to include(%(<style nonce="">))
+        end
+      end
+
+      describe "stylesheet_tag" do
+        it "renders the correct explicit nonce only" do
+          get "/index"
+
+          expect(last_response.body).to include(%(<link href="/assets/app-KUHJPSX7.css" type="text/css" rel="stylesheet" class="nonce-true">))
+          expect(last_response.body).to include(%(<link href="/assets/app-KUHJPSX7.css" type="text/css" rel="stylesheet" class="nonce-false">))
+          expect(last_response.body).to include(%(<link href="/assets/app-KUHJPSX7.css" type="text/css" rel="stylesheet" nonce="explicit" class="nonce-explicit">))
+          expect(last_response.body).to include(%(<link href="/assets/app-KUHJPSX7.css" type="text/css" rel="stylesheet" class="nonce-generated">))
+          expect(last_response.body).to include(%(<link href="https://example.com/app.css" type="text/css" rel="stylesheet" class="nonce-absolute">))
+        end
+      end
+
+      describe "javascript_tag" do
+        it "renders the correct explicit nonce only" do
+          get "/index"
+
+          expect(last_response.body).to include(%(<script src="/assets/app-LSLFPUMX.js" type="text/javascript" class="nonce-true"></script>))
+          expect(last_response.body).to include(%(<script src="/assets/app-LSLFPUMX.js" type="text/javascript" class="nonce-false"></script>))
+          expect(last_response.body).to include(%(<script src="/assets/app-LSLFPUMX.js" type="text/javascript" nonce="explicit" class="nonce-explicit"></script>))
+          expect(last_response.body).to include(%(<script src="/assets/app-LSLFPUMX.js" type="text/javascript" class="nonce-generated"></script>))
+          expect(last_response.body).to include(%(<script src="https://example.com/app.js" type="text/javascript" class="nonce-absolute"></script>))
+        end
       end
     end
   end
