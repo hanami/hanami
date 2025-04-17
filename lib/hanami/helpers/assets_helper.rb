@@ -94,7 +94,7 @@ module Hanami
       # as an attribute. See {#content_security_policy_nonce} for how to
       # configure this correctly.
       #
-      # @param source_paths [Array<String, #url>] one or more assets by name or absolute URL
+      # @param sources [Array<String, #url>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
       #
@@ -163,12 +163,12 @@ module Hanami
       #
       #   # <script src="https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.js"
       #   #         type="text/javascript"></script>
-      def javascript_tag(*source_paths, **options)
+      def javascript_tag(*sources, **options)
         options = options.reject { |k, _| k.to_sym == :src }
 
-        _safe_tags(*source_paths) do |source|
+        _safe_tags(*sources) do |source|
           attributes = {
-            src: _typed_path(source, JAVASCRIPT_EXT),
+            src: _typed_url(source, JAVASCRIPT_EXT),
             type: JAVASCRIPT_MIME_TYPE,
             nonce: content_security_policy_nonce
           }
@@ -204,7 +204,7 @@ module Hanami
       # as an attribute. See {#content_security_policy_nonce} for how to
       # configure this correctly.
       #
-      # @param source_paths [Array<String, #url>] one or more assets by name or absolute URL
+      # @param sources [Array<String, #url>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
       #
@@ -262,12 +262,12 @@ module Hanami
       #
       #   # <link href="https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.css"
       #   #       type="text/css" rel="stylesheet">
-      def stylesheet_tag(*source_paths, **options)
+      def stylesheet_tag(*sources, **options)
         options = options.reject { |k, _| k.to_sym == :href }
 
-        _safe_tags(*source_paths) do |source_path|
+        _safe_tags(*sources) do |source|
           attributes = {
-            href: _typed_path(source_path, STYLESHEET_EXT),
+            href: _typed_url(source, STYLESHEET_EXT),
             type: STYLESHEET_MIME_TYPE,
             rel: STYLESHEET_REL,
             nonce: content_security_policy_nonce
@@ -275,7 +275,7 @@ module Hanami
           attributes.merge!(options)
 
           if _context.assets.subresource_integrity? || attributes.include?(:integrity)
-            attributes[:integrity] ||= _subresource_integrity_value(source_path, STYLESHEET_EXT)
+            attributes[:integrity] ||= _subresource_integrity_value(source, STYLESHEET_EXT)
             attributes[:crossorigin] ||= CROSSORIGIN_ANONYMOUS
           end
 
@@ -642,7 +642,7 @@ module Hanami
       #
       # If CDN mode is on, it returns the absolute URL of the asset.
       #
-      # @param source_path [String, #url] the asset name or asset object
+      # @param source [String, #url] the asset name or asset object
       #
       # @return [String] the asset path
       #
@@ -681,11 +681,11 @@ module Hanami
       #   <%= asset_url "application.js" %>
       #
       #   # "https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.js"
-      def asset_url(source_path)
-        return source_path.url if source_path.respond_to?(:url)
-        return source_path if _absolute_url?(source_path)
+      def asset_url(source)
+        return source.url if source.respond_to?(:url)
+        return source if _absolute_url?(source)
 
-        _context.assets[source_path].url
+        _context.assets[source].url
       end
 
       # Random per request nonce value for Content Security Policy (CSP) rules.
@@ -721,25 +721,25 @@ module Hanami
 
       # @since 2.1.0
       # @api private
-      def _safe_tags(*source_paths, &blk)
+      def _safe_tags(*sources, &blk)
         ::Hanami::View::HTML::SafeString.new(
-          source_paths.map(&blk).join(NEW_LINE_SEPARATOR)
+          sources.map(&blk).join(NEW_LINE_SEPARATOR)
         )
       end
 
       # @since 2.1.0
       # @api private
-      def _typed_path(source, ext)
+      def _typed_url(source, ext)
         source = "#{source}#{ext}" if source.is_a?(String) && _append_extension?(source, ext)
         asset_url(source)
       end
 
       # @api private
-      def _subresource_integrity_value(source_path, ext)
-        return if _absolute_url?(source_path)
+      def _subresource_integrity_value(source, ext)
+        return if _absolute_url?(source)
 
-        source_path = "#{source_path}#{ext}" unless /#{Regexp.escape(ext)}\z/.match?(source_path)
-        _context.assets[source_path].sri
+        source = "#{source}#{ext}" unless /#{Regexp.escape(ext)}\z/.match?(source)
+        _context.assets[source].sri
       end
 
       # @since 2.1.0
