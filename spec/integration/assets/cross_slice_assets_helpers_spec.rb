@@ -123,7 +123,6 @@ RSpec.describe "Cross-slice assets via helpers", :app_integration do
     compile_assets!
 
     output = Admin::Slice["views.posts.show"].call.to_s
-
     expect(output).to match(%r{<link href="/assets/app-[A-Z0-9]{8}.css" type="text/css" rel="stylesheet">})
     expect(output).to match(%r{<script src="/assets/app-[A-Z0-9]{8}.js" type="text/javascript"></script>})
   end

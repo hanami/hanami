@@ -96,6 +96,29 @@ module Hanami
           @policy.delete(key)
         end
 
+        # Returns true if 'nonce' is used in any of the policies.
+        #
+        # @return [Boolean]
+        #
+        # @api public
+        # @since x.x.x
+        def nonce?
+          @policy.any? { _2.match?(/'nonce'/) }
+        end
+
+        # Returns an array of middleware name to support 'nonce' in
+        # policies, or an empty array if 'nonce' is not used.
+        #
+        # @return [Array<(Symbol, Array)>]
+        #
+        # @api public
+        # @since x.x.x
+        def middleware
+          return [] unless nonce?
+
+          [Hanami::Middleware::ContentSecurityPolicyNonce]
+        end
+
         # @since 2.0.0
         # @api private
         def to_s

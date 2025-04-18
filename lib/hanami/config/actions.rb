@@ -74,6 +74,23 @@ module Hanami
       # @since 2.0.0
       attr_accessor :content_security_policy
 
+      # Returns the proc to generate Content Security Policy nonce values.
+      #
+      # The current Rack request object is provided as an optional argument
+      # to the proc, enabling the generation of nonces based on session IDs.
+      #
+      # @example Independent random nonce (default)
+      #   -> { SecureRandom.urlsafe_base64(16) }
+      #
+      # @example Session dependent nonce
+      #   ->(request) { Digest::SHA256.base64digest(request.session[:uuid])[0, 16] }
+      #
+      # @return [Proc]
+      #
+      # @api public
+      # @since x.x.x
+      setting :content_security_policy_nonce_generator, default: -> { SecureRandom.urlsafe_base64(16) }
+
       # @!attribute [rw] method_override
       #   Sets or returns whether HTTP method override should be enabled for action classes.
       #
@@ -137,6 +154,10 @@ module Hanami
           default_headers["Content-Security-Policy"] = content_security_policy.to_s
         end
       end
+
+      # @api public
+      # @since x.x.x
+      def content_security_policy? = !!@content_security_policy
 
       private
 

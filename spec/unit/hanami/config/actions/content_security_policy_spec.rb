@@ -28,6 +28,7 @@ RSpec.describe Hanami::Config::Actions, "#content_security_policy" do
       ].join(";")
 
       expect(content_security_policy.to_s).to eq(expected)
+      expect(content_security_policy.nonce?).to be(false)
     end
   end
 
@@ -67,6 +68,12 @@ RSpec.describe Hanami::Config::Actions, "#content_security_policy" do
 
       expect(content_security_policy[:a_custom_key]).to eq("foo")
       expect(content_security_policy.to_s).to match("a-custom-key foo")
+    end
+
+    it "uses 'nonce' in value" do
+      content_security_policy[:javascript_src] = "'self' 'nonce'"
+
+      expect(content_security_policy.nonce?).to be(true)
     end
   end
 
