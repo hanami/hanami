@@ -78,13 +78,15 @@ module Hanami
         end
 
         def root_for_repo_class(repo_class)
-          return unless repo_class.to_s.end_with?("Repo")
-
-          slice.inflector.demodulize(repo_class)
-            .then { slice.inflector.underscore(_1) }
-            .then { _1.gsub(/_repo$/, "") }
-            .then { slice.inflector.pluralize(_1) }
-            .then { _1.to_sym }
+          repo_class_name = slice.inflector.demodulize(repo_class)
+                                 .then { slice.inflector.underscore(_1) }
+    
+          return if repo_class_name.match?(/^(repo|repository)$/)
+          return unless repo_class_name.match?(/(repo|repository)$/)
+    
+          repo_class_name.gsub(/_(repo|repository)$/, "")
+                         .then { slice.inflector.pluralize(_1) }
+                         .then(&:to_sym)
         end
 
         def struct_namespace
