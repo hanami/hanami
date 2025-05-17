@@ -56,4 +56,7 @@ module Hanami
   # @api private
   RB_EXT_REGEXP = %r{.rb$}
   private_constant :RB_EXT_REGEXP
+
+  # @api private
+  CONTENT_SECURITY_POLICY_NONCE_REQUEST_KEY = "hanami.content_security_policy_nonce"
 end

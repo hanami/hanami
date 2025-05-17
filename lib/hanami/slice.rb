@@ -1050,6 +1050,11 @@ module Hanami
             if config.actions.sessions.enabled?
               use(*config.actions.sessions.middleware)
             end
+
+            if config.actions.content_security_policy && # rubocop:disable Style/SafeNavigation
+               config.actions.content_security_policy.nonce?
+              use(*config.actions.content_security_policy.middleware)
+            end
           end
 
           if Hanami.bundled?("hanami-assets") && config.assets.serve
