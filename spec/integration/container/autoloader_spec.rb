@@ -70,11 +70,13 @@ RSpec.describe "App autoloader", :app_integration do
       expect(NonApp::Thing).to be
 
       expect(TestApp::NBAJam::GetThatOuttaHere).to be
+      expect(TestApp::App.autoloader.tag).to eq("hanami.app.test_app")
 
       expect(Admin::Slice["operations.create_game"]).to be_an_instance_of(Admin::Operations::CreateGame)
       expect(Admin::Slice["operations.create_game"].call).to be_an_instance_of(Admin::Entities::Game)
 
       expect(Admin::Entities::Quarter).to be
+      expect(Admin::Slice.autoloader.tag).to eq("hanami.slices.admin")
     end
   end
 end
