@@ -69,7 +69,8 @@ module Hanami
           resolve_rom = method(:resolve_rom)
 
           define_method(:new) do |**kwargs|
-            super(container: kwargs.fetch(:container) { resolve_rom.() })
+            container = kwargs.delete(:container) || resolve_rom.()
+            super(container: container, **kwargs)
           end
         end
 
