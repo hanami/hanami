@@ -252,9 +252,6 @@ RSpec.describe "DB / Repo", :app_integration do
                 dependency.call
               end
 
-              def get(id)
-                posts.by_pk(id).one!
-              end
             end
           end
         end
