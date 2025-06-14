@@ -20,6 +20,9 @@ jobs:
           - "3.2.0"
           - "3.2"
           - "3.1"
+          - "jruby"
+    env:
+        JRUBY_OPTS: "-X+O" # enable objectspace for Zeitwerk clearing
     steps:
       - name: Checkout
         uses: actions/checkout@v4
