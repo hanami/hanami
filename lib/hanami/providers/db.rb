@@ -268,11 +268,21 @@ module Hanami
 
       # @api private
       # @since 2.2.0
-      DATABASE_GEMS = {
-        "mysql2" => "mysql2",
-        "postgres" => "pg",
-        "sqlite" => "sqlite3"
-      }.freeze
+      if RUBY_ENGINE == "ruby"
+        DATABASE_GEMS = {
+          "mysql2" => "mysql2",
+          "postgres" => "pg",
+          "sqlite" => "sqlite3"
+        }.freeze
+      elsif RUBY_ENGINE == "jruby"
+        DATABASE_GEMS = {
+          "mysql2" => "jdbc-mysql",
+          "postgres" => "jdbc-postgresql",
+          "sqlite" => "jdbc-sqlite3"
+        }.freeze
+      else
+        raise "unsupported RUBY_ENGINE: #{RUBY_ENGINE}"
+      end
       private_constant :DATABASE_GEMS
 
       # Raises an error if the relevant database gem for the configured database_url is not
