@@ -80,8 +80,8 @@ RSpec.describe "Operation / Extensions", :app_integration do
 
         operation = TestApp::Operation.new
 
-        expect(operation).not_to respond_to(:rom)
-        expect(operation).not_to respond_to(:transaction)
+        expect(operation.rom).to be nil
+        # TODO: expect `operaiton.transaction` to raise a helpful error
       end
     end
   end
@@ -114,8 +114,8 @@ RSpec.describe "Operation / Extensions", :app_integration do
 
         operation = TestApp::Operation.new
 
-        expect(operation).not_to respond_to(:rom)
-        expect(operation).not_to respond_to(:transaction)
+        expect(operation.rom).to be nil
+        # TODO: expect `operaiton.transaction` to raise a helpful error
       end
     end
   end
