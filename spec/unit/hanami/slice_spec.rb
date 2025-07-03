@@ -65,6 +65,24 @@ RSpec.describe Hanami::Slice, :app_integration do
       expect { Class.new(described_class).prepare }
         .to raise_error Hanami::SliceLoadError, /Slice must have a class name/
     end
+
+    it "does not allow special characters in slice names" do
+      expect { Hanami.app.register_slice(:'test_$lice') }
+        .to raise_error(ArgumentError, /must be lowercase alphanumeric text and underscores only/)
+    end
+
+    it "does not allow uppercase characters in slice names" do
+      expect { Hanami.app.register_slice(:TEST_slice) }
+        .to raise_error(ArgumentError, /must be lowercase alphanumeric text and underscores only/)
+    end
+
+    it "allows lowercase alphanumeric text and underscores only" do
+      expect { Hanami.app.register_slice(:test_slice) }.not_to raise_error
+    end
+
+    it "allows single character slice names" do
+      expect { Hanami.app.register_slice(:t) }.not_to raise_error
+    end
   end
 
   describe ".source_path" do

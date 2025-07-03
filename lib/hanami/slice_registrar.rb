@@ -5,7 +5,7 @@ require_relative "constants"
 module Hanami
   # @api private
   class SliceRegistrar
-    VALID_SLICE_NAME_RE = /^[a-z][a-z0-9_]+$/
+    VALID_SLICE_NAME_RE = /^[a-z][a-z0-9_]*$/
     SLICE_DELIMITER = CONTAINER_KEY_DELIMITER
 
     attr_reader :parent, :slices
