@@ -193,6 +193,15 @@ RSpec.describe "DB / Repo", :app_integration do
         end
       RUBY
 
+      write "slices/main/repositories/post_repository.rb", <<~RUBY
+        module Main
+          module Repositories
+            class PostRepository < Repo
+            end
+          end
+        end
+      RUBY
+
       require "hanami/prepare"
 
       Admin::Slice.prepare :db
@@ -216,6 +225,7 @@ RSpec.describe "DB / Repo", :app_integration do
       expect(Admin::Slice["repos.post_repo"].posts.by_pk(1).one!.class).to be < Admin::Structs::Post
 
       expect(Main::Slice["repos.post_repo"].posts).to eql Main::Slice["relations.posts"]
+      expect(Main::Slice["repositories.post_repository"].posts).to eql Main::Slice["relations.posts"]
       # Slice struct namespace used even when no concrete struct classes are defined
       expect(Main::Slice["repos.post_repo"].posts.by_pk(1).one!.class).to be < Main::Structs::Post
     end

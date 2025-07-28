@@ -83,7 +83,7 @@ module Hanami
                                  .then { slice.inflector.underscore(_1) }
     
           return if repo_class_name.match?(/^(repo|repository)$/)
-          return unless repo_class_name.match?(/(repo|repository)$/)
+          return unless repo_class_name.match?(/_(repo|repository)$/)
     
           repo_class_name.gsub(/_(repo|repository)$/, "")
                          .then { slice.inflector.pluralize(_1) }
