@@ -78,14 +78,18 @@ module Hanami
           slice["db.rom"]
         end
 
-        def root_for_repo_class(repo_class)
-          return unless repo_class.to_s.end_with?("Repo")
+        REPO_CLASS_NAME_REGEX = /^(?<name>.+)_(repo|repository)$/
 
-          slice.inflector.demodulize(repo_class)
+        def root_for_repo_class(repo_class)
+          repo_class_name = slice.inflector.demodulize(repo_class)
             .then { slice.inflector.underscore(_1) }
-            .then { _1.gsub(/_repo$/, "") }
+
+          repo_class_match = repo_class_name.match(REPO_CLASS_NAME_REGEX)
+          return unless repo_class_match
+
+          repo_class_match[:name]
             .then { slice.inflector.pluralize(_1) }
-            .then { _1.to_sym }
+            .then(&:to_sym)
         end
 
         def struct_namespace

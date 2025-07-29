@@ -114,6 +114,13 @@ RSpec.describe "DB / Repo", :app_integration do
         end
       RUBY
 
+      write "app/repo.rb", <<~RUBY
+        module TestApp
+          class Repo < Hanami::DB::Repo
+          end
+        end
+      RUBY
+
       ENV["DATABASE_URL"] = "sqlite::memory"
 
       write "slices/admin/db/struct.rb", <<~RUBY
@@ -137,7 +144,7 @@ RSpec.describe "DB / Repo", :app_integration do
 
       write "slices/admin/repo.rb", <<~RUBY
         module Admin
-          class Repo < Hanami::DB::Repo
+          class Repo < TestApp::Repo
           end
         end
       RUBY
@@ -172,7 +179,7 @@ RSpec.describe "DB / Repo", :app_integration do
 
       write "slices/main/repo.rb", <<~RUBY
         module Main
-          class Repo < Hanami::DB::Repo
+          class Repo < TestApp::Repo
           end
         end
       RUBY
@@ -181,6 +188,15 @@ RSpec.describe "DB / Repo", :app_integration do
         module Main
           module Repos
             class PostRepo < Repo
+            end
+          end
+        end
+      RUBY
+
+      write "slices/main/repositories/post_repository.rb", <<~RUBY
+        module Main
+          module Repositories
+            class PostRepository < Repo
             end
           end
         end
@@ -204,10 +220,12 @@ RSpec.describe "DB / Repo", :app_integration do
       migration.apply(gateway, :up)
       gateway.connection.execute("INSERT INTO posts (title) VALUES ('Together breakfast')")
 
+      expect(Admin::Slice["repos.post_repo"].root).to eql Admin::Slice["relations.posts"]
       expect(Admin::Slice["repos.post_repo"].posts).to eql Admin::Slice["relations.posts"]
       expect(Admin::Slice["repos.post_repo"].posts.by_pk(1).one!.class).to be < Admin::Structs::Post
 
       expect(Main::Slice["repos.post_repo"].posts).to eql Main::Slice["relations.posts"]
+      expect(Main::Slice["repositories.post_repository"].posts).to eql Main::Slice["relations.posts"]
       # Slice struct namespace used even when no concrete struct classes are defined
       expect(Main::Slice["repos.post_repo"].posts.by_pk(1).one!.class).to be < Main::Structs::Post
     end
