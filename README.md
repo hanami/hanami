@@ -105,4 +105,4 @@ Hanami uses [Semantic Versioning 2.0.0](http://semver.org).
 
 ## Copyright
 
-Copyright © 2014–2024 Hanami Team – Released under MIT License.
+Copyright © 2014–2025 Hanami Team – Released under MIT License.
