@@ -27,7 +27,9 @@ gem "dry-types"
 gem "dry-operation", github: "dry-rb/dry-operation", branch: "main"
 
 # For testing the DB layer
-gem "sqlite3"
+
+gem "sqlite3", platforms: "mri"
+gem "jdbc-sqlite3", platforms: "jruby"
 
 group :test do
   gem "capybara"
