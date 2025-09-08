@@ -20,6 +20,10 @@ jobs:
           - "3.2.0"
           - "3.2"
           - "3.1"
+        rack:
+          - "~> 2.0"
+          - "~> 3.0"
+    name: tests (Ruby ${{ matrix.ruby }}, Rack ${{ matrix.rack }})
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,6 +32,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+        env:
+          RACK_VERSION_CONSTRAINT: ${{ matrix.rack }}
       - name: Cache Node modules
         id: cache-node-modules
         uses: actions/cache@v4
@@ -44,6 +50,8 @@ jobs:
           registry-url: https://registry.npmjs.org
       - name: Run the test suite
         run: bundle exec rake
+        env:
+          RACK_VERSION_CONSTRAINT: ${{ matrix.rack }}
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
