@@ -18,6 +18,7 @@ module Hanami
 
         operation_class.extend(Hanami::SliceConfigurable)
         operation_class.extend(ClassMethods)
+        operation_class.prepend(InstanceMethods)
       end
 
       # @api private
@@ -26,7 +27,9 @@ module Hanami
         # @api private
         # @since 2.2.0
         def configure_for_slice(slice)
-          include slice.namespace::Deps["db.rom"]
+          return unless Hanami.bundled?("hanami-db")
+
+          extend SliceConfiguredOperation.new(slice)
         end
 
         # @api private
@@ -39,6 +42,19 @@ module Hanami
 
           require "dry/operation/extensions/rom"
           subclass.include Dry::Operation::Extensions::ROM
+        end
+      end
+
+      # @api public
+      # @since x.x.x
+      module InstanceMethods
+        # @api private
+        attr_reader :rom
+
+        # @api public
+        # @since x.x.x
+        def initialize(rom: nil, **kwargs)
+          @rom = rom
         end
       end
     end
