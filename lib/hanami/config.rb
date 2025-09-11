@@ -117,6 +117,17 @@ module Hanami
       "structs"
     ]
 
+    # @!attribute [rw] memoize_component_dirs
+    #   Sets the directory patterns for components that should be memoized.
+    #
+    #   Defaults to `[]` (no memoization).
+    #
+    #   @return [Array<String>]
+    #
+    #   @api public
+    #   @since 2.3.0
+    setting :memoize_component_dirs, default: []
+
     # @!attribute [rw] base_url
     #   Sets the base URL for app's web server.
     #
