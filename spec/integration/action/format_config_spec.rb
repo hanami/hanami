@@ -136,13 +136,24 @@ RSpec.describe "App action / Format config", :app_integration do
   it "does not add a body parser middleware if one is already added" do
     write "config/app.rb", <<~RUBY
       require "hanami"
+      require 'hanami/middleware/body_parser/parser'
+
+      class CustomBodyParser < Hanami::Middleware::BodyParser::Parser
+        def self.mime_types
+          ['application/json']
+        end
+
+        def parse(body, *)
+          JSON.parse(body).transform_values { |v| v.map(&:upcase) }
+        end
+      end
 
       module TestApp
         class App < Hanami::App
           config.logger.stream = StringIO.new
 
           config.actions.format :json
-          config.middleware.use :body_parser, [json: "application/json+custom"]
+          config.middleware.use :body_parser, [CustomBodyParser]
         end
       end
     RUBY
@@ -185,10 +196,10 @@ RSpec.describe "App action / Format config", :app_integration do
     post(
       "/users",
       JSON.generate("users" => %w[jane john jade joe]),
-      "CONTENT_TYPE" => "application/json+custom"
+      "CONTENT_TYPE" => "application/json"
     )
 
     expect(last_response).to be_successful
-    expect(last_response.body).to eql("jane-john-jade-joe")
+    expect(last_response.body).to eql("JANE-JOHN-JADE-JOE")
   end
 end

@@ -478,7 +478,7 @@ module Hanami
       return unless Hanami.bundled?("hanami-controller")
 
       return if actions.formats.empty?
-      return if middleware.stack["/"].map(&:first).any? { |klass| klass == "Hanami::Middleware::BodyParser" }
+      return if middleware.stack["/"].map(&:first).any? { |klass| klass == Hanami::Middleware::BodyParser }
 
       parsers = SUPPORTED_MIDDLEWARE_PARSERS & actions.formats.values
       return if parsers.empty?
