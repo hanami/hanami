@@ -27,20 +27,12 @@ RSpec.describe "App view / Context / Settings", :app_integration do
   subject(:context) { context_class.new }
 
   describe "#settings" do
-    it "is the app settings by default" do
-      expect(context.settings).to be TestApp::App["settings"]
+    it "is not accessible as a public method" do
+      expect { context.settings }.to raise_error(NoMethodError, /private method/)
     end
 
-    context "injected settings" do
-      subject(:context) {
-        context_class.new(settings: settings)
-      }
-
-      let(:settings) { double(:settings) }
-
-      it "is the injected settings" do
-        expect(context.settings).to be settings
-      end
+    it "is not included in public methods" do
+      expect(context.public_methods).not_to include(:settings)
     end
   end
 end
