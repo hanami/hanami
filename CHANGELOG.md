@@ -9,11 +9,11 @@
 
 ### Changed
 
-- View context `settings` is now private and not accessible from templates (#1536)
-
 ### Deprecated
 
 ### Removed
+
+- View context `settings` has been removed and is no longer accessible from templates (#1536)
 
 ### Fixed
 
