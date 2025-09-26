@@ -9,6 +9,8 @@
 
 ### Changed
 
+- View context `settings` is now private and not accessible from templates (#1536)
+
 ### Deprecated
 
 ### Removed
