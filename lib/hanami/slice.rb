@@ -729,7 +729,9 @@ module Hanami
       # @api public
       # @since 2.0.0
       def routes
-        @routes ||= load_routes
+        return @routes if instance_variable_defined?(:@routes)
+
+        @routes = load_routes
       end
 
       # Returns the slice's router, if or nil if no routes are defined.
@@ -925,7 +927,7 @@ module Hanami
         # Check here for the `routes` definition only, not `router` itself, because the
         # `router` requires the slice to be prepared before it can be loaded, and at this
         # point we're still in the process of preparing.
-        if routes
+        if routes?
           require_relative "providers/routes"
           register_provider(:routes, source: Providers::Routes)
         end
@@ -978,11 +980,19 @@ module Hanami
         slices.freeze
       end
 
+      def routes?
+        return false unless Hanami.bundled?("hanami-router")
+
+        return true if namespace.const_defined?(ROUTES_CLASS_NAME)
+
+        root.join("#{ROUTES_PATH}#{RB_EXT}").file?
+      end
+
       def load_routes
         return false unless Hanami.bundled?("hanami-router")
 
         if root.directory?
-          routes_require_path = File.join(root, ROUTES_PATH)
+          routes_require_path = root.join(ROUTES_PATH).to_s
 
           begin
             require_relative "./routes"
