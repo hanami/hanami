@@ -6,6 +6,7 @@ require "dry/configurable"
 require "dry/inflector"
 
 require_relative "constants"
+require_relative "config/console"
 
 module Hanami
   # Hanami app config
@@ -183,6 +184,18 @@ module Hanami
       "Hanami::Router::NotAllowedError" => :not_found,
       "Hanami::Router::NotFoundError" => :not_found,
     )
+
+    # @!attribute [rw] console
+    #   Returns the app's console config
+    # 
+    #   @example
+    #     config.console.engine # => :irb
+    # 
+    #   @return [Hanami::Config::Console]
+    # 
+    #   @api public
+    #   @since 2.3.0
+    setting :console, default: Hanami::Config::Console.new
 
     # Returns the app or slice's {Hanami::SliceName slice_name}.
     #
