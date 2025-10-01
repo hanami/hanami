@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+require "dry/inflector"
+
 RSpec.describe Hanami::Slice::Router::NestedResourceContext do
   let(:router) { double("router") }
+  let(:inflector) { Dry::Inflector.new }
   let(:parent_path) { "users" }
 
   subject(:context) do
-    described_class.new(router, parent_path)
+    described_class.new(router, inflector, parent_path)
   end
 
   describe "#initialize" do
@@ -26,6 +29,7 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
     it "creates a NestedResourceBuilder for plural resources" do
       expect(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).with(
         router: router,
+        inflector: inflector,
         parent_path: parent_path,
         name: :posts,
         type: :plural,
@@ -52,6 +56,7 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
     it "creates a NestedResourceBuilder for singular resources" do
       expect(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).with(
         router: router,
+        inflector: inflector,
         parent_path: parent_path,
         name: :profile,
         type: :singular,
@@ -79,6 +84,7 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
       it "creates and builds nested resource" do
         expect(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).with(
           router: router,
+          inflector: inflector,
           parent_path: parent_path,
           name: :comments,
           type: :plural,
