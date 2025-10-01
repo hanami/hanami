@@ -22,8 +22,9 @@ module Hanami
 
       # @api private
       # @since 2.0.0
-      def initialize(routes:, middleware_stack: Routing::Middleware::Stack.new, prefix: ::Hanami::Router::DEFAULT_PREFIX, **kwargs, &blk)
+      def initialize(routes:, inflector:, middleware_stack: Routing::Middleware::Stack.new, prefix: ::Hanami::Router::DEFAULT_PREFIX, **kwargs, &blk)
         @path_prefix = Hanami::Router::Prefix.new(prefix)
+        @inflector = inflector
         @middleware_stack = middleware_stack
         instance_eval(&blk)
         super(**kwargs, &routes)
@@ -102,6 +103,7 @@ module Hanami
       def resources(name, **options, &block)
         resource_builder = ResourceBuilder.new(
           router: self,
+          inflector: @inflector,
           name: name,
           type: :plural,
           options: options
@@ -110,7 +112,7 @@ module Hanami
         resource_builder.build_routes
 
         if block_given?
-          nested_context = NestedResourceContext.new(self, resource_builder.path)
+          nested_context = NestedResourceContext.new(self, @inflector, resource_builder.path)
           nested_context.instance_eval(&block)
         end
       end
@@ -140,6 +142,7 @@ module Hanami
       def resource(name, **options, &block)
         resource_builder = ResourceBuilder.new(
           router: self,
+          inflector: @inflector,
           name: name,
           type: :singular,
           options: options
@@ -148,7 +151,7 @@ module Hanami
         resource_builder.build_routes
 
         if block_given?
-          nested_context = NestedResourceContext.new(self, resource_builder.path)
+          nested_context = NestedResourceContext.new(self, @inflector, resource_builder.path)
           nested_context.instance_eval(&block)
         end
       end
@@ -163,10 +166,11 @@ module Hanami
       # @api private
       # @since x.x.x
       class ResourceBuilder
-        attr_reader :router, :name, :type, :options, :action_path, :path, :route_name
+        attr_reader :router, :inflector, :name, :type, :options, :action_path, :path, :route_name
 
-        def initialize(router:, name:, type:, options:)
+        def initialize(router:, inflector:, name:, type:, options:)
           @router = router
+          @inflector = inflector
           @name = name
           @type = type
           @options = options
@@ -208,7 +212,7 @@ module Hanami
           if options[:as]
             options[:as].to_s
           elsif type == :plural
-            Inflector.singularize(name.to_s)
+            @inflector.singularize(name.to_s)
           else
             name.to_s
           end
@@ -246,7 +250,7 @@ module Hanami
         end
 
         def build_route_name(action, prefix)
-          base_name = action == :index ? Inflector.pluralize(route_name) : route_name
+          base_name = action == :index ? @inflector.pluralize(route_name) : route_name
           prefix.empty? ? base_name : "#{prefix}#{base_name}"
         end
 
@@ -277,25 +281,13 @@ module Hanami
         end
       end
 
-      # Simple inflection utilities
-      # @api private
-      # @since x.x.x
-      module Inflector
-        def self.singularize(word)
-          word.chomp("s")
-        end
-
-        def self.pluralize(word)
-          word.end_with?("s") ? word : "#{word}s"
-        end
-      end
-
       # Context for handling nested resources
       # @api private
       # @since x.x.x
       class NestedResourceContext
-        def initialize(router, parent_path)
+        def initialize(router, inflector, parent_path)
           @router = router
+          @inflector = inflector
           @parent_path = parent_path
         end
 
@@ -312,6 +304,7 @@ module Hanami
         def build_nested_resource(name, type, options)
           nested_builder = NestedResourceBuilder.new(
             router: @router,
+            inflector: @inflector,
             parent_path: @parent_path,
             name: name,
             type: type,
@@ -326,12 +319,13 @@ module Hanami
       # @api private
       # @since x.x.x
       class NestedResourceBuilder < ResourceBuilder
-        attr_reader :parent_path, :parent_name
+        attr_reader :parent_path, :parent_name, :inflector
 
-        def initialize(router:, parent_path:, name:, type:, options:)
-          super(router: router, name: name, type: type, options: options)
+        def initialize(router:, inflector:, parent_path:, name:, type:, options:)
+          super(router: router, inflector: inflector, name: name, type: type, options: options)
+          @inflector = inflector
           @parent_path = parent_path
-          @parent_name = Inflector.singularize(parent_path.to_s)
+          @parent_name = inflector.singularize(parent_path.to_s)
         end
 
         private
@@ -343,7 +337,7 @@ module Hanami
         end
 
         def build_route_name(action, prefix)
-          base_name = action == :index ? Inflector.pluralize(route_name) : route_name
+          base_name = action == :index ? @inflector.pluralize(route_name) : route_name
           nested_name = "#{parent_name}_#{base_name}"
           prefix.empty? ? nested_name : "#{prefix}#{nested_name}"
         end

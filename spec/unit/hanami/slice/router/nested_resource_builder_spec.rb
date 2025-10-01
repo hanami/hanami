@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require "dry/inflector"
+
 RSpec.describe Hanami::Slice::Router::NestedResourceBuilder do
   let(:router) { double("router") }
+  let(:inflector) { Dry::Inflector.new }
   let(:parent_path) { "users" }
   let(:name) { :posts }
   let(:type) { :plural }
@@ -10,6 +13,7 @@ RSpec.describe Hanami::Slice::Router::NestedResourceBuilder do
   subject(:builder) do
     described_class.new(
       router: router,
+      inflector: inflector,
       parent_path: parent_path,
       name: name,
       type: type,
