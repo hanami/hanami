@@ -95,7 +95,6 @@ module Hanami
       #   # GET    /users/:id      users.show
       #   # GET    /users/:id/edit users.edit
       #   # PATCH  /users/:id      users.update
-      #   # PUT    /users/:id      users.update
       #   # DELETE /users/:id      users.destroy
       #
       # @api public
@@ -134,7 +133,6 @@ module Hanami
       #   # GET    /profile        profile.show
       #   # GET    /profile/edit   profile.edit
       #   # PATCH  /profile        profile.update
-      #   # PUT    /profile        profile.update
       #   # DELETE /profile        profile.destroy
       #
       # @api public
@@ -201,10 +199,7 @@ module Hanami
           create: {method: :post, path_suffix: "", name_suffix: ""},
           show: {method: :get, path_suffix: "/:id", name_suffix: ""},
           edit: {method: :get, path_suffix: "/:id/edit", name_suffix: "edit_"},
-          update: [
-            {method: :patch, path_suffix: "/:id", name_suffix: ""},
-            {method: :put, path_suffix: "/:id", name_suffix: ""}
-          ],
+          update: {method: :patch, path_suffix: "/:id", name_suffix: ""},
           destroy: {method: :delete, path_suffix: "/:id", name_suffix: ""}
         }.freeze
 
