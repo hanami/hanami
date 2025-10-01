@@ -10,6 +10,8 @@
 
 ### Removed
 
+- View context `settings` has been removed and is no longer accessible from templates (#1536)
+
 ### Fixed
 
 ### Security
