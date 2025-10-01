@@ -4,9 +4,6 @@
 
 ### Added
 
-- Check `ENV["APP_ENV"]` for the Hanami env if `ENV["HANAMI_ENV"]` is not set. The order of environment variable checks is now `HANAMI_ENV`->`APP_ENV`->`RACK_ENV` (@svoop in #1487).
-- Support optional nonce in Rack requests, CSP header rules and view helpers (@svoop in #1500)
-
 ### Changed
 
 ### Deprecated
@@ -16,6 +13,26 @@
 ### Fixed
 
 ### Security
+
+## [v2.3.0.beta1] - Unreleased
+
+### Added
+
+- Add `config.console` settings to app. Set an alternative engine with e.g. `config.console.engine = :pry` (`:irb` is default). Add your own methods to the console with `config.console.include MyModule, AnotherModule`. (@alassek in #1540)
+- Support optional nonce in Rack requests, CSP header rules and view helpers (@svoop in #1500)
+- Check `ENV["APP_ENV"]` for the Hanami env if `ENV["HANAMI_ENV"]` is not set. The order of environment variable checks is now `HANAMI_ENV`->`APP_ENV`->`RACK_ENV` (@svoop in #1487).
+
+### Changed
+
+- Support both Rack v2 and v3. (@kyleplump in #1493)
+- Support single-character slice names. (@aaronmallen in #1528)
+
+### Fixed
+
+- Allow `include Deps` to be used in `Hanami::DB::Repo` subclasses. (@wuarmin in #1523)
+- Properly infer root relations for deeper `Hanami::DB::Repo` subclasses, such as in slices. (@wuarmin in #1478)
+- Delay loading `config/routes.rb` until after autoloading is setup, which means you can access your constants there. (@timriley in #1539)
+- Avoid warning from referencing deprecated `URI::DEFAULT_PARSER`. (@wuarmin in #1518)
 
 ## v2.2.1 - 2024-11-12
 
@@ -1493,3 +1510,7 @@ end
 - [Luca Guidi] Introduced `Lotus::Configuration`
 - [Luca Guidi] Introduced `Lotus::Application`
 - [Luca Guidi] Official support for MRI 2.0
+
+
+[unreleased]: https://github.com/hanami/hanami/compare/v2.3.0.beta1...HEAD
+[v2.3.0.beta1] https://github.com/hanami/hanami/compare/v2.2.1...v2.3.0.beta1
