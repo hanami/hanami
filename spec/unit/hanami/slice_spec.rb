@@ -96,4 +96,32 @@ RSpec.describe Hanami::Slice, :app_integration do
       expect(subject.source_path).to eq subject.root
     end
   end
+
+  describe ".keys" do
+    it "displays a warning if the app is not yet booted" do
+      subject = Hanami.app
+      allow(subject).to receive(:in_repl?).and_return(true)
+
+      expect(subject.booted?).to be_falsy
+      expect { subject.keys }.to output(/Warning: Slice not yet booted./).to_stdout
+    end
+
+    it "does not display a warning if the app is already booted" do
+      subject = Hanami.app
+      allow(subject).to receive(:in_repl?).and_return(true)
+
+      subject.boot
+
+      expect(subject.booted?).to be_truthy
+      expect { subject.keys }.not_to output(/Warning: Slice not yet booted./).to_stdout
+    end
+
+    it "does not display a warning if disabled via settings" do
+      subject = Hanami.app
+      subject.config.suppress_console_boot_warning = true
+
+      expect(subject.booted?).to be_falsy
+      expect { subject.keys }.not_to output(/Warning: Slice not yet booted./).to_stdout
+    end
+  end
 end
