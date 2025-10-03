@@ -507,7 +507,7 @@ RSpec.describe "Hanami web app", :app_integration do
       write "lib/test_app/middleware/api_version.rb", <<~RUBY
         module TestApp
           module Middleware
-            class ApiVersion
+            class APIVersion
               def self.inspect
                 "<Middleware::API::Version>"
               end
@@ -530,7 +530,7 @@ RSpec.describe "Hanami web app", :app_integration do
       write "lib/test_app/middleware/api_deprecation.rb", <<~RUBY
         module TestApp
           module Middleware
-            class ApiDeprecation
+            class APIDeprecation
               def self.inspect
                 "<Middleware::API::Deprecation>"
               end
@@ -578,13 +578,6 @@ RSpec.describe "Hanami web app", :app_integration do
       RUBY
 
       write "config/routes.rb", <<~RUBY
-        require "test_app/middleware/elapsed"
-        require "test_app/middleware/authentication"
-        require "test_app/middleware/rate_limiter"
-        require "test_app/middleware/api_version"
-        require "test_app/middleware/api_deprecation"
-        require "test_app/middleware/scope_identifier"
-
         module TestApp
           class Routes < Hanami::Routes
             use TestApp::Middleware::Elapsed
@@ -609,8 +602,8 @@ RSpec.describe "Hanami web app", :app_integration do
               root to: ->(*) { [200, {"Content-Length" => "3"}, ["API"]] }
 
               slice :api_v1, at: "/v1" do
-                use TestApp::Middleware::ApiVersion
-                use TestApp::Middleware::ApiDeprecation
+                use TestApp::Middleware::APIVersion
+                use TestApp::Middleware::APIDeprecation
                 use TestApp::Middleware::ScopeIdentifier, "API-V1"
 
                 root to: "home.show"
