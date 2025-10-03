@@ -602,6 +602,8 @@ module Hanami
       # @api public
       # @since 2.0.0
       def keys
+        puts boot_warning_message if should_display_boot_warning?
+
         container.keys
       end
 
@@ -1126,6 +1128,22 @@ module Hanami
         parent &&
           config.db.import_from_parent &&
           parent.container.providers[:db]
+      end
+
+      def in_repl?
+        in_irb = defined?(IRB) && IRB.conf[:MAIN_CONTEXT]
+        in_pry = defined?(Pry) && Pry.respond_to?(:config)
+
+        !!(in_irb || in_pry)
+      end
+
+      def should_display_boot_warning?
+        in_repl? && !app.config.suppress_console_boot_warning && !self.booted?
+      end
+
+      def boot_warning_message
+        "Warning: Slice not yet booted. " \
+        "Run \"#{app? ? "app" : self}.boot\" first to view all keys."
       end
 
       # rubocop:enable Metrics/AbcSize

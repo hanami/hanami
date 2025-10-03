@@ -197,6 +197,16 @@ module Hanami
     #   @since 2.3.0
     setting :console, default: Hanami::Config::Console.new
 
+    # @!attribute [rw] console
+    #   Sets if a warning message should be displayed whenever running '#keys' on
+    #   a container before it has been booted in a console session.
+    #
+    #   @return [Boolean]
+    #
+    #   @api public
+    #   @since 2.3.0
+    setting :suppress_console_boot_warning, default: false
+
     # Returns the app or slice's {Hanami::SliceName slice_name}.
     #
     # This is useful for default config values that depend on this name.
