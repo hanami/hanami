@@ -37,27 +37,20 @@ module Hanami
         #
         # This includes the following app components:
         #   - the configured inflector as `inflector`
-        #   - "settings" from the app container as `settings`
         #   - "routes" from the app container as `routes`
         #   - "assets" from the app container as `assets`
         def define_new
           inflector = slice.inflector
-          resolve_settings = method(:resolve_settings)
           resolve_routes = method(:resolve_routes)
           resolve_assets = method(:resolve_assets)
 
           define_method :new do |**kwargs|
             kwargs[:inflector] ||= inflector
-            kwargs[:settings] ||= resolve_settings.()
             kwargs[:routes] ||= resolve_routes.()
             kwargs[:assets] ||= resolve_assets.()
 
             super(**kwargs)
           end
-        end
-
-        def resolve_settings
-          slice["settings"] if slice.key?("settings")
         end
 
         def resolve_routes

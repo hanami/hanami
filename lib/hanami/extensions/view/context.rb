@@ -90,28 +90,18 @@ module Hanami
             # @since 2.1.0
             attr_reader :inflector
 
-            # Returns the app's settings.
-            #
-            # @return [Hanami::Settings] the settings
-            #
-            # @api public
-            # @since 2.1.0
-            attr_reader :settings
-
             # @see SliceConfiguredContext#define_new
             #
             # @api private
             # @since 2.1.0
             def initialize( # rubocop:disable Metrics/ParameterLists
               inflector: nil,
-              settings: nil,
               routes: nil,
               assets: nil,
               request: nil,
               **args
             )
               @inflector = inflector
-              @settings = settings
               @routes = routes
               @assets = assets
               @request = request
