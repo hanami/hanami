@@ -23,7 +23,7 @@ RSpec.describe Hanami::Config, "#actions" do
     end
 
     it "configures base actions settings using custom methods" do
-      expect { actions.formats.add(:json, "app/json") }
+      expect { actions.formats.register(json: "app/json") }
         .to change { actions.formats.mapping }
         .to include("app/json" => :json)
     end
