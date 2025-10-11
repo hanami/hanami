@@ -493,7 +493,7 @@ module Hanami
       return if actions.formats.empty?
       return if middleware.stack["/"].map(&:first).any? { |klass| klass == "Hanami::Middleware::BodyParser" }
 
-      parsers = SUPPORTED_MIDDLEWARE_PARSERS & actions.formats.values
+      parsers = SUPPORTED_MIDDLEWARE_PARSERS & actions.formats.accepted
       return if parsers.empty?
 
       middleware.use(
