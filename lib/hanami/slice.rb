@@ -223,6 +223,18 @@ module Hanami
         app? ? root.join(APP_DIR) : root
       end
 
+      # Returns the slice's root component directory, as a path relative to the app's root.
+      #
+      # @return [Pathname]
+      #
+      # @see #source_path
+      #
+      # @api public
+      # @since 2.3.0
+      def relative_source_path
+        source_path.relative_path_from(app.root)
+      end
+
       # Returns the slice's configured inflector.
       #
       # Unless explicitly re-configured for the slice, this will be the app's inflector.

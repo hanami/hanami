@@ -36,14 +36,14 @@ module Hanami
       def initialize(action_key, slice)
         action_path = action_key.gsub(CONTAINER_KEY_DELIMITER, PATH_DELIMITER)
         action_constant = slice.inflector.camelize(
-          "#{slice.inflector.underscore(slice.namespace.to_s)}#{PATH_DELIMITER}#{action_path}"
+          slice.inflector.underscore(slice.namespace.to_s) + PATH_DELIMITER + action_path
         )
-        action_file = slice.root.join("#{action_path}#{RB_EXT}")
+        action_file_path = slice.relative_source_path.join(action_path).to_s.concat(RB_EXT)
 
         super(<<~MSG)
           Could not find action with key #{action_key.inspect} in #{slice}
 
-          To fix this, define the action class #{action_constant} in #{action_file}
+          To fix this, define the action class #{action_constant} in #{action_file_path}
         MSG
       end
     end
