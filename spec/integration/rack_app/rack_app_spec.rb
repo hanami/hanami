@@ -305,7 +305,7 @@ RSpec.describe "Hanami web app", :app_integration do
       expect { Hanami.app.rack_app }.to raise_error do |exception|
         expect(exception).to be_kind_of(Hanami::Routes::MissingActionError)
         expect(exception.message).to include("Could not find action with key \"actions.missing.action\" in TestApp::App")
-        expect(exception.message).to include("define the action class TestApp::Actions::Missing::Action in actions/missing/action.rb")
+        expect(exception.message).to include("define the action class TestApp::Actions::Missing::Action in app/actions/missing/action.rb")
       end
     end
   end
