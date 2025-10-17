@@ -31,6 +31,7 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
         router: router,
         inflector: inflector,
         parent_path: parent_path,
+        parent_name: "user",
         name: :posts,
         type: :plural,
         options: { only: [:index] }
@@ -58,6 +59,7 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
         router: router,
         inflector: inflector,
         parent_path: parent_path,
+        parent_name: "user",
         name: :profile,
         type: :singular,
         options: { except: [:destroy] }
@@ -86,6 +88,7 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
           router: router,
           inflector: inflector,
           parent_path: parent_path,
+          parent_name: "user",
           name: :comments,
           type: :plural,
           options: { only: [:index, :show] }
