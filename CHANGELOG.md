@@ -10,11 +10,20 @@
 
 ### Removed
 
-- View context `settings` has been removed and is no longer accessible from templates (#1536)
-
 ### Fixed
 
 ### Security
+
+## [v2.3.0.beta1] - 2025-10-17
+
+### Changed
+
+- Use updated API for `config.actions.formats`. (@timriley in #1544)
+- Show relative paths in `MissingActionError`. (@kyleplump and @timriley in #1445)
+
+### Removed
+
+- View context `settings` has been removed and is no longer accessible from templates. (@baweaver in #1536)
 
 ## [v2.3.0.beta1] - 2025-10-03
 
@@ -1514,5 +1523,6 @@ end
 - [Luca Guidi] Official support for MRI 2.0
 
 
-[unreleased]: https://github.com/hanami/hanami/compare/v2.3.0.beta1...HEAD
+[unreleased]: https://github.com/hanami/hanami/compare/v2.3.0.beta2...HEAD
+[v2.3.0.beta2] https://github.com/hanami/hanami/compare/v2.3.0.beta1...v2.3.0.beta2
 [v2.3.0.beta1] https://github.com/hanami/hanami/compare/v2.2.1...v2.3.0.beta1
