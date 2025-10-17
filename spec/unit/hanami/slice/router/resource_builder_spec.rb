@@ -51,7 +51,7 @@ RSpec.describe Hanami::Slice::Router::ResourceBuilder do
     context "with custom options" do
       let(:options) do
         {
-          to: "admin/users",
+          to: "admin.users",
           path: "members",
           as: "member"
         }
@@ -68,20 +68,6 @@ RSpec.describe Hanami::Slice::Router::ResourceBuilder do
       it "uses custom route_name" do
         expect(builder.route_name).to eq "member"
       end
-    end
-  end
-
-  describe "#normalize_action_path" do
-    it "converts slash to dot notation" do
-      expect(builder.normalize_action_path("admin/users")).to eq "admin.users"
-    end
-
-    it "handles string input" do
-      expect(builder.normalize_action_path("users")).to eq "users"
-    end
-
-    it "handles symbol input" do
-      expect(builder.normalize_action_path(:users)).to eq "users"
     end
   end
 
