@@ -166,6 +166,19 @@ module Hanami
       #
       # @api private
       class ResourceBuilder
+        ROUTE_CONFIGURATIONS = {
+          index: {method: :get, path_suffix: "", name_suffix: ""},
+          new: {method: :get, path_suffix: "/new", name_suffix: "new_"},
+          create: {method: :post, path_suffix: "", name_suffix: ""},
+          show: {method: :get, path_suffix: "/:id", name_suffix: ""},
+          edit: {method: :get, path_suffix: "/:id/edit", name_suffix: "edit_"},
+          update: {method: :patch, path_suffix: "/:id", name_suffix: ""},
+          destroy: {method: :delete, path_suffix: "/:id", name_suffix: ""}
+        }.freeze
+
+        PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
+        SINGULAR_ACTIONS = %i[new create show edit update destroy].freeze
+
         attr_reader :router, :inflector, :name, :type, :options, :action_path, :path, :route_name
 
         def initialize(router:, inflector:, name:, type:, options:)
@@ -190,16 +203,6 @@ module Hanami
 
         private
 
-        ROUTE_CONFIGURATIONS = {
-          index: {method: :get, path_suffix: "", name_suffix: ""},
-          new: {method: :get, path_suffix: "/new", name_suffix: "new_"},
-          create: {method: :post, path_suffix: "", name_suffix: ""},
-          show: {method: :get, path_suffix: "/:id", name_suffix: ""},
-          edit: {method: :get, path_suffix: "/:id/edit", name_suffix: "edit_"},
-          update: {method: :patch, path_suffix: "/:id", name_suffix: ""},
-          destroy: {method: :delete, path_suffix: "/:id", name_suffix: ""}
-        }.freeze
-
         def determine_route_name
           if options[:as]
             options[:as].to_s
@@ -214,9 +217,6 @@ module Hanami
           default_actions = type == :plural ? PLURAL_ACTIONS : SINGULAR_ACTIONS
           ActionFilter.filter(default_actions, options)
         end
-
-        PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
-        SINGULAR_ACTIONS = %i[new create show edit update destroy].freeze
 
         def build_route(action, config)
           configs = config.is_a?(Array) ? config : [config]
