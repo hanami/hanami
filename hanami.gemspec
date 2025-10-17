@@ -41,7 +41,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "hanami-cli",       "~> 2.3.0.beta2"
   spec.add_dependency "hanami-utils",     "~> 2.3.0.beta2"
   spec.add_dependency "json",             ">= 2.7.2"
-  spec.add_dependency "zeitwerk",         "~> 2.6"
+  spec.add_dependency "zeitwerk",         "2.7.2"
   spec.add_dependency "rack-session"
 
   spec.add_development_dependency "rspec",     "~> 3.8"
