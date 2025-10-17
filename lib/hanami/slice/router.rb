@@ -13,7 +13,9 @@ module Hanami
     # @since 2.0.0
     class Router < ::Hanami::Router
       # @api private
-      # @since 2.0.0
+      attr_reader :inflector
+
+      # @api private
       attr_reader :middleware_stack
 
       # @api private
@@ -102,7 +104,7 @@ module Hanami
       def resources(name, **options, &block)
         resource_builder = ResourceBuilder.new(
           router: self,
-          inflector: @inflector,
+          inflector: inflector,
           name: name,
           type: :plural,
           options: options
@@ -111,7 +113,7 @@ module Hanami
         resource_builder.build_routes
 
         if block_given?
-          nested_context = NestedResourceContext.new(self, @inflector, resource_builder.path)
+          nested_context = NestedResourceContext.new(self, inflector, resource_builder.path)
           nested_context.instance_eval(&block)
         end
       end
@@ -140,7 +142,7 @@ module Hanami
       def resource(name, **options, &block)
         resource_builder = ResourceBuilder.new(
           router: self,
-          inflector: @inflector,
+          inflector: inflector,
           name: name,
           type: :singular,
           options: options
@@ -149,7 +151,7 @@ module Hanami
         resource_builder.build_routes
 
         if block_given?
-          nested_context = NestedResourceContext.new(self, @inflector, resource_builder.path)
+          nested_context = NestedResourceContext.new(self, inflector, resource_builder.path)
           nested_context.instance_eval(&block)
         end
       end
@@ -201,7 +203,7 @@ module Hanami
           if options[:as]
             options[:as].to_s
           elsif type == :plural
-            @inflector.singularize(name.to_s)
+            inflector.singularize(name.to_s)
           else
             name.to_s
           end
@@ -239,7 +241,7 @@ module Hanami
         end
 
         def build_route_name(action, prefix)
-          base_name = action == :index ? @inflector.pluralize(route_name) : route_name
+          base_name = action == :index ? inflector.pluralize(route_name) : route_name
           prefix.empty? ? base_name : "#{prefix}#{base_name}"
         end
 
@@ -290,9 +292,9 @@ module Hanami
 
         def build_nested_resource(name, type, options)
           nested_builder = NestedResourceBuilder.new(
-            router: @router,
-            inflector: @inflector,
-            parent_path: @parent_path,
+            router: router,
+            inflector: inflector,
+            parent_path: parent_path,
             name: name,
             type: type,
             options: options
@@ -305,7 +307,7 @@ module Hanami
       # Builds nested resource routes
       # @api private
       class NestedResourceBuilder < ResourceBuilder
-        attr_reader :parent_path, :parent_name, :inflector
+        attr_reader :parent_path, :parent_name
 
         def initialize(router:, inflector:, parent_path:, name:, type:, options:)
           super(router: router, inflector: inflector, name: name, type: type, options: options)
@@ -323,7 +325,7 @@ module Hanami
         end
 
         def build_route_name(action, prefix)
-          base_name = action == :index ? @inflector.pluralize(route_name) : route_name
+          base_name = action == :index ? inflector.pluralize(route_name) : route_name
           nested_name = "#{parent_name}_#{base_name}"
           prefix.empty? ? nested_name : "#{prefix}#{nested_name}"
         end
