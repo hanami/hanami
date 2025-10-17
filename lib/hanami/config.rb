@@ -187,12 +187,12 @@ module Hanami
 
     # @!attribute [rw] console
     #   Returns the app's console config
-    # 
+    #
     #   @example
     #     config.console.engine # => :irb
-    # 
+    #
     #   @return [Hanami::Config::Console]
-    # 
+    #
     #   @api public
     #   @since 2.3.0
     setting :console, default: Hanami::Config::Console.new
@@ -493,7 +493,7 @@ module Hanami
       return if actions.formats.empty?
       return if middleware.stack["/"].map(&:first).any? { |klass| klass == "Hanami::Middleware::BodyParser" }
 
-      parsers = SUPPORTED_MIDDLEWARE_PARSERS & actions.formats.values
+      parsers = SUPPORTED_MIDDLEWARE_PARSERS & actions.formats.accepted
       return if parsers.empty?
 
       middleware.use(

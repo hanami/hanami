@@ -34,25 +34,25 @@ RSpec.describe "App action / Slice configuration", :app_integration do
       it "applies default actions config from the app", :aggregate_failures do
         prepare_app
 
-        expect(TestApp::Action.config.formats.values).to eq []
+        expect(TestApp::Action.config.formats.accepted).to eq []
       end
 
       it "applies actions config from the app" do
-        Hanami.app.config.actions.format :json
+        Hanami.app.config.actions.formats.accepted = [:json]
 
         prepare_app
 
-        expect(TestApp::Action.config.formats.values).to eq [:json]
+        expect(TestApp::Action.config.formats.accepted).to eq [:json]
       end
 
       it "does not override config in the base class" do
-        Hanami.app.config.actions.format :csv
+        Hanami.app.config.actions.formats.accepted = [:csv]
 
         prepare_app
 
-        TestApp::Action.config.format :json
+        TestApp::Action.config.formats.accepted = [:json]
 
-        expect(TestApp::Action.config.formats.values).to eq [:json]
+        expect(TestApp::Action.config.formats.accepted).to eq [:json]
       end
     end
 
@@ -75,23 +75,23 @@ RSpec.describe "App action / Slice configuration", :app_integration do
       it "applies default actions config from the app", :aggregate_failures do
         prepare_app
 
-        expect(TestApp::Actions::Articles::Index.config.formats.values).to eq []
+        expect(TestApp::Actions::Articles::Index.config.formats.accepted).to eq []
       end
 
       it "applies actions config from the app" do
-        Hanami.app.config.actions.format :json
+        Hanami.app.config.actions.formats.accepted = [:json]
 
         prepare_app
 
-        expect(TestApp::Actions::Articles::Index.config.formats.values).to eq [:json]
+        expect(TestApp::Actions::Articles::Index.config.formats.accepted).to eq [:json]
       end
 
       it "applies config from the base class" do
         prepare_app
 
-        TestApp::Action.config.format :json
+        TestApp::Action.config.formats.accepted = [:json]
 
-        expect(TestApp::Actions::Articles::Index.config.formats.values).to eq [:json]
+        expect(TestApp::Actions::Articles::Index.config.formats.accepted).to eq [:json]
       end
     end
 
@@ -114,23 +114,23 @@ RSpec.describe "App action / Slice configuration", :app_integration do
       it "applies default actions config from the app", :aggregate_failures do
         prepare_app
 
-        expect(Admin::Actions::Articles::Index.config.formats.values).to eq []
+        expect(Admin::Actions::Articles::Index.config.formats.accepted).to eq []
       end
 
       it "applies actions config from the app" do
-        Hanami.app.config.actions.format :json
+        Hanami.app.config.actions.formats.accepted = [:json]
 
         prepare_app
 
-        expect(Admin::Actions::Articles::Index.config.formats.values).to eq [:json]
+        expect(Admin::Actions::Articles::Index.config.formats.accepted).to eq [:json]
       end
 
       it "applies config from the base class" do
         prepare_app
 
-        TestApp::Action.config.format :json
+        TestApp::Action.config.formats.accepted = [:json]
 
-        expect(Admin::Actions::Articles::Index.config.formats.values).to eq [:json]
+        expect(Admin::Actions::Articles::Index.config.formats.accepted).to eq [:json]
       end
     end
   end
@@ -151,23 +151,23 @@ RSpec.describe "App action / Slice configuration", :app_integration do
       it "applies default actions config from the app", :aggregate_failures do
         prepare_app
 
-        expect(Admin::Action.config.formats.values).to eq []
+        expect(Admin::Action.config.formats.accepted).to eq []
       end
 
       it "applies actions config from the app" do
-        Hanami.app.config.actions.format :json
+        Hanami.app.config.actions.formats.accepted = [:json]
 
         prepare_app
 
-        expect(Admin::Action.config.formats.values).to eq [:json]
+        expect(Admin::Action.config.formats.accepted).to eq [:json]
       end
 
       it "applies config from the app base class" do
         prepare_app
 
-        TestApp::Action.config.format :json
+        TestApp::Action.config.formats.accepted = [:json]
 
-        expect(Admin::Action.config.formats.values).to eq [:json]
+        expect(Admin::Action.config.formats.accepted).to eq [:json]
       end
 
       context "slice actions config present" do
@@ -186,24 +186,24 @@ RSpec.describe "App action / Slice configuration", :app_integration do
         it "applies actions config from the slice" do
           prepare_app
 
-          expect(Admin::Action.config.formats.values).to eq [:csv]
+          expect(Admin::Action.config.formats.accepted).to eq [:csv]
         end
 
         it "prefers actions config from the slice over config from the app-level base class" do
           prepare_app
 
-          TestApp::Action.config.format :json
+          TestApp::Action.config.formats.accepted = [:json]
 
-          expect(Admin::Action.config.formats.values).to eq [:csv]
+          expect(Admin::Action.config.formats.accepted).to eq [:csv]
         end
 
         it "prefers config from the base class over actions config from the slice" do
           prepare_app
 
-          TestApp::Action.config.format :csv
-          Admin::Action.config.format :json
+          TestApp::Action.config.formats.accepted = [:csv]
+          Admin::Action.config.formats.accepted = [:json]
 
-          expect(Admin::Action.config.formats.values).to eq [:json]
+          expect(Admin::Action.config.formats.accepted).to eq [:json]
         end
       end
     end
@@ -227,15 +227,15 @@ RSpec.describe "App action / Slice configuration", :app_integration do
       it "applies default actions config from the app", :aggregate_failures do
         prepare_app
 
-        expect(Admin::Actions::Articles::Index.config.formats.values).to eq []
+        expect(Admin::Actions::Articles::Index.config.formats.accepted).to eq []
       end
 
       it "applies actions config from the app" do
-        Hanami.app.config.actions.format :json
+        Hanami.app.config.actions.formats.accepted = [:json]
 
         prepare_app
 
-        expect(Admin::Actions::Articles::Index.config.formats.values).to eq [:json]
+        expect(Admin::Actions::Articles::Index.config.formats.accepted).to eq [:json]
       end
 
       it "applies actions config from the slice" do
@@ -243,7 +243,7 @@ RSpec.describe "App action / Slice configuration", :app_integration do
           write "config/slices/admin.rb", <<~'RUBY'
             module Admin
               class Slice < Hanami::Slice
-                config.actions.format :json
+                config.actions.formats.accepted = [:json]
               end
             end
           RUBY
@@ -251,15 +251,15 @@ RSpec.describe "App action / Slice configuration", :app_integration do
 
         prepare_app
 
-        expect(Admin::Actions::Articles::Index.config.formats.values).to eq [:json]
+        expect(Admin::Actions::Articles::Index.config.formats.accepted).to eq [:json]
       end
 
       it "applies config from the slice base class" do
         prepare_app
 
-        Admin::Action.config.format :json
+        Admin::Action.config.formats.accepted = [:json]
 
-        expect(Admin::Actions::Articles::Index.config.formats.values).to eq [:json]
+        expect(Admin::Actions::Articles::Index.config.formats.accepted).to eq [:json]
       end
 
       it "prefers config from the slice base class over actions config from the slice" do
@@ -275,9 +275,9 @@ RSpec.describe "App action / Slice configuration", :app_integration do
 
         prepare_app
 
-        Admin::Action.config.format :json
+        Admin::Action.config.formats.accepted = [:json]
 
-        expect(Admin::Actions::Articles::Index.config.formats.values).to eq [:json]
+        expect(Admin::Actions::Articles::Index.config.formats.accepted).to eq [:json]
       end
     end
   end

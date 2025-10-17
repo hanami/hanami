@@ -20,7 +20,7 @@ RSpec.describe "App action / Format config", :app_integration do
         class App < Hanami::App
           config.logger.stream = StringIO.new
 
-          config.actions.format :json
+          config.actions.formats.accept :json
         end
       end
     RUBY
@@ -76,7 +76,10 @@ RSpec.describe "App action / Format config", :app_integration do
         class App < Hanami::App
           config.logger.stream = StringIO.new
 
-          config.actions.formats.add :json, ["application/json+scim", "application/json"]
+          config.actions.formats.register :json, "application/json",
+            accept_types: ["application/json", "application/json+scim"],
+            content_types: ["application/json", "application/json+scim"]
+          config.actions.formats.accept :json
         end
       end
     RUBY
@@ -141,7 +144,7 @@ RSpec.describe "App action / Format config", :app_integration do
         class App < Hanami::App
           config.logger.stream = StringIO.new
 
-          config.actions.format :json
+          config.actions.formats.accept :json
           config.middleware.use :body_parser, [json: "application/json+custom"]
         end
       end
