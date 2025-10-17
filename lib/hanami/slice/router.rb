@@ -218,21 +218,17 @@ module Hanami
           ActionFilter.filter(default_actions, options)
         end
 
-        def build_route(action, config)
-          configs = config.is_a?(Array) ? config : [config]
+        def build_route(action, route_config)
+          route_path = build_route_path(route_config[:path_suffix])
+          route_name = build_route_name(action, route_config[:name_suffix])
+          action_target = "#{action_path}.#{action}"
 
-          configs.each do |route_config|
-            route_path = build_route_path(route_config[:path_suffix])
-            route_name = build_route_name(action, route_config[:name_suffix])
-            action_target = "#{action_path}.#{action}"
-
-            router.public_send(
-              route_config[:method],
-              route_path,
-              to: action_target,
-              as: route_name
-            )
-          end
+          router.public_send(
+            route_config[:method],
+            route_path,
+            to: action_target,
+            as: route_name
+          )
         end
 
         def build_route_path(suffix)
