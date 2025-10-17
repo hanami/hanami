@@ -172,14 +172,9 @@ module Hanami
           @name = name
           @type = type
           @options = options
-          @action_path = normalize_action_path(options[:to] || name.to_s)
+          @action_path = options[:to] || name.to_s
           @path = options[:path] || name.to_s
           @route_name = determine_route_name
-        end
-
-        def normalize_action_path(action_path)
-          # Convert namespace/action format to namespace.action format
-          action_path.to_s.gsub("/", ".")
         end
 
         def build_routes
