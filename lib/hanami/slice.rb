@@ -756,7 +756,6 @@ module Hanami
       # with the addition of support for slice mounting with the {Slice::Router#slice}.
       #
       # @param inspector [Hanami::Router::Inspector, nil] an optional routes inspector
-      # @param inflector [Hanami::Inflector] an inflector to use for the router
       #
       # @return [Hanami::Slice::Router, nil]
       #
@@ -766,7 +765,7 @@ module Hanami
         raise SliceLoadError, "#{self} must be prepared before loading the router" unless prepared?
 
         @_mutex.synchronize do
-          @_router ||= load_router(inspector: inspector, inflector: config.inflector)
+          @_router ||= load_router(inspector: inspector)
         end
       end
 
