@@ -27,8 +27,8 @@ RSpec.describe Hanami::Slice::Router::ResourceBuilder do
       expect(builder.options).to eq({})
     end
 
-    it "sets default action_path from name" do
-      expect(builder.action_path).to eq "users"
+    it "sets default action_key_path from name" do
+      expect(builder.action_key_path).to eq "users"
     end
 
     it "sets default path from name" do
@@ -57,8 +57,8 @@ RSpec.describe Hanami::Slice::Router::ResourceBuilder do
         }
       end
 
-      it "uses custom action_path" do
-        expect(builder.action_path).to eq "admin.users"
+      it "uses custom action_key_path" do
+        expect(builder.action_key_path).to eq "admin.users"
       end
 
       it "uses custom path" do
