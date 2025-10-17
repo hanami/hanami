@@ -98,7 +98,7 @@ module Hanami
       #   # DELETE /users/:id      users.destroy
       #
       # @api public
-      # @since x.x.x
+      # @since 2.3.0
       def resources(name, **options, &block)
         resource_builder = ResourceBuilder.new(
           router: self,
@@ -136,7 +136,7 @@ module Hanami
       #   # DELETE /profile        profile.destroy
       #
       # @api public
-      # @since x.x.x
+      # @since 2.3.0
       def resource(name, **options, &block)
         resource_builder = ResourceBuilder.new(
           router: self,
@@ -162,7 +162,6 @@ module Hanami
 
       # Builds RESTful routes for a resource
       # @api private
-      # @since x.x.x
       class ResourceBuilder
         attr_reader :router, :inflector, :name, :type, :options, :action_path, :path, :route_name
 
@@ -258,7 +257,6 @@ module Hanami
 
       # Filters actions based on :only and :except options
       # @api private
-      # @since x.x.x
       class ActionFilter
         def self.filter(default_actions, options)
           if options[:only]
@@ -273,7 +271,6 @@ module Hanami
 
       # Context for handling nested resources
       # @api private
-      # @since x.x.x
       class NestedResourceContext
         def initialize(router, inflector, parent_path)
           @router = router
@@ -307,7 +304,6 @@ module Hanami
 
       # Builds nested resource routes
       # @api private
-      # @since x.x.x
       class NestedResourceBuilder < ResourceBuilder
         attr_reader :parent_path, :parent_name, :inflector
 
