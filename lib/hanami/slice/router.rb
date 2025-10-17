@@ -10,7 +10,6 @@ module Hanami
     # {Hanami::Slice::ClassMethods#router router}.
     #
     # @api private
-    # @since 2.0.0
     class Router < ::Hanami::Router
       # @api private
       attr_reader :inflector
@@ -19,7 +18,6 @@ module Hanami
       attr_reader :middleware_stack
 
       # @api private
-      # @since 2.0.0
       attr_reader :path_prefix
 
       # @api private
@@ -79,14 +77,15 @@ module Hanami
         @resolver = prev_resolver
       end
 
-      # Generate RESTful routes for a plural resource
-      # @param name [Symbol] The resource name (plural)
-      # @param options [Hash] Options for customizing the routes
+      # Generates RESTful routes for a plural resource.
+      #
+      # @param name [Symbol] the resource name (plural)
+      # @param options [Hash] options for customizing the routes
       # @option options [Array<Symbol>] :only Limit to specific actions
       # @option options [Array<Symbol>] :except Exclude specific actions
-      # @option options [String] :to Override the action path (supports "namespace.action" or "namespace/action")
-      # @option options [String] :path Override the URL path
-      # @option options [String, Symbol] :as Override the route name prefix
+      # @option options [String] :to the action key namespace, e.g. "namespace.action"
+      # @option options [String] :path the URL path
+      # @option options [String, Symbol] :as the route name prefix
       #
       # @example
       #   resources :users
@@ -118,14 +117,15 @@ module Hanami
         end
       end
 
-      # Generate RESTful routes for a singular resource
-      # @param name [Symbol] The resource name (singular)
-      # @param options [Hash] Options for customizing the routes
-      # @option options [Array<Symbol>] :only Limit to specific actions
-      # @option options [Array<Symbol>] :except Exclude specific actions
-      # @option options [String] :to Override the action path (supports "namespace.action" or "namespace/action")
-      # @option options [String] :path Override the URL path
-      # @option options [String, Symbol] :as Override the route name
+      # Generates RESTful routes for a singular resource.
+      #
+      # @param name [Symbol] the resource name (singular)
+      # @param options [Hash] options for customizing the routes
+      # @option options [Array<Symbol>] :only limit to specific actions
+      # @option options [Array<Symbol>] :except exclude specific actions
+      # @option options [String] :to the action key namespace, e.g. "namespace.action"
+      # @option options [String] :path the URL path
+      # @option options [String, Symbol] :as the route name prefix
       #
       # @example
       #   resource :profile
@@ -163,6 +163,7 @@ module Hanami
       end
 
       # Builds RESTful routes for a resource
+      #
       # @api private
       class ResourceBuilder
         attr_reader :router, :inflector, :name, :type, :options, :action_path, :path, :route_name
@@ -258,6 +259,7 @@ module Hanami
       end
 
       # Filters actions based on :only and :except options
+      #
       # @api private
       class ActionFilter
         def self.filter(default_actions, options)
@@ -272,8 +274,11 @@ module Hanami
       end
 
       # Context for handling nested resources
+      #
       # @api private
       class NestedResourceContext
+        attr_reader :router, :parent_path, :parent_name, :inflector
+
         def initialize(router, inflector, parent_path)
           @router = router
           @inflector = inflector
@@ -305,6 +310,7 @@ module Hanami
       end
 
       # Builds nested resource routes
+      #
       # @api private
       class NestedResourceBuilder < ResourceBuilder
         attr_reader :parent_path, :parent_name
