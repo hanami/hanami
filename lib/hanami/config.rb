@@ -187,12 +187,12 @@ module Hanami
 
     # @!attribute [rw] console
     #   Returns the app's console config
-    # 
+    #
     #   @example
     #     config.console.engine # => :irb
-    # 
+    #
     #   @return [Hanami::Config::Console]
-    # 
+    #
     #   @api public
     #   @since 2.3.0
     setting :console, default: Hanami::Config::Console.new
