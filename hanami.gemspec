@@ -7,10 +7,10 @@ require "hanami/version"
 Gem::Specification.new do |spec|
   spec.name          = "hanami"
   spec.version       = Hanami::VERSION
-  spec.authors       = ["Luca Guidi"]
-  spec.email         = ["me@lucaguidi.com"]
-  spec.summary       = "The web, with simplicity"
-  spec.description   = "Hanami is a web framework for Ruby"
+  spec.authors       = ["Hanakai team"]
+  spec.email         = ["info@hanakai.org"]
+  spec.summary       = "A flexible framework for maintainable Ruby apps"
+  spec.description   = spec.summary
   spec.homepage      = "http://hanamirb.org"
   spec.license       = "MIT"
 
