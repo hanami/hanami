@@ -179,7 +179,7 @@ module Hanami
         PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
         SINGULAR_ACTIONS = %i[new create show edit update destroy].freeze
 
-        attr_reader :router, :inflector, :name, :type, :options, :action_path, :path, :route_name
+        attr_reader :router, :inflector, :name, :type, :options, :action_key_path, :path, :route_name
 
         def initialize(router:, inflector:, name:, type:, options:)
           @router = router
@@ -187,7 +187,7 @@ module Hanami
           @name = name
           @type = type
           @options = options
-          @action_path = options[:to] || name.to_s
+          @action_key_path = options[:to] || name.to_s
           @path = options[:path] || name.to_s
           @route_name = determine_route_name
         end
@@ -221,7 +221,7 @@ module Hanami
         def build_route(action, route_config)
           route_path = build_route_path(route_config[:path_suffix])
           route_name = build_route_name(action, route_config[:name_suffix])
-          action_target = "#{action_path}.#{action}"
+          action_target = "#{action_key_path}.#{action}"
 
           router.public_send(
             route_config[:method],
