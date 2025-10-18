@@ -1044,6 +1044,7 @@ module Hanami
 
         Slice::Router.new(
           inspector: inspector,
+          inflector: inflector,
           routes: routes,
           resolver: config.router.resolver.new(slice: self),
           **error_handlers,
