@@ -108,7 +108,7 @@ module Hanami
         # @api private
         def info(message = nil, **payload)
           payload[:message] = message if message
-          logger.info(JSON.fast_generate(payload))
+          logger.info(JSON.generate(payload))
         end
 
         # @see info
@@ -117,7 +117,7 @@ module Hanami
         # @api private
         def error(message = nil, **payload)
           payload[:message] = message if message
-          logger.info(JSON.fast_generate(payload))
+          logger.info(JSON.generate(payload))
         end
       end
 
