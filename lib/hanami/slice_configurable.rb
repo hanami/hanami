@@ -43,7 +43,7 @@ module Hanami
             return unless slice
 
             unless subclass.configured_for_slice?(slice)
-              subclass.configure_for_slice(slice)
+              subclass.configure_for_slice(slice) if subclass.respond_to?(:configure_for_slice)
               subclass.configured_for_slices << slice
             end
           end
@@ -62,8 +62,6 @@ module Hanami
         slices.detect { |slice| klass.name.start_with?("#{slice.namespace}#{MODULE_DELIMITER}") }
       end
     end
-
-    def configure_for_slice(slice); end
 
     def configured_for_slice?(slice)
       configured_for_slices.include?(slice)

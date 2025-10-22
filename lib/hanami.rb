@@ -19,6 +19,7 @@ module Hanami
     @loader ||= Zeitwerk::Loader.for_gem.tap do |loader|
       loader.inflector.inflect "db" => "DB"
       loader.inflector.inflect "db_logging" => "DBLogging"
+      loader.inflector.inflect "slice_configured_db_operation" => "SliceConfiguredDBOperation"
       loader.inflector.inflect "sql_adapter" => "SQLAdapter"
       loader.ignore(
         "#{loader.dirs.first}/hanami/{constants,boot,errors,extensions/router/errors,prepare,rake_tasks,setup}.rb"
