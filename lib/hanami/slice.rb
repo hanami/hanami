@@ -1138,7 +1138,14 @@ module Hanami
       end
 
       def should_display_boot_warning?
-        in_repl? && !app.config.suppress_console_boot_warning && !self.booted?
+        should_display = in_repl? &&
+                           !app.config.suppress_console_boot_warning &&
+                           !booted? &&
+                           @has_displayed_boot_warning.nil?
+
+        @has_displayed_boot_warning = true if should_display
+
+        should_display
       end
 
       def boot_warning_message
