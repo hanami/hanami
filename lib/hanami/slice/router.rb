@@ -269,18 +269,17 @@ module Hanami
         end
       end
 
-      # Context for handling nested resources
+      # Context for handling nested resources using scope method
       #
       # @api private
       class NestedResourceContext
-        attr_reader :router, :parent_path, :parent_name, :inflector, :current_path
+        attr_reader :router, :parent_path, :parent_name, :inflector
 
         def initialize(router, inflector, parent_path, parent_name = nil)
           @router = router
           @inflector = inflector
           @parent_path = parent_path
           @parent_name = parent_name || inflector.singularize(parent_path.to_s)
-          @current_path = build_current_path
         end
 
         def resources(name, **options, &block)
@@ -294,8 +293,7 @@ module Hanami
         # HTTP method delegation for custom routes within resource blocks
         %w[get post patch put delete head options].each do |method|
           define_method(method) do |path, **options|
-            scoped_path = build_scoped_path(path)
-            router.public_send(method, scoped_path, **options)
+            router.public_send(method, path, **options)
           end
         end
 
@@ -312,30 +310,26 @@ module Hanami
             options: options
           )
 
-          nested_builder.build_routes
+          # Use scope to handle the nesting
+          nested_path = "#{parent_path}/:#{parent_name}_id"
+          router.scope(nested_path) do
+            nested_builder.build_routes
 
-          # Handle deeper nesting if block is provided
-          if block_given?
-            nested_context = NestedResourceContext.new(
-              router,
-              inflector,
-              nested_builder.nested_path,
-              nested_builder.nested_parent_name
-            )
-            nested_context.instance_eval(&block)
+            # Handle deeper nesting if block is provided
+            if block_given?
+              nested_context = NestedResourceContext.new(
+                router,
+                inflector,
+                nested_builder.path,
+                inflector.singularize(nested_builder.path.to_s)
+              )
+              nested_context.instance_eval(&block)
+            end
           end
-        end
-
-        def build_current_path
-          "/#{parent_path}/:#{parent_name}_id"
-        end
-
-        def build_scoped_path(path)
-          "#{current_path}/#{path.sub(/^\//, '')}"
         end
       end
 
-      # Builds nested resource routes
+      # Builds nested resource routes using scope method
       #
       # @api private
       class NestedResourceBuilder < ResourceBuilder
@@ -343,7 +337,6 @@ module Hanami
 
         def initialize(router:, inflector:, parent_path:, parent_name: nil, name:, type:, options:)
           super(router: router, inflector: inflector, name: name, type: type, options: options)
-          @inflector = inflector
           @parent_path = parent_path
           @parent_name = parent_name || inflector.singularize(parent_path.to_s)
         end
@@ -360,18 +353,21 @@ module Hanami
 
         private
 
+        # Build nested route paths (for backward compatibility with tests)
         def build_route_path(suffix)
           base_path = "/#{parent_path}/:#{parent_name}_id/#{path}"
           suffix = resolve_suffix(suffix)
           suffix.empty? ? base_path : "#{base_path}#{suffix}"
         end
 
+        # Override to build nested route names
         def build_route_name(action, prefix)
           base_name = action == :index ? inflector.pluralize(route_name) : route_name
           nested_name = "#{parent_name}_#{base_name}"
           prefix.empty? ? nested_name : "#{prefix}#{nested_name}"
         end
       end
+
     end
   end
 end
