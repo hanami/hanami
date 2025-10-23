@@ -24,6 +24,7 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
     before do
       allow(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).and_return(nested_builder)
       allow(nested_builder).to receive(:build_routes)
+      allow(router).to receive(:scope).and_yield
     end
 
     it "creates a NestedResourceBuilder for plural resources" do
@@ -52,6 +53,7 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
     before do
       allow(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).and_return(nested_builder)
       allow(nested_builder).to receive(:build_routes)
+      allow(router).to receive(:scope).and_yield
     end
 
     it "creates a NestedResourceBuilder for singular resources" do
@@ -81,6 +83,7 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
       before do
         allow(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).and_return(nested_builder)
         allow(nested_builder).to receive(:build_routes)
+        allow(router).to receive(:scope).and_yield
       end
 
       it "creates and builds nested resource" do
