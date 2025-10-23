@@ -101,20 +101,7 @@ module Hanami
       # @api public
       # @since 2.3.0
       def resources(name, **options, &block)
-        resource_builder = ResourceBuilder.new(
-          router: self,
-          inflector: inflector,
-          name: name,
-          type: :plural,
-          options: options
-        )
-
-        resource_builder.build_routes
-
-        if block_given?
-          nested_context = NestedResourceContext.new(self, inflector, resource_builder.path)
-          nested_context.instance_eval(&block)
-        end
+        build_resource(name, :plural, options, &block)
       end
 
       # Generates RESTful routes for a singular resource.
@@ -140,11 +127,17 @@ module Hanami
       # @api public
       # @since 2.3.0
       def resource(name, **options, &block)
+        build_resource(name, :singular, options, &block)
+      end
+
+      private
+
+      def build_resource(name, type, options, &block)
         resource_builder = ResourceBuilder.new(
           router: self,
           inflector: inflector,
           name: name,
-          type: :singular,
+          type: type,
           options: options
         )
 
@@ -155,6 +148,8 @@ module Hanami
           nested_context.instance_eval(&block)
         end
       end
+
+      public
 
       # @api private
       # @since 2.0.0
@@ -290,38 +285,45 @@ module Hanami
           build_nested_resource(name, :singular, options, &block)
         end
 
-        # HTTP method delegation for custom routes within resource blocks
-        %w[get post patch put delete head options].each do |method|
-          define_method(method) do |path, **options|
-            router.public_send(method, path, **options)
+        # Delegate all method calls to the scoped router for custom routes
+        def method_missing(method, *args, **kwargs, &block)
+          if router.respond_to?(method)
+            router.scope(nested_scope_path) do
+              router.public_send(method, *args, **kwargs, &block)
+            end
+          else
+            super
           end
+        end
+
+        def respond_to_missing?(method, include_private = false)
+          router.respond_to?(method, include_private) || super
         end
 
         private
 
+        def nested_scope_path
+          "#{parent_path}/:#{parent_name}_id"
+        end
+
         def build_nested_resource(name, type, options, &block)
-          nested_builder = NestedResourceBuilder.new(
-            router: router,
-            inflector: inflector,
-            parent_path: parent_path,
-            parent_name: parent_name,
-            name: name,
-            type: type,
-            options: options
-          )
+          router.scope(nested_scope_path) do
+            # Use regular ResourceBuilder since scope handles the nesting
+            builder = ResourceBuilder.new(
+              router: router,
+              inflector: inflector,
+              name: name,
+              type: type,
+              options: options
+            )
+            
+            builder.build_routes
 
-          # Use scope to handle the nesting
-          nested_path = "#{parent_path}/:#{parent_name}_id"
-          router.scope(nested_path) do
-            nested_builder.build_routes
-
-            # Handle deeper nesting if block is provided
             if block_given?
               nested_context = NestedResourceContext.new(
                 router,
                 inflector,
-                nested_builder.path,
-                inflector.singularize(nested_builder.path.to_s)
+                builder.path
               )
               nested_context.instance_eval(&block)
             end
@@ -329,44 +331,6 @@ module Hanami
         end
       end
 
-      # Builds nested resource routes using scope method
-      #
-      # @api private
-      class NestedResourceBuilder < ResourceBuilder
-        attr_reader :parent_path, :parent_name
-
-        def initialize(router:, inflector:, parent_path:, parent_name: nil, name:, type:, options:)
-          super(router: router, inflector: inflector, name: name, type: type, options: options)
-          @parent_path = parent_path
-          @parent_name = parent_name || inflector.singularize(parent_path.to_s)
-        end
-
-        # Returns the nested path for this resource (used for deeper nesting)
-        def nested_path
-          "#{parent_path}/:#{parent_name}_id/#{path}"
-        end
-
-        # Returns the nested parent name for this resource (used for deeper nesting)
-        def nested_parent_name
-          inflector.singularize(path.to_s)
-        end
-
-        private
-
-        # Build nested route paths (for backward compatibility with tests)
-        def build_route_path(suffix)
-          base_path = "/#{parent_path}/:#{parent_name}_id/#{path}"
-          suffix = resolve_suffix(suffix)
-          suffix.empty? ? base_path : "#{base_path}#{suffix}"
-        end
-
-        # Override to build nested route names
-        def build_route_name(action, prefix)
-          base_name = action == :index ? inflector.pluralize(route_name) : route_name
-          nested_name = "#{parent_name}_#{base_name}"
-          prefix.empty? ? nested_name : "#{prefix}#{nested_name}"
-        end
-      end
 
     end
   end
