@@ -19,20 +19,19 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
   end
 
   describe "#resources" do
-    let(:nested_builder) { double("nested_builder") }
+    let(:resource_builder) { double("resource_builder") }
 
     before do
-      allow(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).and_return(nested_builder)
-      allow(nested_builder).to receive(:build_routes)
+      allow(Hanami::Slice::Router::ResourceBuilder).to receive(:new).and_return(resource_builder)
+      allow(resource_builder).to receive(:build_routes)
+      allow(resource_builder).to receive(:path).and_return("posts")
       allow(router).to receive(:scope).and_yield
     end
 
-    it "creates a NestedResourceBuilder for plural resources" do
-      expect(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).with(
+    it "creates a ResourceBuilder for plural resources" do
+      expect(Hanami::Slice::Router::ResourceBuilder).to receive(:new).with(
         router: router,
         inflector: inflector,
-        parent_path: parent_path,
-        parent_name: "user",
         name: :posts,
         type: :plural,
         options: { only: [:index] }
@@ -41,27 +40,31 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
       context.resources(:posts, only: [:index])
     end
 
-    it "calls build_routes on the nested builder" do
-      expect(nested_builder).to receive(:build_routes)
+    it "calls build_routes on the resource builder" do
+      expect(resource_builder).to receive(:build_routes)
+      context.resources(:posts)
+    end
+
+    it "uses scope with correct nested path" do
+      expect(router).to receive(:scope).with("users/:user_id")
       context.resources(:posts)
     end
   end
 
   describe "#resource" do
-    let(:nested_builder) { double("nested_builder") }
+    let(:resource_builder) { double("resource_builder") }
 
     before do
-      allow(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).and_return(nested_builder)
-      allow(nested_builder).to receive(:build_routes)
+      allow(Hanami::Slice::Router::ResourceBuilder).to receive(:new).and_return(resource_builder)
+      allow(resource_builder).to receive(:build_routes)
+      allow(resource_builder).to receive(:path).and_return("profile")
       allow(router).to receive(:scope).and_yield
     end
 
-    it "creates a NestedResourceBuilder for singular resources" do
-      expect(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).with(
+    it "creates a ResourceBuilder for singular resources" do
+      expect(Hanami::Slice::Router::ResourceBuilder).to receive(:new).with(
         router: router,
         inflector: inflector,
-        parent_path: parent_path,
-        parent_name: "user",
         name: :profile,
         type: :singular,
         options: { except: [:destroy] }
@@ -70,36 +73,14 @@ RSpec.describe Hanami::Slice::Router::NestedResourceContext do
       context.resource(:profile, except: [:destroy])
     end
 
-    it "calls build_routes on the nested builder" do
-      expect(nested_builder).to receive(:build_routes)
+    it "calls build_routes on the resource builder" do
+      expect(resource_builder).to receive(:build_routes)
       context.resource(:profile)
     end
-  end
 
-  describe "private methods" do
-    describe "#build_nested_resource" do
-      let(:nested_builder) { double("nested_builder") }
-
-      before do
-        allow(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).and_return(nested_builder)
-        allow(nested_builder).to receive(:build_routes)
-        allow(router).to receive(:scope).and_yield
-      end
-
-      it "creates and builds nested resource" do
-        expect(Hanami::Slice::Router::NestedResourceBuilder).to receive(:new).with(
-          router: router,
-          inflector: inflector,
-          parent_path: parent_path,
-          parent_name: "user",
-          name: :comments,
-          type: :plural,
-          options: { only: [:index, :show] }
-        )
-        expect(nested_builder).to receive(:build_routes)
-
-        context.send(:build_nested_resource, :comments, :plural, { only: [:index, :show] })
-      end
+    it "uses scope with correct nested path" do
+      expect(router).to receive(:scope).with("users/:user_id")
+      context.resource(:profile)
     end
   end
 end
