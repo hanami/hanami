@@ -21,8 +21,6 @@ These components are designed to be used independently or together in a Hanami a
 
 ## Installation
 
-Hanami supports Ruby (MRI) 3.1+.
-
 ```shell
 gem install hanami
 ```
@@ -95,7 +93,7 @@ $ bundle exec rspec path/to/spec.rb
 
 ### Development Requirements
 
-* Ruby >= 3.1
+* Ruby >= 3.2
 * Bundler
 * Node.js
 
