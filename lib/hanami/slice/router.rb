@@ -134,14 +134,13 @@ module Hanami
 
       def build_resource(name, type, options, &block)
         resource_builder = ResourceBuilder.new(
-          router: self,
           inflector: inflector,
           name: name,
           type: type,
           options: options
         )
 
-        resource_builder.build_routes
+        resource_builder.add_routes(self)
 
         if block
           scope(resource_builder.nested_scope_path) do
@@ -175,10 +174,9 @@ module Hanami
         PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
         SINGULAR_ACTIONS = %i[new create show edit update destroy].freeze
 
-        attr_reader :router, :inflector, :name, :type, :options, :action_key_path, :path, :route_name
+        attr_reader :inflector, :name, :type, :options, :action_key_path, :path, :route_name
 
-        def initialize(router:, inflector:, name:, type:, options:)
-          @router = router
+        def initialize(inflector:, name:, type:, options:)
           @inflector = inflector
           @name = name
           @type = type
@@ -188,12 +186,12 @@ module Hanami
           @route_name = determine_route_name
         end
 
-        def build_routes
+        def add_routes(router)
           actions.each do |action|
             route_config = ROUTE_CONFIGURATIONS[action]
             next unless route_config
 
-            build_route(action, route_config)
+            add_route(router, action, route_config)
           end
         end
 
@@ -228,7 +226,7 @@ module Hanami
           end
         end
 
-        def build_route(action, route_config)
+        def add_route(router, action, route_config)
           route_path = build_route_path(route_config[:path_suffix])
           route_name = build_route_name(action, route_config[:name_suffix])
           action_target = "#{action_key_path}.#{action}"
