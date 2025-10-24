@@ -252,7 +252,7 @@ RSpec.describe "Router / Resource routes" do
       }
     }
 
-    it "works!!!!" do
+    it "routes to actions within the nested slice" do
       expect(routed("GET", "/cafes/1")).to eq %(actions.cafes.show {"id":"1"})
       expect(routed("GET", "/cafes/1/reviews")).to eq %([reviews]actions.cafes.reviews.index {"cafe_id":"1"})
     end
