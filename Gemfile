@@ -28,7 +28,7 @@ gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 gem "dry-types"
 
 # For testing operation integrations
-gem "dry-operation", github: "dry-rb/dry-operation", branch: "put-extension-methods-in-their-own-modules"
+gem "dry-operation", github: "dry-rb/dry-operation", branch: "main"
 
 # For testing the DB layer
 gem "sqlite3"
