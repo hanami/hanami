@@ -12,37 +12,20 @@ module Hanami
     # @since 2.2.0
     module Operation
       # @api private
-      # @since 2.2.0
-      def self.included(operation_class)
+      def self.extended(operation_class)
         super
 
         operation_class.extend(Hanami::SliceConfigurable)
-        operation_class.extend(ClassMethods)
       end
 
+      # private
+
       # @api private
-      # @since 2.2.0
-      module ClassMethods
-        # @api private
-        # @since 2.2.0
-        def configure_for_slice(slice)
-          include slice.namespace::Deps["db.rom"]
-        end
-
-        # @api private
-        # @since 2.2.0
-        def inherited(subclass)
-          super
-
-          return unless subclass.superclass == self
-          return unless Hanami.bundled?("hanami-db")
-
-          require "dry/operation/extensions/rom"
-          subclass.include Dry::Operation::Extensions::ROM
-        end
+      def configure_for_slice(slice)
+        extend SliceConfiguredDBOperation.new(slice) if Hanami.bundled?("hanami-db")
       end
     end
   end
 end
 
-Dry::Operation.include(Hanami::Extensions::Operation)
+Dry::Operation.extend(Hanami::Extensions::Operation)
