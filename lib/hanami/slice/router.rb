@@ -189,7 +189,7 @@ module Hanami
         end
 
         def build_routes
-          allowed_actions.each do |action|
+          actions.each do |action|
             route_config = ROUTE_CONFIGURATIONS[action]
             next unless route_config
 
@@ -217,9 +217,15 @@ module Hanami
           end
         end
 
-        def allowed_actions
+        def actions
           default_actions = type == :plural ? PLURAL_ACTIONS : SINGULAR_ACTIONS
-          ActionFilter.filter(default_actions, options)
+          if options[:only]
+            Array(options[:only]) & default_actions
+          elsif options[:except]
+            default_actions - Array(options[:except])
+          else
+            default_actions
+          end
         end
 
         def build_route(action, route_config)
@@ -255,21 +261,6 @@ module Hanami
           end
 
           suffix
-        end
-      end
-
-      # Filters actions based on :only and :except options
-      #
-      # @api private
-      class ActionFilter
-        def self.filter(default_actions, options)
-          if options[:only]
-            Array(options[:only]) & default_actions
-          elsif options[:except]
-            default_actions - Array(options[:except])
-          else
-            default_actions
-          end
         end
       end
     end
