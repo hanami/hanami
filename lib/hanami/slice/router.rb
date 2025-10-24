@@ -144,7 +144,12 @@ module Hanami
         resource_builder.build_routes
 
         if block_given?
-          nested_context = NestedResourceContext.new(self, inflector, resource_builder.path)
+          nested_context = NestedResourceContext.new(
+            router: self,
+            inflector:,
+            parent_type: type,
+            parent_path: resource_builder.path
+          )
           nested_context.instance_eval(&block)
         end
       end
@@ -268,11 +273,12 @@ module Hanami
       #
       # @api private
       class NestedResourceContext
-        attr_reader :router, :parent_path, :parent_name, :inflector
+        attr_reader :router, :parent_type, :parent_path, :parent_name, :inflector
 
-        def initialize(router, inflector, parent_path, parent_name = nil)
+        def initialize(router:, inflector:, parent_type:, parent_path:, parent_name: nil)
           @router = router
           @inflector = inflector
+          @parent_type = parent_type
           @parent_path = parent_path
           @parent_name = parent_name || inflector.singularize(parent_path.to_s)
         end
@@ -287,12 +293,11 @@ module Hanami
 
         # Delegate all method calls to the scoped router for custom routes
         def method_missing(method, *args, **kwargs, &block)
-          if router.respond_to?(method)
-            router.scope(nested_scope_path) do
-              router.public_send(method, *args, **kwargs, &block)
-            end
-          else
-            super
+          return super unless router.respond_to?(method)
+
+          router = self.router
+          router.scope(nested_scope_path) do
+            router.public_send(method, *args, **kwargs, &block)
           end
         end
 
@@ -303,10 +308,15 @@ module Hanami
         private
 
         def nested_scope_path
-          "#{parent_path}/:#{parent_name}_id"
+          if parent_type == :plural
+            "#{parent_path}/:#{parent_name}_id"
+          else
+            parent_path
+          end
         end
 
         def build_nested_resource(name, type, options, &block)
+          router = self.router
           router.scope(nested_scope_path) do
             # Use regular ResourceBuilder since scope handles the nesting
             builder = ResourceBuilder.new(
@@ -316,22 +326,21 @@ module Hanami
               type: type,
               options: options
             )
-            
+
             builder.build_routes
 
             if block_given?
               nested_context = NestedResourceContext.new(
-                router,
-                inflector,
-                builder.path
+                router:,
+                inflector:,
+                parent_type: type,
+                parent_path: builder.path
               )
               nested_context.instance_eval(&block)
             end
           end
         end
       end
-
-
     end
   end
 end
