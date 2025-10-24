@@ -174,7 +174,7 @@ module Hanami
         PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
         SINGULAR_ACTIONS = %i[new create show edit update destroy].freeze
 
-        attr_reader :inflector, :name, :type, :options, :action_key_path, :path, :route_name
+        attr_reader :inflector, :name, :type, :options, :action_key_path, :path
 
         def initialize(inflector:, name:, type:, options:)
           @inflector = inflector
@@ -183,7 +183,6 @@ module Hanami
           @options = options
           @action_key_path = options[:to] || name.to_s
           @path = options[:path] || name.to_s
-          @route_name = determine_route_name
         end
 
         def add_routes(router)
@@ -204,16 +203,6 @@ module Hanami
         end
 
         private
-
-        def determine_route_name
-          if options[:as]
-            options[:as].to_s
-          elsif type == :plural
-            inflector.singularize(name.to_s)
-          else
-            name.to_s
-          end
-        end
 
         def actions
           default_actions = type == :plural ? PLURAL_ACTIONS : SINGULAR_ACTIONS
@@ -246,8 +235,18 @@ module Hanami
         end
 
         def build_route_name(action, prefix)
-          base_name = action == :index ? inflector.pluralize(route_name) : route_name
+          base_name = action == :index ? inflector.pluralize(route_name_base) : route_name_base
           prefix.empty? ? base_name : "#{prefix}#{base_name}"
+        end
+
+        def route_name_base
+          if options[:as]
+            options[:as].to_s
+          elsif type == :plural
+            inflector.singularize(name.to_s)
+          else
+            name.to_s
+          end
         end
 
         def resolve_suffix(suffix)
