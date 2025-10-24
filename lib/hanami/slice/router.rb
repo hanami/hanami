@@ -134,10 +134,10 @@ module Hanami
 
       def build_resource(name, type, options, &block)
         resource_builder = ResourceBuilder.new(
-          inflector: inflector,
           name: name,
           type: type,
-          options: options
+          options: options,
+          inflector: inflector
         )
 
         resource_builder.add_routes(self)
@@ -174,13 +174,12 @@ module Hanami
         PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
         SINGULAR_ACTIONS = %i[new create show edit update destroy].freeze
 
-        attr_reader :inflector, :name, :type, :options, :action_key_path, :path
-
-        def initialize(inflector:, name:, type:, options:)
-          @inflector = inflector
+        def initialize(name:, type:, options:, inflector:)
           @name = name
           @type = type
           @options = options
+          @inflector = inflector
+
           @action_key_path = options[:to] || name.to_s
           @path = options[:path] || name.to_s
         end
@@ -196,16 +195,16 @@ module Hanami
 
         def nested_scope_path
           if plural?
-            "#{path}/:#{inflector.singularize(path.to_s)}_id"
+            "#{@path}/:#{@inflector.singularize(@path.to_s)}_id"
           else
-            path
+            @path
           end
         end
 
         private
 
         def plural?
-          type == :plural
+          @type == :plural
         end
 
         def singular?
@@ -214,10 +213,10 @@ module Hanami
 
         def actions
           default_actions = plural? ? PLURAL_ACTIONS : SINGULAR_ACTIONS
-          if options[:only]
-            Array(options[:only]) & default_actions
-          elsif options[:except]
-            default_actions - Array(options[:except])
+          if @options[:only]
+            Array(@options[:only]) & default_actions
+          elsif @options[:except]
+            default_actions - Array(@options[:except])
           else
             default_actions
           end
@@ -227,29 +226,29 @@ module Hanami
           router.public_send(
             route_config[:method],
             route_path(route_config[:path_suffix]),
-            to: "#{action_key_path}.#{action}",
+            to: "#{@action_key_path}.#{action}",
             as: route_name(action, route_config[:name_suffix])
           )
         end
 
         def route_path(suffix)
-          base_path = "/#{path}"
+          base_path = "/#{@path}"
           suffix = resolve_suffix(suffix)
           suffix.empty? ? base_path : "#{base_path}#{suffix}"
         end
 
         def route_name(action, prefix)
-          base_name = action == :index ? inflector.pluralize(route_name_base) : route_name_base
+          base_name = action == :index ? @inflector.pluralize(route_name_base) : route_name_base
           prefix.empty? ? base_name : "#{prefix}#{base_name}"
         end
 
         def route_name_base
-          if options[:as]
-            options[:as].to_s
+          if @options[:as]
+            @options[:as].to_s
           elsif plural?
-            inflector.singularize(name.to_s)
+            @inflector.singularize(@name.to_s)
           else
-            name.to_s
+            @name.to_s
           end
         end
 
