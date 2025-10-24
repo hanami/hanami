@@ -94,6 +94,20 @@ RSpec.describe "Router / Resource routes" do
         expect(routed("DELETE", "/posts/1")).to eq %(actions.articles.destroy {"id":"1"})
       end
     end
+
+    describe "witih :path" do
+      let(:routes) { proc { resources :posts, path: "articles" } }
+
+      it "uses the given path for the routes" do
+        expect(routed("GET", "/articles")).to eq %(actions.posts.index)
+        expect(routed("GET", "/articles/new")).to eq %(actions.posts.new)
+        expect(routed("POST", "/articles")).to eq %(actions.posts.create)
+        expect(routed("GET", "/articles/1")).to eq %(actions.posts.show {"id":"1"})
+        expect(routed("GET", "/articles/1/edit")).to eq %(actions.posts.edit {"id":"1"})
+        expect(routed("PATCH", "/articles/1")).to eq %(actions.posts.update {"id":"1"})
+        expect(routed("DELETE", "/articles/1")).to eq %(actions.posts.destroy {"id":"1"})
+      end
+    end
   end
 
   describe "resource" do
@@ -150,6 +164,19 @@ RSpec.describe "Router / Resource routes" do
         expect(routed("GET", "/profile/edit")).to eq %(actions.user.edit)
         expect(routed("PATCH", "/profile")).to eq %(actions.user.update)
         expect(routed("DELETE", "/profile")).to eq %(actions.user.destroy)
+      end
+    end
+
+    describe "with :path" do
+      let(:routes) { proc { resource :profile, path: "user"} }
+
+      it "uses the given path for the routes" do
+        expect(routed("GET", "/user/new")).to eq %(actions.profile.new)
+        expect(routed("POST", "/user")).to eq %(actions.profile.create)
+        expect(routed("GET", "/user")).to eq %(actions.profile.show)
+        expect(routed("GET", "/user/edit")).to eq %(actions.profile.edit)
+        expect(routed("PATCH", "/user")).to eq %(actions.profile.update)
+        expect(routed("DELETE", "/user")).to eq %(actions.profile.destroy)
       end
     end
   end
