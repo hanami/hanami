@@ -195,7 +195,7 @@ module Hanami
         end
 
         def nested_scope_path
-          if type == :plural
+          if plural?
             "#{path}/:#{inflector.singularize(path.to_s)}_id"
           else
             path
@@ -204,8 +204,16 @@ module Hanami
 
         private
 
+        def plural?
+          type == :plural
+        end
+
+        def singular?
+          !plural?
+        end
+
         def actions
-          default_actions = type == :plural ? PLURAL_ACTIONS : SINGULAR_ACTIONS
+          default_actions = plural? ? PLURAL_ACTIONS : SINGULAR_ACTIONS
           if options[:only]
             Array(options[:only]) & default_actions
           elsif options[:except]
@@ -242,7 +250,7 @@ module Hanami
         def route_name_base
           if options[:as]
             options[:as].to_s
-          elsif type == :plural
+          elsif plural?
             inflector.singularize(name.to_s)
           else
             name.to_s
@@ -253,9 +261,7 @@ module Hanami
           return "" if suffix.nil? || suffix.empty?
 
           # For singular resources, remove :id from paths
-          if type == :singular
-            return suffix.gsub("/:id", "")
-          end
+          return suffix.gsub("/:id", "") if singular?
 
           suffix
         end
