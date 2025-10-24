@@ -224,25 +224,21 @@ module Hanami
         end
 
         def add_route(router, action, route_config)
-          route_path = build_route_path(route_config[:path_suffix])
-          route_name = build_route_name(action, route_config[:name_suffix])
-          action_target = "#{action_key_path}.#{action}"
-
           router.public_send(
             route_config[:method],
-            route_path,
-            to: action_target,
-            as: route_name
+            route_path(route_config[:path_suffix]),
+            to: "#{action_key_path}.#{action}",
+            as: route_name(action, route_config[:name_suffix])
           )
         end
 
-        def build_route_path(suffix)
+        def route_path(suffix)
           base_path = "/#{path}"
           suffix = resolve_suffix(suffix)
           suffix.empty? ? base_path : "#{base_path}#{suffix}"
         end
 
-        def build_route_name(action, prefix)
+        def route_name(action, prefix)
           base_name = action == :index ? inflector.pluralize(route_name_base) : route_name_base
           prefix.empty? ? base_name : "#{prefix}#{base_name}"
         end
