@@ -26,6 +26,7 @@ module Hanami
         @path_prefix = Hanami::Router::Prefix.new(prefix)
         @inflector = inflector
         @middleware_stack = middleware_stack
+        @resource_key_prefix = []
         instance_eval(&blk)
         super(**kwargs, &routes)
       end
@@ -133,20 +134,32 @@ module Hanami
       private
 
       def build_resource(name, type, options, &block)
+        key_path = if options[:to]
+          options[:to]
+        elsif @resource_key_prefix.any?
+          "#{@resource_key_prefix.join(CONTAINER_KEY_DELIMITER)}#{CONTAINER_KEY_DELIMITER}#{name}"
+        else
+          name.to_s
+        end
+
         resource_builder = ResourceBuilder.new(
           name: name,
           type: type,
-          options: options,
+          options: options.merge(to: key_path),
           inflector: inflector
         )
 
         resource_builder.add_routes(self)
 
-        if block
-          scope(resource_builder.nested_scope_path) do
-            instance_eval(&block)
-          end
+        resource_scope(name, resource_builder.nested_scope_path, &block) if block
+      end
+
+      def resource_scope(resource_name, path, &block)
+        @resource_key_prefix.push(resource_name)
+        scope(path) do
+          instance_eval(&block)
         end
+        @resource_key_prefix.pop
       end
 
       public
@@ -226,7 +239,7 @@ module Hanami
           router.public_send(
             route_config[:method],
             route_path(route_config[:path_suffix]),
-            to: "#{@action_key_path}.#{action}",
+            to: "#{@action_key_path}#{CONTAINER_KEY_DELIMITER}#{action}",
             as: route_name(action, route_config[:name_suffix])
           )
         end

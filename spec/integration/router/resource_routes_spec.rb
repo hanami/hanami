@@ -173,12 +173,12 @@ RSpec.describe "Router / Resource routes" do
 
     it "routes to the nested resources" do
       expect(routed("GET", "/cafes/1")).to eq %(actions.cafes.show {"id":"1"})
-      expect(routed("GET", "/cafes/1/reviews")).to eq %(actions.reviews.index {"cafe_id":"1"})
-      expect(routed("GET", "/cafes/1/reviews/2/comments")).to eq %(actions.comments.index {"cafe_id":"1","review_id":"2"})
+      expect(routed("GET", "/cafes/1/reviews")).to eq %(actions.cafes.reviews.index {"cafe_id":"1"})
+      expect(routed("GET", "/cafes/1/reviews/2/comments")).to eq %(actions.cafes.reviews.comments.index {"cafe_id":"1","review_id":"2"})
 
       expect(routed("GET", "/profile")).to eq %(actions.profile.show)
-      expect(routed("GET", "/profile/avatar")).to eq %(actions.avatar.show)
-      expect(routed("GET", "/profile/avatar/comments")).to eq %(actions.comments.index)
+      expect(routed("GET", "/profile/avatar")).to eq %(actions.profile.avatar.show)
+      expect(routed("GET", "/profile/avatar/comments")).to eq %(actions.profile.avatar.comments.index)
     end
   end
 
@@ -227,7 +227,7 @@ RSpec.describe "Router / Resource routes" do
 
     it "works!!!!" do
       expect(routed("GET", "/cafes/1")).to eq %(actions.cafes.show {"id":"1"})
-      expect(routed("GET", "/cafes/1/reviews")).to eq %([reviews]actions.reviews.index {"cafe_id":"1"})
+      expect(routed("GET", "/cafes/1/reviews")).to eq %([reviews]actions.cafes.reviews.index {"cafe_id":"1"})
     end
   end
 end
