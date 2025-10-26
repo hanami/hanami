@@ -136,19 +136,11 @@ module Hanami
       private
 
       def build_resource(name, type, options, &block)
-        key_path =
-          if options[:to]
-            options[:to]
-          elsif @resource_scope.any?
-            "#{@resource_scope.join(CONTAINER_KEY_DELIMITER)}#{CONTAINER_KEY_DELIMITER}#{name}"
-          else
-            name.to_s
-          end
-
         resource_builder = ResourceBuilder.new(
           name: name,
           type: type,
-          options: options.merge(to: key_path),
+          resource_scope: @resource_scope,
+          options: options,
           inflector: inflector
         )
 
@@ -182,13 +174,13 @@ module Hanami
         PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
         SINGULAR_ACTIONS = %i[new create show edit update destroy].freeze
 
-        def initialize(name:, type:, options:, inflector:)
+        def initialize(name:, type:, resource_scope:, options:, inflector:)
           @name = name
           @type = type
+          @resource_scope = resource_scope
           @options = options
           @inflector = inflector
 
-          @action_key_path = options[:to] || name.to_s
           @path = options[:path] || name.to_s
         end
 
@@ -234,7 +226,7 @@ module Hanami
           router.public_send(
             route_config[:method],
             route_path(route_config[:path_suffix]),
-            to: "#{@action_key_path}#{CONTAINER_KEY_DELIMITER}#{action}",
+            to: "#{key_path_base}#{CONTAINER_KEY_DELIMITER}#{action}",
             as: route_name(action, route_config[:name_prefix])
           )
         end
@@ -248,6 +240,20 @@ module Hanami
         def route_name(action, prefix)
           base_name = action == :index ? @inflector.pluralize(route_name_base) : route_name_base
           prefix.to_s.empty? ? base_name : "#{prefix}#{base_name}"
+        end
+
+        def key_path_base
+          @key_path ||=
+            if @options[:to]
+              @options[:to]
+            else
+              @name.to_s.then { |name|
+                next name unless @resource_scope.any?
+
+                prefix = @resource_scope.join(CONTAINER_KEY_DELIMITER)
+                "#{prefix}#{CONTAINER_KEY_DELIMITER}#{name}"
+              }
+            end
         end
 
         def route_name_base
