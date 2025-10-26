@@ -170,13 +170,13 @@ module Hanami
       # @api private
       class ResourceBuilder
         ROUTE_CONFIGURATIONS = {
-          index: {method: :get, path_suffix: "", name_suffix: ""},
-          new: {method: :get, path_suffix: "/new", name_suffix: "new_"},
-          create: {method: :post, path_suffix: "", name_suffix: ""},
-          show: {method: :get, path_suffix: "/:id", name_suffix: ""},
-          edit: {method: :get, path_suffix: "/:id/edit", name_suffix: "edit_"},
-          update: {method: :patch, path_suffix: "/:id", name_suffix: ""},
-          destroy: {method: :delete, path_suffix: "/:id", name_suffix: ""}
+          index: {method: :get, path_suffix: "",},
+          new: {method: :get, path_suffix: "/new", name_prefix: "new_"},
+          create: {method: :post, path_suffix: ""},
+          show: {method: :get, path_suffix: "/:id"},
+          edit: {method: :get, path_suffix: "/:id/edit", name_prefix: "edit_"},
+          update: {method: :patch, path_suffix: "/:id"},
+          destroy: {method: :delete, path_suffix: "/:id"}
         }.freeze
 
         PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
@@ -235,7 +235,7 @@ module Hanami
             route_config[:method],
             route_path(route_config[:path_suffix]),
             to: "#{@action_key_path}#{CONTAINER_KEY_DELIMITER}#{action}",
-            as: route_name(action, route_config[:name_suffix])
+            as: route_name(action, route_config[:name_prefix])
           )
         end
 
@@ -247,7 +247,7 @@ module Hanami
 
         def route_name(action, prefix)
           base_name = action == :index ? @inflector.pluralize(route_name_base) : route_name_base
-          prefix.empty? ? base_name : "#{prefix}#{base_name}"
+          prefix.to_s.empty? ? base_name : "#{prefix}#{base_name}"
         end
 
         def route_name_base
