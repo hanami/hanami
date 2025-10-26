@@ -170,9 +170,9 @@ module Hanami
       # @api private
       class ResourceBuilder
         ROUTE_CONFIGURATIONS = {
-          index: {method: :get, path_suffix: "",},
+          index: {method: :get},
           new: {method: :get, path_suffix: "/new", name_prefix: "new_"},
-          create: {method: :post, path_suffix: ""},
+          create: {method: :post},
           show: {method: :get, path_suffix: "/:id"},
           edit: {method: :get, path_suffix: "/:id/edit", name_prefix: "edit_"},
           update: {method: :patch, path_suffix: "/:id"},
@@ -241,7 +241,7 @@ module Hanami
 
         def route_path(suffix)
           base_path = "/#{@path}"
-          suffix = resolve_suffix(suffix)
+          suffix = normalize_suffix(suffix)
           suffix.empty? ? base_path : "#{base_path}#{suffix}"
         end
 
@@ -260,7 +260,7 @@ module Hanami
           end
         end
 
-        def resolve_suffix(suffix)
+        def normalize_suffix(suffix)
           return "" if suffix.nil? || suffix.empty?
 
           # For singular resources, remove :id from paths
