@@ -21,7 +21,6 @@ module Hanami
       attr_reader :path_prefix
 
       # @api private
-      # @since 2.0.0
       def initialize(routes:, inflector:, middleware_stack: Routing::Middleware::Stack.new, prefix: ::Hanami::Router::DEFAULT_PREFIX, **kwargs, &blk)
         @path_prefix = Hanami::Router::Prefix.new(prefix)
         @inflector = inflector
@@ -32,7 +31,6 @@ module Hanami
       end
 
       # @api private
-      # @since 2.0.0
       def freeze
         return self if frozen?
 
@@ -41,7 +39,11 @@ module Hanami
       end
 
       # @api private
-      # @since 2.0.0
+      def to_rack_app
+        middleware_stack.to_rack_app(self)
+      end
+
+      # @api private
       def use(*args, **kwargs, &blk)
         middleware_stack.use(*args, **kwargs.merge(path_prefix: path_prefix.to_s), &blk)
       end
@@ -161,14 +163,6 @@ module Hanami
         scope(path) { instance_eval(&block) }
       ensure
         @resource_key_prefix.pop
-      end
-
-      public
-
-      # @api private
-      # @since 2.0.0
-      def to_rack_app
-        middleware_stack.to_rack_app(self)
       end
 
       # Builds RESTful routes for a resource
