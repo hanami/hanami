@@ -25,7 +25,7 @@ module Hanami
         @path_prefix = Hanami::Router::Prefix.new(prefix)
         @inflector = inflector
         @middleware_stack = middleware_stack
-        @resource_key_prefix = []
+        @resource_scope = []
         instance_eval(&blk)
         super(**kwargs, &routes)
       end
@@ -139,8 +139,8 @@ module Hanami
         key_path =
           if options[:to]
             options[:to]
-          elsif @resource_key_prefix.any?
-            "#{@resource_key_prefix.join(CONTAINER_KEY_DELIMITER)}#{CONTAINER_KEY_DELIMITER}#{name}"
+          elsif @resource_scope.any?
+            "#{@resource_scope.join(CONTAINER_KEY_DELIMITER)}#{CONTAINER_KEY_DELIMITER}#{name}"
           else
             name.to_s
           end
@@ -159,10 +159,10 @@ module Hanami
 
       # @api private
       def resource_scope(resource_name, path, &block)
-        @resource_key_prefix.push(resource_name)
+        @resource_scope.push(resource_name)
         scope(path) { instance_eval(&block) }
       ensure
-        @resource_key_prefix.pop
+        @resource_scope.pop
       end
 
       # Builds RESTful routes for a resource
