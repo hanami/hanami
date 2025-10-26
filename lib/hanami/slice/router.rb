@@ -134,13 +134,14 @@ module Hanami
       private
 
       def build_resource(name, type, options, &block)
-        key_path = if options[:to]
-          options[:to]
-        elsif @resource_key_prefix.any?
-          "#{@resource_key_prefix.join(CONTAINER_KEY_DELIMITER)}#{CONTAINER_KEY_DELIMITER}#{name}"
-        else
-          name.to_s
-        end
+        key_path =
+          if options[:to]
+            options[:to]
+          elsif @resource_key_prefix.any?
+            "#{@resource_key_prefix.join(CONTAINER_KEY_DELIMITER)}#{CONTAINER_KEY_DELIMITER}#{name}"
+          else
+            name.to_s
+          end
 
         resource_builder = ResourceBuilder.new(
           name: name,
@@ -154,11 +155,11 @@ module Hanami
         resource_scope(name, resource_builder.nested_scope_path, &block) if block
       end
 
+      # @api private
       def resource_scope(resource_name, path, &block)
         @resource_key_prefix.push(resource_name)
-        scope(path) do
-          instance_eval(&block)
-        end
+        scope(path) { instance_eval(&block) }
+      ensure
         @resource_key_prefix.pop
       end
 
