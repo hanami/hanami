@@ -186,10 +186,7 @@ module Hanami
 
         def add_routes(router)
           actions.each do |action|
-            route_config = ROUTE_CONFIGURATIONS[action]
-            next unless route_config
-
-            add_route(router, action, route_config)
+            add_route(router, action, ROUTE_CONFIGURATIONS.fetch(action))
           end
         end
 
