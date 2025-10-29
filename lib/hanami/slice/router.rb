@@ -146,13 +146,15 @@ module Hanami
 
         resource_builder.add_routes(self)
 
-        resource_scope(name, resource_builder.nested_scope_path, &block) if block
+        resource_scope(resource_builder, &block) if block
       end
 
       # @api private
-      def resource_scope(resource_name, path, &block)
-        @resource_scope.push(resource_name)
-        scope(path) { instance_eval(&block) }
+      def resource_scope(resource_builder, &block)
+        @resource_scope.push(resource_builder.name)
+        scope(resource_builder.scope_path, as: inflector.singularize(resource_builder.name)) do
+          instance_eval(&block)
+        end
       ensure
         @resource_scope.pop
       end
@@ -163,16 +165,18 @@ module Hanami
       class ResourceBuilder
         ROUTE_CONFIGURATIONS = {
           index: {method: :get},
-          new: {method: :get, path_suffix: "/new", name_prefix: "new_"},
+          new: {method: :get, path_suffix: "/new", name_prefix: "new"},
           create: {method: :post},
           show: {method: :get, path_suffix: "/:id"},
-          edit: {method: :get, path_suffix: "/:id/edit", name_prefix: "edit_"},
+          edit: {method: :get, path_suffix: "/:id/edit", name_prefix: "edit"},
           update: {method: :patch, path_suffix: "/:id"},
           destroy: {method: :delete, path_suffix: "/:id"}
         }.freeze
 
         PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
         SINGULAR_ACTIONS = %i[new create show edit update destroy].freeze
+
+        attr_reader :name
 
         def initialize(name:, type:, resource_scope:, options:, inflector:)
           @name = name
@@ -190,7 +194,7 @@ module Hanami
           end
         end
 
-        def nested_scope_path
+        def scope_path
           if plural?
             "#{@path}/:#{@inflector.singularize(@path.to_s)}_id"
           else
@@ -220,9 +224,11 @@ module Hanami
         end
 
         def add_route(router, action, route_config)
+          path = route_path(route_config[:path_suffix])
+
           router.public_send(
             route_config[:method],
-            route_path(route_config[:path_suffix]),
+            path,
             to: "#{key_path_base}#{CONTAINER_KEY_DELIMITER}#{action}",
             as: route_name(action, route_config[:name_prefix])
           )
@@ -234,9 +240,13 @@ module Hanami
           suffix.empty? ? base_path : "#{base_path}#{suffix}"
         end
 
-        def route_name(action, prefix)
-          base_name = action == :index ? @inflector.pluralize(route_name_base) : route_name_base
-          prefix.to_s.empty? ? base_name : "#{prefix}#{base_name}"
+        def normalize_suffix(suffix)
+          return "" if suffix.nil? || suffix.empty?
+
+          # For singular resources, remove :id from paths
+          return suffix.gsub("/:id", "") if singular?
+
+          suffix
         end
 
         def key_path_base
@@ -253,23 +263,22 @@ module Hanami
             end
         end
 
-        def route_name_base
-          if @options[:as]
-            @options[:as].to_s
-          elsif plural?
-            @inflector.singularize(@name.to_s)
-          else
-            @name.to_s
-          end
+        def route_name(action, prefix)
+          name = route_name_base
+          name = @inflector.pluralize(name) if action == :index
+
+          [prefix, name]
         end
 
-        def normalize_suffix(suffix)
-          return "" if suffix.nil? || suffix.empty?
-
-          # For singular resources, remove :id from paths
-          return suffix.gsub("/:id", "") if singular?
-
-          suffix
+        def route_name_base
+          @route_name_base ||=
+            if @options[:as]
+              @options[:as].to_s
+            elsif plural?
+              @inflector.singularize(@name.to_s)
+            else
+              @name.to_s
+            end
         end
       end
     end

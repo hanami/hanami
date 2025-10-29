@@ -49,6 +49,10 @@ RSpec.describe "Router / Resource routes" do
       expect(routed("GET", "/posts/1/edit")).to eq %(actions.posts.edit {"id":"1"})
       expect(routed("PATCH", "/posts/1")).to eq %(actions.posts.update {"id":"1"})
       expect(routed("DELETE", "/posts/1")).to eq %(actions.posts.destroy {"id":"1"})
+
+      expect(router.path("posts")).to eq "/posts"
+      expect(router.path("new_post")).to eq "/posts/new"
+      expect(router.path("edit_post", id: 1)).to eq "/posts/1/edit"
     end
 
     describe "with :only" do
@@ -124,6 +128,10 @@ RSpec.describe "Router / Resource routes" do
       expect(routed("GET", "/profiles")).to eq "Not Found"
       expect(routed("GET", "/profiles/1")).to eq "Not Found"
       expect(routed("GET", "/profile/1")).to eq "Not Found"
+
+      expect(router.path("profile")).to eq "/profile"
+      expect(router.path("new_profile")).to eq "/profile/new"
+      expect(router.path("edit_profile")).to eq "/profile/edit"
     end
 
     describe "with :only" do
@@ -186,7 +194,7 @@ RSpec.describe "Router / Resource routes" do
       proc {
         resources :cafes, only: :show do
           resources :reviews, only: :index do
-            resources :comments, only: :index
+            resources :comments, only: [:index, :new, :create]
           end
         end
 
@@ -202,6 +210,12 @@ RSpec.describe "Router / Resource routes" do
       expect(routed("GET", "/cafes/1")).to eq %(actions.cafes.show {"id":"1"})
       expect(routed("GET", "/cafes/1/reviews")).to eq %(actions.cafes.reviews.index {"cafe_id":"1"})
       expect(routed("GET", "/cafes/1/reviews/2/comments")).to eq %(actions.cafes.reviews.comments.index {"cafe_id":"1","review_id":"2"})
+
+      expect(router.path("cafe", id: 1)).to eq "/cafes/1"
+      expect(router.path("cafe_reviews", cafe_id: 1)).to eq "/cafes/1/reviews"
+      expect(router.path("cafe_review_comments", cafe_id: 1, review_id: 1)).to eq "/cafes/1/reviews/1/comments"
+      expect(router.path("new_cafe_review_comment", cafe_id: 1, review_id: 1)).to eq "/cafes/1/reviews/1/comments/new"
+      expect(router.path("cafe_review_comment", cafe_id: 1, review_id: 1)).to eq "/cafes/1/reviews/1/comments"
 
       expect(routed("GET", "/profile")).to eq %(actions.profile.show)
       expect(routed("GET", "/profile/avatar")).to eq %(actions.profile.avatar.show)
