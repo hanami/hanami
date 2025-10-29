@@ -49,6 +49,10 @@ RSpec.describe "Router / Resource routes" do
       expect(routed("GET", "/posts/1/edit")).to eq %(actions.posts.edit {"id":"1"})
       expect(routed("PATCH", "/posts/1")).to eq %(actions.posts.update {"id":"1"})
       expect(routed("DELETE", "/posts/1")).to eq %(actions.posts.destroy {"id":"1"})
+
+      expect(router.path("posts")).to eq "/posts"
+      expect(router.path("new_post")).to eq "/posts/new"
+      expect(router.path("edit_post", id: 1)).to eq "/posts/1/edit"
     end
 
     describe "with :only" do
@@ -124,6 +128,10 @@ RSpec.describe "Router / Resource routes" do
       expect(routed("GET", "/profiles")).to eq "Not Found"
       expect(routed("GET", "/profiles/1")).to eq "Not Found"
       expect(routed("GET", "/profile/1")).to eq "Not Found"
+
+      expect(router.path("profile")).to eq "/profile"
+      expect(router.path("new_profile")).to eq "/profile/new"
+      expect(router.path("edit_profile")).to eq "/profile/edit"
     end
 
     describe "with :only" do
@@ -186,7 +194,7 @@ RSpec.describe "Router / Resource routes" do
       proc {
         resources :cafes, only: :show do
           resources :reviews, only: :index do
-            resources :comments, only: :index
+            resources :comments, only: [:index, :new, :create]
           end
         end
 
@@ -203,6 +211,12 @@ RSpec.describe "Router / Resource routes" do
       expect(routed("GET", "/cafes/1/reviews")).to eq %(actions.cafes.reviews.index {"cafe_id":"1"})
       expect(routed("GET", "/cafes/1/reviews/2/comments")).to eq %(actions.cafes.reviews.comments.index {"cafe_id":"1","review_id":"2"})
 
+      expect(router.path("cafe", id: 1)).to eq "/cafes/1"
+      expect(router.path("cafe_reviews", cafe_id: 1)).to eq "/cafes/1/reviews"
+      expect(router.path("cafe_review_comments", cafe_id: 1, review_id: 1)).to eq "/cafes/1/reviews/1/comments"
+      expect(router.path("new_cafe_review_comment", cafe_id: 1, review_id: 1)).to eq "/cafes/1/reviews/1/comments/new"
+      expect(router.path("cafe_review_comment", cafe_id: 1, review_id: 1)).to eq "/cafes/1/reviews/1/comments"
+
       expect(routed("GET", "/profile")).to eq %(actions.profile.show)
       expect(routed("GET", "/profile/avatar")).to eq %(actions.profile.avatar.show)
       expect(routed("GET", "/profile/avatar/comments")).to eq %(actions.profile.avatar.comments.index)
@@ -213,7 +227,7 @@ RSpec.describe "Router / Resource routes" do
     let(:routes) {
       proc {
         resources :cafes, only: :show do
-          get "/top-reviews", to: "cafes.top_reviews.index"
+          get "/top-reviews", to: "cafes.top_reviews.index", as: :top_reviews
         end
       }
     }
@@ -221,6 +235,8 @@ RSpec.describe "Router / Resource routes" do
     it "nests the standalone route under the resource" do
       expect(routed("GET", "/cafes/1")).to eq %(actions.cafes.show {"id":"1"})
       expect(routed("GET", "/cafes/1/top-reviews")).to eq %(actions.cafes.top_reviews.index {"cafe_id":"1"})
+
+      expect(router.path("cafe_top_reviews", cafe_id: 1)).to eq "/cafes/1/top-reviews"
     end
   end
 
@@ -229,7 +245,7 @@ RSpec.describe "Router / Resource routes" do
       proc {
         scope "coffee-lovers" do
           resources :cafes, only: :show do
-            get "/top-reviews", to: "cafes.top_reviews.index"
+            get "/top-reviews", to: "cafes.top_reviews.index", as: :top_reviews
           end
         end
       }
@@ -238,6 +254,9 @@ RSpec.describe "Router / Resource routes" do
     it "routes to the resources under the scope" do
       expect(routed("GET", "/coffee-lovers/cafes/1")).to eq %(actions.cafes.show {"id":"1"})
       expect(routed("GET", "/coffee-lovers/cafes/1/top-reviews")).to eq %(actions.cafes.top_reviews.index {"cafe_id":"1"})
+
+      expect(router.path("coffee_lovers_cafe", id: 1)).to eq "/coffee-lovers/cafes/1"
+      expect(router.path("coffee_lovers_cafe_top_reviews", cafe_id: 1)).to eq "/coffee-lovers/cafes/1/top-reviews"
     end
   end
 
@@ -246,7 +265,7 @@ RSpec.describe "Router / Resource routes" do
       proc {
         resources :cafes, only: :show do
           slice :reviews, at: "" do
-            resources :reviews
+            resources :reviews, only: :index
           end
         end
       }
@@ -255,6 +274,8 @@ RSpec.describe "Router / Resource routes" do
     it "routes to actions within the nested slice" do
       expect(routed("GET", "/cafes/1")).to eq %(actions.cafes.show {"id":"1"})
       expect(routed("GET", "/cafes/1/reviews")).to eq %([reviews]actions.cafes.reviews.index {"cafe_id":"1"})
+
+      expect(router.path("cafe_reviews", cafe_id: 1)).to eq "/cafes/1/reviews"
     end
   end
 end
