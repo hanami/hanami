@@ -236,7 +236,7 @@ module Hanami
         LEADING_ID_REGEX = %r{\A/:id}
 
         def key_path_base
-          @key_path ||=
+          @key_path_base ||=
             if @options[:to]
               @options[:to]
             else
