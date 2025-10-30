@@ -163,7 +163,7 @@ module Hanami
       #
       # @api private
       class ResourceBuilder
-        ROUTE_CONFIGURATIONS = {
+        ROUTE_OPTIONS = {
           index: {method: :get},
           new: {method: :get, path_suffix: "/new", name_prefix: "new"},
           create: {method: :post},
@@ -190,7 +190,7 @@ module Hanami
 
         def add_routes(router)
           actions.each do |action|
-            add_route(router, action, ROUTE_CONFIGURATIONS.fetch(action))
+            add_route(router, action, ROUTE_OPTIONS.fetch(action))
           end
         end
 
