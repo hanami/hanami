@@ -174,7 +174,7 @@ module Hanami
         }.freeze
 
         PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
-        SINGULAR_ACTIONS = %i[new create show edit update destroy].freeze
+        SINGULAR_ACTIONS = (PLURAL_ACTIONS - %i[index]).freeze
 
         attr_reader :name
 
