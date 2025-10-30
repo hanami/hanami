@@ -221,31 +221,19 @@ module Hanami
           end
         end
 
-        def add_route(router, action, route_config)
-          path = route_path(route_config[:path_suffix])
+        def add_route(router, action, route_options)
+          path = "/#{@path}#{route_suffix(route_options[:path_suffix])}"
+          to = "#{key_path_base}#{CONTAINER_KEY_DELIMITER}#{action}"
+          as = route_name(action, route_options[:name_prefix])
 
-          router.public_send(
-            route_config[:method],
-            path,
-            to: "#{key_path_base}#{CONTAINER_KEY_DELIMITER}#{action}",
-            as: route_name(action, route_config[:name_prefix])
-          )
+          router.public_send(route_options[:method], path, to:, as:)
         end
 
-        def route_path(suffix)
-          base_path = "/#{@path}"
-          suffix = normalize_suffix(suffix)
-          suffix.empty? ? base_path : "#{base_path}#{suffix}"
-        end
-
-        def normalize_suffix(suffix)
-          return "" if suffix.nil? || suffix.empty?
-
-          # For singular resources, remove :id from paths
-          return suffix.gsub("/:id", "") if singular?
-
+        def route_suffix(suffix)
+          return suffix.sub(LEADING_ID_REGEX, "") if suffix && singular?
           suffix
         end
+        LEADING_ID_REGEX = %r{\A/:id}
 
         def key_path_base
           @key_path ||=
