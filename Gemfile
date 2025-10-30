@@ -15,7 +15,7 @@ end
 
 gem "hanami-utils", github: "hanami/hanami-utils", branch: "main"
 gem "hanami-db", github: "hanami/hanami-db", branch: "main"
-gem "hanami-router", github: "hanami/hanami-router", branch: "main"
+gem "hanami-router", github: "hanami/hanami-router", branch: "improve-name-flexibility"
 gem "hanami-controller", github: "hanami/hanami-controller", branch: "main"
 gem "hanami-cli", github: "hanami/hanami-cli", branch: "main"
 gem "hanami-view", github: "hanami/hanami-view", branch: "main"
