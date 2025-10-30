@@ -145,18 +145,7 @@ module Hanami
         )
 
         resource_builder.add_routes(self)
-
-        resource_scope(resource_builder, &block) if block
-      end
-
-      # @api private
-      def resource_scope(resource_builder, &block)
-        @resource_scope.push(resource_builder.name)
-        scope(resource_builder.scope_path, as: inflector.singularize(resource_builder.name)) do
-          instance_eval(&block)
-        end
-      ensure
-        @resource_scope.pop
+        resource_builder.scope(self, &block) if block
       end
 
       # Builds RESTful routes for a resource
@@ -176,8 +165,6 @@ module Hanami
         PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
         SINGULAR_ACTIONS = (PLURAL_ACTIONS - %i[index]).freeze
 
-        attr_reader :name
-
         def initialize(name:, type:, resource_scope:, options:, inflector:)
           @name = name
           @type = type
@@ -188,17 +175,16 @@ module Hanami
           @path = options[:path] || name.to_s
         end
 
+        def scope(router, &block)
+          @resource_scope.push(@name)
+          router.scope(scope_path, as: scope_name, &block)
+        ensure
+          @resource_scope.pop
+        end
+
         def add_routes(router)
           actions.each do |action|
             add_route(router, action, ROUTE_OPTIONS.fetch(action))
-          end
-        end
-
-        def scope_path
-          if plural?
-            "#{@path}/:#{@inflector.singularize(@path.to_s)}_id"
-          else
-            @path
           end
         end
 
@@ -210,6 +196,18 @@ module Hanami
 
         def singular?
           !plural?
+        end
+
+        def scope_path
+          if plural?
+            "#{@path}/:#{@inflector.singularize(@path.to_s)}_id"
+          else
+            @path
+          end
+        end
+
+        def scope_name
+          @inflector.singularize(@name)
         end
 
         def actions
