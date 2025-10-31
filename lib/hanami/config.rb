@@ -484,24 +484,16 @@ module Hanami
       self.slices = ENV["HANAMI_SLICES"]&.split(",")&.map(&:strip)
     end
 
-    SUPPORTED_MIDDLEWARE_PARSERS = %i[json].freeze
-    private_constant :SUPPORTED_MIDDLEWARE_PARSERS
+    DEFAULT_MIDDLEWARE_PARSERS = {
+      form: ["multipart/form-data"],
+      json: ["application/json", "application/vnd.api+json"]
+    }.freeze
+    private_constant :DEFAULT_MIDDLEWARE_PARSERS
 
     def use_body_parser_middleware
-      return unless Hanami.bundled?("hanami-controller")
+      return unless Hanami.bundled?("hanami-router") && Hanami.bundled?("hanami-controller")
 
-      return if actions.formats.empty?
-      return if middleware.stack["/"].map(&:first).any? { |klass| klass == "Hanami::Middleware::BodyParser" }
-
-      parsers = SUPPORTED_MIDDLEWARE_PARSERS & actions.formats.accepted
-      return if parsers.empty?
-
-      middleware.use(
-        :body_parser,
-        [parsers.to_h { |parser_format|
-          [parser_format, actions.formats.mime_types_for(parser_format)]
-        }]
-      )
+      middleware.use(:body_parser, [DEFAULT_MIDDLEWARE_PARSERS])
     end
 
     def load_dependent_config(gem_name)
