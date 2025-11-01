@@ -106,18 +106,30 @@ module Hanami
         #
         # @since 2.1.0
         # @api private
-        def info(message = nil, **payload)
-          payload[:message] = message if message
-          logger.info(JSON.generate(payload))
+        def info(message = nil, **payload, &blk)
+          logger.info do
+            if blk
+              JSON.generate(blk.call)
+            else
+              payload[:message] = message if message
+              JSON.generate(payload)
+            end
+          end
         end
 
         # @see info
         #
         # @since 2.1.0
         # @api private
-        def error(message = nil, **payload)
-          payload[:message] = message if message
-          logger.info(JSON.generate(payload))
+        def error(message = nil, **payload, &blk)
+          logger.info do
+            if blk
+              JSON.generate(blk.call)
+            else
+              payload[:message] = message if message
+              JSON.generate(payload)
+            end
+          end
         end
       end
 
@@ -145,7 +157,10 @@ module Hanami
       # @since 2.0.0
       def log_request(env, status, elapsed)
         logger.tagged(:rack) do
-          logger.info(**data(env, status: status, elapsed: elapsed))
+
+          logger.info do
+            data(env, status: status, elapsed: elapsed)
+          end
         end
       end
 
@@ -153,7 +168,9 @@ module Hanami
       # @since 2.0.0
       def log_exception(env, exception, status, elapsed)
         logger.tagged(:rack) do
-          logger.error(exception, **data(env, status: status, elapsed: elapsed))
+          logger.error(exception) do
+            data(env, status: status, elapsed: elapsed)
+          end
         end
       end
 
