@@ -39,4 +39,41 @@ RSpec.describe "Slices / Slice configuration", :app_integration do
       expect(Search::Slice.config.no_auto_register_paths).to eq %w[structs]
     end
   end
+
+  specify "Slices can configure memoization for specific component directories" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+            config.logger.stream = StringIO.new
+            config.memoize_component_dirs = ["actions/", "views/"]
+          end
+        end
+      RUBY
+
+      write "config/slices/main.rb", <<~RUBY
+        module Main
+          class Slice < Hanami::Slice
+            # Inherits from app
+          end
+        end
+      RUBY
+
+      write "config/slices/search.rb", <<~RUBY
+        module Search
+          class Slice < Hanami::Slice
+            config.memoize_component_dirs = []
+          end
+        end
+      RUBY
+
+      require "hanami/prepare"
+
+      expect(TestApp::App.config.memoize_component_dirs).to eq ["actions/", "views/"]
+      expect(Main::Slice.config.memoize_component_dirs).to eq ["actions/", "views/"]
+      expect(Search::Slice.config.memoize_component_dirs).to eq []
+    end
+  end
 end
