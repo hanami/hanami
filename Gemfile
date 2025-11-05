@@ -29,7 +29,6 @@ gem "dry-types"
 
 # For testing operation integrations
 gem "dry-operation", github: "dry-rb/dry-operation", branch: "main"
-gem "dry-logger", github: "dry-rb/dry-logger", branch: "main"
 
 # For testing the DB layer
 gem "sqlite3"
