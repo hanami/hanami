@@ -122,7 +122,7 @@ module Hanami
         # @since 2.1.0
         # @api private
         def error(message = nil, **payload, &blk)
-          logger.info do
+          logger.error do
             if blk
               JSON.generate(blk.call)
             else
