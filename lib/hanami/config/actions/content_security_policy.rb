@@ -101,7 +101,7 @@ module Hanami
         # @return [Boolean]
         #
         # @api public
-        # @since x.x.x
+        # @since 2.3.0
         def nonce?
           @policy.any? { _2.match?(/'nonce'/) }
         end
@@ -112,7 +112,7 @@ module Hanami
         # @return [Array<(Symbol, Array)>]
         #
         # @api public
-        # @since x.x.x
+        # @since 2.3.0
         def middleware
           return [] unless nonce?
 

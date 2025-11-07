@@ -14,16 +14,16 @@ module Hanami
     # @see Hanami::Middleware::ContentSecurityPolicyNonce
     #
     # @api private
-    # @since x.x.x
+    # @since 2.3.0
     class ContentSecurityPolicyNonce
       # @api private
-      # @since x.x.x
+      # @since 2.3.0
       def initialize(app)
         @app = app
       end
 
       # @api private
-      # @since x.x.x
+      # @since 2.3.0
       def call(env)
         return @app.call(env) unless Hanami.app.config.actions.content_security_policy?
 

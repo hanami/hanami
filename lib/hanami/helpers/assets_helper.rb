@@ -710,7 +710,7 @@ module Hanami
       #
       # @return [String, nil] nonce value of the current request
       #
-      # @since x.x.x
+      # @since 2.3.0
       #
       # @example App configuration
       #
@@ -766,7 +766,7 @@ module Hanami
         _context.assets.crossorigin?(source)
       end
 
-      # @since x.x.x
+      # @since 2.3.0
       # @api private
       def _nonce(source, nonce_option)
         if nonce_option == false
