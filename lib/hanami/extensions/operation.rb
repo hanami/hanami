@@ -11,6 +11,8 @@ module Hanami
     # @api public
     # @since 2.2.0
     module Operation
+      require_relative "operation/slice_configured_db_operation"
+
       # @api private
       def self.extended(operation_class)
         super

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami/view"
+require_relative "view/slice_configured_view"
 
 module Hanami
   # @api private

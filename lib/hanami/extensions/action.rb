@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "hanami/action"
+require_relative "action/slice_configured_action"
 
 module Hanami
   # @api private

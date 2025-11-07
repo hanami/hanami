@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../../errors"
+require_relative "slice_configured_context"
 
 module Hanami
   module Extensions
