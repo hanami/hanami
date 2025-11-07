@@ -80,8 +80,8 @@ RSpec.describe "Operation / Extensions", :app_integration do
 
         operation = TestApp::Operation.new
 
-        expect(operation).not_to respond_to(:rom)
-        expect(operation).not_to respond_to(:transaction)
+        expect(operation.rom).to be nil
+        expect { operation.transaction }.to raise_error Hanami::ComponentLoadError, "A configured db for TestApp::App is required to run transactions."
       end
     end
   end
