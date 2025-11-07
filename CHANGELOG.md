@@ -14,6 +14,46 @@
 
 ### Security
 
+## [v2.3.0] - Unreleased
+
+### Added
+
+- Add `resources` and `resource` methods to the routes DSL. (@afomera and @timriley in #1542 and #1548)
+
+  ```ruby
+  resources :users
+  # Generates:
+  # GET    /users          users.index
+  # GET    /users/new      users.new
+  # POST   /users          users.create
+  # GET    /users/:id      users.show
+  # GET    /users/:id/edit users.edit
+  # PATCH  /users/:id      users.update
+  # DELETE /users/:id      users.destroy
+
+  resource :profile
+  # Generates (singular, no index):
+  # GET    /profile/new    profile.new
+  # POST   /profile        profile.create
+  # GET    /profile        profile.show
+  # GET    /profile/edit   profile.edit
+  # PATCH  /profile        profile.update
+  # DELETE /profile        profile.destroy
+  ```
+
+### Changed
+
+- Enable body parsing middleware by default. (@timriley in #1549)
+
+  This will parse multipart form upload bodies in requests with content type of `multipart/form-data`, and JSON bodies in requests with content types of `application/json` or `application/vnd.api+json`.
+- For standard logging, use block-based API to provide log payloads, so that log payloads are not generated if the log severity is less than the configured log level. (@p8 in #1550)
+
+### Fixed
+
+- Avoid errors when eagerloading Zeitwerk (or when running `bin/rails zeitwerk:check` if your Hanami app is embedded within Rails) by skipping autoloading for extension files that may depend on non-installed gems. (@timriley in #1498)
+- Only extend `Dry::Operation` for Hanami’s database layer when the hanami-db gem is bundled. (@timriley in #1490)
+- Address deprecation warnings from previous usage of `JSON.fast_generate`. (@krzykamil in #1546)
+
 ## [v2.3.0.beta1] - 2025-10-17
 
 ### Changed
@@ -1523,6 +1563,7 @@ end
 - [Luca Guidi] Official support for MRI 2.0
 
 
-[unreleased]: https://github.com/hanami/hanami/compare/v2.3.0.beta2...HEAD
+[unreleased]: https://github.com/hanami/hanami/compare/v2.3.0...HEAD
+[v2.3.0] https://github.com/hanami/hanami/compare/v2.3.0.beta2...v2.3.0
 [v2.3.0.beta2] https://github.com/hanami/hanami/compare/v2.3.0.beta1...v2.3.0.beta2
 [v2.3.0.beta1] https://github.com/hanami/hanami/compare/v2.2.1...v2.3.0.beta1
