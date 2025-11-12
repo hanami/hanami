@@ -251,10 +251,11 @@ module Hanami
 
         def route_name(action, prefix)
           name = route_name_base
-          name = @inflector.pluralize(name) if action == :index
+          name = @inflector.pluralize(name) if plural? && PLURALIZED_NAME_ACTIONS.include?(action)
 
           [prefix, name]
         end
+        PLURALIZED_NAME_ACTIONS = %i[index create].freeze
 
         def route_name_base
           @route_name_base ||=

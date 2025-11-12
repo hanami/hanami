@@ -215,7 +215,6 @@ RSpec.describe "Router / Resource routes" do
       expect(router.path("cafe_reviews", cafe_id: 1)).to eq "/cafes/1/reviews"
       expect(router.path("cafe_review_comments", cafe_id: 1, review_id: 1)).to eq "/cafes/1/reviews/1/comments"
       expect(router.path("new_cafe_review_comment", cafe_id: 1, review_id: 1)).to eq "/cafes/1/reviews/1/comments/new"
-      expect(router.path("cafe_review_comment", cafe_id: 1, review_id: 1)).to eq "/cafes/1/reviews/1/comments"
 
       expect(routed("GET", "/profile")).to eq %(actions.profile.show)
       expect(routed("GET", "/profile/avatar")).to eq %(actions.profile.avatar.show)
