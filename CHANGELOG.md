@@ -9,18 +9,18 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 [Reloader][reloader], [Router][router], [Utils][utils],
 [Validations][validations], [View][view], [Webconsole][webconsole]
 
-[assets]: https://github.com/hanami/assets/blob/main/CHANGELOG.md
-[assets-js]: https://github.com/hanami/assets-js/blob/main/CHANGELOG.md
-[cli]: https://github.com/hanami/cli/blob/main/CHANGELOG.md
-[controller]: https://github.com/hanami/controller/blob/main/CHANGELOG.md
-[db]: https://github.com/hanami/db/blob/main/CHANGELOG.md
-[rspec]: https://github.com/hanami/rspec/blob/main/CHANGELOG.md
-[reloader]: https://github.com/hanami/reloader/blob/main/CHANGELOG.md
-[router]: https://github.com/hanami/router/blob/main/CHANGELOG.md
-[utils]: https://github.com/hanami/utils/blob/main/CHANGELOG.md
-[validations]: https://github.com/hanami/validations/blob/main/CHANGELOG.md
-[view]: https://github.com/hanami/view/blob/main/CHANGELOG.md
-[webconsole]: https://github.com/hanami/webconsole/blob/main/CHANGELOG.md
+[assets]: https://github.com/hanami/hanami-assets/blob/main/CHANGELOG.md
+[assets-js]: https://github.com/hanami/hanami-assets-js/blob/main/CHANGELOG.md
+[cli]: https://github.com/hanami/hanami-cli/blob/main/CHANGELOG.md
+[controller]: https://github.com/hanami/hanami-controller/blob/main/CHANGELOG.md
+[db]: https://github.com/hanami/hanami-db/blob/main/CHANGELOG.md
+[rspec]: https://github.com/hanami/hanami-rspec/blob/main/CHANGELOG.md
+[reloader]: https://github.com/hanami/hanami-reloader/blob/main/CHANGELOG.md
+[router]: https://github.com/hanami/hanami-router/blob/main/CHANGELOG.md
+[utils]: https://github.com/hanami/hanami-utils/blob/main/CHANGELOG.md
+[validations]: https://github.com/hanami/hanami-validations/blob/main/CHANGELOG.md
+[view]: https://github.com/hanami/hanami-view/blob/main/CHANGELOG.md
+[webconsole]: https://github.com/hanami/hanami-webconsole/blob/main/CHANGELOG.md
 
 ## [Unreleased]
 
