@@ -36,7 +36,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Security
 
-## [v2.3.0] - Unreleased
+## [v2.3.0] - 2025-11-12
 
 ### Added
 
