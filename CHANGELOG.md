@@ -1,5 +1,27 @@
 # Hanami
 
+A flexible framework for maintainable Ruby apps.
+
+A complete Hanami app is composed of multiple gems. For a complete overview of changes, see also these CHANGELOGs:
+
+[Assets][assets], [Assets JS][assets-js], [CLI][cli],
+[Controller][controller], [DB][db], [RSpec][rspec],
+[Reloader][reloader], [Router][router], [Utils][utils],
+[Validations][validations], [View][view], [Webconsole][webconsole]
+
+[assets]: https://github.com/hanami/assets/blob/main/CHANGELOG.md
+[assets-js]: https://github.com/hanami/assets-js/blob/main/CHANGELOG.md
+[cli]: https://github.com/hanami/cli/blob/main/CHANGELOG.md
+[controller]: https://github.com/hanami/controller/blob/main/CHANGELOG.md
+[db]: https://github.com/hanami/db/blob/main/CHANGELOG.md
+[rspec]: https://github.com/hanami/rspec/blob/main/CHANGELOG.md
+[reloader]: https://github.com/hanami/reloader/blob/main/CHANGELOG.md
+[router]: https://github.com/hanami/router/blob/main/CHANGELOG.md
+[utils]: https://github.com/hanami/utils/blob/main/CHANGELOG.md
+[validations]: https://github.com/hanami/validations/blob/main/CHANGELOG.md
+[view]: https://github.com/hanami/view/blob/main/CHANGELOG.md
+[webconsole]: https://github.com/hanami/webconsole/blob/main/CHANGELOG.md
+
 ## [Unreleased]
 
 ### Added
