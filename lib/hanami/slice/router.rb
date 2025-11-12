@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "hanami/router"
+require_relative "routing/resolver"
+require_relative "routing/middleware/stack"
 
 module Hanami
   class Slice

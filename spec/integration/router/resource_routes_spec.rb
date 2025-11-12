@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/inflector"
+require "hanami/slice/router"
 require "json"
 
 RSpec.describe "Router / Resource routes" do
