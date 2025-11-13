@@ -36,6 +36,12 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Security
 
+## [v2.3.1] - 2025-11-14
+
+### Fixed
+
+- Fix a circular require warning when loading router extensions. (@timriley in #1556)
+
 ## [v2.3.0] - 2025-11-12
 
 ### Added
@@ -1585,7 +1591,8 @@ end
 - [Luca Guidi] Official support for MRI 2.0
 
 
-[unreleased]: https://github.com/hanami/hanami/compare/v2.3.0...HEAD
-[v2.3.0] https://github.com/hanami/hanami/compare/v2.3.0.beta2...v2.3.0
-[v2.3.0.beta2] https://github.com/hanami/hanami/compare/v2.3.0.beta1...v2.3.0.beta2
-[v2.3.0.beta1] https://github.com/hanami/hanami/compare/v2.2.1...v2.3.0.beta1
+[unreleased]: https://github.com/hanami/hanami/compare/v2.3.1...HEAD
+[v2.3.1]: https://github.com/hanami/hanami/compare/v2.3.0...v2.3.1
+[v2.3.0]: https://github.com/hanami/hanami/compare/v2.3.0.beta2...v2.3.0
+[v2.3.0.beta2]: https://github.com/hanami/hanami/compare/v2.3.0.beta1...v2.3.0.beta2
+[v2.3.0.beta1]: https://github.com/hanami/hanami/compare/v2.2.1...v2.3.0.beta1
