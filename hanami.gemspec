@@ -38,7 +38,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dry-monitor",      "~> 1.0", ">= 1.0.1", "< 2"
   spec.add_dependency "dry-system",       "~> 1.1"
   spec.add_dependency "dry-logger",       "~> 1.2", "< 2"
-  spec.add_dependency "hanami-cli",       ">= 2.3.0"
+  spec.add_dependency "hanami-cli",       ">= 2.3.1"
   spec.add_dependency "hanami-utils",     ">= 2.3.0"
   spec.add_dependency "json",             ">= 2.7.2"
   spec.add_dependency "zeitwerk",         "~> 2.6"
