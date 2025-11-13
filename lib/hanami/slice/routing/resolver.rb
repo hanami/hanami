@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../../routes"
-
 module Hanami
   class Slice
     # @api private
