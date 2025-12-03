@@ -36,6 +36,16 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Security
 
+[unreleased]: https://github.com/hanami/hanami/compare/v2.3.2...HEAD
+
+## [v2.3.2] - 2025-12-04
+
+### Fixed
+
+- Support the newly released Bundler v4 by removing upper version bound our dependency on it. Require at least Bundler 2.0 as well. (@timriley in #1559)
+
+[v2.3.2]: https://github.com/hanami/hanami/compare/v2.3.1...v2.3.2
+
 ## [v2.3.1] - 2025-11-14
 
 ### Fixed
@@ -1591,7 +1601,6 @@ end
 - [Luca Guidi] Official support for MRI 2.0
 
 
-[unreleased]: https://github.com/hanami/hanami/compare/v2.3.1...HEAD
 [v2.3.1]: https://github.com/hanami/hanami/compare/v2.3.0...v2.3.1
 [v2.3.0]: https://github.com/hanami/hanami/compare/v2.3.0.beta2...v2.3.0
 [v2.3.0.beta2]: https://github.com/hanami/hanami/compare/v2.3.0.beta1...v2.3.0.beta2
