@@ -32,7 +32,7 @@ def create_app(temp_dir, component_count:)
   File.write("#{temp_dir}/config/slices/memoized.rb", <<~RUBY)
     module Memoized
       class Slice < Hanami::Slice
-        config.memoize_component_dirs = ["actions/", "views/"]
+        config.memoize_component_key_prefixes = ["actions.", "views."]
       end
     end
   RUBY
@@ -41,7 +41,7 @@ def create_app(temp_dir, component_count:)
   File.write("#{temp_dir}/config/slices/normal.rb", <<~RUBY)
     module Normal
       class Slice < Hanami::Slice
-        config.memoize_component_dirs = []
+        config.memoize_component_key_prefixes = []
       end
     end
   RUBY
@@ -140,8 +140,8 @@ def run_speed_benchmark(component_count:)
     puts "Hanami application loaded!"
     puts
     puts "Configuration verification:"
-    puts "Memoized slice memoize_component_dirs: #{Memoized::Slice.config.memoize_component_dirs}"
-    puts "Normal slice memoize_component_dirs: #{Normal::Slice.config.memoize_component_dirs}"
+    puts "Memoized slice memoize_component_key_prefixes: #{Memoized::Slice.config.memoize_component_key_prefixes}"
+    puts "Normal slice memoize_component_key_prefixes: #{Normal::Slice.config.memoize_component_key_prefixes}"
     puts
 
     # Test memoization behavior
@@ -150,20 +150,20 @@ def run_speed_benchmark(component_count:)
     # Actions
     action1 = Memoized::Slice["actions.action_0"]
     action2 = Memoized::Slice["actions.action_0"]
-    puts "Memoized Actions - same instance: #{action1.object_id == action2.object_id}"
+    puts "Memoized Actions - same instance: #{action1.equal?(action2)}"
 
     action3 = Normal::Slice["actions.action_0"]
     action4 = Normal::Slice["actions.action_0"]
-    puts "Normal Actions - same instance: #{action3.object_id == action4.object_id}"
+    puts "Normal Actions - same instance: #{action3.equal?(action4)}"
 
     # Views
     view1 = Memoized::Slice["views.view_0"]
     view2 = Memoized::Slice["views.view_0"]
-    puts "Memoized Views - same instance: #{view1.object_id == view2.object_id}"
+    puts "Memoized Views - same instance: #{view1.equal?(view2)}"
 
     view3 = Normal::Slice["views.view_0"]
     view4 = Normal::Slice["views.view_0"]
-    puts "Normal Views - same instance: #{view3.object_id == view4.object_id}"
+    puts "Normal Views - same instance: #{view3.equal?(view4)}"
     puts
 
     # Benchmark: Single component (best case for memoization)
@@ -186,7 +186,7 @@ def run_speed_benchmark(component_count:)
       x.compare!
     end
 
-    puts "\n" + "=" * 60
+    puts "\n#{"=" * 60}"
 
     # Benchmark: Random component access (realistic case)
     puts "=== RANDOM COMPONENT RESOLUTION (REALISTIC CASE) ==="
@@ -209,7 +209,7 @@ def run_speed_benchmark(component_count:)
       x.compare!
     end
 
-    puts "\n" + "=" * 60
+    puts "\n#{"=" * 60}"
 
     # Benchmark: Sequential access (cache warming)
     puts "=== SEQUENTIAL COMPONENT RESOLUTION ==="
@@ -234,7 +234,7 @@ def run_speed_benchmark(component_count:)
       x.compare!
     end
 
-    puts "\n" + "=" * 60
+    puts "\n#{"=" * 60}"
     puts "SUMMARY"
     puts "=" * 60
     puts
