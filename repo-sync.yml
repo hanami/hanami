@@ -1,0 +1,26 @@
+name:
+  gem: hanami
+  constant: Hanami
+github_org: hanami
+gemspec:
+  authors: ["Hanakai team"]
+  email: ["info@hanakai.org"]
+  summary: "A flexible framework for maintainable Ruby apps"
+  homepage: "https://hanamirb.org"
+  runtime_dependencies:
+    - ["bundler", ">= 2.0"]
+    - ["dry-configurable", "~> 1.0", ">= 1.2.0", "< 2"]
+    - ["dry-core", "~> 1.0", "< 2"]
+    - ["dry-inflector", "~> 1.0", ">= 1.1.0", "< 2"]
+    - ["dry-monitor", "~> 1.0", ">= 1.0.1", "< 2"]
+    - ["dry-system", "~> 1.1"]
+    - ["dry-logger", "~> 1.2", "< 2"]
+    - ["hanami-cli", ">= 2.3.1"]
+    - ["hanami-utils", ">= 2.3.0"]
+    - ["json", ">= 2.7.2"]
+    - ["zeitwerk", "~> 2.6"]
+    - ["rack-session"]
+  development_dependencies:
+    - ["rspec", "~> 3.8"]
+    - ["rack-test", "~> 2.0"]
+    - ["rake", "~> 13.0"]
