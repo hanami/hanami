@@ -9,8 +9,8 @@ unless ENV["CI"]
   gem "yard-junk"
 end
 
-if ENV["RACK_VERSION_CONSTRAINT"]
-  gem "rack", ENV["RACK_VERSION_CONSTRAINT"]
+if ENV["RACK_MATRIX_VALUE"]
+  gem "rack", ENV["RACK_MATRIX_VALUE"]
 end
 
 gem "hanami-utils", github: "hanami/hanami-utils", branch: "main"

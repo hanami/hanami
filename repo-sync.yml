@@ -2,6 +2,10 @@ name:
   gem: hanami
   constant: Hanami
 github_org: hanami
+ci:
+  matrix:
+    rack: ["~> 2.0", "~> 3.0"]
+  node: true
 gemspec:
   authors: ["Hanakai team"]
   email: ["info@hanakai.org"]

@@ -32,7 +32,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
         env:
-          RACK_VERSION_CONSTRAINT: ${{ matrix.rack }}
+          RACK_MATRIX_VALUE: ${{ matrix.rack }}
       - name: Cache Node modules
         id: cache-node-modules
         uses: actions/cache@v4
@@ -50,7 +50,7 @@ jobs:
       - name: Run the test suite
         run: bundle exec rake
         env:
-          RACK_VERSION_CONSTRAINT: ${{ matrix.rack }}
+          RACK_MATRIX_VALUE: ${{ matrix.rack }}
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
