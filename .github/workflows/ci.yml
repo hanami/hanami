@@ -1,56 +1,92 @@
-name: ci
+# This file is synced from hanakai-rb/repo-sync
+
+name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "release-*", "ci/*"]
+    tags: ["v*"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "release-*"]
   schedule:
     - cron: "30 4 * * *"
 
 jobs:
-  build:
+  tests:
+    name: Tests (Ruby ${{ matrix.ruby }}, Rack ${{ matrix.rack }})
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.optional || false }}
     strategy:
       fail-fast: false
       matrix:
         ruby:
           - "3.4"
           - "3.3"
-          - "3.2.0"
           - "3.2"
         rack:
           - "~> 2.0"
           - "~> 3.0"
-    name: tests (Ruby ${{ matrix.ruby }}, Rack ${{ matrix.rack }})
+        include:
+          - ruby: "3.4"
+            rack: "~> 2.0"
+            coverage: "true"
+          - ruby: "jruby"
+            rack: "~> 2.0"
+            optional: true
+          - ruby: "jruby"
+            rack: "~> 3.0"
+            optional: true
+          - ruby: "4.0.0-preview2"
+            rack: "~> 2.0"
+            optional: true
+          - ruby: "4.0.0-preview2"
+            rack: "~> 3.0"
+            optional: true
+    env:
+      COVERAGE: ${{ matrix.coverage }}
+      RACK_MATRIX_VALUE: ${{ matrix.rack || '' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
+      - name: Install package dependencies
+        run: "[ -e $APT_DEPS ] || sudo apt-get install -y --no-install-recommends $APT_DEPS"
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Install dependencies
+        run: npm install
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
         env:
-          RACK_MATRIX_VALUE: ${{ matrix.rack }}
-      - name: Cache Node modules
-        id: cache-node-modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.OS }}-${{ hashFiles('package-lock.json') }}
-      - name: Install NPM Modules
-        if: steps.cache-modules.outputs.cache-hit != 'true'
-        run: npm install
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          registry-url: https://registry.npmjs.org
-      - name: Run the test suite
-        run: bundle exec rake
+          RACK_MATRIX_VALUE: ${{ matrix.rack || '' }}
+      - name: Run all tests
+        id: test
+        run: |
+          status=0
+          bundle exec rake || status=$?
+          if [ ${status} -ne 0 ] && [ "${{ matrix.optional }}" == "true" ]; then
+            echo "::warning::Optional matrix job failed."
+            echo "optional_fail=true" >> "${GITHUB_OUTPUT}"
+            echo "optional_fail_status=${status}" >> "${GITHUB_OUTPUT}"
+            exit 0  # Ignore error here to keep the green checkmark
+          fi
+          exit ${status}
         env:
-          RACK_MATRIX_VALUE: ${{ matrix.rack }}
+          RACK_MATRIX_VALUE: ${{ matrix.rack || '' }}
+      - name: Add comment for optional failures
+        uses: thollander/actions-comment-pull-request@v3
+        if: ${{ matrix.optional && github.event.pull_request }}
+        with:
+          comment-tag: "${{ matrix.ruby }}-optional-failure-notice"
+          message: |
+            ℹ️ Optional job failed: Ruby ${{ matrix.ruby }}
+          mode: ${{ steps.test.outputs.optional_fail == 'true' && 'upsert' || 'delete' }}
 
   workflow-keepalive:
     if: github.event_name == 'schedule'
@@ -59,3 +95,4 @@ jobs:
       actions: write
     steps:
       - uses: liskin/gh-workflow-keepalive@v1
+
