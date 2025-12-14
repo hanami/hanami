@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "ostruct"
-
-# rubocop:disable Style/OpenStructUse
-
 RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app_integration do
   before do
     with_directory(make_tmp_directory) do
@@ -79,7 +75,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
     end
 
     it "makes user-defined helpers available in parts via a `helpers` object" do
-      post = OpenStruct.new(title: "Hello world")
+      post = Data.define(:title).new(title: "Hello world")
       output = TestApp::App["views.posts.show"].call(post: post).to_s.strip
 
       expect(output).to eq "<h1>Hello world! (app helpers)</h1>"
@@ -148,7 +144,7 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
     end
 
     it "makes user-defined helpers (from app as well as slice) available in parts via a `helpers` object" do
-      post = OpenStruct.new(title: "Hello world")
+      post = Data.define(:title).new(title: "Hello world")
       output = Main::Slice["views.posts.show"].call(post: post).to_s
 
       expect(output).to eq <<~HTML
@@ -158,5 +154,3 @@ RSpec.describe "App view / Helpers / User-defined helpers / Scope helpers", :app
     end
   end
 end
-
-# rubocop:enable Style/OpenStructUse
