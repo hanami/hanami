@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "ostruct"
-
-# rubocop:disable Style/OpenStructUse
-
 RSpec.describe "App view / Helpers / Part helpers", :app_integration do
   before do
     with_directory(make_tmp_directory) do
@@ -65,7 +61,7 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
     end
 
     it "makes default helpers available in parts" do
-      post = OpenStruct.new(number: 12_345)
+      post = Data.define(:number).new(number: 12_345)
       output = TestApp::App["views.posts.show"].call(post: post).to_s.strip
 
       expect(output).to eq "<h1>12,345</h1>"
@@ -113,12 +109,10 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
     end
 
     it "makes default helpers available in parts" do
-      post = OpenStruct.new(number: 12_345)
+      post = Data.define(:number).new(number: 12_345)
       output = Main::Slice["views.posts.show"].call(post: post).to_s.strip
 
       expect(output).to eq "<h1>12,345</h1>"
     end
   end
 end
-
-# rubocop:enable Style/OpenStructUse
