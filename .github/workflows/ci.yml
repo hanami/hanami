@@ -22,6 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
+          - "4.0"
           - "3.4"
           - "3.3"
           - "3.2"
@@ -38,10 +39,10 @@ jobs:
           - ruby: "jruby"
             rack: "~> 3.0"
             optional: true
-          - ruby: "4.0.0-preview2"
+          - ruby: "ruby-head"
             rack: "~> 2.0"
             optional: true
-          - ruby: "4.0.0-preview2"
+          - ruby: "ruby-head"
             rack: "~> 3.0"
             optional: true
     env:
