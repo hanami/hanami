@@ -30,19 +30,13 @@ jobs:
           - "~> 2.0"
           - "~> 3.0"
         include:
-          - ruby: "3.4"
+          - ruby: "4.0"
             rack: "~> 2.0"
             coverage: "true"
           - ruby: "jruby"
             rack: "~> 2.0"
             optional: true
           - ruby: "jruby"
-            rack: "~> 3.0"
-            optional: true
-          - ruby: "ruby-head"
-            rack: "~> 2.0"
-            optional: true
-          - ruby: "ruby-head"
             rack: "~> 3.0"
             optional: true
     env:
