@@ -14,8 +14,6 @@ on:
 jobs:
   tests:
     name: Tests (Ruby ${{ matrix.ruby }}, Rack ${{ matrix.rack }})
-    permissions:
-      pull-requests: write
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.optional || false }}
     strategy:
@@ -74,13 +72,14 @@ jobs:
           exit ${status}
         env:
           RACK_MATRIX_VALUE: ${{ matrix.rack || '' }}
-      - name: Add comment for optional failures
-        uses: thollander/actions-comment-pull-request@v3
+      - name: Create optional failure comment
         if: ${{ matrix.optional && github.event.pull_request }}
+        uses: hanakai-rb/repo-sync/pr-comment-artifact@main
         with:
-          comment-tag: "${{ matrix.ruby }}-optional-failure-notice"
-          message: |
-            ℹ️ Optional job failed: Ruby ${{ matrix.ruby }}
+          name: ci-ruby-${{ matrix.ruby }}
+          pr-number: ${{ github.event.pull_request.number }}
+          comment-tag: ruby-${{ matrix.ruby }}-optional-failure
+          message: "ℹ️ Optional job failed: Ruby ${{ matrix.ruby }}"
           mode: ${{ steps.test.outputs.optional_fail == 'true' && 'upsert' || 'delete' }}
 
   workflow-keepalive:

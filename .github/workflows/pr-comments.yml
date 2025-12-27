@@ -1,0 +1,30 @@
+# This file is synced from hanakai-rb/repo-sync
+
+# Downloads comment artifacts from completed workflows and posts them to PRs. This allows source
+# workflows to run with read-only permissions on fork PRs while still posting comments via this
+# privileged workflow that runs in the base repo context.
+#
+# Comment artifacts should be generated using the `hanakai-rb/repo-sync/pr-comment-artifact@main`
+# action.
+
+name: PR comments
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+permissions:
+  pull-requests: write
+
+jobs:
+  post-comments:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.event == "pull_request"
+
+    steps:
+      - name: Post comments
+        uses: hanakai-rb/repo-sync/pr-comments-from-artifacts@main
+        with:
+          workflow-run-id: ${{ github.event.workflow_run.id }}
