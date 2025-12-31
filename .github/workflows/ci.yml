@@ -1,6 +1,7 @@
 # This file is synced from hanakai-rb/repo-sync
 
 name: CI
+run-name: ${{ github.ref_type == 'tag' && format('Release {0}', github.ref_name) || 'CI' }}
 
 on:
   push:
