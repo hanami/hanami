@@ -1,6 +1,7 @@
 name:
   gem: hanami
   constant: Hanami
+  title: Hanami
 github_org: hanami
 ci:
   matrix:
