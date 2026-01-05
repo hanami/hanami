@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "hanami/slice"
 
 RSpec.describe Hanami::Slice, :app_integration do

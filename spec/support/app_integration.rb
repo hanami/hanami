@@ -51,7 +51,7 @@ module RSpec
         assets_compile = Hanami::CLI::Commands::App::Assets::Compile.new(
           config: Hanami.app.config.assets,
           out: File.new(File::NULL, "w"),
-          err: File.new(File::NULL, "w"),
+          err: File.new(File::NULL, "w")
         )
 
         with_directory(Hanami.app.root) { assets_compile.call }
@@ -94,7 +94,7 @@ def autoloaders_teardown!
   ObjectSpace.each_object(Zeitwerk::Loader) do |loader|
     loader.unregister if loader.dirs.any? { |dir|
       dir.include?("/spec/") || dir.include?(Dir.tmpdir) ||
-        dir.include?("/slices/") || dir.include?("/app")
+      dir.include?("/slices/") || dir.include?("/app")
     }
   end
 end

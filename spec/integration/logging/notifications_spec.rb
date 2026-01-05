@@ -63,6 +63,3 @@ RSpec.describe "Logging / Notifications", :app_integration do
     end
   end
 end
-
-
-

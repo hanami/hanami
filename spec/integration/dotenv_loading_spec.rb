@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/FetchEnvVar
-
 RSpec.describe "Dotenv loading", :app_integration do
   before do
     @orig_env = ENV.to_h
@@ -134,5 +132,3 @@ RSpec.describe "Dotenv loading", :app_integration do
     end
   end
 end
-
-# rubocop:enable Style/FetchEnvVar
