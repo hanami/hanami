@@ -3,6 +3,8 @@
 source "https://rubygems.org"
 gemspec
 
+gem "rubocop"
+
 unless ENV["CI"]
   gem "byebug", platforms: :mri
   gem "yard"
