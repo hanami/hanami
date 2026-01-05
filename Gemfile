@@ -3,8 +3,6 @@
 source "https://rubygems.org"
 gemspec
 
-gem "rubocop"
-
 unless ENV["CI"]
   gem "byebug", platforms: :mri
   gem "yard"
@@ -41,4 +39,8 @@ group :test do
   gem "dotenv"
   gem "saharspec"
   gem "slim"
+end
+
+group :tools do
+  gem "rubocop"
 end
