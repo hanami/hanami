@@ -1,27 +1,31 @@
-# Please keep AllCops, Bundler, Style, Metrics groups and then order cops
-# alphabetically
 inherit_from:
-  - https://raw.githubusercontent.com/hanami/devtools/main/.rubocop.yml
-Naming/HeredocDelimiterNaming:
-  Enabled: false
-Naming/RescuedExceptionsVariableName:
-  Enabled: false
-Style/AccessorGrouping:
-  Enabled: false
-Style/BlockDelimiters:
-  Enabled: false
-Style/CommentedKeyword:
-  Enabled: false
-Style/LambdaCall:
-  Enabled: false
-Style/StabbyLambdaParentheses:
-  Enabled: false
-Style/StringLiteralsInInterpolation:
-  Enabled: false
-Style/TrailingCommaInArguments:
-  Enabled: false
-Style/TrailingCommaInArrayLiteral:
-  Enabled: false
-Style/TrailingCommaInHashLiteral:
+  - https://raw.githubusercontent.com/hanakai-rb/repo-sync/main/rubocop/rubocop.yml
+
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - "spec/**/*_spec.rb"
+  AllowedPatterns:
+    # Allow comments
+    - '\A\s*#'
+
+Lint/MixedRegexpCaptureTypes:
   Enabled: false
 
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Enabled: false
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
+
+Style/StringConcatenation:
+  Enabled: false
+
+Style/WordArray:
+  Enabled: false
+
+Style/YodaCondition:
+  Enabled: false

@@ -95,7 +95,7 @@ module Hanami
             #
             # @api private
             # @since 2.1.0
-            def initialize( # rubocop:disable Metrics/ParameterLists
+            def initialize(
               inflector: nil,
               routes: nil,
               assets: nil,
@@ -157,7 +157,9 @@ module Hanami
             # @since 2.1.0
             def request
               unless @request
-                raise Hanami::ComponentLoadError, "Request not available. Only views rendered from Hanami::Action instances have a request."
+                raise Hanami::ComponentLoadError, <<~STR
+                  Request not available. Only views rendered from Hanami::Action instances have a request.
+                STR
               end
 
               @request

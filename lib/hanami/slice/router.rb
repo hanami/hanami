@@ -23,7 +23,14 @@ module Hanami
       attr_reader :path_prefix
 
       # @api private
-      def initialize(routes:, inflector:, middleware_stack: Routing::Middleware::Stack.new, prefix: ::Hanami::Router::DEFAULT_PREFIX, **kwargs, &blk)
+      def initialize(
+        routes:,
+        inflector:,
+        middleware_stack: Routing::Middleware::Stack.new,
+        prefix: ::Hanami::Router::DEFAULT_PREFIX,
+        **kwargs,
+        &blk
+      )
         @path_prefix = Hanami::Router::Prefix.new(prefix)
         @inflector = inflector
         @middleware_stack = middleware_stack
@@ -233,6 +240,7 @@ module Hanami
 
         def route_suffix(suffix)
           return suffix.sub(LEADING_ID_REGEX, "") if suffix && singular?
+
           suffix
         end
         LEADING_ID_REGEX = %r{\A/:id}

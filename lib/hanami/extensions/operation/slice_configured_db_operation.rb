@@ -51,6 +51,7 @@ module Hanami
           attr_reader :rom
 
           def initialize(rom:, **)
+            super()
             @rom = rom
           end
         end
@@ -59,6 +60,7 @@ module Hanami
           attr_reader :slice
 
           def initialize(slice)
+            super()
             @slice = slice
           end
 

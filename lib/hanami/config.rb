@@ -182,7 +182,7 @@ module Hanami
     #   @since 2.1.0
     setting :render_error_responses, default: Hash.new(:internal_server_error).merge!(
       "Hanami::Router::NotAllowedError" => :not_found,
-      "Hanami::Router::NotFoundError" => :not_found,
+      "Hanami::Router::NotFoundError" => :not_found
     )
 
     # @!attribute [rw] console

@@ -157,7 +157,6 @@ module Hanami
       # @since 2.0.0
       def log_request(env, status, elapsed)
         logger.tagged(:rack) do
-
           logger.info do
             data(env, status: status, elapsed: elapsed)
           end
@@ -189,7 +188,7 @@ module Hanami
           length: extract_content_length(env),
           params: env.fetch(ROUTER_PARAMS, EMPTY_PARAMS),
           elapsed: elapsed,
-          elapsed_unit: MICROSECOND,
+          elapsed_unit: MICROSECOND
         }
       end
 

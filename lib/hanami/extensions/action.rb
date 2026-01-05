@@ -109,7 +109,7 @@ module Hanami
         end
 
         # @api private
-        def view_context_options(request, response) # rubocop:disable Lint:UnusedMethodArgument
+        def view_context_options(request, response)
           {request: request}
         end
 

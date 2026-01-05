@@ -54,7 +54,7 @@ module Hanami
           end
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def configure_view(view_class)
           view_class.settings.each do |setting|
             next unless slice.config.views.respond_to?(setting.name)
@@ -134,7 +134,7 @@ module Hanami
             view_class.config.scope_namespace = scope_namespace
           end
         end
-        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def define_inherited
           template_name = method(:template_name)
