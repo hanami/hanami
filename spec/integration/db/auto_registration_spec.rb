@@ -29,11 +29,7 @@ RSpec.describe "DB / auto-registration", :app_integration do
 
       require "hanami/boot"
 
-      expect(Hanami.app.keys).not_to include(*[
-        "db.changesets.update_posts",
-        "entities.post",
-        "structs.post"
-      ])
+      expect(Hanami.app.keys).not_to include("db.changesets.update_posts", "entities.post", "structs.post")
     end
   end
 end

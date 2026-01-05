@@ -43,7 +43,7 @@ RSpec.describe "Hanami::Providers::DB.config", :app_integration do
       end
 
       it "adds a plugin with a block" do
-        block = -> plugin_config { }
+        block = -> plugin_config {}
 
         expect {
           adapter.plugin(relations: :foo, &block)

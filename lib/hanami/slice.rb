@@ -956,11 +956,11 @@ module Hanami
 
           if register_db_provider?
             # Only register providers if the user hasn't provided their own
-            if !container.providers[:db]
+            unless container.providers[:db]
               register_provider(:db, namespace: true, source: Providers::DB)
             end
 
-            if !container.providers[:relations]
+            unless container.providers[:relations]
               register_provider(:relations, namespace: true, source: Providers::Relations)
             end
           end
@@ -968,7 +968,7 @@ module Hanami
       end
 
       def prepare_autoloader
-        autoloader.tag = "hanami.slices.#{slice_name.to_s}"
+        autoloader.tag = "hanami.slices.#{slice_name}"
 
         # Component dirs are automatically pushed to the autoloader by dry-system's zeitwerk plugin.
         # This method adds other dirs that are not otherwise configured as component dirs.
@@ -1022,6 +1022,7 @@ module Hanami
         end
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def load_router(inspector:)
         return unless routes
 
@@ -1088,6 +1089,7 @@ module Hanami
           middleware_stack.update(config.middleware_stack)
         end
       end
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def render_errors?
         config.render_errors

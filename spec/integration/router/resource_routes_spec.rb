@@ -5,7 +5,7 @@ require "hanami/slice/router"
 require "json"
 
 RSpec.describe "Router / Resource routes" do
-  let(:router) { Hanami::Slice::Router.new(routes:, resolver:, inflector: Dry::Inflector.new) { } }
+  let(:router) { Hanami::Slice::Router.new(routes:, resolver:, inflector: Dry::Inflector.new) {} }
 
   let(:resolver) { Hanami::Slice::Routing::Resolver.new(slice:) }
   let(:slice) {
@@ -57,7 +57,7 @@ RSpec.describe "Router / Resource routes" do
     end
 
     describe "with :only" do
-      let(:routes) { proc { resources :posts, only: %i(index show) } }
+      let(:routes) { proc { resources :posts, only: %i[index show] } }
 
       it "routes only the given actions to the resource" do
         expect(routed("GET", "/posts")).to eq %(actions.posts.index)
@@ -72,7 +72,7 @@ RSpec.describe "Router / Resource routes" do
     end
 
     describe "with :except" do
-      let(:routes) { proc { resources :posts, except: %i(edit update destroy) } }
+      let(:routes) { proc { resources :posts, except: %i[edit update destroy] } }
 
       it "routes all except the given actions to the resource" do
         expect(routed("GET", "/posts")).to eq %(actions.posts.index)
@@ -136,7 +136,7 @@ RSpec.describe "Router / Resource routes" do
     end
 
     describe "with :only" do
-      let(:routes) { proc { resource :profile, only: %i(show edit update) } }
+      let(:routes) { proc { resource :profile, only: %i[show edit update] } }
 
       it "routes only the given actions to the resource" do
         expect(routed("GET", "/profile")).to eq %(actions.profile.show)
@@ -150,7 +150,7 @@ RSpec.describe "Router / Resource routes" do
     end
 
     describe "with :except" do
-      let(:routes) { proc { resource :profile, except: %i(edit update destroy) } }
+      let(:routes) { proc { resource :profile, except: %i[edit update destroy] } }
 
       it "routes all except the given actions to the resource" do
         expect(routed("GET", "/profile/new")).to eq %(actions.profile.new)
@@ -177,7 +177,7 @@ RSpec.describe "Router / Resource routes" do
     end
 
     describe "with :path" do
-      let(:routes) { proc { resource :profile, path: "user"} }
+      let(:routes) { proc { resource :profile, path: "user" } }
 
       it "uses the given path for the routes" do
         expect(routed("GET", "/user/new")).to eq %(actions.profile.new)

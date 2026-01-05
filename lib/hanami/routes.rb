@@ -137,6 +137,7 @@ module Hanami
       # @api private
       def method_missing(name, *args, **kwargs, &block)
         return super unless respond_to?(name)
+
         definitions << [name, args, kwargs, block]
         self
       end

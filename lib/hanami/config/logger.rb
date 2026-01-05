@@ -173,12 +173,14 @@ module Hanami
 
       # @api private
       def logger_constructor_options
-        {stream: stream,
+        {
+          stream: stream,
           level: level,
           formatter: formatter,
           filters: filters,
           template: template,
-          **options}
+          **options
+        }
       end
 
       # @api private

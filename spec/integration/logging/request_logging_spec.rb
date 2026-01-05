@@ -26,10 +26,10 @@ RSpec.describe "Logging / Request logging", :app_integration do
 
   def generate_app
     write "config/app.rb", <<~RUBY
-    module TestApp
-      class App < Hanami::App
+      module TestApp
+        class App < Hanami::App
+        end
       end
-    end
     RUBY
   end
 
@@ -83,7 +83,7 @@ RSpec.describe "Logging / Request logging", :app_integration do
           path: "/",
           ip: "127.0.0.1",
           elapsed: Integer,
-          elapsed_unit: a_string_matching(/(µs|ms)/),
+          elapsed_unit: a_string_matching(/(µs|ms)/)
         )
       end
     end
@@ -142,7 +142,7 @@ RSpec.describe "Logging / Request logging", :app_integration do
           path: "/",
           ip: "127.0.0.1",
           elapsed: Integer,
-          elapsed_unit: a_string_matching(/(µs|ms)/),
+          elapsed_unit: a_string_matching(/(µs|ms)/)
         )
       end
     end
