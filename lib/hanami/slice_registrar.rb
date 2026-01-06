@@ -108,8 +108,8 @@ module Hanami
       slice_class =
         begin
           inflector.constantize("#{slice_module_name(slice_name)}#{MODULE_DELIMITER}Slice")
-        rescue NameError => e
-          raise e unless e.name.to_s == inflector.camelize(slice_name) || e.name.to_s == :Slice
+        rescue NameError => exception
+          raise exception unless exception.name.to_s == inflector.camelize(slice_name) || exception.name.to_s == :Slice
         end
 
       register(slice_name, slice_class)

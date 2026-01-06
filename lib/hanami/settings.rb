@@ -140,8 +140,8 @@ module Hanami
 
         begin
           require slice_settings_require_path
-        rescue LoadError => e
-          raise e unless e.path == slice_settings_require_path
+        rescue LoadError => exception
+          raise exception unless exception.path == slice_settings_require_path
         end
       end
     end
@@ -167,8 +167,8 @@ module Hanami
         else
           public_send("#{name}=", value)
         end
-      rescue => e # rubocop:disable Style/RescueStandardError
-        errs[name] = e
+      rescue => exception # rubocop:disable Style/RescueStandardError
+        errs[name] = exception
       end
 
       raise InvalidSettingsError, errors if errors.any?

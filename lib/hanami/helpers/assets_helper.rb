@@ -4,8 +4,6 @@ require "uri"
 require "hanami/view"
 require_relative "../constants"
 
-# rubocop:disable Metrics/ModuleLength
-
 module Hanami
   module Helpers
     # HTML assets helpers
@@ -804,5 +802,3 @@ module Hanami
     end
   end
 end
-
-# rubocop:enable Metrics/ModuleLength

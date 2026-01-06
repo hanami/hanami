@@ -40,8 +40,8 @@ module Hanami
               slice.inflector.constantize(
                 slice.inflector.camelize("#{slice.app.slice_name.name}/views/context")
               )
-            rescue NameError => e
-              raise e unless %i[Views Context].include?(e.name)
+            rescue NameError => exception
+              raise exception unless %i[Views Context].include?(exception.name)
 
               Hanami::View::Context
             end

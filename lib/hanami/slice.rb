@@ -46,7 +46,6 @@ module Hanami
       end
     end
 
-    # rubocop:disable Metrics/ModuleLength
     module ClassMethods
       # Returns the slice's parent.
       #
@@ -1009,16 +1008,16 @@ module Hanami
           begin
             require_relative "./routes"
             require routes_require_path
-          rescue LoadError => e
-            raise e unless e.path == routes_require_path
+          rescue LoadError => exception
+            raise exception unless exception.path == routes_require_path
           end
         end
 
         begin
           routes_class = namespace.const_get(ROUTES_CLASS_NAME)
           routes_class.routes
-        rescue NameError => e
-          raise e unless e.name == ROUTES_CLASS_NAME.to_sym
+        rescue NameError => exception
+          raise exception unless exception.name == ROUTES_CLASS_NAME.to_sym
         end
       end
 
@@ -1145,6 +1144,5 @@ module Hanami
 
       # rubocop:enable Metrics/AbcSize
     end
-    # rubocop:enable Metrics/ModuleLength
   end
 end

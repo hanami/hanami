@@ -246,17 +246,14 @@ module Hanami
         LEADING_ID_REGEX = %r{\A/:id}
 
         def key_path_base
-          @key_path_base ||=
-            if @options[:to]
-              @options[:to]
+          @key_path_base ||= @options[:to] || begin
+            if @resource_scope.any?
+              prefix = @resource_scope.join(CONTAINER_KEY_DELIMITER)
+              "#{prefix}#{CONTAINER_KEY_DELIMITER}#{@name}"
             else
-              @name.to_s.then { |name|
-                next name unless @resource_scope.any?
-
-                prefix = @resource_scope.join(CONTAINER_KEY_DELIMITER)
-                "#{prefix}#{CONTAINER_KEY_DELIMITER}#{name}"
-              }
+              @name.to_s
             end
+          end
         end
 
         def route_name(action, prefix)

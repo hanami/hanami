@@ -49,8 +49,8 @@ module Hanami
 
           begin
             slice.app.namespace.const_get(:View, false)
-          rescue NameError => e
-            raise unless e.name == :View
+          rescue NameError => exception
+            raise unless exception.name == :View
           end
         end
 
