@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
+
 gemspec
+
+eval_gemfile "Gemfile.devtools"
 
 unless ENV["CI"]
   gem "byebug", platforms: :mri
