@@ -1,2 +1,4 @@
+# This file is synced from hanakai-rb/repo-sync
+
 inherit_from:
   - https://raw.githubusercontent.com/hanakai-rb/repo-sync/main/rubocop/rubocop.yml
