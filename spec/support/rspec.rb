@@ -1,27 +1,28 @@
 # frozen_string_literal: true
 
+# This file is synced from hanakai-rb/repo-sync
+
 RSpec.configure do |config|
-  config.expect_with :rspec do |expectations|
-    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
-  end
-
-  config.mock_with :rspec do |mocks|
-    mocks.verify_partial_doubles = true
-  end
-
-  config.before :suite do
-    require "hanami/devtools/integration"
-    Pathname.new(Dir.pwd).join("tmp").mkpath
-  end
-
-  config.shared_context_metadata_behavior = :apply_to_host_groups
-
+  # When no filter given, search and run focused tests
   config.filter_run_when_matching :focus
+
+  # Disables rspec monkey patches (no reason for their existence tbh)
   config.disable_monkey_patching!
-  config.warnings = false
 
-  config.default_formatter = "doc" if config.files_to_run.one?
+  # Run ruby in verbose mode
+  config.warnings = true
 
-  config.order = :random
-  Kernel.srand config.seed
+  # Collect all failing expectations automatically,
+  # without calling aggregate_failures everywhere
+  config.define_derived_metadata do |meta|
+    meta[:aggregate_failures] = true
+  end
+
+  if ENV['CI']
+    # No focused specs should be committed. This ensures
+    # builds fail when this happens.
+    config.before(:each, :focus) do
+      raise StandardError, "You've committed a focused spec!"
+    end
+  end
 end

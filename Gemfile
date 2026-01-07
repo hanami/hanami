@@ -7,7 +7,6 @@ gemspec
 eval_gemfile "Gemfile.devtools"
 
 unless ENV["CI"]
-  gem "byebug", platforms: :mri
   gem "yard"
   gem "yard-junk"
 end
