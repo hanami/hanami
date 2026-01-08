@@ -18,7 +18,7 @@ RSpec.configure do |config|
     meta[:aggregate_failures] = true
   end
 
-  if ENV['CI']
+  if ENV["CI"]
     # No focused specs should be committed. This ensures
     # builds fail when this happens.
     config.before(:each, :focus) do
