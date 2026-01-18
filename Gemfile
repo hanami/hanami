@@ -42,7 +42,3 @@ group :test do
   gem "saharspec"
   gem "slim"
 end
-
-group :tools do
-  gem "rubocop"
-end
