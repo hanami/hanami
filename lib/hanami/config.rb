@@ -248,6 +248,20 @@ module Hanami
     # @since 2.2.0
     attr_reader :db
 
+    # Returns the app's i18n config, or a null config if i18n is not bundled.
+    #
+    # @example When i18n is bundled
+    #   config.i18n.default_locale # => :en
+    #
+    # @example When i18n is not bundled
+    #   config.i18n.default_locale # => NoMethodError
+    #
+    # @return [Hanami::Config::I18n, Hanami::Config::NullConfig]
+    #
+    # @api public
+    # @since 2.2.0
+    attr_reader :i18n
+
     # Returns the app's middleware stack, or nil if hanami-router is not bundled.
     #
     # Use this to configure middleware that should apply to all routes.
@@ -332,6 +346,11 @@ module Hanami
 
       @db = load_dependent_config("hanami-db") { DB.new }
 
+      @i18n = load_dependent_config("i18n") {
+        require_relative "config/i18n"
+        I18n.new
+      }
+
       @logger = Config::Logger.new(env: env, app_name: app_name)
 
       @middleware = load_dependent_config("hanami-router") {
@@ -362,6 +381,7 @@ module Hanami
       @actions = source.actions.dup
       @assets = source.assets.dup
       @db = source.db.dup
+      @i18n = source.i18n.dup
       @logger = source.logger.dup
       @middleware = source.middleware.dup
       @router = source.router.dup.tap do |router|
