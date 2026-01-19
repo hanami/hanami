@@ -36,6 +36,9 @@ gem "dry-operation", github: "dry-rb/dry-operation", branch: "main"
 gem "sqlite3", platform: :mri
 gem "jdbc-sqlite3", platform: :jruby
 
+# For testing i18n support
+gem "i18n"
+
 group :test do
   gem "capybara"
   gem "dotenv"
