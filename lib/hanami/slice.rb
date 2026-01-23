@@ -934,6 +934,7 @@ module Hanami
         )
       end
 
+      # rubocop:disable Metrics/PerceivedComplexity
       def prepare_container_providers
         # Check here for the `routes` definition only, not `router` itself, because the
         # `router` requires the slice to be prepared before it can be loaded, and at this
@@ -964,7 +965,16 @@ module Hanami
             end
           end
         end
+
+        if Hanami.bundled?("i18n")
+          require_relative "providers/i18n"
+
+          if i18n_config_dir? && !container.providers[:i18n]
+            register_provider(:i18n, source: Providers::I18n)
+          end
+        end
       end
+      # rubocop:enable Metrics/PerceivedComplexity
 
       def prepare_autoloader
         autoloader.tag = "hanami.slices.#{slice_name}"
@@ -1110,6 +1120,10 @@ module Hanami
 
       def assets_dir?
         source_path.join("assets").directory?
+      end
+
+      def i18n_config_dir?
+        root.join("config", "i18n").directory?
       end
 
       def register_db_provider?
