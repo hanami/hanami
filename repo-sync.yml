@@ -7,6 +7,7 @@ ci:
   matrix:
     rack: ["~> 2.0", "~> 3.0"]
   node: true
+  jruby: false
 gemspec:
   authors: ["Hanakai team"]
   email: ["info@hanakai.org"]
