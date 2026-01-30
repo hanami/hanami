@@ -4,8 +4,8 @@
 # workflows to run with read-only permissions on fork PRs while still posting comments via this
 # privileged workflow that runs in the base repo context.
 #
-# Comment artifacts should be generated using the `hanakai-rb/repo-sync/pr-comment-artifact@main`
-# action.
+# Comment artifacts should be generated using the
+# `hanakai-rb/repo-sync/shared-actions/pr-comment-artifact@main` action.
 
 name: PR comments
 
@@ -25,6 +25,6 @@ jobs:
 
     steps:
       - name: Post comments
-        uses: hanakai-rb/repo-sync/pr-comments-from-artifacts@main
+        uses: hanakai-rb/repo-sync/shared-actions/pr-comments-from-artifacts@main
         with:
           workflow-run-id: ${{ github.event.workflow_run.id }}

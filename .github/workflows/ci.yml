@@ -75,7 +75,7 @@ jobs:
           RACK_MATRIX_VALUE: ${{ matrix.rack || '' }}
       - name: Create optional failure comment
         if: ${{ matrix.optional && github.event.pull_request }}
-        uses: hanakai-rb/repo-sync/pr-comment-artifact@main
+        uses: hanakai-rb/repo-sync/shared-actions/pr-comment-artifact@main
         with:
           name: ci-ruby-${{ matrix.ruby }}
           pr-number: ${{ github.event.pull_request.number }}
