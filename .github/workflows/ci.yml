@@ -91,3 +91,39 @@ jobs:
     steps:
       - uses: liskin/gh-workflow-keepalive@v1
 
+  release:
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag'
+    needs: tests
+    steps:
+      - name: Trigger release workflow
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.RELEASE_MACHINE_DISPATCH_TOKEN }}
+          script: |
+            const tag = context.ref.replace("refs/tags/", "");
+            const repo = context.repo.owner + "/" + context.repo.repo;
+
+            const tagMessage = await github.rest.git.getTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_sha: context.sha
+            }).then(res => res.data.message).catch(() => "");
+            const announce = /(skip-announce|no-announce)/i.test(tagMessage) ? "false" : "true";
+
+            await github.rest.actions.createWorkflowDispatch({
+              owner: "hanakai-rb",
+              repo: "release-machine",
+              workflow_id: "release.yml",
+              ref: "main",
+              inputs: { repo, tag, announce }
+            });
+
+            const workflowUrl = "https://github.com/hanakai-rb/release-machine/actions/workflows/release.yml";
+            await core.summary
+              .addHeading("Release Triggered")
+              .addRaw(`Triggered release workflow for <code>${tag}</code>`)
+              .addLink("View release workflow", workflowUrl)
+              .write();
+  
+
