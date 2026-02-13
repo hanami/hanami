@@ -26,6 +26,7 @@ module Hanami
         end
       end
 
+      # rubocop:disable Metrics/AbcSize
       def start
         backend = config.backend || ::I18n::Backend::Simple.new
 
@@ -67,6 +68,7 @@ module Hanami
           fallbacks: fallbacks_config
         )
       end
+      # rubocop:enable Metrics/AbcSize
 
       private
 

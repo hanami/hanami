@@ -43,6 +43,8 @@ module Hanami
           self.locale = locale if locale
         end
 
+        # rubocop:disable Metrics/PerceivedComplexity
+
         # Translates the given key.
         #
         # @param key [String, Symbol] the translation key to look up
@@ -99,6 +101,8 @@ module Hanami
             result
           end
         end
+
+        # rubocop:enable Metrics/PerceivedComplexity
 
         # @api public
         # @since x.x.x
