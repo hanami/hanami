@@ -12,49 +12,58 @@ module Hanami
     class I18n
       include Dry::Configurable
 
-      # The default locale to use for translations.
+      # @!attribute [rw] default_locale
+      #   Sets or returns the default locale to use for translations.
       #
-      # Default: `:en`
+      #   Defaults to `:en`.
       #
-      # @example
-      #   config.i18n.default_locale = :fr
+      #   @return [Symbol]
       #
-      # @api public
-      # @since x.x.x
+      #   @example
+      #     config.i18n.default_locale = :fr
+      #
+      #   @api public
+      #   @since x.x.x
       setting :default_locale, default: Providers::I18n::DEFAULT_LOCALE
 
-      # Array of available locales for the application.
+      # @!attribute [rw] available_locales
+      #   Sets or returns the array of available locales for the application.
       #
-      # When set, only these locales will be considered available, even if translation files exist
-      # for other locales. When empty or not set, all locales from loaded translation files are
-      # available.
+      #   When set, only these locales will be considered available, even if translation files exist
+      #   for other locales. When empty or not set, all locales from loaded translation files are
+      #   available.
       #
-      # Default: `[]` (all loaded locales are available)
+      #   Defaults to `[]` (all loaded locales are available).
       #
-      # @example Restrict to specific locales
-      #   config.i18n.available_locales = [:en, :fr, :de]
+      #   @return [Array<Symbol>]
       #
-      # @api public
-      # @since x.x.x
+      #   @example Restrict to specific locales
+      #     config.i18n.available_locales = [:en, :fr, :de]
+      #
+      #   @api public
+      #   @since x.x.x
       setting :available_locales, default: Providers::I18n::DEFAULT_AVAILABLE_LOCALES
 
-      # Array of file path patterns for loading translation files.
+      # @!attribute [rw] load_path
+      #   Sets or returns the array of file path patterns for loading translation files.
       #
-      # Patterns can be:
+      #   Patterns can be:
       #
-      # - Relative paths/globs (resolved against the app/slice root)
-      # - Absolute paths (used as-is)
+      #   - Relative paths/globs (resolved against the app/slice root)
+      #   - Absolute paths (used as-is)
       #
-      # Default: `["config/i18n/**/*.{yml,yaml,json,rb}"]`
+      #   Defaults to `["config/i18n/**/*.{yml,yaml,json,rb}"]`.
       #
-      # @example Append custom paths
-      #   config.i18n.load_path += ["config/custom_translations/**/*.yml"]
+      #   @return [Array<String>]
       #
-      # @example Replace default paths
-      #   config.i18n.load_path = ["translations/**/*.yml"]
+      #   @example Append custom paths
+      #     config.i18n.load_path += ["config/custom_translations/**/*.yml"]
       #
-      # @api public
-      # @since x.x.x
+      #   @example Replace default paths
+      #     config.i18n.load_path = ["translations/**/*.yml"]
+      #
+      #   @api public
+      #   @since x.x.x
       setting :load_path, default: Providers::I18n::DEFAULT_LOAD_PATH
 
       # @!attribute [rw] fallbacks
