@@ -366,6 +366,175 @@ RSpec.describe "I18n", :app_integration do
       end
     end
 
+    it "supports locale fallbacks" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+              config.i18n.default_locale = :en
+              config.i18n.fallbacks = true
+            end
+          end
+        RUBY
+
+        write "config/i18n/en.yml", <<~YAML
+          en:
+            greeting: Hello
+            messages:
+              welcome: Welcome
+        YAML
+
+        write "config/i18n/de.yml", <<~YAML
+          de:
+            greeting: Hallo
+        YAML
+
+        require "hanami/prepare"
+
+        i18n = Hanami.app["i18n"]
+
+        # Translation exists in German
+        expect(i18n.t("greeting", locale: :de)).to eq "Hallo"
+
+        # Translation missing in German, falls back to English
+        expect(i18n.t("messages.welcome", locale: :de)).to eq "Welcome"
+      end
+    end
+
+    it "supports custom fallback configuration with hash" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+              config.i18n.default_locale = :en
+              config.i18n.fallbacks = {de: [:de, :en], fr: [:fr, :en]}
+            end
+          end
+        RUBY
+
+        write "config/i18n/en.yml", <<~YAML
+          en:
+            greeting: Hello
+            messages:
+              welcome: Welcome
+        YAML
+
+        write "config/i18n/de.yml", <<~YAML
+          de:
+            greeting: Hallo
+        YAML
+
+        write "config/i18n/fr.yml", <<~YAML
+          fr:
+            greeting: Bonjour
+        YAML
+
+        require "hanami/prepare"
+
+        i18n = Hanami.app["i18n"]
+
+        # German falls back to English for missing translations
+        expect(i18n.t("greeting", locale: :de)).to eq "Hallo"
+        expect(i18n.t("messages.welcome", locale: :de)).to eq "Welcome"
+
+        # French falls back to English for missing translations
+        expect(i18n.t("greeting", locale: :fr)).to eq "Bonjour"
+        expect(i18n.t("messages.welcome", locale: :fr)).to eq "Welcome"
+      end
+    end
+
+    it "supports fallbacks with array configuration (default fallback for all locales)" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+              config.i18n.default_locale = :en
+              config.i18n.fallbacks = [:en]
+            end
+          end
+        RUBY
+
+        write "config/i18n/en.yml", <<~YAML
+          en:
+            greeting: Hello
+            messages:
+              welcome: Welcome
+        YAML
+
+        write "config/i18n/de.yml", <<~YAML
+          de:
+            greeting: Hallo
+        YAML
+
+        write "config/i18n/fr.yml", <<~YAML
+          fr:
+            greeting: Bonjour
+        YAML
+
+        require "hanami/prepare"
+
+        i18n = Hanami.app["i18n"]
+
+        # All locales fall back to English for missing translations
+        expect(i18n.t("greeting", locale: :de)).to eq "Hallo"
+        expect(i18n.t("messages.welcome", locale: :de)).to eq "Welcome"
+        expect(i18n.t("greeting", locale: :fr)).to eq "Bonjour"
+        expect(i18n.t("messages.welcome", locale: :fr)).to eq "Welcome"
+      end
+    end
+
+    it "does not apply fallbacks when using a custom backend" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+              config.i18n.default_locale = :en
+              config.i18n.fallbacks = true
+            end
+          end
+        RUBY
+
+        write "config/providers/i18n.rb", <<~RUBY
+          Hanami.app.register_provider :i18n, namespace: true do
+            prepare do
+              require "i18n"
+            end
+
+            start do
+              backend = I18n::Backend::Simple.new
+              backend.store_translations(:en, {greeting: "Hello from custom backend"})
+              backend.store_translations(:de, {custom: "Hallo"})
+
+              register "backend", Hanami::Providers::I18n::Backend.new(
+                backend,
+                default_locale: :en,
+                available_locales: [:en, :de]
+              )
+            end
+          end
+        RUBY
+
+        require "hanami/prepare"
+
+        i18n = Hanami.app["i18n.backend"]
+
+        # Custom backend is used
+        expect(i18n.t("greeting")).to eq "Hello from custom backend"
+
+        # Fallbacks are NOT applied because a custom backend was provided
+        # (fallbacks are only auto-configured for the default Simple backend)
+        expect(i18n.t("greeting", locale: :de)).to eq "greeting"
+      end
+    end
+
     it "allows appending to default load_path with +=" do
       with_tmp_directory(Dir.mktmpdir) do
         write "config/app.rb", <<~'RUBY'

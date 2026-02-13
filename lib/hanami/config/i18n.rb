@@ -57,6 +57,32 @@ module Hanami
       # @since x.x.x
       setting :load_path, default: Providers::I18n::DEFAULT_LOAD_PATH
 
+      # @!attribute [rw] fallbacks
+      #   Sets or returns the locale fallbacks configuration for missing translations.
+      #
+      #   When enabled, the i18n backend will fall back to other locales when a translation is
+      #   missing in the requested locale.
+      #
+      #   This can be set to `true` to enable default fallbacks, a hash to configure explicit
+      #   fallback chains per locale, or an array to set a default fallback locale for all locales.
+      #
+      #   Defaults to `nil` (fallbacks disabled).
+      #
+      #   @return [Boolean, Hash, Array, nil]
+      #
+      #   @example Enable default fallbacks
+      #     config.i18n.fallbacks = true
+      #
+      #   @example Configure fallbacks with a hash
+      #     config.i18n.fallbacks = {de: [:de, :en], fr: [:fr, :en]}
+      #
+      #   @example Configure a default fallback locale
+      #     config.i18n.fallbacks = [:en]
+      #
+      #   @api public
+      #   @since x.x.x
+      setting :fallbacks
+
       private
 
       def method_missing(name, *args, &block)

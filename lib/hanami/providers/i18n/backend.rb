@@ -28,13 +28,15 @@ module Hanami
         # @param locale [Symbol, String, nil] initial locale to set in thread-local storage
         # @param default_locale [Symbol, String] the default locale to use when no locale is set
         # @param available_locales [Array<Symbol, String>] list of available locales
+        # @param fallbacks [I18n::Locale::Fallbacks, nil] fallbacks configuration for missing translations
         #
         # @api private
         # @since x.x.x
-        def initialize(backend, locale: nil, default_locale: :en, available_locales: [])
+        def initialize(backend, locale: nil, default_locale: :en, available_locales: [], fallbacks: nil)
           @backend = backend
           @default_locale = default_locale.to_sym
           @available_locales = Array(available_locales).map(&:to_sym)
+          @fallbacks = fallbacks
 
           # Set initial locale (if provided) in thread-local storage.
           @storage_key = :"hanami_i18n_#{object_id}"
@@ -71,6 +73,20 @@ module Hanami
 
           result = catch(:exception) do
             @backend.translate(locale, key, options)
+          end
+
+          # If translation is missing and fallbacks are configured, try fallback locales
+          if result.is_a?(::I18n::MissingTranslation) && @fallbacks && !options[:fallback]
+            fallback_locales = @fallbacks[locale] - [locale]
+            fallback_locales.each do |fallback_locale|
+              fallback_result = catch(:exception) do
+                @backend.translate(fallback_locale, key, options.merge(fallback: true))
+              end
+
+              unless fallback_result.is_a?(::I18n::MissingTranslation)
+                return fallback_result
+              end
+            end
           end
 
           if result.is_a?(::I18n::MissingTranslation)

@@ -4,7 +4,7 @@ module Hanami
   module Providers
     # @api private
     class I18n < Hanami::Provider::Source
-      SLICE_CONFIGURED_SETTINGS = %i[default_locale available_locales load_path].freeze
+      SLICE_CONFIGURED_SETTINGS = %i[default_locale available_locales load_path fallbacks].freeze
 
       DEFAULT_LOCALE = :en
       DEFAULT_AVAILABLE_LOCALES = [].freeze
@@ -14,6 +14,7 @@ module Hanami
       setting :available_locales, default: DEFAULT_AVAILABLE_LOCALES
       setting :backend
       setting :load_path, default: DEFAULT_LOAD_PATH
+      setting :fallbacks
 
       def prepare
         require "i18n"
@@ -28,6 +29,29 @@ module Hanami
       def start
         backend = config.backend || ::I18n::Backend::Simple.new
 
+        # Configure fallbacks if enabled (only for default backend, not custom backends)
+        fallbacks_config = nil
+        if config.fallbacks && !config.backend
+          fallbacks_config =
+            case config.fallbacks
+            when true
+              # Use default_locale as the only fallback
+              fallbacks = ::I18n::Locale::Fallbacks.new
+              fallbacks.defaults = [config.default_locale]
+              fallbacks
+            when Hash
+              # Use explicit per-locale fallback mapping
+              ::I18n::Locale::Fallbacks.new(config.fallbacks)
+            when Array
+              # Use the given fallbacks for all locales
+              fallbacks = ::I18n::Locale::Fallbacks.new
+              fallbacks.defaults = config.fallbacks
+              fallbacks
+            else
+              ::I18n::Locale::Fallbacks.new(config.fallbacks)
+            end
+        end
+
         # Only load translation files if using the default backend. Custom backends are expected to
         # handle their own initialization.
         unless config.backend
@@ -39,7 +63,8 @@ module Hanami
           backend,
           locale: config.default_locale,
           default_locale: config.default_locale,
-          available_locales: config.available_locales
+          available_locales: config.available_locales,
+          fallbacks: fallbacks_config
         )
       end
 
