@@ -16,6 +16,23 @@ module Hanami
     class Views
       include Dry::Configurable
 
+      # @!attribute [rw] default_template_engine
+      #   Sets or returns the default template engine to use for generated views.
+      #
+      #   Used by generators when no explicit template engine is specified.
+      #   Supports `erb`, `haml`, and `slim`.
+      #
+      #   Defaults to `"erb"`.
+      #
+      # @example
+      #   config.views.default_template_engine = "slim"
+      #
+      # @return [String] the template engine name
+      #
+      # @api public
+      # @since 2.4.0
+      setting :default_template_engine, default: "erb"
+
       # @api private
       # @since 2.1.0
       attr_reader :base_config
