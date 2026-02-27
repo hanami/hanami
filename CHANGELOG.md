@@ -26,6 +26,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Added
 
+- New setting `:default_template_engine` that sets which template engine should be used by default when doing `hanami generate` (@katafrakt in #1564)
+
 ### Changed
 
 ### Deprecated
