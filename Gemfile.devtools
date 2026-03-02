@@ -1,0 +1,17 @@
+# frozen_string_literal: true
+
+# This file is synced from hanakai-rb/repo-sync
+
+gem "rake", ">= 12.3.3"
+
+group :test do
+  gem "simplecov", require: false, platforms: :ruby
+  gem "simplecov-cobertura", require: false, platforms: :ruby
+  gem "rexml", require: false
+
+  gem "warning"
+end
+
+group :tools do
+  gem "rubocop"
+end

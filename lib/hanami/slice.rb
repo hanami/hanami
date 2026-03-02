@@ -46,7 +46,6 @@ module Hanami
       end
     end
 
-    # rubocop:disable Metrics/ModuleLength
     module ClassMethods
       # Returns the slice's parent.
       #
@@ -221,6 +220,18 @@ module Hanami
       # @since 2.2.0
       def source_path
         app? ? root.join(APP_DIR) : root
+      end
+
+      # Returns the slice's root component directory, as a path relative to the app's root.
+      #
+      # @return [Pathname]
+      #
+      # @see #source_path
+      #
+      # @api public
+      # @since 2.3.0
+      def relative_source_path
+        source_path.relative_path_from(app.root)
       end
 
       # Returns the slice's configured inflector.
@@ -729,7 +740,9 @@ module Hanami
       # @api public
       # @since 2.0.0
       def routes
-        @routes ||= load_routes
+        return @routes if instance_variable_defined?(:@routes)
+
+        @routes = load_routes
       end
 
       # Returns the slice's router, if or nil if no routes are defined.
@@ -936,11 +949,12 @@ module Hanami
         )
       end
 
+      # rubocop:disable Metrics/PerceivedComplexity
       def prepare_container_providers
         # Check here for the `routes` definition only, not `router` itself, because the
         # `router` requires the slice to be prepared before it can be loaded, and at this
         # point we're still in the process of preparing.
-        if routes
+        if routes?
           require_relative "providers/routes"
           register_provider(:routes, source: Providers::Routes)
         end
@@ -957,19 +971,28 @@ module Hanami
 
           if register_db_provider?
             # Only register providers if the user hasn't provided their own
-            if !container.providers[:db]
+            unless container.providers[:db]
               register_provider(:db, namespace: true, source: Providers::DB)
             end
 
-            if !container.providers[:relations]
+            unless container.providers[:relations]
               register_provider(:relations, namespace: true, source: Providers::Relations)
             end
           end
         end
+
+        if Hanami.bundled?("i18n")
+          require_relative "providers/i18n"
+
+          if i18n_config_dir? && !container.providers[:i18n]
+            register_provider(:i18n, source: Providers::I18n)
+          end
+        end
       end
+      # rubocop:enable Metrics/PerceivedComplexity
 
       def prepare_autoloader
-        autoloader.tag = "hanami.slices.#{slice_name.to_s}"
+        autoloader.tag = "hanami.slices.#{slice_name}"
 
         # Component dirs are automatically pushed to the autoloader by dry-system's zeitwerk plugin.
         # This method adds other dirs that are not otherwise configured as component dirs.
@@ -993,28 +1016,37 @@ module Hanami
         slices.freeze
       end
 
+      def routes?
+        return false unless Hanami.bundled?("hanami-router")
+
+        return true if namespace.const_defined?(ROUTES_CLASS_NAME)
+
+        root.join("#{ROUTES_PATH}#{RB_EXT}").file?
+      end
+
       def load_routes
         return false unless Hanami.bundled?("hanami-router")
 
         if root.directory?
-          routes_require_path = File.join(root, ROUTES_PATH)
+          routes_require_path = root.join(ROUTES_PATH).to_s
 
           begin
             require_relative "./routes"
             require routes_require_path
-          rescue LoadError => e
-            raise e unless e.path == routes_require_path
+          rescue LoadError => exception
+            raise exception unless exception.path == routes_require_path
           end
         end
 
         begin
           routes_class = namespace.const_get(ROUTES_CLASS_NAME)
           routes_class.routes
-        rescue NameError => e
-          raise e unless e.name == ROUTES_CLASS_NAME.to_sym
+        rescue NameError => exception
+          raise exception unless exception.name == ROUTES_CLASS_NAME.to_sym
         end
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def load_router(inspector:)
         return unless routes
 
@@ -1037,6 +1069,7 @@ module Hanami
 
         Slice::Router.new(
           inspector: inspector,
+          inflector: inflector,
           routes: routes,
           resolver: config.router.resolver.new(slice: self),
           **error_handlers,
@@ -1080,6 +1113,7 @@ module Hanami
           middleware_stack.update(config.middleware_stack)
         end
       end
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def render_errors?
         config.render_errors
@@ -1101,6 +1135,10 @@ module Hanami
 
       def assets_dir?
         source_path.join("assets").directory?
+      end
+
+      def i18n_config_dir?
+        root.join("config", "i18n").directory?
       end
 
       def register_db_provider?
@@ -1135,6 +1173,5 @@ module Hanami
 
       # rubocop:enable Metrics/AbcSize
     end
-    # rubocop:enable Metrics/ModuleLength
   end
 end

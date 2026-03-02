@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../../errors"
+require_relative "slice_configured_context"
 
 module Hanami
   module Extensions
@@ -39,8 +40,8 @@ module Hanami
               slice.inflector.constantize(
                 slice.inflector.camelize("#{slice.app.slice_name.name}/views/context")
               )
-            rescue NameError => e
-              raise e unless %i[Views Context].include?(e.name)
+            rescue NameError => exception
+              raise exception unless %i[Views Context].include?(exception.name)
 
               Hanami::View::Context
             end
@@ -90,28 +91,18 @@ module Hanami
             # @since 2.1.0
             attr_reader :inflector
 
-            # Returns the app's settings.
-            #
-            # @return [Hanami::Settings] the settings
-            #
-            # @api public
-            # @since 2.1.0
-            attr_reader :settings
-
             # @see SliceConfiguredContext#define_new
             #
             # @api private
             # @since 2.1.0
-            def initialize( # rubocop:disable Metrics/ParameterLists
+            def initialize(
               inflector: nil,
-              settings: nil,
               routes: nil,
               assets: nil,
               request: nil,
               **args
             )
               @inflector = inflector
-              @settings = settings
               @routes = routes
               @assets = assets
               @request = request
@@ -166,7 +157,9 @@ module Hanami
             # @since 2.1.0
             def request
               unless @request
-                raise Hanami::ComponentLoadError, "Request not available. Only views rendered from Hanami::Action instances have a request."
+                raise Hanami::ComponentLoadError, <<~STR
+                  Request not available. Only views rendered from Hanami::Action instances have a request.
+                STR
               end
 
               @request
@@ -177,7 +170,7 @@ module Hanami
             # @return [Boolean]
             #
             # @api public
-            # @since x.x.x
+            # @since 2.3.0
             def request?
               !!@request
             end

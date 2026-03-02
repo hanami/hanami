@@ -1,0 +1,31 @@
+name: Repo-sync preview
+
+on:
+  workflow_run:
+    workflows: ["CI", "RuboCop"]
+    types: [completed]
+    branches:
+      - "ci/repo-sync-preview-*"
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch status to repo-sync
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.REPO_SYNC_DISPATCH_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: "hanakai-rb",
+              repo: "repo-sync",
+              workflow_id: "aggregate-preview-status.yml",
+              ref: "main",
+              inputs: {
+                pr_number: "${{ github.event.workflow_run.head_branch }}".replace("ci/repo-sync-preview-", ""),
+                repo_name: "${{ github.repository }}",
+                workflow_name: "${{ github.event.workflow_run.name }}",
+                status: "${{ github.event.workflow_run.conclusion }}",
+                run_url: "${{ github.event.workflow_run.html_url }}"
+              }
+            });

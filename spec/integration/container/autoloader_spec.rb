@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "App autoloader", :app_integration do
   specify "Classes are autoloaded through direct reference, including through components resolved from the container" do
     with_tmp_directory(Dir.mktmpdir) do

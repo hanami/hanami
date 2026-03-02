@@ -252,7 +252,7 @@ RSpec.describe "DB / Slices", :app_integration do
         :exclude_or_null,
         :caller_logging,
         :error_sql,
-        :sql_comments,
+        :sql_comments
       ]
       # Except when it has been explicitly configured in a child slice provider
       expect(Main::Slice["db.gateway"].options[:extensions]).to eq []

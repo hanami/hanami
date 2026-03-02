@@ -7,6 +7,8 @@ require_relative "../constants"
 
 module Hanami
   module Providers
+    # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+
     # @api private
     # @since 2.2.0
     class DB < Hanami::Provider::Source
@@ -250,7 +252,7 @@ module Hanami
           end
 
         # Set the default gateway from ENV var without suffix
-        if !database_urls.key?(:default)
+        unless database_urls.key?(:default)
           fallback_vars = ["#{env_var_prefix}DATABASE_URL", "DATABASE_URL"].uniq
 
           fallback_vars.each do |var|
@@ -290,7 +292,9 @@ module Hanami
 
         return if Hanami.bundled?(database_gem)
 
-        raise Hanami::ComponentLoadError, %(The "#{database_gem}" gem is required to connect to #{database_url}. Please add it to your Gemfile.)
+        raise Hanami::ComponentLoadError, <<~STR
+          The "#{database_gem}" gem is required to connect to #{database_url}. Please add it to your Gemfile.
+        STR
       end
 
       def register_rom_components(component_type, path)
@@ -309,6 +313,7 @@ module Hanami
         end
       end
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
     Dry::System.register_provider_source(
       :db,

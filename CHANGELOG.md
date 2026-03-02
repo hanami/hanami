@@ -1,11 +1,32 @@
 # Hanami
 
+A flexible framework for maintainable Ruby apps.
+
+A complete Hanami app is composed of multiple gems. For a complete overview of changes, see also these CHANGELOGs:
+
+[Assets][assets], [Assets JS][assets-js], [CLI][cli],
+[Controller][controller], [DB][db], [RSpec][rspec],
+[Reloader][reloader], [Router][router], [Utils][utils],
+[Validations][validations], [View][view], [Webconsole][webconsole]
+
+[assets]: https://github.com/hanami/hanami-assets/blob/main/CHANGELOG.md
+[assets-js]: https://github.com/hanami/hanami-assets-js/blob/main/CHANGELOG.md
+[cli]: https://github.com/hanami/hanami-cli/blob/main/CHANGELOG.md
+[controller]: https://github.com/hanami/hanami-controller/blob/main/CHANGELOG.md
+[db]: https://github.com/hanami/hanami-db/blob/main/CHANGELOG.md
+[rspec]: https://github.com/hanami/hanami-rspec/blob/main/CHANGELOG.md
+[reloader]: https://github.com/hanami/hanami-reloader/blob/main/CHANGELOG.md
+[router]: https://github.com/hanami/hanami-router/blob/main/CHANGELOG.md
+[utils]: https://github.com/hanami/hanami-utils/blob/main/CHANGELOG.md
+[validations]: https://github.com/hanami/hanami-validations/blob/main/CHANGELOG.md
+[view]: https://github.com/hanami/hanami-view/blob/main/CHANGELOG.md
+[webconsole]: https://github.com/hanami/hanami-webconsole/blob/main/CHANGELOG.md
+
 ## [Unreleased]
 
 ### Added
 
-- Check `ENV["APP_ENV"]` for the Hanami env if `ENV["HANAMI_ENV"]` is not set. The order of environment variable checks is now `HANAMI_ENV`->`APP_ENV`->`RACK_ENV` (@svoop in #1487).
-- Support optional nonce in Rack requests, CSP header rules and view helpers (@svoop in #1500)
+- New setting `:default_template_engine` that sets which template engine should be used by default when doing `hanami generate` (@katafrakt in #1564)
 
 ### Changed
 
@@ -16,6 +37,93 @@
 ### Fixed
 
 ### Security
+
+[unreleased]: https://github.com/hanami/hanami/compare/v2.3.2...HEAD
+
+## [v2.3.2] - 2025-12-04
+
+### Fixed
+
+- Support the newly released Bundler v4 by removing upper version bound our dependency on it. Require at least Bundler 2.0 as well. (@timriley in #1559)
+
+[v2.3.2]: https://github.com/hanami/hanami/compare/v2.3.1...v2.3.2
+
+## [v2.3.1] - 2025-11-14
+
+### Fixed
+
+- Fix a circular require warning when loading router extensions. (@timriley in #1556)
+
+## [v2.3.0] - 2025-11-12
+
+### Added
+
+- Add `resources` and `resource` methods to the routes DSL. (@afomera and @timriley in #1542 and #1548)
+
+  ```ruby
+  resources :users
+  # Generates:
+  # GET    /users          users.index
+  # GET    /users/new      users.new
+  # POST   /users          users.create
+  # GET    /users/:id      users.show
+  # GET    /users/:id/edit users.edit
+  # PATCH  /users/:id      users.update
+  # DELETE /users/:id      users.destroy
+
+  resource :profile
+  # Generates (singular, no index):
+  # GET    /profile/new    profile.new
+  # POST   /profile        profile.create
+  # GET    /profile        profile.show
+  # GET    /profile/edit   profile.edit
+  # PATCH  /profile        profile.update
+  # DELETE /profile        profile.destroy
+  ```
+
+### Changed
+
+- Enable body parsing middleware by default. (@timriley in #1549)
+
+  This will parse multipart form upload bodies in requests with content type of `multipart/form-data`, and JSON bodies in requests with content types of `application/json` or `application/vnd.api+json`.
+- For standard logging, use block-based API to provide log payloads, so that log payloads are not generated if the log severity is less than the configured log level. (@p8 in #1550)
+
+### Fixed
+
+- Avoid errors when eagerloading Zeitwerk (or when running `bin/rails zeitwerk:check` if your Hanami app is embedded within Rails) by skipping autoloading for extension files that may depend on non-installed gems. (@timriley in #1498)
+- Only extend `Dry::Operation` for Hanami’s database layer when the hanami-db gem is bundled. (@timriley in #1490)
+- Address deprecation warnings from previous usage of `JSON.fast_generate`. (@krzykamil in #1546)
+
+## [v2.3.0.beta1] - 2025-10-17
+
+### Changed
+
+- Use updated API for `config.actions.formats`. (@timriley in #1544)
+- Show relative paths in `MissingActionError`. (@kyleplump and @timriley in #1445)
+
+### Removed
+
+- View context `settings` has been removed and is no longer accessible from templates. (@baweaver in #1536)
+
+## [v2.3.0.beta1] - 2025-10-03
+
+### Added
+
+- Add `config.console` settings to app. Set an alternative engine with e.g. `config.console.engine = :pry` (`:irb` is default). Add your own methods to the console with `config.console.include MyModule, AnotherModule`. (@alassek in #1540)
+- Support optional nonce in Rack requests, CSP header rules and view helpers (@svoop in #1500)
+- Check `ENV["APP_ENV"]` for the Hanami env if `ENV["HANAMI_ENV"]` is not set. The order of environment variable checks is now `HANAMI_ENV`->`APP_ENV`->`RACK_ENV` (@svoop in #1487).
+
+### Changed
+
+- Support both Rack v2 and v3. (@kyleplump in #1493)
+- Support single-character slice names. (@aaronmallen in #1528)
+
+### Fixed
+
+- Allow `include Deps` to be used in `Hanami::DB::Repo` subclasses. (@wuarmin in #1523)
+- Properly infer root relations for deeper `Hanami::DB::Repo` subclasses, such as in slices. (@wuarmin in #1478)
+- Delay loading `config/routes.rb` until after autoloading is setup, which means you can access your constants there. (@timriley in #1539)
+- Avoid warning from referencing deprecated `URI::DEFAULT_PARSER`. (@wuarmin in #1518)
 
 ## v2.2.1 - 2024-11-12
 
@@ -1493,3 +1601,9 @@ end
 - [Luca Guidi] Introduced `Lotus::Configuration`
 - [Luca Guidi] Introduced `Lotus::Application`
 - [Luca Guidi] Official support for MRI 2.0
+
+
+[v2.3.1]: https://github.com/hanami/hanami/compare/v2.3.0...v2.3.1
+[v2.3.0]: https://github.com/hanami/hanami/compare/v2.3.0.beta2...v2.3.0
+[v2.3.0.beta2]: https://github.com/hanami/hanami/compare/v2.3.0.beta1...v2.3.0.beta2
+[v2.3.0.beta1]: https://github.com/hanami/hanami/compare/v2.2.1...v2.3.0.beta1

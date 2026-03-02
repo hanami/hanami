@@ -72,9 +72,9 @@ module Hanami
         request.set_header(Rack::REQUEST_METHOD, "GET")
 
         @errors_app.call(request.env)
-      rescue Exception => failsafe_error
+      rescue Exception => exception
         # rubocop:disable Style/StderrPuts
-        $stderr.puts "Error during exception rendering: #{failsafe_error}\n  #{failsafe_error.backtrace * "\n  "}"
+        $stderr.puts "Error during exception rendering: #{exception}\n  #{exception.backtrace * "\n  "}"
         # rubocop:enable Style/StderrPuts
 
         [

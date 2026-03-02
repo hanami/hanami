@@ -60,13 +60,13 @@ RSpec.describe "DB / Logging", :app_integration do
       gateway.connection.execute("INSERT INTO posts (title) VALUES ('Together breakfast')")
 
       relation = Hanami.app["relations.posts"]
-      expect(relation.select(:title).to_a).to eq [{:title=>"Together breakfast"}]
+      expect(relation.select(:title).to_a).to eq [{title: "Together breakfast"}]
 
       logger_stream.rewind
       log_lines = logger_stream.read.split("\n")
 
       expect(log_lines.length).to eq 1
-      expect(log_lines.first).to match /Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/
+      expect(log_lines.first).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
     end
   end
 
@@ -143,14 +143,14 @@ RSpec.describe "DB / Logging", :app_integration do
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 1
-        expect(log_lines.last).to match /Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/
+        expect(log_lines.last).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
 
         relation = Main::Slice["relations.posts"]
         relation.select(:id).to_a
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 2
-        expect(log_lines.last).to match /Loaded :sqlite in \d+ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/
+        expect(log_lines.last).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
       end
     end
   end
@@ -224,14 +224,14 @@ RSpec.describe "DB / Logging", :app_integration do
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 1
-        expect(log_lines.last).to match /Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/
+        expect(log_lines.last).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
 
         relation = Main::Slice["relations.posts"]
         relation.select(:id).to_a
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 2
-        expect(log_lines.last).to match /Loaded :sqlite in \d+ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/
+        expect(log_lines.last).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
       end
     end
   end
@@ -288,13 +288,13 @@ RSpec.describe "DB / Logging", :app_integration do
         gateway.connection.execute("INSERT INTO posts (title) VALUES ('Together breakfast')")
 
         relation = Hanami.app["relations.posts"]
-        expect(relation.select(:title).to_a).to eq [{:title=>"Together breakfast"}]
+        expect(relation.select(:title).to_a).to eq [{title: "Together breakfast"}]
 
         logger_stream.rewind
         log_lines = logger_stream.read.split("\n")
 
         expect(log_lines.length).to eq 1
-        expect(log_lines.first).to match /Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/
+        expect(log_lines.first).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
       end
     end
   end

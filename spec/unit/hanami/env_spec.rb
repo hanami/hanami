@@ -4,7 +4,7 @@ RSpec.describe Hanami, ".env" do
   subject { described_class.env(e: env) }
 
   context "HANAMI_ENV, APP_ENV and RACK_ENV in ENV" do
-    let(:env) { { "HANAMI_ENV" => "test", "APP_ENV" => "development", "RACK_ENV" => "production" } }
+    let(:env) { {"HANAMI_ENV" => "test", "APP_ENV" => "development", "RACK_ENV" => "production"} }
 
     it "is the value of HANAMI_ENV" do
       is_expected.to eq(:test)
@@ -12,7 +12,7 @@ RSpec.describe Hanami, ".env" do
   end
 
   context "APP_ENV and RACK_ENV in ENV" do
-    let(:env) { {"APP_ENV" => "development", "RACK_ENV" => "production" } }
+    let(:env) { {"APP_ENV" => "development", "RACK_ENV" => "production"} }
 
     it "is the value of APP_ENV" do
       is_expected.to eq(:development)
@@ -20,7 +20,7 @@ RSpec.describe Hanami, ".env" do
   end
 
   context "RACK_ENV in ENV" do
-    let(:env) { { "RACK_ENV" => "production" } }
+    let(:env) { {"RACK_ENV" => "production"} }
 
     it "is the value of RACK_ENV" do
       is_expected.to eq(:production)

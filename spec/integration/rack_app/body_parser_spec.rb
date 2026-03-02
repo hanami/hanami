@@ -12,14 +12,13 @@ RSpec.describe "Hanami web app", :app_integration do
     with_tmp_directory(Dir.mktmpdir, &example)
   end
 
-  specify "Setting middlewares in the config" do
+  specify "Default body parser" do
     write "config/app.rb", <<~RUBY
       require "hanami"
 
       module TestApp
         class App < Hanami::App
           config.actions.format :json
-          config.middleware.use :body_parser, :json
           config.logger.stream = StringIO.new
         end
       end
@@ -65,7 +64,8 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class App < Hanami::App
-          config.actions.formats.add :json, ["application/json+scim"]
+          config.actions.formats.register :json, "application/json+scim"
+          config.actions.formats.accept :json
           config.middleware.use :body_parser, [json: "application/json+scim"]
           config.logger.stream = StringIO.new
         end

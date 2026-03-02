@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/configurable"
+require "hanami/action"
 
 module Hanami
   class Config
@@ -88,7 +89,7 @@ module Hanami
       # @return [Proc]
       #
       # @api public
-      # @since x.x.x
+      # @since 2.3.0
       setting :content_security_policy_nonce_generator, default: -> { SecureRandom.urlsafe_base64(16) }
 
       # @!attribute [rw] method_override
@@ -156,7 +157,7 @@ module Hanami
       end
 
       # @api public
-      # @since x.x.x
+      # @since 2.3.0
       def content_security_policy? = !!@content_security_policy
 
       private

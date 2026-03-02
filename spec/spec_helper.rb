@@ -8,7 +8,6 @@ LOG_DIR = Pathname(SPEC_ROOT).join("..").join("log")
 require_relative "support/coverage" if ENV["COVERAGE"].eql?("true")
 
 require "hanami"
-begin; require "byebug"; rescue LoadError; end
 require "hanami/utils/file_list"
 require "hanami/devtools/unit"
 
