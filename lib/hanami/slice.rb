@@ -861,6 +861,7 @@ module Hanami
         prepare_container_plugins
         prepare_container_base_config
         prepare_container_component_dirs
+        prepare_container_memoization
         prepare_container_imports
         prepare_container_providers
       end
@@ -922,6 +923,18 @@ module Hanami
           dir.auto_register = -> component {
             relative_path = component.file_path.relative_path_from(root).to_s
             !relative_path.start_with?(*no_auto_register_paths)
+          }
+        end
+      end
+
+      def prepare_container_memoization
+        return if config.memoize_component_namespaces.empty?
+
+        namespaces = config.memoize_component_namespaces
+
+        container.config.component_dirs.each do |component_dir|
+          component_dir.memoize = -> component {
+            component.key.start_with?(*namespaces)
           }
         end
       end
