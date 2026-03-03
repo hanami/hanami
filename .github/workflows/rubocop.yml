@@ -21,10 +21,12 @@ jobs:
       BUNDLE_ONLY: tools
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
+        with:
+          persist-credentials: false
 
       - name: Set up Ruby 4.0
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@896e71e063dc0933bb442a54e949d75291991ecb # zizmor: ignore[cache-poisoning]
         with:
           ruby-version: 4.0
           bundler-cache: true
