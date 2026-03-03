@@ -28,7 +28,7 @@ def create_app_with_config(temp_dir, memoize:, component_count:)
   File.write("#{temp_dir}/config/slices/main.rb", <<~RUBY)
     module Main
       class Slice < Hanami::Slice
-        config.memoize_component_key_prefixes = #{memoize ? '["actions.", "views."]' : "[]"}
+        config.memoize_component_namespaces = #{memoize ? '["actions.", "views."]' : "[]"}
       end
     end
   RUBY

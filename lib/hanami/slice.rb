@@ -928,15 +928,13 @@ module Hanami
       end
 
       def prepare_container_memoization
-        return if config.memoize_component_dirs.empty?
+        return if config.memoize_component_namespaces.empty?
+
+        namespaces = config.memoize_component_namespaces
 
         container.config.component_dirs.each do |component_dir|
           component_dir.memoize = -> component {
-            relative_path = component.file_path.relative_path_from(root).to_s
-
-            config.memoize_component_dirs.any? do |dir_pattern|
-              relative_path.start_with?(dir_pattern)
-            end
+            component.key.start_with?(*namespaces)
           }
         end
       end

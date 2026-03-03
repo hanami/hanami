@@ -32,7 +32,7 @@ def create_app(temp_dir, component_count:)
   File.write("#{temp_dir}/config/slices/memoized.rb", <<~RUBY)
     module Memoized
       class Slice < Hanami::Slice
-        config.memoize_component_key_prefixes = ["actions.", "views."]
+        config.memoize_component_namespaces = ["actions.", "views."]
       end
     end
   RUBY
@@ -41,7 +41,7 @@ def create_app(temp_dir, component_count:)
   File.write("#{temp_dir}/config/slices/normal.rb", <<~RUBY)
     module Normal
       class Slice < Hanami::Slice
-        config.memoize_component_key_prefixes = []
+        config.memoize_component_namespaces = []
       end
     end
   RUBY
@@ -140,8 +140,8 @@ def run_speed_benchmark(component_count:)
     puts "Hanami application loaded!"
     puts
     puts "Configuration verification:"
-    puts "Memoized slice memoize_component_key_prefixes: #{Memoized::Slice.config.memoize_component_key_prefixes}"
-    puts "Normal slice memoize_component_key_prefixes: #{Normal::Slice.config.memoize_component_key_prefixes}"
+    puts "Memoized slice memoize_component_namespaces: #{Memoized::Slice.config.memoize_component_namespaces}"
+    puts "Normal slice memoize_component_namespaces: #{Normal::Slice.config.memoize_component_namespaces}"
     puts
 
     # Test memoization behavior

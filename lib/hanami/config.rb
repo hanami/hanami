@@ -118,8 +118,9 @@ module Hanami
       "structs"
     ]
 
-    # @!attribute [rw] memoize_component_dirs
-    #   Sets the directory patterns for components that should be memoized.
+    # @!attribute [rw] memoize_component_namespaces
+    #   Sets the component namespaces to memoize. Each namespace must end with a dot
+    #   to denote a namespace boundary (e.g. `"actions."`, `"views."`).
     #
     #   Defaults to `[]` (no memoization).
     #
@@ -127,7 +128,19 @@ module Hanami
     #
     #   @api public
     #   @since 2.3.0
-    setting :memoize_component_dirs, default: []
+    setting :memoize_component_namespaces, default: [], constructor: -> namespaces {
+      unless namespaces.is_a?(Array)
+        raise ArgumentError, "memoize_component_namespaces must be an Array, got #{namespaces.class}"
+      end
+
+      namespaces.each do |namespace|
+        unless namespace.end_with?(".")
+          raise ArgumentError, %(memoize_component_namespaces values must end with a dot (e.g. "#{namespace}."))
+        end
+      end
+
+      namespaces.freeze
+    }
 
     # @!attribute [rw] base_url
     #   Sets the base URL for app's web server.
