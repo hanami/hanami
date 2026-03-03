@@ -84,26 +84,16 @@ def measure_memory_usage(memoize:, resolutions:, component_count:)
   begin
     create_app_with_config(temp_dir, memoize: memoize, component_count: component_count)
 
-    # Create a separate Ruby script to measure memory in a fresh process
+    # Create a separate Ruby script to measure allocations in a fresh process
     script = <<~RUBY
-      def get_memory_usage
-        if RUBY_PLATFORM.match?(/darwin/)
-          `ps -o rss= -p \#{Process.pid}`.to_i
-        elsif RUBY_PLATFORM.match?(/linux/)
-          `ps -o rss= -p \#{Process.pid}`.to_i
-        else
-          `ps -o rss= -p \#{Process.pid}`.to_i
-        end
-      end
-
       Dir.chdir("#{temp_dir}")
       require "./config/app"
       require "hanami/prepare"
 
       GC.start
-      sleep 0.1
+      GC.disable
 
-      memory_before = get_memory_usage
+      allocations_before = GC.stat[:total_allocated_objects]
 
       #{resolutions}.times do
         #{component_count}.times do |i|
@@ -112,12 +102,11 @@ def measure_memory_usage(memoize:, resolutions:, component_count:)
         end
       end
 
-      GC.start
-      sleep 0.1
+      allocations_after = GC.stat[:total_allocated_objects]
 
-      memory_after = get_memory_usage
+      GC.enable
 
-      puts "\#{memory_before},\#{memory_after}"
+      puts "\#{allocations_before},\#{allocations_after}"
     RUBY
 
     script_path = "#{temp_dir}/measure_memory.rb"
@@ -135,12 +124,12 @@ def measure_memory_usage(memoize:, resolutions:, component_count:)
       {before: 0, after: 0, delta: 0}
     else
       result_line = output.strip
-      memory_before, memory_after = result_line.split(",").map(&:to_i)
+      alloc_before, alloc_after = result_line.split(",").map(&:to_i)
 
       {
-        before: memory_before,
-        after: memory_after,
-        delta: memory_after - memory_before,
+        before: alloc_before,
+        after: alloc_after,
+        delta: alloc_after - alloc_before,
       }
     end
   ensure
@@ -148,19 +137,15 @@ def measure_memory_usage(memoize:, resolutions:, component_count:)
   end
 end
 
-def format_memory(kb)
-  if kb > 1024
-    "#{(kb / 1024.0).round(2)} MB"
-  else
-    "#{kb} KB"
-  end
+def format_count(count)
+  count.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
 end
 
 def run_memory_benchmark(component_count:)
   app_size = component_count <= 50 ? "SMALL" : "LARGE"
   puts "=== HANAMI MEMORY USAGE BENCHMARK (#{app_size} APP) ==="
   puts "Simulating app with #{component_count} actions + #{component_count} views"
-  puts "Measuring memory usage with and without memoization"
+  puts "Measuring object allocations with and without memoization"
   puts
 
   resolution_counts = [100, 1000, 5000, 10_000]
@@ -187,26 +172,17 @@ def run_memory_benchmark(component_count:)
     puts
 
     puts "Normal (no memoization):"
-    puts "  Before: #{format_memory(normal_result[:before])}"
-    puts "  After:  #{format_memory(normal_result[:after])}"
-    puts "  Delta:  #{format_memory(normal_result[:delta])}"
+    puts "  Allocations: #{format_count(normal_result[:delta])} objects"
     puts
 
     puts "Memoized:"
-    puts "  Before: #{format_memory(memoized_result[:before])}"
-    puts "  After:  #{format_memory(memoized_result[:after])}"
-    puts "  Delta:  #{format_memory(memoized_result[:delta])}"
+    puts "  Allocations: #{format_count(memoized_result[:delta])} objects"
     puts
 
-    memory_saved = normal_result[:delta] - memoized_result[:delta]
-    if memory_saved.positive?
-      percent_saved = ((memory_saved.to_f / normal_result[:delta]) * 100).round(2)
-      puts "Memory saved by memoization: #{format_memory(memory_saved)} (#{percent_saved}%)"
-    elsif memory_saved.negative?
-      percent_increase = ((memory_saved.abs.to_f / normal_result[:delta]) * 100).round(2)
-      puts "Additional memory used by memoization: #{format_memory(memory_saved.abs)} (#{percent_increase}%)"
-    else
-      puts "Memory usage: No significant difference"
+    saved = normal_result[:delta] - memoized_result[:delta]
+    if normal_result[:delta].positive?
+      percent_saved = ((saved.to_f / normal_result[:delta]) * 100).round(2)
+      puts "Allocations saved by memoization: #{format_count(saved)} objects (#{percent_saved}%)"
     end
   end
 
@@ -215,16 +191,8 @@ def run_memory_benchmark(component_count:)
   puts "SUMMARY"
   puts "=" * 60
   puts
-  puts "Note: Memoization saves memory by reusing component instances instead"
-  puts "of creating new objects on each resolution. The savings grow with the"
-  puts "number of component resolutions."
-  puts
-  puts "Expected: Memoized should use significantly less memory when components"
-  puts "are resolved many times, as instances are cached rather than recreated."
-  puts
-  puts "Component pool size affects savings:"
-  puts "- Small apps (20-50 components): Higher percentage savings (60-80%)"
-  puts "- Large apps (200+ components): Lower percentage savings (10-30%)"
+  puts "Note: Measures total object allocations (GC disabled) for deterministic results."
+  puts "Memoization reuses cached instances instead of creating new objects on each resolution."
 end
 
 if __FILE__ == $0
