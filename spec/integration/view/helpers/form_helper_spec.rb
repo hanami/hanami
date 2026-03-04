@@ -156,7 +156,7 @@ RSpec.describe "Helpers / FormHelper", :app_integration do
         module TestApp
           class App < Hanami::App
             config.logger.stream = StringIO.new
-            config.actions.sessions = :cookie, {secret: "xyz"}
+            config.actions.sessions = :cookie, {secret: "wxyz"*16} # Rack demands >=64 characters
           end
         end
       RUBY

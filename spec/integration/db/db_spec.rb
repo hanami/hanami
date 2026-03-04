@@ -10,7 +10,7 @@ RSpec.describe "DB", :app_integration do
     ENV.replace(@env)
   end
 
-  it "sets up ROM and reigsters relations" do
+  it "sets up ROM and registers relations" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
         require "hanami"

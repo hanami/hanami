@@ -56,4 +56,67 @@ RSpec.describe "Operation / Extensions", :app_integration do
       expect(main.rom).to be Main::Slice["db.rom"]
     end
   end
+
+  context "hanami-db bundled, but no db configured" do
+    it "does not extend the operation class" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "app/operation.rb", <<~RUBY
+          module TestApp
+            class Operation < Dry::Operation
+            end
+          end
+        RUBY
+
+        require "hanami/prepare"
+
+        operation = TestApp::Operation.new
+
+        expect(operation.rom).to be nil
+        expect { operation.transaction }.to raise_error Hanami::ComponentLoadError, "A configured db for TestApp::App is required to run transactions."
+      end
+    end
+  end
+
+  context "hanami-db not bundled" do
+    before do
+      allow(Hanami).to receive(:bundled?).and_call_original
+      allow(Hanami).to receive(:bundled?).with("hanami-db").and_return false
+    end
+
+    it "does not extend the operation class" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "app/operation.rb", <<~RUBY
+          module TestApp
+            class Operation < Dry::Operation
+            end
+          end
+        RUBY
+
+        require "hanami/prepare"
+
+        operation = TestApp::Operation.new
+
+        expect { operation.rom }.to raise_error NoMethodError
+        expect { operation.transaction }.to raise_error NoMethodError
+      end
+    end
+  end
 end

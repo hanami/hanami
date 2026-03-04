@@ -2,8 +2,7 @@
 
 require "uri"
 require "hanami/view"
-
-# rubocop:disable Metrics/ModuleLength
+require_relative "../constants"
 
 module Hanami
   module Helpers
@@ -61,7 +60,10 @@ module Hanami
 
       # @since 0.3.0
       # @api private
-      ABSOLUTE_URL_MATCHER = URI::DEFAULT_PARSER.make_regexp
+      # TODO: we can drop the defined?-check and fallback once Ruby 3.3 becomes our minimum required version
+      ABSOLUTE_URL_MATCHER = (
+        defined?(URI::RFC2396_PARSER) ? URI::RFC2396_PARSER : URI::DEFAULT_PARSER
+      ).make_regexp
 
       # @since 1.1.0
       # @api private
@@ -85,7 +87,12 @@ module Hanami
       # name of the algorithm, then a hyphen, then the hash value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
-      # @param source_paths [Array<String, #url>] one or more assets by name or absolute URL
+      # If the Content Security Policy uses 'nonce' and the source is not
+      # absolute, the nonce value of the current request is automatically added
+      # as an attribute. You can override this with the `nonce: false` option.
+      # See {#content_security_policy_nonce} for more.
+      #
+      # @param sources [Array<String, #url>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
       #
@@ -136,6 +143,10 @@ module Hanami
       #
       #   # <script src="/assets/application.js" type="text/javascript" defer="defer"></script>
       #
+      # @example Disable nonce
+      #
+      #   <%= javascript_tag "application", nonce: false %>
+      #
       # @example Absolute URL
       #
       #   <%= javascript_tag "https://code.jquery.com/jquery-2.1.4.min.js" %>
@@ -154,13 +165,15 @@ module Hanami
       #
       #   # <script src="https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.js"
       #   #         type="text/javascript"></script>
-      def javascript_tag(*source_paths, **options)
+      def javascript_tag(*sources, **options)
         options = options.reject { |k, _| k.to_sym == :src }
+        nonce_option = options.delete(:nonce)
 
-        _safe_tags(*source_paths) do |source|
+        _safe_tags(*sources) do |source|
           attributes = {
-            src: _typed_path(source, JAVASCRIPT_EXT),
-            type: JAVASCRIPT_MIME_TYPE
+            src: _typed_url(source, JAVASCRIPT_EXT),
+            type: JAVASCRIPT_MIME_TYPE,
+            nonce: _nonce(source, nonce_option)
           }
           attributes.merge!(options)
 
@@ -189,7 +202,12 @@ module Hanami
       # name of the algorithm, then a hyphen, then the hashed value of the file.
       # If more than one algorithm is used, they"ll be separated by a space.
       #
-      # @param source_paths [Array<String, #url>] one or more assets by name or absolute URL
+      # If the Content Security Policy uses 'nonce' and the source is not
+      # absolute, the nonce value of the current request is automatically added
+      # as an attribute. You can override this with the `nonce: false` option.
+      # See {#content_security_policy_nonce} for more.
+      #
+      # @param sources [Array<String, #url>] one or more assets by name or absolute URL
       #
       # @return [Hanami::View::HTML::SafeString] the markup
       #
@@ -213,6 +231,10 @@ module Hanami
       #
       #   # <link href="/assets/application.css" type="text/css" rel="stylesheet">
       #   # <link href="/assets/dashboard.css" type="text/css" rel="stylesheet">
+      #
+      # @example Disable nonce
+      #
+      #   <%= stylesheet_tag "application", nonce: false %>
       #
       # @example Subresource Integrity
       #
@@ -247,19 +269,21 @@ module Hanami
       #
       #   # <link href="https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.css"
       #   #       type="text/css" rel="stylesheet">
-      def stylesheet_tag(*source_paths, **options)
+      def stylesheet_tag(*sources, **options)
         options = options.reject { |k, _| k.to_sym == :href }
+        nonce_option = options.delete(:nonce)
 
-        _safe_tags(*source_paths) do |source_path|
+        _safe_tags(*sources) do |source|
           attributes = {
-            href: _typed_path(source_path, STYLESHEET_EXT),
+            href: _typed_url(source, STYLESHEET_EXT),
             type: STYLESHEET_MIME_TYPE,
-            rel: STYLESHEET_REL
+            rel: STYLESHEET_REL,
+            nonce: _nonce(source, nonce_option)
           }
           attributes.merge!(options)
 
           if _context.assets.subresource_integrity? || attributes.include?(:integrity)
-            attributes[:integrity] ||= _subresource_integrity_value(source_path, STYLESHEET_EXT)
+            attributes[:integrity] ||= _subresource_integrity_value(source, STYLESHEET_EXT)
             attributes[:crossorigin] ||= CROSSORIGIN_ANONYMOUS
           end
 
@@ -626,7 +650,7 @@ module Hanami
       #
       # If CDN mode is on, it returns the absolute URL of the asset.
       #
-      # @param source_path [String, #url] the asset name or asset object
+      # @param source [String, #url] the asset name or asset object
       #
       # @return [String] the asset path
       #
@@ -665,42 +689,71 @@ module Hanami
       #   <%= asset_url "application.js" %>
       #
       #   # "https://assets.bookshelf.org/assets/application-28a6b886de2372ee3922fcaf3f78f2d8.js"
-      def asset_url(source_path)
-        return source_path.url if source_path.respond_to?(:url)
-        return source_path if _absolute_url?(source_path)
+      def asset_url(source)
+        return source.url if source.respond_to?(:url)
+        return source if _absolute_url?(source)
 
-        _context.assets[source_path].url
+        _context.assets[source].url
+      end
+
+      # Random per request nonce value for Content Security Policy (CSP) rules.
+      #
+      # If the `Hanami::Middleware::ContentSecurityPolicyNonce` middleware is
+      # in use, this helper returns the nonce value for the current request
+      # or `nil` otherwise.
+      #
+      # For this policy to work in the browser, you have to add the `'nonce'`
+      # placeholder to the script and/or style source policy rule. It will be
+      # substituted by the current nonce value like `'nonce-A12OggyZ'.
+      #
+      # @return [String, nil] nonce value of the current request
+      #
+      # @since 2.3.0
+      #
+      # @example App configuration
+      #
+      #   config.middleware.use Hanami::Middleware::ContentSecurityPolicyNonce
+      #   config.actions.content_security_policy[:script_src] = "'self' 'nonce'"
+      #   config.actions.content_security_policy[:style_src] = "'self' 'nonce'"
+      #
+      # @example View helper
+      #
+      #   <script nonce="<%= content_security_policy_nonce %>">
+      def content_security_policy_nonce
+        return unless _context.request?
+
+        _context.request.env[CONTENT_SECURITY_POLICY_NONCE_REQUEST_KEY]
       end
 
       private
 
       # @since 2.1.0
       # @api private
-      def _safe_tags(*source_paths, &blk)
+      def _safe_tags(*sources, &blk)
         ::Hanami::View::HTML::SafeString.new(
-          source_paths.map(&blk).join(NEW_LINE_SEPARATOR)
+          sources.map(&blk).join(NEW_LINE_SEPARATOR)
         )
       end
 
       # @since 2.1.0
       # @api private
-      def _typed_path(source, ext)
+      def _typed_url(source, ext)
         source = "#{source}#{ext}" if source.is_a?(String) && _append_extension?(source, ext)
         asset_url(source)
       end
 
       # @api private
-      def _subresource_integrity_value(source_path, ext)
-        return if _absolute_url?(source_path)
+      def _subresource_integrity_value(source, ext)
+        return if _absolute_url?(source)
 
-        source_path = "#{source_path}#{ext}" unless /#{Regexp.escape(ext)}\z/.match?(source_path)
-        _context.assets[source_path].sri
+        source = "#{source}#{ext}" unless /#{Regexp.escape(ext)}\z/.match?(source)
+        _context.assets[source].sri
       end
 
       # @since 2.1.0
       # @api private
       def _absolute_url?(source)
-        ABSOLUTE_URL_MATCHER.match(source)
+        ABSOLUTE_URL_MATCHER.match?(source.respond_to?(:url) ? source.url : source)
       end
 
       # @since 1.2.0
@@ -709,6 +762,18 @@ module Hanami
         return false unless _absolute_url?(source)
 
         _context.assets.crossorigin?(source)
+      end
+
+      # @since 2.3.0
+      # @api private
+      def _nonce(source, nonce_option)
+        if nonce_option == false
+          nil
+        elsif nonce_option == true || (nonce_option.nil? && !_absolute_url?(source))
+          content_security_policy_nonce
+        else
+          nonce_option
+        end
       end
 
       # @since 2.1.0
@@ -737,5 +802,3 @@ module Hanami
     end
   end
 end
-
-# rubocop:enable Metrics/ModuleLength

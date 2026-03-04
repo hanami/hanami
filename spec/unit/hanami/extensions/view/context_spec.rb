@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "hanami/view"
 require "hanami/view/context"
 require "hanami/extensions/view/context"

@@ -5,7 +5,7 @@ require_relative "constants"
 module Hanami
   # @api private
   class SliceRegistrar
-    VALID_SLICE_NAME_RE = /^[a-z][a-z0-9_]+$/
+    VALID_SLICE_NAME_RE = /^[a-z][a-z0-9_]*$/
     SLICE_DELIMITER = CONTAINER_KEY_DELIMITER
 
     attr_reader :parent, :slices
@@ -108,8 +108,8 @@ module Hanami
       slice_class =
         begin
           inflector.constantize("#{slice_module_name(slice_name)}#{MODULE_DELIMITER}Slice")
-        rescue NameError => e
-          raise e unless e.name.to_s == inflector.camelize(slice_name) || e.name.to_s == :Slice
+        rescue NameError => exception
+          raise exception unless exception.name.to_s == inflector.camelize(slice_name) || exception.name.to_s == :Slice
         end
 
       register(slice_name, slice_class)

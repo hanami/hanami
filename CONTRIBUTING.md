@@ -1,52 +1,29 @@
-Hanami is an open source project and we would love you to help us make it better.
+# Issue guidelines
 
-## Reporting Issues
+## Reporting bugs
 
-A well formatted issue is appreciated, and goes a long way in helping us help you.
+If you’ve found a bug, please report an issue and describe the expected behavior versus what actually happens. If the bug causes a crash, attach a full backtrace. If possible, a reproduction script showing the problem is highly appreciated.
 
-* Make sure you have a [GitHub account](https://github.com/signup/free)
-* Submit a [GitHub issue](./issues) by:
-  * Clearly describing the issue
-    * Provide a descriptive summary
-    * Explain the expected behavior
-    * Explain the actual behavior
-    * Provide steps to reproduce the actual behavior
-    * Provide your application's complete `Gemfile.lock` as text (in a [Gist](https://gist.github.com) for bonus points)
-    * Any relevant stack traces
+## Reporting feature requests
 
-If you provide code, make sure it is formatted with the triple backticks (\`).
+Report a feature request **only after discussing it first on [our forum](https://discourse.hanamirb.org)** and having it accepted. Please provide a concise description of the feature.
 
-At this point, we'd love to tell you how long it will take for us to respond,
-but we just don't know.
+## Reporting questions, support requests, ideas, concerns etc.
 
-## Pull requests
+**Please don’t.** Use [our forum](https://discourse.hanamirb.org) instead.
 
-We accept pull requests to Hanami for:
+# Pull request guidelines
 
-* Adding documentation
-* Fixing bugs
-* Adding new features
+A pull request will only be accepted if it addresses a specific issue that was reported previously, or fixes typos, mistakes in documentation etc.
 
-Not all features proposed will be added but we are open to having a conversation
-about a feature you are championing.
+Other requirements:
 
-Here's a quick guide:
+1. Do not open a pull request if you can't provide tests along with it. If you have problems writing tests, ask for help in the related issue.
+2. Follow the style conventions of the surrounding code. In most cases, this is standard ruby style.
+3. Add API documentation if it's a new feature.
+4. Update API documentation if it changes an existing feature.
+5. Bonus points for sending a PR which updates user documentation in our [site repository](https://github.com/hanakai-rb/site).
 
-1. Fork the repo.
+# Asking for help
 
-2. Run the tests. This is to make sure your starting point works. Tests can be
-run via `rake`
-
-3. Create a new branch and make your changes. This includes tests for features!
-
-4. Push to your fork and submit a pull request. For more information, see
-[GitHub's pull request help section](https://help.github.com/articles/using-pull-requests/).
-
-At this point you're waiting on us. Expect a conversation regarding your pull
-request; Questions, clarifications, and so on.
-
-Some things that will increase the chance that your pull request is accepted:
-
-* Use Hanami idioms
-* Include tests that fail without your code, and pass with it
-* Update the documentation, guides, etc.
+If these guidelines aren't helpful, and you're stuck, please post a message on [our forum](https://discourse.dry-rb.org) or [find us in chat](https://discord.gg/KFCxDmk3JQ).

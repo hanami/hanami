@@ -19,10 +19,24 @@ module Hanami
     @loader ||= Zeitwerk::Loader.for_gem.tap do |loader|
       loader.inflector.inflect "db" => "DB"
       loader.inflector.inflect "db_logging" => "DBLogging"
+      loader.inflector.inflect "slice_configured_db_operation" => "SliceConfiguredDBOperation"
       loader.inflector.inflect "sql_adapter" => "SQLAdapter"
+
+      gem_lib = loader.dirs.first
       loader.ignore(
-        "#{loader.dirs.first}/hanami/{constants,boot,errors,extensions/router/errors,prepare,rake_tasks,setup}.rb"
+        "#{gem_lib}/hanami/{constants,boot,errors,extensions/router/errors,prepare,rake_tasks,setup}.rb",
+        # Ignore conditionally-loaded classes dependent on gems that may not be included in the
+        # user's Gemfile
+        "#{gem_lib}/hanami/config/{assets,router,views}.rb",
+        "#{gem_lib}/hanami/slice/router.rb",
+        "#{gem_lib}/hanami/slice/routing/resolver.rb",
+        "#{gem_lib}/hanami/slice/routing/middleware/stack.rb",
+        "#{gem_lib}/hanami/extensions/**/*"
       )
+
+      unless Hanami.bundled?("hanami-router")
+        loader.ignore("#{gem_lib}/hanami/routes.rb")
+      end
     end
   end
 
@@ -138,7 +152,15 @@ module Hanami
     end
   end
 
-  # Returns the Hanami app environment as loaded from the `HANAMI_ENV` environment variable.
+  # Returns the Hanami app environment as determined from the environment.
+  #
+  # Checks the following environment variables in order:
+  #
+  # - `HANAMI_ENV`
+  # - `APP_ENV`
+  # - `RACK_ENV`
+  #
+  # Defaults to `:development` if no environment variable is set.
   #
   # @example
   #   Hanami.env # => :development
@@ -148,7 +170,7 @@ module Hanami
   # @api public
   # @since 2.0.0
   def self.env(e: ENV)
-    e.fetch("HANAMI_ENV") { e.fetch("RACK_ENV", "development") }.to_sym
+    (e["HANAMI_ENV"] || e["APP_ENV"] || e["RACK_ENV"] || :development).to_sym
   end
 
   # Returns true if {.env} matches any of the given names

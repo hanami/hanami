@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Container / Standard providers / Rack", :app_integration do
   specify "Rack provider is loaded when rack is bundled" do
     with_tmp_directory(Dir.mktmpdir) do

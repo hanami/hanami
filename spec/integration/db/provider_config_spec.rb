@@ -33,8 +33,9 @@ RSpec.describe "DB / Provider / Config", :app_integration do
         plugins = Hanami.app["db.config"].setup.plugins
         expect(plugins).to match [
           an_object_satisfying {
-            _1.name == :instrumentation && _1.type == :relation &&
-              _1.config.notifications == Hanami.app["notifications"]
+            _1.name == :instrumentation &&
+            _1.type == :relation &&
+            _1.config.notifications == Hanami.app["notifications"]
           },
           an_object_satisfying { _1.name == :auto_restrictions && _1.type == :relation }
         ]

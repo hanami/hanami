@@ -11,10 +11,13 @@ RSpec.describe "Logging / Request logging", :app_integration do
 
   let(:logger_stream) { StringIO.new }
 
+  let(:logger_level) { nil }
+
   let(:root) { make_tmp_directory }
 
   def configure_logger
     Hanami.app.config.logger.stream = logger_stream
+    Hanami.app.config.logger.level = logger_level if logger_level
   end
 
   def logs
@@ -23,10 +26,10 @@ RSpec.describe "Logging / Request logging", :app_integration do
 
   def generate_app
     write "config/app.rb", <<~RUBY
-    module TestApp
-      class App < Hanami::App
+      module TestApp
+        class App < Hanami::App
+        end
       end
-    end
     RUBY
   end
 
@@ -80,8 +83,21 @@ RSpec.describe "Logging / Request logging", :app_integration do
           path: "/",
           ip: "127.0.0.1",
           elapsed: Integer,
-          elapsed_unit: a_string_matching(/(µs|ms)/),
+          elapsed_unit: a_string_matching(/(µs|ms)/)
         )
+      end
+    end
+
+    context "log level error" do
+      let(:logger_level) { :error }
+      before do
+        expect_any_instance_of(Hanami::Web::RackLogger).to_not receive(:data)
+      end
+
+      it "does not log info" do
+        get "/"
+
+        expect(logs.split("\n").length).to eq 0
       end
     end
   end
@@ -126,7 +142,7 @@ RSpec.describe "Logging / Request logging", :app_integration do
           path: "/",
           ip: "127.0.0.1",
           elapsed: Integer,
-          elapsed_unit: a_string_matching(/(µs|ms)/),
+          elapsed_unit: a_string_matching(/(µs|ms)/)
         )
       end
     end

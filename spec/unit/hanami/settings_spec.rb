@@ -41,7 +41,7 @@ RSpec.describe Hanami::Settings do
 
       expect { settings_class.new(store) }.to raise_error(
         described_class::InvalidSettingsError,
-        /(database_url: nope to database).*(redis_url: nope to redis)/m,
+        /(database_url: nope to database).*(redis_url: nope to redis)/m
       )
     end
 
@@ -54,7 +54,7 @@ RSpec.describe Hanami::Settings do
 
       expect { settings_class.new(store) }.to raise_error(
         described_class::InvalidSettingsError,
-        /database_url: nope to database/m,
+        /database_url: nope to database/m
       )
     end
 
@@ -80,7 +80,7 @@ RSpec.describe Hanami::Settings do
       end
 
       expect(settings_class.new.inspect).to eq(
-        "#<#{settings_class.to_s} [password, passphrase]>"
+        "#<#{settings_class} [password, passphrase]>"
       )
     end
   end
@@ -93,7 +93,7 @@ RSpec.describe Hanami::Settings do
       end
 
       expect(settings_class.new.inspect_values).to eq(
-        "#<#{settings_class.to_s} password=\"dont_tell_anybody\" passphrase=\"shhh\">"
+        "#<#{settings_class} password=\"dont_tell_anybody\" passphrase=\"shhh\">"
       )
     end
   end

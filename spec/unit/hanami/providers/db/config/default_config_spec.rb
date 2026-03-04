@@ -33,7 +33,7 @@ RSpec.describe "Hanami::Providers::DB / Config / Default config", :app_integrati
       specify do
         expect(config.adapter(:sql).plugins).to match [
           [{relations: :instrumentation}, instance_of(Proc)],
-          [{relations: :auto_restrictions}, nil],
+          [{relations: :auto_restrictions}, nil]
         ]
       end
 

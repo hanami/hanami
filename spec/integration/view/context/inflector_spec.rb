@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "hanami"
 
 RSpec.describe "App view / Context / Inflector", :app_integration do
