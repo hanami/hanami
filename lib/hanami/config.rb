@@ -106,8 +106,6 @@ module Hanami
     #
     #   Paths are relative to `/app` or a slice root.
     #
-    #   The `/lib` directory is always excluded from auto-registration.
-    #
     #   Defaults to `["db", "entities", "relations", "structs"]`.
     #
     #   @return [Array<String>] array of relative paths
