@@ -130,8 +130,26 @@ RSpec.describe Hanami::Config::Logger do
   end
 
   describe "#options" do
-    it "defaults to empty hash" do
-      expect(subject.options).to eq({})
+    context "in :development env" do
+      it "defaults to colorize: true" do
+        expect(subject.options).to eq({colorize: true})
+      end
+    end
+
+    context "in :test environment" do
+      let(:env) { :test }
+
+      it "defaults to an empty hash" do
+        expect(subject.options).to eq({})
+      end
+    end
+
+    context "in :production environment" do
+      let(:env) { :production }
+
+      it "defaults to an empty hash" do
+        expect(subject.options).to eq({})
+      end
     end
   end
 
