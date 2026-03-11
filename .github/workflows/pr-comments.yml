@@ -9,7 +9,7 @@
 
 name: PR comments
 
-on:
+on: # zizmor: ignore[dangerous-triggers]
   workflow_run:
     workflows: ["CI"]
     types:
@@ -21,6 +21,8 @@ permissions:
 jobs:
   post-comments:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     if: github.event.workflow_run.event == 'pull_request'
 
     steps:
