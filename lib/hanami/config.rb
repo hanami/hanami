@@ -7,6 +7,7 @@ require "dry/inflector"
 
 require_relative "constants"
 require_relative "config/console"
+require_relative "universal_logger"
 
 module Hanami
   # Hanami app config
@@ -456,13 +457,19 @@ module Hanami
     # Sets the app's logger instance.
     #
     # This entirely replaces the default `Dry::Logger::Dispatcher` instance that would have been
+    # configured via {#logger}.
+    #
+    # The provided logger will be wrapped with {Hanami::UniversalLogger} if it doesn't support both
+    # keyword arguments and `#tagged` logging, ensuring compatibility with Hanami's logging
+    # interface.
     #
     # @see #logger_instance
+    # @see Hanami::UniversalLogger
     #
     # @api public
     # @since 2.0.0
     def logger=(logger_instance)
-      @logger_instance = logger_instance
+      @logger_instance = Hanami::UniversalLogger[logger_instance]
     end
 
     # rubocop:enable Style/TrivialAccessors

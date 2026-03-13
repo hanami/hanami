@@ -196,9 +196,27 @@ RSpec.describe Hanami::Config do
     it "can be changed to a pre-initialized instance via #logger=" do
       logger_instance = Object.new
 
-      expect { config.logger = logger_instance }
-        .to change { config.logger_instance }
-        .to logger_instance
+      config.logger = logger_instance
+
+      # The logger is wrapped with UniversalLogger for compatibility
+      expect(config.logger_instance).to be_a(Hanami::UniversalLogger)
+      expect(config.logger_instance.logger).to be(logger_instance)
+    end
+
+    it "returns fully compatible loggers as-is without wrapping" do
+      logger_instance = Class.new do
+        def tagged(*tags)
+          yield
+        end
+
+        def info(message = nil, **payload)
+        end
+      end.new
+
+      config.logger = logger_instance
+
+      # Fully compatible loggers are not wrapped
+      expect(config.logger_instance).to be(logger_instance)
     end
 
     context "unrecognized :env" do
