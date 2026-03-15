@@ -21,6 +21,8 @@ module Hanami
       loader.inflector.inflect "db_logging" => "DBLogging"
       loader.inflector.inflect "slice_configured_db_operation" => "SliceConfiguredDBOperation"
       loader.inflector.inflect "sql_adapter" => "SQLAdapter"
+      loader.inflector.inflect "sql_logger" => "SQLLogger"
+      loader.inflector.inflect "sql_formatter" => "SQLFormatter"
 
       gem_lib = loader.dirs.first
       loader.ignore(

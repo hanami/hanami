@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
+require "json"
+
 RSpec.describe "DB / Logging", :app_integration do
+  # Allow optional ANSI escape sequences around tokens in log output, since the development logger
+  # enables colorization by default.
+  let(:esc) { '(?:\e\[\d+m)*' }
+
   before do
     @env = ENV.to_h
     allow(Hanami::Env).to receive(:loaded?).and_return(false)
@@ -66,7 +72,7 @@ RSpec.describe "DB / Logging", :app_integration do
       log_lines = logger_stream.read.split("\n")
 
       expect(log_lines.length).to eq 1
-      expect(log_lines.first).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
+      expect(log_lines.first).to match(/\[test_app\] \[#{esc}INFO#{esc}\] \[.*\] #{esc}SQL#{esc} sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
     end
   end
 
@@ -143,14 +149,14 @@ RSpec.describe "DB / Logging", :app_integration do
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 1
-        expect(log_lines.last).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(log_lines.last).to match(/\[test_app\] \[#{esc}INFO#{esc}\] \[.*\] #{esc}SQL#{esc} sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
 
         relation = Main::Slice["relations.posts"]
         relation.select(:id).to_a
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 2
-        expect(log_lines.last).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(log_lines.last).to match(/\[test_app\] \[#{esc}INFO#{esc}\] \[.*\] #{esc}SQL#{esc} sqlite \d+(\.\d+)?ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
       end
     end
   end
@@ -224,14 +230,14 @@ RSpec.describe "DB / Logging", :app_integration do
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 1
-        expect(log_lines.last).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(log_lines.last).to match(/\[test_app\] \[#{esc}INFO#{esc}\] \[.*\] #{esc}SQL#{esc} sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
 
         relation = Main::Slice["relations.posts"]
         relation.select(:id).to_a
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 2
-        expect(log_lines.last).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(log_lines.last).to match(/\[test_app\] \[#{esc}INFO#{esc}\] \[.*\] #{esc}SQL#{esc} sqlite \d+(\.\d+)?ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
       end
     end
   end
@@ -294,7 +300,17 @@ RSpec.describe "DB / Logging", :app_integration do
         log_lines = logger_stream.read.split("\n")
 
         expect(log_lines.length).to eq 1
-        expect(log_lines.first).to match(/Loaded :sqlite in \d+ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
+
+        # In production, logs are JSON formatted with structured data
+        log_json = JSON.parse(log_lines.first, symbolize_names: true)
+        expect(log_json).to include(
+          progname: "test_app",
+          severity: "INFO",
+          query: "SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`",
+          db: "sqlite",
+          elapsed: be_a(Numeric),
+          elapsed_unit: "ms"
+        )
       end
     end
   end
