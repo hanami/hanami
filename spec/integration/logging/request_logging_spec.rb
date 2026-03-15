@@ -21,7 +21,7 @@ RSpec.describe "Logging / Request logging", :app_integration do
   end
 
   def logs
-    @logs ||= (logger_stream.rewind and logger_stream.read)
+    @logs ||= strip_ansi(logger_stream.rewind && logger_stream.read)
   end
 
   def generate_app

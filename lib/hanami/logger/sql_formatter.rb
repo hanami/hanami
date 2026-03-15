@@ -19,7 +19,8 @@ module Hanami
     # payload.
     #
     # Supports colorization via Dry Logger's template color tags. When `colorize: true` is set in
-    # the logger options (the default in development), the "SQL" label and severity are colorized.
+    # the logger options (the default in development), the "SQL" label is colorized, and severity
+    # is colorized per-level by the parent formatter (e.g. INFO => magenta, ERROR => red).
     #
     # When colorization is enabled and the "rouge" gem is available, SQL queries are syntax
     # highlighted using Rouge's SQL lexer. This is a soft dependency; if Rouge is not installed,
@@ -38,16 +39,14 @@ module Hanami
       TEXT
 
       SQL_TEMPLATE_COLORIZED = <<~TEXT
-        [%<progname>s] [<cyan>%<severity>s</cyan>] [%<time>s] <blue>SQL</blue> %<db>s %<elapsed>s%<elapsed_unit>s %<query>s
+        [%<progname>s] [%<severity>s] [%<time>s] <blue>SQL</blue> %<db>s %<elapsed>s%<elapsed_unit>s %<query>s
       TEXT
 
       def initialize(**options)
         super
-
         @template = Dry::Logger::Formatters::Template[
           colorize? ? SQL_TEMPLATE_COLORIZED : SQL_TEMPLATE
         ]
-
         @sql_colorizer = build_sql_colorizer if colorize?
       end
 
