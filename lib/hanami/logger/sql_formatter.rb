@@ -18,8 +18,16 @@ module Hanami
     # In production, the default JSON formatter handles SQL entries automatically via the structured
     # payload.
     #
-    # Supports colorization via dry-logger's template color tags. When `colorize: true` is set in
+    # Supports colorization via Dry Logger's template color tags. When `colorize: true` is set in
     # the logger options (the default in development), the "SQL" label and severity are colorized.
+    #
+    # When colorization is enabled and the "rouge" gem is available, SQL queries are syntax
+    # highlighted using Rouge's SQL lexer. This is a soft dependency; if Rouge is not installed,
+    # queries output as plain, unhighlighted text.
+    #
+    # The Rouge theme defaults to Gruvbox and can be customized by setting the `HANAMI_SQL_THEME`
+    # environment variable to any Rouge theme name (e.g. "github.dark", "monokai", "gruvbox.light").
+    # See `Rouge::Theme.registry` for available themes.
     #
     # @see Hanami::Logger::SQLLogger
     #
@@ -35,9 +43,38 @@ module Hanami
 
       def initialize(**options)
         super
+
         @template = Dry::Logger::Formatters::Template[
           colorize? ? SQL_TEMPLATE_COLORIZED : SQL_TEMPLATE
         ]
+
+        @sql_colorizer = build_sql_colorizer if colorize?
+      end
+
+      private
+
+      def format_query(value)
+        if @sql_colorizer
+          @sql_colorizer.call(value)
+        else
+          value
+        end
+      end
+
+      def build_sql_colorizer
+        begin
+          require "rouge"
+        rescue LoadError
+          return nil
+        end
+
+        theme_name = ENV.fetch("HANAMI_SQL_THEME", "gruvbox")
+        theme_class = Rouge::Theme.find(theme_name) || Rouge::Themes::Gruvbox
+        formatter = Rouge::Formatters::Terminal256.new(theme_class.new)
+
+        lexer = Rouge::Lexers::SQL.new
+
+        ->(sql) { formatter.format(lexer.lex(sql)) }
       end
     end
   end
