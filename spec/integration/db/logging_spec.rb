@@ -3,9 +3,11 @@
 require "json"
 
 RSpec.describe "DB / Logging", :app_integration do
-  # Allow optional ANSI escape sequences around tokens in log output, since the development logger
-  # enables colorization by default.
-  let(:esc) { '(?:\e\[\d+m)*' }
+  # Strip ANSI escape sequences from log output for assertion matching, since the development
+  # logger enables colorization by default (including Rouge SQL syntax highlighting).
+  def strip_ansi(str)
+    str.gsub(/\e\[[0-9;]*m/, "")
+  end
 
   before do
     @env = ENV.to_h
@@ -72,7 +74,7 @@ RSpec.describe "DB / Logging", :app_integration do
       log_lines = logger_stream.read.split("\n")
 
       expect(log_lines.length).to eq 1
-      expect(log_lines.first).to match(/\[test_app\] \[#{esc}INFO#{esc}\] \[.*\] #{esc}SQL#{esc} sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
+      expect(strip_ansi(log_lines.first)).to match(/\[test_app\] \[INFO\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
     end
   end
 
@@ -149,14 +151,14 @@ RSpec.describe "DB / Logging", :app_integration do
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 1
-        expect(log_lines.last).to match(/\[test_app\] \[#{esc}INFO#{esc}\] \[.*\] #{esc}SQL#{esc} sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[INFO\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
 
         relation = Main::Slice["relations.posts"]
         relation.select(:id).to_a
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 2
-        expect(log_lines.last).to match(/\[test_app\] \[#{esc}INFO#{esc}\] \[.*\] #{esc}SQL#{esc} sqlite \d+(\.\d+)?ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[INFO\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
       end
     end
   end
@@ -230,14 +232,14 @@ RSpec.describe "DB / Logging", :app_integration do
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 1
-        expect(log_lines.last).to match(/\[test_app\] \[#{esc}INFO#{esc}\] \[.*\] #{esc}SQL#{esc} sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[INFO\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
 
         relation = Main::Slice["relations.posts"]
         relation.select(:id).to_a
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 2
-        expect(log_lines.last).to match(/\[test_app\] \[#{esc}INFO#{esc}\] \[.*\] #{esc}SQL#{esc} sqlite \d+(\.\d+)?ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[INFO\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
       end
     end
   end

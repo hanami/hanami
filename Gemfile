@@ -26,7 +26,7 @@ gem "hanami-webconsole", github: "hanami/hanami-webconsole", branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
-# This is needed for settings specs to pass
+# For testing settings with types
 gem "dry-types"
 
 # For testing operation integrations
@@ -35,6 +35,9 @@ gem "dry-operation", github: "dry-rb/dry-operation", branch: "main"
 # For testing the DB layer
 gem "sqlite3", platform: :mri
 gem "jdbc-sqlite3", platform: :jruby
+
+# For testing SQL logging
+gem "rouge"
 
 # For testing i18n support
 gem "i18n"
