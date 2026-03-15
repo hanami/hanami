@@ -5,11 +5,6 @@ require "hanami/logger/sql_formatter"
 require "stringio"
 
 RSpec.describe Hanami::Logger::SQLFormatter do
-  # Strips ANSI escape sequences for plain-text assertions.
-  def strip_ansi(str)
-    str.gsub(/\e\[[0-9;]*m/, "")
-  end
-
   # Returns true when the string contains the 256-colour escape sequences emitted by
   # Rouge::Formatters::Terminal256 (e.g. "\e[38;5;203m").
   def rouge_highlighted?(str)

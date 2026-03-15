@@ -158,7 +158,7 @@ module Hanami
         Dry.Logger(app_name, **options) do |setup|
           setup
             .add_backend(log_if: -> entry { !entry.tag?(:rack) && !entry.tag?(:sql) })
-            .add_backend(log_if: -> entry { entry.tag?(:rack) }, formatter: :rack)
+            .add_backend(log_if: -> entry { entry.tag?(:rack) }, formatter: Hanami::Logger::RackFormatter)
             .add_backend(log_if: -> entry { entry.tag?(:sql) }, formatter: Hanami::Logger::SQLFormatter)
         end
       end

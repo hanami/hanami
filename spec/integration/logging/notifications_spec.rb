@@ -56,7 +56,7 @@ RSpec.describe "Logging / Notifications", :app_integration do
       # See Hanami::Providers::Rack for more detail.
       Hanami.app["notifications"].instrument(:sql)
 
-      logs = -> { Pathname(dir).join("test.log").realpath.read }
+      logs = -> { strip_ansi(Pathname(dir).join("test.log").realpath.read) }
 
       post "/users", JSON.generate(name: "jane", password: "secret"), {"CONTENT_TYPE" => "application/json"}
       expect(logs.()).to match %r{POST 200 \d+(µs|ms) 127.0.0.1 /}
