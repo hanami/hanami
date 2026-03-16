@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "dry/logger/formatters/string"
+require "dry/logger"
 
 module Hanami
   module Logger
