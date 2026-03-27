@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "dry/core/constants"
+
 module Hanami
   class Settings
     # A settings store that chains multiple stores with fallback resolution.
@@ -18,8 +20,7 @@ module Hanami
     # @since unreleased
     class CompositeStore
       # @api private
-      NOT_SET = Object.new.freeze
-      private_constant :NOT_SET
+      Undefined = Dry::Core::Constants::Undefined
 
       # @param stores [Array<#fetch>] ordered list of stores to query
       def initialize(*stores)
@@ -38,8 +39,8 @@ module Hanami
       # @since unreleased
       def fetch(name, *args, &block)
         @stores.each do |store|
-          value = store.fetch(name, NOT_SET)
-          return value unless value.equal?(NOT_SET)
+          value = store.fetch(name, Undefined)
+          return value unless value.equal?(Undefined)
         end
 
         return args.first unless args.empty?
