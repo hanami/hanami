@@ -34,7 +34,7 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
           module Views
             module Posts
               class Show < TestApp::View
-                expose :post
+                decorate :post
               end
             end
           end
@@ -82,7 +82,7 @@ RSpec.describe "App view / Helpers / Part helpers", :app_integration do
           module Views
             module Posts
               class Show < Main::View
-                expose :post
+                decorate :post
               end
             end
           end
