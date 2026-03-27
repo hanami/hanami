@@ -408,8 +408,6 @@ module Hanami
       logger.finalize!
       router.finalize!
 
-      use_body_parser_middleware
-
       super
     end
 
@@ -511,18 +509,6 @@ module Hanami
 
     def load_from_env
       self.slices = ENV["HANAMI_SLICES"]&.split(",")&.map(&:strip)
-    end
-
-    DEFAULT_MIDDLEWARE_PARSERS = {
-      form: ["multipart/form-data"],
-      json: ["application/json", "application/vnd.api+json"]
-    }.freeze
-    private_constant :DEFAULT_MIDDLEWARE_PARSERS
-
-    def use_body_parser_middleware
-      return unless Hanami.bundled?("hanami-router") && Hanami.bundled?("hanami-controller")
-
-      middleware.use(:body_parser, [DEFAULT_MIDDLEWARE_PARSERS])
     end
 
     def load_dependent_config(gem_name)
