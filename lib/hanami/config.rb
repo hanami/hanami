@@ -6,7 +6,6 @@ require "dry/configurable"
 require "dry/inflector"
 
 require_relative "constants"
-require_relative "config/console"
 require_relative "universal_logger"
 
 module Hanami
