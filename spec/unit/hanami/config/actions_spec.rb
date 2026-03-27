@@ -12,8 +12,7 @@ RSpec.describe Hanami::Config, "#actions" do
   context "hanami-controller is bundled" do
     it "is a full actions config" do
       is_expected.to be_an_instance_of(Hanami::Config::Actions)
-
-      is_expected.to respond_to(:format)
+      is_expected.to respond_to(:formats)
     end
 
     it "configures base action settings" do

@@ -18,7 +18,7 @@ RSpec.describe "Hanami web app", :app_integration do
 
       module TestApp
         class App < Hanami::App
-          config.actions.format :json
+          config.actions.formats.accept :json
           config.logger.stream = StringIO.new
         end
       end
