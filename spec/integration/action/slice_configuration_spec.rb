@@ -176,7 +176,7 @@ RSpec.describe "App action / Slice configuration", :app_integration do
             write "config/slices/admin.rb", <<~'RUBY'
               module Admin
                 class Slice < Hanami::Slice
-                  config.actions.format :csv
+                  config.actions.formats.accept :csv
                 end
               end
             RUBY
@@ -267,7 +267,7 @@ RSpec.describe "App action / Slice configuration", :app_integration do
           write "config/slices/admin.rb", <<~'RUBY'
             module Admin
               class Slice < Hanami::Slice
-                config.actions.format :csv
+                config.actions.formats.accept :csv
               end
             end
           RUBY
