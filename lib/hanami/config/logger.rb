@@ -121,17 +121,19 @@ module Hanami
         @app_name = app_name
         @env = env
 
+        default_level = ENV["HANAMI_LOG_LEVEL"]&.to_sym
+
         case env
         when :development
-          config.level = :debug
+          config.level = default_level || :debug
           config.options = {colorize: true}
           config.logger_constructor = method(:development_logger)
         when :test
-          config.level = :debug
+          config.level = default_level || :debug
           config.stream = File.join("log", "#{env}.log")
           config.logger_constructor = method(:development_logger)
         else
-          config.level = :info
+          config.level = default_level || :info
           config.formatter = :json
           config.logger_constructor = method(:production_logger)
         end
