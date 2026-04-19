@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "npm --prefix node_modules/hanami-assets run build"
+  },
   "devDependencies": {
     "typescript": "^5.2.2"
   },
