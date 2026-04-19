@@ -28,6 +28,7 @@ module Hanami
       #   Sets or returns the logger's level.
       #
       #   Defaults to `:info` for the production environment and `:debug` for all others.
+      #   Can be set via the `HANAMI_LOG_LEVEL` environment variable.
       #
       #   @return [Symbol]
       #
@@ -121,19 +122,19 @@ module Hanami
         @app_name = app_name
         @env = env
 
-        default_level = ENV["HANAMI_LOG_LEVEL"]&.to_sym
+        env_log_level = ENV["HANAMI_LOG_LEVEL"]&.to_sym
 
         case env
         when :development
-          config.level = default_level || :debug
+          config.level = env_log_level || :debug
           config.options = {colorize: true}
           config.logger_constructor = method(:development_logger)
         when :test
-          config.level = default_level || :debug
+          config.level = env_log_level || :debug
           config.stream = File.join("log", "#{env}.log")
           config.logger_constructor = method(:development_logger)
         else
-          config.level = default_level || :info
+          config.level = env_log_level || :info
           config.formatter = :json
           config.logger_constructor = method(:production_logger)
         end
