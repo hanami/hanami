@@ -59,8 +59,6 @@ jobs:
           node-version: 20.x
       - name: Install dependencies
         run: npm install
-      - name: Build assets
-        run: npm run build
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:

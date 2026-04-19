@@ -1,11 +1,8 @@
 {
-  "scripts": {
-    "build": "npm --prefix node_modules/hanami-assets run build"
-  },
   "devDependencies": {
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "hanami-assets": "github:hanami/assets-js#main"
+    "hanami-assets": "github:hanami/assets-js#fix-prepare-for-git-install"
   }
 }
