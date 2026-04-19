@@ -47,20 +47,20 @@ RSpec.describe Hanami::Config::Logger do
       ENV.delete("HANAMI_LOG_LEVEL")
     end
 
-    it "overrides the per-environment default" do
-      expect(subject.level).to eq(:warn)
+    it "takes precedence over the per-environment default" do
+      expect(subject.instance.level).to eq(Logger::WARN)
     end
 
-    it "can still be overridden by explicit config" do
+    it "takes precedence over explicit config.logger.level" do
       subject.level = :fatal
-      expect(subject.level).to eq(:fatal)
+      expect(subject.instance.level).to eq(Logger::WARN)
     end
 
     context "when :production environment" do
       let(:env) { :production }
 
-      it "overrides the production default" do
-        expect(subject.level).to eq(:warn)
+      it "takes precedence over the production default" do
+        expect(subject.instance.level).to eq(Logger::WARN)
       end
     end
   end

@@ -122,19 +122,17 @@ module Hanami
         @app_name = app_name
         @env = env
 
-        env_log_level = ENV["HANAMI_LOG_LEVEL"]&.to_sym
-
         case env
         when :development
-          config.level = env_log_level || :debug
+          config.level = :debug
           config.options = {colorize: true}
           config.logger_constructor = method(:development_logger)
         when :test
-          config.level = env_log_level || :debug
+          config.level = :debug
           config.stream = File.join("log", "#{env}.log")
           config.logger_constructor = method(:development_logger)
         else
-          config.level = env_log_level || :info
+          config.level = :info
           config.formatter = :json
           config.logger_constructor = method(:production_logger)
         end
@@ -183,7 +181,7 @@ module Hanami
       def logger_constructor_options
         {
           stream: stream,
-          level: level,
+          level: ENV["HANAMI_LOG_LEVEL"]&.to_sym || level,
           formatter: formatter,
           filters: filters,
           template: template,
