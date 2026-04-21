@@ -4,7 +4,7 @@ if Hanami.bundled?("hanami-db")
   require_relative "extensions/db/repo"
 end
 
-if Hanami.bundled?("hanami-controller")
+if Hanami.bundled?("hanami-action")
   require_relative "extensions/action"
 end
 

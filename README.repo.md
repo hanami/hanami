@@ -5,7 +5,7 @@ Hanami is a **full-stack** Ruby web framework. It's made up of smaller, single-p
 This repository is for the full-stack framework, which provides the glue that ties all the parts together:
 
 * [**Hanami::Router**](https://github.com/hanami/router) - Rack compatible HTTP router for Ruby
-* [**Hanami::Controller**](https://github.com/hanami/controller) - Full featured, fast and testable actions for Rack
+* [**Hanami::Action**](https://github.com/hanami/hanami-action) - Full featured, fast and testable actions for Rack
 * [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
 * [**Hanami::DB**](https://github.com/hanami/db) - Database integration, complete with migrations, repositories, relations, and structs
 * [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby

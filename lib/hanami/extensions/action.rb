@@ -9,7 +9,7 @@ module Hanami
     # Integrated behavior for `Hanami::Action` classes within Hanami apps.
     #
     # @see InstanceMethods
-    # @see https://github.com/hanami/controller
+    # @see https://github.com/hanami/hanami-action
     #
     # @api public
     # @since 2.0.0

@@ -5,14 +5,14 @@ A flexible framework for maintainable Ruby apps.
 A complete Hanami app is composed of multiple gems. For a complete overview of changes, see also these CHANGELOGs:
 
 [Assets][assets], [Assets JS][assets-js], [CLI][cli],
-[Controller][controller], [DB][db], [RSpec][rspec],
+[Action][action], [DB][db], [RSpec][rspec],
 [Reloader][reloader], [Router][router], [Utils][utils],
 [Validations][validations], [View][view], [Webconsole][webconsole]
 
 [assets]: https://github.com/hanami/hanami-assets/blob/main/CHANGELOG.md
 [assets-js]: https://github.com/hanami/hanami-assets-js/blob/main/CHANGELOG.md
 [cli]: https://github.com/hanami/hanami-cli/blob/main/CHANGELOG.md
-[controller]: https://github.com/hanami/hanami-controller/blob/main/CHANGELOG.md
+[action]: https://github.com/hanami/hanami-action/blob/main/CHANGELOG.md
 [db]: https://github.com/hanami/hanami-db/blob/main/CHANGELOG.md
 [rspec]: https://github.com/hanami/hanami-rspec/blob/main/CHANGELOG.md
 [reloader]: https://github.com/hanami/hanami-reloader/blob/main/CHANGELOG.md
