@@ -9,7 +9,7 @@ RSpec.describe Hanami::Config, "#actions" do
 
   subject(:actions) { config.actions }
 
-  context "hanami-controller is bundled" do
+  context "hanami-action is bundled" do
     it "is a full actions config" do
       is_expected.to be_an_instance_of(Hanami::Config::Actions)
       is_expected.to respond_to(:formats)
@@ -32,10 +32,10 @@ RSpec.describe Hanami::Config, "#actions" do
     end
   end
 
-  context "hanami-controller is not bundled" do
+  context "hanami-action is not bundled" do
     before do
       allow(Hanami).to receive(:bundled?).and_call_original
-      expect(Hanami).to receive(:bundled?).with("hanami-controller").and_return(false)
+      expect(Hanami).to receive(:bundled?).with("hanami-action").and_return(false)
     end
 
     it "does not expose any settings" do

@@ -222,12 +222,12 @@ module Hanami
     # @since 2.0.0
     attr_reader :env
 
-    # Returns the app's actions config, or a null config if hanami-controller is not bundled.
+    # Returns the app's actions config, or a null config if hanami-action is not bundled.
     #
-    # @example When hanami-controller is bundled
+    # @example When hanami-action is bundled
     #   config.actions.default_request_format # => :html
     #
-    # @example When hanami-controller is not bundled
+    # @example When hanami-action is not bundled
     #   config.actions.default_request_format # => NoMethodError
     #
     # @return [Hanami::Config::Actions, Hanami::Config::NullConfig]
@@ -336,7 +336,7 @@ module Hanami
       self.render_detailed_errors = (env == :development)
       load_from_env
 
-      @actions = load_dependent_config("hanami-controller") {
+      @actions = load_dependent_config("hanami-action") {
         require_relative "config/actions"
         Actions.new
       }
