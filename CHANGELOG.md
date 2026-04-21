@@ -28,6 +28,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 - New setting `:default_template_engine` that sets which template engine should be used by default when doing `hanami generate`. (@katafrakt in #1564)
 - Added `Hanami::Settings::CompositeStore`, which can be used to chain setting lookups from multiple stores. (@aaronmallen in #1572)
+- Support `HANAMI_LOG_LEVEL` env var to set the log level (e.g. `HANAMI_LOG_LEVEL=warn bundle exec hanami server`). Takes precedence over `config.logger.level` set in `config/app.rb`.
 
 ### Changed
 
