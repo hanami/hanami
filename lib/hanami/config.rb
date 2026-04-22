@@ -6,7 +6,6 @@ require "dry/configurable"
 require "dry/inflector"
 
 require_relative "constants"
-require_relative "config/console"
 require_relative "universal_logger"
 
 module Hanami
@@ -253,12 +252,12 @@ module Hanami
     # @since 2.0.0
     attr_reader :env
 
-    # Returns the app's actions config, or a null config if hanami-controller is not bundled.
+    # Returns the app's actions config, or a null config if hanami-action is not bundled.
     #
-    # @example When hanami-controller is bundled
+    # @example When hanami-action is bundled
     #   config.actions.default_request_format # => :html
     #
-    # @example When hanami-controller is not bundled
+    # @example When hanami-action is not bundled
     #   config.actions.default_request_format # => NoMethodError
     #
     # @return [Hanami::Config::Actions, Hanami::Config::NullConfig]
@@ -367,7 +366,7 @@ module Hanami
       self.render_detailed_errors = (env == :development)
       load_from_env
 
-      @actions = load_dependent_config("hanami-controller") {
+      @actions = load_dependent_config("hanami-action") {
         require_relative "config/actions"
         Actions.new
       }
@@ -437,8 +436,6 @@ module Hanami
       views.finalize!
       logger.finalize!
       router.finalize!
-
-      use_body_parser_middleware
 
       super
     end
@@ -541,18 +538,6 @@ module Hanami
 
     def load_from_env
       self.slices = ENV["HANAMI_SLICES"]&.split(",")&.map(&:strip)
-    end
-
-    DEFAULT_MIDDLEWARE_PARSERS = {
-      form: ["multipart/form-data"],
-      json: ["application/json", "application/vnd.api+json"]
-    }.freeze
-    private_constant :DEFAULT_MIDDLEWARE_PARSERS
-
-    def use_body_parser_middleware
-      return unless Hanami.bundled?("hanami-router") && Hanami.bundled?("hanami-controller")
-
-      middleware.use(:body_parser, [DEFAULT_MIDDLEWARE_PARSERS])
     end
 
     def load_dependent_config(gem_name)

@@ -16,7 +16,7 @@ RSpec.describe "Logging / Notifications", :app_integration do
 
         module TestApp
           class App < Hanami::App
-            config.actions.format :json
+            config.actions.formats.accept :json
             config.logger.options = {colorize: true}
             config.logger.stream = config.root.join("test.log")
           end

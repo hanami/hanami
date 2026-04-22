@@ -32,7 +32,7 @@ module Hanami
 
       # CSRF Token session key
       #
-      # This name of this key is shared with the hanami and hanami-controller gems.
+      # This name of this key is shared with the hanami and hanami-action gems.
       #
       # @since 2.1.0
       # @api private

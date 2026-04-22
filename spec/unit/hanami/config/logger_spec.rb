@@ -39,6 +39,32 @@ RSpec.describe Hanami::Config::Logger do
     end
   end
 
+  describe "HANAMI_LOG_LEVEL env var" do
+    around do |example|
+      ENV["HANAMI_LOG_LEVEL"] = "warn"
+      example.run
+    ensure
+      ENV.delete("HANAMI_LOG_LEVEL")
+    end
+
+    it "takes precedence over the per-environment default" do
+      expect(subject.instance.level).to eq(Logger::WARN)
+    end
+
+    it "takes precedence over explicit config.logger.level" do
+      subject.level = :fatal
+      expect(subject.instance.level).to eq(Logger::WARN)
+    end
+
+    context "when :production environment" do
+      let(:env) { :production }
+
+      it "takes precedence over the production default" do
+        expect(subject.instance.level).to eq(Logger::WARN)
+      end
+    end
+  end
+
   describe "#stream" do
     it "defaults to $stdout" do
       expect(subject.stream).to eq($stdout)

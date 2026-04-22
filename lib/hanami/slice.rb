@@ -1089,7 +1089,7 @@ module Hanami
             use(Hanami::Webconsole::Middleware, config)
           end
 
-          if Hanami.bundled?("hanami-controller")
+          if Hanami.bundled?("hanami-action")
             if config.actions.method_override
               require "rack/method_override"
               use(Rack::MethodOverride)

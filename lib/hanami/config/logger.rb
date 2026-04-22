@@ -28,6 +28,7 @@ module Hanami
       #   Sets or returns the logger's level.
       #
       #   Defaults to `:info` for the production environment and `:debug` for all others.
+      #   Can be set via the `HANAMI_LOG_LEVEL` environment variable.
       #
       #   @return [Symbol]
       #
@@ -180,7 +181,7 @@ module Hanami
       def logger_constructor_options
         {
           stream: stream,
-          level: level,
+          level: ENV["HANAMI_LOG_LEVEL"]&.to_sym || level,
           formatter: formatter,
           filters: filters,
           template: template,
