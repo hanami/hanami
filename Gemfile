@@ -23,6 +23,7 @@ gem "hanami-cli", github: "hanami/hanami-cli", branch: "main"
 gem "hanami-view", github: "hanami/hanami-view", branch: "main"
 gem "hanami-assets", github: "hanami/hanami-assets", branch: "main"
 gem "hanami-webconsole", github: "hanami/hanami-webconsole", branch: "main"
+gem "benchmark-ips"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
