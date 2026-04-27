@@ -120,6 +120,36 @@ module Hanami
       "structs"
     ]
 
+    # @!attribute [rw] no_memoize
+    #   Sets the components that should not be memoized in the container.
+    #
+    #   All auto-registered components are memoized by default, meaning each component is resolved
+    #   only once, with the same instance returned on every subsequent resolution.
+    #
+    #   Use this setting to opt specific components out of memoization. It accepts an array of key
+    #   prefixes (strings) for the simple case, or a proc for full control. The proc receives a
+    #   `Dry::System::Component` and should return `true` for components that should _not_ be
+    #   memoized.
+    #
+    #   Individual components can also opt out by adding a `# memoize: false` magic comment at the
+    #   top of their source file.
+    #
+    #   Defaults to `[]` (all components memoized).
+    #
+    #   @example Opt out by key prefix
+    #     config.no_memoize = ["workers", "jobs"]
+    #
+    #   @example Opt out with a proc
+    #     config.no_memoize = ->(component) {
+    #       component.key.start_with?("workers")
+    #     }
+    #
+    #   @return [Array<String>, Proc]
+    #
+    #   @api public
+    #   @since 2.3.0
+    setting :no_memoize, default: []
+
     # @!attribute [rw] base_url
     #   Sets the base URL for app's web server.
     #
