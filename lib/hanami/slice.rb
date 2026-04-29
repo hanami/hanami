@@ -817,9 +817,12 @@ module Hanami
         ensure_slice_consts
         ensure_root
 
+        slice_namespace = namespace
+
         prepare_all
 
         instance_exec(container, &@prepare_container_block) if @prepare_container_block
+        slice_namespace.const_set :Deps, container.injector
         container.configured!
 
         prepare_autoloader
@@ -857,7 +860,7 @@ module Hanami
 
       def prepare_all
         prepare_settings
-        prepare_container_consts
+        prepare_container_const
         prepare_container_plugins
         prepare_container_base_config
         prepare_container_component_dirs
@@ -869,9 +872,8 @@ module Hanami
         container.register(:settings, settings) if settings
       end
 
-      def prepare_container_consts
+      def prepare_container_const
         namespace.const_set :Container, container
-        namespace.const_set :Deps, container.injector
       end
 
       def prepare_container_plugins
