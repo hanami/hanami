@@ -67,15 +67,33 @@ module Hanami
         #   These dependencies are injected automatically so that a call to `.new` (with no
         #   arguments) returns a fully integrated action.
         #
+        #   WARNING: This is prepended into a class intended for dependency injection, so the
+        #   implementation of this method using `**kwargs` instead of named keyword arguments
+        #   is intentional. Adding named kwargs will break Dry::AutoInject.
+        #
+        #   @param view [Hanami::View]
+        #   @param view_context_class [Hanami::View::Context]
+        #   @param rack_monitor [Dry::Monitor::Rack::Middleware]
         #   @param routes [Hanami::Slice::RoutesHelper]
         #
         #   @api public
         #   @since 2.0.0
-        def initialize(view: nil, view_context_class: nil, rack_monitor: nil, routes: nil, **kwargs)
-          @view = view
-          @view_context_class = view_context_class
-          @routes = routes
-          @rack_monitor = rack_monitor
+        def initialize(**kwargs)
+          if kwargs.key?(:view)
+            @view = kwargs.delete(:view)
+          end
+
+          if kwargs.key?(:view_context_class)
+            @view_context_class = kwargs.delete(:view_context_class)
+          end
+
+          if kwargs.key?(:rack_monitor)
+            @rack_monitor = kwargs.delete(:rack_monitor)
+          end
+
+          if kwargs.key?(:routes)
+            @routes = kwargs.delete(:routes)
+          end
 
           super(**kwargs)
         end
