@@ -796,12 +796,24 @@ module Hanami
       #
       #   @return [Array] the three-element Rack response array
       #
+      #   @raise [Hanami::NoRoutesDefinedError] if the hanami-router gem is missing or
+      #   no routes are defined.
+      #
       #   @see #rack_app
       #
       #   @api public
       #   @since 2.0.0
       def call(...)
-        rack_app.call(...)
+        if rack_app
+          rack_app.call(...)
+        else
+          error_message = if Hanami.bundled?("hanami-router")
+                            "Could not handle this rack request because no routes are defined"
+                          else
+                            "Could not handle this rack request because the hanami router gem is missing, please add it"
+                          end
+          raise NoRoutesDefinedError, error_message
+        end
       end
 
       private

@@ -98,4 +98,20 @@ RSpec.describe Hanami::Slice, :app_integration do
       expect(subject.source_path).to eq subject.root
     end
   end
+
+  describe ".call" do
+    it "raises an informative error if the hanami-router gem is unavailable" do
+      allow(Hanami).to receive(:bundled?).and_call_original
+      allow(Hanami).to receive(:bundled?).with("hanami-router").and_return(false)
+
+      subject = Hanami.app
+      subject.prepare
+      expect { subject.call }.to raise_error(Hanami::NoRoutesDefinedError, "Could not handle this rack request because the hanami router gem is missing, please add it")
+    end
+    it "raises an informative error if there are no routes" do
+      subject = Hanami.app
+      subject.prepare
+      expect { subject.call }.to raise_error(Hanami::NoRoutesDefinedError, "Could not handle this rack request because no routes are defined")
+    end
+  end
 end

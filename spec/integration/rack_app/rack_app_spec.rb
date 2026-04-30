@@ -439,4 +439,24 @@ RSpec.describe "Hanami web app", :app_integration do
       end
     end
   end
+
+  specify ".call raises an error when hanami-router gem is unavailable" do
+    allow(Hanami).to receive(:bundled?).and_call_original
+    allow(Hanami).to receive(:bundled?).with("hanami-router").and_return(false)
+
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      require "hanami/prepare"
+
+      expect { Hanami.app.call({}) }.to raise_error(Hanami::NoRoutesDefinedError, "Could not handle this rack request because the hanami router gem is missing, please add it")
+    end
+  end
 end
