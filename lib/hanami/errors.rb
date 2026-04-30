@@ -25,6 +25,12 @@ module Hanami
   # @since 2.0.0
   ComponentLoadError = Class.new(Error)
 
+  # Error raised when there are no routes defined.
+  #
+  # @api public
+  # @since 2.4.0
+  NoRoutesDefinedError = Class.new(Error)
+
   # Error raised when unsupported middleware configuration is given.
   #
   # @see Hanami::Slice::Routing::Middleware::Stack#use
