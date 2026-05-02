@@ -904,8 +904,22 @@ module Hanami
         container.config.provider_dirs = [File.join("config", "providers")]
         container.config.registrations_dir = File.join("config", "registrations")
 
+        container.config.component_dirs.memoize = memoize_policy
+
         container.config.env = config.env
         container.config.inflector = config.inflector
+      end
+
+      def memoize_policy
+        no_memoize = config.no_memoize
+
+        if no_memoize.respond_to?(:call)
+          ->(component) { !no_memoize.call(component) }
+        elsif no_memoize.is_a?(Array) && no_memoize.any?
+          ->(component) { !component.key.start_with?(*no_memoize) }
+        else
+          true
+        end
       end
 
       def prepare_container_component_dirs
