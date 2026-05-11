@@ -110,19 +110,74 @@ RSpec.describe Hanami::Providers::I18n::Backend do
   end
 
   describe "#localize and #l" do
-    it "delegates to backend localize method" do
-      time = Time.now
-      allow(i18n_backend).to receive(:localize).with(:en, time, nil, {}).and_return("localized time")
+    let(:date) { Date.new(2026, 5, 11) }
 
-      result = backend.localize(time)
-      expect(result).to eq("localized time")
+    before do
+      i18n_backend.store_translations(
+        :en, {
+          date: {
+            formats: {short: "%B %d", numeric: "%Y-%m-%d"},
+            month_names: [
+              nil, "January", "February", "March", "April", "May", "June",
+              "July", "August", "September", "October", "November", "December"
+            ],
+            abbr_month_names: [
+              nil, "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+              "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ]
+          }
+        }
+      )
+
+      i18n_backend.store_translations(
+        :fr, {
+          date: {
+            formats: {short: "%d %B"},
+            month_names: [
+              nil, "janvier", "février", "mars", "avril", "mai", "juin",
+              "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+            ]
+          }
+        }
+      )
     end
 
-    it "aliases #l to #localize" do
-      time = Time.now
-      allow(i18n_backend).to receive(:localize).and_return("localized")
+    it "localizes a date with a symbol format" do
+      expect(backend.localize(date, format: :short)).to eq("May 11")
+    end
 
-      expect(backend.l(time)).to eq(backend.localize(time))
+    it "localizes with a locale-dependent strftime code" do
+      expect(backend.localize(date, format: "%B %d")).to eq("May 11")
+    end
+
+    it "localizes with an abbreviated month code" do
+      expect(backend.localize(date, format: "%b")).to eq("May")
+    end
+
+    it "localizes with a locale-independent strftime code" do
+      expect(backend.localize(date, format: "%Y-%m-%d")).to eq("2026-05-11")
+    end
+
+    it "resolves format and codes through the given :locale" do
+      expect(backend.localize(date, format: :short, locale: :fr)).to eq("11 mai")
+    end
+
+    it "uses the current locale when none is given" do
+      backend.locale = :fr
+      expect(backend.localize(date, format: :short)).to eq("11 mai")
+    end
+
+    it "raises when given a non-strftime-able object" do
+      expect { backend.localize("not a date") }
+        .to raise_error(ArgumentError, /must be a Date, DateTime or Time/)
+    end
+
+    it "returns the :default when object is nil" do
+      expect(backend.localize(nil, default: "n/a")).to eq("n/a")
+    end
+
+    it "is aliased as #l" do
+      expect(backend.l(date, format: :short)).to eq(backend.localize(date, format: :short))
     end
   end
 
