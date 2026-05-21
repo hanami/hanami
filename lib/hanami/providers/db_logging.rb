@@ -11,7 +11,7 @@ module Hanami
       def start
         require "hanami/logger/sql_logger"
         Hanami::Logger::SQLLogger
-          .new(slice["logger"], level: slice.config.db.sql_log_level)
+          .new(slice["logger"], level: slice.config.db.log_level)
           .subscribe(slice["notifications"])
       end
     end

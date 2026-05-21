@@ -85,7 +85,7 @@ RSpec.describe "DB / Logging", :app_integration do
 
         module TestApp
           class App < Hanami::App
-            config.db.sql_log_level = :debug
+            config.db.log_level = :debug
           end
         end
       RUBY
