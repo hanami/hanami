@@ -14,12 +14,13 @@ module Hanami
     #
     # @api private
     class SQLLogger
-      attr_reader :logger
+      attr_reader :logger, :level
 
       # @param logger [#tagged, #info] a Hanami-compatible logger (typically a
       #   Dry::Logger::Dispatcher or a {Hanami::UniversalLogger}-wrapped logger)
-      def initialize(logger)
+      def initialize(logger, level: :info)
         @logger = logger
+        @level = level
       end
 
       # Subscribes to `:sql` notification events.
@@ -37,7 +38,7 @@ module Hanami
       # @param query [String] the SQL query string
       def log_query(time:, name:, query:)
         logger.tagged(:sql) do
-          logger.info do
+          logger.public_send(@level) do
             {query:, db: name, elapsed: time.round(3), elapsed_unit: "ms"}
           end
         end

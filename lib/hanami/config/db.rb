@@ -15,6 +15,8 @@ module Hanami
 
       setting :import_from_parent, default: false
 
+      setting :log_level, default: :info
+
       private
 
       def method_missing(name, *args, &block)
