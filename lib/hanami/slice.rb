@@ -995,7 +995,7 @@ module Hanami
         if Hanami.bundled?("i18n")
           require_relative "providers/i18n"
 
-          if i18n_config_dir? && !container.providers[:i18n]
+          if register_i18n_provider? && !container.providers[:i18n]
             register_provider(:i18n, source: Providers::I18n)
           end
         end
@@ -1148,8 +1148,14 @@ module Hanami
         source_path.join("assets").directory?
       end
 
-      def i18n_config_dir?
-        root.join("config", "i18n").directory?
+      # Ensures an i18n provider is available in every slice.
+      #
+      # For the app, this will always be a standalone provider. For slices, this will be a
+      # standalone provider unless the slice is configured to share the app's "i18n" component.
+      def register_i18n_provider?
+        return true if self == app
+
+        !config.shared_app_component_keys.include?("i18n")
       end
 
       def register_db_provider?

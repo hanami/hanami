@@ -45,14 +45,16 @@ module Hanami
       setting :available_locales, default: Providers::I18n::DEFAULT_AVAILABLE_LOCALES
 
       # @!attribute [rw] load_path
-      #   Sets or returns the array of file path patterns for loading translation files.
+      #   Sets or returns the array of file path patterns for loading per-slice translation files.
       #
       #   Patterns can be:
       #
-      #   - Relative paths/globs (resolved against the app/slice root)
+      #   - Relative paths/globs (resolved against the slice's own root)
       #   - Absolute paths (used as-is)
       #
       #   Defaults to `["config/i18n/**/*.{yml,yaml,json,rb}"]`.
+      #
+      #   See {#shared_load_path} for common translations that should be loaded into every slice.
       #
       #   @return [Array<String>]
       #
@@ -65,6 +67,32 @@ module Hanami
       #   @api public
       #   @since x.x.x
       setting :load_path, default: Providers::I18n::DEFAULT_LOAD_PATH
+
+      # @!attribute [rw] shared_load_path
+      #   Sets or returns the array of file path patterns for loading translation files that
+      #   should be shared across every slice in the app.
+      #
+      #   Relative patterns are resolved against the **app root**, regardless of which slice is
+      #   being loaded. Absolute paths are used as-is. Files matched by these patterns are loaded
+      #   into every slice's i18n backend before that slice's own {#load_path} files, so
+      #   slice-specific translations override shared ones on key conflicts.
+      #
+      #   This is the recommended place for foundational translation data needed by every slice,
+      #   such as the `date.*` and `time.*` keys used by `localize`.
+      #
+      #   Defaults to `["config/i18n/shared/**/*.{yml,yaml,json,rb}"]`.
+      #
+      #   @return [Array<String>]
+      #
+      #   @example Disable shared translations
+      #     config.i18n.shared_load_path = []
+      #
+      #   @example Add another shared source
+      #     config.i18n.shared_load_path += ["vendor/translations/**/*.yml"]
+      #
+      #   @api public
+      #   @since x.x.x
+      setting :shared_load_path, default: Providers::I18n::DEFAULT_SHARED_LOAD_PATH
 
       # @!attribute [rw] fallbacks
       #   Sets or returns the locale fallbacks configuration for missing translations.
