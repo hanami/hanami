@@ -127,11 +127,15 @@ module Hanami
           translate(key, **options.merge(raise: true))
         end
 
-        # Localizes the given object (e.g., date, time, number).
+        # Localizes the given date or time.
         #
-        # @param object [Date, Time, DateTime, Numeric] the object to localize
+        # Resolves symbol formats through this instance's translations (e.g. `:short` becomes
+        # `date.formats.short` or `time.formats.short`). Also resolves locale-dependent strftime
+        # codes (e.g. `%a`, `%A`, `%b`, `%B`, `%p`, `%P`).
+        #
+        # @param object [Date, Time, DateTime] the object to localize
         # @param locale [Symbol, String, nil] the locale to use (defaults to current locale)
-        # @param format [Symbol, String, nil] the format to use for localization
+        # @param format [Symbol, String] the format to use for localization
         # @param options [Hash] additional localization options
         #
         # @return [String] the localized string representation
@@ -144,9 +148,27 @@ module Hanami
         #
         # @api public
         # @since x.x.x
-        def localize(object, locale: nil, format: nil, **options)
+        def localize(object, locale: nil, format: :default, **options)
           locale ||= self.locale
-          @backend.localize(locale, object, format, options)
+
+          return options[:default] if object.nil? && options.key?(:default)
+
+          unless object.respond_to?(:strftime)
+            raise ArgumentError, <<~MSG
+              Object must be a Date, DateTime or Time object. #{object.inspect} given.
+            MSG
+          end
+
+          if format.is_a?(Symbol)
+            type = object.respond_to?(:sec) ? "time" : "date"
+            format = translate(
+              :"#{type}.formats.#{format}",
+              **options, locale:, object:, raise: true
+            )
+          end
+
+          format = expand_localization_format(locale, object, format)
+          object.strftime(format)
         end
 
         # @api public
@@ -308,6 +330,39 @@ module Hanami
           key = missing_translation.key
           key.to_s
         end
+
+        # rubocop:disable Layout/LineLength, Style/NestedTernaryOperator, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+        # Expands locale-dependent strftime codes (`%a`, `%A`, `%b`, `%B`, `%p`, `%P` and their
+        # uppercase `^` variants) by looking up day/month names and meridiem markers through this
+        # backend.
+        #
+        # This is a deliberate port of `I18n::Backend::Base#translate_localization_format`. We can't
+        # call this upstream method directly because it's private and also hardcodes `I18n.t!` (the
+        # global module) for every lookup, which defeats our per-slice isolated backends.
+        #
+        # This set of locale-dependent strftime codes is fixed by the C `strftime` spec and has not
+        # changed in the upstream gem since at least 2010, so this table is effectively frozen.
+        def expand_localization_format(locale, object, format)
+          format.to_s.gsub(/%(|\^)[aAbBpP]/) do |match|
+            case match
+            when "%a"   then t!(:"date.abbr_day_names",   locale:, format:)[object.wday]
+            when "%^a"  then t!(:"date.abbr_day_names",   locale:, format:)[object.wday].upcase
+            when "%A"   then t!(:"date.day_names",        locale:, format:)[object.wday]
+            when "%^A"  then t!(:"date.day_names",        locale:, format:)[object.wday].upcase
+            when "%b"   then t!(:"date.abbr_month_names", locale:, format:)[object.mon]
+            when "%^b"  then t!(:"date.abbr_month_names", locale:, format:)[object.mon].upcase
+            when "%B"   then t!(:"date.month_names",      locale:, format:)[object.mon]
+            when "%^B"  then t!(:"date.month_names",      locale:, format:)[object.mon].upcase
+            when "%p"   then t!(:"time.#{(object.respond_to?(:hour) ? object.hour : 0) < 12 ? :am : :pm}", locale:, format:).upcase
+            when "%P"   then t!(:"time.#{(object.respond_to?(:hour) ? object.hour : 0) < 12 ? :am : :pm}", locale:, format:).downcase
+            end
+          end
+        rescue ::I18n::MissingTranslationData => exception
+          exception.message
+        end
+
+        # rubocop:enable Layout/LineLength, Style/NestedTernaryOperator, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       end
     end
   end
