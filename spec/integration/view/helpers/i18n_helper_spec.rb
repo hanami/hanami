@@ -104,4 +104,78 @@ RSpec.describe "App view / Helpers / I18n helper", :app_integration do
       expect(output).to include "<time>11 May</time>"
     end
   end
+
+  describe "relative key lookup" do
+    describe "in a top-level template" do
+      def before_prepare
+        write "config/i18n/en.yml", <<~YAML
+          en:
+            posts:
+              show:
+                title: "The post title"
+        YAML
+
+        write "app/views/posts/show.rb", <<~RUBY
+          module TestApp
+            module Views
+              module Posts
+                class Show < TestApp::View
+                end
+              end
+            end
+          end
+        RUBY
+
+        write "app/templates/posts/show.html.erb", <<~ERB
+          <h1><%= t(".title") %></h1>
+        ERB
+      end
+
+      it "resolves the key against the current template name" do
+        output = TestApp::App["views.posts.show"].call.to_s
+
+        expect(output).to include "<h1>The post title</h1>"
+      end
+    end
+
+    describe "in a partial" do
+      def before_prepare
+        write "config/i18n/en.yml", <<~YAML
+          en:
+            posts:
+              show:
+                title: "The post title"
+              _form:
+                label: "Post title"
+        YAML
+
+        write "app/views/posts/show.rb", <<~RUBY
+          module TestApp
+            module Views
+              module Posts
+                class Show < TestApp::View
+                end
+              end
+            end
+          end
+        RUBY
+
+        write "app/templates/posts/show.html.erb", <<~ERB
+          <h1><%= t(".title") %></h1>
+          <%= render("form") %>
+        ERB
+
+        write "app/templates/posts/_form.html.erb", <<~ERB
+          <label><%= t(".label") %></label>
+        ERB
+      end
+
+      it "resolves relative keys against the partial's own lookup name" do
+        output = TestApp::App["views.posts.show"].call.to_s
+
+        expect(output).to include "<h1>The post title</h1>"
+        expect(output).to include "<label>Post title</label>"
+      end
+    end
+  end
 end
