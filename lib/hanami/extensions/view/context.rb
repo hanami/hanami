@@ -100,12 +100,14 @@ module Hanami
               routes: nil,
               assets: nil,
               request: nil,
+              i18n: nil,
               **args
             )
               @inflector = inflector
               @routes = routes
               @assets = assets
               @request = request
+              @i18n = i18n
 
               @content_for = {}
 
@@ -190,6 +192,22 @@ module Hanami
               end
 
               @routes
+            end
+
+            # Returns the slice's i18n backend.
+            #
+            # @return [Hanami::Providers::I18n::Backend] the i18n backend
+            #
+            # @raise [Hanami::ComponentLoadError] if the i18n gem is not bundled
+            #
+            # @api public
+            # @since x.x.x
+            def i18n
+              unless @i18n
+                raise Hanami::ComponentLoadError, "the i18n gem is required to access translations"
+              end
+
+              @i18n
             end
 
             # @overload content_for(key, value = nil, &block)
