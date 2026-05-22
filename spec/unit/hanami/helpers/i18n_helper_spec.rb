@@ -18,7 +18,8 @@ RSpec.describe Hanami::Helpers::I18nHelper do
     }.new(context)
   }
 
-  let(:context) { double(i18n:) }
+  let(:context) { double(i18n:, current_template_name:) }
+  let(:current_template_name) { nil }
 
   let(:i18n) do
     raw_backend = I18n::Backend::Simple.new
@@ -29,7 +30,18 @@ RSpec.describe Hanami::Helpers::I18nHelper do
         greeting: "Hello, %{name}!",
         messages: {welcome: "Welcome"},
         greeting_html: "Hello, <strong>%{name}</strong>!",
-        legal: {html: "<p>Read the <a href=\"/terms\">terms</a>.</p>"}
+        legal: {html: "<p>Read the <a href=\"/terms\">terms</a>.</p>"},
+        users: {
+          index: {
+            title: "Users index",
+            heading_html: "Hello, <strong>%{name}</strong>!",
+            html: "<p>raw html</p>"
+          },
+          _form: {label: "Name"}
+        },
+        admin: {users: {index: {title: "Admin users index"}}},
+        foo: {users: {index: {title: "Scoped title"}}},
+        _form: {label: "Top-level form label"}
       }
     )
 
@@ -119,6 +131,83 @@ RSpec.describe Hanami::Helpers::I18nHelper do
       it "does not pre-escape interpolation values" do
         expect(helper.translate("greeting", name: "<Alice>"))
           .to eq "Hello, <Alice>!"
+      end
+    end
+
+    context "relative keys" do
+      let(:current_template_name) { "users/index" }
+
+      it "expands a leading-dot key against the current template name" do
+        expect(helper.translate(".title")).to eq "Users index"
+      end
+
+      it "converts slashes in the template name to dots" do
+        allow(context).to receive(:current_template_name).and_return("admin/users/index")
+        expect(helper.translate(".title")).to eq "Admin users index"
+      end
+
+      it "expands symbol keys" do
+        expect(helper.translate(:".title")).to eq "Users index"
+      end
+
+      it "preserves the leading underscore in partial basenames when expanding" do
+        allow(context).to receive(:current_template_name).and_return("users/_form")
+        expect(helper.translate(".label")).to eq "Name"
+      end
+
+      it "preserves the leading underscore for a top-level partial" do
+        allow(context).to receive(:current_template_name).and_return("_form")
+        expect(helper.translate(".label")).to eq "Top-level form label"
+      end
+
+      it "includes the expanded key in the missing-translation markup" do
+        result = helper.translate(".nope")
+
+        expect(result).to be_html_safe
+        expect(result).to include "users.index.nope</span>"
+      end
+
+      it "preserves HTML safety for expanded `_html` keys and escapes interpolations" do
+        result = helper.translate(".heading_html", name: "<script>")
+
+        expect(result).to be_html_safe
+        expect(result).to eq "Hello, <strong>&lt;script&gt;</strong>!"
+      end
+
+      it "preserves HTML safety for expanded `.html` keys" do
+        result = helper.translate(".html")
+
+        expect(result).to be_html_safe
+        expect(result).to eq "<p>raw html</p>"
+      end
+
+      it "does not expand absolute keys even when a template is current" do
+        expect(helper.translate("hello")).to eq "Hello"
+      end
+
+      it "does not treat array keys as relative" do
+        # If arrays were treated as relative, calling translate with no template current
+        # would raise I18n::ArgumentError. Confirm it doesn't.
+        allow(context).to receive(:current_template_name).and_return(nil)
+        expect { helper.translate([".missing", :hello]) }.not_to raise_error
+      end
+
+      it "composes with the :scope option" do
+        expect(helper.translate(".title", scope: :foo)).to eq "Scoped title"
+      end
+
+      context "when no template is being rendered" do
+        let(:current_template_name) { nil }
+
+        it "raises I18n::ArgumentError from #translate" do
+          expect { helper.translate(".title") }
+            .to raise_error(I18n::ArgumentError, /relative translation key/)
+        end
+
+        it "raises I18n::ArgumentError from #translate!" do
+          expect { helper.translate!(".title") }
+            .to raise_error(I18n::ArgumentError, /relative translation key/)
+        end
       end
     end
   end

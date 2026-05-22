@@ -28,6 +28,13 @@ module Hanami
       # `<span class="translation_missing">` element containing the missing key, useful for
       # spotting missing translations during development.
       #
+      # When the key begins with a `.`, it is treated as relative to the currently-rendering
+      # template and expanded against its name (slashes become dots; partial basenames keep
+      # their leading underscore). For example, `translate(".title")` inside
+      # `users/index.html.erb` resolves to `users.index.title`, and `translate(".label")`
+      # inside `users/_form.html.erb` resolves to `users._form.label`. Raises
+      # `I18n::ArgumentError` if called outside a template render.
+      #
       # @param key [String, Symbol] the translation key to look up
       # @param options [Hash] translation options forwarded to the backend (`:locale`, `:scope`,
       #   `:default`, `:count`, `:raise`, etc.), plus any interpolation values
@@ -48,9 +55,20 @@ module Hanami
       #   <%= translate("missing.key") %>
       #   # => '<span class="translation_missing" title="...">missing.key</span>'
       #
+      # @example Relative key lookup
+      #   # In app/templates/users/index.html.erb:
+      #   <%= translate(".title") %>
+      #   # Looks up "users.index.title"
+      #
+      #   # In app/templates/users/_form.html.erb (a partial):
+      #   <%= translate(".label") %>
+      #   # Looks up "users._form.label"
+      #
       # @api public
       # @since x.x.x
       def translate(key, **options)
+        key = _resolve_i18n_key(key)
+
         html_safe = _html_safe_translation_key?(key)
 
         options = _escape_translation_options(options) if html_safe
@@ -116,6 +134,22 @@ module Hanami
       alias_method :l, :localize
 
       private
+
+      def _resolve_i18n_key(key)
+        return key unless key.to_s.start_with?(".")
+
+        template_name = _context.current_template_name
+
+        unless template_name
+          raise(
+            ::I18n::ArgumentError,
+            "Cannot use relative translation key #{key.inspect} outside of a template render. " \
+            "Use an absolute key (without a leading dot) instead."
+          )
+        end
+
+        "#{template_name.tr("/", ".")}#{key}"
+      end
 
       def _html_safe_translation_key?(key)
         HTML_SAFE_TRANSLATION_KEY.match?(key.to_s)
