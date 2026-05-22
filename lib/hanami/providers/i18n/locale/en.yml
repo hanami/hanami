@@ -1,0 +1,57 @@
+en:
+  date:
+    formats:
+      default: "%a, %-d %b %Y"
+      short: "%-d %b"
+      long: "%-d %B %Y"
+    day_names:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+    abbr_day_names:
+      - Sun
+      - Mon
+      - Tue
+      - Wed
+      - Thu
+      - Fri
+      - Sat
+    month_names:
+      - ~
+      - January
+      - February
+      - March
+      - April
+      - May
+      - June
+      - July
+      - August
+      - September
+      - October
+      - November
+      - December
+    abbr_month_names:
+      - ~
+      - Jan
+      - Feb
+      - Mar
+      - Apr
+      - May
+      - Jun
+      - Jul
+      - Aug
+      - Sep
+      - Oct
+      - Nov
+      - Dec
+  time:
+    formats:
+      default: "%a, %-d %b %Y %H:%M:%S %:z"
+      short: "%-d %b %-I:%M %P"
+      long: "%-d %B %Y %-I:%M %P"
+    am: "am"
+    pm: "pm"

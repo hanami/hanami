@@ -601,7 +601,7 @@ RSpec.describe "I18n", :app_integration do
       end
     end
 
-    it "does not register the provider when config/i18n/ directory does not exist" do
+    it "registers the i18n provider with bundled English defaults even without user translations" do
       with_tmp_directory(Dir.mktmpdir) do
         write "config/app.rb", <<~'RUBY'
           require "hanami"
@@ -612,12 +612,63 @@ RSpec.describe "I18n", :app_integration do
           end
         RUBY
 
-        # No config/i18n/ directory exists
+        write "slices/admin/action.rb", <<~RUBY
+          module Admin
+            class Action
+            end
+          end
+        RUBY
+
+        # No config/i18n/ directory exists; only the bundled defaults are available.
 
         require "hanami/prepare"
 
-        # Provider should not be registered
-        expect(Hanami.app.key?("i18n")).to be false
+        # Provider registers in the app and in slices, so `l(Date.today, format: :short)` produces
+        # sensible output out of the box.
+        date = Date.new(2026, 5, 22)
+        time = Time.new(2026, 5, 22, 9, 5, 30, "+10:00")
+
+        expect(Hanami.app["i18n"].l(date, format: :default)).to eq "Fri, 22 May 2026"
+        expect(Hanami.app["i18n"].l(date, format: :short)).to eq "22 May"
+        expect(Hanami.app["i18n"].l(date, format: :long)).to eq "22 May 2026"
+
+        expect(Hanami.app["i18n"].l(time, format: :default)).to eq "Fri, 22 May 2026 09:05:30 +10:00"
+        expect(Hanami.app["i18n"].l(time, format: :short)).to eq "22 May 9:05 am"
+        expect(Hanami.app["i18n"].l(time, format: :long)).to eq "22 May 2026 9:05 am"
+
+        # Bundled defaults reach slices too.
+        expect(Admin::Slice["i18n"].l(date, format: :short)).to eq "22 May"
+        expect(Admin::Slice["i18n"].l(time, format: :short)).to eq "22 May 9:05 am"
+      end
+    end
+
+    it "lets user translations override bundled English defaults" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "config/i18n/en.yml", <<~YAML
+          en:
+            date:
+              formats:
+                short: "%d/%m/%Y"
+        YAML
+
+        require "hanami/prepare"
+
+        date = Date.new(2026, 5, 22)
+
+        # User format overrides the bundled `date.formats.short`.
+        expect(Hanami.app["i18n"].l(date, format: :short)).to eq "22/05/2026"
+
+        # Bundled keys the user didn't override still apply.
+        expect(Hanami.app["i18n"].l(date, format: :long)).to eq "22 May 2026"
       end
     end
 
@@ -961,6 +1012,193 @@ RSpec.describe "I18n", :app_integration do
           expect(search_i18n).not_to be(app_i18n)
           expect(search_i18n.t("search_message")).to eq "Search only"
           expect(search_i18n.t("shared")).to eq "shared" # Missing
+        end
+      end
+
+      # Pattern: Common translations via `config/i18n/shared/`.
+      #
+      # - The app's `config/i18n/shared/` directory is loaded into every slice's backend by
+      #   default, providing common trnaslations without needing to duplicate these per-slice.
+      # - Each slice still has its own i18n instance with its own locale state.
+      # - Slice-specific translations are loaded on top of shared ones, so slices can override
+      #   shared keys.
+      # - Files directly under `config/i18n/` (not in `shared/`) remain app-slice-only.
+      specify "shared translations via config/i18n/shared/ are loaded into every slice" do
+        with_tmp_directory(Dir.mktmpdir) do
+          write "config/app.rb", <<~'RUBY'
+            require "hanami"
+
+            module TestApp
+              class App < Hanami::App
+                config.i18n.default_locale = :en
+              end
+            end
+          RUBY
+
+          write "config/i18n/en.yml", <<~YAML
+            en:
+              app_only: App slice only
+          YAML
+
+          write "config/i18n/shared/en.yml", <<~YAML
+            en:
+              shared_greeting: Hello from shared
+              date:
+                month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+          YAML
+
+          write "slices/admin/config/i18n/en.yml", <<~YAML
+            en:
+              admin_only: Admin slice only
+              shared_greeting: Hello from admin override
+          YAML
+
+          write "slices/main/action.rb", <<~RUBY
+            module Main
+              class Action
+              end
+            end
+          RUBY
+
+          require "hanami/prepare"
+
+          app_i18n = Hanami.app["i18n"]
+          admin_i18n = Admin::Slice["i18n"]
+          main_i18n = Main::Slice["i18n"]
+
+          # Each slice has its own instance
+          expect(app_i18n).not_to be(admin_i18n)
+          expect(admin_i18n).not_to be(main_i18n)
+
+          # Shared translations reach every slice (including the app slice)
+          expect(app_i18n.t("shared_greeting")).to eq "Hello from shared"
+          expect(main_i18n.t("shared_greeting")).to eq "Hello from shared"
+          expect(app_i18n.t("date.month_names")[5]).to eq "May"
+          expect(main_i18n.t("date.month_names")[5]).to eq "May"
+
+          # App-only translations stay in the app slice
+          expect(app_i18n.t("app_only")).to eq "App slice only"
+          expect(admin_i18n.t("app_only")).to eq "app_only" # Missing
+          expect(main_i18n.t("app_only")).to eq "app_only" # Missing
+
+          # Slice-specific translations override shared keys for that slice
+          expect(admin_i18n.t("shared_greeting")).to eq "Hello from admin override"
+          expect(admin_i18n.t("admin_only")).to eq "Admin slice only"
+
+          # And don't leak to other slices
+          expect(main_i18n.t("admin_only")).to eq "admin_only" # Missing
+        end
+      end
+
+      specify "shared_load_path can be disabled by setting it to []" do
+        with_tmp_directory(Dir.mktmpdir) do
+          write "config/app.rb", <<~'RUBY'
+            require "hanami"
+
+            module TestApp
+              class App < Hanami::App
+                config.i18n.default_locale = :en
+                config.i18n.shared_load_path = []
+              end
+            end
+          RUBY
+
+          write "config/i18n/shared/en.yml", <<~YAML
+            en:
+              shared_greeting: Hello from shared
+          YAML
+
+          write "slices/admin/action.rb", <<~RUBY
+            module Admin
+              class Action
+              end
+            end
+          RUBY
+
+          require "hanami/prepare"
+
+          # Admin slice doesn't get the shared translations
+          expect(Admin::Slice["i18n"].t("shared_greeting")).to eq "shared_greeting"
+        end
+      end
+
+      specify "shared_load_path can be relocated to another directory" do
+        with_tmp_directory(Dir.mktmpdir) do
+          write "config/app.rb", <<~'RUBY'
+            require "hanami"
+
+            module TestApp
+              class App < Hanami::App
+                config.i18n.default_locale = :en
+                config.i18n.shared_load_path = ["config/i18n_baseline/**/*.yml"]
+              end
+            end
+          RUBY
+
+          write "config/i18n_baseline/en.yml", <<~YAML
+            en:
+              baseline: From the baseline dir
+          YAML
+
+          write "slices/admin/action.rb", <<~RUBY
+            module Admin
+              class Action
+              end
+            end
+          RUBY
+
+          require "hanami/prepare"
+
+          expect(Hanami.app["i18n"].t("baseline")).to eq "From the baseline dir"
+          expect(Admin::Slice["i18n"].t("baseline")).to eq "From the baseline dir"
+        end
+      end
+
+      specify "a slice can opt out of shared translations independently" do
+        with_tmp_directory(Dir.mktmpdir) do
+          write "config/app.rb", <<~'RUBY'
+            require "hanami"
+
+            module TestApp
+              class App < Hanami::App
+                config.i18n.default_locale = :en
+              end
+            end
+          RUBY
+
+          write "config/i18n/shared/en.yml", <<~YAML
+            en:
+              shared_greeting: Hello from shared
+          YAML
+
+          write "config/slices/main.rb", <<~RUBY
+            module Main
+              class Slice < Hanami::Slice
+                config.i18n.shared_load_path = []
+              end
+            end
+          RUBY
+
+          write "slices/main/config/i18n/en.yml", <<~YAML
+            en:
+              own: Just my own stuff
+          YAML
+
+          write "slices/admin/action.rb", <<~RUBY
+            module Admin
+              class Action
+              end
+            end
+          RUBY
+
+          require "hanami/prepare"
+
+          # Admin slice (default) gets the shared translations
+          expect(Admin::Slice["i18n"].t("shared_greeting")).to eq "Hello from shared"
+
+          # Main slice (opted out) does not
+          expect(Main::Slice["i18n"].t("shared_greeting")).to eq "shared_greeting"
+          expect(Main::Slice["i18n"].t("own")).to eq "Just my own stuff"
         end
       end
     end
