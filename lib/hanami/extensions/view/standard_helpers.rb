@@ -16,6 +16,10 @@ module Hanami
         if Hanami.bundled?("hanami-assets")
           include Helpers::AssetsHelper
         end
+
+        if Hanami.bundled?("i18n")
+          include Helpers::I18nHelper
+        end
       end
     end
   end

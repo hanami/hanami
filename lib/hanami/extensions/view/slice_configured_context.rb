@@ -39,15 +39,18 @@ module Hanami
         #   - the configured inflector as `inflector`
         #   - "routes" from the app container as `routes`
         #   - "assets" from the app container as `assets`
+        #   - "i18n" from the slice container as `i18n`
         def define_new
           inflector = slice.inflector
           resolve_routes = method(:resolve_routes)
           resolve_assets = method(:resolve_assets)
+          resolve_i18n = method(:resolve_i18n)
 
           define_method :new do |**kwargs|
             kwargs[:inflector] ||= inflector
             kwargs[:routes] ||= resolve_routes.()
             kwargs[:assets] ||= resolve_assets.()
+            kwargs[:i18n] ||= resolve_i18n.()
 
             super(**kwargs)
           end
@@ -59,6 +62,10 @@ module Hanami
 
         def resolve_assets
           slice["assets"] if slice.key?("assets")
+        end
+
+        def resolve_i18n
+          slice["i18n"] if slice.key?("i18n")
         end
       end
     end
