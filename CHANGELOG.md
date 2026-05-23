@@ -30,6 +30,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Added `Hanami::Settings::CompositeStore`, which can be used to chain setting lookups from multiple stores. (@aaronmallen in #1572)
 - Support `HANAMI_LOG_LEVEL` env var to set the log level (e.g. `HANAMI_LOG_LEVEL=warn bundle exec hanami server`). Takes precedence over `config.logger.level` set in `config/app.rb`.
 - New setting `:log_level` for `db`, allowing to override default `:info` level for SQL logs
+- Make I18n helpers available in `Hanami::Action` instances. These delegate to the slice's own i18n backend via a new `#i18n` accessor. Relative keys (beginning with `.`) are expanded the action's name, so `t(".title")` inside `Main::Actions::Posts::Show` looks up `posts.show.title`. (@timriley)
 
 ### Changed
 
