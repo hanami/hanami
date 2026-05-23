@@ -43,8 +43,7 @@ module Hanami
         # @api private
         attr_reader :view_context_class
 
-        # Returns the app or slice's {Hanami::Slice::RoutesHelper RoutesHelper} for use within
-        # action instance methods.
+        # Returns the slice's {Hanami::Slice::RoutesHelper RoutesHelper}.
         #
         # @return [Hanami::Slice::RoutesHelper]
         #
@@ -52,14 +51,21 @@ module Hanami
         # @since 2.0.0
         attr_reader :routes
 
-        # Returns the app or slice's `Dry::Monitor::Rack::Middleware` for use within
-        # action instance methods.
+        # Returns the slice's `Dry::Monitor::Rack::Middleware`.
         #
         # @return [Dry::Monitor::Rack::Middleware]
         #
         # @api public
         # @since 2.0.0
         attr_reader :rack_monitor
+
+        # Returns the slice's i18n backend.
+        #
+        # @return [Hanami::Providers::I18n::Backend]
+        #
+        # @api public
+        # @since x.x.x
+        attr_reader :i18n
 
         # @overload def initialize(routes: nil, **kwargs)
         #   Returns a new `Hanami::Action` with app components injected as dependencies.
@@ -71,11 +77,12 @@ module Hanami
         #
         #   @api public
         #   @since 2.0.0
-        def initialize(view: nil, view_context_class: nil, rack_monitor: nil, routes: nil, **kwargs)
+        def initialize(view: nil, view_context_class: nil, rack_monitor: nil, routes: nil, i18n: nil, **kwargs)
           @view = view
           @view_context_class = view_context_class
           @routes = routes
           @rack_monitor = rack_monitor
+          @i18n = i18n
 
           super(**kwargs)
         end
@@ -132,3 +139,9 @@ module Hanami
 end
 
 Hanami::Action.include(Hanami::Extensions::Action)
+
+if Hanami.bundled?("i18n")
+  require_relative "action/i18n_helper"
+  Hanami::Action.setting(:i18n_key_base)
+  Hanami::Action.include(Hanami::Extensions::Action::I18nHelper)
+end
