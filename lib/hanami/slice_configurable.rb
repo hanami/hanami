@@ -31,11 +31,9 @@ module Hanami
 
         inherited_mod = Module.new do
           define_method(:inherited) do |subclass|
-            unless Hanami.app?
-              raise ComponentLoadError, "Class #{klass} must be defined within an Hanami app"
-            end
-
             super(subclass)
+
+            return unless Hanami.app?
 
             subclass.instance_variable_set(:@configured_for_slices, configured_for_slices.dup)
 

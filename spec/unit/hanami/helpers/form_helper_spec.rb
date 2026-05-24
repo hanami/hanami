@@ -17,11 +17,23 @@ RSpec.describe Hanami::Helpers::FormHelper do
   }
 
   let(:context) {
-    Hanami::View::Context.new(request: request, inflector: Dry::Inflector.new)
+    Class.new(Hanami::View::Context) {
+      attr_reader :request, :inflector
+
+      def initialize(request:, inflector:, **args)
+        @request = request
+        @inflector = inflector
+        super(**args)
+      end
+
+      def csrf_token
+        request.session[Hanami::Action::CSRFProtection::CSRF_TOKEN]
+      end
+    }.new(request:, inflector: Dry::Inflector.new)
   }
 
   let(:request) {
-    Hanami::Action::Request.new(env: rack_request, params: params, session_enabled: true)
+    Hanami::Action::Request.new(env: rack_request, params:, session_enabled: true)
   }
 
   let(:rack_request) {

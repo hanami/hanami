@@ -16,7 +16,6 @@ module Hanami
           # a class named `Views::Context` within the slice's namespace.
           #
           # @api private
-          # @since 2.1.0
           def context_class(slice)
             views_namespace = views_namespace(slice)
 
@@ -31,8 +30,15 @@ module Hanami
 
           private
 
-          # @api private
-          # @since 2.1.0
+          def views_namespace(slice)
+            # TODO: this could be moved into the top-level Extensions::View
+            if slice.namespace.const_defined?(:Views)
+              slice.namespace.const_get(:Views)
+            else
+              slice.namespace.const_set(:Views, Module.new)
+            end
+          end
+
           def context_superclass(slice)
             return Hanami::View::Context if Hanami.app.equal?(slice)
 
@@ -46,36 +52,35 @@ module Hanami
               Hanami::View::Context
             end
           end
-
-          # @api private
-          # @since 2.1.0
-          def views_namespace(slice)
-            # TODO: this could be moved into the top-level Extensions::View
-            if slice.namespace.const_defined?(:Views)
-              slice.namespace.const_get(:Views)
-            else
-              slice.namespace.const_set(:Views, Module.new)
-            end
-          end
         end
 
-        # @api private
-        # @since 2.1.0
         module ClassExtension
           def self.included(context_class)
             super
 
             context_class.extend(Hanami::SliceConfigurable)
             context_class.extend(ClassMethods)
-            context_class.prepend(InstanceMethods)
+          end
+
+          # A marker indicating the context class has had Hanami app-specific behaviour mixed in.
+          #
+          # Checked by {ClassMethods#configure_for_slice} so a chain of slice-configured subclasses
+          # does not re-apply the integration. This matters for the prepended `#initialize`, which
+          # would otherwise fire once per slice in the chain instead of once per instance.
+          #
+          # @api private
+          module IntegratedContext
           end
 
           # @api private
-          # @since 2.1.0
           module ClassMethods
             # @api private
-            # @since 2.1.0
             def configure_for_slice(slice)
+              unless is_a?(IntegratedContext)
+                prepend InstanceMethods
+                extend IntegratedContext
+              end
+
               extend SliceConfiguredContext.new(slice)
             end
           end
@@ -115,7 +120,6 @@ module Hanami
             end
 
             # @api private
-            # @since 2.1.0
             def initialize_copy(source)
               # The standard implementation of initialize_copy will make shallow copies of all
               # instance variables from the source. This is fine for most of our ivars.
