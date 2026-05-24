@@ -65,7 +65,7 @@ module Hanami
           # A marker indicating the context class has had Hanami app-specific behaviour mixed in.
           #
           # Checked by {ClassMethods#configure_for_slice} so a chain of slice-configured subclasses
-          # does not re-apply the integration. This matters for the prepended `#initialize`, which
+          # does not re-apply the integration. This matters for the prepended {Initializer}, which
           # would otherwise fire once per slice in the chain instead of once per instance.
           #
           # @api private
@@ -77,7 +77,8 @@ module Hanami
             # @api private
             def configure_for_slice(slice)
               unless is_a?(IntegratedContext)
-                prepend InstanceMethods
+                prepend Initializer
+                include InstanceMethods
                 extend IntegratedContext
               end
 
@@ -85,21 +86,14 @@ module Hanami
             end
           end
 
-          # @api public
-          # @since 2.1.0
-          module InstanceMethods
-            # Returns the app's inflector.
-            #
-            # @return [Dry::Inflector] the inflector
-            #
-            # @api public
-            # @since 2.1.0
-            attr_reader :inflector
-
+          # Captures the integration kwargs into ivars. Prepended so it runs before any
+          # user-defined initializer in the subclass.
+          #
+          # @api private
+          module Initializer
             # @see SliceConfiguredContext#define_new
             #
             # @api private
-            # @since 2.1.0
             def initialize(
               inflector: nil,
               routes: nil,
@@ -129,6 +123,21 @@ module Hanami
               # state across distinct view renderings.
               @content_for = source.instance_variable_get(:@content_for).dup
             end
+          end
+
+          # Readers exposing the ivars captured by {Initializer}. Included rather than prepended
+          # so user subclasses can override them naturally.
+          #
+          # @api public
+          # @since 2.1.0
+          module InstanceMethods
+            # Returns the app's inflector.
+            #
+            # @return [Dry::Inflector] the inflector
+            #
+            # @api public
+            # @since 2.1.0
+            attr_reader :inflector
 
             # Returns the app's assets.
             #
