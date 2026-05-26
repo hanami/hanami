@@ -74,7 +74,7 @@ RSpec.describe "DB / Logging", :app_integration do
       log_lines = logger_stream.read.split("\n")
 
       expect(log_lines.length).to eq 1
-      expect(strip_ansi(log_lines.first)).to match(/\[test_app\] \[INFO\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
+      expect(strip_ansi(log_lines.first)).to match(/\[test_app\] \[DEBUG\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
     end
   end
 
@@ -212,14 +212,14 @@ RSpec.describe "DB / Logging", :app_integration do
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 1
-        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[INFO\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[DEBUG\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
 
         relation = Main::Slice["relations.posts"]
         relation.select(:id).to_a
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 2
-        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[INFO\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[DEBUG\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
       end
     end
   end
@@ -293,20 +293,20 @@ RSpec.describe "DB / Logging", :app_integration do
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 1
-        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[INFO\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[DEBUG\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`title` FROM `posts` ORDER BY `posts`.`id`/)
 
         relation = Main::Slice["relations.posts"]
         relation.select(:id).to_a
 
         log_lines = logger_stream.string.split("\n")
         expect(log_lines.length).to eq 2
-        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[INFO\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
+        expect(strip_ansi(log_lines.last)).to match(/\[test_app\] \[DEBUG\] \[.*\] SQL sqlite \d+(\.\d+)?ms SELECT `posts`.`id` FROM `posts` ORDER BY `posts`.`id`/)
       end
     end
   end
 
   describe "in production" do
-    it "logs SQL queries" do
+    it "does not log SQL queries by default" do
       with_tmp_directory(Dir.mktmpdir) do
         write "config/app.rb", <<~RUBY
           require "hanami"
@@ -362,9 +362,69 @@ RSpec.describe "DB / Logging", :app_integration do
         logger_stream.rewind
         log_lines = logger_stream.read.split("\n")
 
+        expect(log_lines.length).to eq 0
+      end
+    end
+
+    it "logs SQL as JSON if log level is configured" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+              config.db.log_level = :info
+            end
+          end
+        RUBY
+
+        write "app/relations/posts.rb", <<~RUBY
+          module TestApp
+            module Relations
+              class Posts < Hanami::DB::Relation
+                schema :posts, infer: true
+              end
+            end
+          end
+        RUBY
+
+        ENV["DATABASE_URL"] = "sqlite::memory"
+        ENV["HANAMI_ENV"] = "production"
+
+        require "hanami/setup"
+
+        logger_stream = StringIO.new
+        Hanami.app.config.logger.stream = logger_stream
+
+        require "hanami/prepare"
+
+        Hanami.app.prepare :db
+
+        # Manually run a migration and add a test record
+        gateway = Hanami.app["db.gateway"]
+        migration = gateway.migration do
+          change do
+            create_table :posts do
+              primary_key :id
+              column :title, :text, null: false
+            end
+
+            create_table :authors do
+              primary_key :id
+            end
+          end
+        end
+        migration.apply(gateway, :up)
+        gateway.connection.execute("INSERT INTO posts (title) VALUES ('Together breakfast')")
+
+        relation = Hanami.app["relations.posts"]
+        expect(relation.select(:title).to_a).to eq [{title: "Together breakfast"}]
+
+        logger_stream.rewind
+        log_lines = logger_stream.read.split("\n")
+
         expect(log_lines.length).to eq 1
 
-        # In production, logs are JSON formatted with structured data
         log_json = JSON.parse(log_lines.first, symbolize_names: true)
         expect(log_json).to include(
           progname: "test_app",

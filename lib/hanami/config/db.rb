@@ -15,7 +15,7 @@ module Hanami
 
       setting :import_from_parent, default: false
 
-      setting :log_level, default: :info
+      setting :log_level, default: :debug
 
       private
 
