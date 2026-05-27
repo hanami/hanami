@@ -18,7 +18,7 @@ module Hanami
 
       # @param logger [#tagged, #info] a Hanami-compatible logger (typically a
       #   Dry::Logger::Dispatcher or a {Hanami::UniversalLogger}-wrapped logger)
-      def initialize(logger, level: :info)
+      def initialize(logger, level: :debug)
         @logger = logger
         @level = level
       end
