@@ -960,7 +960,7 @@ module Hanami
         )
       end
 
-      # rubocop:disable Metrics/PerceivedComplexity
+      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def prepare_container_providers
         # Check here for the `routes` definition only, not `router` itself, because the
         # `router` requires the slice to be prepared before it can be loaded, and at this
@@ -999,8 +999,19 @@ module Hanami
             register_provider(:i18n, source: Providers::I18n)
           end
         end
+
+        if Hanami.bundled?("hanami-mailer")
+          # Explicit require here to ensure the provider source registers itself, to allow the
+          # user to configure it within their own concrete provider file.
+          require_relative "providers/mailers"
+
+          # Only register the provider if the user hasn't provided their own.
+          unless container.providers[:mailers]
+            register_provider(:mailers, namespace: true, source: Providers::Mailers)
+          end
+        end
       end
-      # rubocop:enable Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def prepare_autoloader
         autoloader.tag = "hanami.slices.#{slice_name}"

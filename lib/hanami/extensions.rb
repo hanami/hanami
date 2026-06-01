@@ -20,6 +20,11 @@ if Hanami.bundled?("hanami-router")
   require_relative "extensions/router/errors"
 end
 
+if Hanami.bundled?("hanami-mailer")
+  require "hanami/mailer"
+  require_relative "extensions/mailer"
+end
+
 if Hanami.bundled?("dry-operation")
   require_relative "extensions/operation"
 end

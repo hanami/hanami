@@ -25,6 +25,8 @@ module Hanami
             end
 
             views_namespace.const_set(:Context, Class.new(context_superclass(slice)).tap { |klass|
+              # Call configure_for_slice explicitly, since this is an anonymous class at this point,
+              # so the slice cannot be inferred from its name.
               klass.configure_for_slice(slice)
             })
           end
