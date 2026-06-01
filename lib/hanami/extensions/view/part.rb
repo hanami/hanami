@@ -27,6 +27,8 @@ module Hanami
             extend SliceConfiguredPart.new(slice)
 
             const_set :PartHelpers, Class.new(PartHelpers) { |klass|
+              # Call configure_for_slice explicitly, since this is an anonymous class at this point,
+              # so the slice cannot be inferred from its name.
               klass.configure_for_slice(slice)
             }
           end

@@ -57,6 +57,8 @@ module Hanami
           define_method(:new) do |**args|
             return super(**args) if args.key?(:rendering)
 
+            # Call configure_for_slice explicitly, since this is an anonymous class at this point,
+            # so the slice cannot be inferred from its name.
             slice_rendering = Class.new(Hanami::View)
               .configure_for_slice(slice)
               .new

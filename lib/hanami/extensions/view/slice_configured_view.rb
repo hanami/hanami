@@ -185,8 +185,8 @@ module Hanami
               views_namespace.const_get(:Part)
             else
               views_namespace.const_set(:Part, Class.new(part_superclass).tap { |klass|
-                # Give the slice to `configure_for_slice`, since it cannot be inferred when it is
-                # called via `.inherited`, because the class is anonymous at this point
+                # Call configure_for_slice explicitly, since this is an anonymous class at this point,
+                # so the slice cannot be inferred from its name.
                 klass.configure_for_slice(slice)
               })
             end
@@ -208,8 +208,8 @@ module Hanami
               views_namespace.const_get(:Scope)
             else
               views_namespace.const_set(:Scope, Class.new(scope_superclass).tap { |klass|
-                # Give the slice to `configure_for_slice`, since it cannot be inferred when it is
-                # called via `.inherited`, since the class is anonymous at this point
+                # Call configure_for_slice explicitly, since this is an anonymous class at this point,
+                # so the slice cannot be inferred from its name.
                 klass.configure_for_slice(slice)
               })
             end
