@@ -7,22 +7,19 @@
   <title>Hanami</title>
   <style>
     :root {
-      --max-width: 768px;
+      --max-width: 840px;
+      --color-primary: oklch(71.93% 0.18 10.67);
+      --box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px;
       --foreground-rgb: 0, 0, 0;
       --background-rgb: 255, 255, 255;
-      --card-border-rgb: 200, 200, 200;
-      --card-background-rgb: 100, 100, 100;
       --font-sans: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
-      --gradient: radial-gradient(circle at 50% 125%, rgba(255,202,212,1) 0%, rgba(255,202,212,0) 40%);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         --foreground-rgb: 255, 255, 255;
         --background-rgb: 0, 0, 0;
-        --card-border-rgb: 200, 200, 200;
-        --card-background-rgb: 100, 100, 100;
-        --gradient: radial-gradient(circle at 50% 125%, rgba(255,73,108,0.75) 0%, rgba(255,73,108,0) 40%);
+        --box-shadow: rgba(255, 255, 255, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 10px 15px -3px, rgba(255, 255, 255, 0.1) 0px 4px 6px -4px;
       }
     }
 
@@ -41,7 +38,7 @@
 
     body {
       color: rgb(var(--foreground-rgb));
-      background: var(--gradient) rgb(var(--background-rgb));
+      background: rgb(var(--background-rgb));
       font-family: var(--font-sans);
       font-style: normal;
     }
@@ -59,12 +56,19 @@
       color: rgb(var(--foreground-rgb));
     }
 
+    .intro {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 3;
+      justify-content: center;
+      align-items: center;
+    }
+
     .welcome {
       display: flex;
       flex-direction: column;
       gap: 2vh;
       justify-content: center;
-      flex-grow: 3;
       align-items: center;
       text-align: center;
       position: relative;
@@ -73,45 +77,79 @@
 
     .welcome .logo {
       display: block;
-      width: 120px;
-      height: 120px;
+      width: 160px;
+      height: auto;
     }
 
     .welcome h1 {
-      font-size: 2.625rem;
-      font-weight: 500;
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+    }
+
+    .welcome h1 strong {
+      color: var(--color-primary);
+      display: block;
+    }
+
+    .hero {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      width: max(100vw, 1200px);
+      z-index: 0;
+      pointer-events: none;
+      line-height: 0;
+    }
+
+    .hero svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .welcome .logo,
+    .welcome h1 {
+      position: relative;
+      z-index: 1;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      column-gap: 20px;
-      max-width: 100%;
+      gap: 1rem;
+      max-width: var(--max-width);
       margin-bottom: 8vh;
-      width: var(--max-width);
+      width: 100%;
     }
 
     .card {
-      padding: 1rem;
-      border-radius: 12px;
-      border: 1px solid rgba(var(--card-border-rgb), 0.3);
-      background: rgba(var(--card-background-rgb), 0);
-      transition: background 200ms, border 200ms;
+      background: rgb(var(--background-rgb));
+      border-radius: 1rem;
+      border: 3px solid var(--color-primary);
+      box-shadow: var(--box-shadow);
+      padding: 1.4rem;
+      transition: transform 200ms;
     }
 
     .card:hover {
-      background: rgba(var(--card-background-rgb), 0.05);
+      transform: translateY(-4px);
     }
 
     .card h2 {
-      font-size: 1.5rem;
-      font-weight: 500;
-      margin-bottom: 0.8rem;
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.4rem;
     }
 
     .card p {
-      line-height: 1.5;
+      font-size: 1.2rem;
       opacity: 0.6;
+      line-height: 1.4;
+      text-wrap: pretty;
     }
 
     .meta {
@@ -121,20 +159,10 @@
 
     /* Mobile */
     @media (max-width: 700px) {
-
       .welcome {
         justify-content: top;
         flex-grow: 0;
         margin-bottom: 4rem;
-      }
-
-      .welcome .logo {
-        width: 90px;
-        height: 90px;
-      }
-
-      .welcome h1 {
-        font-size: 2rem;
       }
 
       .grid {
@@ -155,17 +183,192 @@
       }
     }
 
+    @media (min-width: 1024px) {
+      .welcome h1 {
+        font-size: 4.5rem;
+        line-height: 1;
+      }
+
+      .hero {
+        width: max(100vw, 1728px);
+      }
+    }
+
     @media (prefers-color-scheme: dark) {
       html {
         color-scheme: dark;
       }
-      .card {
-        border: 1px solid rgba(var(--card-border-rgb), 0.15);
-        background: rgba(var(--card-background-rgb), 0);
+    }
+
+    /* Animated Hanami logo */
+    .anim-logo {
+      --speed: 1;
+      --amp-base: 0.8;
+      --amp: var(--amp-base);
+      --wiggle-dur: calc(0.32s / var(--speed));
+      --burst-dur: calc(0.9s / var(--speed));
+      overflow: visible;
+    }
+
+    @keyframes anim-logo-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(calc(-4px * var(--amp))); }
+    }
+
+    @keyframes anim-logo-wiggle {
+      0% { transform: rotate(0); }
+      25% { transform: rotate(calc(-4deg * var(--amp))); }
+      50% { transform: rotate(calc(4deg * var(--amp))); }
+      75% { transform: rotate(calc(-3deg * var(--amp))); }
+      100% { transform: rotate(0); }
+    }
+
+    @keyframes anim-logo-happy-bounce {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      20% { transform: translateY(calc(-20px * var(--amp))) scale(calc(1 + 0.08 * var(--amp)), calc(1 - 0.08 * var(--amp))); }
+      45% { transform: translateY(calc(6px * var(--amp))) scale(calc(1 - 0.08 * var(--amp)), calc(1 + 0.08 * var(--amp))); }
+      70% { transform: translateY(calc(-6px * var(--amp))) scale(1.02, 0.98); }
+    }
+
+    @keyframes anim-logo-sparkle {
+      0% { opacity: 0; transform: scale(0.2); }
+      30% { opacity: 1; transform: scale(calc(1 * var(--amp))); }
+      100% { opacity: 0; transform: scale(0.2) translate(var(--dx, 0), var(--dy, 0)); }
+    }
+
+    .anim-logo .petals,
+    .anim-logo .face {
+      transform-origin: 100.5px 97px;
+      transform-box: view-box;
+      animation: anim-logo-bob calc(2.2s / var(--speed)) ease-in-out infinite;
+    }
+    .anim-logo .petals-inner,
+    .anim-logo .face-inner {
+      transform-origin: 100.5px 97px;
+      transform-box: view-box;
+    }
+    .anim-logo .sparkle {
+      transform-origin: center;
+      transform-box: fill-box;
+      opacity: 0;
+    }
+    .anim-logo .valley-dots circle {
+      transform-origin: center;
+      transform-box: fill-box;
+      opacity: 0;
+    }
+
+    /* Hover plays the celebratory burst */
+    .anim-logo:hover .petals-inner,
+    .anim-logo:hover .face-inner {
+      animation:
+        anim-logo-wiggle var(--wiggle-dur) ease-in-out 1,
+        anim-logo-happy-bounce var(--burst-dur) cubic-bezier(0.2, 0.9, 0.3, 1.3) var(--wiggle-dur) 1;
+    }
+    .anim-logo:hover .valley-dots circle {
+      animation: anim-logo-sparkle var(--burst-dur) ease-out var(--wiggle-dur) 1;
+    }
+    .anim-logo:hover .valley-dots circle:nth-child(2) { animation-delay: calc(var(--wiggle-dur) + 0.05s); }
+    .anim-logo:hover .valley-dots circle:nth-child(3) { animation-delay: calc(var(--wiggle-dur) + 0.1s); }
+    .anim-logo:hover .valley-dots circle:nth-child(4) { animation-delay: calc(var(--wiggle-dur) + 0.15s); }
+    .anim-logo:hover .valley-dots circle:nth-child(5) { animation-delay: calc(var(--wiggle-dur) + 0.2s); }
+    .anim-logo:hover .sparkle {
+      animation: anim-logo-sparkle var(--burst-dur) ease-out var(--wiggle-dur) 1;
+    }
+    .anim-logo:hover .sparkle.s2 { animation-delay: calc(var(--wiggle-dur) + 0.06s); }
+    .anim-logo:hover .sparkle.s3 { animation-delay: calc(var(--wiggle-dur) + 0.12s); }
+    .anim-logo:hover .sparkle.s4 { animation-delay: calc(var(--wiggle-dur) + 0.18s); }
+
+    /*
+     * Hero illustration
+     */
+    @media (prefers-reduced-motion: no-preference) {
+      .squiggle-branch,
+      .squiggle-star {
+        transform-box: fill-box;
+        transform-origin: center;
       }
 
-      .card:hover {
-        background: rgba(var(--card-background-rgb), 0.1);
+      .squiggle-branch { animation: squiggle-leaf-1 1.2s step-end infinite; }
+      .squiggle-branch:nth-of-type(2n) { animation-name: squiggle-leaf-2; animation-duration: 1.05s; }
+      .squiggle-branch:nth-of-type(3n) { animation-name: squiggle-leaf-3; animation-duration: 1.35s; }
+      .squiggle-branch:nth-of-type(4n + 1) { animation-name: squiggle-leaf-4; animation-duration: 1.275s; }
+      .squiggle-branch:nth-of-type(5n + 2) { animation-delay: -0.45s; }
+      .squiggle-branch:nth-of-type(7n + 3) { animation-delay: -0.75s; }
+
+      .squiggle-star { animation: squiggle-star-1 1.2s step-end infinite; }
+      .squiggle-star:nth-of-type(2n) { animation-name: squiggle-star-2; animation-duration: 1.05s; }
+      .squiggle-star:nth-of-type(3n) { animation-name: squiggle-star-3; animation-duration: 1.35s; }
+      .squiggle-star:nth-of-type(4n + 1) { animation-name: squiggle-star-4; animation-duration: 1.125s; }
+      .squiggle-star:nth-of-type(5n + 2) { animation-delay: -0.6s; }
+      .squiggle-star:nth-of-type(7n + 3) { animation-delay: -0.3s; }
+    }
+
+    /* The boil is fussy at small sizes, so hold still on phones */
+    @media (max-width: 640px) {
+      .squiggle-branch,
+      .squiggle-star { animation: none; }
+    }
+
+    @keyframes squiggle-leaf-1 {
+      0% { transform: translate(0.1px, -0.12px) rotate(0.1deg) scale(1.005, 0.995) skew(0.1deg, -0.05deg); }
+      25% { transform: translate(-0.12px, 0.15px) rotate(-0.08deg) scale(0.995, 1.005) skew(-0.08deg, 0.1deg); }
+      50% { transform: translate(0.15px, 0.1px) rotate(0.08deg) scale(1.002, 1.002) skew(0.08deg, -0.08deg); }
+      75% { transform: translate(-0.1px, -0.12px) rotate(-0.1deg) scale(0.998, 1.005) skew(-0.1deg, 0.05deg); }
+    }
+
+    @keyframes squiggle-leaf-2 {
+      0% { transform: translate(-0.08px, 0.08px) rotate(-0.08deg) skew(-0.2deg, 0.15deg); }
+      25% { transform: translate(0.08px, -0.08px) rotate(0.08deg) skew(0.15deg, -0.2deg); }
+      50% { transform: translate(-0.05px, -0.08px) rotate(-0.05deg) skew(-0.15deg, 0.2deg); }
+      75% { transform: translate(0.08px, 0.08px) rotate(0.05deg) skew(0.2deg, -0.15deg); }
+    }
+
+    @keyframes squiggle-leaf-3 {
+      0% { transform: translate(0.12px, 0.1px) rotate(-0.08deg) scale(0.995, 1.005) skew(0.08deg, 0.08deg); }
+      33% { transform: translate(-0.1px, -0.12px) rotate(0.1deg) scale(1.005, 0.998) skew(-0.1deg, -0.05deg); }
+      66% { transform: translate(0.12px, -0.1px) rotate(-0.1deg) scale(0.998, 1.005) skew(0.1deg, -0.1deg); }
+    }
+
+    @keyframes squiggle-leaf-4 {
+      0% { transform: translate(-0.1px, 0.12px) rotate(0.1deg) scale(1.002, 0.995) skew(-0.08deg, 0.1deg); }
+      20% { transform: translate(0.12px, -0.1px) rotate(-0.08deg) scale(0.998, 1.005) skew(0.1deg, -0.08deg); }
+      50% { transform: translate(-0.12px, 0.1px) rotate(0.08deg) scale(1.005, 0.998) skew(-0.1deg, 0.05deg); }
+      80% { transform: translate(0.08px, 0.12px) rotate(-0.1deg) scale(0.995, 1.005) skew(0.08deg, -0.1deg); }
+    }
+
+    @keyframes squiggle-star-1 {
+      0% { transform: translate(0.3px, -0.25px) rotate(0.35deg) scale(1.025, 0.99) skew(0.3deg, -0.2deg); }
+      25% { transform: translate(-0.25px, 0.3px) rotate(-0.3deg) scale(0.985, 1.025) skew(-0.25deg, 0.3deg); }
+      50% { transform: translate(0.3px, 0.25px) rotate(0.3deg) scale(1.015, 1.015) skew(0.2deg, -0.25deg); }
+      75% { transform: translate(-0.3px, -0.25px) rotate(-0.35deg) scale(0.99, 1.02) skew(-0.3deg, 0.2deg); }
+    }
+
+    @keyframes squiggle-star-2 {
+      0% { transform: translate(-0.3px, 0.25px) rotate(-0.35deg) scale(1.02, 1.03) skew(-0.3deg, 0.25deg); }
+      25% { transform: translate(0.25px, -0.3px) rotate(0.35deg) scale(0.985, 0.98) skew(0.25deg, -0.3deg); }
+      50% { transform: translate(-0.25px, -0.25px) rotate(-0.3deg) scale(1.03, 1.015) skew(-0.2deg, 0.3deg); }
+      75% { transform: translate(0.3px, 0.25px) rotate(0.3deg) scale(0.98, 0.99) skew(0.3deg, -0.25deg); }
+    }
+
+    @keyframes squiggle-star-3 {
+      0% { transform: translate(0.25px, 0.3px) rotate(-0.35deg) scale(0.99, 1.025) skew(0.3deg, 0.25deg); }
+      33% { transform: translate(-0.3px, -0.25px) rotate(0.3deg) scale(1.025, 0.985) skew(-0.25deg, -0.2deg); }
+      66% { transform: translate(0.3px, -0.3px) rotate(-0.35deg) scale(0.995, 1.025) skew(0.3deg, -0.3deg); }
+    }
+
+    @keyframes squiggle-star-4 {
+      0% { transform: translate(-0.25px, 0.3px) rotate(0.35deg) scale(1.025, 0.99) skew(-0.2deg, 0.3deg); }
+      20% { transform: translate(0.3px, -0.25px) rotate(-0.3deg) scale(0.985, 1.025) skew(0.3deg, -0.25deg); }
+      50% { transform: translate(-0.3px, 0.25px) rotate(0.3deg) scale(1.03, 0.99) skew(-0.3deg, 0.2deg); }
+      80% { transform: translate(0.25px, 0.3px) rotate(-0.35deg) scale(0.99, 1.03) skew(0.25deg, -0.3deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .anim-logo,
+      .anim-logo *,
+      .anim-logo:hover * {
+        animation: none !important;
       }
     }
 
@@ -173,23 +376,205 @@
 </head>
 <body>
   <main>
-    <div class="welcome">
-      <img src="data:image/svg+xml,%3Csvg height='840' width='840' viewBox='0 0 840 840' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cmask id='a' fill='%23fff'%3E%3Cpath d='m0 0h840v840h-840z' fill='%23fff' fill-rule='evenodd'/%3E%3C/mask%3E%3Cg fill='none' fill-rule='evenodd' mask='url(%23a)'%3E%3Cg transform='translate(-115.9919 -103.9919)'%3E%3Cg fill='%23dc3610'%3E%3Cpath d='m523.491853 126.991853 377.093909 273.974762-144.037057 443.300476h-466.113705l-144.037056-443.300476z' opacity='.6' transform='matrix(.91354546 .40673664 -.40673664 .91354546 258.181591 -167.665085)'/%3E%3Cpath d='m525.491853 129.991853 377.093909 273.974762-144.037057 443.300476h-466.113705l-144.037056-443.300476z' opacity='.8' transform='matrix(.97437006 .22495105 -.22495105 .97437006 131.903231 -104.716004)'/%3E%3Cpath d='m535.491853 130.991853 377.093909 273.974762-144.037057 443.300476h-466.113705l-144.037056-443.300476z'/%3E%3C/g%3E%3Cpath d='m534.991853 370.991853c86.156421 0 156 69.843579 156 156s-69.843579 156-156 156-156-69.843579-156-156 69.843579-156 156-156zm0 35c-66.826455 0-121 54.173545-121 121s54.173545 121 121 121 121-54.173545 121-121-54.173545-121-121-121z' fill='%23fff'/%3E%3Cpath d='m535.947441 478.991853 74.023116 90.999216-20.023116 27h-108l-19.978704-27z' fill='%23fff' transform='matrix(-1 0 0 -1 1071.9392 1075.983)'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E" alt="Hanani logo" class="logo">
-      <h1>Welcome to Hanami</h1>
-    </div>
-    <div class="grid">
-      <a href="https://guides.hanamirb.org" class="card">
-        <h2>Guides</h2>
-        <p>Get started with the Hanami guides</p>
-      </a>
-      <a href="http://github.com/hanami" class="card">
-        <h2>Code</h2>
-        <p>Contribute to the source code</p>
-      </a>
-      <a href="https://discourse.hanamirb.org" class="card">
-        <h2>Forum</h2>
-        <p>Join the conversation on the forum</p>
-      </a>
+    <div class="intro">
+      <div class="welcome">
+        <div class="hero" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1728 385"
+            preserveAspectRatio="xMidYMid meet"
+            focusable="false"
+          >
+            <g class="squiggle-stars">
+              <g class="squiggle-star">
+                <ellipse cx="3.35366" cy="12.5" rx="3.35366" ry="12.5" transform="matrix(-1 0 0 1 1323.85 170)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="3.35366" cy="12.5" rx="3.35366" ry="12.5" transform="matrix(4.37114e-08 1 1 -4.37114e-08 1308 179.146)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="3.35366" cy="12.5" rx="3.35366" ry="12.5" transform="matrix(-1 0 0 1 1468.85 246)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="3.35366" cy="12.5" rx="3.35366" ry="12.5" transform="matrix(4.37114e-08 1 1 -4.37114e-08 1453 255.146)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="3.35366" cy="12.5" rx="3.35366" ry="12.5" transform="matrix(-1 0 0 1 1221.85 3)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="3.35366" cy="12.5" rx="3.35366" ry="12.5" transform="matrix(4.37114e-08 1 1 -4.37114e-08 1206 12.1465)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="4.47182" cy="16.6677" rx="4.47182" ry="16.6677" transform="matrix(-0.998872 -0.0474846 -0.0474846 0.998872 1154.12 288.425)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="4.47182" cy="16.6677" rx="4.47182" ry="16.6677" transform="matrix(-0.0474845 0.998872 0.998872 0.0474845 1132.42 299.604)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="3.35366" cy="12.5" rx="3.35366" ry="12.5" transform="matrix(-1 0 0 1 578.854 89)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="3.35366" cy="12.5" rx="3.35366" ry="12.5" transform="matrix(4.37114e-08 1 1 -4.37114e-08 563 98.1465)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="3.35366" cy="12.5" rx="3.35366" ry="12.5" transform="matrix(-1 0 0 1 177.854 233)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="3.35366" cy="12.5" rx="3.35366" ry="12.5" transform="matrix(4.37114e-08 1 1 -4.37114e-08 162 242.146)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="6.43902" cy="24" rx="6.43902" ry="24" transform="matrix(-1 0 0 1 501.439 202)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="6.43902" cy="24" rx="6.43902" ry="24" transform="matrix(4.37114e-08 1 1 -4.37114e-08 471 219.562)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="4.56098" cy="17" rx="4.56098" ry="17" transform="matrix(-1 0 0 1 1420.56 69)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="4.56098" cy="17" rx="4.56098" ry="17" transform="matrix(4.37114e-08 1 1 -4.37114e-08 1399 81.4395)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="2.41463" cy="9" rx="2.41463" ry="9" transform="matrix(-1 0 0 1 286.414 28)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="2.41463" cy="9" rx="2.41463" ry="9" transform="matrix(4.37114e-08 1 1 -4.37114e-08 275 34.5854)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="2.41463" cy="9" rx="2.41463" ry="9" transform="matrix(-1 0 0 1 669.414 13)" fill="#FFD33B" />
+              </g>
+              <g class="squiggle-star">
+                <ellipse cx="2.41463" cy="9" rx="2.41463" ry="9" transform="matrix(4.37114e-08 1 1 -4.37114e-08 658 19.5854)" fill="#FFD33B" />
+              </g>
+            </g>
+
+            <!-- Small top-right leaf -->
+            <g class="squiggle-branch">
+              <path d="M1106.48 41.8622C1102.01 38.8871 1089.99 49.0808 1084.33 57.5821C1078.67 66.0835 1073.89 81.1008 1078.36 84.0759C1082.82 87.0511 1095.42 75.978 1100.5 68.356C1105.58 60.7341 1110.94 44.8374 1106.48 41.8622Z" fill="#2AAD56" />
+              <path d="M1081.73 81.9741C1078.31 84.9585 1075.57 87.8593 1074.71 91.2775" fill="none" stroke="#2AAD56" stroke-width="4" stroke-linecap="round" />
+            </g>
+
+            <!-- Lower-left large branch -->
+            <g class="squiggle-branch">
+              <path d="M399.203 339.17C388.004 332.151 351.627 319.319 317.487 323.149" fill="none" stroke="#2AAD56" stroke-width="6.93851" stroke-linecap="round" />
+              <path d="M272.694 320.082C272.354 324.55 283.375 331.941 292.886 332.664C302.397 333.386 319.583 328.139 319.922 323.671C320.262 319.204 306.099 312.853 297.572 312.205C289.045 311.557 273.033 315.615 272.694 320.082Z" fill="#2AAD56" />
+              <path d="M320.021 286.736C316.526 288.977 315.413 300.342 320.046 308.68C324.68 317.018 337.397 327.239 341.313 325.062C345.23 322.886 343.432 309.492 339.278 302.017C335.124 294.542 323.515 284.494 320.021 286.736Z" fill="#2AAD56" />
+              <path d="M354.38 291.416C350.886 293.658 349.772 305.023 354.406 313.36C359.039 321.698 371.757 331.919 375.673 329.742C379.589 327.566 377.791 314.173 373.637 306.697C369.483 299.222 357.874 289.174 354.38 291.416Z" fill="#2AAD56" />
+              <path d="M349.863 360.207C346.617 357.618 346.676 346.199 352.14 338.381C357.605 330.563 371.304 321.701 374.977 324.268C378.649 326.835 375.486 339.973 370.587 346.982C365.687 353.992 353.109 362.796 349.863 360.207Z" fill="#2AAD56" />
+              <path d="M312.081 352.316C309.316 349.219 311.292 337.971 317.993 331.183C324.693 324.394 339.687 317.96 342.875 321.107C346.064 324.254 340.739 336.674 334.732 342.761C328.724 348.848 314.845 355.413 312.081 352.316Z" fill="#2AAD56" />
+            </g>
+
+            <!-- Upper-right large branch -->
+            <g class="squiggle-branch">
+              <path d="M1227.6 141.627C1231.76 131.12 1250.32 103.856 1275.78 89.2038" fill="none" stroke="#2AAD56" stroke-width="5.93243" stroke-linecap="round" />
+              <path d="M1305.08 64.4047C1307.58 67.3101 1303.73 77.9832 1297.54 83.2983C1291.36 88.6135 1276.86 93.7025 1274.36 90.7971C1271.87 87.8917 1278.41 76.344 1283.95 71.5787C1289.5 66.8134 1302.58 61.4993 1305.08 64.4047Z" fill="#2AAD56" />
+              <path d="M1255.59 65.4034C1259.13 65.1779 1265.66 72.4426 1266.69 80.5327C1267.72 88.6229 1264.13 102.104 1260.33 102.589C1256.53 103.073 1250.99 92.9366 1250.07 85.6834C1249.14 78.4301 1252.05 65.6289 1255.59 65.4034Z" fill="#2AAD56" />
+              <path d="M1234.29 86.0294C1237.83 85.8038 1244.36 93.0685 1245.39 101.159C1246.42 109.249 1242.84 122.73 1239.04 123.215C1235.24 123.699 1229.69 113.563 1228.77 106.309C1227.84 99.0561 1230.75 86.2549 1234.29 86.0294Z" fill="#2AAD56" />
+              <path d="M1272.24 131.129C1273.17 127.702 1267.34 119.865 1259.62 117.247C1251.9 114.629 1237.97 115.463 1236.74 119.091C1235.51 122.719 1244.35 130.168 1251.27 132.515C1258.2 134.862 1271.32 134.556 1272.24 131.129Z" fill="#2AAD56" />
+              <path d="M1294.27 106.557C1294.61 103.023 1287.55 96.2767 1279.5 94.9938C1271.44 93.711 1257.86 96.8729 1257.25 100.656C1256.65 104.439 1266.61 110.297 1273.83 111.447C1281.05 112.598 1293.94 110.091 1294.27 106.557Z" fill="#2AAD56" />
+            </g>
+
+            <!-- Left mid branch -->
+            <g class="squiggle-branch">
+              <path d="M384.652 193.586C373.718 190.736 344.4 175.629 326.761 152.142" fill="none" stroke="#2AAD56" stroke-width="5.93243" stroke-linecap="round" />
+              <path d="M298.583 126.072C301.163 123.24 312.225 125.763 318.253 131.256C324.281 136.75 331.094 150.519 328.514 153.351C325.933 156.182 313.676 151.095 308.272 146.17C302.868 141.245 296.003 128.903 298.583 126.072Z" fill="#2AAD56" />
+              <path d="M305.591 175.073C304.936 171.585 311.354 164.226 319.259 162.22C327.163 160.213 340.981 162.131 341.923 165.844C342.866 169.557 333.479 176.293 326.392 178.092C319.305 179.892 306.245 178.562 305.591 175.073Z" fill="#2AAD56" />
+              <path d="M328.653 193.706C327.999 190.217 334.416 182.859 342.321 180.852C350.226 178.845 364.043 180.763 364.986 184.476C365.929 188.189 356.541 194.925 349.454 196.725C342.367 198.524 329.308 197.195 328.653 193.706Z" fill="#2AAD56" />
+              <path d="M368.803 150.552C365.289 150.051 358.219 156.784 356.559 164.769C354.9 172.754 357.421 186.474 361.171 187.254C364.922 188.033 371.241 178.36 372.729 171.201C374.216 164.042 372.317 151.053 368.803 150.552Z" fill="#2AAD56" />
+              <path d="M341.736 131.673C338.188 131.769 332.349 139.595 332.055 147.745C331.761 155.895 336.551 168.997 340.379 169.135C344.207 169.273 348.812 158.676 349.075 151.369C349.339 144.062 345.284 131.577 341.736 131.673Z" fill="#2AAD56" />
+            </g>
+
+            <!-- Left tall stem -->
+            <g class="squiggle-branch">
+              <path d="M502.33 151.935C494.201 143.506 462.769 95.0055 470.665 56.3729" fill="none" stroke="#2AAD56" stroke-width="6.14765" stroke-linecap="round" />
+              <path d="M468.299 14.031C472.699 13.7442 479.855 24.6662 480.465 34.0325C481.076 43.3988 475.731 60.2528 471.331 60.5396C466.932 60.8264 460.833 46.8243 460.285 38.4269C459.738 30.0296 463.9 14.3178 468.299 14.031Z" fill="#2AAD56" />
+              <path d="M442.419 92.8489C443.725 89.4102 453.375 86.3708 461.45 88.8668C469.524 91.3628 480.706 100.524 479.534 104.317C478.362 108.109 466.421 108.995 459.182 106.757C451.943 104.519 441.112 96.2877 442.419 92.8489Z" fill="#2AAD56" />
+              <path d="M449.656 120.061C451.11 116.108 460.662 112.16 468.384 114.547C476.107 116.934 486.496 126.683 485.153 131.028C483.81 135.374 472.145 137.012 465.222 134.872C458.298 132.731 448.201 124.014 449.656 120.061Z" fill="#2AAD56" />
+              <path d="M513.792 102.818C510.955 100.476 501.065 102.61 495.284 108.775C489.502 114.939 484.319 128.434 487.214 131.149C490.11 133.865 500.924 128.726 506.107 123.199C511.29 117.672 516.629 105.16 513.792 102.818Z" fill="#2AAD56" />
+              <path d="M499.376 54.8426C496.67 51.6933 486.111 51.5987 479.403 56.74C472.696 61.8814 465.813 74.9116 468.541 78.4697C471.268 82.0278 483.118 79.1661 489.132 74.5566C495.146 69.9472 502.082 57.9918 499.376 54.8426Z" fill="#2AAD56" />
+              <path d="M437.3 53.6708C439.88 50.213 450.549 49.2015 457.585 53.8828C464.622 58.5642 472.227 71.3052 469.647 75.1834C467.066 79.0615 454.944 77.159 448.636 72.9619C442.327 68.7648 434.721 57.1287 437.3 53.6708Z" fill="#2AAD56" />
+              <path d="M505.358 83.3203C503.106 80.4114 492.989 80.3158 485.992 85.0562C478.995 89.7966 470.968 101.819 473.194 105.105C475.421 108.391 487.101 105.759 493.374 101.509C499.647 97.2593 507.609 86.2293 505.358 83.3203Z" fill="#2AAD56" />
+            </g>
+
+            <!-- Lower-right large branch -->
+            <g class="squiggle-branch">
+              <path d="M1281.44 307.686C1292.89 310.152 1350.67 311.302 1379.34 284.231" fill="none" stroke="#2AAD56" stroke-width="6.14765" stroke-linecap="round" />
+              <path d="M1416.58 263.924C1414.5 260.035 1401.45 259.71 1393.17 264.127C1384.88 268.544 1373.38 281.97 1375.45 285.86C1377.53 289.749 1392.64 287.553 1400.07 283.593C1407.49 279.632 1418.65 267.814 1416.58 263.924Z" fill="#2AAD56" />
+              <path d="M1363.23 327.459C1365.47 324.537 1362.96 314.734 1356.59 309.187C1350.21 303.641 1336.53 298.966 1333.93 301.961C1331.32 304.956 1336.86 315.57 1342.58 320.543C1348.3 325.516 1361 330.382 1363.23 327.459Z" fill="#2AAD56" />
+              <path d="M1336.29 335.65C1338.88 332.331 1337.21 322.132 1331.11 316.828C1325.01 311.523 1311.25 307.831 1308.26 311.263C1305.28 314.695 1310.03 325.471 1315.5 330.227C1320.97 334.983 1333.7 338.97 1336.29 335.65Z" fill="#2AAD56" />
+              <path d="M1317.14 272.058C1320.63 273.234 1324.03 282.764 1321.84 290.926C1319.64 299.089 1310.91 310.606 1307.07 309.577C1303.24 308.547 1301.91 296.648 1303.87 289.33C1305.84 282.012 1313.66 270.881 1317.14 272.058Z" fill="#2AAD56" />
+              <path d="M1365.51 259.024C1369.62 259.665 1375.26 268.588 1374.43 276.998C1373.59 285.408 1366.15 298.125 1361.69 297.682C1357.22 297.24 1353.41 285.661 1354.16 278.12C1354.91 270.58 1361.41 258.384 1365.51 259.024Z" fill="#2AAD56" />
+              <path d="M1399.23 311.161C1400.81 307.147 1396.04 297.547 1388.36 294.034C1380.67 290.521 1365.83 290.774 1363.9 295.01C1361.96 299.247 1369.97 308.546 1376.86 311.695C1383.75 314.844 1397.65 315.176 1399.23 311.161Z" fill="#2AAD56" />
+              <path d="M1338.16 268.949C1341.82 269.329 1347.23 277.877 1346.89 286.322C1346.55 294.766 1340.56 307.924 1336.6 307.764C1332.63 307.604 1328.71 296.29 1329.02 288.719C1329.32 281.148 1334.5 268.569 1338.16 268.949Z" fill="#2AAD56" />
+            </g>
+          </svg>
+        </div>
+        <svg class="logo anim-logo" viewBox="0 0 201 194" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hanami logo">
+          <circle class="hitbox" cx="100.5" cy="97" r="100" fill="transparent" pointer-events="all" />
+
+          <g class="petals">
+            <g class="petals-inner">
+              <path
+                fill="#FF6C89"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M48.1827 120.394C43.5166 120.84 38.6883 120.362 33.9539 118.828L24.3571 115.723C5.86366 109.736 -4.2754 89.9154 1.7354 71.4882C7.74194 53.0631 27.6357 42.9638 46.1334 48.9512L55.7302 52.0564C60.4645 53.5899 64.6525 56.0303 68.1617 59.1227C66.2961 54.843 65.2588 50.1194 65.2588 45.1579V35.1053C65.2588 15.7308 81.05 0.000991821 100.495 0.000991821C119.941 0.000991821 135.728 15.7308 135.728 35.1053V45.1579C135.728 50.1194 134.695 54.843 132.825 59.1227C136.334 56.0303 140.522 53.5899 145.261 52.0564L154.857 48.9512C173.351 42.9638 193.245 53.0631 199.255 71.4882C205.266 89.9154 195.127 109.736 176.634 115.723L167.037 118.828C162.298 120.362 157.47 120.84 152.808 120.394C156.843 122.764 160.467 125.978 163.395 129.994L169.325 138.126C180.758 153.801 177.265 175.771 161.53 187.16C145.798 198.548 123.749 195.069 112.316 179.395L106.387 171.26C103.458 167.246 101.511 162.819 100.495 158.261C99.4794 162.819 97.5326 167.246 94.6041 171.26L88.6745 179.395C77.242 195.069 55.1882 198.548 39.4568 187.16C23.7254 175.771 20.2332 153.801 31.6614 138.126L37.5953 129.994C40.5196 125.978 44.1441 122.764 48.1827 120.394Z"
+              />
+            </g>
+          </g>
+
+          <g class="face">
+            <g class="face-inner">
+              <circle cx="100.49" cy="102.192" r="45.17" fill="#FFC9C4" />
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M78.1877 101.341C78.1877 103.219 76.6564 104.745 74.7716 104.745C72.8851 104.745 71.3555 103.219 71.3555 101.341C71.3555 94.5942 76.8527 89.1157 83.6248 89.1157C90.397 89.1157 95.8958 94.5942 95.8958 101.341C95.8958 103.219 94.3646 104.745 92.4797 104.745C90.5949 104.745 89.0636 103.219 89.0636 101.341C89.0636 98.35 86.6273 95.9226 83.6248 95.9226C80.624 95.9226 78.1877 98.35 78.1877 101.341Z"
+                fill="#000"
+              />
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M112.005 101.341C112.005 103.219 110.474 104.745 108.589 104.745C106.703 104.745 105.173 103.219 105.173 101.341C105.173 94.5942 110.67 89.1157 117.443 89.1157C124.215 89.1157 129.714 94.5942 129.714 101.341C129.714 103.219 128.182 104.745 126.297 104.745C124.413 104.745 122.881 103.219 122.881 101.341C122.881 98.35 120.445 95.9226 117.443 95.9226C114.442 95.9226 112.005 98.35 112.005 101.341Z"
+                fill="#000"
+              />
+            </g>
+          </g>
+
+          <g class="valley-dots" fill="#FF6C89">
+            <circle cx="63" cy="58" r="4.5" />
+            <circle cx="148" cy="59" r="4.5" />
+            <circle cx="170" cy="136" r="4.5" />
+            <circle cx="106" cy="183" r="4.5" />
+            <circle cx="41" cy="137" r="4.5" />
+          </g>
+
+          <g fill="#FF6C89">
+            <circle class="sparkle s1" cx="34" cy="34" r="5" />
+            <circle class="sparkle s2" cx="167" cy="34" r="5" />
+            <circle class="sparkle s3" cx="34" cy="170" r="5" />
+            <circle class="sparkle s4" cx="167" cy="170" r="5" />
+          </g>
+        </svg>
+        <h1>
+          Welcome to
+          <strong>Hanami</strong>
+        </h1>
+      </div>
+      <div class="grid">
+        <a href="https://hanakai.org/learn/hanami" class="card">
+          <h2>Learn</h2>
+          <p>Get started with the Hanami guides</p>
+        </a>
+        <a href="https://github.com/hanami/hanami" class="card">
+          <h2>Code</h2>
+          <p>Explore the source code and contribute changes</p>
+        </a>
+        <a href="https://hanakai.org/community" class="card">
+          <h2>Community</h2>
+          <p>Ask questions and share ideas with us</p>
+        </a>
+      </div>
     </div>
     <p class="meta">
       Hanami version: <%= hanami_version %> • Ruby version: <%= ruby_version %>
