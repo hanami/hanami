@@ -911,6 +911,9 @@ module Hanami
       end
 
       def memoize_policy
+        # Do not memoize components in the test env, so they can be stubbed if required.
+        return false if config.env == :test
+
         no_memoize = config.no_memoize
 
         if no_memoize.respond_to?(:call)
