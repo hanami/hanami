@@ -51,6 +51,47 @@ RSpec.describe "Container / Memoize components", :app_integration do
     end
   end
 
+  describe "Disabled memoization in test env" do
+    around do |example|
+      original_env = ENV["HANAMI_ENV"]
+      ENV["HANAMI_ENV"] = "test"
+      example.run
+      ENV["HANAMI_ENV"] = original_env
+    end
+
+    it "does not memoize auto-registered components" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "app/my_component.rb", <<~RUBY
+          module TestApp
+            class MyComponent
+            end
+          end
+        RUBY
+
+        write "slices/admin/my_component.rb", <<~RUBY
+          module Admin
+            class MyComponent
+            end
+          end
+        RUBY
+
+        require "hanami/prepare"
+
+        expect(TestApp::App["my_component"]).not_to be TestApp::App["my_component"]
+        expect(Admin::Slice["my_component"]).not_to be Admin::Slice["my_component"]
+      end
+    end
+  end
+
   describe "Per-file opt-out via magic comment" do
     it "does not memoize a component with a # memoize: false magic comment" do
       with_tmp_directory(Dir.mktmpdir) do
