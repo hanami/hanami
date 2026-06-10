@@ -79,6 +79,19 @@ RSpec.describe "Mailers", :app_integration do
       end
     end
 
+    it "forces the test delivery method in the test env, ignoring SMTP_* env vars" do
+      ENV["HANAMI_ENV"] = "test"
+      ENV["SMTP_ADDRESS"] = "smtp.example.com"
+
+      with_tmp_directory(Dir.mktmpdir) do
+        write_app
+        require "hanami/prepare"
+
+        expect(Hanami.app["mailers.delivery_method"])
+          .to be_a(Hanami::Mailer::Delivery::Test)
+      end
+    end
+
     it "reads per-slice SMTP env vars, leaving other slices on the default" do
       ENV["ADMIN__SMTP_ADDRESS"] = "smtp.admin.example.com"
 
