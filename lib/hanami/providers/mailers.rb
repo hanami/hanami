@@ -9,6 +9,13 @@ module Hanami
     # reads `ADMIN__SMTP_ADDRESS`, falling back to `SMTP_ADDRESS`). Register your own `:mailers`
     # provider if you need to use another delivery method or different setup logic.
     #
+    # In the test env, environment variables are ignored, and the test delivery method is always
+    # used, so the test suite can never send real email.
+    #
+    # In the production env, warns noisily when there is no SMTP configuration, before falling back
+    # to the test delivery method. This ensures an app whose mail setup is a work in progress can
+    # still boot.
+    #
     # @api private
     class Mailers < Hanami::Provider::Source
       # Maps SMTP environment variable names to their compatible delivery option keys.
@@ -43,11 +50,9 @@ module Hanami
 
       private
 
-      # Builds an SMTP delivery method when SMTP env vars are present; otherwise the test
-      # delivery method. In production with no SMTP configuration, warns noisily before falling
-      # back to the test delivery method (mail will not be sent) — but never raises, so an app
-      # whose mail setup is still a work in progress can boot.
       def build_delivery_method
+        return Hanami::Mailer::Delivery::Test.new if Hanami.env?(:test)
+
         smtp_options = smtp_options_from_env
 
         return Hanami::Mailer::Delivery::SMTP.new(**smtp_options) if smtp_options.key?(:address)
