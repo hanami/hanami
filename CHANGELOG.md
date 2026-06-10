@@ -4,23 +4,22 @@ A flexible framework for maintainable Ruby apps.
 
 A complete Hanami app is composed of multiple gems. For a complete overview of changes, see also these CHANGELOGs:
 
-[Assets][assets], [Assets JS][assets-js], [CLI][cli],
-[Action][action], [DB][db], [RSpec][rspec],
-[Reloader][reloader], [Router][router], [Utils][utils],
-[Validations][validations], [View][view], [Webconsole][webconsole]
+[Assets], [Assets JS], [CLI], [Action], [DB], [Mailer], [Minitest],
+[RSpec], [Reloader], [Router], [Utils], [View], [Webconsole]
 
-[assets]: https://github.com/hanami/hanami-assets/blob/main/CHANGELOG.md
-[assets-js]: https://github.com/hanami/hanami-assets-js/blob/main/CHANGELOG.md
-[cli]: https://github.com/hanami/hanami-cli/blob/main/CHANGELOG.md
-[action]: https://github.com/hanami/hanami-action/blob/main/CHANGELOG.md
-[db]: https://github.com/hanami/hanami-db/blob/main/CHANGELOG.md
-[rspec]: https://github.com/hanami/hanami-rspec/blob/main/CHANGELOG.md
-[reloader]: https://github.com/hanami/hanami-reloader/blob/main/CHANGELOG.md
-[router]: https://github.com/hanami/hanami-router/blob/main/CHANGELOG.md
-[utils]: https://github.com/hanami/hanami-utils/blob/main/CHANGELOG.md
-[validations]: https://github.com/hanami/hanami-validations/blob/main/CHANGELOG.md
-[view]: https://github.com/hanami/hanami-view/blob/main/CHANGELOG.md
-[webconsole]: https://github.com/hanami/hanami-webconsole/blob/main/CHANGELOG.md
+[Assets]: https://github.com/hanami/hanami-assets/blob/main/CHANGELOG.md
+[Assets JS]: https://github.com/hanami/hanami-assets-js/blob/main/CHANGELOG.md
+[CLI]: https://github.com/hanami/hanami-cli/blob/main/CHANGELOG.md
+[Action]: https://github.com/hanami/hanami-action/blob/main/CHANGELOG.md
+[DB]: https://github.com/hanami/hanami-db/blob/main/CHANGELOG.md
+[Mailer]: https://github.com/hanami/hanami-mailer/blob/main/CHANGELOG.md
+[Minitest]: https://github.com/hanami/hanami-minitest/blob/main/CHANGELOG.md
+[RSpec]: https://github.com/hanami/hanami-rspec/blob/main/CHANGELOG.md
+[Reloader]: https://github.com/hanami/hanami-reloader/blob/main/CHANGELOG.md
+[Router]: https://github.com/hanami/hanami-router/blob/main/CHANGELOG.md
+[Utils]: https://github.com/hanami/hanami-utils/blob/main/CHANGELOG.md
+[View]: https://github.com/hanami/hanami-view/blob/main/CHANGELOG.md
+[Webconsole]: https://github.com/hanami/hanami-webconsole/blob/main/CHANGELOG.md
 
 ## [Unreleased]
 
