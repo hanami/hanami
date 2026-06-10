@@ -48,6 +48,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Raise a helpful error message when the `Slice.call` Rack entrypoint is called and no routes are available. (@sandbergja in #1586)
 - Apply extensions to hanami-action gem rather than hanami-controller (which is now retired). (@cllns in #1582)
 - Redesign the new app welcome screen to match our new Hanakai visuals. (@makenosound in #1598)
+- Require Ruby 3.3 or newer.
 
 ### Deprecated
 
