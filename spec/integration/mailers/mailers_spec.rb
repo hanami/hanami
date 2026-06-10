@@ -271,7 +271,7 @@ RSpec.describe "Mailers", :app_integration do
         YAML
         write_welcome_mailer
         write "app/templates/mailers/welcome.html.erb",
-              "<p><%= t(\".greeting\") %>, <%= user[:name] %></p>\n"
+          "<p><%= t(\".greeting\") %>, <%= user[:name] %></p>\n"
         require "hanami/prepare"
 
         result = Hanami.app["mailers.welcome"].deliver(user: {name: "Bob", email: "b@example.com"})
@@ -312,7 +312,7 @@ RSpec.describe "Mailers", :app_integration do
         YAML
         write_welcome_mailer
         write "app/templates/mailers/welcome.html.erb",
-              "<p><%= t(\"mailers.greeting\") %>, <%= user[:name] %></p>\n"
+          "<p><%= t(\"mailers.greeting\") %>, <%= user[:name] %></p>\n"
         require "hanami/prepare"
 
         result = Hanami.app["mailers.welcome"].deliver(user: {name: "Bob", email: "b@example.com"})

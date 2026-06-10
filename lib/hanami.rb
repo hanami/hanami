@@ -101,8 +101,8 @@ module Hanami
     @_mutex.synchronize do
       unless defined?(@_app)
         raise AppLoadError,
-              "Hanami.app is not yet configured. " \
-              "You may need to `require \"hanami/setup\"` to load your config/app.rb file."
+          "Hanami.app is not yet configured. " \
+          "You may need to `require \"hanami/setup\"` to load your config/app.rb file."
       end
 
       @_app

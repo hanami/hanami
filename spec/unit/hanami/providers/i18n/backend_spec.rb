@@ -415,8 +415,8 @@ RSpec.describe Hanami::Providers::I18n::Backend do
 
     before do
       other_backend_instance.store_translations(:de, {
-                                                  hello: "Guten Tag"
-                                                })
+        hello: "Guten Tag"
+      })
     end
 
     it "maintains separate backends" do
