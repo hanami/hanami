@@ -1,6 +1,8 @@
 # Hanami
 
-A flexible framework for maintainable Ruby apps.
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Break Versioning](https://www.taoensso.com/break-versioning).
 
 A complete Hanami app is composed of multiple gems. For a complete overview of changes, see also these CHANGELOGs:
 
@@ -22,6 +24,22 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 [Webconsole]: https://github.com/hanami/hanami-webconsole/blob/main/CHANGELOG.md
 
 ## [Unreleased]
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+[unreleased]: https://github.com/hanami/hanami/compare/v3.0.0.rc1...HEAD
+
+## [3.0.0.rc1] - 2026-06-16
 
 ### Added
 
@@ -50,17 +68,11 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Redesign the new app welcome screen to match our new Hanakai visuals. (@makenosound in #1598)
 - Require Ruby 3.3 or newer.
 
-### Deprecated
-
 ### Removed
 
 - Remove default body parsing middleware. This functionality has moved into Hanami Action. (@timriley in #1575)
 
-### Fixed
-
-### Security
-
-[unreleased]: https://github.com/hanami/hanami/compare/v2.3.2...HEAD
+[3.0.0.rc1]: https://github.com/hanami/hanami/compare/v2.3.2...v3.0.0.rc1
 
 ## [v2.3.2] - 2025-12-04
 
