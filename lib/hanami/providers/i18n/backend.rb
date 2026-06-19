@@ -118,14 +118,18 @@ module Hanami
         # @raise [I18n::MissingTranslationData] if translation is missing
         #
         # @example
-        #   t!("hello") # => "Hello"
-        #   t!("missing.key") # raises I18n::MissingTranslationData
+        #   translate!("hello") # => "Hello"
+        #   translate!("missing.key") # raises I18n::MissingTranslationData
         #
         # @api public
         # @since x.x.x
-        def t!(key, **options)
+        def translate!(key, **options)
           translate(key, **options.merge(raise: true))
         end
+
+        # @api public
+        # @since x.x.x
+        alias_method :t!, :translate!
 
         # Localizes the given date or time.
         #

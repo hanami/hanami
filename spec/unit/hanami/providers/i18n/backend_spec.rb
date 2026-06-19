@@ -99,13 +99,19 @@ RSpec.describe Hanami::Providers::I18n::Backend do
     end
   end
 
-  describe "#t!" do
+  describe "#translate! and #t!" do
     it "translates successfully" do
+      expect(backend.translate!(:hello)).to eq("Hello")
       expect(backend.t!(:hello)).to eq("Hello")
     end
 
     it "raises exception for missing translation" do
+      expect { backend.translate!(:missing_key) }.to raise_error(I18n::MissingTranslationData)
       expect { backend.t!(:missing_key) }.to raise_error(I18n::MissingTranslationData)
+    end
+
+    it "aliases #t! to #translate!" do
+      expect(backend.t!(:hello)).to eq(backend.translate!(:hello))
     end
   end
 
