@@ -448,6 +448,45 @@ RSpec.describe "Slices", :app_integration do
     end
   end
 
+  describe "Hanami.slices" do
+    specify "returns all (nested) slices, with nested slices before their parents and the app last" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "config/slices/main.rb", <<~RUBY
+          module Main
+            class Slice < Hanami::Slice
+            end
+          end
+        RUBY
+
+        write "slices/main/config/slices/nested.rb", <<~RUBY
+          module Main
+            module Nested
+              class Slice < Hanami::Slice
+              end
+            end
+          end
+        RUBY
+
+        require "hanami/prepare"
+
+        expect(Hanami.slices).to eq [Main::Nested::Slice, Main::Slice, Hanami.app]
+      end
+    end
+
+    specify "raises an error when the app is not loaded" do
+      expect { Hanami.slices }.to raise_error(Hanami::AppLoadError)
+    end
+  end
+
   specify "Registering a slice with a block creates a slice class and evals the block" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
