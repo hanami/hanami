@@ -3,11 +3,12 @@
 module Hanami
   module Extensions
     module Action
+      require_relative "name_inferrer"
+
       # Provides slice-specific configuration and behavior for any action class defined
       # within a slice's module namespace.
       #
       # @api private
-      # @since 2.0.0
       class SliceConfiguredAction < Module
         attr_reader :slice
 
@@ -18,7 +19,9 @@ module Hanami
 
         def extended(action_class)
           configure_action(action_class)
+          configure_action_i18n(action_class)
           extend_behavior(action_class)
+          define_inherited
           define_new
         end
 
@@ -34,6 +37,7 @@ module Hanami
           view_context_class = method(:view_context_class)
           resolve_routes = method(:resolve_routes)
           resolve_rack_monitor = method(:resolve_rack_monitor)
+          resolve_i18n = method(:resolve_i18n)
 
           define_method(:new) do |**kwargs|
             super(
@@ -41,8 +45,21 @@ module Hanami
               view_context_class: kwargs.fetch(:view_context_class) { view_context_class.() },
               routes: kwargs.fetch(:routes) { resolve_routes.() },
               rack_monitor: kwargs.fetch(:rack_monitor) { resolve_rack_monitor.() },
+              i18n: kwargs.fetch(:i18n) { resolve_i18n.() },
               **kwargs,
             )
+          end
+        end
+
+        # Defines an `inherited` hook on this module so each subclass of the slice-configured
+        # action gets its own `config.i18n_key_base`, inferred from its class name. Mirrors the
+        # approach used by `SliceConfiguredView` for `config.template`.
+        def define_inherited
+          configure_action_i18n = method(:configure_action_i18n)
+
+          define_method(:inherited) do |subclass|
+            super(subclass)
+            configure_action_i18n.call(subclass)
           end
         end
 
@@ -98,6 +115,14 @@ module Hanami
           end
         end
 
+        def configure_action_i18n(action_class)
+          return unless action_class.config.respond_to?(:i18n_key_base=)
+
+          action_class.config.i18n_key_base = NameInferrer.call(
+            action_class_name: action_class.name, slice:
+          )
+        end
+
         def extend_behavior(action_class)
           if actions_config.sessions.enabled?
             require "hanami/action/session"
@@ -150,6 +175,10 @@ module Hanami
 
         def resolve_rack_monitor
           slice.app["rack.monitor"] if slice.app.key?("rack.monitor")
+        end
+
+        def resolve_i18n
+          slice["i18n"] if slice.key?("i18n")
         end
 
         def actions_config

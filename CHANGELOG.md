@@ -46,7 +46,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Integrate hanami-mailer gem when bundled. (@timriley in #1597, #1600)
 
     Load templates from `templates/mailers/`. Register a `"mailers.delivery_method"`, which is either an SMTP mailer when `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTHENTICATION` env vars are present. These can also be prefixed with a slice name. Register a test delivery always in the test env, and also in other envs when the env vars are absent.
-- Integrate i18n gem when bundled. (@timriley in #1562, #1589, #1590, #1591, #1592)
+- Integrate i18n gem when bundled. (@timriley in #1562, #1589, #1590, #1591, #1592, #1593)
 
     Register an `"i18n"` component in each slice, which may be configured via `config.i18n` or a dedicated `:i18n` provider. Load translations from `config/i18n/` within each slice. Load shared translations from `config/i18n/shared/` at the app-level only. Bundle default English translations for `#localize`. Make helpers available in views and actions, which also prefix relative keys (with a leading ".") with their own dot-delimited template or action names.
 - Wrap the configured app logger with `Hanami::UniversalLogger`, to provide a consistent logging interface regardless of the underlying logger. The app can now be depended upon to support (1) structured logging via keyword args passed to log methods, and (2) tagged logging via `#tagged`. (@timriley in #1567, #1568)
