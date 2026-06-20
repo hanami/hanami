@@ -27,6 +27,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Added
 
+- Add `Hanami::Slice.with_slices`, returning the slice and all its nested slices. (@timriley in #1604)
+
 ### Changed
 
 ### Deprecated

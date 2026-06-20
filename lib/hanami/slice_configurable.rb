@@ -57,9 +57,7 @@ module Hanami
       def slice_for(klass)
         return unless klass.name
 
-        slices = Hanami.app.slices.with_nested + [Hanami.app]
-
-        slices.detect { |slice| klass.name.start_with?("#{slice.namespace}#{MODULE_DELIMITER}") }
+        Hanami.app.with_slices.detect { |slice| klass.name.start_with?("#{slice.namespace}#{MODULE_DELIMITER}") }
       end
     end
 

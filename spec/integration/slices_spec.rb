@@ -468,4 +468,40 @@ RSpec.describe "Slices", :app_integration do
       expect(Main::Slice["greeting"]).to eq "hello world"
     end
   end
+
+  describe "iterating over slices via .with_slices" do
+    specify "returns the slice and all its nested slices, with nested slices before their parents and the slice last" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "config/slices/main.rb", <<~RUBY
+          module Main
+            class Slice < Hanami::Slice
+            end
+          end
+        RUBY
+
+        write "slices/main/config/slices/nested.rb", <<~RUBY
+          module Main
+            module Nested
+              class Slice < Hanami::Slice
+              end
+            end
+          end
+        RUBY
+
+        require "hanami/prepare"
+
+        expect(Hanami.app.with_slices).to eq [Main::Nested::Slice, Main::Slice, Hanami.app]
+        expect(Main::Slice.with_slices).to eq [Main::Nested::Slice, Main::Slice]
+      end
+    end
+  end
 end

@@ -394,6 +394,26 @@ module Hanami
         @slices ||= SliceRegistrar.new(self)
       end
 
+      # Returns an array of this slice and all of its nested slices.
+      #
+      # The nested slices are returned first (with their more specific namespaces ahead of their
+      # parents'), and this slice is returned last. This ordering means a class can be matched to
+      # its most specific slice by detecting the first slice whose namespace it belongs to. It is
+      # useful when you need to operate across every container, such as in test support code.
+      #
+      # @example
+      #   Hanami.app.with_slices # => [Main::Nested::Slice, Main::Slice, Admin::Slice, MyApp::App]
+      #
+      # @return [Array<Hanami::Slice>] this slice and all of its (nested) slices, this slice last
+      #
+      # @see #slices
+      #
+      # @api public
+      # @since 3.0.0
+      def with_slices
+        slices.with_nested + [self]
+      end
+
       # @overload register_slice(name, &block)
       #   Registers a nested slice with the given name.
       #
