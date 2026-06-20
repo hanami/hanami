@@ -448,8 +448,29 @@ RSpec.describe "Slices", :app_integration do
     end
   end
 
-  describe "Hanami.slices" do
-    specify "returns all (nested) slices, with nested slices before their parents and the app last" do
+  specify "Registering a slice with a block creates a slice class and evals the block" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+            register_slice :main do
+              register "greeting", "hello world"
+            end
+          end
+        end
+      RUBY
+
+      require "hanami/prepare"
+
+      expect(Hanami.app.slices[:main]).to be Main::Slice
+      expect(Main::Slice["greeting"]).to eq "hello world"
+    end
+  end
+
+  describe "iterating over slices via .with_slices" do
+    specify "returns the slice and all its nested slices, with nested slices before their parents and the slice last" do
       with_tmp_directory(Dir.mktmpdir) do
         write "config/app.rb", <<~RUBY
           require "hanami"
@@ -478,33 +499,9 @@ RSpec.describe "Slices", :app_integration do
 
         require "hanami/prepare"
 
-        expect(Hanami.slices).to eq [Main::Nested::Slice, Main::Slice, Hanami.app]
+        expect(Hanami.app.with_slices).to eq [Main::Nested::Slice, Main::Slice, Hanami.app]
+        expect(Main::Slice.with_slices).to eq [Main::Nested::Slice, Main::Slice]
       end
-    end
-
-    specify "raises an error when the app is not loaded" do
-      expect { Hanami.slices }.to raise_error(Hanami::AppLoadError)
-    end
-  end
-
-  specify "Registering a slice with a block creates a slice class and evals the block" do
-    with_tmp_directory(Dir.mktmpdir) do
-      write "config/app.rb", <<~RUBY
-        require "hanami"
-
-        module TestApp
-          class App < Hanami::App
-            register_slice :main do
-              register "greeting", "hello world"
-            end
-          end
-        end
-      RUBY
-
-      require "hanami/prepare"
-
-      expect(Hanami.app.slices[:main]).to be Main::Slice
-      expect(Main::Slice["greeting"]).to eq "hello world"
     end
   end
 end

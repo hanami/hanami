@@ -119,29 +119,6 @@ module Hanami
     instance_variable_defined?(:@_app)
   end
 
-  # Returns an array of all slices, including the app itself and all nested slices.
-  #
-  # This is useful when you need to operate across every container in your app, such as in test
-  # support code.
-  #
-  # Nested slices (with their more specific namespaces) are returned ahead of their parents, and the
-  # app is returned last. This ordering assists with matching a class to its most specific slice by
-  # detecting the first slice whose namespace it belongs to.
-  #
-  # @example
-  #   Hanami.slices # => [Main::Nested::Slice, Main::Slice, Admin::Slice, MyApp::App]
-  #
-  # @return [Array<Hanami::Slice>] all (nested) slices, with the app last
-  #
-  # @see .app
-  # @see Hanami::Slice
-  #
-  # @api public
-  # @since 3.0.0
-  def self.slices
-    app.slices.with_nested + [app]
-  end
-
   # @api private
   # @since 2.0.0
   def self.app=(klass)
