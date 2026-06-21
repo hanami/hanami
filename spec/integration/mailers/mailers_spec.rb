@@ -165,6 +165,42 @@ RSpec.describe "Mailers", :app_integration do
       end
     end
 
+    it "shares the app's delivery method with slices via shared_app_component_keys" do
+      ENV["SMTP_ADDRESS"] = "smtp.example.com"
+
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+              config.shared_app_component_keys += ["mailers.delivery_method"]
+            end
+          end
+        RUBY
+        write "slices/admin/mailers/welcome.rb", <<~RUBY
+          module Admin
+            module Mailers
+              class Welcome < Hanami::Mailer
+                from "noreply@example.com"
+                to "user@example.com"
+                subject "Hi"
+              end
+            end
+          end
+        RUBY
+        require "hanami/prepare"
+
+        app_delivery_method = Hanami.app["mailers.delivery_method"]
+        expect(app_delivery_method).to be_a(Hanami::Mailer::Delivery::SMTP)
+
+        # The slice imports the app's delivery method instead of registering its own :mailers
+        # provider, so it resolves the very same instance.
+        admin = Hanami.app.slices[:admin]
+        expect(admin["mailers.delivery_method"]).to be(app_delivery_method)
+      end
+    end
+
     it "warns (without raising) in production when no SMTP is configured" do
       ENV["HANAMI_ENV"] = "production"
       logger_stream = StringIO.new
