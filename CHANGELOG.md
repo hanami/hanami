@@ -31,6 +31,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Changed
 
+- Syntax highlight SQL in logs when the rouge gem is bundled. (@timriley in #1570, #1607)
+
 ### Deprecated
 
 ### Removed
