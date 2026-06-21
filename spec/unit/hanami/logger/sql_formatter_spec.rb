@@ -6,9 +6,11 @@ require "stringio"
 
 RSpec.describe Hanami::Logger::SQLFormatter do
   # Returns true when the string contains the 256-colour escape sequences emitted by
-  # Rouge::Formatters::Terminal256 (e.g. "\e[38;5;203m").
+  # Rouge::Formatters::Terminal256.
   def rouge_highlighted?(str)
-    str.match?(/\e\[38;5;\d+m/)
+    # Matches a 256-colour foreground code (e.g. "\e[38;5;203m"), optionally followed by extra
+    # attributes like bold (e.g. "\e[38;5;28;01m"), which themes such as "pastie" emit.
+    str.match?(/\e\[38;5;\d+(?:;\d+)*m/)
   end
 
   def build_logger(stream:, colorize:)
@@ -87,18 +89,18 @@ RSpec.describe Hanami::Logger::SQLFormatter do
     end
   end
 
-  describe "HANAMI_SQL_THEME environment variable" do
+  describe "HANAMI_LOG_SYNTAX_THEME environment variable" do
     around do |example|
-      original = ENV["HANAMI_SQL_THEME"]
+      original = ENV["HANAMI_LOG_SYNTAX_THEME"]
       example.run
     ensure
-      ENV["HANAMI_SQL_THEME"] = original
+      ENV["HANAMI_LOG_SYNTAX_THEME"] = original
     end
 
-    it "uses the named theme when HANAMI_SQL_THEME is set to a valid theme name" do
+    it "uses the named theme when HANAMI_LOG_SYNTAX_THEME is set to a valid theme name" do
       default_output = capture(colorize: true)
 
-      ENV["HANAMI_SQL_THEME"] = "monokai"
+      ENV["HANAMI_LOG_SYNTAX_THEME"] = "monokai"
       monokai_output = capture(colorize: true)
 
       # Both should be highlighted, but with different colour codes
@@ -106,8 +108,8 @@ RSpec.describe Hanami::Logger::SQLFormatter do
       expect(monokai_output).not_to eq(default_output)
     end
 
-    it "falls back to Gruvbox without raising when HANAMI_SQL_THEME names an unknown theme" do
-      ENV["HANAMI_SQL_THEME"] = "totally_nonexistent_theme"
+    it "falls back to the default theme without raising when HANAMI_LOG_SYNTAX_THEME names an unknown theme" do
+      ENV["HANAMI_LOG_SYNTAX_THEME"] = "totally_nonexistent_theme"
 
       expect { capture(colorize: true) }.not_to raise_error
       expect(rouge_highlighted?(capture(colorize: true))).to be true

@@ -26,9 +26,9 @@ module Hanami
     # highlighted using Rouge's SQL lexer. This is a soft dependency; if Rouge is not installed,
     # queries output as plain, unhighlighted text.
     #
-    # The Rouge theme defaults to "base16.solarized" and can be customized by setting the
-    # `HANAMI_SQL_THEME` environment variable to any Rouge theme name. See `Rouge::Theme.registry`
-    # for available themes.
+    # The Rouge theme defaults to "pastie" and can be customized by setting the
+    # `HANAMI_LOG_SYNTAX_THEME` environment variable to any Rouge theme name. See
+    # `Rouge::Theme.registry` for available themes.
     #
     # @see Hanami::Logger::SQLLogger
     #
@@ -67,8 +67,8 @@ module Hanami
           return nil
         end
 
-        theme_name = ENV.fetch("HANAMI_SQL_THEME", "base16.solarized")
-        theme_class = Rouge::Theme.find(theme_name) || Rouge::Themes::Base16::Solarized
+        theme_name = ENV.fetch("HANAMI_LOG_SYNTAX_THEME", "pastie")
+        theme_class = Rouge::Theme.find(theme_name) || Rouge::Themes::Pastie
         formatter = Rouge::Formatters::Terminal256.new(theme_class.new)
 
         lexer = Rouge::Lexers::SQL.new
