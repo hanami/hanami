@@ -39,7 +39,17 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Security
 
-[unreleased]: https://github.com/hanami/hanami/compare/v3.0.0.rc1...HEAD
+[unreleased]: https://github.com/hanami/hanami/compare/v3.0.0...HEAD
+
+## [3.0.0]
+
+### Added
+
+- Integrate hanami-mailer gem when bundled. (@timriley in #1597, #1600, #1606)
+
+    Load templates from `templates/mailers/`. Register a `"mailers.delivery_method"`, which is either an SMTP mailer when `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTHENTICATION` env vars are present. These can also be prefixed with a slice name. Register a test delivery always in the test env, and also in other envs when the env vars are absent.
+
+[3.0.0]: https://github.com/hanami/hanami/compare/v2.3.2...v3.0.0
 
 ## [3.0.0.rc1] - 2026-06-16
 

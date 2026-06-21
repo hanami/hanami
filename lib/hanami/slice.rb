@@ -1029,7 +1029,7 @@ module Hanami
           require_relative "providers/mailers"
 
           # Only register the provider if the user hasn't provided their own.
-          unless container.providers[:mailers]
+          if register_mailers_provider? && !container.providers[:mailers]
             register_provider(:mailers, namespace: true, source: Providers::Mailers)
           end
         end
@@ -1190,6 +1190,17 @@ module Hanami
         return true if self == app
 
         !config.shared_app_component_keys.include?("i18n")
+      end
+
+      # Ensures a mailers provider is available in every slice.
+      #
+      # For the app, this will always be a standalone provider. For slices, this will be a
+      # standalone provider unless the slice is configured to share the app's
+      # "mailers.delivery_method" component.
+      def register_mailers_provider?
+        return true if self == app
+
+        !config.shared_app_component_keys.include?("mailers.delivery_method")
       end
 
       def register_db_provider?
