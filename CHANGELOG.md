@@ -28,6 +28,19 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 ### Added
 
 - Add `Hanami::Slice.with_slices`, returning the slice and all its nested slices. (@timriley in #1604)
+- Wrap the configured app logger with `Hanami::UniversalLogger`, to provide a consistent logging interface regardless of the underlying logger. The app can now be depended upon to support (1) structured logging via keyword args passed to log methods, and (2) tagged logging via `#tagged`. (@timriley in #1567, #1568, #1608)
+- Allow the built-in logger to be further configured in a `config/providers/logger.rb` provider file, useful for calling arbitrary methods on the logger, like adding backends. (@timriley in #1608)
+
+    ```ruby
+    Hanami.app.configure_provider :logger do
+      before :start do
+        logger.add_backend(
+          stream: Hanami.app.root.join("log", "payments.log"),
+          log_if: -> entry { entry.tag?(:payments) }
+        )
+      end
+    end
+    ```
 
 ### Changed
 
