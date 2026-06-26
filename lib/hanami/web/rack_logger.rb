@@ -59,7 +59,7 @@ module Hanami
       # @api private
       # @since 2.0.0
       def initialize(logger, env: :development)
-        @logger = Hanami::UniversalLogger[logger]
+        @logger = logger
         extend(Development) if %i[development test].include?(env)
       end
 

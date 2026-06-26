@@ -23,7 +23,7 @@ module Hanami
   # This adapter is used for all loggers configured in Hanami apps.
   #
   # @api public
-  # @since x.x.x
+  # @since 3.0.0
   class UniversalLogger
     class << self
       # Wrap a logger if needed, or return it as-is if fully compatible.
@@ -59,7 +59,7 @@ module Hanami
     end
 
     # @api public
-    # @since x.x.x
+    # @since 3.0.0
     attr_reader :logger
 
     # @api private
@@ -82,7 +82,7 @@ module Hanami
     #   @return [void]
     #
     #   @api public
-    #   @since x.x.x
+    #   @since 3.0.0
 
     # @!method info(message = nil, **payload, &blk)
     #   Logs an info message.
@@ -92,7 +92,7 @@ module Hanami
     #   @yieldreturn [Hash] additional payload data to merge
     #   @return [void]
     #   @api public
-    #   @since x.x.x
+    #   @since 3.0.0
 
     # @!method warn(message = nil, **payload, &blk)
     #   Logs a warning message.
@@ -103,7 +103,7 @@ module Hanami
     #   @return [void]
     #
     #   @api public
-    #   @since x.x.x
+    #   @since 3.0.0
 
     # @!method error(message = nil, **payload, &blk)
     #   Logs an error message.
@@ -114,7 +114,7 @@ module Hanami
     #   @return [void]
     #
     #   @api public
-    #   @since x.x.x
+    #   @since 3.0.0
 
     # @!method fatal(message = nil, **payload, &blk)
     #   Logs a fatal message.
@@ -125,7 +125,7 @@ module Hanami
     #   @return [void]
     #
     #   @api public
-    #   @since x.x.x
+    #   @since 3.0.0
 
     # @!method unknown(message = nil, **payload, &blk)
     #   Logs a message with unknown severity.
@@ -136,7 +136,7 @@ module Hanami
     #   @return [void]
     #
     #   @api public
-    #   @since x.x.x
+    #   @since 3.0.0
 
     LOG_LEVEL_METHODS.each do |level|
       define_method(level) do |message = nil, **payload, &blk|
@@ -145,7 +145,7 @@ module Hanami
     end
 
     # @api public
-    # @since x.x.x
+    # @since 3.0.0
     def add(severity, message = nil, progname = nil, &blk)
       # Convert severity to a level symbol if it's an integer (the standard Logger uses integers).
       level = _severity_to_level(severity)
@@ -157,11 +157,11 @@ module Hanami
     end
 
     # @api public
-    # @since x.x.x
+    # @since 3.0.0
     alias_method :log, :add
 
     # @api public
-    # @since x.x.x
+    # @since 3.0.0
     def tagged(*tags)
       previous_tags = _current_tags
       self._current_tags = tags
