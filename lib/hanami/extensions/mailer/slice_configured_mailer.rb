@@ -25,6 +25,7 @@ module Hanami
         def extended(mailer_class)
           configure_mailer(mailer_class)
           define_new
+          define_inherited
         end
 
         def inspect
@@ -41,6 +42,19 @@ module Hanami
               delivery_method: kwargs.fetch(:delivery_method) { resolve_delivery_method.() },
               **kwargs
             )
+          end
+        end
+
+        # Reconfigures the template name for each subclass.
+        def define_inherited
+          template_name = method(:template_name)
+
+          define_method(:inherited) do |subclass|
+            super(subclass)
+
+            if (template = template_name.(subclass))
+              subclass.config.template = template
+            end
           end
         end
 
