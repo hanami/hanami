@@ -8,7 +8,7 @@ module Hanami
     # Hanami I18n config
     #
     # @api public
-    # @since x.x.x
+    # @since 3.0.0
     class I18n
       include Dry::Configurable
 
@@ -23,7 +23,7 @@ module Hanami
       #     config.i18n.default_locale = :fr
       #
       #   @api public
-      #   @since x.x.x
+      #   @since 3.0.0
       setting :default_locale, default: Providers::I18n::DEFAULT_LOCALE
 
       # @!attribute [rw] available_locales
@@ -41,7 +41,7 @@ module Hanami
       #     config.i18n.available_locales = [:en, :fr, :de]
       #
       #   @api public
-      #   @since x.x.x
+      #   @since 3.0.0
       setting :available_locales, default: Providers::I18n::DEFAULT_AVAILABLE_LOCALES
 
       # @!attribute [rw] load_path
@@ -65,7 +65,7 @@ module Hanami
       #     config.i18n.load_path = ["translations/**/*.yml"]
       #
       #   @api public
-      #   @since x.x.x
+      #   @since 3.0.0
       setting :load_path, default: Providers::I18n::DEFAULT_LOAD_PATH
 
       # @!attribute [rw] shared_load_path
@@ -91,7 +91,7 @@ module Hanami
       #     config.i18n.shared_load_path += ["vendor/translations/**/*.yml"]
       #
       #   @api public
-      #   @since x.x.x
+      #   @since 3.0.0
       setting :shared_load_path, default: Providers::I18n::DEFAULT_SHARED_LOAD_PATH
 
       # @!attribute [rw] fallbacks
@@ -117,7 +117,7 @@ module Hanami
       #     config.i18n.fallbacks = [:en]
       #
       #   @api public
-      #   @since x.x.x
+      #   @since 3.0.0
       setting :fallbacks
 
       private

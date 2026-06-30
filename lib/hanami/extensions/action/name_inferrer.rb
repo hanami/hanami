@@ -6,7 +6,7 @@ module Hanami
       # Infers an action's name (e.g. `posts.show`) from its class name relative to its slice
       # namespace.
       #
-      # @api private      # @since x.x.x
+      # @api private
       class NameInferrer
         class << self
           # @example

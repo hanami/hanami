@@ -41,7 +41,7 @@ module Hanami
     #   # Looks up "users._form.label"
     #
     # @api public
-    # @since x.x.x
+    # @since 3.0.0
     module I18nHelper
       # Shared `translate` / `localize` (and shorthand) helper methods used by both view-layer
       # consumers and action-layer consumers.
@@ -53,7 +53,7 @@ module Hanami
       #   context, and is a no-op for absolute keys.
       #
       # @api public
-      # @since x.x.x
+      # @since 3.0.0
       module Methods
         # Matches keys whose final segment is `html` or whose final segment ends in `_html`. These
         # translated values are treated as HTML-safe and any string interpolation values are
@@ -82,7 +82,7 @@ module Hanami
         #   the key ends in `_html` or `html`)
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def translate(key, **options)
           key = _resolve_i18n_key(key)
 
@@ -105,7 +105,7 @@ module Hanami
         end
 
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         alias_method :t, :translate
 
         # Translates the given key, raising an exception if the translation is missing.
@@ -118,13 +118,13 @@ module Hanami
         # @raise [I18n::MissingTranslationData] if the translation is missing
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def translate!(key, **options)
           translate(key, **options, raise: true)
         end
 
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         alias_method :t!, :translate!
 
         # Localizes the given object (e.g. a date, time, or number) using the slice's i18n backend.
@@ -136,13 +136,13 @@ module Hanami
         # @return [String] the localized string
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def localize(object, **options)
           _i18n.localize(object, **options)
         end
 
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         alias_method :l, :localize
 
         private

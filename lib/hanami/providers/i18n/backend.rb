@@ -10,7 +10,7 @@ module Hanami
       # this wrapper maintains per-instance state for true isolation between slices.
       #
       # @api public
-      # @since x.x.x
+      # @since 3.0.0
       class Backend
         attr_reader :backend
 
@@ -19,7 +19,7 @@ module Hanami
         # @return [Symbol] the default locale
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         attr_reader :default_locale
 
         # Creates a new Backend instance.
@@ -31,7 +31,7 @@ module Hanami
         # @param fallbacks [I18n::Locale::Fallbacks, nil] fallbacks configuration for missing translations
         #
         # @api private
-        # @since x.x.x
+        # @since 3.0.0
         def initialize(backend, locale: nil, default_locale: :en, available_locales: [], fallbacks: nil)
           @backend = backend
           @default_locale = default_locale.to_sym
@@ -69,7 +69,7 @@ module Hanami
         #   translate("hello", locale: :fr) # => "Bonjour"
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def translate(key, **options)
           locale = options[:locale] || self.locale
 
@@ -105,7 +105,7 @@ module Hanami
         # rubocop:enable Metrics/PerceivedComplexity
 
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         alias_method :t, :translate
 
         # Translates the given key, raising an exception if translation is missing.
@@ -122,13 +122,13 @@ module Hanami
         #   translate!("missing.key") # raises I18n::MissingTranslationData
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def translate!(key, **options)
           translate(key, **options.merge(raise: true))
         end
 
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         alias_method :t!, :translate!
 
         # Localizes the given date or time.
@@ -151,7 +151,7 @@ module Hanami
         #   localize(Date.today, locale: :fr, format: :long) # => "19 janvier 2026"
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def localize(object, locale: nil, format: :default, **options)
           locale ||= self.locale
 
@@ -176,7 +176,7 @@ module Hanami
         end
 
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         alias_method :l, :localize
 
         # Returns true if a translation exists for the given key.
@@ -192,7 +192,7 @@ module Hanami
         #   exists?("missing.key") # => false
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def exists?(key, locale: nil, **options)
           locale ||= self.locale
           @backend.exists?(locale, key, options)
@@ -211,7 +211,7 @@ module Hanami
         #   transliterate("Ærøskøbing") # => "AEroskobing"
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def transliterate(key, locale: nil, replacement: nil, **options)
           locale ||= self.locale
           @backend.transliterate(locale, key, replacement)
@@ -223,7 +223,7 @@ module Hanami
         # Otherwise, returns all locales detected from loaded translation files.
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def available_locales
           if @available_locales.any?
             @available_locales
@@ -237,7 +237,7 @@ module Hanami
         # @return [void]
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def reload!
           @backend.reload!
         end
@@ -247,7 +247,7 @@ module Hanami
         # @return [void]
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def eager_load!
           @backend.eager_load! if @backend.respond_to?(:eager_load!)
         end
@@ -265,7 +265,7 @@ module Hanami
         #   locale # => :fr
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def locale
           Thread.current[@storage_key] || default_locale
         end
@@ -285,7 +285,7 @@ module Hanami
         #   self.locale = nil # resets to default_locale
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def locale=(value)
           Thread.current[@storage_key] = value&.to_sym
         end
@@ -316,7 +316,7 @@ module Hanami
         #   end
         #
         # @api public
-        # @since x.x.x
+        # @since 3.0.0
         def with_locale(tmp_locale)
           previous_locale = Thread.current[@storage_key]
           Thread.current[@storage_key] = tmp_locale&.to_sym

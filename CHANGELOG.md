@@ -27,7 +27,28 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Added
 
-- Add `Hanami::Slice.with_slices`, returning the slice and all its nested slices. (@timriley in #1604)
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+[unreleased]: https://github.com/hanami/hanami/compare/v3.0.0...HEAD
+
+## [3.0.0] - 2026-06-30
+
+### Added
+
+- Integrate hanami-mailer gem when bundled. (@timriley in #1597, #1600, #1606, #1609)
+
+    Load templates from `templates/mailers/`. Register a `"mailers.delivery_method"`, which is either an SMTP mailer when `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTHENTICATION` env vars are present. These can also be prefixed with a slice name. Register a test delivery always in the test env, and also in other envs when the env vars are absent.
+- Integrate i18n gem when bundled. (@timriley in #1562, #1589, #1590, #1591, #1592, #1593)
+
+    Register an `"i18n"` component in each slice, which may be configured via `config.i18n` or a dedicated `:i18n` provider. Load translations from `config/i18n/` within each slice. Load shared translations from `config/i18n/shared/` at the app-level only. Bundle default English translations for `#localize`. Make helpers available in views and actions, which also prefix relative keys (with a leading ".") with their own dot-delimited template or action names.
 - Wrap the configured app logger with `Hanami::UniversalLogger`, to provide a consistent logging interface regardless of the underlying logger. The app can now be depended upon to support (1) structured logging via keyword args passed to log methods, and (2) tagged logging via `#tagged`. (@timriley in #1567, #1568, #1608)
 - Allow the built-in logger to be further configured in a `config/providers/logger.rb` provider file, useful for calling arbitrary methods on the logger, like adding backends. (@timriley in #1608)
 
@@ -41,28 +62,28 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
       end
     end
     ```
+- Support `HANAMI_LOG_LEVEL` env var to set the log level (e.g. `HANAMI_LOG_LEVEL=warn bundle exec hanami server`). Takes precedence over `config.logger.level` set in `config/app.rb`. (@cllns in #1580)
+- Add `config.db.log_level` setting, for changing the log level for SQL logs. (@katafrakt in #1587)
+- New setting `:default_template_engine` that sets which template engine should be used by default when doing `hanami generate`. (@katafrakt in #1564)
+- Add `Hanami::Settings::CompositeStore`, which can be used to chain setting lookups from multiple stores. (@aaronmallen in #1572)
+- Add `Hanami::Slice.with_slices`, returning the slice and all its nested slices. (@timriley in #1604)
 
 ### Changed
 
+- Default to memoizing all components, except in test env. Opt out for some or all components via `config.no_memoize`. (@timriley in #1573, #1599)
+- Colorize logs by default in development env. (@timriley in #1566)
+- Emit structured log entries for SQL queries, formatted consistently with request logs. (@timriley in #1569)
 - Syntax highlight SQL in logs when the rouge gem is bundled. (@timriley in #1570, #1607)
-
-### Deprecated
+- Colorize web request logs. (@timriley in #1571)
+- Change default log level for SQL (and other database) statements from `:info` to `:debug`. (@katafrakt in #1595)
+- Raise a helpful error message when the `Slice.call` Rack entrypoint is called and no routes are available. (@sandbergja in #1586)
+- Apply extensions to hanami-action gem rather than hanami-controller (which is now retired). (@cllns in #1582)
+- Redesign the new app welcome screen to match our new Hanakai visuals. (@makenosound in #1598)
+- Require Ruby 3.3 or newer.
 
 ### Removed
 
-### Fixed
-
-### Security
-
-[unreleased]: https://github.com/hanami/hanami/compare/v3.0.0...HEAD
-
-## [3.0.0]
-
-### Added
-
-- Integrate hanami-mailer gem when bundled. (@timriley in #1597, #1600, #1606)
-
-    Load templates from `templates/mailers/`. Register a `"mailers.delivery_method"`, which is either an SMTP mailer when `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTHENTICATION` env vars are present. These can also be prefixed with a slice name. Register a test delivery always in the test env, and also in other envs when the env vars are absent.
+- Remove default body parsing middleware. This functionality has moved into Hanami Action. (@timriley in #1575)
 
 [3.0.0]: https://github.com/hanami/hanami/compare/v2.3.2...v3.0.0
 

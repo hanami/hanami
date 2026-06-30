@@ -203,7 +203,7 @@ module Hanami
             # @raise [Hanami::ComponentLoadError] if the i18n gem is not bundled
             #
             # @api public
-            # @since x.x.x
+            # @since 3.0.0
             def i18n
               unless @i18n
                 raise Hanami::ComponentLoadError, "the i18n gem is required to access translations"

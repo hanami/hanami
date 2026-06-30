@@ -17,7 +17,7 @@ module Hanami
     #   )
     #
     # @api public
-    # @since x.x.x
+    # @since 3.0.0
     class CompositeStore
       # @api private
       Undefined = Dry::Core::Constants::Undefined
@@ -36,7 +36,7 @@ module Hanami
       # @raise [KeyError] if no store has the key and no default is given
       #
       # @api public
-      # @since x.x.x
+      # @since 3.0.0
       def fetch(name, *args, &block)
         @stores.each do |store|
           value = store.fetch(name, Undefined)

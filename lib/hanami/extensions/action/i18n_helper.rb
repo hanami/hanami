@@ -33,7 +33,7 @@ module Hanami
       # @see Hanami::Helpers::I18nHelper::Methods
       #
       # @api public
-      # @since x.x.x
+      # @since 3.0.0
       module I18nHelper
         include Hanami::Helpers::I18nHelper::Methods
 
