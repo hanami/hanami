@@ -43,6 +43,12 @@ gem "rouge"
 # For testing i18n support
 gem "i18n"
 
+# Work around RDoc/JRuby incompatibiltiy: rdoc 8 depends on rbs 4, whose native C extension can't
+# build on JRuby.
+#
+# Remove this once https://github.com/ruby/rdoc/issues/1746 is resolved.
+gem "rdoc", "< 8.0"
+
 group :test do
   gem "capybara"
   gem "dotenv"
