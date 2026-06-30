@@ -30,10 +30,20 @@ RSpec.describe "Mailers", :app_integration do
   end
 
   def write_welcome_mailer
+    # Mirror a realistic app, where concrete mailers all inherit from a base class.
+    write "app/mailer.rb", <<~RUBY
+      # auto_register: false
+
+      module TestApp
+        class Mailer < Hanami::Mailer
+        end
+      end
+    RUBY
+
     write "app/mailers/welcome.rb", <<~RUBY
       module TestApp
         module Mailers
-          class Welcome < Hanami::Mailer
+          class Welcome < TestApp::Mailer
             from "noreply@example.com"
             to { |user:| user[:email] }
             subject "Welcome!"
