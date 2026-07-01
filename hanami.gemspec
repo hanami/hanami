@@ -38,7 +38,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "dry-system", "~> 1.1"
   spec.add_runtime_dependency "dry-logger", "~> 1.2", "< 2"
   spec.add_runtime_dependency "hanami-cli", ">= 2.3.1"
-  spec.add_runtime_dependency "hanami-utils", ">= 2.3.0"
+  spec.add_runtime_dependency "hanami-utils", "~> 3.0.0"
   spec.add_runtime_dependency "json", ">= 2.7.2"
   spec.add_runtime_dependency "zeitwerk", "~> 2.6"
   spec.add_runtime_dependency "rack-session"
