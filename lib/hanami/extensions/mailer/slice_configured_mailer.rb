@@ -52,7 +52,7 @@ module Hanami
           define_method(:inherited) do |subclass|
             super(subclass)
 
-            if (template = template_name.(subclass))
+            if Hanami.bundled?("hanami-view") && (template = template_name.(subclass))
               subclass.config.template = template
             end
           end

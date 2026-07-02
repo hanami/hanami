@@ -35,6 +35,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Fixed
 
+- Don't attempt to inherit mailer template when `hanami-view` if not bundled (@katafrakt in #1611)
+
 ### Security
 
 [unreleased]: https://github.com/hanami/hanami/compare/v3.0.0...HEAD

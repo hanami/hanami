@@ -391,5 +391,68 @@ RSpec.describe "Mailers", :app_integration do
         }.to raise_error(Hanami::ComponentLoadError)
       end
     end
+
+    context "when hanami-view is not bundled" do
+      before do
+        allow(Hanami).to receive(:bundled?).and_call_original
+        allow(Hanami).to receive(:bundled?).with("hanami-view").and_return(false)
+      end
+
+      def write_custom_mailer
+        write "app/mailer.rb", <<~RUBY
+          # auto_register: false
+
+          module TestApp
+            class Mailer < Hanami::Mailer
+            end
+          end
+        RUBY
+
+        write "app/mailers/welcome.rb", <<~RUBY
+          module TestApp
+            module Mailers
+              class Welcome < TestApp::Mailer
+                from "noreply@example.com"
+                to { |user:| user[:email] }
+                subject "Welcome!"
+
+                expose :user
+
+                private
+
+                def render_view(format, input)
+                  user = input[:user]
+
+                  case format
+                  when :html
+                    "<h1>Hello, \#{user[:name]}!</h1>\n"
+                  when :text
+                    "Hello, \#{user[:name]}!\n"
+                  end
+                end
+              end
+            end
+          end
+        RUBY
+      end
+
+      it "renders the email" do
+        with_tmp_directory(Dir.mktmpdir) do
+          write_app
+          write_custom_mailer
+          require "hanami/prepare"
+
+          result = Hanami.app["mailers.welcome"].deliver(
+            user: {name: "Alice", email: "alice@example.com"}
+          )
+
+          expect(result.message.to).to eq(["alice@example.com"])
+          expect(result.message.subject).to eq("Welcome!")
+          expect(result.message.html_body).to eq("<h1>Hello, Alice!</h1>\n")
+          expect(result.message.text_body).to eq("Hello, Alice!\n")
+          expect(Hanami.app["mailers.delivery_method"].deliveries.length).to eq(1)
+        end
+      end
+    end
   end
 end
