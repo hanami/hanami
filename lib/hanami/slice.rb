@@ -107,7 +107,7 @@ module Hanami
       # @api public
       # @since 2.2.0
       def app?
-        eql?(app)
+        Hanami.app? && eql?(app)
       end
 
       # Returns the slice's config.
@@ -1187,7 +1187,7 @@ module Hanami
       # For the app, this will always be a standalone provider. For slices, this will be a
       # standalone provider unless the slice is configured to share the app's "i18n" component.
       def register_i18n_provider?
-        return true if self == app
+        return true if app?
 
         !config.shared_app_component_keys.include?("i18n")
       end
@@ -1198,7 +1198,7 @@ module Hanami
       # standalone provider unless the slice is configured to share the app's
       # "mailers.delivery_method" component.
       def register_mailers_provider?
-        return true if self == app
+        return true if app?
 
         !config.shared_app_component_keys.include?("mailers.delivery_method")
       end

@@ -35,7 +35,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Fixed
 
-- Don't attempt to inherit mailer template when `hanami-view` if not bundled (@katafrakt in #1611)
+- Don't attempt to inherit mailer template when `hanami-view` if not bundled. (@katafrakt in #1611)
+- Return `false` from `Hanami::Slice.app?`, rather than raising `Hanami::AppLoadError`, when no app is defined. (@parndt in #1612)
 
 ### Security
 
