@@ -26,6 +26,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 ## [Unreleased]
 
 ### Added
+- Add a new database configuration option: `migrations_table`.  It defaults to `:schema_migrations`.
 
 ### Changed
 
