@@ -28,7 +28,7 @@ module Hanami
       # @api public
       # @since 3.0.0
       def logger
-        @logger ||= Hanami.app.config.logger_instance
+        @logger ||= slice.config.logger_instance
       end
     end
 

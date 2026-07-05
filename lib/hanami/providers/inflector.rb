@@ -10,7 +10,7 @@ module Hanami
     class Inflector < Hanami::Provider::Source
       # @api private
       def start
-        register :inflector, Hanami.app.inflector
+        register :inflector, slice.inflector
       end
     end
   end
