@@ -66,7 +66,7 @@ module Hanami
         unless config.backend
           translation_files = [
             BUNDLED_DEFAULTS_PATH,
-            *resolve_load_paths(Array(config.shared_load_path), root: slice.app.root),
+            *resolve_load_paths(Array(config.shared_load_path), root: slice.host.root),
             *resolve_load_paths(Array(config.load_path), root: slice.root)
           ].uniq
 
