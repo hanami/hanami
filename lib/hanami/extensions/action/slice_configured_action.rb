@@ -170,11 +170,11 @@ module Hanami
         end
 
         def resolve_routes
-          slice.app["routes"] if slice.app.key?("routes")
+          slice.host["routes"] if slice.host.key?("routes")
         end
 
         def resolve_rack_monitor
-          slice.app["rack.monitor"] if slice.app.key?("rack.monitor")
+          slice.host["rack.monitor"] if slice.host.key?("rack.monitor")
         end
 
         def resolve_i18n

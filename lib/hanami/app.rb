@@ -117,6 +117,9 @@ module Hanami
       def prepare_container_component_dirs; end
       def prepare_container_imports; end
 
+      # The app provisions its providers via #prepare_app_providers below
+      def prepare_host_providers; end
+
       # rubocop:disable Metrics/AbcSize
 
       def prepare_app_component_dirs
