@@ -132,8 +132,10 @@ RSpec.describe "DB", :app_integration do
   end
 
   it "raises an error when the database driver gem is missing" do
+    pg_gem = RUBY_ENGINE == "jruby" ? "jdbc-postgresql" : "pg"
+
     allow(Hanami).to receive(:bundled?).and_call_original
-    expect(Hanami).to receive(:bundled?).with("pg").and_return false
+    expect(Hanami).to receive(:bundled?).with(pg_gem).and_return false
 
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
@@ -152,7 +154,7 @@ RSpec.describe "DB", :app_integration do
       require "hanami/prepare"
 
       expect { Hanami.app.prepare :db }.to raise_error(Hanami::ComponentLoadError) { |error|
-        expect(error.message).to include %(The "pg" gem is required)
+        expect(error.message).to include %(The "#{pg_gem}" gem is required)
       }
     end
   end
@@ -239,7 +241,8 @@ RSpec.describe "DB", :app_integration do
 
       Hanami.app.prepare :db
 
-      expect(Hanami.app["db.gateway"].connection.url).to eq "sqlite://./test.db"
+      expected_url = RUBY_ENGINE == "jruby" ? "jdbc:sqlite:#{Dir.pwd}/test.db" : "sqlite://./test.db"
+      expect(Hanami.app["db.gateway"].connection.url).to eq expected_url
     end
   end
 end

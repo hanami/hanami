@@ -230,11 +230,43 @@ module Hanami
           fetch_or_store(gw_config.cache_keys) {
             ROM::Gateway.setup(
               gw_config.adapter_name,
-              gw_config.database_url,
+              jdbc_database_url(gw_config.database_url),
               **gw_config.options
             )
           }
         }
+      end
+
+      # Translates a database URL into the `jdbc:` form required to connect via JRuby's JDBC
+      # adapters. A no-op on other Ruby engines.
+      if RUBY_ENGINE == "jruby"
+        def jdbc_database_url(database_url)
+          uri = URI(database_url)
+
+          case uri.scheme
+          when "sqlite"
+            # Mirrors the native sqlite adapter's own leniency: any URL without a host/path
+            # (however its opaque part is spelled, e.g. "sqlite::memory") means an in-memory
+            # database.
+            if uri.host.to_s.empty? && uri.path.to_s.empty?
+              "jdbc:sqlite::memory:"
+            else
+              # Resolve relative paths against Ruby's own Dir.pwd rather than leaving the JDBC
+              # driver to resolve them against the JVM's user.dir, which Dir.chdir does not move.
+              "jdbc:sqlite:#{File.expand_path("#{uri.host}#{uri.path}")}"
+            end
+          when "postgres", "postgresql"
+            "jdbc:postgresql:#{database_url.sub(/\A\w+:/, "")}"
+          when "mysql2"
+            "jdbc:mysql:#{database_url.sub(/\A\w+:/, "")}"
+          else
+            database_url
+          end
+        end
+      else
+        def jdbc_database_url(database_url)
+          database_url
+        end
       end
 
       def detect_database_urls_from_env
@@ -270,11 +302,21 @@ module Hanami
 
       # @api private
       # @since 2.2.0
-      DATABASE_GEMS = {
-        "mysql2" => "mysql2",
-        "postgres" => "pg",
-        "sqlite" => "sqlite3"
-      }.freeze
+      if RUBY_ENGINE == "ruby"
+        DATABASE_GEMS = {
+          "mysql2" => "mysql2",
+          "postgres" => "pg",
+          "sqlite" => "sqlite3"
+        }.freeze
+      elsif RUBY_ENGINE == "jruby"
+        DATABASE_GEMS = {
+          "mysql2" => "jdbc-mysql",
+          "postgres" => "jdbc-postgresql",
+          "sqlite" => "jdbc-sqlite3"
+        }.freeze
+      else
+        raise "unsupported RUBY_ENGINE: #{RUBY_ENGINE}"
+      end
       private_constant :DATABASE_GEMS
 
       # Raises an error if the relevant database gem for the configured database_url is not

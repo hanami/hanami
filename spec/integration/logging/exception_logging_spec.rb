@@ -74,7 +74,9 @@ RSpec.describe "Logging / Exception logging", :app_integration do
       expect(logs).to match %r{GET 500 \d+(µs|ms) 127.0.0.1 /}
       expect(logs).to include("unhandled (TestApp::Actions::Test::UnhandledError)")
 
-      if RUBY_VERSION < "3.4"
+      if RUBY_ENGINE == "jruby"
+        expect(logs).to include("app/actions/test.rb:7:in 'handle'")
+      elsif RUBY_VERSION < "3.4"
         expect(logs).to include("app/actions/test.rb:7:in `handle'")
       else
         expect(logs).to include("app/actions/test.rb:7:in 'TestApp::Actions::Test#handle'")
