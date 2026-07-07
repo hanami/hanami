@@ -44,6 +44,11 @@ module RSpec
       def compile_assets!
         # hanami-cli's asset compile command shells out via Process.fork, which JRuby cannot
         # support (the JVM has no fork()).
+        #
+        # TODO: hanami-cli has since replaced this Process.fork with a Thread (see
+        # hanami/hanami-cli#jruby/fix-ci), which needs no such workaround. Once that's merged to
+        # hanami-cli's main and this app's Gemfile picks up the release/commit that includes it,
+        # remove this skip and confirm the asset specs pass on JRuby for real.
         skip "Asset compilation requires Process.fork, which is unavailable on JRuby" if RUBY_ENGINE == "jruby"
 
         link_node_modules
