@@ -68,7 +68,7 @@ RSpec.describe "DB / Repo", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/prepare"
 
@@ -121,7 +121,7 @@ RSpec.describe "DB / Repo", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       write "slices/admin/db/struct.rb", <<~RUBY
         module Admin
@@ -275,7 +275,7 @@ RSpec.describe "DB / Repo", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/prepare"
 
