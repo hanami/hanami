@@ -230,39 +230,11 @@ module Hanami
           fetch_or_store(gw_config.cache_keys) {
             ROM::Gateway.setup(
               gw_config.adapter_name,
-              database_url_for_jdbc(gw_config.database_url),
+              gw_config.database_url,
               **gw_config.options
             )
           }
         }
-      end
-
-      # Translates a database URL into the `jdbc:` form required to connect via JRuby's JDBC
-      # adapters. A no-op on other Ruby engines.
-      def database_url_for_jdbc(database_url)
-        return database_url if RUBY_ENGINE != "jruby"
-
-        uri = URI(database_url)
-
-        case uri.scheme
-        when "sqlite"
-          # Mirrors the native sqlite adapter's own leniency: any URL without a host/path
-          # (however its opaque part is spelled, e.g. "sqlite::memory") means an in-memory
-          # database.
-          if uri.host.to_s.empty? && uri.path.to_s.empty?
-            "jdbc:sqlite::memory:"
-          else
-            # Resolve relative paths against Ruby's own Dir.pwd rather than leaving the JDBC
-            # driver to resolve them against the JVM's user.dir, which Dir.chdir does not move.
-            "jdbc:sqlite:#{File.expand_path("#{uri.host}#{uri.path}")}"
-          end
-        when "postgres", "postgresql"
-          "jdbc:postgresql:#{database_url.sub(/\A\w+:/, "")}"
-        when "mysql2"
-          "jdbc:mysql:#{database_url.sub(/\A\w+:/, "")}"
-        else
-          database_url
-        end
       end
 
       def detect_database_urls_from_env
@@ -299,9 +271,12 @@ module Hanami
       # @api private
       # @since 2.2.0
       DATABASE_GEMS = {
-        "mysql2" => RUBY_ENGINE != "jruby" ? "mysql2" : "jdbc-mysql",
-        "postgres" => RUBY_ENGINE != "jruby" ? "pg" : "jdbc-postgresql",
-        "sqlite" => RUBY_ENGINE != "jruby" ? "sqlite3" : "jdbc-sqlite3"
+        "mysql2" => "mysql2",
+        "postgres" => "pg",
+        "sqlite" => "sqlite3",
+        "jdbc:mysql" => "jdbc-mysql",
+        "jdbc:postgresql" => "jdbc-postgresql",
+        "jdbc:sqlite" => "jdbc-sqlite3"
       }.freeze
       private_constant :DATABASE_GEMS
 
@@ -314,6 +289,12 @@ module Hanami
       def ensure_database_gem(database_url)
         scheme = URI(database_url).scheme
         return unless scheme
+
+        # JDBC URLs (required to connect via JRuby) nest the real scheme after "jdbc:", e.g.
+        # "jdbc:postgresql://...", so URI#scheme alone (just "jdbc") isn't enough to identify them.
+        if scheme == "jdbc" && (sub_scheme = database_url[/\Ajdbc:(\w+):/, 1])
+          scheme = "jdbc:#{sub_scheme}"
+        end
 
         database_gem = DATABASE_GEMS[scheme]
         return unless database_gem

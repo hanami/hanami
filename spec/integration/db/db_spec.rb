@@ -31,7 +31,7 @@ RSpec.describe "DB", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/prepare"
 
@@ -83,7 +83,7 @@ RSpec.describe "DB", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/prepare"
 
@@ -132,10 +132,8 @@ RSpec.describe "DB", :app_integration do
   end
 
   it "raises an error when the database driver gem is missing" do
-    pg_gem = RUBY_ENGINE == "jruby" ? "jdbc-postgresql" : "pg"
-
     allow(Hanami).to receive(:bundled?).and_call_original
-    expect(Hanami).to receive(:bundled?).with(pg_gem).and_return false
+    expect(Hanami).to receive(:bundled?).with("pg").and_return false
 
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
@@ -154,7 +152,7 @@ RSpec.describe "DB", :app_integration do
       require "hanami/prepare"
 
       expect { Hanami.app.prepare :db }.to raise_error(Hanami::ComponentLoadError) { |error|
-        expect(error.message).to include %(The "#{pg_gem}" gem is required)
+        expect(error.message).to include %(The "pg" gem is required)
       }
     end
   end
@@ -185,7 +183,7 @@ RSpec.describe "DB", :app_integration do
           # In this test, we're not setting an ENV["DATABASE_URL"], and instead configuring
           # it via the provider source config, to prove that this works
           config.gateway :default do |gw|
-            gw.database_url = "sqlite::memory"
+            gw.database_url = "#{sqlite_database_url}"
           end
         end
       RUBY
@@ -235,13 +233,20 @@ RSpec.describe "DB", :app_integration do
       RUBY
 
       ENV["HANAMI_ENV"] = "test"
-      ENV["DATABASE_URL"] = "sqlite://./development.db"
+      # JRuby's JDBC driver resolves relative paths against the JVM's own working directory,
+      # which Ruby's Dir.chdir (used by with_tmp_directory) does not move, so use an absolute
+      # path to keep this test's sqlite file inside the tmp directory.
+      ENV["DATABASE_URL"] =
+        RUBY_ENGINE == "jruby" ? "jdbc:sqlite:#{File.expand_path("development.db")}" : "sqlite://./development.db"
 
       require "hanami/prepare"
 
       Hanami.app.prepare :db
 
-      expected_url = RUBY_ENGINE == "jruby" ? "jdbc:sqlite:#{Dir.pwd}/test.db" : "sqlite://./test.db"
+      # hanami-db's test-mode URL transformation only understands hierarchical URLs (with a
+      # `path`), not JDBC's opaque URLs, so it leaves JRuby's URL untouched.
+      expected_url =
+        RUBY_ENGINE == "jruby" ? "jdbc:sqlite:#{File.expand_path("development.db")}" : "sqlite://./test.db"
       expect(Hanami.app["db.gateway"].connection.url).to eq expected_url
     end
   end

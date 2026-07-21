@@ -24,7 +24,7 @@ RSpec.describe "DB / Provider / Config", :app_integration do
 
         write "config/db/.keep", ""
 
-        ENV["DATABASE_URL"] = "sqlite::memory"
+        ENV["DATABASE_URL"] = sqlite_database_url
 
         require "hanami/prepare"
 
@@ -76,7 +76,7 @@ RSpec.describe "DB / Provider / Config", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/prepare"
 
