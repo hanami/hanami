@@ -26,7 +26,7 @@ module Hanami
       end
 
       def finalize_config
-        return if @config_finalized
+        return self if @config_finalized
 
         apply_parent_config if apply_parent_config?
 
@@ -261,11 +261,149 @@ module Hanami
           end
         end
 
+        # Build URLs from component ENV vars for any gateways without a complete URL
+        gateway_names = [:default, *detect_gateway_names_from_env_components(env_var_prefix)]
+        (gateway_names - database_urls.keys).each do |gateway_name|
+          url = build_database_url_from_env(env_var_prefix, gateway_name)
+          database_urls[gateway_name] = url if url
+        end
+
         if Hanami.env?(:test)
           database_urls.transform_values! { Hanami::DB::Testing.database_url(_1) }
         end
 
         database_urls
+      end
+
+      # ENV vars (without any slice prefix or gateway name suffix) from which a database URL can be
+      # built when no complete URL is given.
+      #
+      # @api private
+      DATABASE_URL_COMPONENT_VARS = %w[
+        DATABASE_ADAPTER
+        DATABASE_USER
+        DATABASE_PASSWORD
+        DATABASE_HOST
+        DATABASE_PORT
+        DATABASE_NAME
+      ].freeze
+      private_constant :DATABASE_URL_COMPONENT_VARS
+
+      # Database URL schemes for the adapter names given in DATABASE_ADAPTER. Any other adapter
+      # name is used as the scheme as given.
+      #
+      # @api private
+      DATABASE_ADAPTER_SCHEMES = {
+        "mysql" => "mysql2",
+        "postgresql" => "postgres",
+        "sqlite3" => "sqlite"
+      }.freeze
+      private_constant :DATABASE_ADAPTER_SCHEMES
+
+      # Host to use when no DATABASE_HOST is given.
+      #
+      # @api private
+      DEFAULT_DATABASE_HOST = "localhost"
+      private_constant :DEFAULT_DATABASE_HOST
+
+      # Ports to use when no DATABASE_PORT is given, by database URL scheme. Schemes without an
+      # entry here get no port at all.
+      #
+      # @api private
+      DEFAULT_DATABASE_PORTS = {
+        "mysql2" => "3306",
+        "postgres" => "5432"
+      }.freeze
+      private_constant :DEFAULT_DATABASE_PORTS
+
+      # Returns the names of the gateways with component ENV vars carrying a gateway name suffix,
+      # such as DATABASE_HOST__EXTRA.
+      def detect_gateway_names_from_env_components(env_var_prefix)
+        DATABASE_URL_COMPONENT_VARS.flat_map { |var|
+          gateway_prefix = "#{env_var_prefix}#{var}__"
+
+          ENV.keys
+            .select { _1.start_with?(gateway_prefix) }
+            .map { _1.delete_prefix(gateway_prefix).downcase.to_sym }
+        }.uniq
+      end
+
+      # Builds the given gateway's database URL from component ENV vars, such as DATABASE_HOST and
+      # DATABASE_PORT.
+      #
+      # The host defaults to localhost, and the port to the adapter's default port, so an adapter
+      # alone is enough to connect to a database running locally.
+      #
+      # Returns nil if no components are given, or if no adapter is given.
+      def build_database_url_from_env(env_var_prefix, gateway_name)
+        gateway_suffix = "__#{gateway_name.to_s.upcase}" unless gateway_name == :default
+
+        components = DATABASE_URL_COMPONENT_VARS.to_h { |var|
+          [var, database_url_component_from_env(var, env_var_prefix, gateway_suffix)]
+        }
+
+        return if components.values.all?(&:nil?)
+
+        adapter = components["DATABASE_ADAPTER"]
+        return unless adapter
+
+        scheme = DATABASE_ADAPTER_SCHEMES.fetch(adapter, adapter)
+        components["DATABASE_HOST"] ||= DEFAULT_DATABASE_HOST
+        components["DATABASE_PORT"] ||= DEFAULT_DATABASE_PORTS[scheme]
+
+        name = components["DATABASE_NAME"]
+
+        "#{scheme}://#{database_url_authority(components)}#{"/#{name}" if name}"
+      end
+
+      # Returns the value of the first ENV var giving the component, from the most to the least
+      # specific:
+      #
+      #   {SLICE_NAME__}DATABASE_HOST{__GATEWAY_NAME}
+      #   {SLICE_NAME__}DATABASE_HOST
+      #   DATABASE_HOST__GATEWAY_NAME
+      #   DATABASE_HOST
+      #
+      # This way, gateways and slices can share the components they have in common, and give their
+      # own values for the components they do not.
+      def database_url_component_from_env(var, env_var_prefix, gateway_suffix)
+        vars = [
+          "#{env_var_prefix}#{var}#{gateway_suffix}",
+          "#{env_var_prefix}#{var}",
+          "#{var}#{gateway_suffix}",
+          var
+        ].uniq
+
+        vars.each do |env_var|
+          value = ENV[env_var]
+          return value unless value.nil? || value.empty?
+        end
+
+        nil
+      end
+
+      def database_url_authority(components)
+        userinfo = database_url_userinfo(components)
+        port = components["DATABASE_PORT"]
+
+        "#{"#{userinfo}@" if userinfo}#{components["DATABASE_HOST"]}#{":#{port}" if port}"
+      end
+
+      def database_url_userinfo(components)
+        user = components["DATABASE_USER"]
+        password = components["DATABASE_PASSWORD"]
+
+        if user && password
+          "#{escape_database_url_component(user)}:#{escape_database_url_component(password)}"
+        elsif user
+          escape_database_url_component(user)
+        elsif password
+          ":#{escape_database_url_component(password)}"
+        end
+      end
+
+      def escape_database_url_component(value)
+        value.gsub(/[^A-Za-z0-9\-._~]/) { |char| char.bytes.map { format("%%%02X", _1) }.join }
       end
 
       # @api private
