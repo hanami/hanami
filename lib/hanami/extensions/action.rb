@@ -37,6 +37,12 @@ module Hanami
       #
       # @since 2.0.0
       module InstanceMethods
+        # Options accepted by `Hanami::View#call` itself, which must never be given from request
+        # params.
+        #
+        # @api private
+        VIEW_RESERVED_KEYS = %i[format context layout].freeze
+
         # @api private
         attr_reader :view
 
@@ -89,16 +95,25 @@ module Hanami
 
         private
 
-        # @api private
         def build_response(**options)
           options = options.merge(view_options: method(:view_options))
           super(**options)
         end
 
-        # @api private
         def finish(req, res, halted)
-          res.render(view, **req.params) if !halted && auto_render?(res)
+          res.render(view, **view_input(req, res)) if !halted && auto_render?(res)
           super
+        end
+
+        # Returns the input for the automatically rendered view.
+        #
+        # Includes response exposures as well as request params. Exposures are given precedence;
+        # these are server-set and should not be overridden by the client.
+        #
+        # Drops any keys matching the keywords for `Hanami::View#call` itself, since these are
+        # behavioral controls and the client should have no say over how the view renders.
+        def view_input(req, res)
+          {**req.params.to_h.except(*VIEW_RESERVED_KEYS), **res.exposures}
         end
 
         # @api private
