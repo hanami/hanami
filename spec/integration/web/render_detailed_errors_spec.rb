@@ -46,6 +46,8 @@ RSpec.describe "Web / Rendering detailed errors", :app_integration do
     end
   end
 
+  # These assert against the page's `data-webconsole-*` hooks rather than its markup, so that
+  # restyling the error page does not break this spec.
   describe "HTML request" do
     it "renders a detailed HTML error page" do
       get "/error", {}, "HTTP_ACCEPT" => "text/html"
@@ -53,8 +55,11 @@ RSpec.describe "Web / Rendering detailed errors", :app_integration do
       expect(last_response.status).to eq 500
 
       html = Capybara.string(last_response.body)
-      expect(html).to have_selector("header", text: "RuntimeError at /error")
-      expect(html).to have_selector("ul.frames li.application", text: "app/actions/error.rb")
+      expect(html).to have_selector("[data-webconsole-exception-class]", text: "RuntimeError")
+      expect(html).to have_selector("[data-webconsole-request-summary]", text: "/error")
+      expect(html).to have_selector(
+        "[data-webconsole-frame-kind='app']", text: "app/actions/error.rb"
+      )
     end
 
     it "renders a detailed HTML error page and returns a 404 status for a not found error" do
@@ -63,26 +68,41 @@ RSpec.describe "Web / Rendering detailed errors", :app_integration do
       expect(last_response.status).to eq 404
 
       html = Capybara.string(last_response.body)
-      expect(html).to have_selector("header", text: "Hanami::Router::NotFoundError at /__not_found__")
+      expect(html).to have_selector(
+        "[data-webconsole-exception-class]", text: "Hanami::Router::NotFoundError"
+      )
     end
   end
 
   describe "Other request types" do
     it "renders a detailed error page in text" do
+      get "/error", {}, "HTTP_ACCEPT" => "text/plain"
+
+      expect(last_response.status).to eq 500
+      expect(last_response.headers["content-type"]).to include "text/plain"
+
+      expect(last_response.body).to include "## RuntimeError"
+      expect(last_response.body).to match %r{### Backtrace.+app/actions/error\.rb}m
+    end
+
+    it "renders a detailed error page as JSON" do
       get "/error", {}, "HTTP_ACCEPT" => "application/json"
 
       expect(last_response.status).to eq 500
+      expect(last_response.headers["content-type"]).to include "application/json"
 
-      expect(last_response.body).to include "RuntimeError at /error"
-      expect(last_response.body).to match %r{App backtrace.+app/actions/error.rb}m
+      body = JSON.parse(last_response.body)
+      expect(body["error"]).to eq "RuntimeError"
+      expect(body["status"]).to eq 500
+      expect(body["backtrace"].join("\n")).to include "app/actions/error.rb"
     end
 
     it "renders a detailed error page in text and returns a 404 status for a not found error" do
-      get "/__not_found__", {}, "HTTP_ACCEPT" => "text/html"
+      get "/__not_found__", {}, "HTTP_ACCEPT" => "text/plain"
 
       expect(last_response.status).to eq 404
 
-      expect(last_response.body).to include "Hanami::Router::NotFoundError at /__not_found__"
+      expect(last_response.body).to include "## Hanami::Router::NotFoundError"
     end
   end
 
