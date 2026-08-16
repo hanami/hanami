@@ -19,4 +19,14 @@ RSpec.describe(Hanami::Router::NotFoundError) do
   it "returns the env" do
     expect(error.env).to be env
   end
+
+  it "returns no slice by default" do
+    expect(error.slice).to be nil
+  end
+
+  it "returns the slice it was given" do
+    slice = Class.new
+
+    expect(described_class.new(env, slice: slice).slice).to be slice
+  end
 end

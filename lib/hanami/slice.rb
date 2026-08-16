@@ -1107,8 +1107,8 @@ module Hanami
 
         error_handlers = {}.tap do |hsh|
           if render_errors || render_detailed_errors
-            hsh[:not_allowed] = ROUTER_NOT_ALLOWED_HANDLER
-            hsh[:not_found] = ROUTER_NOT_FOUND_HANDLER
+            hsh[:not_allowed] = router_not_allowed_handler(slice)
+            hsh[:not_found] = router_not_found_handler(slice)
           end
         end
 
@@ -1168,15 +1168,20 @@ module Hanami
         config.render_detailed_errors && Hanami.bundled?("hanami-webconsole")
       end
 
-      ROUTER_NOT_ALLOWED_HANDLER = -> env, allowed_http_methods {
-        raise Hanami::Router::NotAllowedError.new(env, allowed_http_methods)
-      }.freeze
-      private_constant :ROUTER_NOT_ALLOWED_HANDLER
+      # The errors raised for unmatched requests carry the slice that was routing them, so that
+      # error handling further up the stack (such as the detailed error page rendered by
+      # hanami-webconsole) can reach its routes.
+      def router_not_allowed_handler(slice)
+        -> env, allowed_http_methods {
+          raise Hanami::Router::NotAllowedError.new(env, allowed_http_methods, slice: slice)
+        }.freeze
+      end
 
-      ROUTER_NOT_FOUND_HANDLER = -> env {
-        raise Hanami::Router::NotFoundError.new(env)
-      }.freeze
-      private_constant :ROUTER_NOT_FOUND_HANDLER
+      def router_not_found_handler(slice)
+        -> env {
+          raise Hanami::Router::NotFoundError.new(env, slice: slice)
+        }.freeze
+      end
 
       def assets_dir?
         source_path.join("assets").directory?
