@@ -44,6 +44,99 @@ RSpec.describe "App action / View rendering / Automatic rendering", :app_integra
     end
   end
 
+  it "Prefers exposures over params of the same name" do
+    within_app do
+      write "app/actions/profile/show.rb", <<~RUBY
+        module TestApp
+          module Actions
+            module Profile
+              class Show < TestApp::Action
+                def handle(req, res)
+                  res[:favorite_number] = 123
+                end
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "app/views/profile/show.rb", <<~RUBY
+        module TestApp
+          module Views
+            module Profile
+              class Show < TestApp::View
+                expose :name, :favorite_number
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "app/templates/profile/show.html.slim", <<~'SLIM'
+        h1 Hello, #{name}. Your favorite number is #{favorite_number}, right?
+      SLIM
+
+      require "hanami/prepare"
+
+      action = TestApp::App["actions.profile.show"]
+      response = action.(name: "Jennifer", favorite_number: 456)
+      rendered = response.body[0]
+
+      expect(rendered).to eq "<html><body><h1>Hello, Jennifer. Your favorite number is 123, right?</h1></body></html>"
+    end
+  end
+
+  it "Ignores params matching the keywords of Hanami::View#call" do
+    within_app do
+      write "app/actions/profile/show.rb", <<~RUBY
+        module TestApp
+          module Actions
+            module Profile
+              class Show < TestApp::Action
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "app/views/profile/show.rb", <<~RUBY
+        module TestApp
+          module Views
+            module Profile
+              class Show < TestApp::View
+                expose :name
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "app/templates/layouts/admin.html.slim", <<~SLIM
+        html
+          body
+            h2 Admin
+            == yield
+      SLIM
+
+      write "app/templates/profile/show.html.slim", <<~'SLIM'
+        h1 Hello, #{name}.
+      SLIM
+
+      write "app/templates/profile/show.json.slim", <<~'SLIM'
+        | {"name": "#{name}"}
+      SLIM
+
+      require "hanami/prepare"
+
+      action = TestApp::App["actions.profile.show"]
+      response = action.(name: "Jennifer", format: "json", layout: "admin", context: "nope")
+      rendered = response.body[0]
+
+      expect(rendered).to eq "<html><body><h1>Hello, Jennifer.</h1></body></html>"
+      expect(response.status).to eq 200
+    end
+  end
+
   it "Does not render a view automatically when #render? returns false " do
     within_app do
       write "app/actions/profile/show.rb", <<~RUBY

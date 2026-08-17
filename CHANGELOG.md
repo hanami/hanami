@@ -35,7 +35,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Fixed
 
-- Don't attempt to inherit mailer template when `hanami-view` if not bundled (@katafrakt in #1611)
+- Prefer response exposures over request params when preparing input for the view as part of an action auto-rendering. (@timriley in #1620)
 
 ### Security
 
