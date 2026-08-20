@@ -40,10 +40,21 @@ module Hanami
       @_mutex.synchronize do
         subclass.class_eval do
           @_mutex = Mutex.new
-          @autoloader = Zeitwerk::Loader.new
-          @container = Class.new(Dry::System::Container)
+          build_container_and_autoloader
         end
       end
+    end
+
+    # Builds the slice's container and autoloader.
+    #
+    # Called when the slice is first defined, and again by {ClassMethods#reload!}, which discards
+    # the previous pair wholesale rather than attempting to invalidate them in place.
+    #
+    # @api private
+    # @since 3.1.0
+    def self.build_container_and_autoloader
+      @autoloader = Zeitwerk::Loader.new
+      @container = Class.new(Dry::System::Container)
     end
 
     module ClassMethods
@@ -355,6 +366,62 @@ module Hanami
       def shutdown
         slices.each(&:shutdown)
         container.shutdown!
+        self
+      end
+
+      # Reloads the slice in place, picking up changes to its source files.
+      #
+      # This tears down the slice and each of its nested slices - stopping providers, unloading
+      # autoloaded constants, and discarding the container, routes and settings - then prepares
+      # them again from scratch.
+      #
+      # Crucially, the slice class objects themselves are preserved, so an already-mounted Rack app
+      # (such as `run Hanami.app` in `config.ru`) remains valid across a reload.
+      #
+      # Slices are rediscovered from disk on each reload, so slices added, removed or redefined are
+      # picked up too. Note this means slice class objects are replaced, unlike the app class.
+      #
+      # `config/app.rb` is the one file that is never reloaded: it defines the app class that this
+      # method deliberately preserves, so changes to it still require a full restart.
+      #
+      # This is intended for development use only.
+      #
+      # @return [self]
+      #
+      # @see #prepare
+      #
+      # @api public
+      # @since 3.1.0
+      def reload!
+        # `@awaiting_reload_prepare` means an earlier reload tore this slice down but then raised
+        # while preparing it again (a syntax error in a reloaded file, most often). The slice is
+        # torn down but not prepared, so this reload must still run to give it another chance.
+        return self unless prepared? || @awaiting_reload_prepare
+
+        unless code_reloading?
+          raise SliceLoadError,
+            "#{self} cannot be reloaded because `config.code_reloading` was false when it was " \
+            "prepared. Set `config.code_reloading = true` on the app before preparing it."
+        end
+
+        # Skipped when a previous reload already tore the slice down but failed to prepare it
+        # again. Tearing down twice would raise, and there is nothing left to tear down anyway.
+        if prepared?
+          # Tear down nested slices first: their containers import from their parent's, so
+          # unwinding in the other order would leave them holding references into a dead container.
+          (slices.with_nested + [self]).each { |slice| slice.__send__(:teardown_for_reload) }
+
+          # Then discard the slice tree itself, so `prepare` rediscovers it from disk and picks up
+          # slices that have been added, removed or redefined.
+          discard_slices_for_reload
+
+          @awaiting_reload_prepare = true
+        end
+
+        prepare
+
+        @awaiting_reload_prepare = false
+
         self
       end
 
@@ -854,6 +921,11 @@ module Hanami
         instance_exec(container, &@prepare_container_block) if @prepare_container_block
         container.configured!
 
+        # Zeitwerk only tracks the constants it defines (and so can only unload them later) when
+        # reloading is enabled before `setup`. Both this class and `Hanami::App` call `setup` from
+        # `prepare_autoloader`, so this must happen here, ahead of either. See {ClassMethods#reload!}.
+        autoloader.enable_reloading if code_reloading?
+
         prepare_autoloader
 
         # Load child slices last, ensuring their parent is fully prepared beforehand
@@ -866,6 +938,122 @@ module Hanami
         self
       end
 
+      # Unwinds everything {#prepare} built up, leaving the slice class itself intact and ready to
+      # be prepared again.
+      #
+      # @api private
+      # @since 3.1.0
+      def teardown_for_reload
+        # Capture these before the container is replaced below.
+        reloadable_paths = required_reloadable_paths
+
+        # Stop providers so they can release resources (DB connections, and so on) before the
+        # components holding them are discarded.
+        container.shutdown!
+
+        # Drop every constant Zeitwerk defined for this slice, then retire the loader itself. A
+        # fresh loader is built below rather than reusing this one via `reload`, which would
+        # require `enable_reloading` to have been set before `setup`.
+        autoloader.unload
+        autoloader.unregister
+
+        remove_consts_for_reload
+
+        build_container_and_autoloader
+
+        # These files live under `config/` and so are `require`d rather than autoloaded. Dropping
+        # them from $LOADED_FEATURES is what allows them to be evaluated again against the newly
+        # built container.
+        reloadable_paths.each { |path| $LOADED_FEATURES.delete(path) }
+
+        remove_instance_variable(:@settings) if instance_variable_defined?(:@settings)
+        remove_instance_variable(:@routes) if instance_variable_defined?(:@routes)
+        @_router = nil
+        @rack_app = nil
+
+        @prepared = false
+        @booted = false
+
+        self
+      end
+
+      # Whether code reloading is enabled, which is always an app-wide decision.
+      #
+      # Slices copy their config from the app, so each one carries its own `code_reloading` value,
+      # but the app's is the only one consulted. Reloading a subset of slices is not coherent:
+      # slices import from their parent's container, so a slice that opted out would be left
+      # holding components from a container that the reload had already discarded.
+      #
+      # @api private
+      # @since 3.1.0
+      def code_reloading?
+        # A slice can be prepared without an app in place (in tests, mostly), in which case there
+        # is no app-wide value to defer to.
+        return config.code_reloading unless Hanami.app?
+
+        app.config.code_reloading
+      end
+
+      # Discards the slice registrar and everything it registered, so that {#prepare} builds the
+      # slice tree again from what is currently on disk.
+      #
+      # @api private
+      # @since 3.1.0
+      def discard_slices_for_reload
+        slices.unload_for_reload
+
+        remove_instance_variable(:@slices) if instance_variable_defined?(:@slices)
+        @slices_loaded = false
+
+        self
+      end
+
+      # Removes the constants that {#prepare} defines outside of the autoloader, and which Zeitwerk
+      # therefore does not unload.
+      #
+      # `Container` and `Deps` are set directly by `prepare_container_consts`, while `Routes` and
+      # `Settings` come from `require`d files under `config/`. In both cases the constant remaining
+      # defined would stop it being rebuilt: `prepare` refuses to run while `Container` exists, and
+      # the routes and settings are only loaded from disk when their constant is missing.
+      #
+      # @api private
+      # @since 3.1.0
+      def remove_consts_for_reload
+        consts = [
+          CONTAINER_CONST_NAME,
+          DEPS_CONST_NAME,
+          ROUTES_CLASS_NAME,
+          SETTINGS_CLASS_NAME
+        ]
+
+        consts.each do |const_name|
+          namespace.__send__(:remove_const, const_name) if namespace.const_defined?(const_name, false)
+        end
+      end
+
+      # Returns the realpaths of the slice's `require`d (rather than autoloaded) files that should
+      # be re-evaluated on reload: its routes, settings, providers and registrations.
+      #
+      # `config/app.rb` and the slice definitions in `config/slices/` are deliberately excluded:
+      # they define the app and slice classes themselves, which {ClassMethods#reload!} preserves.
+      #
+      # @api private
+      # @since 3.1.0
+      def required_reloadable_paths
+        dirs = container.config.provider_dirs + [container.config.registrations_dir]
+
+        paths = dirs.flat_map { |dir|
+          Dir[File.join(root, dir, "**", "*#{RB_EXT}")]
+        }
+
+        paths << root.join("#{ROUTES_PATH}#{RB_EXT}").to_s
+        paths << root.join("#{SETTINGS_PATH}#{RB_EXT}").to_s
+
+        paths.filter_map { |path|
+          File.realpath(path) if File.file?(path)
+        }
+      end
+
       def ensure_slice_name
         unless name
           raise SliceLoadError, "Slice must have a class name before it can be prepared"
@@ -873,10 +1061,11 @@ module Hanami
       end
 
       def ensure_slice_consts
-        if namespace.const_defined?(:Container) || namespace.const_defined?(:Deps)
+        if namespace.const_defined?(CONTAINER_CONST_NAME) || namespace.const_defined?(DEPS_CONST_NAME)
           raise(
             SliceLoadError,
-            "#{namespace}::Container and #{namespace}::Deps constants must not already be defined"
+            "#{namespace}::#{CONTAINER_CONST_NAME} and #{namespace}::#{DEPS_CONST_NAME} " \
+            "constants must not already be defined"
           )
         end
       end
@@ -902,8 +1091,8 @@ module Hanami
       end
 
       def prepare_container_consts
-        namespace.const_set :Container, container
-        namespace.const_set :Deps, container.injector
+        namespace.const_set CONTAINER_CONST_NAME, container
+        namespace.const_set DEPS_CONST_NAME, container.injector
       end
 
       def prepare_container_plugins
@@ -1057,7 +1246,15 @@ module Hanami
       end
 
       def prepare_slices
-        slices.load_slices.each(&:prepare)
+        # Slice classes are defined by `require`d files (`config/slices/`, `slices/*/config/`), so
+        # they survive a reload and must not be registered a second time. This means slices added
+        # or removed on disk are only picked up by a full restart.
+        unless @slices_loaded
+          slices.load_slices
+          @slices_loaded = true
+        end
+
+        slices.each(&:prepare)
         slices.freeze
       end
 
