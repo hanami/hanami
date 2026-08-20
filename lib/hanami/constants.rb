@@ -34,6 +34,18 @@ module Hanami
   private_constant :SLICES_DIR
 
   # @api private
+  SLICE_CLASS_NAME = "Slice"
+  private_constant :SLICE_CLASS_NAME
+
+  # @api private
+  CONTAINER_CONST_NAME = "Container"
+  private_constant :CONTAINER_CONST_NAME
+
+  # @api private
+  DEPS_CONST_NAME = "Deps"
+  private_constant :DEPS_CONST_NAME
+
+  # @api private
   ROUTES_PATH = File.join(CONFIG_DIR, "routes")
   private_constant :ROUTES_PATH
 
