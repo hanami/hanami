@@ -35,14 +35,21 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Fixed
 
-- Prefer response exposures over request params when preparing input for the view as part of an action auto-rendering. (@timriley in #1620)
 - Don't attempt to inherit mailer template when `hanami-view` if not bundled. (@katafrakt in #1611)
 - Return `false` from `Hanami::Slice.app?`, rather than raising `Hanami::AppLoadError`, when no app is defined. (@parndt in #1612)
 - Build `logger` and `inflector` providers registered on a slice from the slice's own config, rather than the app's. (@parndt in #1613)
 
 ### Security
 
-[unreleased]: https://github.com/hanami/hanami/compare/v3.0.1...HEAD
+[unreleased]: https://github.com/hanami/hanami/compare/v3.0.2...HEAD
+
+## [3.0.2] - 2026-08-21
+
+### Fixed
+
+- Prefer response exposures over request params when preparing input for the view as part of an action auto-rendering. (@timriley in #1620)
+
+[3.0.2]: https://github.com/hanami/hanami/compare/v3.0.1...v3.0.2
 
 ## [3.0.1] - 2026-07-03
 
