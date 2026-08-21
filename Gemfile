@@ -15,15 +15,15 @@ if ENV["RACK_MATRIX_VALUE"]
   gem "rack", ENV["RACK_MATRIX_VALUE"]
 end
 
-gem "hanami-utils", github: "hanami/hanami-utils", branch: "main"
-gem "hanami-db", github: "hanami/hanami-db", branch: "main"
-gem "hanami-router", github: "hanami/hanami-router", branch: "main"
-gem "hanami-action", github: "hanami/hanami-action", branch: "main"
-gem "hanami-cli", github: "hanami/hanami-cli", branch: "main"
-gem "hanami-view", github: "hanami/hanami-view", branch: "main"
-gem "hanami-mailer", github: "hanami/hanami-mailer", branch: "main"
-gem "hanami-assets", github: "hanami/hanami-assets", branch: "main"
-gem "hanami-webconsole", github: "hanami/hanami-webconsole", branch: "main"
+gem "hanami-utils", "~> 3.0.0"
+gem "hanami-db", "~> 3.0.0"
+gem "hanami-router", "~> 3.0.0"
+gem "hanami-action", "~> 3.0.0"
+gem "hanami-cli", "~> 3.0.0"
+gem "hanami-view", "~> 3.0.0"
+gem "hanami-mailer", "~> 3.0.0"
+gem "hanami-assets", "~> 3.0.0"
+gem "hanami-webconsole", "~> 3.0.0"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
