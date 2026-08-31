@@ -43,15 +43,25 @@ module Hanami
   # {Hanami::Slice::ClassMethods#prepare prepare} step, to ensure that the app boots only when valid
   # settings are present.
   #
-  # Setting values are loaded from a configurable store, which defaults to
-  # {Hanami::Settings::EnvStore}, which fetches the values from equivalent upper-cased keys in
-  # `ENV`. You can configure an alternative store via {Hanami::Config#settings_store}. Setting stores
-  # must implement a `#fetch` method with the same signature as `Hash#fetch`.
+  # Setting values are loaded from a configurable store, which defaults to a
+  # {Hanami::Settings::CompositeStore} resolving each value from, in order:
+  #
+  # 1. {Hanami::Settings::EnvStore}, which fetches the value from the equivalent upper-cased key in
+  #    `ENV`.
+  # 2. {Hanami::Settings::YamlFileStore}, for `config/settings/[HANAMI_ENV].yml`.
+  # 3. {Hanami::Settings::YamlFileStore}, for `config/settings/default.yml`.
+  #
+  # The YAML files are optional, and are read from the app root only: like `ENV`, they are shared by
+  # the app and all its slices.
+  #
+  # You can configure an alternative store via {Hanami::Config#settings_store}. Setting stores must
+  # implement a `#fetch` method with the same signature as `Hash#fetch`.
   #
   # [dry-c]: https://dry-rb.org/gems/dry-configurable/
   # [dry-t]: https://dry-rb.org/gems/dry-types/
   #
-  # @see Hanami::Settings::DotenvStore
+  # @see Hanami::Settings::EnvStore
+  # @see Hanami::Settings::YamlFileStore
   #
   # @api public
   # @since 2.0.0

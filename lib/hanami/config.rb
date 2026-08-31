@@ -48,16 +48,22 @@ module Hanami
     # @!attribute [rw] settings_store
     #   Sets the store used to retrieve {Hanami::Settings} values.
     #
-    #   Defaults to an instance of {Hanami::Settings::EnvStore}.
+    #   Defaults to a {Hanami::Settings::CompositeStore} that resolves each setting from, in order:
+    #   `ENV`, `config/settings/[HANAMI_ENV].yml`, then `config/settings/default.yml`.
+    #
+    #   The YAML files are read from the app root only, and are shared by the app and all its
+    #   slices, in the same way as `ENV`.
     #
     #   @return [#fetch]
     #
     #   @see Hanami::Settings
+    #   @see Hanami::Settings::CompositeStore#fetch
     #   @see Hanami::Settings::EnvStore#fetch
+    #   @see Hanami::Settings::YamlFileStore#fetch
     #
     #   @api public
     #   @since 2.0.0
-    setting :settings_store, default: Hanami::Settings::EnvStore.new
+    setting :settings_store
 
     # @!attribute [rw] slices
     #   Sets the slices to load when the app is preared or booted.
@@ -362,6 +368,7 @@ module Hanami
 
       # Apply default values that are only knowable at initialize-time (vs require-time)
       self.root = Dir.pwd
+      self.settings_store = default_settings_store
       self.render_errors = (env == :production)
       self.render_detailed_errors = (env == :development)
       load_from_env
@@ -535,6 +542,18 @@ module Hanami
     end
 
     private
+
+    # Returns the store used to retrieve settings values when none is configured.
+    #
+    # The YAML file paths are resolved lazily, since the root may be configured after this config is
+    # initialized.
+    def default_settings_store
+      Settings::CompositeStore.new(
+        Settings::EnvStore.new,
+        Settings::YamlFileStore.new { root.join(SETTINGS_PATH, "#{env}.yml") },
+        Settings::YamlFileStore.new { root.join(SETTINGS_PATH, "default.yml") }
+      )
+    end
 
     def load_from_env
       self.slices = ENV["HANAMI_SLICES"]&.split(",")&.map(&:strip)
