@@ -72,28 +72,26 @@ module Hanami
       slices.values
     end
 
-    # Unwinds this registrar ahead of a reload, so that its slices are discovered from disk again.
+    # Unloads every registered slice, then removes the slice classes and namespace modules
+    # themselves, leaving nothing behind that would shadow what is on disk.
     #
-    # Drops each registered slice's definition file from $LOADED_FEATURES and removes its slice
-    # class and namespace module, leaving nothing behind that would shadow what is on disk. This is
-    # what allows slices to be added, removed or redefined without restarting.
+    # The caller is expected to discard this registrar afterwards, so that the slices are
+    # discovered from disk again. This is what allows slices to be added, removed or redefined
+    # without restarting.
     #
-    # The slice classes themselves are discarded here (unlike the app class, which {Slice.reload!}
-    # preserves), so a reload replaces them with fresh objects.
+    # The slice classes are therefore replaced by a reload, unlike the app class, which
+    # {Slice::ClassMethods#reload!} deliberately preserves.
     #
     # @api private
     # @since 3.1.0
-    def unload_for_reload
-      slices.each_value { |slice| slice.slices.unload_for_reload }
+    def unload!
+      # Reverse order, mirroring how the slices were prepared, so a slice is unloaded before any
+      # it may have been able to reference.
+      to_a.reverse_each(&:unload!)
 
-      slices.each_key do |slice_name|
-        # `find_slice_require_path` returns an extension-less path, matching how `load_slice`
-        # passes it to `require`.
-        path = find_slice_require_path(slice_name.to_s)&.then { "#{_1}#{RB_EXT}" }
-        $LOADED_FEATURES.delete(File.realpath(path)) if path && File.file?(path)
+      slices.each_key { |slice_name| remove_slice_consts(slice_name) }
 
-        remove_slice_consts(slice_name)
-      end
+      self
     end
 
     def with_nested
@@ -122,12 +120,19 @@ module Hanami
     # or when a slice directory exists at `slices/[slice_name]`.
     #
     # If a slice definition file is found by `find_slice_require_path`, then `load_slice` will
-    # require the file before registering the slice class.
+    # load the file before registering the slice class.
     #
     # If a slice class is not found, registering the slice will generate the slice class.
     def load_slice(slice_name)
-      slice_require_path = find_slice_require_path(slice_name)
-      require slice_require_path if slice_require_path
+      slice_path = find_slice_require_path(slice_name)
+
+      # `load` rather than `require`, so that the file is evaluated again on every prepare and a
+      # reload picks up changes to it. The slice class and namespace module it defines are removed
+      # by `unload!` above, so they are defined afresh rather than reopened.
+      #
+      # `find_slice_require_path` returns an extension-less path, so add the extension: unlike
+      # `require`, `load` will not infer it.
+      load "#{slice_path}#{RB_EXT}" if slice_path
 
       slice_class =
         begin

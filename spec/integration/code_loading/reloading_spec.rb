@@ -122,6 +122,62 @@ RSpec.describe "Code loading / Reloading", :app_integration do
     end
   end
 
+  describe "unloading" do
+    before do
+      @dir = make_tmp_directory
+
+      with_directory(@dir) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "app/greeter.rb", <<~'RUBY'
+          module TestApp
+            class Greeter
+              def call = "hello"
+            end
+          end
+        RUBY
+      end
+    end
+
+    specify "unloading a prepared app leaves it unprepared, and preparable again" do
+      with_directory(@dir) { require "hanami/prepare" }
+
+      app.unload!
+
+      expect(app).not_to be_prepared
+      expect(defined?(TestApp::Greeter)).to be nil
+      expect(TestApp.const_defined?(:Container, false)).to be false
+
+      with_directory(@dir) { app.prepare }
+
+      expect(app).to be_prepared
+      expect(app["greeter"].call).to eq "hello"
+    end
+
+    specify "unloading an app that was never prepared does nothing" do
+      with_directory(@dir) { require "hanami/setup" }
+
+      expect { app.unload! }.not_to raise_error
+      expect(app).not_to be_prepared
+    end
+
+    specify "reloading an app that was never prepared simply prepares it" do
+      with_directory(@dir) { require "hanami/setup" }
+
+      reload!
+
+      expect(app).to be_prepared
+      expect(app["greeter"].call).to eq "hello"
+    end
+  end
+
   describe "routes" do
     before do
       @dir = make_tmp_directory
