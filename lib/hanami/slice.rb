@@ -48,8 +48,7 @@ module Hanami
 
     # Builds the slice's container and autoloader.
     #
-    # Called when the slice is first defined, and again on every {ClassMethods#unload!}, which
-    # discards the previous pair wholesale rather than attempting to invalidate them in place.
+    # Called when the slice is first defined, and again on every {ClassMethods#unload!}.
     #
     # @api private
     # @since 3.1.0
@@ -373,19 +372,11 @@ module Hanami
 
       # Reloads the slice in place, picking up changes to its source files.
       #
-      # This unloads the slice and each of its nested slices (see {#unload!}), then prepares them
-      # again from scratch.
+      # Unloads the slice and its nested slices, then prepares them again. Slice classes are
+      # rediscovered from disk, but the app class object is preserved, so `run Hanami.app` in
+      # `config.ru` stays valid. `config/app.rb` is therefore never reloaded.
       #
-      # Crucially, the slice class objects themselves are preserved, so an already-mounted Rack app
-      # (such as `run Hanami.app` in `config.ru`) remains valid across a reload.
-      #
-      # Slices are rediscovered from disk on each reload, so slices added, removed or redefined are
-      # picked up too. Note this means slice class objects are replaced, unlike the app class.
-      #
-      # `config/app.rb` is the one file that is never reloaded: it defines the app class that this
-      # method deliberately preserves, so changes to it still require a full restart.
-      #
-      # This is intended for development use only.
+      # Intended for development use only.
       #
       # @return [self]
       #
@@ -398,24 +389,19 @@ module Hanami
         unload!.prepare
       end
 
-      # Reverses {#prepare}, leaving the slice class itself intact and ready to be prepared again.
+      # Reverses {#prepare}, leaving the slice class ready to be prepared again.
       #
-      # Each step of `prepare` registers its own reversal via {#on_unload} as it completes, and
-      # this runs those in reverse order. Because the stack holds exactly the steps that finished,
-      # unloading a slice whose `prepare` raised part way through works too: only the work that was
-      # actually done gets undone.
+      # Runs the steps registered via {#on_unload}, in reverse. The stack holds only the steps that
+      # finished, so this works after a `prepare` that raised part way through.
       #
       # @return [self]
       #
-      # @see #reload!
       # @see #on_unload
       #
       # @api private
       # @since 3.1.0
       def unload!
-        # Zeitwerk can only unload the constants it defined if it was told to track them ahead of
-        # `setup`, which happens during `prepare`. Without that, those constants would linger and
-        # the slice would keep serving stale code once prepared again.
+        # Zeitwerk can only unload constants it was told to track ahead of `setup`.
         if @unload_steps.any? && !code_reloading?
           raise SliceLoadError,
             "#{self} cannot be unloaded because `config.code_reloading` was false when it was " \
@@ -431,10 +417,10 @@ module Hanami
         self
       end
 
-      # Registers a step that {#unload!} runs to undo a piece of the work {#prepare} just did.
+      # Registers a step for {#unload!} to run, undoing work {#prepare} just did.
       #
-      # Steps run in reverse order of registration, so registering a step next to the work it
-      # reverses is enough to have it unwound before whatever that work depended upon.
+      # Steps run last-in-first-out, so a step registered next to its work is unwound before
+      # anything that work depended upon.
       #
       # @return [self]
       #
@@ -838,9 +824,8 @@ module Hanami
 
         @settings = Settings.load_for_slice(self)
 
-        # The `Settings` class is defined by a `load`ed file under `config/`, so removing the
-        # constant is what allows the class to be defined afresh, rather than reopened, on the next
-        # prepare. Reopening it would re-declare its settings, which dry-configurable rejects.
+        # Removing the constant lets the class be defined afresh next prepare. Reopening it would
+        # re-declare its settings, which dry-configurable rejects.
         on_unload do
           remove_instance_variable(:@settings)
 
@@ -867,8 +852,7 @@ module Hanami
 
         @routes = load_routes
 
-        # As with the settings above, the `Routes` class comes from a `load`ed file under
-        # `config/`, so the constant must go for the class to be defined afresh next time.
+        # As with the settings above, the constant must go for the class to be defined afresh.
         on_unload do
           remove_instance_variable(:@routes)
 
@@ -964,17 +948,11 @@ module Hanami
         ensure_slice_consts
         ensure_root
 
-        # Registered first, so it runs last: every unload step registered below expects the
-        # container and autoloader it was registered against to still be in place. In particular,
-        # `autoloader.unload` must come after the providers are stopped, since a provider's `stop`
-        # block may reference constants the autoloader defined.
-        #
-        # A fresh pair is built rather than reusing the loader via `Zeitwerk::Loader#reload`, so
-        # that each prepare starts from the same clean state as the very first one.
+        # Registered first, so it runs last: `autoloader.unload` must follow the provider shutdown
+        # below, whose `stop` blocks may reference autoloaded constants.
         on_unload do
-          # Zeitwerk refuses to unload a loader it never set up, which is the state we're in if
-          # this prepare raised before reaching `prepare_autoloader`. Nothing was autoloaded in
-          # that case, so there is nothing to unload either.
+          # Zeitwerk refuses to unload a loader it never set up, which is where a `prepare` that
+          # raised before `prepare_autoloader` leaves us.
           autoloader.unload if @autoloader_setup
           autoloader.unregister
 
@@ -994,12 +972,8 @@ module Hanami
         # parent's autoloaded directories)
         prepare_slices
 
-        # Registered last, so it runs first: both memos hold the router and Rack apps built from
-        # this slice and its children, all of which the steps above discard.
-        #
-        # These are memoized lazily (under `@_mutex`), but the step is registered here rather than
-        # at the point of memoization, because `router` memoizes from inside a `@_mutex` block and
-        # Ruby's mutexes are not reentrant.
+        # Registered here rather than where these are memoized: `router` memoizes inside a
+        # `@_mutex` block, and `on_unload` must not take a lock Ruby cannot re-enter.
         on_unload do
           @_router = nil
           @rack_app = nil
@@ -1010,18 +984,13 @@ module Hanami
         self
       end
 
-      # Whether code reloading is enabled, which is always an app-wide decision.
-      #
-      # Slices copy their config from the app, so each one carries its own `code_reloading` value,
-      # but the app's is the only one consulted. Reloading a subset of slices is not coherent:
-      # slices import from their parent's container, so a slice that opted out would be left
-      # holding components from a container that the reload had already discarded.
+      # Whether code reloading is enabled. Always an app-wide decision: slices import from their
+      # parent's container, so one opting out would hold components from a discarded container.
       #
       # @api private
       # @since 3.1.0
       def code_reloading?
-        # A slice can be prepared without an app in place (in tests, mostly), in which case there
-        # is no app-wide value to defer to.
+        # A slice can be prepared without an app in place (in tests, mostly).
         return config.code_reloading unless Hanami.app?
 
         app.config.code_reloading
@@ -1081,9 +1050,8 @@ module Hanami
           loader: autoloader,
           run_setup: false,
           eager_load: false,
-          # Zeitwerk only tracks the constants it defines (and so can only unload them later) when
-          # reloading is enabled ahead of `setup`. The plugin applies this from its
-          # `after(:configure)` hook, which runs before `prepare_autoloader` calls `setup`.
+          # Applied from the plugin's `after(:configure)` hook, so it lands before
+          # `prepare_autoloader` calls `setup`, which is Zeitwerk's deadline for it.
           enable_reloading: code_reloading?
         )
       end
@@ -1156,9 +1124,7 @@ module Hanami
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def prepare_container_providers
-        # Stop providers so they can release the resources they hold (database connections, and so
-        # on) before the components holding them are discarded. dry-system `load`s provider files,
-        # so the freshly built container evaluates them again by itself.
+        # Stop providers so they can release what they hold before it is discarded.
         on_unload { container.shutdown! }
 
         # Check here for the `routes` definition only, not `router` itself, because the
@@ -1236,9 +1202,7 @@ module Hanami
         slices.load_slices.each(&:prepare)
         slices.freeze
 
-        # Discarding the registrar (rather than just unloading the slices it holds) is what lets
-        # the next prepare rediscover slices from disk, picking up any added, removed or redefined
-        # since. Slice class objects are therefore replaced by a reload, unlike the app class.
+        # Discarding the registrar is what lets the next prepare rediscover slices from disk.
         on_unload do
           slices.unload!
 
@@ -1262,8 +1226,7 @@ module Hanami
         if root.directory? && routes_path.file?
           require_relative "./routes"
 
-          # `load` rather than `require`, so that the file is evaluated again on every prepare and
-          # a reload picks up changes to it.
+          # `load`, so the file is evaluated again on each prepare.
           load routes_path.to_s
         end
 

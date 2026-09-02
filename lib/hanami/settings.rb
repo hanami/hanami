@@ -138,9 +138,8 @@ module Hanami
 
         slice_settings_path = File.join(slice.root, "#{SETTINGS_PATH}#{RB_EXT}")
 
-        # `load` rather than `require`, so that the file is evaluated again on every prepare and a
-        # reload picks up changes to it. The slice removes the `Settings` constant this defines
-        # when unloading, so the class is defined afresh rather than reopened.
+        # `load`, so the file is evaluated again on each prepare. The slice removes the `Settings`
+        # constant when unloading, so the class is defined afresh rather than reopened.
         load slice_settings_path if File.file?(slice_settings_path)
       end
     end

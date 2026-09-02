@@ -194,12 +194,8 @@ module Hanami
     # @!attribute [rw] code_reloading
     #   Sets whether the app can be reloaded in place via `Hanami::Slice.reload!`.
     #
-    #   This is an app-wide setting. Slices copy their config from the app, but only the app's
-    #   value is used: reloading applies to the app and all its slices together.
-    #
-    #   Enabling this makes each slice's Zeitwerk autoloader track the constants it defines, so
-    #   they can be unloaded later. Zeitwerk requires this to be set before the autoloader is set
-    #   up, which means it must be configured before the app is prepared.
+    #   App-wide: slices copy their config from the app, but only the app's value is used. Must
+    #   be set before the app is prepared.
     #
     #   Defaults to `true` in development mode, `false` in all others.
     #
