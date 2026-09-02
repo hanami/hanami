@@ -43,6 +43,9 @@ jobs:
     env:
       COVERAGE: ${{ matrix.coverage }}
       RACK_MATRIX_VALUE: ${{ matrix.rack || '' }}
+      # Env below included from ./repo-sync-extensions/ci-env.yml
+      # Enable ObjectSpace for tests
+      JRUBY_OPTS: "-X+O"
     steps:
       - name: Checkout
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
