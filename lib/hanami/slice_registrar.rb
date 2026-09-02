@@ -73,20 +73,13 @@ module Hanami
     end
 
     # Unloads every registered slice, then removes the slice classes and namespace modules
-    # themselves, leaving nothing behind that would shadow what is on disk.
-    #
-    # The caller is expected to discard this registrar afterwards, so that the slices are
-    # discovered from disk again. This is what allows slices to be added, removed or redefined
-    # without restarting.
-    #
-    # The slice classes are therefore replaced by a reload, unlike the app class, which
-    # {Slice::ClassMethods#reload!} deliberately preserves.
+    # themselves. The caller discards this registrar afterwards, so the next prepare rediscovers
+    # slices from disk.
     #
     # @api private
     # @since 3.1.0
     def unload!
-      # Reverse order, mirroring how the slices were prepared, so a slice is unloaded before any
-      # it may have been able to reference.
+      # Reverse of the order they were prepared in.
       to_a.reverse_each(&:unload!)
 
       slices.each_key { |slice_name| remove_slice_consts(slice_name) }
@@ -126,12 +119,8 @@ module Hanami
     def load_slice(slice_name)
       slice_path = find_slice_require_path(slice_name)
 
-      # `load` rather than `require`, so that the file is evaluated again on every prepare and a
-      # reload picks up changes to it. The slice class and namespace module it defines are removed
-      # by `unload!` above, so they are defined afresh rather than reopened.
-      #
-      # `find_slice_require_path` returns an extension-less path, so add the extension: unlike
-      # `require`, `load` will not infer it.
+      # `load`, so the file is evaluated again on each prepare; `unload!` above removed the
+      # constants it defines. `find_slice_require_path` omits the extension, which `load` needs.
       load "#{slice_path}#{RB_EXT}" if slice_path
 
       slice_class =
