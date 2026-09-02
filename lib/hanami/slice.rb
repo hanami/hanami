@@ -986,11 +986,6 @@ module Hanami
         instance_exec(container, &@prepare_container_block) if @prepare_container_block
         container.configured!
 
-        # Zeitwerk only tracks the constants it defines (and so can only unload them later) when
-        # reloading is enabled before `setup`. Both this class and `Hanami::App` call `setup` from
-        # `prepare_autoloader`, so this must happen here, ahead of either. See {ClassMethods#reload!}.
-        autoloader.enable_reloading if code_reloading?
-
         prepare_autoloader
         @autoloader_setup = true
 
@@ -1030,15 +1025,6 @@ module Hanami
         return config.code_reloading unless Hanami.app?
 
         app.config.code_reloading
-      end
-
-      # Returns the realpaths of the slice's provider files, which dry-system `require`s.
-      #
-      # TODO: Remove along with the `$LOADED_FEATURES` handling in `prepare_container_providers`.
-      def provider_file_paths
-        container.config.provider_dirs
-          .flat_map { |dir| Dir[File.join(root, dir, "**", "*#{RB_EXT}")] }
-          .filter_map { |path| File.realpath(path) if File.file?(path) }
       end
 
       def ensure_slice_name
@@ -1094,7 +1080,11 @@ module Hanami
           :zeitwerk,
           loader: autoloader,
           run_setup: false,
-          eager_load: false
+          eager_load: false,
+          # Zeitwerk only tracks the constants it defines (and so can only unload them later) when
+          # reloading is enabled ahead of `setup`. The plugin applies this from its
+          # `after(:configure)` hook, which runs before `prepare_autoloader` calls `setup`.
+          enable_reloading: code_reloading?
         )
       end
 
@@ -1166,18 +1156,10 @@ module Hanami
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def prepare_container_providers
-        on_unload do
-          # Stop providers so they can release the resources they hold (database connections, and
-          # so on) before the components holding them are discarded.
-          container.shutdown!
-
-          # Provider files are `require`d by dry-system, so dropping them from `$LOADED_FEATURES`
-          # is what allows them to be evaluated again against the newly built container.
-          #
-          # TODO: Remove once dry-system's `ProviderRegistrar` uses `load` for provider files, as
-          # its `ManifestRegistrar` already does for registrations.
-          provider_file_paths.each { |path| $LOADED_FEATURES.delete(path) }
-        end
+        # Stop providers so they can release the resources they hold (database connections, and so
+        # on) before the components holding them are discarded. dry-system `load`s provider files,
+        # so the freshly built container evaluates them again by itself.
+        on_unload { container.shutdown! }
 
         # Check here for the `routes` definition only, not `router` itself, because the
         # `router` requires the slice to be prepared before it can be loaded, and at this
