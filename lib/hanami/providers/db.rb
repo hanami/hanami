@@ -309,7 +309,31 @@ module Hanami
             "#{target.slice_name.name}/#{path}/#{component_name}"
           ).then { target.inflector.constantize(_1) }
 
+          next unless rom_component_class?(component_type, component_class)
+
           @rom_config.public_send(:"register_#{component_type}", component_class)
+        end
+      end
+
+      # Returns true if the class is a ROM component of the given type.
+      #
+      # Only these classes are registered with ROM, which leaves apps free to keep their own
+      # classes alongside their ROM components in the same directories.
+      def rom_component_class?(component_type, component_class)
+        return false unless component_class.is_a?(Class)
+
+        case component_type
+        when :relation
+          component_class < ROM::Relation
+        when :command
+          component_class < ROM::Command
+        when :mapper
+          # ROM mappers may be built from either of these two unrelated classes. ROM::Transformer
+          # must be required explicitly, so it may not be loaded at this point.
+          component_class < ROM::Mapper ||
+            (defined?(ROM::Transformer) && component_class < ROM::Transformer)
+        else
+          false
         end
       end
     end
