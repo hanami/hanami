@@ -191,6 +191,22 @@ module Hanami
     #   @since 2.1.0
     setting :render_detailed_errors, default: false
 
+    # @!attribute [rw] code_reloading
+    #   Sets whether the app can be reloaded in place via `Hanami::Slice.reload!`.
+    #
+    #   App-wide: slices copy their config from the app, but only the app's value is used. Must
+    #   be set before the app is prepared.
+    #
+    #   Defaults to `true` in development mode, `false` in all others.
+    #
+    #   @return [Boolean]
+    #
+    #   @see Hanami::Slice::ClassMethods#reload!
+    #
+    #   @api public
+    #   @since 3.1.0
+    setting :code_reloading, default: false
+
     # @!attribute [rw] render_error_responses
     #   Sets a mapping of exception class names (as strings) to symbolic response status codes used
     #   for rendering error responses.
@@ -364,6 +380,7 @@ module Hanami
       self.root = Dir.pwd
       self.render_errors = (env == :production)
       self.render_detailed_errors = (env == :development)
+      self.code_reloading = (env == :development)
       load_from_env
 
       @actions = load_dependent_config("hanami-action") {

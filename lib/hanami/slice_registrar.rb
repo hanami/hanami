@@ -72,6 +72,21 @@ module Hanami
       slices.values
     end
 
+    # Unloads every registered slice, then removes the slice classes and namespace modules
+    # themselves. The caller discards this registrar afterwards, so the next prepare rediscovers
+    # slices from disk.
+    #
+    # @api private
+    # @since 3.1.0
+    def unload!
+      # Reverse of the order they were prepared in.
+      to_a.reverse_each(&:unload!)
+
+      slices.each_key { |slice_name| remove_slice_consts(slice_name) }
+
+      self
+    end
+
     def with_nested
       to_a.flat_map { |slice|
         # Return nested slices first so that their more specific namespaces may be picked up first
@@ -98,16 +113,19 @@ module Hanami
     # or when a slice directory exists at `slices/[slice_name]`.
     #
     # If a slice definition file is found by `find_slice_require_path`, then `load_slice` will
-    # require the file before registering the slice class.
+    # load the file before registering the slice class.
     #
     # If a slice class is not found, registering the slice will generate the slice class.
     def load_slice(slice_name)
-      slice_require_path = find_slice_require_path(slice_name)
-      require slice_require_path if slice_require_path
+      slice_path = find_slice_require_path(slice_name)
+
+      # `load`, so the file is evaluated again on each prepare; `unload!` above removed the
+      # constants it defines. `find_slice_require_path` omits the extension, which `load` needs.
+      load "#{slice_path}#{RB_EXT}" if slice_path
 
       slice_class =
         begin
-          inflector.constantize("#{slice_module_name(slice_name)}#{MODULE_DELIMITER}Slice")
+          inflector.constantize("#{slice_module_name(slice_name)}#{MODULE_DELIMITER}#{SLICE_CLASS_NAME}")
         rescue NameError => exception
           raise exception unless exception.name.to_s == inflector.camelize(slice_name) || exception.name.to_s == :Slice
         end
@@ -149,7 +167,20 @@ module Hanami
           parent_slice_namespace.const_set(inflector.camelize(slice_name), Module.new)
         end
 
-      slice_module.const_set(:Slice, Class.new(Hanami::Slice, &block))
+      slice_module.const_set(SLICE_CLASS_NAME, Class.new(Hanami::Slice, &block))
+    end
+
+    def remove_slice_consts(slice_name)
+      module_name = inflector.camelize(slice_name.to_s)
+      return unless parent_slice_namespace.const_defined?(module_name, false)
+
+      slice_module = parent_slice_namespace.const_get(module_name)
+
+      if slice_module.const_defined?(SLICE_CLASS_NAME, false)
+        slice_module.__send__(:remove_const, SLICE_CLASS_NAME)
+      end
+
+      parent_slice_namespace.__send__(:remove_const, module_name)
     end
 
     def slice_module_name(slice_name)

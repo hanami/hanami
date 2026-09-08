@@ -136,13 +136,11 @@ module Hanami
       def require_slice_settings(slice)
         require "hanami/settings"
 
-        slice_settings_require_path = File.join(slice.root, SETTINGS_PATH)
+        slice_settings_path = File.join(slice.root, "#{SETTINGS_PATH}#{RB_EXT}")
 
-        begin
-          require slice_settings_require_path
-        rescue LoadError => exception
-          raise exception unless exception.path == slice_settings_require_path
-        end
+        # `load`, so the file is evaluated again on each prepare. The slice removes the `Settings`
+        # constant when unloading, so the class is defined afresh rather than reopened.
+        load slice_settings_path if File.file?(slice_settings_path)
       end
     end
 
