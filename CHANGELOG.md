@@ -27,6 +27,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Added
 
+- Add `Hanami::ResolvableError`, letting an error describe how to fix it. Include the module and declare resolutions; the development error page renders a card for each, showing a command to copy, a snippet to paste or a list to work through. A resolution declaring `run` also gets a button that runs it. (@afomera in #1622)
+
 ### Changed
 
 ### Deprecated
