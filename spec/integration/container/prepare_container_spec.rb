@@ -1,6 +1,77 @@
 # frozen_string_literal: true
 
 RSpec.describe "Container / prepare_container", :app_integration do
+  describe "Deps reflects plugins installed via prepare_container" do
+    module MarkInjector
+      def injector(**options)
+        super.tap { |inj| inj.instance_variable_set(:@marked_by_plugin, true) }
+      end
+    end
+
+    before :context do
+      Dry::System::Plugins.register(:mark_injector, MarkInjector)
+    end
+
+    after :context do
+      Dry::System::Plugins.registry.delete(:mark_injector)
+    end
+
+    describe "in app" do
+      before :context do
+        with_directory(@dir = make_tmp_directory) do
+          write "config/app.rb", <<~'RUBY'
+            module TestApp
+              class App < Hanami::App
+                prepare_container do |c|
+                  c.use(:mark_injector)
+                end
+              end
+            end
+          RUBY
+
+          write "app/.keep", ""
+        end
+      end
+
+      it "uses the injector configured by installed plugins" do
+        with_directory(@dir) { require "hanami/prepare" }
+
+        expect(TestApp::Deps.instance_variable_get(:@marked_by_plugin)).to be(true)
+      end
+    end
+
+    describe "in slice" do
+      before :context do
+        with_directory(@dir = make_tmp_directory) do
+          write "config/app.rb", <<~'RUBY'
+            module TestApp
+              class App < Hanami::App
+              end
+            end
+          RUBY
+
+          write "slices/main/config/slice.rb", <<~'RUBY'
+            module Main
+              class Slice < Hanami::Slice
+                prepare_container do |c|
+                  c.use(:mark_injector)
+                end
+              end
+            end
+          RUBY
+
+          write "slices/main/.keep", ""
+        end
+      end
+
+      it "uses the injector configured by installed plugins" do
+        with_directory(@dir) { require "hanami/prepare" }
+
+        expect(Main::Deps.instance_variable_get(:@marked_by_plugin)).to be(true)
+      end
+    end
+  end
+
   # (Most of) the examples below make their expectations on a `container_to_prepare`,
   # which is the container yielded to the `Slice.prepare_container` block _at the moment
   # it is called_.
