@@ -39,6 +39,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Return `false` from `Hanami::Slice.app?`, rather than raising `Hanami::AppLoadError`, when no app is defined. (@parndt in #1612)
 - Build `logger` and `inflector` providers registered on a slice from the slice's own config, rather than the app's. (@parndt in #1613)
 - Register only ROM classes from the `relations`, `db/commands` and `db/mappers` directories, leaving any other classes in those directories untouched. (@aaronmallen in #1629)
+- Resolve the `routes` helper in slice view contexts from the app, so views and actions in a slice generate the same named paths. (@aaronmallen in #1630)
 
 ### Security
 
