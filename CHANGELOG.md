@@ -38,6 +38,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Don't attempt to inherit mailer template when `hanami-view` if not bundled. (@katafrakt in #1611)
 - Return `false` from `Hanami::Slice.app?`, rather than raising `Hanami::AppLoadError`, when no app is defined. (@parndt in #1612)
 - Build `logger` and `inflector` providers registered on a slice from the slice's own config, rather than the app's. (@parndt in #1613)
+- Register only ROM classes from the `relations`, `db/commands` and `db/mappers` directories, leaving any other classes in those directories untouched. (@aaronmallen in #1629)
 
 ### Security
 
