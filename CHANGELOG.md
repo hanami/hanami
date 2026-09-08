@@ -27,6 +27,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Added
 
+- Slices can be defined, prepared, booted, and served as Rack apps without an `Hanami::App` defined in the process. (@parndt in #1614)
+
 ### Changed
 
 ### Deprecated
