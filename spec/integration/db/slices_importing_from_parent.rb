@@ -63,7 +63,7 @@ RSpec.describe "DB / Slices / Importing from app", :app_integration do
 
       write "slices/admin/.keep", ""
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/prepare"
 

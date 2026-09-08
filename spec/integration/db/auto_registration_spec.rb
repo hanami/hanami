@@ -25,7 +25,7 @@ RSpec.describe "DB / auto-registration", :app_integration do
       write "app/entities/post.rb", ""
       write "app/structs/post.rb", ""
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/boot"
 

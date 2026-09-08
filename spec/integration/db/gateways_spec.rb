@@ -25,10 +25,10 @@ RSpec.describe "DB / Gateways", :app_integration do
       write "app/relations/.keep", ""
       write "slices/admin/relations/.keep", ""
 
-      ENV["DATABASE_URL"] = "sqlite://db/default.sqlite3"
-      ENV["DATABASE_URL__EXTRA"] = "sqlite://db/extra.sqlite3"
-      ENV["ADMIN__DATABASE_URL__DEFAULT"] = "sqlite://db/admin.sqlite3"
-      ENV["ADMIN__DATABASE_URL__SPECIAL"] = "sqlite://db/admin_special.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_database_url("db/default.sqlite3")
+      ENV["DATABASE_URL__EXTRA"] = sqlite_database_url("db/extra.sqlite3")
+      ENV["ADMIN__DATABASE_URL__DEFAULT"] = sqlite_database_url("db/admin.sqlite3")
+      ENV["ADMIN__DATABASE_URL__SPECIAL"] = sqlite_database_url("db/admin_special.sqlite3")
 
       require "hanami/prepare"
 
@@ -62,11 +62,11 @@ RSpec.describe "DB / Gateways", :app_integration do
       write "config/providers/db.rb", <<~RUBY
         Hanami.app.configure_provider :db do
           config.gateway :default do |gw|
-            gw.database_url = "sqlite://db/default.sqlite3"
+            gw.database_url = "#{sqlite_database_url("db/default.sqlite3")}"
           end
 
           config.gateway :extra do |gw|
-            gw.database_url = "sqlite://db/extra.sqlite3"
+            gw.database_url = "#{sqlite_database_url("db/extra.sqlite3")}"
           end
         end
       RUBY
@@ -111,8 +111,8 @@ RSpec.describe "DB / Gateways", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
-      ENV["DATABASE_URL__EXTRA"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
+      ENV["DATABASE_URL__EXTRA"] = sqlite_database_url
 
       require "hanami/prepare"
 
@@ -138,22 +138,22 @@ RSpec.describe "DB / Gateways", :app_integration do
       write "config/providers/db.rb", <<~RUBY
         Hanami.app.configure_provider :db do
           config.gateway :special do |gw|
-            gw.database_url = "sqlite://db/special.sqlite3"
+            gw.database_url = "#{sqlite_database_url("db/special.sqlite3")}"
           end
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite://db/default.sqlite3"
-      ENV["DATABASE_URL__EXTRA"] = "sqlite://db/extra.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_database_url("db/default.sqlite3")
+      ENV["DATABASE_URL__EXTRA"] = sqlite_database_url("db/extra.sqlite3")
 
       require "hanami/prepare"
 
       database_urls = Hanami.app.container.providers[:db].source.finalize_config.database_urls
 
       expect(database_urls).to eq(
-        default: "sqlite://db/default.sqlite3",
-        extra: "sqlite://db/extra.sqlite3",
-        special: "sqlite://db/special.sqlite3"
+        default: sqlite_database_url("db/default.sqlite3"),
+        extra: sqlite_database_url("db/extra.sqlite3"),
+        special: sqlite_database_url("db/special.sqlite3")
       )
     end
   end
@@ -183,8 +183,8 @@ RSpec.describe "DB / Gateways", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
-      ENV["DATABASE_URL__SPECIAL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
+      ENV["DATABASE_URL__SPECIAL"] = sqlite_database_url
 
       require "hanami/prepare"
 
@@ -214,7 +214,7 @@ RSpec.describe "DB / Gateways", :app_integration do
           end
 
           config.gateway :default do |gw|
-            gw.database_url = "sqlite::memory"
+            gw.database_url = "#{sqlite_database_url}"
             gw.adapter :sql do |a|
               a.plugin relation: :nullify
             end
@@ -228,8 +228,8 @@ RSpec.describe "DB / Gateways", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
-      ENV["DATABASE_URL__SPECIAL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
+      ENV["DATABASE_URL__SPECIAL"] = sqlite_database_url
 
       require "hanami/prepare"
 
@@ -258,12 +258,12 @@ RSpec.describe "DB / Gateways", :app_integration do
       write "config/providers/db.rb", <<~RUBY
         Hanami.app.configure_provider :db do
           config.gateway :default do |gw|
-            gw.database_url = "sqlite::memory"
+            gw.database_url = "#{sqlite_database_url}"
           end
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
       ENV["DATABASE_URL__SPECIAL"] = "postgres://localhost/database"
 
       require "hanami/prepare"
@@ -320,8 +320,8 @@ RSpec.describe "DB / Gateways", :app_integration do
       RUBY
 
       write "db/.keep", ""
-      ENV["DATABASE_URL"] = "sqlite://db/default.sqlite3"
-      ENV["DATABASE_URL__EXTRA"] = "sqlite://db/extra.sqlite3"
+      ENV["DATABASE_URL"] = sqlite_database_url("db/default.sqlite3")
+      ENV["DATABASE_URL__EXTRA"] = sqlite_database_url("db/extra.sqlite3")
 
       require "hanami/prepare"
 
