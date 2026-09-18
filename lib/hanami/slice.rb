@@ -415,8 +415,11 @@ module Hanami
             "prepared. Set `config.code_reloading = true` on the app before preparing it."
         end
 
-        @unload_steps.reverse_each(&:call)
-        @unload_steps = []
+        # Popped rather than iterated, so a step registered while unwinding (a provider's `stop`
+        # memoizing `routes`, say) is unwound too instead of being dropped with the stack.
+        while (step = @unload_steps.pop)
+          step.call
+        end
 
         @prepared = false
         @booted = false

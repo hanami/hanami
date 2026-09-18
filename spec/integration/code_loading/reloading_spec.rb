@@ -161,6 +161,23 @@ RSpec.describe "Code loading / Reloading", :app_integration do
       expect(app["greeter"].call).to eq "hello"
     end
 
+    specify "unloading also unwinds steps registered while unwinding" do
+      with_directory(@dir) { require "hanami/prepare" }
+
+      # A step that lazily memoizes something during unload (as `settings` or `routes` would if
+      # a provider's `stop` touched them) registers its own undo mid-unwind.
+      unwound = []
+      app.on_unload do
+        unwound << :outer
+        app.on_unload { unwound << :inner }
+      end
+
+      app.unload!
+
+      expect(unwound).to eq [:outer, :inner]
+      expect(app.instance_variable_get(:@unload_steps)).to be_empty
+    end
+
     specify "unloading an app that was never prepared does nothing" do
       with_directory(@dir) { require "hanami/setup" }
 
