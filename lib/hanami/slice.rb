@@ -5,6 +5,7 @@ require "dry/system"
 
 require_relative "constants"
 require_relative "errors"
+require_relative "providers"
 
 module Hanami
   # A slice represents any distinct area of concern within an Hanami app.
@@ -42,6 +43,12 @@ module Hanami
           @_mutex = Mutex.new
           @autoloader = Zeitwerk::Loader.new
           @container = Class.new(Dry::System::Container)
+
+          # Configure the container's provider registrar here rather than at prepare-time. The
+          # container memoizes its registrar upon first access, so registering or configuring any
+          # provider from within a slice class body would otherwise leave the container with Dry
+          # System's default registrar, which cannot build Hanami's slice-aware providers.
+          @container.config.provider_registrar = ProviderRegistrar.for_slice(subclass)
         end
       end
     end
@@ -558,6 +565,23 @@ module Hanami
         container.register_provider(...)
       end
 
+      # Registers one of Hanami's first-party providers (such as `:db`, `:logger` or `:mailers`),
+      # configuring it with the given block.
+      #
+      # Call this from a provider file in the slice's `config/providers/` directory, or from
+      # directly within the slice class body.
+      #
+      # @example
+      #   module MyApp
+      #     class App < Hanami::App
+      #       configure_provider :db do
+      #         config.gateway(:default) do |gw|
+      #           gw.database_url = "sqlite://db/my_app.sqlite3"
+      #         end
+      #       end
+      #     end
+      #   end
+      #
       # @api public
       # @since 2.1.0
       def configure_provider(*args, **kwargs, &block)
@@ -920,7 +944,6 @@ module Hanami
       def prepare_container_base_config
         container.config.name = slice_name.to_sym
         container.config.root = root
-        container.config.provider_registrar = ProviderRegistrar.for_slice(self)
         container.config.provider_dirs = [File.join("config", "providers")]
         container.config.registrations_dir = File.join("config", "registrations")
 
@@ -998,40 +1021,25 @@ module Hanami
           register_provider(:assets, source: Providers::Assets)
         end
 
-        if Hanami.bundled?("hanami-db")
-          # Explicit require here to ensure the provider source registers itself, to allow the user
-          # to configure it within their own concrete provider file.
-          require_relative "providers/db"
+        if Hanami.bundled?("hanami-db") && register_db_provider?
+          # Only register providers if the user hasn't provided their own
+          unless container.providers[:db]
+            register_provider(:db, namespace: true, source: Providers::DB)
+          end
 
-          if register_db_provider?
-            # Only register providers if the user hasn't provided their own
-            unless container.providers[:db]
-              register_provider(:db, namespace: true, source: Providers::DB)
-            end
-
-            unless container.providers[:relations]
-              register_provider(:relations, namespace: true, source: Providers::Relations)
-            end
+          unless container.providers[:relations]
+            register_provider(:relations, namespace: true, source: Providers::Relations)
           end
         end
 
-        if Hanami.bundled?("i18n")
-          require_relative "providers/i18n"
-
-          if register_i18n_provider? && !container.providers[:i18n]
-            register_provider(:i18n, source: Providers::I18n)
-          end
+        if Hanami.bundled?("i18n") && register_i18n_provider? && !container.providers[:i18n]
+          register_provider(:i18n, source: Providers::I18n)
         end
 
-        if Hanami.bundled?("hanami-mailer")
-          # Explicit require here to ensure the provider source registers itself, to allow the
-          # user to configure it within their own concrete provider file.
-          require_relative "providers/mailers"
-
-          # Only register the provider if the user hasn't provided their own.
-          if register_mailers_provider? && !container.providers[:mailers]
-            register_provider(:mailers, namespace: true, source: Providers::Mailers)
-          end
+        # Only register the provider if the user hasn't provided their own.
+        if Hanami.bundled?("hanami-mailer") && register_mailers_provider? &&
+           !container.providers[:mailers]
+          register_provider(:mailers, namespace: true, source: Providers::Mailers)
         end
       end
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

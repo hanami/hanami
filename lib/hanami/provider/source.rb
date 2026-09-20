@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "dry/system"
+
 module Hanami
   module Provider
     class Source < Dry::System::Provider::Source
