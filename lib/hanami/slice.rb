@@ -61,7 +61,7 @@ module Hanami
       # memoizes its registrar upon first access, so registering or configuring any provider from
       # within a slice class body would otherwise leave the container with Dry System's default
       # registrar, which cannot build Hanami's slice-aware providers.
-      @container.config.provider_registrar = ProviderRegistrar.for_slice(subclass)
+      @container.config.provider_registrar = ProviderRegistrar.for_slice(self)
     end
 
     module ClassMethods
