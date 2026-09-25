@@ -17,16 +17,16 @@ module Hanami
     #
     # @example
     #   # config/app.rb
-    #   config.settings_store = Hanami::Settings::YamlFileStore.new(config.root.join("my_settings.yml"))
+    #   config.settings_store = Hanami::Settings::YAMLFileStore.new(config.root.join("my_settings.yml"))
     #
     # @example Resolving the path lazily
     #   # Give a block to resolve the path when the settings are first fetched, rather than when the
     #   # store is created.
-    #   config.settings_store = Hanami::Settings::YamlFileStore.new { config.root.join("my_settings.yml") }
+    #   config.settings_store = Hanami::Settings::YAMLFileStore.new { config.root.join("my_settings.yml") }
     #
     # @api public
     # @since 3.1.0
-    class YamlFileStore
+    class YAMLFileStore
       # The classes permitted when parsing the YAML file.
       #
       # @api private

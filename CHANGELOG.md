@@ -27,7 +27,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Added
 
-- Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new`Hanami::Settings::YamlFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen)
+- Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new`Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen)
 
 ### Changed
 

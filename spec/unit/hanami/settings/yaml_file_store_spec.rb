@@ -3,7 +3,7 @@
 require "hanami/settings/yaml_file_store"
 require "tmpdir"
 
-RSpec.describe Hanami::Settings::YamlFileStore do
+RSpec.describe Hanami::Settings::YAMLFileStore do
   subject(:store) { described_class.new(path) }
 
   let(:root) { Pathname(Dir.mktmpdir) }

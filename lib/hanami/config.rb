@@ -59,7 +59,7 @@ module Hanami
     #   @see Hanami::Settings
     #   @see Hanami::Settings::CompositeStore#fetch
     #   @see Hanami::Settings::EnvStore#fetch
-    #   @see Hanami::Settings::YamlFileStore#fetch
+    #   @see Hanami::Settings::YAMLFileStore#fetch
     #
     #   @api public
     #   @since 2.0.0
@@ -550,8 +550,8 @@ module Hanami
     def default_settings_store
       Settings::CompositeStore.new(
         Settings::EnvStore.new,
-        Settings::YamlFileStore.new { root.join(SETTINGS_PATH, "#{env}.yml") },
-        Settings::YamlFileStore.new { root.join(SETTINGS_PATH, "default.yml") }
+        Settings::YAMLFileStore.new { root.join(SETTINGS_PATH, "#{env}.yml") },
+        Settings::YAMLFileStore.new { root.join(SETTINGS_PATH, "default.yml") }
       )
     end
 
