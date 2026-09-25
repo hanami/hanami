@@ -43,6 +43,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Register only ROM classes from the `relations`, `db/commands` and `db/mappers` directories, leaving any other classes in those directories untouched. (@aaronmallen in #1629)
 - Register Hanami's first-party provider sources when `Hanami::Slice` loads, rather than when a slice is prepared. This allows `configure_provider` to be called within an app or slice class body. (@timriley in #1636)
 - Configure a slice's provider registrar when the slice class is defined rather than when it is prepared. Calling `register_provider` from within a slice class body previously left the slice with Dry System's default registrar, leading to errors when the slice was prepared. (@timriley in #1636)
+- Resolve the `routes` helper in slice view contexts from the app, so views and actions in a slice generate the same named paths. (@aaronmallen in #1630)
 
 ### Security
 

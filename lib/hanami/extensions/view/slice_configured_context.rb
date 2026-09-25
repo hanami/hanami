@@ -38,7 +38,7 @@ module Hanami
         # This includes the following app components:
         #   - the configured inflector as `inflector`
         #   - "routes" from the app container as `routes`
-        #   - "assets" from the app container as `assets`
+        #   - "assets" from the slice container as `assets`
         #   - "i18n" from the slice container as `i18n`
         def define_new
           inflector = slice.inflector
@@ -56,8 +56,12 @@ module Hanami
           end
         end
 
+        # Resolves from the app, not the slice, because a slice defining its own routes registers
+        # its own "routes" component, which knows only that slice's names and none of the prefix it
+        # is mounted at. Actions resolve the app's helper, so this keeps a view and an action in the
+        # same slice in agreement.
         def resolve_routes
-          slice["routes"] if slice.key?("routes")
+          slice.app["routes"] if slice.app.key?("routes")
         end
 
         def resolve_assets
