@@ -23,6 +23,7 @@ module Hanami
       loader.inflector.inflect "sql_adapter" => "SQLAdapter"
       loader.inflector.inflect "sql_logger" => "SQLLogger"
       loader.inflector.inflect "sql_formatter" => "SQLFormatter"
+      loader.inflector.inflect "yaml_file_store" => "YAMLFileStore"
 
       gem_lib = loader.dirs.first
       loader.ignore(
