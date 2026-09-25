@@ -27,6 +27,10 @@ gem "hanami-webconsole", github: "hanami/hanami-webconsole", branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
+# Required for Slice reloading support; remove Dry System releases and we can bake the dependency
+# into the gemspec.
+gem "dry-system", github: "dry-rb/dry-system", branch: "main"
+
 # For testing settings with types
 gem "dry-types"
 

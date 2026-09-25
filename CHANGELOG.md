@@ -27,8 +27,12 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Added
 
-- Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new`Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen)
+- Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new`Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen in #1627)
+- Reload an app's code in place via `Hanami.app.reload`, without restarting the Ruby process. (@afomera and @#timriley in #1625)
 
+    This unloads the app and all its slices, then prepares them again, picking up changes to code, settings, providers, routes and slices themselves. The app class itself is kept, so `run Hanami.app` in `config.ru` continues to work, which means that `config/app.rb` itself is not reloaded.
+
+    Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
 ### Changed
 
 ### Deprecated
