@@ -198,7 +198,7 @@ module Hanami
     setting :render_detailed_errors, default: false
 
     # @!attribute [rw] code_reloading
-    #   Sets whether the app can be reloaded in place via `Hanami::Slice.reload!`.
+    #   Sets whether the app can be reloaded in place via `Hanami::Slice.reload`.
     #
     #   App-wide: slices copy their config from the app, but only the app's value is used. Must
     #   be set before the app is prepared.
@@ -207,7 +207,7 @@ module Hanami
     #
     #   @return [Boolean]
     #
-    #   @see Hanami::Slice::ClassMethods#reload!
+    #   @see Hanami::Slice::ClassMethods#reload
     #
     #   @api public
     #   @since 3.1.0

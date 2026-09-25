@@ -78,9 +78,9 @@ module Hanami
     #
     # @api private
     # @since 3.1.0
-    def unload!
+    def unload
       # Reverse of the order they were prepared in.
-      to_a.reverse_each(&:unload!)
+      to_a.reverse_each(&:unload)
 
       slices.each_key { |slice_name| remove_slice_consts(slice_name) }
 
@@ -119,7 +119,7 @@ module Hanami
     def load_slice(slice_name)
       slice_path = find_slice_require_path(slice_name)
 
-      # `load`, so the file is evaluated again on each prepare; `unload!` above removed the
+      # `load`, so the file is evaluated again on each prepare; `unload` above removed the
       # constants it defines. `find_slice_require_path` omits the extension, which `load` needs.
       load "#{slice_path}#{RB_EXT}" if slice_path
 

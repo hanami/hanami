@@ -3,8 +3,8 @@
 RSpec.describe "Code loading / Reloading", :app_integration do
   subject(:app) { Hanami.app }
 
-  def reload!
-    with_directory(@dir) { app.reload! }
+  def reload
+    with_directory(@dir) { app.reload }
   end
 
   describe "app code" do
@@ -46,7 +46,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(app["greeter"].call).to eq "goodbye"
     end
@@ -64,7 +64,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(app["farewell"].call).to eq "bye"
     end
@@ -74,7 +74,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
 
       FileUtils.rm File.join(@dir, "app", "greeter.rb")
 
-      reload!
+      reload
 
       expect(app.key?("greeter")).to be false
     end
@@ -82,7 +82,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
     specify "replaces stale constants rather than reusing them" do
       before_reload = TestApp::Greeter
 
-      reload!
+      reload
 
       expect(TestApp::Greeter).to be
       expect(TestApp::Greeter).not_to equal before_reload
@@ -91,13 +91,13 @@ RSpec.describe "Code loading / Reloading", :app_integration do
     specify "preserves the app class object so `run Hanami.app` stays valid" do
       app_class = Hanami.app
 
-      reload!
+      reload
 
       expect(Hanami.app).to equal app_class
     end
 
     specify "leaves the app prepared and resolvable afterwards" do
-      reload!
+      reload
 
       expect(app).to be_prepared
       expect(app["greeter"]).to be_an_instance_of TestApp::Greeter
@@ -115,7 +115,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
           RUBY
         end
 
-        reload!
+        reload
 
         expect(app["greeter"].call).to eq "hello #{i}"
       end
@@ -149,7 +149,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
     specify "unloading a prepared app leaves it unprepared, and preparable again" do
       with_directory(@dir) { require "hanami/prepare" }
 
-      app.unload!
+      app.unload
 
       expect(app).not_to be_prepared
       expect(defined?(TestApp::Greeter)).to be nil
@@ -172,7 +172,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         app.on_unload { unwound << :inner }
       end
 
-      app.unload!
+      app.unload
 
       expect(unwound).to eq [:outer, :inner]
       expect(app.instance_variable_get(:@unload_steps)).to be_empty
@@ -181,14 +181,14 @@ RSpec.describe "Code loading / Reloading", :app_integration do
     specify "unloading an app that was never prepared does nothing" do
       with_directory(@dir) { require "hanami/setup" }
 
-      expect { app.unload! }.not_to raise_error
+      expect { app.unload }.not_to raise_error
       expect(app).not_to be_prepared
     end
 
     specify "reloading an app that was never prepared simply prepares it" do
       with_directory(@dir) { require "hanami/setup" }
 
-      reload!
+      reload
 
       expect(app).to be_prepared
       expect(app["greeter"].call).to eq "hello"
@@ -234,7 +234,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(Rack::MockRequest.new(app).get("/changed").body).to eq "changed"
       expect(Rack::MockRequest.new(app).get("/original").status).to eq 404
@@ -280,7 +280,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(Main::Slice["greeter"].call).to eq "main goodbye"
     end
@@ -290,7 +290,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
       # take effect. Anything holding a slice class across a reload will hold a stale one.
       slice_class = Main::Slice
 
-      reload!
+      reload
 
       expect(Main::Slice).not_to equal slice_class
       expect(app.slices[:main]).to equal Main::Slice
@@ -339,7 +339,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
       app.start(:tracker)
       expect(tracker_events).to eq %w[started]
 
-      reload!
+      reload
 
       expect(tracker_events).to eq %w[started stopped]
 
@@ -361,7 +361,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
       app.start(:tracker)
 
       expect(app["tracker"]).to eq "replaced!"
@@ -414,7 +414,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(app["settings"].one).to eq "first"
       expect(app["settings"].two).to eq "second"
@@ -447,7 +447,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
       end
     end
 
-    def reload! = with_directory(@dir) { app.reload! }
+    def reload = with_directory(@dir) { app.reload }
 
     specify "picks up a slice added on disk" do
       expect(app.slices.keys).to eq [:main]
@@ -462,7 +462,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(app.slices.keys).to contain_exactly(:main, :admin)
       expect(Admin::Slice["greeter"].call).to eq "admin"
@@ -473,7 +473,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
 
       FileUtils.rm_rf File.join(@dir, "slices", "main")
 
-      reload!
+      reload
 
       expect(app.slices.keys).to eq []
     end
@@ -489,7 +489,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
       expect(Main::Slice["marker"]).to eq "before"
 
       with_directory(@dir) do
@@ -502,7 +502,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(Main::Slice["marker"]).to eq "after!!"
     end
@@ -518,7 +518,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(Main::Slice["greeter"].call).to eq "main"
       expect(Admin::Slice["greeter"].call).to eq "admin"
@@ -577,7 +577,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(Main::Slice["greeter"].call).to eq "main v1"
       expect(Main::Nested::Slice["greeter"].call).to eq "nested v2"
@@ -598,7 +598,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(Main::Slice.slices.keys).to contain_exactly(:nested, :extra)
       expect(Main::Extra::Slice["greeter"].call).to eq "extra"
@@ -645,7 +645,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
       end
 
       # Settings are loaded during `prepare`, so this leaves the app torn down.
-      expect { reload! }.to raise_error(NameError)
+      expect { reload }.to raise_error(NameError)
       expect(app).not_to be_prepared
 
       with_directory(@dir) do
@@ -660,7 +660,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         ENV["TWO"] = "recovered"
       end
 
-      reload!
+      reload
 
       expect(app).to be_prepared
       expect(app["settings"].two).to eq "recovered"
@@ -704,7 +704,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
     end
 
     specify "reloading raises rather than silently doing nothing" do
-      expect { reload! }.to raise_error(Hanami::SliceLoadError, /code_reloading/)
+      expect { reload }.to raise_error(Hanami::SliceLoadError, /code_reloading/)
     end
   end
 
@@ -776,7 +776,7 @@ RSpec.describe "Code loading / Reloading", :app_integration do
         RUBY
       end
 
-      reload!
+      reload
 
       expect(Main::Slice["greeter"].call).to eq "main v2"
     end

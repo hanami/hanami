@@ -49,7 +49,7 @@ module Hanami
 
     # Builds the slice's container and autoloader.
     #
-    # Called when the slice is first defined, and again on every {ClassMethods#unload!}.
+    # Called when the slice is first defined, and again on every {ClassMethods#unload}.
     #
     # @api private
     # @since 3.1.0
@@ -387,13 +387,13 @@ module Hanami
       #
       # @return [self]
       #
-      # @see #unload!
+      # @see #unload
       # @see #prepare
       #
       # @api public
       # @since 3.1.0
-      def reload!
-        unload!.prepare
+      def reload
+        unload.prepare
       end
 
       # Reverses {#prepare}, leaving the slice class ready to be prepared again.
@@ -407,7 +407,7 @@ module Hanami
       #
       # @api private
       # @since 3.1.0
-      def unload!
+      def unload
         # Zeitwerk can only unload constants it was told to track ahead of `setup`.
         if @unload_steps.any? && !code_reloading?
           raise SliceLoadError,
@@ -427,14 +427,14 @@ module Hanami
         self
       end
 
-      # Registers a step for {#unload!} to run, undoing work {#prepare} just did.
+      # Registers a step for {#unload} to run, undoing work {#prepare} just did.
       #
       # Steps run last-in-first-out, so a step registered next to its work is unwound before
       # anything that work depended upon.
       #
       # @return [self]
       #
-      # @see #unload!
+      # @see #unload
       #
       # @api private
       # @since 3.1.0
@@ -1215,7 +1215,7 @@ module Hanami
 
         # Discarding the registrar is what lets the next prepare rediscover slices from disk.
         on_unload do
-          slices.unload!
+          slices.unload
 
           remove_instance_variable(:@slices)
         end
