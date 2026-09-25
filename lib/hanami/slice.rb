@@ -52,7 +52,6 @@ module Hanami
     # Called when the slice is first defined, and again on every {ClassMethods#unload}.
     #
     # @api private
-    # @since 3.1.0
     def self.build_container_and_autoloader
       @autoloader = Zeitwerk::Loader.new
       @autoloader_setup = false
@@ -406,17 +405,21 @@ module Hanami
       # @see #on_unload
       #
       # @api private
-      # @since 3.1.0
       def unload
         # Zeitwerk can only unload constants it was told to track ahead of `setup`.
         if @unload_steps.any? && !code_reloading?
           raise SliceLoadError,
-            "#{self} cannot be unloaded because `config.code_reloading` was false when it was " \
-            "prepared. Set `config.code_reloading = true` on the app before preparing it."
+            "#{self} cannot be unloaded because `config.code_reloading` is false (it " \
+            "defaults to true only in development). Set `config.code_reloading = true` " \
+            "on the app before preparing it."
         end
 
-        # Popped rather than iterated, so a step registered while unwinding (a provider's `stop`
-        # memoizing `routes`, say) is unwound too instead of being dropped with the stack.
+        # Pop here rather than iterating, because an unload step may register another unload step
+        # while it runs.
+        #
+        # For example, in the unload step for `.prepare_container_providers`, we run
+        # `container.shutdown!`. This calls `stop` on every provider, executing user code that may
+        # interact with slice methods (e.g. `.routes`) that add further unload steps.
         while (step = @unload_steps.pop)
           step.call
         end
@@ -427,7 +430,7 @@ module Hanami
         self
       end
 
-      # Registers a step for {#unload} to run, undoing work {#prepare} just did.
+      # Registers a step for {#unload!} to run, to undo work done during {#prepare}.
       #
       # Steps run last-in-first-out, so a step registered next to its work is unwound before
       # anything that work depended upon.
@@ -437,7 +440,6 @@ module Hanami
       # @see #unload
       #
       # @api private
-      # @since 3.1.0
       def on_unload(&block)
         @unload_steps << block
 
@@ -999,8 +1001,9 @@ module Hanami
         # parent's autoloaded directories)
         prepare_slices
 
-        # Registered here rather than where these are memoized: `router` memoizes inside a
-        # `@_mutex` block, and `on_unload` must not take a lock Ruby cannot re-enter.
+        # Register these here rather than where they're memoized. `@_router ||=` re-runs on every
+        # call while the router is nil (a slice with no routes), and would register an unload step
+        # each time. `@rack_app` is built from the router, so clear it alongside.
         on_unload do
           @_router = nil
           @rack_app = nil
@@ -1011,11 +1014,11 @@ module Hanami
         self
       end
 
-      # Whether code reloading is enabled. Always an app-wide decision: slices import from their
-      # parent's container, so one opting out would hold components from a discarded container.
+      # Returns true if code reloading is enabled. Always an app-wide decision: slices import from
+      # their parent's container, so one opting out would hold components from a discarded
+      # container.
       #
       # @api private
-      # @since 3.1.0
       def code_reloading?
         # A slice can be prepared without an app in place (in tests, mostly).
         return config.code_reloading unless Hanami.app?
@@ -1077,8 +1080,6 @@ module Hanami
           loader: autoloader,
           run_setup: false,
           eager_load: false,
-          # Applied from the plugin's `after(:configure)` hook, so it lands before
-          # `prepare_autoloader` calls `setup`, which is Zeitwerk's deadline for it.
           enable_reloading: code_reloading?
         )
       end
