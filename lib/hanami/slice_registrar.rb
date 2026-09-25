@@ -112,16 +112,16 @@ module Hanami
     # Runs when a slice file has been found inside the app at `config/slices/[slice_name].rb`,
     # or when a slice directory exists at `slices/[slice_name]`.
     #
-    # If a slice definition file is found by `find_slice_require_path`, then `load_slice` will
-    # load the file before registering the slice class.
+    # If a slice definition file is found by `find_slice_file`, then `load_slice` will load the file
+    # before registering the slice class.
     #
     # If a slice class is not found, registering the slice will generate the slice class.
     def load_slice(slice_name)
-      slice_path = find_slice_require_path(slice_name)
+      slice_path = find_slice_file(slice_name)
 
-      # `load`, so the file is evaluated again on each prepare; `unload` above removed the
-      # constants it defines. `find_slice_require_path` omits the extension, which `load` needs.
-      load "#{slice_path}#{RB_EXT}" if slice_path
+      # `load` the file so it is evaluated again on each prepare. `unload` above takes care of
+      # removing the slice constants.
+      load slice_path if slice_path
 
       slice_class =
         begin
@@ -144,19 +144,16 @@ module Hanami
     # 1. `config/slices/[parent_slice_name]/[slice_name].rb`
     # 2. `slices/[parent_slice_name]/config/[slice_name].rb`
     # 3. `slices/[parent_slice_name]/[slice_name]/config/slice.rb`
-    def find_slice_require_path(slice_name)
+    def find_slice_file(slice_name)
       app_slice_file_path = [slice_name]
       app_slice_file_path.prepend(parent.slice_name) unless parent.eql?(parent.app)
       ancestors = [
-        parent.app.root.join(CONFIG_DIR, SLICES_DIR, app_slice_file_path.join(File::SEPARATOR)),
-        parent.root.join(CONFIG_DIR, SLICES_DIR, slice_name),
-        root.join(SLICES_DIR, slice_name, CONFIG_DIR, "slice")
+        parent.app.root.join(CONFIG_DIR, SLICES_DIR, "#{app_slice_file_path.join(File::SEPARATOR)}#{RB_EXT}"),
+        parent.root.join(CONFIG_DIR, SLICES_DIR, "#{slice_name}#{RB_EXT}"),
+        root.join(SLICES_DIR, slice_name, CONFIG_DIR, "slice#{RB_EXT}")
       ]
 
-      ancestors
-        .uniq
-        .find { _1.sub_ext(RB_EXT).file? }
-        &.to_s
+      ancestors.uniq.find { _1.file? }&.to_s
     end
 
     def build_slice(slice_name, &block)
