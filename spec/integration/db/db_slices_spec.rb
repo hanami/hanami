@@ -25,7 +25,7 @@ RSpec.describe "DB / Slices", :app_integration do
       write "slices/admin/relations/.keep", ""
       write "slices/main/relations/.keep", ""
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/prepare"
 
@@ -69,14 +69,14 @@ RSpec.describe "DB / Slices", :app_integration do
       write "slices/admin/relations/.keep", ""
       write "slices/main/relations/.keep", ""
 
-      ENV["DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("app.sqlite").to_s
-      ENV["DATABASE_URL__EXTRA"] = "sqlite://" + Pathname(@dir).realpath.join("extra.sqlite").to_s
-      ENV["DATABASE_URL__BONUS"] = "sqlite://" + Pathname(@dir).realpath.join("bonus.sqlite").to_s
+      ENV["DATABASE_URL"] = sqlite_database_url(Pathname(@dir).realpath.join("app.sqlite").to_s)
+      ENV["DATABASE_URL__EXTRA"] = sqlite_database_url(Pathname(@dir).realpath.join("extra.sqlite").to_s)
+      ENV["DATABASE_URL__BONUS"] = sqlite_database_url(Pathname(@dir).realpath.join("bonus.sqlite").to_s)
 
       # "extra" gateway in admin slice, same URL as app
       ENV["ADMIN__DATABASE_URL__EXTRA"] = ENV["DATABASE_URL__EXTRA"]
       # "extra" gatway in main slice, different URL
-      ENV["MAIN__DATABASE_URL__EXTRA"] = "sqlite://" + Pathname(@dir).realpath.join("extra-main.sqlite").to_s
+      ENV["MAIN__DATABASE_URL__EXTRA"] = sqlite_database_url(Pathname(@dir).realpath.join("extra-main.sqlite").to_s)
       # "bonus" gateway in admin slice, same URL as app
       ENV["ADMIN__DATABASE_URL__BONUS"] = ENV["DATABASE_URL__BONUS"]
       # "bonus" gateway in main slice, same URL as app; different connection options in provider
@@ -123,7 +123,7 @@ RSpec.describe "DB / Slices", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/prepare"
 
@@ -195,10 +195,10 @@ RSpec.describe "DB / Slices", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("database.db").to_s
+      ENV["DATABASE_URL"] = sqlite_database_url(Pathname(@dir).realpath.join("database.db").to_s)
 
       # Extra gateway for app only. Unlike other config, not copied to child slices.
-      ENV["DATABASE_URL__EXTRA"] = "sqlite://" + Pathname(@dir).realpath.join("extra.db").to_s
+      ENV["DATABASE_URL__EXTRA"] = sqlite_database_url(Pathname(@dir).realpath.join("extra.db").to_s)
 
       require "hanami/prepare"
 
@@ -303,7 +303,7 @@ RSpec.describe "DB / Slices", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("database.db").to_s
+      ENV["DATABASE_URL"] = sqlite_database_url(Pathname(@dir).realpath.join("database.db").to_s)
 
       require "hanami/prepare"
 
@@ -355,9 +355,9 @@ RSpec.describe "DB / Slices", :app_integration do
         end
       RUBY
 
-      ENV["ADMIN__DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("admin.db").to_s
-      ENV["ADMIN__SUPER__DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("admin_super.db").to_s
-      ENV["MAIN__DATABASE_URL"] = "sqlite://" + Pathname(@dir).realpath.join("main.db").to_s
+      ENV["ADMIN__DATABASE_URL"] = sqlite_database_url(Pathname(@dir).realpath.join("admin.db").to_s)
+      ENV["ADMIN__SUPER__DATABASE_URL"] = sqlite_database_url(Pathname(@dir).realpath.join("admin_super.db").to_s)
+      ENV["MAIN__DATABASE_URL"] = sqlite_database_url(Pathname(@dir).realpath.join("main.db").to_s)
 
       require "hanami/prepare"
 

@@ -90,8 +90,12 @@ RSpec.shared_context "App integration" do
   let(:app_modules) { %i[TestApp Admin Main Search] }
 end
 
+def slice_autoloaders(klass)
+  klass.subclasses.flat_map { |subclass| [subclass.autoloader] + slice_autoloaders(subclass) }
+end
+
 def autoloaders_teardown!
-  ObjectSpace.each_object(Zeitwerk::Loader) do |loader|
+  slice_autoloaders(Hanami::Slice).each do |loader|
     loader.unregister if loader.dirs.any? { |dir|
       dir.include?("/spec/") || dir.include?(Dir.tmpdir) ||
       dir.include?("/slices/") || dir.include?("/app")

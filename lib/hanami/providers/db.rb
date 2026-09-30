@@ -273,7 +273,10 @@ module Hanami
       DATABASE_GEMS = {
         "mysql2" => "mysql2",
         "postgres" => "pg",
-        "sqlite" => "sqlite3"
+        "sqlite" => "sqlite3",
+        "jdbc:mysql" => "jdbc-mysql",
+        "jdbc:postgresql" => "jdbc-postgresql",
+        "jdbc:sqlite" => "jdbc-sqlite3"
       }.freeze
       private_constant :DATABASE_GEMS
 
@@ -286,6 +289,12 @@ module Hanami
       def ensure_database_gem(database_url)
         scheme = URI(database_url).scheme
         return unless scheme
+
+        # JDBC URLs (required to connect via JRuby) nest the real scheme after "jdbc:", e.g.
+        # "jdbc:postgresql://...", so URI#scheme alone (just "jdbc") isn't enough to identify them.
+        if scheme == "jdbc" && (sub_scheme = database_url[/\Ajdbc:(\w+):/, 1])
+          scheme = "jdbc:#{sub_scheme}"
+        end
 
         database_gem = DATABASE_GEMS[scheme]
         return unless database_gem

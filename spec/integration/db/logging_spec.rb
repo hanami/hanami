@@ -39,7 +39,7 @@ RSpec.describe "DB / Logging", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/setup"
 
@@ -100,7 +100,7 @@ RSpec.describe "DB / Logging", :app_integration do
         end
       RUBY
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
 
       require "hanami/setup"
 
@@ -156,7 +156,7 @@ RSpec.describe "DB / Logging", :app_integration do
           end
         RUBY
 
-        ENV["DATABASE_URL"] = "sqlite::memory"
+        ENV["DATABASE_URL"] = sqlite_database_url
 
         write "slices/admin/relations/posts.rb", <<~RUBY
           module Admin
@@ -237,7 +237,7 @@ RSpec.describe "DB / Logging", :app_integration do
           end
         RUBY
 
-        ENV["DATABASE_URL"] = "sqlite::memory"
+        ENV["DATABASE_URL"] = sqlite_database_url
 
         write "slices/admin/relations/posts.rb", <<~RUBY
           module Admin
@@ -327,7 +327,7 @@ RSpec.describe "DB / Logging", :app_integration do
           end
         RUBY
 
-        ENV["DATABASE_URL"] = "sqlite::memory"
+        ENV["DATABASE_URL"] = sqlite_database_url
         ENV["HANAMI_ENV"] = "production"
 
         require "hanami/setup"
@@ -388,7 +388,7 @@ RSpec.describe "DB / Logging", :app_integration do
           end
         RUBY
 
-        ENV["DATABASE_URL"] = "sqlite::memory"
+        ENV["DATABASE_URL"] = sqlite_database_url
         ENV["HANAMI_ENV"] = "production"
 
         require "hanami/setup"
