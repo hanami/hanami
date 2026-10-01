@@ -119,8 +119,12 @@ RSpec.describe "DB / Gateways", :app_integration do
       default = Hanami.app["db.gateways.default"]
       extra   = Hanami.app["db.gateways.extra"]
 
-      expect(default.options).to eq({timeout: 10_000, extensions: [:error_sql]})
-      expect(extra.options).to eq({readonly: true, extensions: %i[caller_logging error_sql sql_comments]})
+      pragmas = Hanami::DB::SQLite::Pragmas.new.connect_sqls
+
+      expect(default.options).to eq({timeout: 10_000, extensions: [:error_sql], connect_sqls: pragmas})
+      expect(extra.options).to eq(
+        {readonly: true, extensions: %i[caller_logging error_sql sql_comments], connect_sqls: pragmas}
+      )
     end
   end
 

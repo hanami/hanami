@@ -78,6 +78,16 @@ RSpec.describe "Hanami::Providers::DB / Config / Default config", :app_integrati
         expect(config.adapter(:sql).extensions).to eq []
       end
     end
+
+    describe "connect_sqls" do
+      it "configures no connect_sqls for a non-SQLite database" do
+        expect(config.adapter(:sql).connect_sqls).to eq []
+      end
+
+      it "leaves connect_sqls out of gateway_options" do
+        expect(config.adapter(:sql).gateway_options).not_to have_key(:connect_sqls)
+      end
+    end
   end
 
   describe "sql adapter for postgres" do
@@ -95,6 +105,70 @@ RSpec.describe "Hanami::Providers::DB / Config / Default config", :app_integrati
         :pg_json,
         :pg_range
       ]
+    end
+  end
+
+  describe "sql adapter for sqlite" do
+    let(:database_url) { "sqlite://db/app.sqlite3" }
+
+    before do
+      skip_defaults if respond_to?(:skip_defaults)
+      config.adapter(:sql).configure_for_database(database_url)
+    end
+
+    describe "connect_sqls" do
+      it "configures the SQLite pragma defaults" do
+        expect(config.adapter(:sql).connect_sqls).to eq Hanami::DB::SQLite::Pragmas.new.connect_sqls
+      end
+
+      context "with a single-colon sqlite URL" do
+        let(:database_url) { "sqlite:db/app.sqlite3" }
+
+        it "configures the SQLite pragma defaults" do
+          expect(config.adapter(:sql).connect_sqls).to eq Hanami::DB::SQLite::Pragmas.new.connect_sqls
+        end
+      end
+
+      context "with a jdbc:sqlite URL" do
+        let(:database_url) { "jdbc:sqlite:db/app.sqlite3" }
+
+        it "configures the SQLite pragma defaults" do
+          expect(config.adapter(:sql).connect_sqls).to eq Hanami::DB::SQLite::Pragmas.new.connect_sqls
+        end
+      end
+
+      context "when configured more than once" do
+        it "does not repeat the pragmas" do
+          config.adapter(:sql).configure_for_database(database_url)
+
+          expect(config.adapter(:sql).connect_sqls).to eq Hanami::DB::SQLite::Pragmas.new.connect_sqls
+        end
+      end
+
+      describe "skipping defaults" do
+        def skip_defaults
+          config.adapter(:sql).skip_defaults :connect_sqls
+        end
+
+        it "configures no connect_sqls" do
+          expect(config.adapter(:sql).connect_sqls).to eq []
+        end
+      end
+
+      describe "skipping all defaults" do
+        def skip_defaults
+          config.adapter(:sql).skip_defaults
+        end
+
+        it "configures no connect_sqls" do
+          expect(config.adapter(:sql).connect_sqls).to eq []
+        end
+      end
+    end
+
+    specify "gateway_options" do
+      expect(config.adapter(:sql).gateway_options)
+        .to include(connect_sqls: Hanami::DB::SQLite::Pragmas.new.connect_sqls)
     end
   end
 end
