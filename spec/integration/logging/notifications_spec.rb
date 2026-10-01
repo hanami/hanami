@@ -37,7 +37,7 @@ RSpec.describe "Logging / Notifications", :app_integration do
             module Users
               class Create < Hanami::Action
                 def handle(req, resp)
-                  resp.body = req.params.to_h.keys
+                  resp.body = req.params.to_h.keys.join(", ")
                 end
               end
             end
