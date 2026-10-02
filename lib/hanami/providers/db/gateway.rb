@@ -51,8 +51,8 @@ module Hanami
           adapter_options = config.adapter.gateway_options
           options = {**connection_options, **adapter_options}
 
-          # Combine connect_sqls rather than letting the adapter's replace yours. Your statements
-          # run last, so they win over any adapter defaults they conflict with.
+          # Combine connect_sqls rather than letting the adapter's replace the user's. The user's
+          # statements run last, so they win over any adapter defaults they conflict with.
           if options.key?(:connect_sqls)
             options[:connect_sqls] = [
               *adapter_options.fetch(:connect_sqls, nil),
