@@ -33,7 +33,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     This unloads the app and all its slices, then prepares them again, picking up changes to code, settings, providers, routes and slices themselves. The app class itself is kept, so `run Hanami.app` in `config.ru` continues to work, which means that `config/app.rb` itself is not reloaded.
 
     Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
-- Apply sensible SQLite pragmas to every connection for apps using SQLite, via hanami-db's `Hanami::DB::SQLite::Pragmas`: `journal_mode = wal`, `synchronous = normal`, `mmap_size` of 128MiB, `journal_size_limit` of 64MiB and `cache_size = 2000`. (@cllns)
+- Apply sensible SQLite pragmas to every connection for apps using SQLite, via hanami-db's `Hanami::DB::SQLite::Pragmas`: `journal_mode = wal`, `synchronous = normal`, `mmap_size` of 128MiB, `journal_size_limit` of 64MiB and `cache_size = 2000`. (@cllns in #1637)
 
     These are given to Sequel as `connect_sqls`. Any `connect_sqls` you provide via a gateway's `connection_options` run after these, so your own pragmas take precedence. To opt out, call `skip_defaults :connect_sqls` (or `skip_defaults` for all defaults) in your SQL adapter config:
 
