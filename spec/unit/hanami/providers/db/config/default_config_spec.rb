@@ -19,6 +19,13 @@ RSpec.describe "Hanami::Providers::DB / Config / Default config", :app_integrati
     end
   end
 
+  def gateway_for(database_url, **connection_options)
+    Hanami::Providers::DB::Gateway.new.tap do |gateway|
+      gateway.config.database_url = database_url
+      gateway.connection_options(**connection_options)
+    end
+  end
+
   specify %(relations_path = "relations") do
     expect(config)
   end
@@ -26,7 +33,7 @@ RSpec.describe "Hanami::Providers::DB / Config / Default config", :app_integrati
   describe "sql adapter" do
     before do
       skip_defaults if respond_to?(:skip_defaults)
-      config.adapter(:sql).configure_for_database("mysql://localhost/test_app_development")
+      config.adapter(:sql).configure_for_gateway(gateway_for("mysql://localhost/test_app_development"))
     end
 
     describe "plugins" do
@@ -92,7 +99,7 @@ RSpec.describe "Hanami::Providers::DB / Config / Default config", :app_integrati
 
   describe "sql adapter for postgres" do
     before do
-      config.adapter(:sql).configure_for_database("postgresql://localhost/test_app_development")
+      config.adapter(:sql).configure_for_gateway(gateway_for("postgresql://localhost/test_app_development"))
     end
 
     specify "extensions" do
@@ -110,10 +117,11 @@ RSpec.describe "Hanami::Providers::DB / Config / Default config", :app_integrati
 
   describe "sql adapter for sqlite" do
     let(:database_url) { "sqlite://db/app.sqlite3" }
+    let(:connection_options) { {} }
 
     before do
       skip_defaults if respond_to?(:skip_defaults)
-      config.adapter(:sql).configure_for_database(database_url)
+      config.adapter(:sql).configure_for_gateway(gateway_for(database_url, **connection_options))
     end
 
     describe "connect_sqls" do
@@ -137,9 +145,18 @@ RSpec.describe "Hanami::Providers::DB / Config / Default config", :app_integrati
         end
       end
 
+      context "with a read-only connection" do
+        let(:connection_options) { {readonly: true} }
+
+        it "configures the SQLite pragma defaults for read-only connections" do
+          expect(config.adapter(:sql).connect_sqls).to eq Hanami::DB::SQLite::Pragmas.new(readonly: true).connect_sqls
+          expect(config.adapter(:sql).connect_sqls).not_to include(a_string_matching(/journal_mode/))
+        end
+      end
+
       context "when configured more than once" do
         it "does not repeat the pragmas" do
-          config.adapter(:sql).configure_for_database(database_url)
+          config.adapter(:sql).configure_for_gateway(gateway_for(database_url))
 
           expect(config.adapter(:sql).connect_sqls).to eq Hanami::DB::SQLite::Pragmas.new.connect_sqls
         end
