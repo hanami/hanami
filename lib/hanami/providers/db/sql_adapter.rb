@@ -45,12 +45,12 @@ module Hanami
         end
 
         # @api private
-        def configure_for_database(database_url)
+        def configure_for_gateway(gateway)
           return if skip_defaults?
 
           configure_plugins
-          configure_extensions(database_url)
-          configure_connect_sqls(database_url)
+          configure_extensions(gateway.database_url)
+          configure_connect_sqls(gateway)
         end
 
         # @api private
@@ -93,28 +93,18 @@ module Hanami
         end
 
         # @api private
-        private def configure_connect_sqls(database_url)
+        private def configure_connect_sqls(gateway)
           return if skip_defaults?(:connect_sqls)
 
           # Pragmas for SQLite databases, run on every new connection. Matches "sqlite://",
           # "sqlite:" and "jdbc:sqlite:" URLs.
           #
-          # Setting journal_mode writes to the database file. A gateway using
-          # `connection_options readonly: true` cannot do that, so it raises an exception when
-          # connecting to a database that is not already in WAL mode. Read-only gateways should
-          # skip these defaults:
-          #
-          #   config.gateway :archive do |gw|
-          #     gw.connection_options readonly: true
-          #     gw.adapter :sql do |adapter|
-          #       adapter.skip_defaults :connect_sqls
-          #     end
-          #   end
-          #
-          # Note: this skips all of the defaults. You may want to add back the ones that help
-          # reads, like mmap_size and cache_size, which the example above does not set.
-          if database_url.to_s.start_with?(/(jdbc:)?sqlite:/)
-            config.connect_sqls = Hanami::DB::SQLite::Pragmas.new.connect_sqls
+          # Read-only connections skip the pragmas that write to the database file. This currently
+          # checks for `readonly: true` in `connection_options` only. It does not look for
+          # `?readonly=true` in the database URL.
+          if gateway.database_url.to_s.start_with?(/(jdbc:)?sqlite:/)
+            readonly = gateway.connection_options.fetch(:readonly, false)
+            config.connect_sqls = Hanami::DB::SQLite::Pragmas.new(readonly:).connect_sqls
           end
         end
 

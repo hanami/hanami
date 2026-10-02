@@ -21,7 +21,9 @@ RSpec.describe "Hanami::Providers::DB / Config / Gateway config", :app_integrati
 
   describe "sql adapter" do
     before do
-      config.adapter(:sql).configure_for_database("sqlite::memory")
+      gateway = Hanami::Providers::DB::Gateway.new
+      gateway.config.database_url = "sqlite::memory"
+      config.adapter(:sql).configure_for_gateway(gateway)
     end
 
     describe "connection_options" do
@@ -72,7 +74,8 @@ RSpec.describe "Hanami::Providers::DB / Config / Gateway config", :app_integrati
       it "runs connect_sqls from connection_options after the adapter's connect_sqls" do
         config.gateway :default do |gw|
           gw.connection_options connect_sqls: ["PRAGMA cache_size = 500"]
-          gw.adapter(:sql) { _1.configure_for_database("sqlite::memory") }
+          gw.config.database_url = "sqlite::memory"
+          gw.adapter(:sql) { _1.configure_for_gateway(gw) }
         end
 
         expect(config.gateway(:default).options.fetch(:connect_sqls)).to eq [

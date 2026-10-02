@@ -70,7 +70,7 @@ module Hanami
 
           config.adapter.configure_from_adapter(default_adapter)
 
-          config.adapter.configure_for_database(config.database_url)
+          config.adapter.configure_for_gateway(self)
 
           self
         end
