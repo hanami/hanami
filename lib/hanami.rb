@@ -253,11 +253,15 @@ module Hanami
   # @since 2.0.0
   def self.bundled?(gem_name)
     @_mutex.synchronize do
-      @_bundled[gem_name] ||= begin
-        gem(gem_name)
-      rescue Gem::LoadError
-        false
-      end
+      @_bundled.fetch(gem_name) {
+        @_bundled[gem_name] =
+          begin
+            gem(gem_name)
+            true
+          rescue Gem::LoadError
+            false
+          end
+      }
     end
   end
 
