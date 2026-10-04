@@ -33,6 +33,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     This unloads the app and all its slices, then prepares them again, picking up changes to code, settings, providers, routes and slices themselves. The app class itself is kept, so `run Hanami.app` in `config.ru` continues to work, which means that `config/app.rb` itself is not reloaded.
 
     Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
+- Slices can be defined, prepared, booted, and served as Rack apps without an `Hanami::App` defined in the process. (@parndt in #1614)
+
 ### Changed
 
 ### Deprecated

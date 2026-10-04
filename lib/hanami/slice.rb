@@ -19,8 +19,9 @@ module Hanami
   # Each slice has its own config, and may optionally have its own settings, routes, as well as
   # other nested slices.
   #
-  # Slices expect an Hanami app to be defined (which itself is a slice). They will initialize their
-  # config as a copy of the app's, and will also configure certain components
+  # Slices expect an app (which itself is a slice). They will initialize their config as a copy of
+  # the app's, and will also configure certain components. The app is the Hanami app when one is
+  # defined, or otherwise the outermost slice, so slices can also be used without an Hanami app.
   #
   # Slices must be _prepared_ and optionally _booted_ before they can be used (see
   # {ClassMethods.prepare} and {ClassMethods.boot}). A prepared slice will lazily load its
@@ -108,29 +109,36 @@ module Hanami
       # @since 2.0.0
       attr_reader :container
 
-      # Returns the Hanami app.
+      # Returns the app: Hanami.app when one is defined, or otherwise the outermost slice.
       #
-      # @return [Hanami::App]
+      # The app provides the config, base components and routes helper shared by the slices within
+      # it. With no Hanami app defined, a slice with no parent acts as the app for itself and the
+      # slices it registers.
+      #
+      # @return [Hanami::Slice]
       #
       # @api public
       # @since 2.0.0
       def app
-        Hanami.app
+        return Hanami.app if Hanami.app?
+
+        parent ? parent.app : self
       end
 
-      # Returns true if the slice is Hanami.app
+      # Returns true if the slice is the app.
       #
       # @return [Boolean]
       #
+      # @see #app
+      #
       # @api public
       # @since 2.2.0
-      def app?
-        Hanami.app? && eql?(app)
-      end
+      def app? = eql?(app)
 
       # Returns the slice's config.
       #
-      # A slice's config is copied from the app config at time of first access.
+      # A slice's config is copied from the app config at time of first access. With no Hanami app
+      # defined, the outermost slice builds its own.
       #
       # @return [Hanami::Config]
       #
@@ -139,10 +147,15 @@ module Hanami
       # @api public
       # @since 2.0.0
       def config
-        @config ||= app.config.dup.tap do |slice_config|
-          # Unset config from app that does not apply to ordinary slices
-          slice_config.root = nil
-        end
+        @config ||=
+          if app?
+            Hanami::Config.new(app_name: slice_name, env: Hanami.env)
+          else
+            app.config.dup.tap do |slice_config|
+              # Unset config from app that does not apply to ordinary slices
+              slice_config.root = nil
+            end
+          end
       end
 
       # Evaluates the block for a given app environment only.
@@ -227,18 +240,18 @@ module Hanami
         # to live in the app SLICES_DIR. For advanced cases, the correct slice root should be
         # explicitly configured at the beginning of the slice class body, before any calls to
         # `settings`.
-        config.root || app.root.join(SLICES_DIR, slice_name.to_s)
+        config.root || (app? ? Pathname(Dir.pwd) : app.root.join(SLICES_DIR, slice_name.to_s))
       end
 
-      # Returns the slice's root component directory, accounting for App as a special case.
+      # Returns the slice's root component directory.
       #
       # @return [Pathname]
       #
+      # @see App::ClassMethods#source_path
+      #
       # @api public
       # @since 2.2.0
-      def source_path
-        app? ? root.join(APP_DIR) : root
-      end
+      def source_path = root
 
       # Returns the slice's root component directory, as a path relative to the app's root.
       #
@@ -1022,12 +1035,7 @@ module Hanami
       # container.
       #
       # @api private
-      def code_reloading?
-        # A slice can be prepared without an app in place (in tests, mostly).
-        return config.code_reloading unless Hanami.app?
-
-        app.config.code_reloading
-      end
+      def code_reloading? = app.config.code_reloading
 
       def ensure_slice_name
         unless name
@@ -1052,6 +1060,9 @@ module Hanami
       end
 
       def prepare_all
+        # Make app-wide notifications available as early as possible
+        container.use(:notifications) if app?
+
         prepare_settings
         prepare_container_consts
         prepare_container_plugins
@@ -1059,6 +1070,36 @@ module Hanami
         prepare_container_component_dirs
         prepare_container_imports
         prepare_container_providers
+        prepare_app_providers
+      end
+
+      # Registers the components the app shares with the slices within it.
+      def prepare_app_providers
+        return unless app?
+
+        require_relative "providers/inflector"
+        register_provider(:inflector, source: Hanami::Providers::Inflector)
+
+        # Allow the logger to be replaced by users with a manual provider, for advanced cases.
+        unless container.providers[:logger]
+          register_provider(:logger, source: Hanami::Providers::Logger)
+        end
+
+        # Ensure the logger is wrapped by `Hanami::UniversalLogger`, even if manually registered in a
+        # user-defined provider, guaranteeing Hanami's structured and tagged logging interface across
+        # the framework.
+        container.providers[:logger].source.after(:start) do
+          container.decorate(:logger) { |logger| Hanami::UniversalLogger[logger] }
+        end
+
+        if Hanami.bundled?("rack")
+          require_relative "providers/rack"
+          register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
+        end
+
+        if Hanami.bundled?("hanami-db")
+          register_provider(:db_logging, source: Hanami::Providers::DBLogging)
+        end
       end
 
       def prepare_settings
@@ -1145,6 +1186,8 @@ module Hanami
       end
 
       def prepare_container_imports
+        return if app?
+
         import(
           keys: config.shared_app_component_keys,
           from: app.container,
@@ -1309,12 +1352,12 @@ module Hanami
 
             if config.actions.content_security_policy && # rubocop:disable Style/SafeNavigation
                config.actions.content_security_policy.nonce?
-              use(*config.actions.content_security_policy.middleware)
+              use(*config.actions.content_security_policy.middleware, config: slice.app.config)
             end
           end
 
           if Hanami.bundled?("hanami-assets") && config.assets.serve
-            use(Hanami::Middleware::Assets)
+            use(Hanami::Middleware::Assets, config: slice.app.config)
           end
 
           middleware_stack.update(config.middleware_stack)
