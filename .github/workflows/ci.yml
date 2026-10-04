@@ -27,6 +27,7 @@ jobs:
           - "4.0"
           - "3.4"
           - "3.3"
+          - "jruby"
         rack:
           - "~> 2.0"
           - "~> 3.0"
@@ -34,12 +35,6 @@ jobs:
           - ruby: "4.0"
             rack: "~> 2.0"
             coverage: "true"
-          - ruby: "jruby"
-            rack: "~> 2.0"
-            optional: true
-          - ruby: "jruby"
-            rack: "~> 3.0"
-            optional: true
     env:
       COVERAGE: ${{ matrix.coverage }}
       RACK_MATRIX_VALUE: ${{ matrix.rack || '' }}
