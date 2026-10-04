@@ -275,7 +275,7 @@ module Hanami
         "postgres" => "pg",
         "sqlite" => "sqlite3",
         "jdbc:mysql" => "jdbc-mysql",
-        "jdbc:postgresql" => "jdbc-postgresql",
+        "jdbc:postgresql" => "jdbc-postgres",
         "jdbc:sqlite" => "jdbc-sqlite3"
       }.freeze
       private_constant :DATABASE_GEMS
