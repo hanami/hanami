@@ -36,12 +36,11 @@ module Hanami
           # @api private
           # @since 2.1.0
           def context_superclass(slice)
-            # A slice that is its own host builds straight on the framework context
-            return Hanami::View::Context if slice.host?
+            return Hanami::View::Context if slice.app?
 
             begin
               slice.inflector.constantize(
-                slice.inflector.camelize("#{slice.host.slice_name.name}/views/context")
+                slice.inflector.camelize("#{slice.app.slice_name.name}/views/context")
               )
             rescue NameError => exception
               raise exception unless %i[Views Context].include?(exception.name)

@@ -18,14 +18,15 @@ module Hanami
     class ContentSecurityPolicyNonce
       # @api private
       # @since 2.3.0
-      def initialize(app)
+      def initialize(app, config: Hanami.app.config)
         @app = app
+        @config = config
       end
 
       # @api private
       # @since 2.3.0
       def call(env)
-        return @app.call(env) unless Hanami.app.config.actions.content_security_policy?
+        return @app.call(env) unless @config.actions.content_security_policy?
 
         args = nonce_generator.arity == 1 ? [Rack::Request.new(env)] : []
         request_nonce = nonce_generator.call(*args)
@@ -42,7 +43,7 @@ module Hanami
       private
 
       def nonce_generator
-        Hanami.app.config.actions.content_security_policy_nonce_generator
+        @config.actions.content_security_policy_nonce_generator
       end
 
       def sub_nonce(string, nonce)

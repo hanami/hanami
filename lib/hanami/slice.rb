@@ -19,9 +19,9 @@ module Hanami
   # Each slice has its own config, and may optionally have its own settings, routes, as well as
   # other nested slices.
   #
-  # Slices are hosted by the Hanami app when one is defined (the app is itself a slice), and will
-  # initialize their config as a copy of the app's. A slice with no app in the process is its own
-  # {ClassMethods#host host}, and provisions its own config and base components.
+  # Slices expect an app (which itself is a slice). They will initialize their config as a copy of
+  # the app's, and will also configure certain components. The app is the Hanami app when one is
+  # defined, or otherwise the outermost slice, so slices can also be used without an Hanami app.
   #
   # Slices must be _prepared_ and optionally _booted_ before they can be used (see
   # {ClassMethods.prepare} and {ClassMethods.boot}). A prepared slice will lazily load its
@@ -109,60 +109,36 @@ module Hanami
       # @since 2.0.0
       attr_reader :container
 
-      # Returns the Hanami app.
+      # Returns the app: Hanami.app when one is defined, or otherwise the outermost slice.
       #
-      # @return [Hanami::App]
-      #
-      # @api public
-      # @since 2.0.0
-      def app
-        Hanami.app
-      end
-
-      # Returns true if the slice is Hanami.app
-      #
-      # @return [Boolean]
-      #
-      # @api public
-      # @since 2.2.0
-      def app?
-        Hanami.app? && eql?(app)
-      end
-
-      # Returns the slice's host: the app, when one is defined in the process, or the slice
-      # itself, when it is running standalone.
-      #
-      # The host is the slice that provides shared facilities to the slices it hosts: config,
-      # base providers, shared components, and the routes helper. A standalone slice hosts
-      # itself.
+      # The app provides the config, base components and routes helper shared by the slices within
+      # it. With no Hanami app defined, a slice with no parent acts as the app for itself and the
+      # slices it registers.
       #
       # @return [Hanami::Slice]
       #
       # @api public
-      # @since 3.1.0
-      def host
-        Hanami.app? ? app : self
+      # @since 2.0.0
+      def app
+        return Hanami.app if Hanami.app?
+
+        parent ? parent.app : self
       end
 
-      # Returns true if the slice is its own host.
-      #
-      # This is the case when the slice is the app, or when it is running standalone (with no
-      # app defined in the process).
+      # Returns true if the slice is the app.
       #
       # @return [Boolean]
       #
-      # @see #host
+      # @see #app
       #
       # @api public
-      # @since 3.1.0
-      def host?
-        eql?(host)
-      end
+      # @since 2.2.0
+      def app? = eql?(app)
 
       # Returns the slice's config.
       #
-      # A slice's config is copied from its host's config at time of first access. A slice that
-      # is its own host builds its own config.
+      # A slice's config is copied from the app config at time of first access. With no Hanami app
+      # defined, the outermost slice builds its own.
       #
       # @return [Hanami::Config]
       #
@@ -172,12 +148,11 @@ module Hanami
       # @since 2.0.0
       def config
         @config ||=
-          if host?
-            # A slice that is its own host builds its own config, exactly as an app does
+          if app?
             Hanami::Config.new(app_name: slice_name, env: Hanami.env)
           else
-            host.config.dup.tap do |slice_config|
-              # Unset config from the host that does not apply to ordinary slices
+            app.config.dup.tap do |slice_config|
+              # Unset config from app that does not apply to ordinary slices
               slice_config.root = nil
             end
           end
@@ -265,24 +240,18 @@ module Hanami
         # to live in the app SLICES_DIR. For advanced cases, the correct slice root should be
         # explicitly configured at the beginning of the slice class body, before any calls to
         # `settings`.
-        config.root ||
-          if host?
-            # A slice that is its own host gets the same default root as an app would
-            Pathname(Dir.pwd)
-          else
-            host.root.join(SLICES_DIR, slice_name.to_s)
-          end
+        config.root || (app? ? Pathname(Dir.pwd) : app.root.join(SLICES_DIR, slice_name.to_s))
       end
 
-      # Returns the slice's root component directory, accounting for App as a special case.
+      # Returns the slice's root component directory.
       #
       # @return [Pathname]
       #
+      # @see App::ClassMethods#source_path
+      #
       # @api public
       # @since 2.2.0
-      def source_path
-        app? ? root.join(APP_DIR) : root
-      end
+      def source_path = root
 
       # Returns the slice's root component directory, as a path relative to the app's root.
       #
@@ -293,7 +262,7 @@ module Hanami
       # @api public
       # @since 2.3.0
       def relative_source_path
-        source_path.relative_path_from(host.root)
+        source_path.relative_path_from(app.root)
       end
 
       # Returns the slice's configured inflector.
@@ -1066,12 +1035,7 @@ module Hanami
       # container.
       #
       # @api private
-      def code_reloading?
-        # A slice can be prepared without an app in place (in tests, mostly).
-        return config.code_reloading unless Hanami.app?
-
-        app.config.code_reloading
-      end
+      def code_reloading? = app.config.code_reloading
 
       def ensure_slice_name
         unless name
@@ -1096,31 +1060,34 @@ module Hanami
       end
 
       def prepare_all
+        # Make app-wide notifications available as early as possible
+        container.use(:notifications) if app?
+
         prepare_settings
         prepare_container_consts
         prepare_container_plugins
         prepare_container_base_config
         prepare_container_component_dirs
         prepare_container_imports
-        prepare_host_providers
         prepare_container_providers
+        prepare_app_providers
       end
 
-      # A slice that is its own host provisions the components it would otherwise import
-      # from the app. Mirrors App#prepare_app_providers, which the app uses instead (see
-      # the empty override in App::ClassMethods).
-      def prepare_host_providers
-        return unless host?
-
-        container.use(:notifications)
+      # Registers the components the app shares with the slices within it.
+      def prepare_app_providers
+        return unless app?
 
         require_relative "providers/inflector"
         register_provider(:inflector, source: Hanami::Providers::Inflector)
 
-        require_relative "providers/logger"
+        # Allow the logger to be replaced by users with a manual provider, for advanced cases.
         unless container.providers[:logger]
           register_provider(:logger, source: Hanami::Providers::Logger)
         end
+
+        # Ensure the logger is wrapped by `Hanami::UniversalLogger`, even if manually registered in a
+        # user-defined provider, guaranteeing Hanami's structured and tagged logging interface across
+        # the framework.
         container.providers[:logger].source.after(:start) do
           container.decorate(:logger) { |logger| Hanami::UniversalLogger[logger] }
         end
@@ -1128,6 +1095,10 @@ module Hanami
         if Hanami.bundled?("rack")
           require_relative "providers/rack"
           register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
+        end
+
+        if Hanami.bundled?("hanami-db")
+          register_provider(:db_logging, source: Hanami::Providers::DBLogging)
         end
       end
 
@@ -1215,13 +1186,11 @@ module Hanami
       end
 
       def prepare_container_imports
-        # A slice that is its own host has nowhere to import from; it provisions these
-        # components itself (see #prepare_host_providers)
-        return if host?
+        return if app?
 
         import(
           keys: config.shared_app_component_keys,
-          from: host.container,
+          from: app.container,
           as: nil
         )
       end
@@ -1383,17 +1352,12 @@ module Hanami
 
             if config.actions.content_security_policy && # rubocop:disable Style/SafeNavigation
                config.actions.content_security_policy.nonce?
-              use(*config.actions.content_security_policy.middleware)
+              use(*config.actions.content_security_policy.middleware, config: slice.app.config)
             end
           end
 
           if Hanami.bundled?("hanami-assets") && config.assets.serve
-            if slice.host?
-              # A slice that is its own host serves assets per its own config
-              use(Hanami::Middleware::Assets, config:)
-            else
-              use(Hanami::Middleware::Assets)
-            end
+            use(Hanami::Middleware::Assets, config: slice.app.config)
           end
 
           middleware_stack.update(config.middleware_stack)
@@ -1425,21 +1389,21 @@ module Hanami
 
       # Ensures an i18n provider is available in every slice.
       #
-      # A slice that is its own host will always register its own provider. Other slices will
-      # do so unless they are configured to share their host's "i18n" component.
+      # For the app, this will always be a standalone provider. For slices, this will be a
+      # standalone provider unless the slice is configured to share the app's "i18n" component.
       def register_i18n_provider?
-        return true if host?
+        return true if app?
 
         !config.shared_app_component_keys.include?("i18n")
       end
 
       # Ensures a mailers provider is available in every slice.
       #
-      # A slice that is its own host will always register its own provider. Other slices will
-      # do so unless they are configured to share their host's "mailers.delivery_method"
-      # component.
+      # For the app, this will always be a standalone provider. For slices, this will be a
+      # standalone provider unless the slice is configured to share the app's
+      # "mailers.delivery_method" component.
       def register_mailers_provider?
-        return true if host?
+        return true if app?
 
         !config.shared_app_component_keys.include?("mailers.delivery_method")
       end

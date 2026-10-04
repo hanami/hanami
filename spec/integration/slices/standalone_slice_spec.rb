@@ -68,9 +68,9 @@ RSpec.describe "Slices / Standalone slices", :app_integration do
 
       slice = PagesFeature::Slice
 
-      # With no app in the process, the slice is its own host
-      expect(slice.host).to be slice
-      expect(slice).to be_host
+      # With no Hanami app, the slice is its own app
+      expect(slice.app).to be slice
+      expect(slice).to be_app
 
       expect(slice.prepare).to be slice
       expect(slice.prepared?).to be true
