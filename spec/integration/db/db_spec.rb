@@ -233,21 +233,13 @@ RSpec.describe "DB", :app_integration do
       RUBY
 
       ENV["HANAMI_ENV"] = "test"
-      # JRuby's JDBC driver resolves relative paths against the JVM's own working directory,
-      # which Ruby's Dir.chdir (used by with_tmp_directory) does not move, so use an absolute
-      # path to keep this test's sqlite file inside the tmp directory.
-      ENV["DATABASE_URL"] =
-        RUBY_ENGINE == "jruby" ? "jdbc:sqlite:#{File.expand_path("development.db")}" : "sqlite://./development.db"
+      ENV["DATABASE_URL"] = sqlite_database_url("./development.db")
 
       require "hanami/prepare"
 
       Hanami.app.prepare :db
 
-      # hanami-db's test-mode URL transformation only understands hierarchical URLs (with a
-      # `path`), not JDBC's opaque URLs, so it leaves JRuby's URL untouched.
-      expected_url =
-        RUBY_ENGINE == "jruby" ? "jdbc:sqlite:#{File.expand_path("development.db")}" : "sqlite://./test.db"
-      expect(Hanami.app["db.gateway"].connection.url).to eq expected_url
+      expect(Hanami.app["db.gateway"].connection.url).to eq sqlite_database_url("./test.db")
     end
   end
 end
