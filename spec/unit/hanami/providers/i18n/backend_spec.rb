@@ -375,27 +375,21 @@ RSpec.describe Hanami::Providers::I18n::Backend do
     end
 
     it "isolates with_locale across threads" do
-      results = {}
-
-      threads = [
-        Thread.new do
-          backend.with_locale(:fr) do
-            sleep 0.01
-            results[:thread1] = backend.t(:hello)
-          end
-        end,
-        Thread.new do
-          backend.with_locale(:en) do
-            sleep 0.01
-            results[:thread2] = backend.t(:hello)
-          end
+      thread1 = Thread.new do
+        backend.with_locale(:fr) do
+          sleep 0.01
+          backend.t(:hello)
         end
-      ]
+      end
+      thread2 = Thread.new do
+        backend.with_locale(:en) do
+          sleep 0.01
+          backend.t(:hello)
+        end
+      end
 
-      threads.each(&:join)
-
-      expect(results[:thread1]).to eq("Bonjour")
-      expect(results[:thread2]).to eq("Hello")
+      expect(thread1.value).to eq("Bonjour")
+      expect(thread2.value).to eq("Hello")
     end
   end
 

@@ -31,7 +31,7 @@ RSpec.describe "Single-file app", :app_integration do
 
             configure_provider :db do
               config.gateway(:default) do |gw|
-                gw.database_url = "sqlite::memory"
+                gw.database_url = "#{sqlite_database_url}"
               end
             end
 
@@ -65,7 +65,7 @@ RSpec.describe "Single-file app", :app_integration do
 
       expect(TestApp::Actions::Home).to be_configured_for_slice(TestApp::App)
       expect(TestApp::App["settings"].tagline).to eq "One file is all you need"
-      expect(TestApp::App["db.gateway"].connection.uri).to eq "sqlite::memory"
+      expect(TestApp::App["db.gateway"].connection.uri).to eq sqlite_database_url
     end
   end
 end

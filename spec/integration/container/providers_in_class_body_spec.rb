@@ -70,7 +70,7 @@ RSpec.describe "Container / Providers in the class body", :app_integration do
           class App < Hanami::App
             configure_provider :db do
               config.gateway(:default) do |gw|
-                gw.database_url = "sqlite::memory"
+                gw.database_url = "#{sqlite_database_url}"
               end
             end
           end
@@ -83,7 +83,7 @@ RSpec.describe "Container / Providers in the class body", :app_integration do
 
       Hanami.app.prepare :db
 
-      expect(Hanami.app["db.gateway"].connection.uri).to eq "sqlite::memory"
+      expect(Hanami.app["db.gateway"].connection.uri).to eq sqlite_database_url
     end
   end
 
@@ -103,7 +103,7 @@ RSpec.describe "Container / Providers in the class body", :app_integration do
           class Slice < Hanami::Slice
             configure_provider :db do
               config.gateway(:default) do |gw|
-                gw.database_url = "sqlite::memory"
+                gw.database_url = "#{sqlite_database_url}"
               end
             end
           end
@@ -116,7 +116,7 @@ RSpec.describe "Container / Providers in the class body", :app_integration do
 
       Admin::Slice.prepare :db
 
-      expect(Admin::Slice["db.gateway"].connection.uri).to eq "sqlite::memory"
+      expect(Admin::Slice["db.gateway"].connection.uri).to eq sqlite_database_url
     end
   end
 end
