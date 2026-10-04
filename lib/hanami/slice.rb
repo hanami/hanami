@@ -951,9 +951,12 @@ module Hanami
       #
       #   @api public
       #   @since 2.0.0
-      def call(...)
+      def call(rack_env)
+        # Do not change this to `call(...)`. When JRuby forwards a hash through `...`, it can pass
+        # on a copy. The app would then change the copy, and the caller would not see the any
+        # changes, such as values that middleware adds to the env.
         if rack_app
-          rack_app.call(...)
+          rack_app.call(rack_env)
         else
           error_message = if Hanami.bundled?("hanami-router")
                             "Could not handle this rack request because no routes are defined"
