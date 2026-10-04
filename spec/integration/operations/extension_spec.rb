@@ -41,8 +41,8 @@ RSpec.describe "Operation / Extensions", :app_integration do
       write "slices/main/db/.keep", ""
       write "slices/main/relations/.keep", ""
 
-      ENV["DATABASE_URL"] = "sqlite::memory"
-      ENV["MAIN__DATABASE_URL"] = "sqlite::memory"
+      ENV["DATABASE_URL"] = sqlite_database_url
+      ENV["MAIN__DATABASE_URL"] = sqlite_database_url
 
       require "hanami/prepare"
 
