@@ -44,6 +44,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
     With the lazy exposures in Hanami View 3.1, this ensures form rendering no longer runs every exposure in the view, only the ones the form reads. 
 
+- Require hanami-db 3.1 or later, using its new `Hanami::DB::DatabaseURL` to find the gem required to connect to each database URL. If an older hanami-db is installed, preparing the `:db` provider raises an error explaining how to upgrade. (@parndt)
+
 ### Deprecated
 
 ### Removed
@@ -57,6 +59,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Register Hanami's first-party provider sources when `Hanami::Slice` loads, rather than when a slice is prepared. This allows `configure_provider` to be called within an app or slice class body. (@timriley in #1636)
 - Configure a slice's provider registrar when the slice class is defined rather than when it is prepared. Calling `register_provider` from within a slice class body previously left the slice with Dry System's default registrar, leading to errors when the slice was prepared. (@timriley in #1636)
 - Resolve the `routes` helper in slice view contexts from the app, so views and actions in a slice generate the same named paths. (@aaronmallen in #1630)
+- Raise a helpful error when the `pg` gem is missing for `postgresql://` database URLs, as already happened for `postgres://` URLs. (@parndt)
 - Detect already-activated gems in `Hanami.bundled?` when running outside of Bundler. Previously, gems like `rack` that were activated as a dependency of another gem were reported as missing, leaving `rack.monitor` unregistered and causing every request to return a 500 error. (@maksim-romanov in #1639)
 - Use the `as:` option of `resources` for all route names. Member routes now use its singular form (`resources :books, as: :publications` gives `publication`, `new_publication` and `edit_publication`), and the index route keeps its own `publications` name instead of being overwritten by the show route. Routes nested under the resource now use it too, giving `publication_reviews` rather than `book_reviews`. (@timriley in #1643)
 - Name routes nested under a singular `resource` using the resource's name as given, matching the resource's own routes. `resource :settings do resources :items end` now gives `settings_items` rather than `setting_items`. (@timriley in #1643)
