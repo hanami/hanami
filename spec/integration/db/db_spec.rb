@@ -131,6 +131,32 @@ RSpec.describe "DB", :app_integration do
     end
   end
 
+  it "raises an error when the installed hanami-db is too old" do
+    hide_const "Hanami::DB::DatabaseURL"
+
+    with_tmp_directory(Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+          end
+        end
+      RUBY
+
+      write "app/relations/.keep", ""
+
+      ENV["DATABASE_URL"] = "postgres://127.0.0.0"
+
+      require "hanami/prepare"
+
+      expect { Hanami.app.prepare :db }.to raise_error(Hanami::ComponentLoadError) { |error|
+        expect(error.message).to include "requires hanami-db 3.1.0 or later, but #{Hanami::DB::VERSION} is installed"
+        expect(error.message).to include "bundle update hanami-db"
+      }
+    end
+  end
+
   it "raises an error when the database driver gem is missing" do
     allow(Hanami).to receive(:bundled?).and_call_original
     expect(Hanami).to receive(:bundled?).with("pg").and_return false
