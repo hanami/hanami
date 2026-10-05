@@ -46,6 +46,33 @@ RSpec.describe "DB / Provider / Config", :app_integration do
     end
   end
 
+  describe "SQLite pragmas" do
+    it "applies the default pragmas to every connection" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~RUBY
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "config/db/.keep", ""
+
+        ENV["DATABASE_URL"] = "sqlite://" + Pathname(Dir.pwd).realpath.join("database.db").to_s
+
+        require "hanami/prepare"
+
+        Hanami.app.prepare :db
+
+        connection = Hanami.app["db.gateway"].connection
+        expect(connection.get(Sequel.lit("journal_mode FROM pragma_journal_mode"))).to eq "wal"
+        expect(connection.get(Sequel.lit("synchronous FROM pragma_synchronous"))).to eq 1
+      end
+    end
+  end
+
   it "evaluates plugin config blocks in the context of the provider" do
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
