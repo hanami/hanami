@@ -216,7 +216,7 @@ module Hanami
         end
 
         def scope_name
-          @inflector.singularize(@name)
+          route_name_base
         end
 
         def actions
@@ -265,14 +265,10 @@ module Hanami
         PLURALIZED_NAME_ACTIONS = %i[index create].freeze
 
         def route_name_base
-          @route_name_base ||=
-            if @options[:as]
-              @options[:as].to_s
-            elsif plural?
-              @inflector.singularize(@name.to_s)
-            else
-              @name.to_s
-            end
+          @route_name_base ||= begin
+            name = (@options[:as] || @name).to_s
+            plural? ? @inflector.singularize(name) : name
+          end
         end
       end
     end
