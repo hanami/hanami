@@ -127,6 +127,30 @@ RSpec.describe "Router / Resource routes" do
         expect(router.path("edit_article", id: 1)).to eq "/posts/1/edit"
       end
     end
+
+    describe "with an uncountable name" do
+      let(:routes) { proc { resources :news } }
+
+      it "adds an _index suffix to the collection route names" do
+        expect(routed("GET", "/news")).to eq %(actions.news.index)
+        expect(routed("POST", "/news")).to eq %(actions.news.create)
+        expect(routed("GET", "/news/1")).to eq %(actions.news.show {"id":"1"})
+
+        expect(router.path("news_index")).to eq "/news"
+        expect(router.path("news", id: 1)).to eq "/news/1"
+        expect(router.path("new_news")).to eq "/news/new"
+        expect(router.path("edit_news", id: 1)).to eq "/news/1/edit"
+      end
+    end
+
+    describe "with an uncountable :as" do
+      let(:routes) { proc { resources :posts, as: :series } }
+
+      it "adds an _index suffix to the collection route names" do
+        expect(router.path("series_index")).to eq "/posts"
+        expect(router.path("series", id: 1)).to eq "/posts/1"
+      end
+    end
   end
 
   describe "resource" do
