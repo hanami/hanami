@@ -35,6 +35,10 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
 ### Changed
 
+- In routes, pass the `as:` option of `resources` through the inflector, in the same way as the resource name. Previously `as:` was used exactly as given. Now, member routes and routes nested under the resource use its singular form, and the index and create routes use its plural form. (@timriley in #1643)
+
+    For example, `resources :items, as: :data` now gives `datum`, `edit_datum` and `datum_reviews` for member and nested routes, and `data` for the index route. To change how a name is inflected, add a custom inflection with `config.inflections` in your app.
+
 ### Deprecated
 
 ### Removed
