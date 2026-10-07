@@ -298,6 +298,32 @@ RSpec.describe "Router / Resource routes" do
       end
     end
 
+    describe "with :path" do
+      let(:routes) {
+        proc {
+          resources :cafes, only: :show, path: "coffee-shops" do
+            resources :reviews, only: :index
+          end
+
+          resources :posts, only: :show, path: "blog/posts" do
+            resources :comments, only: :index
+          end
+
+          resources :comments, only: :show, path: "reviews" do
+            resources :likes, only: :index
+          end
+        }
+      }
+
+      it "uses the resource name for the nested route params" do
+        expect(routed("GET", "/coffee-shops/1/reviews")).to eq %(actions.cafes.reviews.index {"cafe_id":"1"})
+        expect(routed("GET", "/blog/posts/1/comments")).to eq %(actions.posts.comments.index {"post_id":"1"})
+        expect(routed("GET", "/reviews/1/likes")).to eq %(actions.comments.likes.index {"comment_id":"1"})
+
+        expect(router.path("cafe_reviews", cafe_id: 1)).to eq "/coffee-shops/1/reviews"
+      end
+    end
+
     describe "under a singular resource with a plural name" do
       let(:routes) {
         proc {

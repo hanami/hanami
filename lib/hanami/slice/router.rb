@@ -209,7 +209,7 @@ module Hanami
 
         def scope_path
           if plural?
-            "#{@path}/:#{@inflector.singularize(@path.to_s)}_id"
+            "#{@path}/:#{@inflector.singularize(@name.to_s)}_id"
           else
             @path
           end

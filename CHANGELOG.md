@@ -52,6 +52,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Use the `as:` option of `resources` for all route names. Member routes now use its singular form (`resources :books, as: :publications` gives `publication`, `new_publication` and `edit_publication`), and the index route keeps its own `publications` name instead of being overwritten by the show route. Routes nested under the resource now use it too, giving `publication_reviews` rather than `book_reviews`. (@timriley in #1643)
 - Name routes nested under a singular `resource` using the resource's name as given, matching the resource's own routes. `resource :settings do resources :items end` now gives `settings_items` rather than `setting_items`. (@timriley in #1643)
 - Give the index and create routes of `resources` with an uncountable name (like `news`) a name with an `_index` suffix (`news_index`). Previously these shared the `news` name with the show route, which left the index route without a usable name. (@timriley in #1643)
+- Name the params for routes nested under `resources` after the resource name, rather than its `path:`. `resources :cafes, path: "coffee-shops" do resources :reviews end` now gives `/coffee-shops/:cafe_id/reviews`. Previously, a `path:` with a dash or a slash gave an invalid param name, and the nested routes did not match any request. Apps that use a `path:` and read the old param name (for example, `article_id` for `resources :posts, path: "articles"`) will need to read the new name (`post_id`). (@timriley in #1643)
 
 ### Security
 
