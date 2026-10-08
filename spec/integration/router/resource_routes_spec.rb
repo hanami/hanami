@@ -113,6 +113,44 @@ RSpec.describe "Router / Resource routes" do
         expect(routed("DELETE", "/articles/1")).to eq %(actions.posts.destroy {"id":"1"})
       end
     end
+
+    describe "with :as" do
+      let(:routes) { proc { resources :posts, as: :articles } }
+
+      it "uses the given name for the route names" do
+        expect(routed("GET", "/posts")).to eq %(actions.posts.index)
+        expect(routed("GET", "/posts/1")).to eq %(actions.posts.show {"id":"1"})
+
+        expect(router.path("articles")).to eq "/posts"
+        expect(router.path("article", id: 1)).to eq "/posts/1"
+        expect(router.path("new_article")).to eq "/posts/new"
+        expect(router.path("edit_article", id: 1)).to eq "/posts/1/edit"
+      end
+    end
+
+    describe "with an uncountable name" do
+      let(:routes) { proc { resources :news } }
+
+      it "adds an _index suffix to the collection route names" do
+        expect(routed("GET", "/news")).to eq %(actions.news.index)
+        expect(routed("POST", "/news")).to eq %(actions.news.create)
+        expect(routed("GET", "/news/1")).to eq %(actions.news.show {"id":"1"})
+
+        expect(router.path("news_index")).to eq "/news"
+        expect(router.path("news", id: 1)).to eq "/news/1"
+        expect(router.path("new_news")).to eq "/news/new"
+        expect(router.path("edit_news", id: 1)).to eq "/news/1/edit"
+      end
+    end
+
+    describe "with an uncountable :as" do
+      let(:routes) { proc { resources :posts, as: :series } }
+
+      it "adds an _index suffix to the collection route names" do
+        expect(router.path("series_index")).to eq "/posts"
+        expect(router.path("series", id: 1)).to eq "/posts/1"
+      end
+    end
   end
 
   describe "resource" do
@@ -188,6 +226,18 @@ RSpec.describe "Router / Resource routes" do
         expect(routed("DELETE", "/user")).to eq %(actions.profile.destroy)
       end
     end
+
+    describe "with :as" do
+      let(:routes) { proc { resource :profile, as: :account } }
+
+      it "uses the given name for the route names" do
+        expect(routed("GET", "/profile")).to eq %(actions.profile.show)
+
+        expect(router.path("account")).to eq "/profile"
+        expect(router.path("new_account")).to eq "/profile/new"
+        expect(router.path("edit_account")).to eq "/profile/edit"
+      end
+    end
   end
 
   describe "nested resources" do
@@ -220,6 +270,75 @@ RSpec.describe "Router / Resource routes" do
       expect(routed("GET", "/profile")).to eq %(actions.profile.show)
       expect(routed("GET", "/profile/avatar")).to eq %(actions.profile.avatar.show)
       expect(routed("GET", "/profile/avatar/comments")).to eq %(actions.profile.avatar.comments.index)
+    end
+
+    describe "with :as" do
+      let(:routes) {
+        proc {
+          resources :cafes, only: :show, as: :coffee_shops do
+            resources :reviews, only: :index, as: :ratings do
+              get "/top", to: "cafes.reviews.top", as: :top
+            end
+          end
+
+          resource :profile, only: :show, as: :account do
+            resources :comments, only: :index
+          end
+        }
+      }
+
+      it "uses the given names for the nested route names" do
+        expect(routed("GET", "/cafes/1/reviews")).to eq %(actions.cafes.reviews.index {"cafe_id":"1"})
+
+        expect(router.path("coffee_shop", id: 1)).to eq "/cafes/1"
+        expect(router.path("coffee_shop_ratings", cafe_id: 1)).to eq "/cafes/1/reviews"
+        expect(router.path("coffee_shop_rating_top", cafe_id: 1, review_id: 2)).to eq "/cafes/1/reviews/2/top"
+
+        expect(router.path("account_comments")).to eq "/profile/comments"
+      end
+    end
+
+    describe "with :path" do
+      let(:routes) {
+        proc {
+          resources :cafes, only: :show, path: "coffee-shops" do
+            resources :reviews, only: :index
+          end
+
+          resources :posts, only: :show, path: "blog/posts" do
+            resources :comments, only: :index
+          end
+
+          resources :comments, only: :show, path: "reviews" do
+            resources :likes, only: :index
+          end
+        }
+      }
+
+      it "uses the resource name for the nested route params" do
+        expect(routed("GET", "/coffee-shops/1/reviews")).to eq %(actions.cafes.reviews.index {"cafe_id":"1"})
+        expect(routed("GET", "/blog/posts/1/comments")).to eq %(actions.posts.comments.index {"post_id":"1"})
+        expect(routed("GET", "/reviews/1/likes")).to eq %(actions.comments.likes.index {"comment_id":"1"})
+
+        expect(router.path("cafe_reviews", cafe_id: 1)).to eq "/coffee-shops/1/reviews"
+      end
+    end
+
+    describe "under a singular resource with a plural name" do
+      let(:routes) {
+        proc {
+          resource :settings, only: :show do
+            resources :items, only: :index
+          end
+        }
+      }
+
+      it "uses the resource name as given for the nested route names" do
+        expect(routed("GET", "/settings/items")).to eq %(actions.settings.items.index)
+
+        expect(router.path("settings")).to eq "/settings"
+        expect(router.path("settings_items")).to eq "/settings/items"
+      end
     end
   end
 

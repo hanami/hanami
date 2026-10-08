@@ -35,6 +35,10 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
 ### Changed
 
+- In routes, pass the `as:` option of `resources` through the inflector, in the same way as the resource name. Previously `as:` was used exactly as given. Now, member routes and routes nested under the resource use its singular form, and the index and create routes use its plural form. (@timriley in #1643)
+
+    For example, `resources :items, as: :data` now gives `datum`, `edit_datum` and `datum_reviews` for member and nested routes, and `data` for the index route. To change how a name is inflected, add a custom inflection with `config.inflections` in your app.
+
 ### Deprecated
 
 ### Removed
@@ -49,6 +53,10 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Configure a slice's provider registrar when the slice class is defined rather than when it is prepared. Calling `register_provider` from within a slice class body previously left the slice with Dry System's default registrar, leading to errors when the slice was prepared. (@timriley in #1636)
 - Resolve the `routes` helper in slice view contexts from the app, so views and actions in a slice generate the same named paths. (@aaronmallen in #1630)
 - Detect already-activated gems in `Hanami.bundled?` when running outside of Bundler. Previously, gems like `rack` that were activated as a dependency of another gem were reported as missing, leaving `rack.monitor` unregistered and causing every request to return a 500 error. (@maksim-romanov in #1639)
+- Use the `as:` option of `resources` for all route names. Member routes now use its singular form (`resources :books, as: :publications` gives `publication`, `new_publication` and `edit_publication`), and the index route keeps its own `publications` name instead of being overwritten by the show route. Routes nested under the resource now use it too, giving `publication_reviews` rather than `book_reviews`. (@timriley in #1643)
+- Name routes nested under a singular `resource` using the resource's name as given, matching the resource's own routes. `resource :settings do resources :items end` now gives `settings_items` rather than `setting_items`. (@timriley in #1643)
+- Give the index and create routes of `resources` with an uncountable name (like `news`) a name with an `_index` suffix (`news_index`). Previously these shared the `news` name with the show route, which left the index route without a usable name. (@timriley in #1643)
+- Name the params for routes nested under `resources` after the resource name, rather than its `path:`. `resources :cafes, path: "coffee-shops" do resources :reviews end` now gives `/coffee-shops/:cafe_id/reviews`. Previously, a `path:` with a dash or a slash gave an invalid param name, and the nested routes did not match any request. Apps that use a `path:` and read the old param name (for example, `article_id` for `resources :posts, path: "articles"`) will need to read the new name (`post_id`). (@timriley in #1643)
 
 ### Security
 

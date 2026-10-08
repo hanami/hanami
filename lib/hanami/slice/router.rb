@@ -209,14 +209,14 @@ module Hanami
 
         def scope_path
           if plural?
-            "#{@path}/:#{@inflector.singularize(@path.to_s)}_id"
+            "#{@path}/:#{@inflector.singularize(@name.to_s)}_id"
           else
             @path
           end
         end
 
         def scope_name
-          @inflector.singularize(@name)
+          route_name_base
         end
 
         def actions
@@ -258,21 +258,24 @@ module Hanami
 
         def route_name(action, prefix)
           name = route_name_base
-          name = @inflector.pluralize(name) if plural? && PLURALIZED_NAME_ACTIONS.include?(action)
+          name = collection_route_name if plural? && PLURALIZED_NAME_ACTIONS.include?(action)
 
           [prefix, name]
         end
         PLURALIZED_NAME_ACTIONS = %i[index create].freeze
 
+        # Returns the name for the collection routes. Adds an "_index" suffix for uncountable names
+        # (like "news"), so that these routes have different names from the member routes.
+        def collection_route_name
+          name = @inflector.pluralize(route_name_base)
+          name == route_name_base ? "#{name}_index" : name
+        end
+
         def route_name_base
-          @route_name_base ||=
-            if @options[:as]
-              @options[:as].to_s
-            elsif plural?
-              @inflector.singularize(@name.to_s)
-            else
-              @name.to_s
-            end
+          @route_name_base ||= begin
+            name = (@options[:as] || @name).to_s
+            plural? ? @inflector.singularize(name) : name
+          end
         end
       end
     end
