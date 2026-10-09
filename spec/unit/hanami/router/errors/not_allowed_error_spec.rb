@@ -24,4 +24,14 @@ RSpec.describe(Hanami::Router::NotAllowedError) do
   it "returns the allowed methods" do
     expect(error.allowed_methods).to be allowed_methods
   end
+
+  it "returns no slice by default" do
+    expect(error.slice).to be nil
+  end
+
+  it "returns the slice it was given" do
+    slice = Class.new
+
+    expect(described_class.new(env, allowed_methods, slice: slice).slice).to be slice
+  end
 end

@@ -18,8 +18,21 @@ module Hanami
       # @since 2.1.0
       attr_reader :env
 
-      def initialize(env)
+      # Returns the slice whose router could not match the request.
+      #
+      # Its {Hanami::Slice::ClassMethods#router router} answers `#routes`, which is how error
+      # handling above the router (such as a detailed error page) can list the routes that were
+      # available.
+      #
+      # @return [Hanami::Slice, nil] the slice, or nil when the error was raised outside a slice
+      #
+      # @api public
+      # @since 3.1.0
+      attr_reader :slice
+
+      def initialize(env, slice: nil)
         @env = env
+        @slice = slice
 
         message = "No route found for #{env["REQUEST_METHOD"]} #{env["PATH_INFO"]}"
         super(message)
@@ -46,9 +59,20 @@ module Hanami
       # @since 2.1.0
       attr_reader :allowed_methods
 
-      def initialize(env, allowed_methods)
+      # Returns the slice whose router matched the path but not the method.
+      #
+      # @return [Hanami::Slice, nil] the slice, or nil when the error was raised outside a slice
+      #
+      # @see NotFoundError#slice
+      #
+      # @api public
+      # @since 3.1.0
+      attr_reader :slice
+
+      def initialize(env, allowed_methods, slice: nil)
         @env = env
         @allowed_methods = allowed_methods
+        @slice = slice
 
         message = "Only #{allowed_methods.join(', ')} requests are allowed at #{env["PATH_INFO"]}"
         super(message)
