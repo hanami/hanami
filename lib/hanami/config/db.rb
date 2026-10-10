@@ -17,6 +17,8 @@ module Hanami
 
       setting :log_level, default: :debug
 
+      setting :migrations_table, default: :schema_migrations
+
       private
 
       def method_missing(name, *args, &block)
