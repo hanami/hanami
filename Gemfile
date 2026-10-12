@@ -31,6 +31,9 @@ gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 # into the gemspec.
 gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 
+# Required until dry-cli 2.0 is released
+gem "dry-cli", github: "dry-rb/dry-cli", branch: "main"
+
 # For testing settings with types
 gem "dry-types"
 
