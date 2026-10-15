@@ -26,6 +26,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 ## [Unreleased]
 
 ### Added
+- Add a new database configuration option: `migrations_table`.  It defaults to `:schema_migrations`.
 
 - Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new`Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen in #1627)
 - Reload an app's code in place via `Hanami.app.reload`, without restarting the Ruby process. (@afomera and @#timriley in #1625)
