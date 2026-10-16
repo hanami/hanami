@@ -26,7 +26,7 @@ module Hanami
       end
 
       def finalize_config
-        return if @config_finalized
+        return self if @config_finalized
 
         apply_parent_config if apply_parent_config?
 
@@ -261,11 +261,163 @@ module Hanami
           end
         end
 
+        # Build URLs from component ENV vars for any gateways without a complete URL
+        gateway_names = [:default, *detect_gateway_names_from_env_components(env_var_prefix)]
+        (gateway_names - database_urls.keys).each do |gateway_name|
+          url = build_database_url_from_env(env_var_prefix, gateway_name)
+          database_urls[gateway_name] = url if url
+        end
+
         if Hanami.env?(:test)
           database_urls.transform_values! { Hanami::DB::Testing.database_url(_1) }
         end
 
         database_urls
+      end
+
+      # ENV vars (without any slice prefix or gateway name suffix) from which a database URL can be
+      # built when no complete URL is given.
+      #
+      # @api private
+      DATABASE_URL_COMPONENT_VARS = %w[
+        DATABASE_SCHEME
+        DATABASE_USER
+        DATABASE_PASSWORD
+        DATABASE_HOST
+        DATABASE_PORT
+        DATABASE_NAME
+      ].freeze
+      private_constant :DATABASE_URL_COMPONENT_VARS
+
+      # Host to use when no DATABASE_HOST is given.
+      #
+      # @api private
+      DEFAULT_DATABASE_HOST = "localhost"
+      private_constant :DEFAULT_DATABASE_HOST
+
+      # Returns the names of the gateways with component ENV vars carrying a gateway name suffix,
+      # such as DATABASE_HOST__EXTRA.
+      def detect_gateway_names_from_env_components(env_var_prefix)
+        DATABASE_URL_COMPONENT_VARS.flat_map { |var|
+          gateway_prefix = "#{env_var_prefix}#{var}__"
+
+          ENV.keys
+            .select { _1.start_with?(gateway_prefix) }
+            .map { _1.delete_prefix(gateway_prefix).downcase.to_sym }
+        }.uniq
+      end
+
+      # Builds the given gateway's database URL from component ENV vars, such as DATABASE_HOST and
+      # DATABASE_PORT.
+      #
+      # DATABASE_SCHEME is used exactly as it would be written in a full database URL, such as
+      # "postgres", "mysql2", "sqlite", or "jdbc:postgresql" on JRuby. The host defaults to
+      # localhost, and the port is left to the database driver's default when not given.
+      #
+      # SQLite has no server to connect to, so its URL is built from the name alone, which is the
+      # path to the database file, such as "db/app.sqlite3".
+      #
+      # Returns nil if no components are given. Raises an error if components are given without a
+      # scheme.
+      def build_database_url_from_env(env_var_prefix, gateway_name)
+        gateway_suffix = "__#{gateway_name.to_s.upcase}" unless gateway_name == :default
+
+        components = DATABASE_URL_COMPONENT_VARS.to_h { |var|
+          [var, database_url_component_from_env(var, env_var_prefix, gateway_suffix)]
+        }
+
+        return if components.values.all?(&:nil?)
+
+        scheme = components["DATABASE_SCHEME"]
+        raise_missing_database_scheme(env_var_prefix, gateway_name, gateway_suffix) unless scheme
+
+        name = escape_database_url_path(components["DATABASE_NAME"])
+
+        case scheme
+        when "sqlite"
+          "sqlite://#{name}"
+        when "jdbc:sqlite"
+          "jdbc:sqlite:#{name}"
+        when /\Ajdbc:/
+          "#{scheme}://#{database_url_host(components)}#{"/#{name}" if name}#{jdbc_database_url_query(components)}"
+        else
+          userinfo = database_url_userinfo(components)
+
+          "#{scheme}://#{"#{userinfo}@" if userinfo}#{database_url_host(components)}#{"/#{name}" if name}"
+        end
+      end
+
+      # JDBC drivers take the user and password as query params rather than userinfo.
+      def jdbc_database_url_query(components)
+        query = URI.encode_www_form(
+          {user: components["DATABASE_USER"], password: components["DATABASE_PASSWORD"]}.compact
+        )
+
+        "?#{query}" unless query.empty?
+      end
+
+      def raise_missing_database_scheme(env_var_prefix, gateway_name, gateway_suffix)
+        var = "#{env_var_prefix}DATABASE_SCHEME#{gateway_suffix}"
+        alternative = " (or DATABASE_SCHEME)" unless var == "DATABASE_SCHEME"
+
+        raise Hanami::ComponentLoadError, <<~STR
+          A database_url for gateway #{gateway_name} could not be built from DATABASE_* ENV vars because no scheme is given. Please set #{var}#{alternative} to your database URL scheme, such as "postgres", "mysql2", "sqlite" or "jdbc:postgresql".
+        STR
+      end
+
+      # Returns the value of the first ENV var giving the component, from the most to the least
+      # specific:
+      #
+      #   {SLICE_NAME__}DATABASE_HOST{__GATEWAY_NAME}
+      #   {SLICE_NAME__}DATABASE_HOST
+      #   DATABASE_HOST__GATEWAY_NAME
+      #   DATABASE_HOST
+      #
+      # This way, gateways and slices can share the components they have in common, and give their
+      # own values for the components they do not.
+      def database_url_component_from_env(var, env_var_prefix, gateway_suffix)
+        vars = [
+          "#{env_var_prefix}#{var}#{gateway_suffix}",
+          "#{env_var_prefix}#{var}",
+          "#{var}#{gateway_suffix}",
+          var
+        ].uniq
+
+        vars.each do |env_var|
+          value = ENV[env_var]
+          return value unless value.nil? || value.empty?
+        end
+
+        nil
+      end
+
+      def database_url_host(components)
+        host = components["DATABASE_HOST"] || DEFAULT_DATABASE_HOST
+        port = components["DATABASE_PORT"]
+
+        "#{host}#{":#{port}" if port}"
+      end
+
+      def database_url_userinfo(components)
+        user = components["DATABASE_USER"]
+        password = components["DATABASE_PASSWORD"]
+
+        if user && password
+          "#{escape_database_url_component(user)}:#{escape_database_url_component(password)}"
+        elsif user
+          escape_database_url_component(user)
+        elsif password
+          ":#{escape_database_url_component(password)}"
+        end
+      end
+
+      # Escapes each segment on its own, keeping the slashes in SQLite file paths.
+      def escape_database_url_path(value)
+        value&.split("/", -1)&.map { escape_database_url_component(_1) }&.join("/")
+      end
+
+      def escape_database_url_component(value)
+        value.gsub(/[^A-Za-z0-9\-._~]/) { |char| char.bytes.map { format("%%%02X", _1) }.join }
       end
 
       # @api private
