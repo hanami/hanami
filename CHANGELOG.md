@@ -39,6 +39,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
     For example, `resources :items, as: :data` now gives `datum`, `edit_datum` and `datum_reviews` for member and nested routes, and `data` for the index route. To change how a name is inflected, add a custom inflection with `config.inflections` in your app.
 
+- Load database settings from component env variables (@aaronmallen in #1621)
+
 ### Deprecated
 
 ### Removed
