@@ -155,6 +155,27 @@ RSpec.describe Hanami::Helpers::FormHelper do
         end
       end
 
+      context "with lazy values, such as view locals" do
+        let(:values) {
+          book = double("book", author: double("author", avatar: double("avatar", url: val)))
+
+          Class.new {
+            define_method(:key?) { |key| key == :book }
+            define_method(:[]) { |key| {book:}[key] }
+            define_method(:to_h) { raise "values must not be converted to a hash" }
+          }.new
+        }
+        let(:val) { "https://hanami.test/avatar.png" }
+
+        it "renders with value, without converting the values to a hash" do
+          html = form_for("/books", values: values) do |f|
+            f.text_field "book.author.avatar.url"
+          end
+
+          expect(html).to include %(<input type="text" name="book[author][avatar][url]" id="book-author-avatar-url" value="#{val}">)
+        end
+      end
+
       context "with filled params" do
         let(:params) { {book: {author: {avatar: {url: val}}}} }
         let(:val) { "https://hanami.test/avatar.png" }
