@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "rake"
-require "hanami/cli/bundler"
+require "hanami/cli"
 
 RSpec.describe "Rake tasks", :app_integration do
   describe "assets:precompile" do
