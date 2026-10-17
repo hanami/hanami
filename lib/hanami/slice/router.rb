@@ -34,7 +34,7 @@ module Hanami
         @path_prefix = Hanami::Router::Prefix.new(prefix)
         @inflector = inflector
         @middleware_stack = middleware_stack
-        @resource_scope = []
+        @resource_stack = []
         instance_eval(&blk)
         super(**kwargs, &routes)
       end
@@ -142,19 +142,72 @@ module Hanami
         build_resource(name, :singular, options, &block)
       end
 
+      # Defines routes on the collection of a plural resource, rather than on a single member.
+      #
+      # Use this inside a `resources` block. Routes in the block are nested under the resource path,
+      # without the resource's ID param.
+      #
+      # @example
+      #   resources :books do
+      #     collection do
+      #       get "/latest", to: "books.latest", as: :latest
+      #     end
+      #
+      #     get "/reviews", to: "books.reviews", as: :reviews
+      #   end
+      #
+      #   # Generates (in addition to the RESTful routes):
+      #   # GET /books/latest            books.latest   (named :books_latest)
+      #   # GET /books/:book_id/reviews  books.reviews  (named :book_reviews)
+      #
+      # @raise [ArgumentError] if not called directly inside a `resources` block
+      #
+      # @api public
+      # @since 3.1.0
+      def collection(&block)
+        resource_builder = @resource_stack.last
+
+        unless resource_builder&.plural? && resource_builder.member_scope?(@path_prefix, @name_prefix)
+          raise ArgumentError, "collection must be used directly inside a `resources` block"
+        end
+
+        # Leave the resource's member scope, so the collection routes have no resource ID param
+        with_prefixes(resource_builder.path_prefix, resource_builder.name_prefix) do
+          scope(resource_builder.path, as: resource_builder.collection_route_name, &block)
+        end
+      end
+
       private
 
       def build_resource(name, type, options, &block)
         resource_builder = ResourceBuilder.new(
-          name: name,
-          type: type,
-          resource_scope: @resource_scope,
-          options: options,
-          inflector: inflector
+          name:,
+          type:,
+          parents: @resource_stack.dup,
+          path_prefix: @path_prefix,
+          name_prefix: @name_prefix,
+          options:,
+          inflector:
         )
 
         resource_builder.add_routes(self)
-        resource_builder.scope(self, &block) if block
+        within_resource(resource_builder, &block) if block
+      end
+
+      def within_resource(resource_builder, &block)
+        @resource_stack.push(resource_builder)
+        resource_builder.scope(self, &block)
+      ensure
+        @resource_stack.pop
+      end
+
+      def with_prefixes(path_prefix, name_prefix)
+        prev_path_prefix, prev_name_prefix = @path_prefix, @name_prefix
+        @path_prefix, @name_prefix = path_prefix, name_prefix
+
+        yield
+      ensure
+        @path_prefix, @name_prefix = prev_path_prefix, prev_name_prefix
       end
 
       # Builds RESTful routes for a resource
@@ -174,10 +227,23 @@ module Hanami
         PLURAL_ACTIONS = %i[index new create show edit update destroy].freeze
         SINGULAR_ACTIONS = (PLURAL_ACTIONS - %i[index]).freeze
 
-        def initialize(name:, type:, resource_scope:, options:, inflector:)
+        attr_reader :name
+
+        attr_reader :path
+
+        # The router's path and name prefixes outside this resource.
+        #
+        # Collection routes are added from inside the resource's member scope (where paths include
+        # the resource's ID param), so we keep these prefixes to step back out of that scope. We
+        # also compare against them to make sure a collection is not defined in a nested scope.
+        attr_reader :path_prefix, :name_prefix
+
+        def initialize(name:, type:, parents:, path_prefix:, name_prefix:, options:, inflector:)
           @name = name
           @type = type
-          @resource_scope = resource_scope
+          @parents = parents
+          @path_prefix = path_prefix
+          @name_prefix = name_prefix
           @options = options
           @inflector = inflector
 
@@ -185,10 +251,7 @@ module Hanami
         end
 
         def scope(router, &block)
-          @resource_scope.push(@name)
           router.scope(scope_path, as: scope_name, &block)
-        ensure
-          @resource_scope.pop
         end
 
         def add_routes(router)
@@ -197,11 +260,25 @@ module Hanami
           end
         end
 
-        private
-
         def plural?
           @type == :plural
         end
+
+        # Returns true if the given router prefixes are those of this resource's own scope. This is
+        # false if another scope has been opened inside the resource's block.
+        def member_scope?(path_prefix, name_prefix)
+          path_prefix.to_s == @path_prefix.join(scope_path).to_s &&
+            name_prefix.to_s == @name_prefix.join(scope_name).to_s
+        end
+
+        # Returns the name for the collection routes. Adds an "_index" suffix for uncountable names
+        # (like "news"), so that these routes have different names from the member routes.
+        def collection_route_name
+          name = @inflector.pluralize(route_name_base)
+          name == route_name_base ? "#{name}_index" : name
+        end
+
+        private
 
         def singular?
           !plural?
@@ -247,8 +324,8 @@ module Hanami
 
         def key_path_base
           @key_path_base ||= @options[:to] || begin
-            if @resource_scope.any?
-              prefix = @resource_scope.join(CONTAINER_KEY_DELIMITER)
+            if @parents.any?
+              prefix = @parents.map(&:name).join(CONTAINER_KEY_DELIMITER)
               "#{prefix}#{CONTAINER_KEY_DELIMITER}#{@name}"
             else
               @name.to_s
@@ -263,13 +340,6 @@ module Hanami
           [prefix, name]
         end
         PLURALIZED_NAME_ACTIONS = %i[index create].freeze
-
-        # Returns the name for the collection routes. Adds an "_index" suffix for uncountable names
-        # (like "news"), so that these routes have different names from the member routes.
-        def collection_route_name
-          name = @inflector.pluralize(route_name_base)
-          name == route_name_base ? "#{name}_index" : name
-        end
 
         def route_name_base
           @route_name_base ||= begin

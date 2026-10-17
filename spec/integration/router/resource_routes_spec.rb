@@ -359,6 +359,101 @@ RSpec.describe "Router / Resource routes" do
     end
   end
 
+  describe "collection routes" do
+    let(:routes) {
+      proc {
+        resources :books, only: :show do
+          collection do
+            get "/latest", to: "books.latest", as: :latest
+          end
+
+          get "/reviews", to: "books.reviews.index", as: :reviews
+        end
+      }
+    }
+
+    it "routes to the collection without the resource id" do
+      expect(routed("GET", "/books/latest")).to eq %(actions.books.latest)
+      expect(routed("GET", "/books/1")).to eq %(actions.books.show {"id":"1"})
+      expect(routed("GET", "/books/1/reviews")).to eq %(actions.books.reviews.index {"book_id":"1"})
+
+      expect(router.path("books_latest")).to eq "/books/latest"
+      expect(router.path("book_reviews", book_id: 1)).to eq "/books/1/reviews"
+    end
+
+    describe "with :path and :as" do
+      let(:routes) {
+        proc {
+          resources :cafes, only: :show, path: "coffee-shops", as: :coffee_shops do
+            collection do
+              get "/latest", to: "cafes.latest", as: :latest
+            end
+          end
+        }
+      }
+
+      it "uses the given path and name" do
+        expect(routed("GET", "/coffee-shops/latest")).to eq %(actions.cafes.latest)
+
+        expect(router.path("coffee_shops_latest")).to eq "/coffee-shops/latest"
+      end
+    end
+
+    describe "with nested resources" do
+      let(:routes) {
+        proc {
+          resources :books, only: :show do
+            collection do
+              resources :drafts, only: :index
+            end
+          end
+        }
+      }
+
+      it "uses the parent resource in the container keys" do
+        expect(routed("GET", "/books/drafts")).to eq %(actions.books.drafts.index)
+      end
+    end
+
+    describe "under a singular resource" do
+      let(:routes) {
+        proc {
+          resource :profile do
+            collection {}
+          end
+        }
+      }
+
+      it "raises an error" do
+        expect { router }.to raise_error(ArgumentError, /collection/)
+      end
+    end
+
+    describe "within a scope inside a resource" do
+      let(:routes) {
+        proc {
+          resources :books do
+            scope "admin" do
+              collection {}
+            end
+          end
+        }
+      }
+
+      it "raises an error" do
+        expect { router }.to raise_error(ArgumentError, /collection/)
+      end
+    end
+
+    describe "outside a resource" do
+      let(:routes) { proc { collection {} } }
+
+      it "raises an error" do
+        expect { router }.to raise_error(ArgumentError, /collection/)
+      end
+    end
+  end
+
   describe "resources nested under scopes" do
     let(:routes) {
       proc {
@@ -395,6 +490,26 @@ RSpec.describe "Router / Resource routes" do
       expect(routed("GET", "/cafes/1/reviews")).to eq %([reviews]actions.cafes.reviews.index {"cafe_id":"1"})
 
       expect(router.path("cafe_reviews", cafe_id: 1)).to eq "/cafes/1/reviews"
+    end
+  end
+
+  describe "collection routes within slices" do
+    let(:routes) {
+      proc {
+        slice :reviews, at: "/reviews" do
+          resources :books, only: :show do
+            collection do
+              get "/latest", to: "books.latest", as: :latest
+            end
+          end
+        end
+      }
+    }
+
+    it "routes to the collection within the slice" do
+      expect(routed("GET", "/reviews/books/latest")).to eq %([reviews]actions.books.latest)
+
+      expect(router.path("reviews_books_latest")).to eq "/reviews/books/latest"
     end
   end
 end
