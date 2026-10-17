@@ -446,7 +446,7 @@ RSpec.describe "Router / Resource routes" do
       }
 
       it "raises an error" do
-        expect { router }.to raise_error(ArgumentError, /collection/)
+        expect { router }.to raise_error(ArgumentError, /not a singular `resource` block/)
       end
     end
 
@@ -462,7 +462,7 @@ RSpec.describe "Router / Resource routes" do
       }
 
       it "raises an error" do
-        expect { router }.to raise_error(ArgumentError, /collection/)
+        expect { router }.to raise_error(ArgumentError, /not inside a nested scope/)
       end
     end
 
@@ -470,7 +470,7 @@ RSpec.describe "Router / Resource routes" do
       let(:routes) { proc { collection {} } }
 
       it "raises an error" do
-        expect { router }.to raise_error(ArgumentError, /collection/)
+        expect { router }.to raise_error(ArgumentError, /collection must be used inside a `resources` block/)
       end
     end
   end

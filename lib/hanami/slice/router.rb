@@ -167,8 +167,18 @@ module Hanami
       def collection(&block)
         resource_builder = @resource_stack.last
 
-        unless resource_builder&.plural? && resource_builder.member_scope?(@path_prefix, @name_prefix)
-          raise ArgumentError, "collection must be used directly inside a `resources` block"
+        unless resource_builder
+          raise ArgumentError, "collection must be used inside a `resources` block"
+        end
+
+        unless resource_builder.plural?
+          raise ArgumentError,
+            "collection must be used inside a `resources` block, not a singular `resource` block"
+        end
+
+        unless resource_builder.member_scope?(@path_prefix, @name_prefix)
+          raise ArgumentError,
+            "collection must be used directly inside a `resources` block, not inside a nested scope"
         end
 
         within_collection(resource_builder, &block)
