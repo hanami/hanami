@@ -415,6 +415,27 @@ RSpec.describe "Router / Resource routes" do
       end
     end
 
+    describe "within a nested resource" do
+      let(:routes) {
+        proc {
+          resources :authors, only: :show do
+            resources :books, only: :show do
+              collection do
+                get "/latest", to: "authors.books.latest", as: :latest
+              end
+            end
+          end
+        }
+      }
+
+      it "keeps the parent resource's member scope" do
+        expect(routed("GET", "/authors/1/books/latest")).to eq %(actions.authors.books.latest {"author_id":"1"})
+        expect(routed("GET", "/authors/1/books/2")).to eq %(actions.authors.books.show {"author_id":"1","id":"2"})
+
+        expect(router.path("author_books_latest", author_id: 1)).to eq "/authors/1/books/latest"
+      end
+    end
+
     describe "under a singular resource" do
       let(:routes) {
         proc {
