@@ -171,10 +171,7 @@ module Hanami
           raise ArgumentError, "collection must be used directly inside a `resources` block"
         end
 
-        # Leave the resource's member scope, so the collection routes have no resource ID param
-        with_prefixes(resource_builder.path_prefix, resource_builder.name_prefix) do
-          scope(resource_builder.path, as: resource_builder.collection_route_name, &block)
-        end
+        within_collection(resource_builder, &block)
       end
 
       private
@@ -201,11 +198,12 @@ module Hanami
         @resource_stack.pop
       end
 
-      def with_prefixes(path_prefix, name_prefix)
+      def within_collection(resource_builder, &block)
         prev_path_prefix, prev_name_prefix = @path_prefix, @name_prefix
-        @path_prefix, @name_prefix = path_prefix, name_prefix
+        @path_prefix = resource_builder.collection_path_prefix
+        @name_prefix = resource_builder.collection_name_prefix
 
-        yield
+        instance_eval(&block)
       ensure
         @path_prefix, @name_prefix = prev_path_prefix, prev_name_prefix
       end
@@ -229,15 +227,8 @@ module Hanami
 
         attr_reader :name
 
-        attr_reader :path
-
-        # The router's path and name prefixes outside this resource.
-        #
-        # Collection routes are added from inside the resource's member scope (where paths include
-        # the resource's ID param), so we keep these prefixes to step back out of that scope. We
-        # also compare against them to make sure a collection is not defined in a nested scope.
-        attr_reader :path_prefix, :name_prefix
-
+        # @param path_prefix [Hanami::Router::Prefix] the router's path prefix outside this resource
+        # @param name_prefix [Hanami::Router::Prefix] the router's name prefix outside this resource
         def initialize(name:, type:, parents:, path_prefix:, name_prefix:, options:, inflector:)
           @name = name
           @type = type
@@ -271,11 +262,17 @@ module Hanami
             name_prefix.to_s == @name_prefix.join(scope_name).to_s
         end
 
-        # Returns the name for the collection routes. Adds an "_index" suffix for uncountable names
-        # (like "news"), so that these routes have different names from the member routes.
-        def collection_route_name
-          name = @inflector.pluralize(route_name_base)
-          name == route_name_base ? "#{name}_index" : name
+        # Returns the router's path prefix for this resource's collection routes.
+        #
+        # Collection routes are added from inside the resource's member scope (where paths include
+        # the resource's ID param), so this is built from the path prefix outside the resource.
+        def collection_path_prefix
+          @path_prefix.join(@path)
+        end
+
+        # Returns the router's name prefix for this resource's collection routes.
+        def collection_name_prefix
+          @name_prefix.join(collection_route_name)
         end
 
         private
@@ -340,6 +337,13 @@ module Hanami
           [prefix, name]
         end
         PLURALIZED_NAME_ACTIONS = %i[index create].freeze
+
+        # Returns the name for the collection routes. Adds an "_index" suffix for uncountable names
+        # (like "news"), so that these routes have different names from the member routes.
+        def collection_route_name
+          name = @inflector.pluralize(route_name_base)
+          name == route_name_base ? "#{name}_index" : name
+        end
 
         def route_name_base
           @route_name_base ||= begin
