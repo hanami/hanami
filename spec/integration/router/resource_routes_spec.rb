@@ -412,6 +412,26 @@ RSpec.describe "Router / Resource routes" do
 
       it "uses the parent resource in the container keys" do
         expect(routed("GET", "/books/drafts")).to eq %(actions.books.drafts.index)
+
+        expect(router.path("books_drafts")).to eq "/books/drafts"
+      end
+    end
+
+    describe "with an uncountable name" do
+      let(:routes) {
+        proc {
+          resources :news, only: :show do
+            collection do
+              get "/latest", to: "news.latest", as: :latest
+            end
+          end
+        }
+      }
+
+      it "adds an index suffix to the route name" do
+        expect(routed("GET", "/news/latest")).to eq %(actions.news.latest)
+
+        expect(router.path("news_index_latest")).to eq "/news/latest"
       end
     end
 
@@ -455,6 +475,22 @@ RSpec.describe "Router / Resource routes" do
         proc {
           resources :books do
             scope "admin" do
+              collection {}
+            end
+          end
+        }
+      }
+
+      it "raises an error" do
+        expect { router }.to raise_error(ArgumentError, /not inside a nested scope/)
+      end
+    end
+
+    describe "within another collection" do
+      let(:routes) {
+        proc {
+          resources :books do
+            collection do
               collection {}
             end
           end
