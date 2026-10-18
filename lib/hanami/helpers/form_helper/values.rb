@@ -22,7 +22,9 @@ module Hanami
         # @since 2.1.0
         # @api private
         def initialize(values: {}, params: {}, csrf_token: nil)
-          @values = values.to_h
+          # Keep Hash-like objects like `Hanami::View::Locals` as they are given, since we only read
+          # single keys. Converting view locals to a Hash would otherwise resolve every exposure.
+          @values = values.respond_to?(:key?) ? values : values.to_h
           @params = params.to_h
           @csrf_token = csrf_token
         end
