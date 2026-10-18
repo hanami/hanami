@@ -40,6 +40,9 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     For example, `resources :items, as: :data` now gives `datum`, `edit_datum` and `datum_reviews` for member and nested routes, and `data` for the index route. To change how a name is inflected, add a custom inflection with `config.inflections` in your app.
 
 - Load database settings from component env variables (@aaronmallen in #1621)
+- In `form_for`, read values from the view's locals one key at a time, rather than converting them to a Hash first. (@timriley in #1644)
+
+    With the lazy exposures in Hanami View 3.1, this ensures form rendering no longer runs every exposure in the view, only the ones the form reads. 
 
 ### Deprecated
 
