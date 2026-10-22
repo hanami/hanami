@@ -2,6 +2,7 @@
 
 require "delegate"
 require "json"
+require "hanami/utils/hash"
 
 module Hanami
   # @api private
@@ -31,6 +32,9 @@ module Hanami
 
       ROUTER_PARAMS = "router.params"
       private_constant :ROUTER_PARAMS
+
+      ACTION_BODY_PARAMS = "hanami.action.body_params"
+      private_constant :ACTION_BODY_PARAMS
 
       CONTENT_LENGTH = "CONTENT_LENGTH"
       private_constant :CONTENT_LENGTH
@@ -100,8 +104,6 @@ module Hanami
 
       attr_reader :logger
 
-      # @api private
-      # @since 2.0.0
       def data(env, status:, elapsed:)
         {
           verb: env[REQUEST_METHOD],
@@ -109,14 +111,23 @@ module Hanami
           ip: env[HTTP_X_FORWARDED_FOR] || env[REMOTE_ADDR],
           path: "#{env[SCRIPT_NAME]}#{env[PATH_INFO]}",
           length: extract_content_length(env),
-          params: env.fetch(ROUTER_PARAMS, EMPTY_PARAMS),
+          params: extract_params(env),
           elapsed: elapsed,
           elapsed_unit: MICROSECOND
         }
       end
 
-      # @api private
-      # @since 2.0.0
+      # Returns the full request params: those from the router (path, query string and
+      # form-urlencoded body), plus any body params parsed by the action (such as from a JSON body).
+      def extract_params(env)
+        router_params = env.fetch(ROUTER_PARAMS, EMPTY_PARAMS)
+        body_params = env[ACTION_BODY_PARAMS]
+
+        return router_params unless body_params
+
+        router_params.merge(Utils::Hash.deep_symbolize(body_params))
+      end
+
       def extract_content_length(env)
         value = env[CONTENT_LENGTH]
         !value || value.to_s == "0" ? "-" : value

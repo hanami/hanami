@@ -148,6 +148,58 @@ RSpec.describe "Logging / Request logging", :app_integration do
     end
   end
 
+  describe "request params" do
+    def generate_app
+      write "config/app.rb", <<~RUBY
+        module TestApp
+          class App < Hanami::App
+            config.actions.formats.accept :json, :html
+          end
+        end
+      RUBY
+    end
+
+    def before_prepare
+      write "config/routes.rb", <<~RUBY
+        module TestApp
+          class Routes < Hanami::Routes
+            put "/books/:id", to: "books.update"
+          end
+        end
+      RUBY
+
+      write "app/actions/books/update.rb", <<~RUBY
+        module TestApp
+          module Actions
+            module Books
+              class Update < Hanami::Action
+                def handle(req, res)
+                  res.body = "OK"
+                end
+              end
+            end
+          end
+        end
+      RUBY
+    end
+
+    it "logs path, query string and parsed body params" do
+      put "/books/42?known=foo",
+        JSON.generate("title" => "Test", "author" => {"name" => "Joao"}),
+        "CONTENT_TYPE" => "application/json"
+
+      expect(last_response).to be_successful
+      expect(logs).to include({known: "foo", id: "42", title: "Test", author: {name: "Joao"}}.inspect)
+    end
+
+    it "logs form body params" do
+      put "/books/42", "title=Test", "CONTENT_TYPE" => "application/x-www-form-urlencoded"
+
+      expect(last_response).to be_successful
+      expect(logs).to include({title: "Test", id: "42"}.inspect)
+    end
+  end
+
   context "when using ::Logger from Ruby stdlib" do
     def generate_app
       write "config/app.rb", <<~RUBY
