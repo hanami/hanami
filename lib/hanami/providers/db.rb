@@ -193,7 +193,8 @@ module Hanami
 
         config.gateways.each do |key, gw_config|
           gw_config.database_url ||= database_urls_from_env.fetch(key) {
-            raise Hanami::ComponentLoadError, "A database_url for gateway #{key} is required to start :db."
+            parent_database_url(key) ||
+              raise(Hanami::ComponentLoadError, "A database_url for gateway #{key} is required to start :db.")
           }
 
           ensure_database_gem(gw_config.database_url)
@@ -202,6 +203,14 @@ module Hanami
 
           gw_config.configure_adapter(config.adapters)
         end
+      end
+
+      # Returns the database URL of the parent's gateway with the given name, so that slices can
+      # use database URLs configured explicitly in the parent (rather than given in ENV vars).
+      def parent_database_url(key)
+        return unless apply_parent_config?
+
+        parent_db_provider.source.config.gateways[key]&.database_url
       end
 
       def apply_parent_gateway_config(key, gw_config)

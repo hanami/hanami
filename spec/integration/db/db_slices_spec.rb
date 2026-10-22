@@ -270,6 +270,84 @@ RSpec.describe "DB / Slices", :app_integration do
     end
   end
 
+  specify "slices use database URLs configured explicitly in the parent db provider" do
+    with_tmp_directory(@dir = Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+            config.logger.stream = File::NULL
+          end
+        end
+      RUBY
+
+      write "config/providers/db.rb", <<~RUBY
+        Hanami.app.configure_provider :db do
+          config.gateway :default do |gw|
+            gw.database_url = "#{sqlite_database_url(Pathname(@dir).realpath.join("app.db").to_s)}"
+          end
+        end
+      RUBY
+
+      write "slices/admin/relations/.keep", ""
+      write "slices/main/relations/.keep", ""
+
+      ENV.delete("DATABASE_URL")
+      ENV["MAIN__DATABASE_URL"] = sqlite_database_url(Pathname(@dir).realpath.join("main.db").to_s)
+
+      require "hanami/prepare"
+
+      # The parent's URL is used when no URL is given in ENV
+      expect(Admin::Slice["db.gateway"]).to be Hanami.app["db.gateway"]
+      expect(Admin::Slice["db.rom"].gateways.keys).to eq [:default]
+
+      # A URL given in ENV takes precedence over the parent's URL
+      expect(Main::Slice["db.gateway"]).not_to be Hanami.app["db.gateway"]
+      expect(Main::Slice["db.gateway"].connection.opts[:database]).to end_with "main.db"
+    end
+  end
+
+  specify "slices not configured from the parent do not use the parent's database URLs" do
+    with_tmp_directory(@dir = Dir.mktmpdir) do
+      write "config/app.rb", <<~RUBY
+        require "hanami"
+
+        module TestApp
+          class App < Hanami::App
+            config.logger.stream = File::NULL
+          end
+        end
+      RUBY
+
+      write "config/providers/db.rb", <<~RUBY
+        Hanami.app.configure_provider :db do
+          config.gateway :default do |gw|
+            gw.database_url = "#{sqlite_database_url(Pathname(@dir).realpath.join("app.db").to_s)}"
+          end
+        end
+      RUBY
+
+      write "config/slices/admin.rb", <<~RUBY
+        module Admin
+          class Slice < Hanami::Slice
+            config.db.configure_from_parent = false
+          end
+        end
+      RUBY
+
+      write "slices/admin/relations/.keep", ""
+
+      ENV.delete("DATABASE_URL")
+
+      require "hanami/prepare"
+
+      expect { Admin::Slice.prepare :db }.to raise_error(
+        Hanami::ComponentLoadError, "A database_url for gateway default is required to start :db."
+      )
+    end
+  end
+
   specify "disabling sharing of config from the app" do
     with_tmp_directory(@dir = Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
