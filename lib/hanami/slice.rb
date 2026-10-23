@@ -969,8 +969,6 @@ module Hanami
 
       private
 
-      # rubocop:disable Metrics/AbcSize
-
       def prepare_slice
         return self if prepared?
 
@@ -1088,15 +1086,17 @@ module Hanami
       end
 
       def prepare_container_base_config
-        container.config.name = slice_name.to_sym
-        container.config.root = root
-        container.config.provider_dirs = [File.join("config", "providers")]
-        container.config.registrations_dir = File.join("config", "registrations")
+        container_config = container.config
 
-        container.config.component_dirs.memoize = memoize_policy
+        container_config.name = slice_name.to_sym
+        container_config.root = root
+        container_config.provider_dirs = [File.join("config", "providers")]
+        container_config.registrations_dir = File.join("config", "registrations")
 
-        container.config.env = config.env
-        container.config.inflector = config.inflector
+        container_config.component_dirs.memoize = memoize_policy
+
+        container_config.env = config.env
+        container_config.inflector = config.inflector
       end
 
       def memoize_policy
@@ -1117,31 +1117,43 @@ module Hanami
       def prepare_container_component_dirs
         return unless root.directory?
 
+        component_dirs = container.config.component_dirs
+        const = slice_name.name
+
         # Component files in both the root and `lib/` define classes in the slice's
         # namespace
 
-        if root.join(LIB_DIR)&.directory?
-          container.config.component_dirs.add(LIB_DIR) do |dir|
-            dir.namespaces.add_root(key: nil, const: slice_name.name)
+        if root.join(LIB_DIR).directory?
+          component_dirs.add(LIB_DIR) do |dir|
+            dir.namespaces.add_root(key: nil, const:)
           end
         end
 
-        # When auto-registering components in the root, ignore files in `config/` (this is
-        # for framework config only), `lib/` (these will be auto-registered as above), as
-        # well as the configured no_auto_register_paths
-        no_auto_register_paths = ([LIB_DIR, CONFIG_DIR] + config.no_auto_register_paths)
-          .map { |path|
-            path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
-          }
+        auto_register = auto_register_policy
 
         # TODO: Change `""` (signifying the root) once dry-rb/dry-system#238 is resolved
-        container.config.component_dirs.add("") do |dir|
-          dir.namespaces.add_root(key: nil, const: slice_name.name)
-          dir.auto_register = -> component {
-            relative_path = component.file_path.relative_path_from(root).to_s
-            !relative_path.start_with?(*no_auto_register_paths)
-          }
+        component_dirs.add("") do |dir|
+          dir.namespaces.add_root(key: nil, const:)
+          dir.auto_register = auto_register
         end
+      end
+
+      def auto_register_policy
+        ignored_paths = no_auto_register_paths
+
+        -> component {
+          relative_path = component.file_path.relative_path_from(root).to_s
+          !relative_path.start_with?(*ignored_paths)
+        }
+      end
+
+      # When auto-registering components in the root, ignore files in `config/` (this is for
+      # framework config only), `lib/` (these are auto-registered from their own component dir),
+      # as well as the configured no_auto_register_paths.
+      def no_auto_register_paths
+        ([LIB_DIR, CONFIG_DIR] + config.no_auto_register_paths).map { |path|
+          path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
+        }
       end
 
       def prepare_container_imports
@@ -1152,7 +1164,6 @@ module Hanami
         )
       end
 
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def prepare_container_providers
         # Stop providers so they can release what they hold before it is discarded.
         on_unload { container.shutdown! }
@@ -1165,33 +1176,29 @@ module Hanami
           register_provider(:routes, source: Providers::Routes)
         end
 
-        if assets_dir? && Hanami.bundled?("hanami-assets")
+        if register_assets_provider?
           require_relative "providers/assets"
           register_provider(:assets, source: Providers::Assets)
         end
 
-        if Hanami.bundled?("hanami-db") && register_db_provider?
-          # Only register providers if the user hasn't provided their own
-          unless container.providers[:db]
-            register_provider(:db, namespace: true, source: Providers::DB)
-          end
-
-          unless container.providers[:relations]
-            register_provider(:relations, namespace: true, source: Providers::Relations)
-          end
+        if register_db_provider?
+          register_default_provider(:db, namespace: true, source: Providers::DB)
+          register_default_provider(:relations, namespace: true, source: Providers::Relations)
         end
 
-        if Hanami.bundled?("i18n") && register_i18n_provider? && !container.providers[:i18n]
-          register_provider(:i18n, source: Providers::I18n)
+        if register_i18n_provider?
+          register_default_provider(:i18n, source: Providers::I18n)
         end
 
-        # Only register the provider if the user hasn't provided their own.
-        if Hanami.bundled?("hanami-mailer") && register_mailers_provider? &&
-           !container.providers[:mailers]
-          register_provider(:mailers, namespace: true, source: Providers::Mailers)
+        if register_mailers_provider?
+          register_default_provider(:mailers, namespace: true, source: Providers::Mailers)
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+      # Registers a provider unless the user has provided their own under the same name.
+      def register_default_provider(name, **options)
+        register_provider(name, **options) unless container.providers[name]
+      end
 
       def prepare_autoloader
         autoloader.tag = "hanami.slices.#{slice_name}"
@@ -1253,74 +1260,75 @@ module Hanami
         end
       end
 
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def load_router(inspector:)
         return unless routes
 
         require_relative "slice/router"
 
-        slice = self
-        config = self.config
-        rack_monitor = self["rack.monitor"]
-
-        show_welcome = Hanami.env?(:development) && routes.empty?
-        render_errors = render_errors?
-        render_detailed_errors = render_detailed_errors?
-
-        error_handlers = {}.tap do |hsh|
-          if render_errors || render_detailed_errors
-            hsh[:not_allowed] = ROUTER_NOT_ALLOWED_HANDLER
-            hsh[:not_found] = ROUTER_NOT_FOUND_HANDLER
-          end
-        end
+        middleware = router_middleware
+        configured_middleware = config.middleware_stack
 
         Slice::Router.new(
-          inspector: inspector,
-          inflector: inflector,
-          routes: routes,
+          inspector:,
+          inflector:,
+          routes:,
           resolver: config.router.resolver.new(slice: self),
-          **error_handlers,
+          **router_error_handlers,
           **config.router.options
         ) do
-          use(rack_monitor)
-
-          use(Hanami::Web::Welcome) if show_welcome
-
-          use(
-            Hanami::Middleware::RenderErrors,
-            config,
-            Hanami::Middleware::PublicErrorsApp.new(slice.root.join("public"))
-          )
-
-          if render_detailed_errors
-            require "hanami/webconsole"
-            use(Hanami::Webconsole::Middleware, config)
-          end
-
-          if Hanami.bundled?("hanami-action")
-            if config.actions.method_override
-              require "rack/method_override"
-              use(Rack::MethodOverride)
-            end
-
-            if config.actions.sessions.enabled?
-              use(*config.actions.sessions.middleware)
-            end
-
-            if config.actions.content_security_policy && # rubocop:disable Style/SafeNavigation
-               config.actions.content_security_policy.nonce?
-              use(*config.actions.content_security_policy.middleware)
-            end
-          end
-
-          if Hanami.bundled?("hanami-assets") && config.assets.serve
-            use(Hanami::Middleware::Assets)
-          end
-
-          middleware_stack.update(config.middleware_stack)
+          middleware.each { |args| use(*args) }
+          middleware_stack.update(configured_middleware)
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+      def router_error_handlers
+        return {} unless render_errors? || render_detailed_errors?
+
+        {not_allowed: ROUTER_NOT_ALLOWED_HANDLER, not_found: ROUTER_NOT_FOUND_HANDLER}
+      end
+
+      # Returns the arguments to `use` for each framework middleware in the slice's router, in
+      # order, ahead of any middleware from the slice's config.
+      def router_middleware
+        [
+          [self["rack.monitor"]],
+          ([Hanami::Web::Welcome] if Hanami.env?(:development) && routes.empty?),
+          [
+            Hanami::Middleware::RenderErrors,
+            config,
+            Hanami::Middleware::PublicErrorsApp.new(root.join("public"))
+          ],
+          (webconsole_middleware if render_detailed_errors?),
+          *actions_middleware,
+          ([Hanami::Middleware::Assets] if Hanami.bundled?("hanami-assets") && config.assets.serve)
+        ].compact
+      end
+
+      def webconsole_middleware
+        require "hanami/webconsole"
+        [Hanami::Webconsole::Middleware, config]
+      end
+
+      def actions_middleware
+        return [] unless Hanami.bundled?("hanami-action")
+
+        actions = config.actions
+
+        [
+          (method_override_middleware if actions.method_override),
+          (actions.sessions.middleware if actions.sessions.enabled?),
+          (actions.content_security_policy.middleware if content_security_policy_nonce?)
+        ].compact
+      end
+
+      def method_override_middleware
+        require "rack/method_override"
+        [Rack::MethodOverride]
+      end
+
+      def content_security_policy_nonce?
+        config.actions.content_security_policy? && config.actions.content_security_policy.nonce?
+      end
 
       def render_errors?
         config.render_errors
@@ -1340,6 +1348,10 @@ module Hanami
       }.freeze
       private_constant :ROUTER_NOT_FOUND_HANDLER
 
+      def register_assets_provider?
+        Hanami.bundled?("hanami-assets") && assets_dir?
+      end
+
       def assets_dir?
         source_path.join("assets").directory?
       end
@@ -1349,6 +1361,7 @@ module Hanami
       # For the app, this will always be a standalone provider. For slices, this will be a
       # standalone provider unless the slice is configured to share the app's "i18n" component.
       def register_i18n_provider?
+        return false unless Hanami.bundled?("i18n")
         return true if app?
 
         !config.shared_app_component_keys.include?("i18n")
@@ -1360,12 +1373,15 @@ module Hanami
       # standalone provider unless the slice is configured to share the app's
       # "mailers.delivery_method" component.
       def register_mailers_provider?
+        return false unless Hanami.bundled?("hanami-mailer")
         return true if app?
 
         !config.shared_app_component_keys.include?("mailers.delivery_method")
       end
 
       def register_db_provider?
+        return false unless Hanami.bundled?("hanami-db")
+
         concrete_db_provider? ||
           db_config_dir? ||
           relations_dir? ||
@@ -1394,8 +1410,6 @@ module Hanami
           config.db.import_from_parent &&
           parent.container.providers[:db]
       end
-
-      # rubocop:enable Metrics/AbcSize
     end
   end
 end
