@@ -7,8 +7,6 @@ require_relative "../constants"
 
 module Hanami
   module Providers
-    # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
-
     # @api private
     # @since 2.2.0
     class DB < Hanami::Provider::Source
@@ -47,27 +45,10 @@ module Hanami
         require "hanami-db"
 
         gateways = prepare_gateways
-
-        if gateways[:default]
-          register "gateway", gateways[:default]
-        elsif gateways.length == 1
-          register "gateway", gateways.values.first
-        end
-        gateways.each do |key, gateway|
-          register "gateways.#{key}", gateway
-        end
+        register_gateways(gateways)
 
         @rom_config = ROM::Configuration.new(gateways)
-
-        config.each_plugin do |adapter_name, plugin_spec, config_block|
-          if config_block
-            @rom_config.plugin(adapter_name, plugin_spec) do |plugin_config|
-              instance_exec(plugin_config, &config_block)
-            end
-          else
-            @rom_config.plugin(adapter_name, plugin_spec)
-          end
-        end
+        configure_plugins
 
         register "config", @rom_config
       end
@@ -102,6 +83,29 @@ module Hanami
 
       private
 
+      def register_gateways(gateways)
+        if gateways[:default]
+          register "gateway", gateways[:default]
+        elsif gateways.length == 1
+          register "gateway", gateways.values.first
+        end
+        gateways.each do |key, gateway|
+          register "gateways.#{key}", gateway
+        end
+      end
+
+      def configure_plugins
+        config.each_plugin do |adapter_name, plugin_spec, config_block|
+          if config_block
+            @rom_config.plugin(adapter_name, plugin_spec) do |plugin_config|
+              instance_exec(plugin_config, &config_block)
+            end
+          else
+            @rom_config.plugin(adapter_name, plugin_spec)
+          end
+        end
+      end
+
       def parent_db_provider
         return @parent_db_provider if instance_variable_defined?(:@parent_db_provider)
 
@@ -109,7 +113,8 @@ module Hanami
       end
 
       def apply_parent_config
-        parent_db_provider.source.finalize_config
+        parent_source = parent_db_provider.source
+        parent_source.finalize_config
 
         self.class.settings.keys.each do |key|
           # Preserve settings already configured locally
@@ -121,17 +126,22 @@ module Hanami
           # Skip adapter config, we handle this below
           next if key == :adapters
 
-          config[key] = parent_db_provider.source.config[key]
+          config[key] = parent_source.config[key]
         end
 
-        parent_db_provider.source.config.adapters.each do |adapter_name, parent_adapter|
+        parent_source.config.adapters.each do |adapter_name, parent_adapter|
           adapter = config.adapter(adapter_name)
 
-          adapter.class.settings.keys.each do |key|
-            next if adapter.config.configured?(key)
+          copy_unconfigured_settings(from: parent_adapter, to: adapter, keys: adapter.class.settings.keys)
+        end
+      end
 
-            adapter.config[key] = parent_adapter.config[key].dup
-          end
+      # Copies a duplicate of each of the given settings not already configured on `to`.
+      def copy_unconfigured_settings(from:, to:, keys:)
+        keys.each do |key|
+          next if to.config.configured?(key)
+
+          to.config[key] = from.config[key].dup
         end
       end
 
@@ -178,30 +188,38 @@ module Hanami
       def configure_gateways
         # Create gateway configs for gateways detected from database_url ENV vars
         database_urls_from_env = detect_database_urls_from_env
-        database_urls_from_env.keys.each do |key|
+        database_urls_from_env.each_key do |key|
           config.gateways[key] ||= Gateway.new
         end
 
         # Create a single default gateway if none is configured or detected from database URLs
         config.gateways[:default] = Gateway.new if config.gateways.empty?
 
-        # Leave gateways in a stable order: :default first, followed by others in sort order
-        if config.gateways.length > 1
-          gateways = config.gateways
-          config.gateways = {default: gateways[:default], **gateways.sort.to_h}.compact
-        end
+        sort_gateways
 
         config.gateways.each do |key, gw_config|
-          gw_config.database_url ||= database_urls_from_env.fetch(key) {
-            raise Hanami::ComponentLoadError, "A database_url for gateway #{key} is required to start :db."
-          }
-
-          ensure_database_gem(gw_config.database_url)
-
-          apply_parent_gateway_config(key, gw_config) if apply_parent_config?
-
-          gw_config.configure_adapter(config.adapters)
+          configure_gateway(key, gw_config, database_urls_from_env)
         end
+      end
+
+      # Leaves gateways in a stable order: :default first, followed by others in sort order
+      def sort_gateways
+        return unless config.gateways.length > 1
+
+        gateways = config.gateways
+        config.gateways = {default: gateways[:default], **gateways.sort.to_h}.compact
+      end
+
+      def configure_gateway(key, gw_config, database_urls_from_env)
+        gw_config.database_url ||= database_urls_from_env.fetch(key) {
+          raise Hanami::ComponentLoadError, "A database_url for gateway #{key} is required to start :db."
+        }
+
+        ensure_database_gem(gw_config.database_url)
+
+        apply_parent_gateway_config(key, gw_config) if apply_parent_config?
+
+        gw_config.configure_adapter(config.adapters)
       end
 
       def apply_parent_gateway_config(key, gw_config)
@@ -211,11 +229,11 @@ module Hanami
         return unless parent_gw_config&.database_url == gw_config.database_url
 
         # Copy config from matching parent gateway
-        (gw_config.class.settings.keys - [:adapter]).each do |key|
-          next if gw_config.config.configured?(key)
-
-          gw_config.config[key] = parent_gw_config.config[key].dup
-        end
+        copy_unconfigured_settings(
+          from: parent_gw_config,
+          to: gw_config,
+          keys: gw_config.class.settings.keys - [:adapter]
+        )
 
         # If there is an adapter configured within this slice, prefer that, and do not copy the
         # adapter from the parent gateway
@@ -238,28 +256,14 @@ module Hanami
       end
 
       def detect_database_urls_from_env
-        database_urls = {}
-
         env_var_prefix = slice.slice_name.name.gsub("/", "__").upcase + "__" unless slice.app?
 
-        # Build gateway URLs from ENV vars with specific gateway named suffixes
-        gateway_prefix = "#{env_var_prefix}DATABASE_URL__"
-        ENV.select { |(k, _)| k.start_with?(gateway_prefix) }
-          .each do |(var, _)|
-            gateway_name = var.split(gateway_prefix).last.downcase
-
-            database_urls[gateway_name.to_sym] = ENV[var]
-          end
-
-        # Set the default gateway from ENV var without suffix
-        unless database_urls.key?(:default)
-          fallback_vars = ["#{env_var_prefix}DATABASE_URL", "DATABASE_URL"].uniq
-
-          fallback_vars.each do |var|
-            url = ENV[var]
-            database_urls[:default] = url and break if url
-          end
-        end
+        database_urls = {
+          # Set the default gateway from ENV var without suffix
+          default: default_database_url_from_env(env_var_prefix),
+          # Build gateway URLs from ENV vars with specific gateway named suffixes
+          **gateway_database_urls_from_env(env_var_prefix)
+        }.compact
 
         # Build URLs from component ENV vars for any gateways without a complete URL
         gateway_names = [:default, *detect_gateway_names_from_env_components(env_var_prefix)]
@@ -273,6 +277,17 @@ module Hanami
         end
 
         database_urls
+      end
+
+      def default_database_url_from_env(env_var_prefix)
+        ["#{env_var_prefix}DATABASE_URL", "DATABASE_URL"].uniq.filter_map { ENV[_1] }.first
+      end
+
+      def gateway_database_urls_from_env(env_var_prefix)
+        gateway_prefix = "#{env_var_prefix}DATABASE_URL__"
+
+        ENV.select { |var, _| var.start_with?(gateway_prefix) }
+          .to_h { |var, url| [var.delete_prefix(gateway_prefix).downcase.to_sym, url] }
       end
 
       # ENV vars (without any slice prefix or gateway name suffix) from which a database URL can be
@@ -331,6 +346,10 @@ module Hanami
         scheme = components["DATABASE_SCHEME"]
         raise_missing_database_scheme(env_var_prefix, gateway_name, gateway_suffix) unless scheme
 
+        format_database_url(scheme, components)
+      end
+
+      def format_database_url(scheme, components)
         name = escape_database_url_path(components["DATABASE_NAME"])
 
         case scheme
@@ -498,7 +517,6 @@ module Hanami
         end
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
     Dry::System.register_provider_source(
       :db,
