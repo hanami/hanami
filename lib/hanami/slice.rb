@@ -1151,9 +1151,12 @@ module Hanami
       # framework config only), `lib/` (these are auto-registered from their own component dir),
       # as well as the configured no_auto_register_paths.
       def no_auto_register_paths
-        ([LIB_DIR, CONFIG_DIR] + config.no_auto_register_paths).map { |path|
-          path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
-        }
+        directory_prefixes([LIB_DIR, CONFIG_DIR] + config.no_auto_register_paths)
+      end
+
+      # Returns the paths each ending with a separator, so they match whole directory names only.
+      def directory_prefixes(paths)
+        paths.map { |path| path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}" }
       end
 
       def prepare_container_imports

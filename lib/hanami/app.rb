@@ -117,34 +117,40 @@ module Hanami
       def prepare_container_component_dirs; end
       def prepare_container_imports; end
 
-      # rubocop:disable Metrics/AbcSize
-
       def prepare_app_component_dirs
+        component_dirs = container.config.component_dirs
+        const = app_name.name
+
         # Component files in both `app/` and `app/lib/` define classes in the
         # app's namespace
 
         if root.join(APP_DIR, LIB_DIR).directory?
-          container.config.component_dirs.add(File.join(APP_DIR, LIB_DIR)) do |dir|
-            dir.namespaces.add_root(key: nil, const: app_name.name)
+          component_dirs.add(File.join(APP_DIR, LIB_DIR)) do |dir|
+            dir.namespaces.add_root(key: nil, const:)
           end
         end
 
-        # When auto-registering components in `app/`, ignore files in `app/lib/` (these will be
-        # auto-registered as above), as well as the configured no_auto_register_paths
-        no_auto_register_paths = ([LIB_DIR] + config.no_auto_register_paths)
-          .map { |path|
-            path.end_with?(File::SEPARATOR) ? path : "#{path}#{File::SEPARATOR}"
-          }
+        return unless root.join(APP_DIR).directory?
 
-        if root.join(APP_DIR).directory?
-          container.config.component_dirs.add(APP_DIR) do |dir|
-            dir.namespaces.add_root(key: nil, const: app_name.name)
-            dir.auto_register = -> component {
-              relative_path = component.file_path.relative_path_from(root.join(APP_DIR)).to_s
-              !relative_path.start_with?(*no_auto_register_paths)
-            }
-          end
+        auto_register = app_auto_register_policy
+
+        component_dirs.add(APP_DIR) do |dir|
+          dir.namespaces.add_root(key: nil, const:)
+          dir.auto_register = auto_register
         end
+      end
+
+      # When auto-registering components in `app/`, ignore files in `app/lib/` (these are
+      # auto-registered from their own component dir), as well as the configured
+      # no_auto_register_paths.
+      def app_auto_register_policy
+        app_dir = root.join(APP_DIR)
+        ignored_paths = directory_prefixes([LIB_DIR] + config.no_auto_register_paths)
+
+        -> component {
+          relative_path = component.file_path.relative_path_from(app_dir).to_s
+          !relative_path.start_with?(*ignored_paths)
+        }
       end
 
       def prepare_app_providers
@@ -186,8 +192,6 @@ module Hanami
 
         autoloader.setup
       end
-
-      # rubocop:enable Metrics/AbcSize
     end
   end
 end

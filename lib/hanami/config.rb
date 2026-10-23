@@ -377,56 +377,19 @@ module Hanami
     attr_reader :assets
 
     # @api private
-    # rubocop:disable Metrics/AbcSize
     def initialize(app_name:, env:)
       @app_name = app_name
       @env = env
 
-      # Apply default values that are only knowable at initialize-time (vs require-time)
-      self.root = Dir.pwd
-      self.settings_store = default_settings_store
-      self.render_errors = (env == :production)
-      self.render_detailed_errors = (env == :development)
-      self.code_reloading = (env == :development)
+      apply_initial_defaults
       load_from_env
 
-      @actions = load_dependent_config("hanami-action") {
-        require_relative "config/actions"
-        Actions.new
-      }
+      @logger = Config::Logger.new(env:, app_name:)
 
-      @assets = load_dependent_config("hanami-assets") {
-        require_relative "config/assets"
-        Hanami::Config::Assets.new
-      }
-
-      @db = load_dependent_config("hanami-db") { DB.new }
-
-      @i18n = load_dependent_config("i18n") {
-        require_relative "config/i18n"
-        I18n.new
-      }
-
-      @logger = Config::Logger.new(env: env, app_name: app_name)
-
-      @middleware = load_dependent_config("hanami-router") {
-        require_relative "slice/routing/middleware/stack"
-        Slice::Routing::Middleware::Stack.new
-      }
-
-      @router = load_dependent_config("hanami-router") {
-        require_relative "config/router"
-        Router.new(self)
-      }
-
-      @views = load_dependent_config("hanami-view") {
-        require_relative "config/views"
-        Views.new
-      }
+      load_dependent_configs
 
       yield self if block_given?
     end
-    # rubocop:enable Metrics/AbcSize
 
     # @api private
     def initialize_copy(source)
@@ -572,8 +535,52 @@ module Hanami
       )
     end
 
+    # Applies default values that are only knowable at initialize-time (vs require-time)
+    def apply_initial_defaults
+      self.root = Dir.pwd
+      self.settings_store = default_settings_store
+      self.render_errors = (env == :production)
+      self.render_detailed_errors = (env == :development)
+      self.code_reloading = (env == :development)
+    end
+
     def load_from_env
       self.slices = ENV["HANAMI_SLICES"]&.split(",")&.map(&:strip)
+    end
+
+    # Loads the config for each optional gem, or a null config if the gem is not bundled
+    def load_dependent_configs
+      @actions = load_dependent_config("hanami-action") {
+        require_relative "config/actions"
+        Actions.new
+      }
+
+      @assets = load_dependent_config("hanami-assets") {
+        require_relative "config/assets"
+        Hanami::Config::Assets.new
+      }
+
+      @db = load_dependent_config("hanami-db") { DB.new }
+
+      @i18n = load_dependent_config("i18n") {
+        require_relative "config/i18n"
+        I18n.new
+      }
+
+      @middleware = load_dependent_config("hanami-router") {
+        require_relative "slice/routing/middleware/stack"
+        Slice::Routing::Middleware::Stack.new
+      }
+
+      @router = load_dependent_config("hanami-router") {
+        require_relative "config/router"
+        Router.new(self)
+      }
+
+      @views = load_dependent_config("hanami-view") {
+        require_relative "config/views"
+        Views.new
+      }
     end
 
     def load_dependent_config(gem_name)
