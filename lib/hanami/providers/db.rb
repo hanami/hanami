@@ -238,28 +238,14 @@ module Hanami
       end
 
       def detect_database_urls_from_env
-        database_urls = {}
-
         env_var_prefix = slice.slice_name.name.gsub("/", "__").upcase + "__" unless slice.app?
 
-        # Build gateway URLs from ENV vars with specific gateway named suffixes
-        gateway_prefix = "#{env_var_prefix}DATABASE_URL__"
-        ENV.select { |(k, _)| k.start_with?(gateway_prefix) }
-          .each do |(var, _)|
-            gateway_name = var.split(gateway_prefix).last.downcase
-
-            database_urls[gateway_name.to_sym] = ENV[var]
-          end
-
-        # Set the default gateway from ENV var without suffix
-        unless database_urls.key?(:default)
-          fallback_vars = ["#{env_var_prefix}DATABASE_URL", "DATABASE_URL"].uniq
-
-          fallback_vars.each do |var|
-            url = ENV[var]
-            database_urls[:default] = url and break if url
-          end
-        end
+        database_urls = {
+          # Set the default gateway from ENV var without suffix
+          default: default_database_url_from_env(env_var_prefix),
+          # Build gateway URLs from ENV vars with specific gateway named suffixes
+          **gateway_database_urls_from_env(env_var_prefix)
+        }.compact
 
         # Build URLs from component ENV vars for any gateways without a complete URL
         gateway_names = [:default, *detect_gateway_names_from_env_components(env_var_prefix)]
@@ -273,6 +259,17 @@ module Hanami
         end
 
         database_urls
+      end
+
+      def default_database_url_from_env(env_var_prefix)
+        ["#{env_var_prefix}DATABASE_URL", "DATABASE_URL"].uniq.filter_map { ENV[_1] }.first
+      end
+
+      def gateway_database_urls_from_env(env_var_prefix)
+        gateway_prefix = "#{env_var_prefix}DATABASE_URL__"
+
+        ENV.select { |var, _| var.start_with?(gateway_prefix) }
+          .to_h { |var, url| [var.delete_prefix(gateway_prefix).downcase.to_sym, url] }
       end
 
       # ENV vars (without any slice prefix or gateway name suffix) from which a database URL can be
