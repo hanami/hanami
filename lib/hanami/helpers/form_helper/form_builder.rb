@@ -986,26 +986,18 @@ module Hanami
         #
         # @api public
         # @since 2.1.0
-        def select(name, values, **attributes) # rubocop:disable Metrics/AbcSize
+        def select(name, values, **attributes)
           options = attributes.delete(:options) { {} }
           multiple = attributes[:multiple]
           attributes = {name: _select_input_name(name, multiple), id: _input_id(name), **attributes}
           prompt = options.delete(:prompt)
           selected = options.delete(:selected)
-          input_value = _value(name)
 
           option_tags = []
           option_tags << tag.option(prompt) if prompt
-
-          already_selected = nil
-          values.each do |content, value|
-            if (multiple || !already_selected) &&
-               (already_selected = _select_option_selected?(value, selected, input_value, multiple))
-              option_tags << tag.option(content, value: value, selected: true, **options)
-            else
-              option_tags << tag.option(content, value: value, **options)
-            end
-          end
+          option_tags.concat(
+            _select_option_tags(values, selected:, input_value: _value(name), multiple:, options:)
+          )
 
           tag.select(option_tags.join.html_safe, **attributes)
         end
@@ -1337,6 +1329,24 @@ module Hanami
           select_name = _input_name(name)
           select_name = "#{select_name}[]" if multiple
           select_name
+        end
+
+        # Returns an option tag for each of the values, marking the selected values. Only the first
+        # matching value is selected unless multiple selections are allowed.
+        #
+        # @api private
+        # @since 3.1.0
+        def _select_option_tags(values, selected:, input_value:, multiple:, options:)
+          already_selected = nil
+
+          values.map do |content, value|
+            if (multiple || !already_selected) &&
+               (already_selected = _select_option_selected?(value, selected, input_value, multiple))
+              tag.option(content, value:, selected: true, **options)
+            else
+              tag.option(content, value:, **options)
+            end
+          end
         end
 
         # @api private

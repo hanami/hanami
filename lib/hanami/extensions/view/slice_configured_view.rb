@@ -54,10 +54,33 @@ module Hanami
           end
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def configure_view(view_class)
+          apply_slice_config(view_class)
+          configure_paths(view_class)
+
+          view_config = view_class.config
+
+          view_config.inflector = inflector
+          view_config.template = template_name(view_class)
+          view_config.default_context = Extensions::View::Context.context_class(slice).new
+
+          view_config.part_class = part_class
+          view_config.scope_class = scope_class
+
+          if (part_namespace = namespace_from_path("#{VIEWS_DIR}/#{PARTS_DIR}"))
+            view_config.part_namespace = part_namespace
+          end
+          if (scope_namespace = namespace_from_path("#{VIEWS_DIR}/#{SCOPES_DIR}"))
+            view_config.scope_namespace = scope_namespace
+          end
+        end
+
+        def apply_slice_config(view_class)
+          views_config = slice.config.views
+          parent_views_config = slice.parent&.config&.views
+
           view_class.settings.each do |setting|
-            next unless slice.config.views.respond_to?(setting.name)
+            next unless views_config.respond_to?(setting.name)
 
             # Configure the view from config on the slice, _unless it has already been configured by
             # a parent slice_, and re-configuring it for this slice would make no change.
@@ -97,19 +120,18 @@ module Hanami
             # in its immediate superclass.
             #
             # This would be surprising behavior, and we want to avoid it.
-            slice_value = slice.config.views.public_send(setting.name)
-            parent_value = slice.parent.config.views.public_send(setting.name) if slice.parent
+            slice_value = views_config.public_send(setting.name)
 
-            next if slice.parent && slice_value == parent_value
+            next if parent_views_config && slice_value == parent_views_config.public_send(setting.name)
 
             view_class.config.public_send(
               :"#{setting.name}=",
               setting.mutable? ? slice_value.dup : slice_value
             )
           end
+        end
 
-          view_class.config.inflector = inflector
-
+        def configure_paths(view_class)
           # Configure the paths for this view if:
           #   - We are the app, and a user hasn't provided custom `paths` (in this case, we need to
           #     set the defaults)
@@ -120,21 +142,7 @@ module Hanami
              (slice.parent && view_class.config.paths.map(&:dir) == [templates_path(slice.parent)])
             view_class.config.paths = templates_path(slice)
           end
-
-          view_class.config.template = template_name(view_class)
-          view_class.config.default_context = Extensions::View::Context.context_class(slice).new
-
-          view_class.config.part_class = part_class
-          view_class.config.scope_class = scope_class
-
-          if (part_namespace = namespace_from_path("#{VIEWS_DIR}/#{PARTS_DIR}"))
-            view_class.config.part_namespace = part_namespace
-          end
-          if (scope_namespace = namespace_from_path("#{VIEWS_DIR}/#{SCOPES_DIR}"))
-            view_class.config.scope_namespace = scope_namespace
-          end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def define_inherited
           template_name = method(:template_name)
