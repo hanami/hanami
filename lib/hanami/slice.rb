@@ -1314,7 +1314,7 @@ module Hanami
           end
 
           if Hanami.bundled?("hanami-assets") && config.assets.serve
-            use(Hanami::Middleware::Assets)
+            use(Hanami::Middleware::Assets, config: slice.app.config)
           end
 
           middleware_stack.update(config.middleware_stack)
