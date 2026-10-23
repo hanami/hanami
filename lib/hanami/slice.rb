@@ -1309,7 +1309,7 @@ module Hanami
 
             if config.actions.content_security_policy && # rubocop:disable Style/SafeNavigation
                config.actions.content_security_policy.nonce?
-              use(*config.actions.content_security_policy.middleware)
+              use(*config.actions.content_security_policy.middleware, config:)
             end
           end
 
