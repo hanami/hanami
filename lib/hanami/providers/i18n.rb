@@ -34,56 +34,56 @@ module Hanami
         end
       end
 
-      # rubocop:disable Metrics/AbcSize
       def start
-        backend = config.backend || ::I18n::Backend::Simple.new
-
-        # Configure fallbacks if enabled (only for default backend, not custom backends)
-        fallbacks_config = nil
-        if config.fallbacks && !config.backend
-          fallbacks_config =
-            case config.fallbacks
-            when true
-              # Use default_locale as the only fallback
-              fallbacks = ::I18n::Locale::Fallbacks.new
-              fallbacks.defaults = [config.default_locale]
-              fallbacks
-            when Hash
-              # Use explicit per-locale fallback mapping
-              ::I18n::Locale::Fallbacks.new(config.fallbacks)
-            when Array
-              # Use the given fallbacks for all locales
-              fallbacks = ::I18n::Locale::Fallbacks.new
-              fallbacks.defaults = config.fallbacks
-              fallbacks
-            else
-              ::I18n::Locale::Fallbacks.new(config.fallbacks)
-            end
-        end
-
-        # Only load translation files if using the default backend. Custom backends are expected to
-        # handle their own initialization.
-        unless config.backend
-          translation_files = [
-            BUNDLED_DEFAULTS_PATH,
-            *resolve_load_paths(Array(config.shared_load_path), root: slice.app.root),
-            *resolve_load_paths(Array(config.load_path), root: slice.root)
-          ].uniq
-
-          backend.load_translations(*translation_files)
-        end
-
         register "i18n", Backend.new(
-          backend,
+          config.backend || default_backend,
           locale: config.default_locale,
           default_locale: config.default_locale,
           available_locales: config.available_locales,
-          fallbacks: fallbacks_config
+          # Fallbacks apply only to the default backend, not custom backends
+          fallbacks: (locale_fallbacks unless config.backend)
         )
       end
-      # rubocop:enable Metrics/AbcSize
 
       private
+
+      # Returns the default backend, loaded with the translation files. Custom backends are expected
+      # to handle their own initialization.
+      def default_backend
+        ::I18n::Backend::Simple.new.tap do |backend|
+          backend.load_translations(*translation_files)
+        end
+      end
+
+      def translation_files
+        [
+          BUNDLED_DEFAULTS_PATH,
+          *resolve_load_paths(Array(config.shared_load_path), root: slice.app.root),
+          *resolve_load_paths(Array(config.load_path), root: slice.root)
+        ].uniq
+      end
+
+      def locale_fallbacks
+        case config.fallbacks
+        when nil, false
+          nil
+        when true
+          # Use default_locale as the only fallback
+          fallbacks_with_defaults([config.default_locale])
+        when Array
+          # Use the given fallbacks for all locales
+          fallbacks_with_defaults(config.fallbacks)
+        else
+          # Use explicit per-locale fallback mapping
+          ::I18n::Locale::Fallbacks.new(config.fallbacks)
+        end
+      end
+
+      def fallbacks_with_defaults(defaults)
+        ::I18n::Locale::Fallbacks.new.tap do |fallbacks|
+          fallbacks.defaults = defaults
+        end
+      end
 
       # Resolves load path patterns to actual file paths. Relative patterns are resolved against
       # the given `root`. Absolute paths are used as-is.

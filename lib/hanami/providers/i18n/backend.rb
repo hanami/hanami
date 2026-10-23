@@ -43,8 +43,6 @@ module Hanami
           self.locale = locale if locale
         end
 
-        # rubocop:disable Metrics/PerceivedComplexity
-
         # Translates the given key.
         #
         # @param key [String, Symbol] the translation key to look up
@@ -73,36 +71,19 @@ module Hanami
         def translate(key, **options)
           locale = options[:locale] || self.locale
 
-          result = catch(:exception) do
-            @backend.translate(locale, key, options)
+          result = lookup(locale, key, options)
+
+          # If translation is missing, try fallback locales
+          if result.is_a?(::I18n::MissingTranslation) && !options[:fallback]
+            result = lookup_fallbacks(locale, key, options) || result
           end
 
-          # If translation is missing and fallbacks are configured, try fallback locales
-          if result.is_a?(::I18n::MissingTranslation) && @fallbacks && !options[:fallback]
-            fallback_locales = @fallbacks[locale] - [locale]
-            fallback_locales.each do |fallback_locale|
-              fallback_result = catch(:exception) do
-                @backend.translate(fallback_locale, key, options.merge(fallback: true))
-              end
+          return result unless result.is_a?(::I18n::MissingTranslation)
 
-              unless fallback_result.is_a?(::I18n::MissingTranslation)
-                return fallback_result
-              end
-            end
-          end
+          raise ::I18n::MissingTranslationData.new(locale, key, options) if options[:raise]
 
-          if result.is_a?(::I18n::MissingTranslation)
-            if options[:raise]
-              raise ::I18n::MissingTranslationData.new(locale, key, options)
-            else
-              handle_missing_translation(result, options)
-            end
-          else
-            result
-          end
+          handle_missing_translation(result, options)
         end
-
-        # rubocop:enable Metrics/PerceivedComplexity
 
         # @api public
         # @since 3.0.0
@@ -327,6 +308,26 @@ module Hanami
 
         private
 
+        # Returns the translation, or an `I18n::MissingTranslation` if it is missing.
+        def lookup(locale, key, options)
+          catch(:exception) do
+            @backend.translate(locale, key, options)
+          end
+        end
+
+        # Returns the translation from the first of the locale's fallback locales that has one, or
+        # nil if none do or no fallbacks are configured.
+        def lookup_fallbacks(locale, key, options)
+          return unless @fallbacks
+
+          (@fallbacks[locale] - [locale]).each do |fallback_locale|
+            result = lookup(fallback_locale, key, options.merge(fallback: true))
+            return result unless result.is_a?(::I18n::MissingTranslation)
+          end
+
+          nil
+        end
+
         def handle_missing_translation(missing_translation, options)
           default = options[:default]
           return default if default.is_a?(String)
@@ -335,7 +336,18 @@ module Hanami
           key.to_s
         end
 
-        # rubocop:disable Layout/LineLength, Style/NestedTernaryOperator, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # Translation keys for the locale-dependent strftime codes that name a day or month, along
+        # with the method giving the index of the name for a date or time.
+        #
+        # This set of codes is fixed by the C `strftime` spec and has not changed in the upstream
+        # gem since at least 2010, so this table is effectively frozen.
+        LOCALIZED_NAMES = {
+          "a" => [:"date.abbr_day_names", :wday],
+          "A" => [:"date.day_names", :wday],
+          "b" => [:"date.abbr_month_names", :mon],
+          "B" => [:"date.month_names", :mon]
+        }.freeze
+        private_constant :LOCALIZED_NAMES
 
         # Expands locale-dependent strftime codes (`%a`, `%A`, `%b`, `%B`, `%p`, `%P` and their
         # uppercase `^` variants) by looking up day/month names and meridiem markers through this
@@ -344,29 +356,35 @@ module Hanami
         # This is a deliberate port of `I18n::Backend::Base#translate_localization_format`. We can't
         # call this upstream method directly because it's private and also hardcodes `I18n.t!` (the
         # global module) for every lookup, which defeats our per-slice isolated backends.
-        #
-        # This set of locale-dependent strftime codes is fixed by the C `strftime` spec and has not
-        # changed in the upstream gem since at least 2010, so this table is effectively frozen.
         def expand_localization_format(locale, object, format)
-          format.to_s.gsub(/%(|\^)[aAbBpP]/) do |match|
-            case match
-            when "%a"   then t!(:"date.abbr_day_names",   locale:, format:)[object.wday]
-            when "%^a"  then t!(:"date.abbr_day_names",   locale:, format:)[object.wday].upcase
-            when "%A"   then t!(:"date.day_names",        locale:, format:)[object.wday]
-            when "%^A"  then t!(:"date.day_names",        locale:, format:)[object.wday].upcase
-            when "%b"   then t!(:"date.abbr_month_names", locale:, format:)[object.mon]
-            when "%^b"  then t!(:"date.abbr_month_names", locale:, format:)[object.mon].upcase
-            when "%B"   then t!(:"date.month_names",      locale:, format:)[object.mon]
-            when "%^B"  then t!(:"date.month_names",      locale:, format:)[object.mon].upcase
-            when "%p"   then t!(:"time.#{(object.respond_to?(:hour) ? object.hour : 0) < 12 ? :am : :pm}", locale:, format:).upcase
-            when "%P"   then t!(:"time.#{(object.respond_to?(:hour) ? object.hour : 0) < 12 ? :am : :pm}", locale:, format:).downcase
-            end
+          format.to_s.gsub(/%(\^?)([aAbBpP])/) do
+            upcase = Regexp.last_match(1) == "^"
+            expand_localization_code(Regexp.last_match(2), upcase:, locale:, object:, format:)
           end
         rescue ::I18n::MissingTranslationData => exception
           exception.message
         end
 
-        # rubocop:enable Layout/LineLength, Style/NestedTernaryOperator, Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # Returns the expansion of a single strftime code, or nil for `%^p` and `%^P`, which expand
+        # to nothing.
+        def expand_localization_code(code, upcase:, locale:, object:, format:)
+          if (names = LOCALIZED_NAMES[code])
+            key, index_method = names
+            name = t!(key, locale:, format:)[object.public_send(index_method)]
+
+            upcase ? name.upcase : name
+          elsif !upcase
+            meridiem = t!(:"time.#{meridiem_key(object)}", locale:, format:)
+
+            code == "p" ? meridiem.upcase : meridiem.downcase
+          end
+        end
+
+        def meridiem_key(object)
+          hour = object.respond_to?(:hour) ? object.hour : 0
+
+          hour < 12 ? :am : :pm
+        end
       end
     end
   end
