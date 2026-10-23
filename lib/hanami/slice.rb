@@ -1052,6 +1052,9 @@ module Hanami
       end
 
       def prepare_all
+        # Make app-wide notifications available as early as possible
+        container.use(:notifications) if app?
+
         prepare_settings
         prepare_container_consts
         prepare_container_plugins
@@ -1059,6 +1062,36 @@ module Hanami
         prepare_container_component_dirs
         prepare_container_imports
         prepare_container_providers
+        prepare_app_providers
+      end
+
+      # Registers the components the app shares with the slices within it.
+      def prepare_app_providers
+        return unless app?
+
+        require_relative "providers/inflector"
+        register_provider(:inflector, source: Hanami::Providers::Inflector)
+
+        # Allow the logger to be replaced by users with a manual provider, for advanced cases.
+        unless container.providers[:logger]
+          register_provider(:logger, source: Hanami::Providers::Logger)
+        end
+
+        # Ensure the logger is wrapped by `Hanami::UniversalLogger`, even if manually registered in a
+        # user-defined provider, guaranteeing Hanami's structured and tagged logging interface across
+        # the framework.
+        container.providers[:logger].source.after(:start) do
+          container.decorate(:logger) { |logger| Hanami::UniversalLogger[logger] }
+        end
+
+        if Hanami.bundled?("rack")
+          require_relative "providers/rack"
+          register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
+        end
+
+        if Hanami.bundled?("hanami-db")
+          register_provider(:db_logging, source: Hanami::Providers::DBLogging)
+        end
       end
 
       def prepare_settings
