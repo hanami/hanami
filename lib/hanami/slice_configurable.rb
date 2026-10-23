@@ -31,10 +31,6 @@ module Hanami
 
         inherited_mod = Module.new do
           define_method(:inherited) do |subclass|
-            unless Hanami.app?
-              raise ComponentLoadError, "Class #{klass} must be defined within an Hanami app"
-            end
-
             super(subclass)
 
             subclass.instance_variable_set(:@configured_for_slices, configured_for_slices.dup)
@@ -57,7 +53,20 @@ module Hanami
       def slice_for(klass)
         return unless klass.name
 
-        Hanami.app.with_slices.detect { |slice| klass.name.start_with?("#{slice.namespace}#{MODULE_DELIMITER}") }
+        slices.detect { |slice| klass.name.start_with?("#{slice.namespace}#{MODULE_DELIMITER}") }
+      end
+
+      def slices
+        Hanami.app? ? Hanami.app.with_slices : standalone_slices
+      end
+
+      # Standalone slices (no app in the process): every slice class still reachable via its
+      # constant, most specific namespace first
+      def standalone_slices
+        Hanami::Slice.subclasses
+          .reject { |slice| slice.name.nil? || slice <= Hanami::App }
+          .select { |slice| Object.const_defined?(slice.name) && Object.const_get(slice.name).equal?(slice) }
+          .sort_by { |slice| -slice.name.length }
       end
     end
 
