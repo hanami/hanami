@@ -43,8 +43,6 @@ module Hanami
           self.locale = locale if locale
         end
 
-        # rubocop:disable Metrics/PerceivedComplexity
-
         # Translates the given key.
         #
         # @param key [String, Symbol] the translation key to look up
@@ -73,36 +71,19 @@ module Hanami
         def translate(key, **options)
           locale = options[:locale] || self.locale
 
-          result = catch(:exception) do
-            @backend.translate(locale, key, options)
+          result = lookup(locale, key, options)
+
+          # If translation is missing, try fallback locales
+          if result.is_a?(::I18n::MissingTranslation) && !options[:fallback]
+            result = lookup_fallbacks(locale, key, options) || result
           end
 
-          # If translation is missing and fallbacks are configured, try fallback locales
-          if result.is_a?(::I18n::MissingTranslation) && @fallbacks && !options[:fallback]
-            fallback_locales = @fallbacks[locale] - [locale]
-            fallback_locales.each do |fallback_locale|
-              fallback_result = catch(:exception) do
-                @backend.translate(fallback_locale, key, options.merge(fallback: true))
-              end
+          return result unless result.is_a?(::I18n::MissingTranslation)
 
-              unless fallback_result.is_a?(::I18n::MissingTranslation)
-                return fallback_result
-              end
-            end
-          end
+          raise ::I18n::MissingTranslationData.new(locale, key, options) if options[:raise]
 
-          if result.is_a?(::I18n::MissingTranslation)
-            if options[:raise]
-              raise ::I18n::MissingTranslationData.new(locale, key, options)
-            else
-              handle_missing_translation(result, options)
-            end
-          else
-            result
-          end
+          handle_missing_translation(result, options)
         end
-
-        # rubocop:enable Metrics/PerceivedComplexity
 
         # @api public
         # @since 3.0.0
@@ -326,6 +307,26 @@ module Hanami
         end
 
         private
+
+        # Returns the translation, or an `I18n::MissingTranslation` if it is missing.
+        def lookup(locale, key, options)
+          catch(:exception) do
+            @backend.translate(locale, key, options)
+          end
+        end
+
+        # Returns the translation from the first of the locale's fallback locales that has one, or
+        # nil if none do or no fallbacks are configured.
+        def lookup_fallbacks(locale, key, options)
+          return unless @fallbacks
+
+          (@fallbacks[locale] - [locale]).each do |fallback_locale|
+            result = lookup(fallback_locale, key, options.merge(fallback: true))
+            return result unless result.is_a?(::I18n::MissingTranslation)
+          end
+
+          nil
+        end
 
         def handle_missing_translation(missing_translation, options)
           default = options[:default]
