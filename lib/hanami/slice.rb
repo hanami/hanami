@@ -1107,8 +1107,8 @@ module Hanami
 
         error_handlers = {}.tap do |hsh|
           if render_errors || render_detailed_errors
-            hsh[:not_allowed] = router_not_allowed_handler(slice)
-            hsh[:not_found] = router_not_found_handler(slice)
+            hsh[:not_allowed] = router_not_allowed_handler
+            hsh[:not_found] = router_not_found_handler
           end
         end
 
@@ -1171,15 +1171,15 @@ module Hanami
       # The errors raised for unmatched requests carry the slice that was routing them, so that
       # error handling further up the stack (such as the detailed error page rendered by
       # hanami-webconsole) can reach its routes.
-      def router_not_allowed_handler(slice)
+      def router_not_allowed_handler
         -> env, allowed_http_methods {
-          raise Hanami::Router::NotAllowedError.new(env, allowed_http_methods, slice: slice)
+          raise Hanami::Router::NotAllowedError.new(env, allowed_http_methods, slice: self)
         }.freeze
       end
 
-      def router_not_found_handler(slice)
+      def router_not_found_handler
         -> env {
-          raise Hanami::Router::NotFoundError.new(env, slice: slice)
+          raise Hanami::Router::NotFoundError.new(env, slice: self)
         }.freeze
       end
 

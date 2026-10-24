@@ -30,6 +30,7 @@ module Hanami
       # @since 3.1.0
       attr_reader :slice
 
+      # @api private
       def initialize(env, slice: nil)
         @env = env
         @slice = slice
@@ -69,6 +70,7 @@ module Hanami
       # @since 3.1.0
       attr_reader :slice
 
+      # @api private
       def initialize(env, allowed_methods, slice: nil)
         @env = env
         @allowed_methods = allowed_methods

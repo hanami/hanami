@@ -46,8 +46,6 @@ RSpec.describe "Web / Rendering detailed errors", :app_integration do
     end
   end
 
-  # These assert against the page's `data-webconsole-*` hooks rather than its markup, so that
-  # restyling the error page does not break this spec.
   describe "HTML request" do
     it "renders a detailed HTML error page" do
       get "/error", {}, "HTTP_ACCEPT" => "text/html"
