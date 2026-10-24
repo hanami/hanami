@@ -893,26 +893,23 @@ module Hanami
         @routes
       end
 
-      # Returns the slice's router, if or nil if no routes are defined.
+      # Returns the slice's router, or nil if no routes are defined.
       #
-      # An optional `inspector`, implementing the `Hanami::Router::Inspector` interface, may be
-      # provided at first call (the router is then memoized for subsequent accesses). An inspector
-      # is used by the `hanami routes` CLI comment to provide a list of available routes.
+      # The router is memoized on first access. Its `#routes` returns the routes it has defined, such
+      # as for the `hanami routes` CLI command to list them.
       #
       # The returned router is a {Slice::Router}, which provides all `Hanami::Router` functionality,
       # with the addition of support for slice mounting with the {Slice::Router#slice}.
-      #
-      # @param inspector [Hanami::Router::Inspector, nil] an optional routes inspector
       #
       # @return [Hanami::Slice::Router, nil]
       #
       # @api public
       # @since 2.0.0
-      def router(inspector: nil)
+      def router
         raise SliceLoadError, "#{self} must be prepared before loading the router" unless prepared?
 
         @_mutex.synchronize do
-          @_router ||= load_router(inspector: inspector)
+          @_router ||= load_router
         end
       end
 
@@ -1254,7 +1251,7 @@ module Hanami
       end
 
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-      def load_router(inspector:)
+      def load_router
         return unless routes
 
         require_relative "slice/router"
@@ -1269,15 +1266,14 @@ module Hanami
 
         error_handlers = {}.tap do |hsh|
           if render_errors || render_detailed_errors
-            hsh[:not_allowed] = ROUTER_NOT_ALLOWED_HANDLER
-            hsh[:not_found] = ROUTER_NOT_FOUND_HANDLER
+            hsh[:not_allowed] = router_not_allowed_handler
+            hsh[:not_found] = router_not_found_handler
           end
         end
 
         Slice::Router.new(
-          inspector: inspector,
-          inflector: inflector,
-          routes: routes,
+          inflector:,
+          routes:,
           resolver: config.router.resolver.new(slice: self),
           **error_handlers,
           **config.router.options
@@ -1330,15 +1326,20 @@ module Hanami
         config.render_detailed_errors && Hanami.bundled?("hanami-webconsole")
       end
 
-      ROUTER_NOT_ALLOWED_HANDLER = -> env, allowed_http_methods {
-        raise Hanami::Router::NotAllowedError.new(env, allowed_http_methods)
-      }.freeze
-      private_constant :ROUTER_NOT_ALLOWED_HANDLER
+      # The errors raised for unmatched requests carry the slice that was routing them, so that
+      # error handling further up the stack (such as the detailed error page rendered by
+      # hanami-webconsole) can reach its routes.
+      def router_not_allowed_handler
+        -> env, allowed_http_methods {
+          raise Hanami::Router::NotAllowedError.new(env, allowed_http_methods, slice: self)
+        }.freeze
+      end
 
-      ROUTER_NOT_FOUND_HANDLER = -> env {
-        raise Hanami::Router::NotFoundError.new(env)
-      }.freeze
-      private_constant :ROUTER_NOT_FOUND_HANDLER
+      def router_not_found_handler
+        -> env {
+          raise Hanami::Router::NotFoundError.new(env, slice: self)
+        }.freeze
+      end
 
       def assets_dir?
         source_path.join("assets").directory?
