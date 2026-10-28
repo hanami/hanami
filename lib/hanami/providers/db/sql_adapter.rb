@@ -10,6 +10,9 @@ module Hanami
         # @since 2.2.0
         setting :extensions, mutable: true
 
+        # @api private
+        setting :connect_sqls, mutable: true
+
         # @api public
         # @since 2.2.0
         def extension(*extensions)
@@ -20,6 +23,11 @@ module Hanami
         # @since 2.2.0
         def extensions
           config.extensions ||= []
+        end
+
+        # @api private
+        def connect_sqls
+          config.connect_sqls ||= []
         end
 
         # @api private
@@ -37,11 +45,12 @@ module Hanami
         end
 
         # @api private
-        def configure_for_database(database_url)
+        def configure_for_gateway(gateway)
           return if skip_defaults?
 
           configure_plugins
-          configure_extensions(database_url)
+          configure_extensions(gateway.database_url)
+          configure_connect_sqls(gateway)
         end
 
         # @api private
@@ -84,14 +93,33 @@ module Hanami
         end
 
         # @api private
+        private def configure_connect_sqls(gateway)
+          return if skip_defaults?(:connect_sqls)
+
+          # Pragmas for SQLite databases, run on every new connection. Matches "sqlite://",
+          # "sqlite:" and "jdbc:sqlite:" URLs.
+          #
+          # Read-only connections skip the pragmas that write to the database file. This currently
+          # checks for `readonly: true` in `connection_options` only. It does not look for
+          # `?readonly=true` in the database URL.
+          if gateway.database_url.to_s.start_with?(/(jdbc:)?sqlite:/)
+            readonly = gateway.connection_options.fetch(:readonly, false)
+            config.connect_sqls = Hanami::DB::SQLite::Pragmas.new(readonly:).connect_sqls
+          end
+        end
+
+        # @api private
         def gateway_options
-          {extensions: extensions}
+          options = {extensions: extensions}
+          options[:connect_sqls] = connect_sqls if connect_sqls.any?
+          options
         end
 
         # @api public
         # @since 2.2.0
         def clear
           config.extensions = nil
+          config.connect_sqls = nil
           super
         end
       end

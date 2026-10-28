@@ -48,7 +48,19 @@ module Hanami
         # @api public
         # @since 2.2.0
         def options
-          {**connection_options, **config.adapter.gateway_options}
+          adapter_options = config.adapter.gateway_options
+          options = {**connection_options, **adapter_options}
+
+          # Combine connect_sqls rather than letting the adapter's replace the user's. The user's
+          # statements run last, so they win over any adapter defaults they conflict with.
+          if options.key?(:connect_sqls)
+            options[:connect_sqls] = [
+              *adapter_options.fetch(:connect_sqls, nil),
+              *connection_options.fetch(:connect_sqls, nil)
+            ]
+          end
+
+          options
         end
 
         # @api private
@@ -58,7 +70,7 @@ module Hanami
 
           config.adapter.configure_from_adapter(default_adapter)
 
-          config.adapter.configure_for_database(config.database_url)
+          config.adapter.configure_for_gateway(self)
 
           self
         end

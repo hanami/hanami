@@ -16,7 +16,7 @@ if ENV["RACK_MATRIX_VALUE"]
 end
 
 gem "hanami-utils", github: "hanami/hanami-utils", branch: "main"
-gem "hanami-db", github: "hanami/hanami-db", branch: "main"
+gem "hanami-db", github: "hanami/hanami-db", branch: "sqlite-pragmas-readonly"
 gem "hanami-router", github: "hanami/hanami-router", branch: "main"
 gem "hanami-action", github: "hanami/hanami-action", branch: "main"
 gem "hanami-cli", github: "hanami/hanami-cli", branch: "main"
