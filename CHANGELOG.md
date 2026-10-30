@@ -33,6 +33,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     This unloads the app and all its slices, then prepares them again, picking up changes to code, settings, providers, routes and slices themselves. The app class itself is kept, so `run Hanami.app` in `config.ru` continues to work, which means that `config/app.rb` itself is not reloaded.
 
     Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
+- Add `Hanami::ResolvableError`, letting an error describe how to fix it. Include the module and declare resolutions; the development error page renders a card for each, showing a command to copy, a snippet to paste or a list to work through. A resolution declaring `run` also gets a button that runs it. (@afomera in #1622)
+
 ### Changed
 
 - In routes, pass the `as:` option of `resources` through the inflector, in the same way as the resource name. Previously `as:` was used exactly as given. Now, member routes and routes nested under the resource use its singular form, and the index and create routes use its plural form. (@timriley in #1643)
