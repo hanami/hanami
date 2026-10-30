@@ -44,6 +44,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
     With the lazy exposures in Hanami View 3.1, this ensures form rendering no longer runs every exposure in the view, only the ones the form reads. 
 
+- Change the default `config.logger.filters` to `["passw", "secret", "token", "_key", "crypt"]`. With the substring matching in dry-logger 1.3, these filter any key containing these words, ignoring case, such as `password_confirmation`, `client_secret`, `_csrf_token`, `api_key` and `encrypted_password`. To filter more keys, append to `config.logger.filters`. To match a short key exactly, use a regexp such as `/\Apin\z/`. (@timriley in #1657)
+
 ### Deprecated
 
 ### Removed

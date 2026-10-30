@@ -78,16 +78,23 @@ module Hanami
       setting :template, default: :details
 
       # @!attribute [rw] filters
-      #   Sets or returns an array of attribute names to filter from logs.
+      #   Sets or returns an array of filters for values to hide from logs.
       #
-      #   Defaults to `["_csrf", "password", "password_confirmation"]`. If you want to preserve
-      #   these defaults, append to this array rather than reassigning it.
+      #   A string filter matches any key that contains it, ignoring case. For example, `"passw"`
+      #   matches `password`, `password_confirmation` and `new_password`. A string filter containing
+      #   dots matches against the key's full dotted path, such as `"user.pin"`.
       #
-      #   @return [Array<String>]
+      #   A regexp filter matches against each key and its full dotted path, ignoring case. Use a
+      #   regexp to match a short key exactly, such as `/\Apin\z/`.
+      #
+      #   Defaults to `["_key", "crypt", "passw", "secret", "token"]`. If you want to preserve these
+      #   defaults, append to this array rather than reassigning it.
+      #
+      #   @return [Array<String, Regexp>]
       #
       #   @api public
       #   @since 2.0.0
-      setting :filters, default: %w[_csrf password password_confirmation].freeze
+      setting :filters, default: %w[_key crypt passw secret token].freeze
 
       # @!attribute [rw] logger_constructor
       #   Sets or returns the constructor proc to use for the logger instantiation.
