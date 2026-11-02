@@ -72,6 +72,14 @@ RSpec.describe "Web / Rendering detailed errors", :app_integration do
         "[data-webconsole-exception-class]", text: "Hanami::Router::NotFoundError"
       )
     end
+
+    it "shows the app's routes and a fix for a not found error" do
+      get "/eror", {}, "HTTP_ACCEPT" => "text/html"
+
+      html = Capybara.string(last_response.body)
+      expect(html).to have_selector("[data-webconsole-context-panel='Routes']", text: "/error")
+      expect(html).to have_selector("[data-webconsole-fix-text]", text: "Did you mean /error?")
+    end
   end
 
   describe "Other request types" do
@@ -102,7 +110,7 @@ RSpec.describe "Web / Rendering detailed errors", :app_integration do
 
       expect(last_response.status).to eq 404
 
-      expect(last_response.body).to include "## Hanami::Router::NotFoundError"
+      expect(last_response.body).to include "## No matching route (Hanami::Router::NotFoundError)"
     end
   end
 
