@@ -151,11 +151,7 @@ module Hanami
         end
 
         def templates_path(slice)
-          if slice.app.equal?(slice)
-            slice.root.join(APP_DIR, TEMPLATES_DIR)
-          else
-            slice.root.join(TEMPLATES_DIR)
-          end
+          slice.source_path.join(TEMPLATES_DIR)
         end
 
         def namespace_from_path(path)

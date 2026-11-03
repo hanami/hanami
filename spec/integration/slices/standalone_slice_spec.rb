@@ -130,6 +130,37 @@ RSpec.describe "Slices / Standalone slices", :app_integration do
     end
   end
 
+  specify "a standalone slice renders views from templates in its own root" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write_slice("PagesFeature", "pages_feature")
+
+      write "pages_feature/slice/views/show.rb", <<~RUBY
+        require "hanami/view"
+
+        module PagesFeature
+          module Views
+            class Show < Hanami::View
+              expose :slug
+            end
+          end
+        end
+      RUBY
+
+      write "pages_feature/slice/templates/layouts/app.html.erb", <<~ERB
+        <main><%= yield %></main>
+      ERB
+
+      write "pages_feature/slice/templates/show.html.erb", <<~ERB
+        <h1>Page <%= slug %></h1>
+      ERB
+
+      require File.join(Dir.pwd, "pages_feature/lib/pages_feature")
+      PagesFeature::Slice.prepare
+
+      expect(PagesFeature::Slice["views.show"].call(slug: "about").to_s).to eq "<main><h1>Page about</h1>\n</main>\n"
+    end
+  end
+
   specify "a standalone slice can register nested slices" do
     with_tmp_directory(Dir.mktmpdir) do
       write_slice("ParentFeature", "parent_feature")
