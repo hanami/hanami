@@ -34,6 +34,9 @@ gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 # Required until dry-cli 2.0 is released
 gem "dry-cli", github: "dry-rb/dry-cli", branch: "main"
 
+# Required for substring log filtering; remove once dry-logger 1.3 is released
+gem "dry-logger", github: "dry-rb/dry-logger", branch: "main"
+
 # For testing settings with types
 gem "dry-types"
 

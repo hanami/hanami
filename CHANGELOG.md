@@ -44,6 +44,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
     With the lazy exposures in Hanami View 3.1, this ensures form rendering no longer runs every exposure in the view, only the ones the form reads. 
 
+- Change the default `config.logger.filters` to `["passw", "secret", "token", "_key", "crypt"]`. With the substring matching in dry-logger 1.3, these filter any key containing these words, ignoring case, such as `password_confirmation`, `client_secret`, `_csrf_token`, `api_key` and `encrypted_password`. To filter more keys, append to `config.logger.filters`. To match a short key exactly, use a regexp such as `/\Apin\z/`. (@timriley in #1657)
+
 ### Deprecated
 
 ### Removed
@@ -63,6 +65,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Give the index and create routes of `resources` with an uncountable name (like `news`) a name with an `_index` suffix (`news_index`). Previously these shared the `news` name with the show route, which left the index route without a usable name. (@timriley in #1643)
 - Name the params for routes nested under `resources` after the resource name, rather than its `path:`. `resources :cafes, path: "coffee-shops" do resources :reviews end` now gives `/coffee-shops/:cafe_id/reviews`. Previously, a `path:` with a dash or a slash gave an invalid param name, and the nested routes did not match any request. Apps that use a `path:` and read the old param name (for example, `article_id` for `resources :posts, path: "articles"`) will need to read the new name (`post_id`). (@timriley in #1643)
 - In request logs, include body params parsed by actions (such as from JSON request bodies). Parsed body params were missing from logs in Hanami 3.0 when body parsing moved into Hanami Action. (@timriley in #1649)
+- Generate content security policy nonces from the config of the slice whose router serves the request, rather than the app's. Previously a slice served through its own `rack_app` used the app's nonce generator. (@parndt in #1653)
 - Apply slice config to actions and views in a slice that inherit directly from `Hanami::Action` or `Hanami::View`. Previously these missed every setting the slice shared with the app, such as default headers and accepted formats. (@parndt)
 
 ### Security

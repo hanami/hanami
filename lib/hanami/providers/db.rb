@@ -167,11 +167,12 @@ module Hanami
       # inflection rules for ROM will lead to constant loading
       # errors.
       def override_rom_inflector
-        return if ROM::Inflector == Hanami.app["inflector"]
+        inflector = slice.app["inflector"]
+        return if ROM::Inflector == inflector
 
         ROM.instance_eval {
           remove_const :Inflector
-          const_set :Inflector, Hanami.app["inflector"]
+          const_set :Inflector, inflector
         }
       end
 

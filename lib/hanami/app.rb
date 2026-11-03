@@ -100,9 +100,6 @@ module Hanami
       def prepare_all
         prepare_load_path
 
-        # Make app-wide notifications available as early as possible
-        container.use(:notifications)
-
         # Ensure all basic slice preparation is complete before we make adjustments below (which
         # rely on the basic prepare steps having already run)
         super
@@ -110,7 +107,6 @@ module Hanami
         # Run specific prepare steps for the app slice. Note also that some standard steps have been
         # skipped via the empty method overrides below.
         prepare_app_component_dirs
-        prepare_app_providers
       end
 
       # Skip standard slice prepare steps that do not apply to the app
@@ -144,32 +140,6 @@ module Hanami
               !relative_path.start_with?(*no_auto_register_paths)
             }
           end
-        end
-      end
-
-      def prepare_app_providers
-        require_relative "providers/inflector"
-        register_provider(:inflector, source: Hanami::Providers::Inflector)
-
-        # Allow the logger to be replaced by users with a manual provider, for advanced cases.
-        unless container.providers[:logger]
-          register_provider(:logger, source: Hanami::Providers::Logger)
-        end
-
-        # Ensure the logger is wrapped by `Hanami::UniversalLogger`, even if manually registered in a
-        # user-defined provider, guaranteeing Hanami's structured and tagged logging interface across
-        # the framework.
-        container.providers[:logger].source.after(:start) do
-          container.decorate(:logger) { |logger| Hanami::UniversalLogger[logger] }
-        end
-
-        if Hanami.bundled?("rack")
-          require_relative "providers/rack"
-          register_provider(:rack, source: Hanami::Providers::Rack, namespace: true)
-        end
-
-        if Hanami.bundled?("hanami-db")
-          register_provider(:db_logging, source: Hanami::Providers::DBLogging)
         end
       end
 

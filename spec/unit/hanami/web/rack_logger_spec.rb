@@ -11,16 +11,16 @@ RSpec.describe Hanami::Web::RackLogger do
   let(:logger) do
     Dry.Logger(
       app_name,
-      stream: stream,
+      stream:,
       level: :debug,
-      filters: filters,
+      # Use Hanami's default filters
+      filters: Hanami::Config::Logger.new(env: :development, app_name: nil).filters,
       formatter: :rack,
       template: "[%<progname>s] [%<severity>s] [%<time>s] %<message>s"
     )
   end
 
   let(:stream) { StringIO.new }
-  let(:filters) { ["user.password"] }
   let(:app_name) { "my_app" }
 
   describe "#initialize" do
@@ -64,6 +64,30 @@ RSpec.describe Hanami::Web::RackLogger do
             {"user" => {"password" => "[FILTERED]"}}
         LOG
       end
+    end
+
+    it "filters sensitive params" do
+      env = Rack::MockRequest.env_for("/users", method: "POST")
+      env["router.params"] = {
+        "_csrf_token" => "sensitive-1",
+        "user" => {
+          "name" => "Jane",
+          "password" => "sensitive-2",
+          "password_confirmation" => "sensitive-2",
+          "api_key" => "sensitive-3",
+          "encrypted_password" => "sensitive-4",
+          "devices" => [{"name" => "Phone", "access_token" => "sensitive-5"}]
+        },
+        "client_secret" => "sensitive-6"
+      }
+
+      subject.log_request(env, 200, 0.1)
+
+      stream.rewind
+      actual = stream.read
+
+      expect(actual).to include("Jane", "Phone")
+      expect(actual).not_to include("sensitive")
     end
 
     context "ip" do
