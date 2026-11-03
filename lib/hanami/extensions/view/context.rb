@@ -36,7 +36,7 @@ module Hanami
           # @api private
           # @since 2.1.0
           def context_superclass(slice)
-            return Hanami::View::Context if Hanami.app.equal?(slice)
+            return Hanami::View::Context if slice.app?
 
             begin
               slice.inflector.constantize(
