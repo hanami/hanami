@@ -1290,7 +1290,7 @@ module Hanami
 
           if render_detailed_errors
             require "hanami/webconsole"
-            use(Hanami::Webconsole::Middleware, config)
+            use(Hanami::Webconsole::Middleware, slice)
           end
 
           if Hanami.bundled?("hanami-action")
