@@ -64,9 +64,12 @@ module Hanami
         end
 
         def configure_action(action_class)
+          # The slice the superclass was most recently configured from, if any
+          configured_slice = action_class.configured_for_slices.last
+
           action_class.settings.each do |setting|
-            # Configure the action from config on the slice, _unless it has already been configured
-            # by a parent slice_, and re-configuring it for this slice would make no change.
+            # Configure the action from config on the slice, _unless its superclass has already been
+            # configured from a slice_, and re-configuring it for this slice would make no change.
             #
             # In the case of most slices, its actions config is likely to be the same as its parent
             # (since each slice copies its `config` from its parent), and if we re-apply the config
@@ -103,10 +106,12 @@ module Hanami
             # the `:json` value configured in its immediate superclass.
             #
             # This would be surprising behavior, and we want to avoid it.
+            #
+            # A class inheriting directly from `Hanami::Action` has not been configured from any
+            # slice, so it receives every setting from this slice.
             slice_value = slice.config.actions.public_send(setting.name)
-            parent_value = slice.parent.config.actions.public_send(setting.name) if slice.parent
 
-            next if slice.parent && slice_value == parent_value
+            next if configured_slice && slice_value == configured_slice.config.actions.public_send(setting.name)
 
             action_class.config.public_send(
               :"#{setting.name}=",

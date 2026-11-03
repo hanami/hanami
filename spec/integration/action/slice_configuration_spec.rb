@@ -135,6 +135,39 @@ RSpec.describe "App action / Slice configuration", :app_integration do
     end
   end
 
+  describe "inheriting directly from Hanami::Action" do
+    describe "subclass in slice" do
+      before do
+        with_directory(@dir) do
+          write "slices/admin/actions/articles/index.rb", <<~'RUBY'
+            module Admin
+              module Actions
+                module Articles
+                  class Index < Hanami::Action
+                  end
+                end
+              end
+            end
+          RUBY
+        end
+      end
+
+      it "applies actions config from the app" do
+        Hanami.app.config.actions.formats.accepted = [:json]
+
+        prepare_app
+
+        expect(Admin::Actions::Articles::Index.config.formats.accepted).to eq [:json]
+      end
+
+      it "applies default headers from the app" do
+        prepare_app
+
+        expect(Admin::Actions::Articles::Index.config.default_headers).to eq Hanami.app.config.actions.default_headers
+      end
+    end
+  end
+
   describe "inheriting from a slice-level base class, in turn inheriting from an app-level base class" do
     before do
       with_directory(@dir) do

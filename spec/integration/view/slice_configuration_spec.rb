@@ -138,6 +138,33 @@ RSpec.describe "App view / Slice configuration", :app_integration do
     end
   end
 
+  describe "inheriting directly from Hanami::View" do
+    describe "subclass in slice" do
+      before do
+        with_directory(@dir) do
+          write "slices/admin/views/articles/index.rb", <<~RUBY
+            module Admin
+              module Views
+                module Articles
+                  class Index < Hanami::View
+                  end
+                end
+              end
+            end
+          RUBY
+        end
+      end
+
+      it "applies views config from the app" do
+        Hanami.app.config.views.layout = "app_layout"
+
+        prepare_app
+
+        expect(Admin::Views::Articles::Index.config.layout).to eq "app_layout"
+      end
+    end
+  end
+
   describe "inheriting from a slice-level base class, in turn inheriting from an app-level base class" do
     before do
       with_directory(@dir) do

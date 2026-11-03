@@ -54,13 +54,16 @@ module Hanami
           end
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
         def configure_view(view_class)
+          # The slice the superclass was most recently configured from, if any
+          configured_slice = view_class.configured_for_slices.last
+
           view_class.settings.each do |setting|
             next unless slice.config.views.respond_to?(setting.name)
 
-            # Configure the view from config on the slice, _unless it has already been configured by
-            # a parent slice_, and re-configuring it for this slice would make no change.
+            # Configure the view from config on the slice, _unless its superclass has already been
+            # configured from a slice_, and re-configuring it for this slice would make no change.
             #
             # In the case of most slices, its views config is likely to be the same as its parent
             # (since each slice copies its `config` from its parent), and if we re-apply the config
@@ -97,10 +100,12 @@ module Hanami
             # in its immediate superclass.
             #
             # This would be surprising behavior, and we want to avoid it.
+            #
+            # A class inheriting directly from `Hanami::View` has not been configured from any
+            # slice, so it receives every setting from this slice.
             slice_value = slice.config.views.public_send(setting.name)
-            parent_value = slice.parent.config.views.public_send(setting.name) if slice.parent
 
-            next if slice.parent && slice_value == parent_value
+            next if configured_slice && slice_value == configured_slice.config.views.public_send(setting.name)
 
             view_class.config.public_send(
               :"#{setting.name}=",
@@ -134,7 +139,7 @@ module Hanami
             view_class.config.scope_namespace = scope_namespace
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
         def define_inherited
           template_name = method(:template_name)
