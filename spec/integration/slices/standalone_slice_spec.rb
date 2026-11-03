@@ -161,6 +161,28 @@ RSpec.describe "Slices / Standalone slices", :app_integration do
     end
   end
 
+  specify "a view can be defined directly in a prepared standalone slice's namespace" do
+    with_tmp_directory(Dir.mktmpdir) do
+      module PagesFeature
+        class Slice < Hanami::Slice
+          config.root = Dir.pwd
+        end
+      end
+
+      PagesFeature::Slice.prepare
+
+      expect {
+        module PagesFeature
+          class Show < Hanami::View
+          end
+        end
+      }.not_to raise_error
+
+      expect(PagesFeature::Show.config.paths.map(&:dir)).to eq [Pathname(Dir.pwd).join("templates")]
+      expect(Hanami.app?).to be false
+    end
+  end
+
   specify "a standalone slice can register nested slices" do
     with_tmp_directory(Dir.mktmpdir) do
       write_slice("ParentFeature", "parent_feature")
