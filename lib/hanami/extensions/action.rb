@@ -101,7 +101,15 @@ module Hanami
         end
 
         def finish(req, res, halted)
-          res.render(view, **view_input(req, res)) if !halted && auto_render?(res)
+          if !halted && auto_render?(res)
+            begin
+              res.render(view, **view_input(req, res))
+            rescue StandardError => exception
+              rack_monitor&.instrument(:error, exception: exception, env: req.env)
+              raise
+            end
+          end
+
           super
         end
 
