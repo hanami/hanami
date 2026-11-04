@@ -33,6 +33,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     This unloads the app and all its slices, then prepares them again, picking up changes to code, settings, providers, routes and slices themselves. The app class itself is kept, so `run Hanami.app` in `config.ru` continues to work, which means that `config/app.rb` itself is not reloaded.
 
     Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
+- Prepare, boot and serve a slice as a Rack app without an `Hanami::App` defined in the process. With no app defined, the outermost slice acts as the app: `Hanami::Slice.app` returns it, and `Hanami::Slice.app?` is true for it. (@parndt in #1614)
+
 ### Changed
 
 - In routes, pass the `as:` option of `resources` through the inflector, in the same way as the resource name. Previously `as:` was used exactly as given. Now, member routes and routes nested under the resource use its singular form, and the index and create routes use its plural form. (@timriley in #1643)
@@ -53,7 +55,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 ### Fixed
 
 - Don't attempt to inherit mailer template when `hanami-view` if not bundled. (@katafrakt in #1611)
-- Return `false` from `Hanami::Slice.app?`, rather than raising `Hanami::AppLoadError`, when no app is defined. (@parndt in #1612)
+- Don't raise `Hanami::AppLoadError` from `Hanami::Slice.app?` when no app is defined. (@parndt in #1612)
 - Build `logger` and `inflector` providers registered on a slice from the slice's own config, rather than the app's. (@parndt in #1613)
 - Register only ROM classes from the `relations`, `db/commands` and `db/mappers` directories, leaving any other classes in those directories untouched. (@aaronmallen in #1629)
 - Register Hanami's first-party provider sources when `Hanami::Slice` loads, rather than when a slice is prepared. This allows `configure_provider` to be called within an app or slice class body. (@timriley in #1636)
