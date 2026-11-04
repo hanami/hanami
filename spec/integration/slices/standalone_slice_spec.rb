@@ -5,7 +5,7 @@ require "rack/test"
 RSpec.describe "Slices / Standalone slices", :app_integration do
   # No Hanami::App is ever defined in these examples. These modules are removed
   # between examples by the :app_integration teardown.
-  let(:app_modules) { %i[PagesFeature BooksFeature ParentFeature] }
+  let(:app_modules) { %i[PagesFeature BooksFeature ParentFeature BaseFeature] }
 
   def write_slice(module_name, path_name)
     write "#{path_name}/lib/#{path_name}.rb", <<~RUBY
@@ -180,6 +180,30 @@ RSpec.describe "Slices / Standalone slices", :app_integration do
 
       expect(PagesFeature::Show.config.paths.map(&:dir)).to eq [Pathname(Dir.pwd).join("templates")]
       expect(Hanami.app?).to be false
+    end
+  end
+
+  specify "a view can be defined in a standalone slice that inherits from another slice class" do
+    with_tmp_directory(Dir.mktmpdir) do
+      module BaseFeature
+        class Slice < Hanami::Slice
+        end
+      end
+
+      module PagesFeature
+        class Slice < BaseFeature::Slice
+          config.root = Dir.pwd
+        end
+      end
+
+      PagesFeature::Slice.prepare
+
+      module PagesFeature
+        class Show < Hanami::View
+        end
+      end
+
+      expect(PagesFeature::Show.config.paths.map(&:dir)).to eq [Pathname(Dir.pwd).join("templates")]
     end
   end
 
