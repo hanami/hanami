@@ -58,8 +58,7 @@ module Hanami
         #
         # @see Hanami::Extensions::Validation
         def define_contract_methods(action_class)
-          return unless defined?(Hanami::Extensions::Validation) && Hanami::Extensions::Validation.supported?
-          return unless action_class.respond_to?(:contract)
+          return unless defined?(Hanami::Extensions::Validation) && action_class.respond_to?(:contract)
 
           contract_slice = slice
 

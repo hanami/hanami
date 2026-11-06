@@ -26,15 +26,6 @@ module Hanami
     # @since 3.1.0
     module Validation
       class << self
-        # Returns true if dry-schema accepts custom messages backends. Earlier versions accept only
-        # their built-in `:yaml` and `:i18n` backends.
-        #
-        # @api private
-        # @since 3.1.0
-        def supported?
-          Dry::Schema::Messages.respond_to?(:backend)
-        end
-
         # Configures the contract class to use the slice's i18n for its messages, unless it (or a
         # superclass) has been explicitly configured with a different messages backend.
         #
@@ -93,6 +84,4 @@ module Hanami
   end
 end
 
-if Hanami::Extensions::Validation.supported?
-  Dry::Validation::Contract.singleton_class.prepend(Hanami::Extensions::Validation::ContractInherited)
-end
+Dry::Validation::Contract.singleton_class.prepend(Hanami::Extensions::Validation::ContractInherited)
