@@ -23,6 +23,7 @@ module Hanami
           extend_behavior(action_class)
           define_inherited
           define_new
+          define_contract_methods(action_class)
         end
 
         def inspect
@@ -48,6 +49,30 @@ module Hanami
               i18n: kwargs.fetch(:i18n) { resolve_i18n.() },
               **kwargs,
             )
+          end
+        end
+
+        # Defines `params` and `contract` so that contracts given as blocks are configured for the
+        # slice (in particular, to translate their messages with the slice's i18n). These anonymous
+        # contract classes have no name from which their slice could otherwise be inferred.
+        #
+        # @see Hanami::Extensions::Validation
+        def define_contract_methods(action_class)
+          return unless defined?(Hanami::Extensions::Validation) && Hanami::Extensions::Validation.supported?
+          return unless action_class.respond_to?(:contract)
+
+          contract_slice = slice
+
+          define_method(:params) do |klass = nil, &block|
+            return super(klass, &block) if klass || !block
+
+            super(Hanami::Extensions::Validation.contract_class(contract_slice) { params(&block) })
+          end
+
+          define_method(:contract) do |klass = nil, &block|
+            return super(klass, &block) if klass || !block
+
+            super(Hanami::Extensions::Validation.contract_class(contract_slice, &block))
           end
         end
 
