@@ -38,4 +38,12 @@ module Hanami
   # @api public
   # @since 2.0.0
   UnsupportedMiddlewareSpecError = Class.new(Error)
+
+  # Error raised when Hanami's first-party gems are not all on the same major.minor version.
+  #
+  # Raised only when the `HANAMI_GEM_VERSION_MISMATCH` environment variable is `"raise"`.
+  #
+  # @api public
+  # @since 3.1.0
+  GemVersionMismatchError = Class.new(Error)
 end

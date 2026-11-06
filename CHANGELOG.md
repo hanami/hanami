@@ -27,6 +27,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Added
 
+- Check, when `hanami` is required, that Hanami's first-party gems (hanami-action, hanami-view, etc.) share the `hanami` gem's major.minor version, printing a prominent warning to standard error when they don't. Set `HANAMI_GEM_VERSION_MISMATCH=raise` to fail instead, or `HANAMI_GEM_VERSION_MISMATCH=ignore` to skip the check. (@parndt in #1661)
 - Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new`Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen in #1627)
 - Reload an app's code in place via `Hanami.app.reload`, without restarting the Ruby process. (@afomera and @#timriley in #1625)
 
