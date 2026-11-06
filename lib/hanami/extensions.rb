@@ -28,3 +28,7 @@ end
 if Hanami.bundled?("dry-operation")
   require_relative "extensions/operation"
 end
+
+if Hanami.bundled?("dry-validation") && Hanami.bundled?("i18n")
+  require_relative "extensions/validation"
+end

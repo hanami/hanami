@@ -27,6 +27,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Added
 
+- Translate dry-validation contract error messages using the slice's i18n, following its translation files, default locale and current locale. Contracts defined in a slice namespace, as well as contracts given to actions via `params do` or `contract do` blocks, use the same `dry_validation.errors` keys as dry-validation's own I18n backend, falling back to dry-validation's bundled English messages. Set `config.messages.backend` on a contract to opt out. (@parndt in #1662)
 - Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new`Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen in #1627)
 - Reload an app's code in place via `Hanami.app.reload`, without restarting the Ruby process. (@afomera and @#timriley in #1625)
 
@@ -35,6 +36,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
 ### Changed
 
+- Depend on dry-schema 1.17 or later, for its support for custom messages backends. (@parndt in #1662)
+- dry-validation contracts in a slice, and those given to actions as `params do`/`contract do` blocks, now give error messages in the slice's current locale (falling back to English) rather than always in English. Set `config.messages.backend = :yaml` on a contract to keep the previous behaviour. (@parndt in #1662)
 - In routes, pass the `as:` option of `resources` through the inflector, in the same way as the resource name. Previously `as:` was used exactly as given. Now, member routes and routes nested under the resource use its singular form, and the index and create routes use its plural form. (@timriley in #1643)
 
     For example, `resources :items, as: :data` now gives `datum`, `edit_datum` and `datum_reviews` for member and nested routes, and `data` for the index route. To change how a name is inflected, add a custom inflection with `config.inflections` in your app.
