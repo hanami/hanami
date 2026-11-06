@@ -60,7 +60,7 @@ RSpec.describe "DB / Provider / Config", :app_integration do
 
         write "config/db/.keep", ""
 
-        ENV["DATABASE_URL"] = "sqlite://" + Pathname(Dir.pwd).realpath.join("database.db").to_s
+        ENV["DATABASE_URL"] = sqlite_database_url("database.db")
 
         require "hanami/prepare"
 
