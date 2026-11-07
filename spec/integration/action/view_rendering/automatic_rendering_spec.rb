@@ -297,6 +297,59 @@ RSpec.describe "App action / View rendering / Automatic rendering", :app_integra
     end
   end
 
+  it "Instruments an error when exception happens in the template" do
+    within_app do
+      write "app/actions/profile/show.rb", <<~RUBY
+        module TestApp
+          module Actions
+            module Profile
+              class Show < TestApp::Action
+                def handle(req, res)
+                  res[:favorite_number] = 123
+                end
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "app/views/profile/show.rb", <<~RUBY
+        module TestApp
+          module Views
+            module Profile
+              class Show < TestApp::View
+                expose :name, :favorite_number
+              end
+            end
+          end
+        end
+      RUBY
+
+      write "app/templates/profile/show.html.slim", <<~'SLIM'
+        h1 Hello, #{undefined_var}!
+      SLIM
+
+      require "hanami/prepare"
+
+      action = TestApp::App["actions.profile.show"]
+      errors = []
+
+      action.rack_monitor.on :error do |event|
+        errors << event
+      end
+
+      begin
+        action.(name: "Jennifer")
+      rescue StandardError
+        nil
+      end
+
+      expect(errors.length).to eq(1)
+      event = errors[0]
+      expect(event.payload[:exception]).to be_kind_of(NameError)
+    end
+  end
+
   def within_app
     with_tmp_directory(Dir.mktmpdir) do
       write "config/app.rb", <<~RUBY
@@ -304,6 +357,7 @@ RSpec.describe "App action / View rendering / Automatic rendering", :app_integra
 
         module TestApp
           class App < Hanami::App
+            config.logger.stream = StringIO.new
           end
         end
       RUBY
