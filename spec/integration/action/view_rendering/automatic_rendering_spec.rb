@@ -357,7 +357,7 @@ RSpec.describe "App action / View rendering / Automatic rendering", :app_integra
           module Actions
             module Profile
               class Show < TestApp::Action
-                # Stand-in for e.g. ROM::TupleCountMismatchError raised by `repo.one` in an exposure
+                # Stand-in for e.g. ROM::TupleCountMismatchError raised by `repo.one!` in an exposure
                 MissingRecordError = Class.new(StandardError)
 
                 handle_exception MissingRecordError => 404
