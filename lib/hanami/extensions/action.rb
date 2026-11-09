@@ -100,13 +100,17 @@ module Hanami
           super(**options)
         end
 
+        # `finish` handles auto-render from action, but is outside of a regular exception handling
+        # instrumented by Hanami Action, so we need to handle exception handling manually.
         def finish(req, res, halted)
           if !halted && auto_render?(res)
             begin
               res.render(view, **view_input(req, res))
             rescue StandardError => exception
-              rack_monitor&.instrument(:error, exception: exception, env: req.env)
-              raise
+              halted = catch(:halt) do
+                _handle_exception(req, res, exception)
+                nil
+              end
             end
           end
 
