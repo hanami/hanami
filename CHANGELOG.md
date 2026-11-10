@@ -63,6 +63,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     ```
 
     Note: this skips all of the default pragmas. You may want to add back the ones that help reads, like `mmap_size` and `cache_size`, which the example above does not set. Add them via `connect_sqls` in the gateway's `connection_options`.
+
 ### Changed
 
 - In routes, pass the `as:` option of `resources` through the inflector, in the same way as the resource name. Previously `as:` was used exactly as given. Now, member routes and routes nested under the resource use its singular form, and the index and create routes use its plural form. (@timriley in #1643)
@@ -98,6 +99,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - In request logs, include body params parsed by actions (such as from JSON request bodies). Parsed body params were missing from logs in Hanami 3.0 when body parsing moved into Hanami Action. (@timriley in #1649)
 - Generate content security policy nonces from the config of the slice whose router serves the request, rather than the app's. Previously a slice served through its own `rack_app` used the app's nonce generator. (@parndt in #1653)
 - Apply slice config to actions and views in a slice that inherit directly from `Hanami::Action` or `Hanami::View`. Previously these missed every setting the slice shared with the app, such as default headers and accepted formats. (@parndt in #1656)
+- Instrument and correctly handle errors in views in templates when auto-render is used (@katafrakt in #1660)
 
 ### Security
 
