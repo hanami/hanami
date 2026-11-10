@@ -38,7 +38,7 @@ module Hanami
         end
 
         # @api private
-        def configure_for_database(database_url)
+        def configure_for_gateway(gateway)
         end
 
         # @api public

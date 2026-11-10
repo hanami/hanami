@@ -33,6 +33,36 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     This unloads the app and all its slices, then prepares them again, picking up changes to code, settings, providers, routes and slices themselves. The app class itself is kept, so `run Hanami.app` in `config.ru` continues to work, which means that `config/app.rb` itself is not reloaded.
 
     Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
+- Apply sensible SQLite pragmas to every connection for apps using SQLite, via hanami-db's `Hanami::DB::SQLite::Pragmas`: `journal_mode = wal`, `synchronous = normal`, `mmap_size` of 128MiB, `journal_size_limit` of 64MiB and `cache_size = 2000`. (@cllns in #1637)
+
+    These are given to Sequel as `connect_sqls`. Any `connect_sqls` you provide via a gateway's `connection_options` run after these, so your own pragmas take precedence. To opt out, call `skip_defaults :connect_sqls` (or `skip_defaults` for all defaults) in your SQL adapter config:
+
+    ```ruby
+    # config/providers/db.rb
+    Hanami.app.configure_provider :db do
+      config.adapter :sql do |a|
+        a.skip_defaults :connect_sqls
+      end
+    end
+    ```
+
+    Existing SQLite apps will switch to WAL mode on upgrade. WAL mode is persisted in the database file, and SQLite creates `-wal` and `-shm` files beside the database while it is in use.
+
+    Switching to WAL mode writes to the database file, which a read-only gateway cannot do. A gateway using `connection_options readonly: true` on a database that is not already in WAL mode will fail to connect with `SQLite3::ReadOnlyException: attempt to write a readonly database`. Skip the defaults for that gateway:
+
+    ```ruby
+    # config/providers/db.rb
+    Hanami.app.configure_provider :db do
+      config.gateway :archive do |gw|
+        gw.connection_options readonly: true
+        gw.adapter :sql do |adapter|
+          adapter.skip_defaults :connect_sqls
+        end
+      end
+    end
+    ```
+
+    Note: this skips all of the default pragmas. You may want to add back the ones that help reads, like `mmap_size` and `cache_size`, which the example above does not set. Add them via `connect_sqls` in the gateway's `connection_options`.
 - Prepare, boot and serve a slice as a Rack app without an `Hanami::App` defined in the process. With no app defined, the outermost slice acts as the app: `Hanami::Slice.app` returns it, and `Hanami::Slice.app?` is true for it. (@parndt in #1614)
 
 ### Changed
@@ -61,6 +91,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Register Hanami's first-party provider sources when `Hanami::Slice` loads, rather than when a slice is prepared. This allows `configure_provider` to be called within an app or slice class body. (@timriley in #1636)
 - Configure a slice's provider registrar when the slice class is defined rather than when it is prepared. Calling `register_provider` from within a slice class body previously left the slice with Dry System's default registrar, leading to errors when the slice was prepared. (@timriley in #1636)
 - Resolve the `routes` helper in slice view contexts from the app, so views and actions in a slice generate the same named paths. (@aaronmallen in #1630)
+- Raise a helpful error when the `pg` gem is missing for `postgresql://` database URLs, as already happened for `postgres://` URLs. (@parndt in #1647)
 - Detect already-activated gems in `Hanami.bundled?` when running outside of Bundler. Previously, gems like `rack` that were activated as a dependency of another gem were reported as missing, leaving `rack.monitor` unregistered and causing every request to return a 500 error. (@maksim-romanov in #1639)
 - Use the `as:` option of `resources` for all route names. Member routes now use its singular form (`resources :books, as: :publications` gives `publication`, `new_publication` and `edit_publication`), and the index route keeps its own `publications` name instead of being overwritten by the show route. Routes nested under the resource now use it too, giving `publication_reviews` rather than `book_reviews`. (@timriley in #1643)
 - Name routes nested under a singular `resource` using the resource's name as given, matching the resource's own routes. `resource :settings do resources :items end` now gives `settings_items` rather than `setting_items`. (@timriley in #1643)
