@@ -82,6 +82,10 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#asset_url", :app_integration do
       it "returns the relative URL to the asset" do
         expect(asset_url("app.js")).to match(%r{/assets/app-[A-Z0-9]{8}\.js})
       end
+
+      it "raises an AssetMissingError for a source that is not a string" do
+        expect { asset_url(:app) }.to raise_error(Hanami::Assets::AssetMissingError)
+      end
     end
   end
 

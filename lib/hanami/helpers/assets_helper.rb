@@ -65,10 +65,6 @@ module Hanami
         defined?(URI::RFC2396_PARSER) ? URI::RFC2396_PARSER : URI::DEFAULT_PARSER
       ).make_regexp
 
-      # @since 1.1.0
-      # @api private
-      QUERY_STRING_MATCHER = /\?/
-
       include Hanami::View::Helpers::TagHelper
 
       # Generate `script` tag for given source(s)
@@ -746,14 +742,17 @@ module Hanami
       def _subresource_integrity_value(source, ext)
         return if _absolute_url?(source)
 
-        source = "#{source}#{ext}" unless /#{Regexp.escape(ext)}\z/.match?(source)
+        source = "#{source}#{ext}" unless source.end_with?(ext)
         _context.assets[source].sri
       end
 
       # @since 2.1.0
       # @api private
       def _absolute_url?(source)
-        ABSOLUTE_URL_MATCHER.match?(source.respond_to?(:url) ? source.url : source)
+        source = source.respond_to?(:url) ? source.url : source.to_s
+
+        # An absolute URL has a scheme, so a source without a colon needs no further checking.
+        source.include?(":") && ABSOLUTE_URL_MATCHER.match?(source)
       end
 
       # @since 1.2.0
@@ -797,7 +796,7 @@ module Hanami
       # @since 1.1.0
       # @api private
       def _append_extension?(source, ext)
-        source !~ QUERY_STRING_MATCHER && source !~ /#{Regexp.escape(ext)}\z/
+        !source.include?("?") && !source.end_with?(ext)
       end
     end
   end

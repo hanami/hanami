@@ -78,6 +78,21 @@ RSpec.describe Hanami::Helpers::AssetsHelper, "#javascript", :app_integration do
     expect(actual).to eq(%(<script src="/assets/feature-a.js" type="text/javascript"></script>))
   end
 
+  it "renders <script> tag for a source given with its extension" do
+    actual = javascript_tag("feature-a.js")
+    expect(actual).to eq(%(<script src="/assets/feature-a.js" type="text/javascript"></script>))
+  end
+
+  it "renders <script> tag for an absolute URL as given" do
+    actual = javascript_tag("https://cdn.example.test/library.js")
+    expect(actual).to eq(%(<script src="https://cdn.example.test/library.js" type="text/javascript"></script>))
+  end
+
+  it "renders <script> tag for an absolute URL without appending ext after a query string" do
+    actual = javascript_tag("https://cdn.example.test/library?v=1")
+    expect(actual).to eq(%(<script src="https://cdn.example.test/library?v=1" type="text/javascript"></script>))
+  end
+
   xit "renders <script> tag without appending ext after query string" do
     actual = javascript_tag("feature-x?callback=init")
     expect(actual).to eq(%(<script src="/assets/feature-x?callback=init" type="text/javascript"></script>))
