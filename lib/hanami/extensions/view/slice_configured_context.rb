@@ -16,6 +16,7 @@ module Hanami
         def initialize(slice)
           super()
           @slice = slice
+          @components = {}.freeze
         end
 
         # @api private
@@ -61,15 +62,34 @@ module Hanami
         # is mounted at. Actions resolve the app's helper, so this keeps a view and an action in the
         # same slice in agreement.
         def resolve_routes
-          slice.app["routes"] if slice.app.key?("routes")
+          resolve_component(slice.app, "routes")
         end
 
         def resolve_assets
-          slice["assets"] if slice.key?("assets")
+          resolve_component(slice, "assets")
         end
 
         def resolve_i18n
-          slice["i18n"] if slice.key?("i18n")
+          resolve_component(slice, "i18n")
+        end
+
+        # Returns the component registered under the key, or nil if there is none.
+        #
+        # A context is built for every view rendered, so the answer is kept once it can no longer
+        # change.
+        def resolve_component(source, key)
+          return @components[key] if @components.key?(key)
+
+          component = source[key] if source.key?(key)
+          @components = @components.merge(key => component).freeze if settled?(source)
+
+          component
+        end
+
+        # Components are settled once their slice is booted, except in the test env, where they can
+        # be stubbed at any time.
+        def settled?(source)
+          source.booted? && !Hanami.env?(:test)
         end
       end
     end
