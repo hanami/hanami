@@ -30,5 +30,11 @@ if Hanami.bundled?("dry-operation")
 end
 
 if Hanami.bundled?("dry-validation") && Hanami.bundled?("i18n")
-  require_relative "extensions/validation"
+  require "dry/validation"
+
+  # Translating messages with the slice's i18n requires custom messages backends, which arrived in
+  # dry-schema 1.17. Detect the feature rather than the version, so prereleases work too.
+  if Dry::Schema::Messages.respond_to?(:backend)
+    require_relative "extensions/validation"
+  end
 end
