@@ -55,6 +55,13 @@ module Hanami
       end
       private :initialize_copy
 
+      # Define readers for the hanami-assets settings. These are read for every asset helper call,
+      # which would otherwise go through `method_missing` and `respond_to?` on both configs.
+      Hanami::Assets::Config.settings.each do |setting|
+        setting_name = setting.name
+        define_method(setting_name) { base_config.public_send(setting_name) }
+      end
+
       private
 
       def configure_defaults
