@@ -100,6 +100,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - In request logs, include body params parsed by actions (such as from JSON request bodies). Parsed body params were missing from logs in Hanami 3.0 when body parsing moved into Hanami Action. (@timriley in #1649)
 - Generate content security policy nonces from the config of the slice whose router serves the request, rather than the app's. Previously a slice served through its own `rack_app` used the app's nonce generator. (@parndt in #1653)
 - Apply slice config to actions and views in a slice that inherit directly from `Hanami::Action` or `Hanami::View`. Previously these missed every setting the slice shared with the app, such as default headers and accepted formats. (@parndt in #1656)
+- Instrument and correctly handle errors in views in templates when auto-render is used (@katafrakt in #1660)
 
 ### Security
 
