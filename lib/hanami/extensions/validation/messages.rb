@@ -78,6 +78,7 @@ module Hanami
         # @api private
         def initialize
           super
+          @bundled = ::I18n::Backend::Simple.new
           @t = proc { |key, locale: default_locale, **data| lookup(key, locale, **data) }
         end
 
@@ -161,6 +162,9 @@ module Hanami
             end
           end
 
+          slice = config.slice
+          @i18n = (slice["i18n"] if slice&.key?("i18n"))
+
           self
         end
 
@@ -181,16 +185,7 @@ module Hanami
 
         private
 
-        def i18n
-          return @i18n if defined?(@i18n)
-
-          slice = config.slice
-          @i18n = (slice["i18n"] if slice&.key?("i18n"))
-        end
-
-        def bundled
-          @bundled ||= ::I18n::Backend::Simple.new
-        end
+        attr_reader :i18n, :bundled
 
         def i18n_key?(key, locale)
           i18n&.exists?(key, locale:)
