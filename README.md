@@ -16,11 +16,12 @@ Hanami is a **full-stack** Ruby web framework. It's made up of smaller, single-p
 
 This repository is for the full-stack framework, which provides the glue that ties all the parts together:
 
-* [**Hanami::Router**](https://github.com/hanami/router) - Rack compatible HTTP router for Ruby
+* [**Hanami::Router**](https://github.com/hanami/hanami-router) - Rack compatible HTTP router for Ruby
 * [**Hanami::Action**](https://github.com/hanami/hanami-action) - Full featured, fast and testable actions for Rack
-* [**Hanami::View**](https://github.com/hanami/view) - Presentation with a separation between views and templates
-* [**Hanami::DB**](https://github.com/hanami/db) - Database integration, complete with migrations, repositories, relations, and structs
-* [**Hanami::Assets**](https://github.com/hanami/assets) - Assets management for Ruby
+* [**Hanami::View**](https://github.com/hanami/hanami-view) - Presentation with a separation between views and templates
+* [**Hanami::DB**](https://github.com/hanami/hanami-db) - Database integration, complete with migrations, repositories, relations, and structs
+* [**Hanami::Assets**](https://github.com/hanami/hanami-assets) - Assets management for Ruby
+* [**Hanami::Mailer**](https://github.com/hanami/hanami-mailer) - Email delivery for Hanami applications and Ruby projects
 
 These components are designed to be used independently or together in a Hanami application.
 
@@ -39,7 +40,7 @@ bundle exec hanami dev
 # Now visit http://localhost:2300
 ```
 
-Please follow along with the [Getting Started guide](https://guides.hanamirb.org/getting-started/).
+Please follow along with the [Getting Started guide](https://hanakai.org/learn/hanami/getting-started).
 
 ## Contributing
 
