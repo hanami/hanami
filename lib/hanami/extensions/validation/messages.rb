@@ -34,6 +34,13 @@ module Hanami
         # @since 3.1.0
         BUNDLED_LOCALE = :en
 
+        # The slice whose `"i18n"` component translates messages. Set via {Builder}, as part of
+        # `.build`.
+        #
+        # @api private
+        # @since 3.1.0
+        setting :slice
+
         # Builds a {Messages} backend for a slice. Assigned to a contract's
         # `config.messages.backend`, and called via `Dry::Schema::Messages.setup`.
         #
@@ -47,7 +54,7 @@ module Hanami
           end
 
           def build(options)
-            Messages.build(options).with_slice(slice)
+            Messages.build({**options, slice:})
           end
 
           def inspect
@@ -72,12 +79,6 @@ module Hanami
         def initialize
           super
           @t = proc { |key, locale: default_locale, **data| lookup(key, locale, **data) }
-        end
-
-        # @api private
-        def with_slice(slice)
-          @slice = slice
-          self
         end
 
         # Returns the locale to use when none is given: the slice's current locale (which is
@@ -183,7 +184,8 @@ module Hanami
         def i18n
           return @i18n if defined?(@i18n)
 
-          @i18n = (@slice["i18n"] if @slice&.key?("i18n"))
+          slice = config.slice
+          @i18n = (slice["i18n"] if slice&.key?("i18n"))
         end
 
         def bundled
