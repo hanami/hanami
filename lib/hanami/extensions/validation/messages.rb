@@ -139,18 +139,13 @@ module Hanami
           i18n_key?(key, locale) || bundled.exists?(locale, key)
         end
 
-        # @api private
-        def merge(paths)
-          prepare(Array(paths))
-        end
-
         # Loads the bundled message files (Dry Schema's and Dry Validation's defaults, plus any
         # `config.messages.load_paths` added to the contract) into a private store, kept apart from
         # the slice's own translations so they never override them.
         #
         # @api private
-        def prepare(paths = config.load_paths)
-          paths.each do |path|
+        def prepare
+          config.load_paths.each do |path|
             data = self.class.source_cache.fetch_or_store(path.to_s) { ::YAML.load_file(path) }
 
             if custom_top_namespace?(path)
