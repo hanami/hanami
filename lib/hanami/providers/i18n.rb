@@ -36,7 +36,7 @@ module Hanami
 
       # rubocop:disable Metrics/AbcSize
       def start
-        backend = config.backend || ::I18n::Backend::Simple.new
+        backend = config.backend || default_backend
 
         # Configure fallbacks if enabled (only for default backend, not custom backends)
         fallbacks_config = nil
@@ -61,18 +61,6 @@ module Hanami
             end
         end
 
-        # Only load translation files if using the default backend. Custom backends are expected to
-        # handle their own initialization.
-        unless config.backend
-          translation_files = [
-            BUNDLED_DEFAULTS_PATH,
-            *resolve_load_paths(Array(config.shared_load_path), root: slice.app.root),
-            *resolve_load_paths(Array(config.load_path), root: slice.root)
-          ].uniq
-
-          backend.load_translations(*translation_files)
-        end
-
         register "i18n", Backend.new(
           backend,
           locale: config.default_locale,
@@ -84,6 +72,22 @@ module Hanami
       # rubocop:enable Metrics/AbcSize
 
       private
+
+      # Builds the default backend, used when no custom backend is configured. Custom backends are
+      # expected to handle their own initialization.
+      #
+      # This default backend loads the bundled defaults first, then the shared translation files,
+      # then the slice's own translation files, so that later files override earlier ones. It loads
+      # everything immediately, so that errors in translation files appear when the slice boots.
+      def default_backend
+        translation_files = [
+          BUNDLED_DEFAULTS_PATH,
+          *resolve_load_paths(Array(config.shared_load_path), root: slice.app.root),
+          *resolve_load_paths(Array(config.load_path), root: slice.root)
+        ].uniq
+
+        SimpleBackend.new(translation_files).tap(&:eager_load!)
+      end
 
       # Resolves load path patterns to actual file paths. Relative patterns are resolved against
       # the given `root`. Absolute paths are used as-is.
