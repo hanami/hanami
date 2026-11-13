@@ -7,9 +7,9 @@ module Hanami
   module Extensions
     # Integrated behavior for `Dry::Validation::Contract` classes within Hanami apps.
     #
-    # Contracts defined within a slice's namespace translate their error messages using that
-    # slice's `"i18n"` component, so they follow the slice's translation files, default locale and
-    # current locale, just like the rest of the app.
+    # Contracts defined within a slice's namespace translate their error messages using that slice's
+    # `"i18n"` component, so they follow the slice's translation files, default locale and current
+    # locale, just like the rest of the app.
     #
     # To opt a contract out, set its messages backend explicitly:
     #

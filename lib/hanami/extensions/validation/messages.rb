@@ -77,8 +77,8 @@ module Hanami
         end
 
         class << self
-          # Parsed bundled message files, keyed by path. These files never change at runtime, so
-          # are parsed only once.
+          # Parsed bundled message files, keyed by path. These files never change at runtime, so are
+          # parsed only once.
           #
           # @api private
           def source_cache
