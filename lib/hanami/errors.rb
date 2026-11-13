@@ -41,7 +41,8 @@ module Hanami
 
   # Error raised when Hanami's first-party gems are not all on the same major.minor version.
   #
-  # Raised only when the `HANAMI_GEM_VERSION_MISMATCH` environment variable is `"raise"`.
+  # Raised when `hanami` is required. Set the `HANAMI_SKIP_GEM_VERSION_CHECK` environment variable
+  # to skip this check.
   #
   # @api public
   # @since 3.1.0
