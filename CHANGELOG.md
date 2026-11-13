@@ -99,6 +99,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     Calling `I18n.t` directly on the global `I18n` module still uses `I18n.load_path`, as before.
 
     Calling `reload!` on the `i18n` component also now reloads the slice's translation files, rather than replacing them with the files in the global `I18n.load_path`. To use files from a gem, add their paths to `config.i18n.load_path` or `config.i18n.shared_load_path`.
+- Allow subclasses of `Hanami::Action`, `Hanami::View`, `Dry::Operation` and other Hanami-integrated classes to be defined before the Hanami app is defined. Previously, this raised a `Hanami::ComponentLoadError`, which could break gems that define such subclasses when they are required. Hanami now leaves these early subclasses unconfigured, and continues to configure any classes later defined within a slice's namespace. (@timriley in #1666)
 - Register Hanami's first-party provider sources when `Hanami::Slice` loads, rather than when a slice is prepared. This allows `configure_provider` to be called within an app or slice class body. (@timriley in #1636)
 - Configure a slice's provider registrar when the slice class is defined rather than when it is prepared. Calling `register_provider` from within a slice class body previously left the slice with Dry System's default registrar, leading to errors when the slice was prepared. (@timriley in #1636)
 - Resolve the `routes` helper in slice view contexts from the app, so views and actions in a slice generate the same named paths. (@aaronmallen in #1630)
