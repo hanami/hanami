@@ -4,6 +4,7 @@ require "concurrent/map"
 require "i18n"
 require "yaml"
 require "dry/schema/messages/abstract"
+require "dry/validation"
 
 module Hanami
   module Extensions
@@ -31,6 +32,14 @@ module Hanami
         #
         # @api private
         BUNDLED_LOCALE = :en
+
+        # The paths of the message files that ship with Dry Schema and Dry Validation.
+        #
+        # @api private
+        GEM_MESSAGE_PATHS = [
+          Dry::Schema::DEFAULT_MESSAGES_PATH,
+          Dry::Validation::DEFAULT_ERRORS_PATH
+        ].map(&:to_s).freeze
 
         # The slice whose `"i18n"` component translates messages. Set via {Builder}, as part of
         # `.build`.
@@ -77,8 +86,8 @@ module Hanami
         end
 
         class << self
-          # Parsed bundled message files, keyed by path. These files never change at runtime, so are
-          # parsed only once.
+          # Parsed message files from {GEM_MESSAGE_PATHS}, keyed by path. These files never change at
+          # runtime, so are parsed only once.
           #
           # @api private
           def source_cache
@@ -163,7 +172,7 @@ module Hanami
         # @api private
         def prepare
           config.load_paths.each do |path|
-            data = self.class.source_cache.fetch_or_store(path.to_s) { ::YAML.load_file(path) }
+            data = load_messages_file(path)
 
             if custom_top_namespace?(path)
               data = data.transform_values { |messages| {config.top_namespace => messages[Dry::Schema::DEFAULT_MESSAGES_ROOT]} }
@@ -200,6 +209,16 @@ module Hanami
         private
 
         attr_reader :i18n, :bundled
+
+        # Files in a contract's `config.messages.load_paths` are not cached, so that changes to them
+        # take effect when the app reloads its code (and so builds its contracts again).
+        def load_messages_file(path)
+          path = path.to_s
+
+          return ::YAML.load_file(path) unless GEM_MESSAGE_PATHS.include?(path)
+
+          self.class.source_cache.fetch_or_store(path) { ::YAML.load_file(path) }
+        end
 
         def i18n_key?(key, locale)
           i18n&.exists?(key, locale:)

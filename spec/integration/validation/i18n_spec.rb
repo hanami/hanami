@@ -135,6 +135,38 @@ RSpec.describe "Validation / I18n", :app_integration do
     end
   end
 
+  it "reads a contract's own messages files each time a contract is defined" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write_app
+      write "config/contract_errors.yml", <<~YAML
+        en:
+          dry_validation:
+            errors:
+              filled?: "first version"
+      YAML
+      require "hanami/prepare"
+
+      messages_path = File.expand_path("config/contract_errors.yml")
+      define_contract = -> {
+        Hanami::Extensions::Validation.contract_class(Hanami.app) {
+          config.messages.load_paths << messages_path
+          params { required(:name).filled }
+        }
+      }
+
+      expect(define_contract.().new.(name: "").errors.to_h).to eq(name: ["first version"])
+
+      write "config/contract_errors.yml", <<~YAML
+        en:
+          dry_validation:
+            errors:
+              filled?: "second version"
+      YAML
+
+      expect(define_contract.().new.(name: "").errors.to_h).to eq(name: ["second version"])
+    end
+  end
+
   it "uses the app's default locale" do
     with_tmp_directory(Dir.mktmpdir) do
       write_app
