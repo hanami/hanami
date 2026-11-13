@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require_relative "constants"
-require_relative "errors"
 
 module Hanami
   # Calls `configure_for_slice(slice)` on the extended class whenever it is first
   # subclassed within a module namespace corresponding to a slice.
+  #
+  # Subclasses outside any slice's namespace are left alone. This includes every subclass defined
+  # before the app itself is defined, such as those defined by gems.
   #
   # @example
   #   class BaseClass
@@ -31,10 +33,6 @@ module Hanami
 
         inherited_mod = Module.new do
           define_method(:inherited) do |subclass|
-            unless Hanami.app?
-              raise ComponentLoadError, "Class #{klass} must be defined within an Hanami app"
-            end
-
             super(subclass)
 
             subclass.instance_variable_set(:@configured_for_slices, configured_for_slices.dup)
@@ -55,7 +53,7 @@ module Hanami
       private
 
       def slice_for(klass)
-        return unless klass.name
+        return unless klass.name && Hanami.app?
 
         Hanami.app.with_slices.detect { |slice| klass.name.start_with?("#{slice.namespace}#{MODULE_DELIMITER}") }
       end
