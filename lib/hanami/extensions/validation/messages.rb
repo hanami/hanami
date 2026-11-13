@@ -62,6 +62,25 @@ module Hanami
           end
         end
 
+        # Holds a contract's bundled messages: the default English messages that ship with Dry
+        # Schema and Dry Validation (in their `errors.yml` files), plus the messages from any files
+        # added to a contract's `config.messages.load_paths`.
+        #
+        # These messages are kept separate from the slice's own translations, with the slice's
+        # translations always taking precedence. The bundled messages are used only when the slice
+        # does not translate a message.
+        #
+        # Unlike a plain `I18n::Backend::Simple`, this store never loads the files in the global
+        # `I18n.load_path`, so that it contains only the messages stored by {Messages#prepare}.
+        #
+        # @api private
+        # @since 3.1.0
+        class BundledStore < ::I18n::Backend::Simple
+          def initialized?
+            true
+          end
+        end
+
         class << self
           # Parsed bundled message files, keyed by path. These files never change at runtime, so
           # are parsed only once.
@@ -78,7 +97,7 @@ module Hanami
         # @api private
         def initialize
           super
-          @bundled = ::I18n::Backend::Simple.new
+          @bundled = BundledStore.new
           @t = proc { |key, locale: default_locale, **data| lookup(key, locale, **data) }
         end
 
@@ -140,8 +159,8 @@ module Hanami
         end
 
         # Loads the bundled message files (Dry Schema's and Dry Validation's defaults, plus any
-        # `config.messages.load_paths` added to the contract) into a private store, kept apart from
-        # the slice's own translations so they never override them.
+        # `config.messages.load_paths` added to the contract) into a {BundledStore}, kept separate
+        # from the slice's own translations so they never override them.
         #
         # @api private
         def prepare

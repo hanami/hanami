@@ -90,6 +90,27 @@ RSpec.describe "Validation / I18n", :app_integration do
     end
   end
 
+  it "ignores translations in the global I18n load path" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write_app
+      write "global/en.yml", <<~YAML
+        en:
+          dry_validation:
+            errors:
+              filled?: "from the global load path"
+      YAML
+
+      global_path = File.expand_path("global/en.yml")
+      ::I18n.load_path += [global_path]
+
+      require "hanami/prepare"
+
+      expect(TestApp::Contracts::UserContract.new.(name: "").errors.to_h).to eq(name: ["must be filled"])
+    ensure
+      ::I18n.load_path -= [global_path]
+    end
+  end
+
   it "uses the app's default locale" do
     with_tmp_directory(Dir.mktmpdir) do
       write_app
