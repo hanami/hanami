@@ -28,3 +28,12 @@ end
 if Hanami.bundled?("dry-operation")
   require_relative "extensions/operation"
 end
+
+if Hanami.bundled?("dry-validation") && Hanami.bundled?("i18n")
+  require "dry/validation"
+
+  # Translate using slice i18n via a custom Dry Schema backend (version 1.17 or later).
+  if Dry::Schema::Messages.respond_to?(:backend)
+    require_relative "extensions/validation"
+  end
+end
