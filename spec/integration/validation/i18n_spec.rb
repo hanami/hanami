@@ -90,6 +90,30 @@ RSpec.describe "Validation / I18n", :app_integration do
     end
   end
 
+  it "falls back to the bundled English word for joining 'or' messages" do
+    with_tmp_directory(Dir.mktmpdir) do
+      write_app
+      write "app/contracts/or_contract.rb", <<~RUBY
+        module TestApp
+          module Contracts
+            class OrContract < Dry::Validation::Contract
+              params do
+                required(:value) { str? | int? }
+              end
+            end
+          end
+        end
+      RUBY
+      require "hanami/prepare"
+
+      contract = TestApp::Contracts::OrContract.new
+
+      Hanami.app["i18n"].with_locale(:fr) do
+        expect(contract.(value: []).errors.to_h).to eq(value: ["must be a string or must be an integer"])
+      end
+    end
+  end
+
   it "ignores translations in the global I18n load path" do
     with_tmp_directory(Dir.mktmpdir) do
       write_app

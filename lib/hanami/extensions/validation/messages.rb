@@ -93,7 +93,7 @@ module Hanami
         def initialize
           super
           @bundled = BundledStore.new
-          @t = proc { |key, locale: default_locale, **data| lookup(key, locale, **data) }
+          @t = proc { |key, locale: default_locale, **data| lookup_with_fallbacks(key, locale, **data) }
         end
 
         # Returns the locale to use when none is given: the slice's current locale (which is
@@ -207,6 +207,17 @@ module Hanami
 
         def fallback_locales(locale)
           [locale || default_locale, i18n&.default_locale, BUNDLED_LOCALE].compact.map(&:to_sym).uniq
+        end
+
+        # Used by `#translate` (via {#t}), such as for the word that joins "or" messages. Unlike
+        # {#call} and {#rule}, `#translate` has no fallback of its own.
+        def lookup_with_fallbacks(key, locale, **data)
+          fallback_locales(locale).each do |fallback_locale|
+            result = lookup(key, fallback_locale, **data)
+            return result if result
+          end
+
+          nil
         end
 
         def lookup(key, locale, **data)
