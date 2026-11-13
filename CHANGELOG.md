@@ -28,7 +28,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 ### Added
 
 - Translate dry-validation contract error messages using the slice's i18n, following its translation files, default locale and current locale. Contracts defined in a slice namespace, as well as contracts given to actions via `params do` or `contract do` blocks, use the same `dry_validation.errors` keys as dry-validation's own I18n backend, falling back to dry-validation's bundled English messages. Requires dry-schema 1.17 or later. Set `config.messages.backend` on a contract to opt out. (@parndt in #1662)
-- Check, when `hanami` is required, that Hanami's first-party gems (hanami-action, hanami-view, etc.) share the `hanami` gem's major.minor version, raising a `Hanami::GemVersionError` when they don't. Set `HANAMI_SKIP_GEM_VERSION_CHECK=1` to skip the check. (@parndt in #1661)
+- When `hanami` is required, check that first-party gems (hanami-action, hanami-view, etc.) share the hanami gem's major.minor version, raising a `Hanami::GemVersionError` when they don't. Set `HANAMI_SKIP_GEM_VERSION_CHECK=1` to skip the check. (@parndt in #1661)
 - Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new`Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen in #1627)
 - Reload an app's code in place via `Hanami.app.reload`, without restarting the Ruby process. (@afomera and @#timriley in #1625)
 
