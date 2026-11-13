@@ -20,7 +20,7 @@ gemspec:
     - ["dry-monitor", "~> 1.0", ">= 1.0.1", "< 2"]
     - ["dry-system", "~> 1.1"]
     - ["dry-logger", "~> 1.2", "< 2"]
-    - ["hanami-cli", ">= 2.3.1"]
+    - ["hanami-cli", "~> 3.0.0"]
     - ["hanami-utils", "~> 3.0.0"]
     - ["json", ">= 2.7.2"]
     - ["zeitwerk", "~> 2.6"]
