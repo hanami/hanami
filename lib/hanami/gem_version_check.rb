@@ -9,7 +9,8 @@ module Hanami
   # can produce subtle, hard-to-diagnose failures, so we check this when `hanami` is required,
   # before it loads any of the other gems, and raise a {GemVersionMismatchError} on a mismatch.
   #
-  # Only gems already activated (i.e. those in the bundle) are checked. Patch versions may differ.
+  # Only gems already activated (i.e. those in the bundle) are checked. Without Bundler, gems
+  # activated later (e.g. via {Hanami.bundled?}) are not checked. Patch versions may differ.
   #
   # Set the `HANAMI_SKIP_GEM_VERSION_CHECK` environment variable (to any value) to skip the check.
   #
