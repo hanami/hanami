@@ -162,6 +162,9 @@ module Hanami
         # `config.messages.load_paths` added to the contract) into a {BundledStore}, kept separate
         # from the slice's own translations so they never override them.
         #
+        # Called once by `.build`, after the config is set. Finalizes the config and freezes the
+        # backend, so it cannot change after it is built.
+        #
         # @api private
         def prepare
           config.load_paths.each do |path|
@@ -178,6 +181,8 @@ module Hanami
 
           slice = config.slice
           @i18n = (slice["i18n"] if slice&.key?("i18n"))
+
+          finalize!
 
           self
         end
