@@ -46,7 +46,7 @@ module Hanami
         # Configures the contract class to use the slice's i18n for its messages, unless it (or a
         # superclass) has been explicitly configured with a different messages backend.
         #
-        # This must happen before the contract's schema is defined, since dry-schema sets up the
+        # This must happen before the contract's schema is defined, since Dry Schema sets up the
         # messages backend at that point.
         #
         # @api private
