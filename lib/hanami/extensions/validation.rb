@@ -20,7 +20,7 @@ module Hanami
     #     end
     #   end
     #
-    # @see https://dry-rb.org/gems/dry-validation/
+    # @see https://hanakai.org/learn/dry/dry-validation
     #
     # @api public
     # @since 3.1.0
