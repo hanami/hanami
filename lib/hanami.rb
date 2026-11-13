@@ -280,7 +280,7 @@ module Hanami
 
   # Check before loading the extensions, since those require the other Hanami gems, and a version
   # mismatch may cause errors as soon as they're loaded.
-  GemVersionCheck.()
+  GemVersionCheck.call
 
   require_relative "hanami/extensions"
 end
