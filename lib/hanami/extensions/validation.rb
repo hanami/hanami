@@ -11,6 +11,11 @@ module Hanami
     # `"i18n"` component, so they follow the slice's translation files, default locale and current
     # locale, just like the rest of the app.
     #
+    # The slice's translations take precedence over the messages bundled with dry-validation, as
+    # well as over messages from a contract's `config.messages.load_paths`. This lets you customize
+    # dry-validation's own messages for your whole app. A contract's own messages are used only for
+    # the keys that the slice does not translate.
+    #
     # To opt a contract out, set its messages backend explicitly:
     #
     # @example
