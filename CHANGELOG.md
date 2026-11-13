@@ -87,6 +87,18 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Return `false` from `Hanami::Slice.app?`, rather than raising `Hanami::AppLoadError`, when no app is defined. (@parndt in #1612)
 - Build `logger` and `inflector` providers registered on a slice from the slice's own config, rather than the app's. (@parndt in #1613)
 - Register only ROM classes from the `relations`, `db/commands` and `db/mappers` directories, leaving any other classes in those directories untouched. (@aaronmallen in #1629)
+- Load only a slice's configured translation files into its default `i18n` backend. Previously, the backend also loaded the files in the global `I18n.load_path` on its first lookup, and these could override the slice's own translations. (@timriley)
+
+    If you added translation files to `I18n.load_path` and used them via the `i18n` component, add them to your i18n config instead. Use `config.i18n.load_path` for a single slice, or `config.i18n.shared_load_path` for every slice:
+
+    ```ruby
+    # config/app.rb
+    config.i18n.shared_load_path += ["config/locales/**/*.yml"]
+    ```
+
+    Calling `I18n.t` directly on the global `I18n` module still uses `I18n.load_path`, as before.
+
+    Calling `reload!` on the `i18n` component also now reloads the slice's translation files, rather than replacing them with the files in the global `I18n.load_path`. To use files from a gem, add their paths to `config.i18n.load_path` or `config.i18n.shared_load_path`.
 - Register Hanami's first-party provider sources when `Hanami::Slice` loads, rather than when a slice is prepared. This allows `configure_provider` to be called within an app or slice class body. (@timriley in #1636)
 - Configure a slice's provider registrar when the slice class is defined rather than when it is prepared. Calling `register_provider` from within a slice class body previously left the slice with Dry System's default registrar, leading to errors when the slice was prepared. (@timriley in #1636)
 - Resolve the `routes` helper in slice view contexts from the app, so views and actions in a slice generate the same named paths. (@aaronmallen in #1630)
