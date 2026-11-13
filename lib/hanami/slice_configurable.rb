@@ -55,7 +55,25 @@ module Hanami
       def slice_for(klass)
         return unless klass.name && Hanami.app?
 
-        Hanami.app.with_slices.detect { |slice| klass.name.start_with?("#{slice.namespace}#{MODULE_DELIMITER}") }
+        slices.detect { |slice| klass.name.start_with?("#{slice.namespace}#{MODULE_DELIMITER}") }
+      end
+
+      def slices
+        Hanami.app? ? Hanami.app.with_slices : standalone_slices
+      end
+
+      # Standalone slices (no app in the process): every slice class still reachable via its
+      # constant, most specific namespace first
+      def standalone_slices
+        slice_descendants(Hanami::Slice)
+          .reject { |slice| slice.name.nil? || slice <= Hanami::App }
+          .select { |slice| Object.const_defined?(slice.name) && Object.const_get(slice.name).equal?(slice) }
+          .sort_by { |slice| -slice.name.length }
+      end
+
+      # Includes slices inheriting from other slice classes, which Class#subclasses alone omits
+      def slice_descendants(klass)
+        klass.subclasses.flat_map { |subclass| [subclass, *slice_descendants(subclass)] }
       end
     end
 

@@ -65,6 +65,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     ```
 
     Note: this skips all of the default pragmas. You may want to add back the ones that help reads, like `mmap_size` and `cache_size`, which the example above does not set. Add them via `connect_sqls` in the gateway's `connection_options`.
+- Prepare, boot and serve a slice as a Rack app without an `Hanami::App` defined in the process. With no app defined, the outermost slice acts as the app: `Hanami::Slice.app` returns it, and `Hanami::Slice.app?` is true for it. (@parndt in #1614)
 
 ### Changed
 
@@ -87,7 +88,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 ### Fixed
 
 - Don't attempt to inherit mailer template when `hanami-view` if not bundled. (@katafrakt in #1611)
-- Return `false` from `Hanami::Slice.app?`, rather than raising `Hanami::AppLoadError`, when no app is defined. (@parndt in #1612)
+- Don't raise `Hanami::AppLoadError` from `Hanami::Slice.app?` when no app is defined. (@parndt in #1612)
 - Build `logger` and `inflector` providers registered on a slice from the slice's own config, rather than the app's. (@parndt in #1613)
 - Register only ROM classes from the `relations`, `db/commands` and `db/mappers` directories, leaving any other classes in those directories untouched. (@aaronmallen in #1629)
 - Load only a slice's configured translation files into its default `i18n` backend. Previously, the backend also loaded the files in the global `I18n.load_path` on its first lookup, and these could override the slice's own translations. (@timriley)
