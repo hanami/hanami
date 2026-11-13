@@ -56,8 +56,8 @@ gem "i18n"
 # For testing validation contract i18n integration
 gem "dry-validation"
 
-# Required for custom messages backends; remove once dry-schema releases this
-gem "dry-schema", github: "dry-rb/dry-schema", branch: "custom-messages-backend"
+# Required for custom messages backends; remove afer dry-schema 1.17 ships.
+gem "dry-schema", github: "dry-rb/dry-schema", branch: "main"
 
 # Work around RDoc/JRuby incompatibiltiy: rdoc 8 depends on rbs 4, whose native C extension can't
 # build on JRuby.
