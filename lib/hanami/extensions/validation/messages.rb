@@ -26,26 +26,22 @@ module Hanami
       # want of a translation.
       #
       # @api private
-      # @since 3.1.0
       class Messages < Dry::Schema::Messages::Abstract
         # The locale of Dry Schema's and Dry Validation's bundled messages.
         #
         # @api private
-        # @since 3.1.0
         BUNDLED_LOCALE = :en
 
         # The slice whose `"i18n"` component translates messages. Set via {Builder}, as part of
         # `.build`.
         #
         # @api private
-        # @since 3.1.0
         setting :slice
 
         # Builds a {Messages} backend for a slice. Assigned to a contract's
         # `config.messages.backend`, and called via `Dry::Schema::Messages.setup`.
         #
         # @api private
-        # @since 3.1.0
         class Builder
           attr_reader :slice
 
@@ -74,7 +70,6 @@ module Hanami
         # `I18n.load_path`, so that it contains only the messages stored by {Messages#prepare}.
         #
         # @api private
-        # @since 3.1.0
         class BundledStore < ::I18n::Backend::Simple
           def initialized?
             true

@@ -33,7 +33,6 @@ module Hanami
         # messages backend at that point.
         #
         # @api private
-        # @since 3.1.0
         def configure_contract(contract_class, slice)
           messages = contract_class.config.messages
 
@@ -46,7 +45,6 @@ module Hanami
         # class body. Used for anonymous contracts, whose slice cannot be inferred from a name.
         #
         # @api private
-        # @since 3.1.0
         def contract_class(slice, &block)
           Class.new(Dry::Validation::Contract).tap { |klass|
             configure_contract(klass, slice)
@@ -55,7 +53,6 @@ module Hanami
         end
 
         # @api private
-        # @since 3.1.0
         def slice_for(klass)
           return unless klass.name && Hanami.app?
 
@@ -71,7 +68,6 @@ module Hanami
       # loaded before the app class) are left alone rather than raising an error.
       #
       # @api private
-      # @since 3.1.0
       module ContractInherited
         def inherited(subclass)
           super
