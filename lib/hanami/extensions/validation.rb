@@ -25,6 +25,18 @@ module Hanami
     # @api public
     # @since 3.1.0
     module Validation
+      # @api private
+      def self.extended(contract_class)
+        super
+
+        contract_class.extend(Hanami::SliceConfigurable)
+      end
+
+      # @api private
+      def configure_for_slice(slice)
+        Validation.configure_contract(self, slice)
+      end
+
       class << self
         # Configures the contract class to use the slice's i18n for its messages, unless it (or a
         # superclass) has been explicitly configured with a different messages backend.
@@ -51,33 +63,9 @@ module Hanami
             klass.class_exec(&block)
           }
         end
-
-        # @api private
-        def slice_for(klass)
-          return unless klass.name && Hanami.app?
-
-          Hanami.app.with_slices.detect { |slice|
-            klass.name.start_with?("#{slice.namespace}#{MODULE_DELIMITER}")
-          }
-        end
-      end
-
-      # Configures named contract subclasses for the slice whose namespace they're defined in.
-      #
-      # Unlike {Hanami::SliceConfigurable}, contracts defined outside an app (for example by a gem
-      # loaded before the app class) are left alone rather than raising an error.
-      #
-      # @api private
-      module ContractInherited
-        def inherited(subclass)
-          super
-
-          slice = Validation.slice_for(subclass)
-          Validation.configure_contract(subclass, slice) if slice
-        end
       end
     end
   end
 end
 
-Dry::Validation::Contract.singleton_class.prepend(Hanami::Extensions::Validation::ContractInherited)
+Dry::Validation::Contract.extend(Hanami::Extensions::Validation)
