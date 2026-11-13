@@ -277,5 +277,10 @@ module Hanami
   loader.setup
 
   require_relative "hanami/errors"
+
+  # Check before loading the extensions, since those require the other Hanami gems, and a version
+  # mismatch may cause errors as soon as they're loaded.
+  GemVersionCheck.call
+
   require_relative "hanami/extensions"
 end
