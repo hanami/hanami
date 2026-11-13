@@ -46,5 +46,5 @@ module Hanami
   #
   # @api public
   # @since 3.1.0
-  GemVersionMismatchError = Class.new(Error)
+  GemVersionError = Class.new(Error)
 end

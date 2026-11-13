@@ -39,7 +39,7 @@ RSpec.describe Hanami::GemVersionCheck do
     }
 
     it "raises an error naming the mismatched gems" do
-      expect { call }.to raise_error(Hanami::GemVersionMismatchError) { |error|
+      expect { call }.to raise_error(Hanami::GemVersionError) { |error|
         expect(error.message).to start_with(
           "hanami is 3.1.2, but these gems are not on 3.1.x:\n\n  hanami-view 3.0.2\n"
         )
@@ -61,7 +61,7 @@ RSpec.describe Hanami::GemVersionCheck do
     let(:specs) { {"hanami-utils" => spec_for("hanami-utils", "2.3.0")} }
 
     it "raises an error naming the gem" do
-      expect { call }.to raise_error(Hanami::GemVersionMismatchError, /hanami-utils 2\.3\.0/)
+      expect { call }.to raise_error(Hanami::GemVersionError, /hanami-utils 2\.3\.0/)
     end
   end
 
@@ -104,7 +104,7 @@ RSpec.describe Hanami::GemVersionCheck do
       _, err, status = require_hanami
 
       expect(status).not_to be_success
-      expect(err).to include "Hanami::GemVersionMismatchError"
+      expect(err).to include "Hanami::GemVersionError"
       expect(err).to include "hanami-minitest 2.3.0"
     end
 
