@@ -2,7 +2,7 @@
 
 module Hanami
   # Checks that Hanami's first-party gems are all on the same major.minor version as the `hanami`
-  # gem itself.
+  # gem itself. Patch versions may differ.
   #
   # These gems are released together and depend on each other's internals in ways their gemspec
   # constraints cannot fully express. Mixing minor versions (e.g. hanami 3.1 with hanami-view 3.0)
@@ -10,7 +10,7 @@ module Hanami
   # before it loads any of the other gems, and raise a {GemVersionMismatchError} on a mismatch.
   #
   # Only gems already activated (i.e. those in the bundle) are checked. Without Bundler, gems
-  # activated later (e.g. via {Hanami.bundled?}) are not checked. Patch versions may differ.
+  # activated later (e.g. via {Hanami.bundled?}) are not checked.
   #
   # Set the `HANAMI_SKIP_GEM_VERSION_CHECK` environment variable (to any value) to skip the check.
   #
