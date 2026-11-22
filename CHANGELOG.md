@@ -30,7 +30,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Translate dry-validation contract error messages using the slice's i18n, following its translation files, default locale and current locale. Contracts defined in a slice namespace, as well as contracts given to actions via `params do` or `contract do` blocks, use the same `dry_validation.errors` keys as dry-validation's own I18n backend, falling back to dry-validation's bundled English messages. Requires dry-schema 1.17 or later. Set `config.messages.backend` on a contract to opt out. (@parndt in #1662)
 - When `hanami` is required, check that first-party gems (hanami-action, hanami-view, etc.) share the hanami gem's major.minor version, raising a `Hanami::GemVersionError` when they don't. Set `HANAMI_SKIP_GEM_VERSION_CHECK=1` to skip the check. (@parndt in #1661)
 - Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new`Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen in #1627)
-- Reload an app's code in place via `Hanami.app.reload`, without restarting the Ruby process. (@afomera and @#timriley in #1625)
+- Reload an app's code in place via `Hanami.app.reload`, without restarting the Ruby process. (@afomera and @timriley in #1625)
 
     This unloads the app and all its slices, then prepares them again, picking up changes to code, settings, providers, routes and slices themselves. The app class itself is kept, so `run Hanami.app` in `config.ru` continues to work, which means that `config/app.rb` itself is not reloaded.
 
@@ -65,6 +65,10 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     ```
 
     Note: this skips all of the default pragmas. You may want to add back the ones that help reads, like `mmap_size` and `cache_size`, which the example above does not set. Add them via `connect_sqls` in the gateway's `connection_options`.
+- Support JRuby. Recognize JDBC database URLs (`jdbc:sqlite:`, `jdbc:postgresql:`, `jdbc:mysql:`) in the db provider, and raise a helpful error when the matching JDBC gem (`jdbc-sqlite3`, `jdbc-postgres` or `jdbc-mysql`) is missing. (@parndt in #1617, @timriley in #1641)
+- Add `#slice` to `Hanami::Router::NotFoundError` and `Hanami::Router::NotAllowedError`, returning the slice whose router could not match the request. Error handling such as the hanami-webconsole detailed error page uses this to list the slice's routes. (@afomera in #1624)
+- Set the `HANAMI_APP_PATH` env var to load the Hanami app class from a file other than `config/app.rb`, such as `HANAMI_APP_PATH=app/hanami.rb`. This is useful for apps that combine Hanami with another framework. (@sandbergja in #1665)
+- Add `collection` blocks to `resources` in routes, for routes on the resource's collection rather than a single member. For example, `resources :books do collection do get "/latest", to: "books.latest", as: :latest end end` gives `GET /books/latest`, named `books_latest`. (@timriley in #1646)
 
 ### Changed
 
@@ -79,14 +83,16 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     With the lazy exposures in Hanami View 3.1, this ensures form rendering no longer runs every exposure in the view, only the ones the form reads. 
 
 - Change the default `config.logger.filters` to `["passw", "secret", "token", "_key", "crypt"]`. With the substring matching in dry-logger 1.3, these filter any key containing these words, ignoring case, such as `password_confirmation`, `client_secret`, `_csrf_token`, `api_key` and `encrypted_password`. To filter more keys, append to `config.logger.filters`. To match a short key exactly, use a regexp such as `/\Apin\z/`. (@timriley in #1657)
+- Give the slice, rather than its config, to `Hanami::Webconsole::Middleware`. This requires the matching version of hanami-webconsole. (@timriley in #1658)
 
 ### Deprecated
 
 ### Removed
 
+- Remove the `inspector:` argument from `Hanami::Slice.router`, since Hanami Router no longer uses an inspector. To list a slice's routes, call `#routes` on its router. (@afomera in #1624)
+
 ### Fixed
 
-- Don't attempt to inherit mailer template when `hanami-view` if not bundled. (@katafrakt in #1611)
 - Return `false` from `Hanami::Slice.app?`, rather than raising `Hanami::AppLoadError`, when no app is defined. (@parndt in #1612)
 - Build `logger` and `inflector` providers registered on a slice from the slice's own config, rather than the app's. (@parndt in #1613)
 - Register only ROM classes from the `relations`, `db/commands` and `db/mappers` directories, leaving any other classes in those directories untouched. (@aaronmallen in #1629)
