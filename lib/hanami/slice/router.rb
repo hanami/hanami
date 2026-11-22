@@ -147,6 +147,10 @@ module Hanami
       # Use this inside a `resources` block. Routes in the block are nested under the resource path,
       # without the resource's ID param.
       #
+      # Route names in the block follow the resource name, such as `books_latest`. To put the route
+      # name first, like the `new_book` and `edit_book` routes, give `as: [:latest, nil]`, which
+      # names the route `latest_books`.
+      #
       # @example
       #   resources :books do
       #     collection do
@@ -165,26 +169,84 @@ module Hanami
       # @api public
       # @since 3.1.0
       def collection(&block)
+        resource_builder = plural_resource_builder_for(:collection)
+
+        within_prefixes(
+          resource_builder.collection_path_prefix,
+          resource_builder.collection_name_prefix,
+          &block
+        )
+      end
+
+      # Defines routes on a single member of a plural resource.
+      #
+      # Use this inside a `resources` block. Routes in the block are nested under the resource path,
+      # with the resource's ID given as the `:id` param, the same as the resource's `show` route.
+      #
+      # Without this block, routes inside a `resources` block use a `:<name>_id` param instead (such
+      # as `:book_id`), so they do not clash with the `:id` param of any nested resources.
+      #
+      # Use this for actions on the resource itself, such as `books.publish`. For child resources
+      # with their own actions, such as `books.reviews`, use `resource` or `resources` directly
+      # inside the `resources` block instead, so their actions receive the parent's ID as
+      # `:book_id`.
+      #
+      # Route names in the block follow the resource name, such as `book_publish`. To put the route
+      # name first, like the `new_book` and `edit_book` routes, give `as: [:publish, nil]`, which
+      # names the route `publish_book`.
+      #
+      # @example
+      #   resources :books do
+      #     member do
+      #       post "/publish", to: "books.publish", as: :publish
+      #     end
+      #
+      #     resources :reviews, only: :index
+      #   end
+      #
+      #   # Generates (in addition to the RESTful routes):
+      #   # POST /books/:id/publish       books.publish        (named :book_publish)
+      #   # GET  /books/:book_id/reviews  books.reviews.index  (named :book_reviews)
+      #
+      # @raise [ArgumentError] if not called directly inside a `resources` block
+      #
+      # @api public
+      # @since 3.1.0
+      def member(&block)
+        resource_builder = plural_resource_builder_for(:member)
+
+        within_prefixes(
+          resource_builder.member_path_prefix,
+          resource_builder.member_name_prefix,
+          &block
+        )
+      end
+
+      private
+
+      # Returns the builder for the current `resources` block, for use by the `collection` and
+      # `member` blocks.
+      #
+      # @raise [ArgumentError] if the current routes are not directly inside a `resources` block
+      def plural_resource_builder_for(block_name)
         resource_builder = @resource_stack.last
 
         unless resource_builder
-          raise ArgumentError, "collection must be used inside a `resources` block"
+          raise ArgumentError, "#{block_name} must be used inside a `resources` block"
         end
 
         unless resource_builder.plural?
           raise ArgumentError,
-            "collection must be used inside a `resources` block, not a singular `resource` block"
+            "#{block_name} must be used inside a `resources` block, not a singular `resource` block"
         end
 
         unless resource_builder.member_scope?(@path_prefix, @name_prefix)
           raise ArgumentError,
-            "collection must be used directly inside a `resources` block, not inside a nested scope"
+            "#{block_name} must be used directly inside a `resources` block, not inside a nested scope"
         end
 
-        within_collection(resource_builder, &block)
+        resource_builder
       end
-
-      private
 
       def build_resource(name, type, options, &block)
         resource_builder = ResourceBuilder.new(
@@ -208,10 +270,10 @@ module Hanami
         @resource_stack.pop
       end
 
-      def within_collection(resource_builder, &block)
+      def within_prefixes(path_prefix, name_prefix, &block)
         prev_path_prefix, prev_name_prefix = @path_prefix, @name_prefix
-        @path_prefix = resource_builder.collection_path_prefix
-        @name_prefix = resource_builder.collection_name_prefix
+        @path_prefix = path_prefix
+        @name_prefix = name_prefix
 
         instance_eval(&block)
       ensure
@@ -283,6 +345,19 @@ module Hanami
         # Returns the router's name prefix for this resource's collection routes.
         def collection_name_prefix
           @name_prefix.join(collection_route_name)
+        end
+
+        # Returns the router's path prefix for this resource's member routes.
+        #
+        # This is the same as the resource's own scope, except it uses an `:id` param rather than a
+        # `:<name>_id` param.
+        def member_path_prefix
+          @path_prefix.join("#{@path}/:id")
+        end
+
+        # Returns the router's name prefix for this resource's member routes.
+        def member_name_prefix
+          @name_prefix.join(scope_name)
         end
 
         private

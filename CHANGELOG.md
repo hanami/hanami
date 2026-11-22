@@ -69,6 +69,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Add `#slice` to `Hanami::Router::NotFoundError` and `Hanami::Router::NotAllowedError`, returning the slice whose router could not match the request. Error handling such as the hanami-webconsole detailed error page uses this to list the slice's routes. (@afomera in #1624)
 - Set the `HANAMI_APP_PATH` env var to load the Hanami app class from a file other than `config/app.rb`, such as `HANAMI_APP_PATH=app/hanami.rb`. This is useful for apps that combine Hanami with another framework. (@sandbergja in #1665)
 - Add `collection` blocks to `resources` in routes, for routes on the resource's collection rather than a single member. For example, `resources :books do collection do get "/latest", to: "books.latest", as: :latest end end` gives `GET /books/latest`, named `books_latest`. (@timriley in #1646)
+- Add `member` blocks to `resources` in routes, for routes on a single member that receive the resource's ID as `:id`, the same as its `show` route. Other routes inside a `resources` block receive it as `:<name>_id`, which suits nested child resources. For example, `resources :books do member do post "/publish", to: "books.publish", as: :publish end end` gives `POST /books/:id/publish`, named `book_publish`. (@timriley in #TBD)
 
 ### Changed
 

@@ -365,6 +365,7 @@ RSpec.describe "Router / Resource routes" do
         resources :books, only: :show do
           collection do
             get "/latest", to: "books.latest", as: :latest
+            get "/oldest", to: "books.oldest", as: [:oldest, nil]
           end
 
           get "/reviews", to: "books.reviews.index", as: :reviews
@@ -374,10 +375,12 @@ RSpec.describe "Router / Resource routes" do
 
     it "routes to the collection without the resource id" do
       expect(routed("GET", "/books/latest")).to eq %(actions.books.latest)
+      expect(routed("GET", "/books/oldest")).to eq %(actions.books.oldest)
       expect(routed("GET", "/books/1")).to eq %(actions.books.show {"id":"1"})
       expect(routed("GET", "/books/1/reviews")).to eq %(actions.books.reviews.index {"book_id":"1"})
 
       expect(router.path("books_latest")).to eq "/books/latest"
+      expect(router.path("oldest_books")).to eq "/books/oldest"
       expect(router.path("book_reviews", book_id: 1)).to eq "/books/1/reviews"
     end
 
@@ -511,6 +514,140 @@ RSpec.describe "Router / Resource routes" do
     end
   end
 
+  describe "member routes" do
+    let(:routes) {
+      proc {
+        resources :books, only: :show do
+          member do
+            post "/publish", to: "books.publish", as: :publish
+            post "/archive", to: "books.archive", as: [:archive, nil]
+          end
+
+          get "/reviews", to: "books.reviews.index", as: :reviews
+        end
+      }
+    }
+
+    it "routes to the member with the resource id as :id" do
+      expect(routed("POST", "/books/1/publish")).to eq %(actions.books.publish {"id":"1"})
+      expect(routed("POST", "/books/1/archive")).to eq %(actions.books.archive {"id":"1"})
+      expect(routed("GET", "/books/1")).to eq %(actions.books.show {"id":"1"})
+      expect(routed("GET", "/books/1/reviews")).to eq %(actions.books.reviews.index {"book_id":"1"})
+
+      expect(router.path("book_publish", id: 1)).to eq "/books/1/publish"
+      expect(router.path("archive_book", id: 1)).to eq "/books/1/archive"
+      expect(router.path("book_reviews", book_id: 1)).to eq "/books/1/reviews"
+    end
+
+    describe "with :path and :as" do
+      let(:routes) {
+        proc {
+          resources :cafes, only: :show, path: "coffee-shops", as: :coffee_shops do
+            member do
+              get "/menu", to: "cafes.menu", as: :menu
+            end
+          end
+        }
+      }
+
+      it "uses the given path and name" do
+        expect(routed("GET", "/coffee-shops/1/menu")).to eq %(actions.cafes.menu {"id":"1"})
+
+        expect(router.path("coffee_shop_menu", id: 1)).to eq "/coffee-shops/1/menu"
+      end
+    end
+
+    describe "within a nested resource" do
+      let(:routes) {
+        proc {
+          resources :authors, only: :show do
+            resources :books, only: :show do
+              member do
+                post "/publish", to: "authors.books.publish", as: :publish
+              end
+            end
+          end
+        }
+      }
+
+      it "keeps the parent resource's member scope" do
+        expect(routed("POST", "/authors/1/books/2/publish")).to eq %(actions.authors.books.publish {"author_id":"1","id":"2"})
+
+        expect(router.path("author_book_publish", author_id: 1, id: 2)).to eq "/authors/1/books/2/publish"
+      end
+    end
+
+    describe "under a singular resource" do
+      let(:routes) {
+        proc {
+          resource :profile do
+            member {}
+          end
+        }
+      }
+
+      it "raises an error" do
+        expect { router }.to raise_error(ArgumentError, /not a singular `resource` block/)
+      end
+    end
+
+    describe "within a scope inside a resource" do
+      let(:routes) {
+        proc {
+          resources :books do
+            scope "admin" do
+              member {}
+            end
+          end
+        }
+      }
+
+      it "raises an error" do
+        expect { router }.to raise_error(ArgumentError, /not inside a nested scope/)
+      end
+    end
+
+    describe "within a collection" do
+      let(:routes) {
+        proc {
+          resources :books do
+            collection do
+              member {}
+            end
+          end
+        }
+      }
+
+      it "raises an error" do
+        expect { router }.to raise_error(ArgumentError, /not inside a nested scope/)
+      end
+    end
+
+    describe "with a collection inside" do
+      let(:routes) {
+        proc {
+          resources :books do
+            member do
+              collection {}
+            end
+          end
+        }
+      }
+
+      it "raises an error" do
+        expect { router }.to raise_error(ArgumentError, /not inside a nested scope/)
+      end
+    end
+
+    describe "outside a resource" do
+      let(:routes) { proc { member {} } }
+
+      it "raises an error" do
+        expect { router }.to raise_error(ArgumentError, /member must be used inside a `resources` block/)
+      end
+    end
+  end
+
   describe "resources nested under scopes" do
     let(:routes) {
       proc {
@@ -567,6 +704,26 @@ RSpec.describe "Router / Resource routes" do
       expect(routed("GET", "/reviews/books/latest")).to eq %([reviews]actions.books.latest)
 
       expect(router.path("reviews_books_latest")).to eq "/reviews/books/latest"
+    end
+  end
+
+  describe "member routes within slices" do
+    let(:routes) {
+      proc {
+        slice :reviews, at: "/reviews" do
+          resources :books, only: :show do
+            member do
+              post "/publish", to: "books.publish", as: :publish
+            end
+          end
+        end
+      }
+    }
+
+    it "routes to the member within the slice" do
+      expect(routed("POST", "/reviews/books/1/publish")).to eq %([reviews]actions.books.publish {"id":"1"})
+
+      expect(router.path("reviews_book_publish", id: 1)).to eq "/reviews/books/1/publish"
     end
   end
 end
