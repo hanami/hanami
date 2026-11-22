@@ -16,7 +16,7 @@ jobs:
       github.event.workflow_run.head_repository.fork == false
     steps:
       - name: Dispatch status to repo-sync
-        uses: actions/github-script@450193c5abd4cdb17ba9f3ffcfe8f635c4bb6c2a
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           github-token: ${{ secrets.REPO_SYNC_DISPATCH_TOKEN }}
           script: |
