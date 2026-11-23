@@ -147,12 +147,13 @@ RSpec.describe "DB", :app_integration do
 
       write "app/relations/.keep", ""
 
-      ENV["DATABASE_URL"] = "postgres://127.0.0.0"
+      ENV["DATABASE_URL"] = "postgres://user:s3cr3t@127.0.0.0"
 
       require "hanami/prepare"
 
       expect { Hanami.app.prepare :db }.to raise_error(Hanami::ComponentLoadError) { |error|
-        expect(error.message).to include %(The "pg" gem is required)
+        expect(error.message).to include %(The "pg" gem is required to connect to a postgres database)
+        expect(error.message).not_to include "s3cr3t"
       }
     end
   end
