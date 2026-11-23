@@ -435,8 +435,11 @@ module Hanami
 
         return if Hanami.bundled?(database_gem)
 
+        # Give only the URL's scheme, since the full URL may contain credentials
+        scheme = Hanami::DB::DatabaseURL.scheme(database_url)
+
         raise Hanami::ComponentLoadError, <<~STR
-          The "#{database_gem}" gem is required to connect to #{database_url}. Please add it to your Gemfile.
+          The "#{database_gem}" gem is required to connect to a #{scheme} database. Please add it to your Gemfile.
         STR
       end
 

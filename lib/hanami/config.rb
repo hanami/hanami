@@ -189,7 +189,7 @@ module Hanami
     #
     #   Requires the hanami-webconsole gem to be available.
     #
-    #   Defaults to `false` in production mode, `true` in all others.
+    #   Defaults to `true` in development mode, `false` in all others.
     #
     #   @return [Boolean]
     #

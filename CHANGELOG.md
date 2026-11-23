@@ -29,13 +29,14 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 - Translate dry-validation contract error messages using the slice's i18n, following its translation files, default locale and current locale. Contracts defined in a slice namespace, as well as contracts given to actions via `params do` or `contract do` blocks, use the same `dry_validation.errors` keys as dry-validation's own I18n backend, falling back to dry-validation's bundled English messages. Requires dry-schema 1.17 or later. Set `config.messages.backend` on a contract to opt out. (@parndt in #1662)
 - When `hanami` is required, check that first-party gems (hanami-action, hanami-view, etc.) share the hanami gem's major.minor version, raising a `Hanami::GemVersionError` when they don't. Set `HANAMI_SKIP_GEM_VERSION_CHECK=1` to skip the check. (@parndt in #1661)
-- Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new`Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen in #1627)
+- Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new `Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen in #1627)
+- Make `Hanami::Settings::EnvStore` public API, for use when building your own `config.settings_store`. (@timriley in #1670)
 - Reload an app's code in place via `Hanami.app.reload`, without restarting the Ruby process. (@afomera and @timriley in #1625)
 
     This unloads the app and all its slices, then prepares them again, picking up changes to code, settings, providers, routes and slices themselves. The app class itself is kept, so `run Hanami.app` in `config.ru` continues to work, which means that `config/app.rb` itself is not reloaded.
 
     Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
-- Apply sensible SQLite pragmas to every connection for apps using SQLite, via hanami-db's `Hanami::DB::SQLite::Pragmas`: `journal_mode = wal`, `synchronous = normal`, `mmap_size` of 128MiB, `journal_size_limit` of 64MiB and `cache_size = 2000`. (@cllns in #1637)
+- Apply sensible SQLite pragmas to every connection for apps using SQLite, via hanami-db's `Hanami::DB::SQLite::Pragmas`: `journal_mode = wal`, `synchronous = normal`, `mmap_size` of 128MiB, `journal_size_limit` of 64MiB and `cache_size = 2000`. (@cllns in #1637, @timriley via hanami/hanami-db#28)
 
     These are given to Sequel as `connect_sqls`. Any `connect_sqls` you provide via a gateway's `connection_options` run after these, so your own pragmas take precedence. To opt out, call `skip_defaults :connect_sqls` (or `skip_defaults` for all defaults) in your SQL adapter config:
 
@@ -50,13 +51,12 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
     Existing SQLite apps will switch to WAL mode on upgrade. WAL mode is persisted in the database file, and SQLite creates `-wal` and `-shm` files beside the database while it is in use.
 
-    Switching to WAL mode writes to the database file, which a read-only gateway cannot do. A gateway using `connection_options readonly: true` on a database that is not already in WAL mode will fail to connect with `SQLite3::ReadOnlyException: attempt to write a readonly database`. Skip the defaults for that gateway:
+    Switching to WAL mode writes to the database file, which a read-only connection cannot do. For gateways using `connection_options readonly: true`, Hanami leaves out the `journal_mode` pragma. Hanami does not detect `?readonly=true` in a database URL, however. A gateway made read-only this way, on a database that is not already in WAL mode, will fail to connect with `SQLite3::ReadOnlyException: attempt to write a readonly database`. Give `readonly: true` in `connection_options` instead, or skip the defaults for that gateway: 
 
     ```ruby
     # config/providers/db.rb
     Hanami.app.configure_provider :db do
       config.gateway :archive do |gw|
-        gw.connection_options readonly: true
         gw.adapter :sql do |adapter|
           adapter.skip_defaults :connect_sqls
         end
@@ -69,7 +69,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Add `#slice` to `Hanami::Router::NotFoundError` and `Hanami::Router::NotAllowedError`, returning the slice whose router could not match the request. Error handling such as the hanami-webconsole detailed error page uses this to list the slice's routes. (@afomera in #1624)
 - Set the `HANAMI_APP_PATH` env var to load the Hanami app class from a file other than `config/app.rb`, such as `HANAMI_APP_PATH=app/hanami.rb`. This is useful for apps that combine Hanami with another framework. (@sandbergja in #1665)
 - Add `collection` blocks to `resources` in routes, for routes on the resource's collection rather than a single member. For example, `resources :books do collection do get "/latest", to: "books.latest", as: :latest end end` gives `GET /books/latest`, named `books_latest`. (@timriley in #1646)
-- Add `member` blocks to `resources` in routes, for routes on a single member that receive the resource's ID as `:id`, the same as its `show` route. Other routes inside a `resources` block receive it as `:<name>_id`, which suits nested child resources. For example, `resources :books do member do post "/publish", to: "books.publish", as: :publish end end` gives `POST /books/:id/publish`, named `book_publish`. (@timriley in #TBD)
+- Add `member` blocks to `resources` in routes, for routes on a single member that receive the resource's ID as `:id`, the same as its `show` route. Other routes inside a `resources` block receive it as `:<name>_id`, which suits nested child resources. For example, `resources :books do member do post "/publish", to: "books.publish", as: :publish end end` gives `POST /books/:id/publish`, named `book_publish`. (@timriley in #1669)
 
 ### Changed
 
@@ -78,7 +78,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
     For example, `resources :items, as: :data` now gives `datum`, `edit_datum` and `datum_reviews` for member and nested routes, and `data` for the index route. To change how a name is inflected, add a custom inflection with `config.inflections` in your app.
 
-- Load database settings from component env variables (@aaronmallen in #1621)
+- Build a database URL from separate env vars when no `DATABASE_URL` is given: `DATABASE_SCHEME` (required), `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_HOST` (defaulting to `localhost`), `DATABASE_PORT` and `DATABASE_NAME`. These follow the same slice prefix and gateway suffix rules as `DATABASE_URL`, such as `MAIN__DATABASE_HOST` or `DATABASE_HOST__EXTRA`. For SQLite, `DATABASE_NAME` is the path to the database file. (@aaronmallen in #1621)
+- Require dry-logger 1.3 or later, for the substring matching used by the default log filters. (@timriley in #1670)
 - In `form_for`, read values from the view's locals one key at a time, rather than converting them to a Hash first. (@timriley in #1644)
 
     With the lazy exposures in Hanami View 3.1, this ensures form rendering no longer runs every exposure in the view, only the ones the form reads. 
@@ -126,6 +127,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Work around a [JRuby bug](https://github.com/jruby/jruby/issues/10115). (@timriley in #1667)
 
 ### Security
+
+- When a database gem is missing, give only the database URL's scheme in the error message, rather than the full URL, which may contain credentials. (@timriley in #1670)
 
 [unreleased]: https://github.com/hanami/hanami/compare/v3.0.2...HEAD
 
