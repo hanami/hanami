@@ -26,6 +26,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 ## [Unreleased]
 
 ### Added
+- Add a new database configuration option: `migrations_table`.  It defaults to `:schema_migrations`.
 
 - Translate dry-validation contract error messages using the slice's i18n, following its translation files, default locale and current locale. Contracts defined in a slice namespace, as well as contracts given to actions via `params do` or `contract do` blocks, use the same `dry_validation.errors` keys as dry-validation's own I18n backend, falling back to dry-validation's bundled English messages. Requires dry-schema 1.17 or later. Set `config.messages.backend` on a contract to opt out. (@parndt in #1662)
 - When `hanami` is required, check that first-party gems (hanami-action, hanami-view, etc.) share the hanami gem's major.minor version, raising a `Hanami::GemVersionError` when they don't. Set `HANAMI_SKIP_GEM_VERSION_CHECK=1` to skip the check. (@parndt in #1661)
