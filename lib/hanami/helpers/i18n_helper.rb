@@ -174,10 +174,10 @@ module Hanami
         def _escape_translation_options(options)
           options.each_with_object({}) do |(key, value), result|
             result[key] =
-              if ::I18n::RESERVED_KEYS.include?(key) || !value.is_a?(String) || _i18n_html_safe?(value)
+              if ::I18n::RESERVED_KEYS.include?(key) || value.is_a?(Numeric) || _i18n_html_safe?(value)
                 value
               else
-                _i18n_html_escape(value)
+                _i18n_html_escape(value.to_s)
               end
           end
         end

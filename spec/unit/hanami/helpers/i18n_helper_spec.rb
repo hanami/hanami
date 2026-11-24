@@ -121,6 +121,41 @@ RSpec.describe Hanami::Helpers::I18nHelper do
       it "does not raise on non-string interpolation values" do
         expect { helper.translate("greeting_html", name: 42) }.not_to raise_error
       end
+
+      it "does not escape numeric interpolation values" do
+        expect(helper.translate("greeting_html", name: 42)).to eq "Hello, <strong>42</strong>!"
+      end
+
+      it "escapes an Array interpolation value (e.g. from `?name[]=`)" do
+        result = helper.translate("greeting_html", name: ["<script>alert(1)</script>"])
+
+        expect(result).to be_html_safe
+        expect(result).not_to include "<script>"
+        expect(result).to include "&lt;script&gt;"
+      end
+
+      it "escapes a Hash interpolation value (e.g. from `?name[x]=`)" do
+        result = helper.translate("greeting_html", name: {x: "<script>alert(1)</script>"})
+
+        expect(result).to be_html_safe
+        expect(result).not_to include "<script>"
+      end
+
+      it "escapes a Symbol interpolation value" do
+        result = helper.translate("greeting_html", name: :"<script>alert(1)</script>")
+
+        expect(result).to be_html_safe
+        expect(result).not_to include "<script>"
+      end
+
+      it "escapes a non-String object (e.g. a view Part) whose `to_s` carries user content" do
+        part = Hanami::View::Part.new(value: "<script>alert(1)</script>")
+
+        result = helper.translate("greeting_html", name: part)
+
+        expect(result).to be_html_safe
+        expect(result).not_to include "<script>"
+      end
     end
 
     context "non-HTML keys" do
