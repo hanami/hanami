@@ -29,9 +29,6 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Changed
 
-- Change the default `config.logger.filters` to `["passw", "secret", "token", "_key", "crypt"]`. With the substring matching in dry-logger 1.3, these filter any key containing these words, ignoring case, such as `password_confirmation`, `client_secret`, `_csrf_token`, `api_key` and `encrypted_password`. To filter more keys, append to `config.logger.filters`. To match a short key exactly, use a regexp such as `/\Apin\z/`. (@timriley in #1657)
-- Require dry-logger 1.3 or later, which the new default log filters depend on. To keep the previous defaults, set `config.logger.filters = %w[_csrf password password_confirmation]`. (@parndt in GHSA-2v2m-5qwc-qhpw)
-
 ### Deprecated
 
 ### Removed
@@ -40,9 +37,17 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Security
 
+[unreleased]: https://github.com/hanami/hanami/compare/v3.0.3...HEAD
+
+## [3.0.3] - 2026-11-24
+
+### Security
+
+- Change the default `config.logger.filters` to `["passw", "secret", "token", "_key", "crypt"]`. With the substring matching in dry-logger 1.3, these filter any key containing these words, ignoring case, such as `password_confirmation`, `client_secret`, `_csrf_token`, `api_key` and `encrypted_password`. To filter more keys, append to `config.logger.filters`. To match a short key exactly, use a regexp such as `/\Apin\z/`. (@timriley in #1657)
+- Require dry-logger 1.3 or later, which the new default log filters depend on. To keep the previous defaults, set `config.logger.filters = %w[_csrf password password_confirmation]`. (@parndt in GHSA-2v2m-5qwc-qhpw)
 - Escape every non-numeric interpolation value in HTML translations. Previously only Strings were escaped, so Arrays and Hashes from request params, Symbols, and view parts were inserted unescaped. (@parndt in GHSA-gc77-6753-x6mr)
 
-[unreleased]: https://github.com/hanami/hanami/compare/v3.0.2...HEAD
+[3.0.3]: https://github.com/hanami/hanami/compare/v3.0.2...v3.0.3
 
 ## [3.0.2] - 2026-08-21
 
