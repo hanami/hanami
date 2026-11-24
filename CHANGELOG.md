@@ -129,6 +129,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 ### Security
 
 - When a database gem is missing, give only the database URL's scheme in the error message, rather than the full URL, which may contain credentials. (@timriley in #1670)
+- Escape every non-numeric interpolation value in HTML translations. Previously only Strings were escaped, so Arrays and Hashes from request params, Symbols, and view parts were inserted unescaped. (@parndt in GHSA-gc77-6753-x6mr)
 
 [unreleased]: https://github.com/hanami/hanami/compare/v3.0.2...HEAD
 
