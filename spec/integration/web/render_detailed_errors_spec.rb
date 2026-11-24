@@ -55,7 +55,7 @@ RSpec.describe "Web / Rendering detailed errors", :app_integration do
       expect(last_response.status).to eq 500
 
       html = Capybara.string(last_response.body)
-      expect(html).to have_selector("[data-webconsole-exception-class]", text: "RuntimeError")
+      expect(html).to have_selector("[data-webconsole-headline]", text: "RuntimeError")
       expect(html).to have_selector("[data-webconsole-request-summary]", text: "/error")
       expect(html).to have_selector(
         "[data-webconsole-frame-kind='app']", text: "app/actions/error.rb"

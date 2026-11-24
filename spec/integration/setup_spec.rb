@@ -161,5 +161,48 @@ RSpec.describe "Hanami setup", :app_integration do
         end
       end
     end
+
+    context "when HANAMI_APP_PATH environment variable is set" do
+      it "converts it into an absolute path if the file exists" do
+        with_envvars("HANAMI_APP_PATH" => "config/my_nice_app.rb") do
+          with_tmp_directory(Dir.mktmpdir) do
+            write "config/my_nice_app.rb"
+
+            expect(app_path.to_s).to match(%r{^/.*/config/my_nice_app.rb$})
+          end
+        end
+      end
+
+      it "returns nil if the file does not exist" do
+        with_envvars("HANAMI_APP_PATH" => "config/my_nice_app.rb") do
+          with_tmp_directory(Dir.mktmpdir) do
+            expect(app_path).to be_nil
+          end
+        end
+      end
+
+      it "ignores an existing config/app.rb" do
+        with_envvars("HANAMI_APP_PATH" => "config/my_nice_app.rb") do
+          with_tmp_directory(Dir.mktmpdir) do
+            write "config/app.rb"
+
+            expect(app_path).to be_nil
+          end
+        end
+      end
+
+      it "does not look in parent directories" do
+        with_envvars("HANAMI_APP_PATH" => "config/my_nice_app.rb") do
+          with_tmp_directory(Dir.mktmpdir) do
+            write "config/my_nice_app.rb"
+            write "lib/foo/bar/.keep"
+
+            Dir.chdir("lib/foo/bar") do
+              expect(app_path).to be_nil
+            end
+          end
+        end
+      end
+    end
   end
 end

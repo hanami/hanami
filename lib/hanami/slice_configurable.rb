@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require_relative "constants"
-require_relative "errors"
 
 module Hanami
   # Calls `configure_for_slice(slice)` on the extended class whenever it is first
   # subclassed within a module namespace corresponding to a slice.
+  #
+  # Subclasses outside any slice's namespace are left alone, such as those defined by gems before
+  # the app is defined.
   #
   # @example
   #   class BaseClass

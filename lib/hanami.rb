@@ -137,6 +137,8 @@ module Hanami
   # Searches within the given directory, then searches upwards through parent directories until the
   # app file can be found.
   #
+  # This behavior can be overriden using the HANAMI_APP_PATH environment variable
+  #
   # @param dir [String, Pathname] The directory from which to start searching. Defaults to the
   #   current directory.
   #
@@ -146,8 +148,13 @@ module Hanami
   # @since 2.0.0
   def self.app_path(dir = Dir.pwd)
     dir = Pathname(dir).expand_path
-    path = dir.join(APP_PATH)
 
+    if ENV["HANAMI_APP_PATH"]
+      path = dir.join(ENV["HANAMI_APP_PATH"])
+      return path.file? ? path : nil
+    end
+
+    path = dir.join(APP_PATH)
     if path.file?
       path
     elsif !dir.root?
@@ -277,5 +284,10 @@ module Hanami
   loader.setup
 
   require_relative "hanami/errors"
+
+  # Check before loading the extensions, since those require the other Hanami gems, and a version
+  # mismatch may cause errors as soon as they're loaded.
+  GemVersionCheck.call
+
   require_relative "hanami/extensions"
 end

@@ -34,9 +34,6 @@ gem "dry-system", github: "dry-rb/dry-system", branch: "main"
 # Required until dry-cli 2.0 is released
 gem "dry-cli", github: "dry-rb/dry-cli", branch: "main"
 
-# Required for substring log filtering; remove once dry-logger 1.3 is released
-gem "dry-logger", github: "dry-rb/dry-logger", branch: "main"
-
 # For testing settings with types
 gem "dry-types"
 
@@ -52,6 +49,12 @@ gem "rouge"
 
 # For testing i18n support
 gem "i18n"
+
+# For testing validation contract i18n integration
+gem "dry-validation"
+
+# Required for custom messages backends; remove afer dry-schema 1.17 ships.
+gem "dry-schema", github: "dry-rb/dry-schema", branch: "main"
 
 # Work around RDoc/JRuby incompatibiltiy: rdoc 8 depends on rbs 4, whose native C extension can't
 # build on JRuby.

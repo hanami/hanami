@@ -19,8 +19,10 @@ module Hanami
       setting :adapters, mutable: true, default: Adapters.new
       setting :gateways, default: {}
 
-      def initialize(...)
-        super(...)
+      # Use explicit args rather than `(...)` to avoid a JRuby 10.1.3.0 bug where keywords forwarded
+      # via `super(...)` lose their keyword flag: https://github.com/jruby/jruby/issues/10026
+      def initialize(*args, **kwargs, &block)
+        super(*args, **kwargs, &block)
 
         @config_finalized = false
       end
@@ -433,8 +435,11 @@ module Hanami
 
         return if Hanami.bundled?(database_gem)
 
+        # Give only the URL's scheme, since the full URL may contain credentials
+        scheme = Hanami::DB::DatabaseURL.scheme(database_url)
+
         raise Hanami::ComponentLoadError, <<~STR
-          The "#{database_gem}" gem is required to connect to #{database_url}. Please add it to your Gemfile.
+          The "#{database_gem}" gem is required to connect to a #{scheme} database. Please add it to your Gemfile.
         STR
       end
 

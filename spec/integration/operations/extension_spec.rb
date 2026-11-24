@@ -119,4 +119,20 @@ RSpec.describe "Operation / Extensions", :app_integration do
       end
     end
   end
+
+  specify "Operations defined outside an app are left alone" do
+    require "hanami"
+
+    operation_class = Class.new(Dry::Operation) {
+      def call(name)
+        step greet(name)
+      end
+
+      def greet(name)
+        Success("Hello, #{name}")
+      end
+    }
+
+    expect(operation_class.new.call("Alice").value!).to eq "Hello, Alice"
+  end
 end

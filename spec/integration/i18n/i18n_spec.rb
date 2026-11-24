@@ -672,6 +672,74 @@ RSpec.describe "I18n", :app_integration do
       end
     end
 
+    it "ignores translation files in the global I18n.load_path" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "config/i18n/en.yml", <<~YAML
+          en:
+            greeting: Hello from the app
+        YAML
+
+        write "global/en.yml", <<~YAML
+          en:
+            greeting: Hello from the global load path
+            global_only: Only in the global load path
+        YAML
+
+        global_path = File.expand_path("global/en.yml")
+        ::I18n.load_path += [global_path]
+
+        require "hanami/prepare"
+
+        i18n = Hanami.app["i18n"]
+
+        expect(i18n.t("greeting")).to eq "Hello from the app"
+        expect(i18n.exists?("global_only")).to be false
+      ensure
+        ::I18n.load_path -= [global_path]
+      end
+    end
+
+    it "keeps the slice's translations after reload!" do
+      with_tmp_directory(Dir.mktmpdir) do
+        write "config/app.rb", <<~'RUBY'
+          require "hanami"
+
+          module TestApp
+            class App < Hanami::App
+            end
+          end
+        RUBY
+
+        write "config/i18n/en.yml", <<~YAML
+          en:
+            greeting: Hello
+        YAML
+
+        require "hanami/prepare"
+
+        i18n = Hanami.app["i18n"]
+        expect(i18n.t("greeting")).to eq "Hello"
+
+        write "config/i18n/en.yml", <<~YAML
+          en:
+            greeting: Hello again
+        YAML
+
+        i18n.reload!
+
+        expect(i18n.t("greeting")).to eq "Hello again"
+      end
+    end
+
     it "allows manual registration via provider file even without config/i18n/ directory" do
       with_tmp_directory(Dir.mktmpdir) do
         write "config/app.rb", <<~'RUBY'
