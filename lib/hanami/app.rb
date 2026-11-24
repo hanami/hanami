@@ -56,6 +56,14 @@ module Hanami
         slice_name
       end
 
+      # Returns the app's root component directory, `app/` within its root.
+      #
+      # @return [Pathname]
+      #
+      # @api public
+      # @since 2.2.0
+      def source_path = root.join(APP_DIR)
+
       # Prepares the $LOAD_PATH based on the app's configured root, prepending the `lib/` directory
       # if it exists. If the lib directory is already added, this will do nothing.
       #

@@ -70,6 +70,7 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 - Set the `HANAMI_APP_PATH` env var to load the Hanami app class from a file other than `config/app.rb`, such as `HANAMI_APP_PATH=app/hanami.rb`. This is useful for apps that combine Hanami with another framework. (@sandbergja in #1665)
 - Add `collection` blocks to `resources` in routes, for routes on the resource's collection rather than a single member. For example, `resources :books do collection do get "/latest", to: "books.latest", as: :latest end end` gives `GET /books/latest`, named `books_latest`. (@timriley in #1646)
 - Add `member` blocks to `resources` in routes, for routes on a single member that receive the resource's ID as `:id`, the same as its `show` route. Other routes inside a `resources` block receive it as `:<name>_id`, which suits nested child resources. For example, `resources :books do member do post "/publish", to: "books.publish", as: :publish end end` gives `POST /books/:id/publish`, named `book_publish`. (@timriley in #1669)
+- Prepare, boot and serve a slice as a Rack app without an `Hanami::App` defined in the process. With no app defined, the outermost slice acts as the app: `Hanami::Slice.app` returns it, and `Hanami::Slice.app?` is true for it. (@parndt in #1614)
 
 ### Changed
 
