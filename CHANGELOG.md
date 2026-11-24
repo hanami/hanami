@@ -29,6 +29,9 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Changed
 
+- Change the default `config.logger.filters` to `["passw", "secret", "token", "_key", "crypt"]`. With the substring matching in dry-logger 1.3, these filter any key containing these words, ignoring case, such as `password_confirmation`, `client_secret`, `_csrf_token`, `api_key` and `encrypted_password`. To filter more keys, append to `config.logger.filters`. To match a short key exactly, use a regexp such as `/\Apin\z/`. (@timriley in #1657)
+- Require dry-logger 1.3 or later, which the new default log filters depend on. To keep the previous defaults, set `config.logger.filters = %w[_csrf password password_confirmation]`. (@parndt in GHSA-2v2m-5qwc-qhpw)
+
 ### Deprecated
 
 ### Removed

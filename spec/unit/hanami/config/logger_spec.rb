@@ -135,13 +135,13 @@ RSpec.describe Hanami::Config::Logger do
 
   describe "#filters" do
     it "defaults to a standard array of sensitive param names" do
-      expect(subject.filters).to include(*%w[_csrf password password_confirmation])
+      expect(subject.filters).to eq %w[_key crypt passw secret token]
     end
 
     it "can have other params names added" do
-      expect { subject.filters << "secret" }
+      expect { subject.filters << "otp" }
         .to change { subject.filters }
-        .to array_including("secret")
+        .to array_including("otp")
 
       expect { subject.filters += ["yet", "another"] }
         .to change { subject.filters }
