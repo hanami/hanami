@@ -205,6 +205,9 @@ RSpec.describe "Code loading / Reloading", :app_integration do
 
           module TestApp
             class App < Hanami::App
+              # Let the router respond with its own 404 for unmatched routes, so the spec does not
+              # depend on hanami-webconsole's error page.
+              config.render_detailed_errors = false
             end
           end
         RUBY
