@@ -35,4 +35,20 @@ RSpec.describe Hanami, ".bundled?" do
       expect(Hanami).to have_received(:gem).once
     end
   end
+
+  context "first-party gem" do
+    let(:gem_name) { "hanami-router" }
+    let(:requirements) { Hanami::GemVersionCheck.requirements_for(gem_name) }
+
+    before do
+      # Loading hanami already checks for hanami-router, so clear its memoized result
+      Hanami.instance_variable_get(:@_bundled).delete(gem_name)
+      allow(Hanami).to receive(:gem).with(gem_name, *requirements).and_return(true)
+    end
+
+    it "activates a version on the same major.minor as hanami" do
+      expect(Hanami.bundled?(gem_name)).to be true
+      expect(Hanami).to have_received(:gem).with(gem_name, *requirements)
+    end
+  end
 end

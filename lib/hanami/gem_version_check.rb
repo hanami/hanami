@@ -10,7 +10,8 @@ module Hanami
   # before it loads any of the other gems, and raise a {GemVersionError} on a mismatch.
   #
   # Only gems already activated (i.e. those in the bundle) are checked. Without Bundler, gems
-  # activated later (e.g. via {Hanami.bundled?}) are not checked.
+  # activated later (e.g. via {Hanami.bundled?}) are not checked. To keep these in step, {Hanami.bundled?}
+  # activates first-party gems with the {.requirements_for} matching Hanami's version.
   #
   # Set the `HANAMI_SKIP_GEM_VERSION_CHECK` environment variable (to any value) to skip the check.
   #
@@ -52,6 +53,26 @@ module Hanami
         return if mismatched.empty?
 
         raise GemVersionError, message(mismatched, hanami_version:, series: series.join("."))
+      end
+
+      # Returns the version requirements for activating the given gem, so that a first-party gem is
+      # activated on the same major.minor as Hanami (including prereleases).
+      #
+      # Without these, RubyGems activates the latest non-prerelease version installed, which can be
+      # from an older release series.
+      #
+      # @param gem_name [String]
+      # @param hanami_version [String]
+      #
+      # @return [Array<String>] the requirements, or an empty array for other gems
+      def requirements_for(gem_name, hanami_version: Hanami::VERSION)
+        return [] unless GEM_NAMES.include?(gem_name)
+
+        major, minor = major_minor(hanami_version)
+
+        # ".a" is the lowest possible prerelease, so this covers every version in the series
+        # (including prereleases), and nothing from the next one.
+        [">= #{major}.#{minor}.0.a", "< #{major}.#{minor + 1}.a"]
       end
 
       private
