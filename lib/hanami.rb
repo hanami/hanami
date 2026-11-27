@@ -3,6 +3,9 @@
 require "pathname"
 require "zeitwerk"
 require_relative "hanami/constants"
+# Required directly, since `Hanami.bundled?` uses these before the loader is set up
+require_relative "hanami/version"
+require_relative "hanami/gem_version_check"
 
 # A complete web framework for Ruby
 #
@@ -28,6 +31,8 @@ module Hanami
       gem_lib = loader.dirs.first
       loader.ignore(
         "#{gem_lib}/hanami/{constants,boot,errors,extensions/router/errors,prepare,rake_tasks,setup}.rb",
+        # Required directly at the top of this file
+        "#{gem_lib}/hanami/{gem_version_check,version}.rb",
         # Ignore conditionally-loaded classes dependent on gems that may not be included in the
         # user's Gemfile
         "#{gem_lib}/hanami/config/{assets,router,views}.rb",
@@ -263,7 +268,7 @@ module Hanami
       @_bundled.fetch(gem_name) {
         @_bundled[gem_name] =
           begin
-            gem(gem_name)
+            gem(gem_name, *GemVersionCheck.requirements_for(gem_name))
             true
           rescue Gem::LoadError
             false

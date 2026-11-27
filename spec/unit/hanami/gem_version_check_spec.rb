@@ -82,6 +82,24 @@ RSpec.describe Hanami::GemVersionCheck do
     end
   end
 
+  describe ".requirements_for" do
+    it "returns requirements for the same major.minor as hanami, allowing prereleases" do
+      requirements = described_class.requirements_for("hanami-router", hanami_version: "3.1.0.rc1")
+
+      expect(requirements).to eq [">= 3.1.0.a", "< 3.2.a"]
+
+      requirement = Gem::Requirement.new(*requirements)
+      expect(requirement).to be_satisfied_by Gem::Version.new("3.1.0.rc1")
+      expect(requirement).to be_satisfied_by Gem::Version.new("3.1.4")
+      expect(requirement).not_to be_satisfied_by Gem::Version.new("3.0.1")
+      expect(requirement).not_to be_satisfied_by Gem::Version.new("3.2.0.beta1")
+    end
+
+    it "returns no requirements for other gems" do
+      expect(described_class.requirements_for("dry-operation", hanami_version: "3.1.0")).to eq []
+    end
+  end
+
   describe "on require \"hanami\"" do
     # Runs in a separate process, since hanami is already loaded here
     def require_hanami(env = {})

@@ -35,6 +35,8 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Fixed
 
+- Stop `hanami` commands from raising a `Hanami::GemVersionError` outside a bundle, such as `hanami new` right after `gem install hanami`, when an older version of another Hanami gem (such as hanami-router 3.0) is installed. `Hanami.bundled?` now activates Hanami's own gems only at a version on the same major.minor as hanami, rather than the latest installed version.
+
 ### Security
 
 [unreleased]: https://github.com/hanami/hanami/compare/v3.1.0.rc1...HEAD
