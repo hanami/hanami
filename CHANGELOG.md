@@ -27,15 +27,36 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Added
 
-- Translate dry-validation contract error messages using the slice's i18n, following its translation files, default locale and current locale. Contracts defined in a slice namespace, as well as contracts given to actions via `params do` or `contract do` blocks, use the same `dry_validation.errors` keys as dry-validation's own I18n backend, falling back to dry-validation's bundled English messages. Requires dry-schema 1.17 or later. Set `config.messages.backend` on a contract to opt out. (@parndt in #1662)
-- When `hanami` is required, check that first-party gems (hanami-action, hanami-view, etc.) share the hanami gem's major.minor version, raising a `Hanami::GemVersionError` when they don't. Set `HANAMI_SKIP_GEM_VERSION_CHECK=1` to skip the check. (@parndt in #1661)
-- Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new `Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen in #1627)
-- Make `Hanami::Settings::EnvStore` public API, for use when building your own `config.settings_store`. (@timriley in #1670)
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+[unreleased]: https://github.com/hanami/hanami/compare/v3.1.0.rc1...HEAD
+
+## [3.1.0.rc1] - 2026-11-27
+
+### Added
+
 - Reload an app's code in place via `Hanami.app.reload`, without restarting the Ruby process. (@afomera and @timriley in #1625)
 
     This unloads the app and all its slices, then prepares them again, picking up changes to code, settings, providers, routes and slices themselves. The app class itself is kept, so `run Hanami.app` in `config.ru` continues to work, which means that `config/app.rb` itself is not reloaded.
 
     Configure this with `config.code_reloading`, which defaults to `true` in development and `false` in all other environments.
+- When `hanami` is required, check that first-party gems (hanami-action, hanami-view, etc.) share the hanami gem's major.minor version, raising a `Hanami::GemVersionError` when they don't. Set `HANAMI_SKIP_GEM_VERSION_CHECK=1` to skip the check. (@parndt in #1661)
+- Add `collection` blocks to `resources` in routes, for routes on the resource's collection rather than a single member. For example, `resources :books do collection do get "/latest", to: "books.latest", as: :latest end end` gives `GET /books/latest`, named `books_latest`. (@timriley in #1646)
+- Add `member` blocks to `resources` in routes, for routes on a single member that receive the resource's ID as `:id`, the same as its `show` route. Other routes inside a `resources` block receive it as `:<name>_id`, which suits nested child resources. For example, `resources :books do member do post "/publish", to: "books.publish", as: :publish end end` gives `POST /books/:id/publish`, named `book_publish`. (@timriley in #1669)
+- Add `#slice` to `Hanami::Router::NotFoundError` and `Hanami::Router::NotAllowedError`, returning the slice whose router could not match the request. Error handling such as the hanami-webconsole detailed error page uses this to list the slice's routes. (@afomera in #1624)
+- Translate dry-validation contract error messages using the slice's i18n, following its translation files, default locale and current locale. Contracts defined in a slice namespace, as well as contracts given to actions via `params do` or `contract do` blocks, use the same `dry_validation.errors` keys as dry-validation's own I18n backend, falling back to dry-validation's bundled English messages. Requires dry-schema 1.17 or later. Set `config.messages.backend` on a contract to opt out. (@parndt in #1662)
+- Load settings from `config/settings/default.yml` and `config/settings/[HANAMI_ENV].yml`, via the new `Hanami::Settings::YAMLFileStore`. Values in `ENV` continue to take precedence. (@aaronmallen in #1627)
+- Make `Hanami::Settings::EnvStore` public API, for use when building your own `config.settings_store`. (@timriley in #1670)
+- Set the `HANAMI_APP_PATH` env var to load the Hanami app class from a file other than `config/app.rb`, such as `HANAMI_APP_PATH=app/hanami.rb`. This is useful for apps that combine Hanami with another framework. (@sandbergja in #1665)
+- Build a database URL from separate env vars when no `DATABASE_URL` is given: `DATABASE_SCHEME` (required), `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_HOST` (defaulting to `localhost`), `DATABASE_PORT` and `DATABASE_NAME`. These follow the same slice prefix and gateway suffix rules as `DATABASE_URL`, such as `MAIN__DATABASE_HOST` or `DATABASE_HOST__EXTRA`. For SQLite, `DATABASE_NAME` is the path to the database file. (@aaronmallen in #1621)
 - Apply sensible SQLite pragmas to every connection for apps using SQLite, via hanami-db's `Hanami::DB::SQLite::Pragmas`: `journal_mode = wal`, `synchronous = normal`, `mmap_size` of 128MiB, `journal_size_limit` of 64MiB and `cache_size = 2000`. (@cllns in #1637, @timriley via hanami/hanami-db#28)
 
     These are given to Sequel as `connect_sqls`. Any `connect_sqls` you provide via a gateway's `connection_options` run after these, so your own pragmas take precedence. To opt out, call `skip_defaults :connect_sqls` (or `skip_defaults` for all defaults) in your SQL adapter config:
@@ -66,28 +87,18 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
     Note: this skips all of the default pragmas. You may want to add back the ones that help reads, like `mmap_size` and `cache_size`, which the example above does not set. Add them via `connect_sqls` in the gateway's `connection_options`.
 - Support JRuby. Recognize JDBC database URLs (`jdbc:sqlite:`, `jdbc:postgresql:`, `jdbc:mysql:`) in the db provider, and raise a helpful error when the matching JDBC gem (`jdbc-sqlite3`, `jdbc-postgres` or `jdbc-mysql`) is missing. (@parndt in #1617, @timriley in #1641)
-- Add `#slice` to `Hanami::Router::NotFoundError` and `Hanami::Router::NotAllowedError`, returning the slice whose router could not match the request. Error handling such as the hanami-webconsole detailed error page uses this to list the slice's routes. (@afomera in #1624)
-- Set the `HANAMI_APP_PATH` env var to load the Hanami app class from a file other than `config/app.rb`, such as `HANAMI_APP_PATH=app/hanami.rb`. This is useful for apps that combine Hanami with another framework. (@sandbergja in #1665)
-- Add `collection` blocks to `resources` in routes, for routes on the resource's collection rather than a single member. For example, `resources :books do collection do get "/latest", to: "books.latest", as: :latest end end` gives `GET /books/latest`, named `books_latest`. (@timriley in #1646)
-- Add `member` blocks to `resources` in routes, for routes on a single member that receive the resource's ID as `:id`, the same as its `show` route. Other routes inside a `resources` block receive it as `:<name>_id`, which suits nested child resources. For example, `resources :books do member do post "/publish", to: "books.publish", as: :publish end end` gives `POST /books/:id/publish`, named `book_publish`. (@timriley in #1669)
 
 ### Changed
 
-- dry-validation contracts in a slice, and those given to actions as `params do`/`contract do` blocks, now give error messages in the slice's current locale (falling back to English) rather than always in English. Set `config.messages.backend = :yaml` on a contract to keep the previous behaviour. (@parndt in #1662)
 - In routes, pass the `as:` option of `resources` through the inflector, in the same way as the resource name. Previously `as:` was used exactly as given. Now, member routes and routes nested under the resource use its singular form, and the index and create routes use its plural form. (@timriley in #1643)
 
     For example, `resources :items, as: :data` now gives `datum`, `edit_datum` and `datum_reviews` for member and nested routes, and `data` for the index route. To change how a name is inflected, add a custom inflection with `config.inflections` in your app.
-
-- Build a database URL from separate env vars when no `DATABASE_URL` is given: `DATABASE_SCHEME` (required), `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_HOST` (defaulting to `localhost`), `DATABASE_PORT` and `DATABASE_NAME`. These follow the same slice prefix and gateway suffix rules as `DATABASE_URL`, such as `MAIN__DATABASE_HOST` or `DATABASE_HOST__EXTRA`. For SQLite, `DATABASE_NAME` is the path to the database file. (@aaronmallen in #1621)
-- Require dry-logger 1.3 or later, for the substring matching used by the default log filters. (@timriley in #1670)
+- dry-validation contracts in a slice, and those given to actions as `params do`/`contract do` blocks, now give error messages in the slice's current locale (falling back to English) rather than always in English. Set `config.messages.backend = :yaml` on a contract to keep the previous behaviour. (@parndt in #1662)
 - In `form_for`, read values from the view's locals one key at a time, rather than converting them to a Hash first. (@timriley in #1644)
 
-    With the lazy exposures in Hanami View 3.1, this ensures form rendering no longer runs every exposure in the view, only the ones the form reads. 
-
-- Change the default `config.logger.filters` to `["passw", "secret", "token", "_key", "crypt"]`. With the substring matching in dry-logger 1.3, these filter any key containing these words, ignoring case, such as `password_confirmation`, `client_secret`, `_csrf_token`, `api_key` and `encrypted_password`. To filter more keys, append to `config.logger.filters`. To match a short key exactly, use a regexp such as `/\Apin\z/`. (@timriley in #1657)
+    With the lazy exposures in Hanami View 3.1, this ensures form rendering no longer runs every exposure in the view, only the ones the form reads.
 - Give the slice, rather than its config, to `Hanami::Webconsole::Middleware`. This requires the matching version of hanami-webconsole. (@timriley in #1658)
-
-### Deprecated
+- Require dry-system 1.3 or later, for reloading code in place.
 
 ### Removed
 
@@ -95,10 +106,12 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
 
 ### Fixed
 
-- Return `false` from `Hanami::Slice.app?`, rather than raising `Hanami::AppLoadError`, when no app is defined. (@parndt in #1612)
-- Build `logger` and `inflector` providers registered on a slice from the slice's own config, rather than the app's. (@parndt in #1613)
-- Register only ROM classes from the `relations`, `db/commands` and `db/mappers` directories, leaving any other classes in those directories untouched. (@aaronmallen in #1629)
-- Load only a slice's configured translation files into its default `i18n` backend. Previously, the backend also loaded the files in the global `I18n.load_path` on its first lookup, and these could override the slice's own translations. (@timriley)
+- Use the `as:` option of `resources` for all route names. Member routes now use its singular form (`resources :books, as: :publications` gives `publication`, `new_publication` and `edit_publication`), and the index route keeps its own `publications` name instead of being overwritten by the show route. Routes nested under the resource now use it too, giving `publication_reviews` rather than `book_reviews`. (@timriley in #1643)
+- Name the params for routes nested under `resources` after the resource name, rather than its `path:`. `resources :cafes, path: "coffee-shops" do resources :reviews end` now gives `/coffee-shops/:cafe_id/reviews`. Previously, a `path:` with a dash or a slash gave an invalid param name, and the nested routes did not match any request. Apps that use a `path:` and read the old param name (for example, `article_id` for `resources :posts, path: "articles"`) will need to read the new name (`post_id`). (@timriley in #1643)
+- Give the index and create routes of `resources` with an uncountable name (like `news`) a name with an `_index` suffix (`news_index`). Previously these shared the `news` name with the show route, which left the index route without a usable name. (@timriley in #1643)
+- Name routes nested under a singular `resource` using the resource's name as given, matching the resource's own routes. `resource :settings do resources :items end` now gives `settings_items` rather than `setting_items`. (@timriley in #1643)
+- Resolve the `routes` helper in slice view contexts from the app, so views and actions in a slice generate the same named paths. (@aaronmallen in #1630)
+- Load only a slice's configured translation files into its default `i18n` backend. Previously, the backend also loaded the files in the global `I18n.load_path` on its first lookup, and these could override the slice's own translations. (@timriley in #1664)
 
     If you added translation files to `I18n.load_path` and used them via the `i18n` component, add them to your i18n config instead. Use `config.i18n.load_path` for a single slice, or `config.i18n.shared_load_path` for every slice:
 
@@ -110,28 +123,35 @@ A complete Hanami app is composed of multiple gems. For a complete overview of c
     Calling `I18n.t` directly on the global `I18n` module still uses `I18n.load_path`, as before.
 
     Calling `reload!` on the `i18n` component also now reloads the slice's translation files, rather than replacing them with the files in the global `I18n.load_path`. To use files from a gem, add their paths to `config.i18n.load_path` or `config.i18n.shared_load_path`.
+- Detect already-activated gems in `Hanami.bundled?` when running outside of Bundler. Previously, gems like `rack` that were activated as a dependency of another gem were reported as missing, leaving `rack.monitor` unregistered and causing every request to return a 500 error. (@maksim-romanov in #1639)
+- In request logs, include body params parsed by actions (such as from JSON request bodies). Parsed body params were missing from logs in Hanami 3.0 when body parsing moved into Hanami Action. (@timriley in #1649)
+- Instrument and correctly handle errors in views in templates when auto-render is used. (@katafrakt in #1660)
+- Apply slice config to actions and views in a slice that inherit directly from `Hanami::Action` or `Hanami::View`. Previously these missed every setting the slice shared with the app, such as default headers and accepted formats. (@parndt in #1656)
+- Generate content security policy nonces from the config of the slice whose router serves the request, rather than the app's. Previously a slice served through its own `rack_app` used the app's nonce generator. (@parndt in #1653)
+- Build `logger` and `inflector` providers registered on a slice from the slice's own config, rather than the app's. (@parndt in #1613)
 - Allow subclasses of `Hanami::Action`, `Hanami::View`, `Dry::Operation` and other Hanami-integrated classes to be defined before the Hanami app is defined. Previously, this raised a `Hanami::ComponentLoadError`, which could break gems that define such subclasses when they are required. Hanami now leaves these early subclasses unconfigured, and continues to configure any classes later defined within a slice's namespace. (@timriley in #1666)
 - Register Hanami's first-party provider sources when `Hanami::Slice` loads, rather than when a slice is prepared. This allows `configure_provider` to be called within an app or slice class body. (@timriley in #1636)
 - Configure a slice's provider registrar when the slice class is defined rather than when it is prepared. Calling `register_provider` from within a slice class body previously left the slice with Dry System's default registrar, leading to errors when the slice was prepared. (@timriley in #1636)
-- Resolve the `routes` helper in slice view contexts from the app, so views and actions in a slice generate the same named paths. (@aaronmallen in #1630)
+- Return `false` from `Hanami::Slice.app?`, rather than raising `Hanami::AppLoadError`, when no app is defined. (@parndt in #1612)
+- Register only ROM classes from the `relations`, `db/commands` and `db/mappers` directories, leaving any other classes in those directories untouched. (@aaronmallen in #1629)
 - Raise a helpful error when the `pg` gem is missing for `postgresql://` database URLs, as already happened for `postgres://` URLs. (@parndt in #1647)
-- Detect already-activated gems in `Hanami.bundled?` when running outside of Bundler. Previously, gems like `rack` that were activated as a dependency of another gem were reported as missing, leaving `rack.monitor` unregistered and causing every request to return a 500 error. (@maksim-romanov in #1639)
-- Use the `as:` option of `resources` for all route names. Member routes now use its singular form (`resources :books, as: :publications` gives `publication`, `new_publication` and `edit_publication`), and the index route keeps its own `publications` name instead of being overwritten by the show route. Routes nested under the resource now use it too, giving `publication_reviews` rather than `book_reviews`. (@timriley in #1643)
-- Name routes nested under a singular `resource` using the resource's name as given, matching the resource's own routes. `resource :settings do resources :items end` now gives `settings_items` rather than `setting_items`. (@timriley in #1643)
-- Give the index and create routes of `resources` with an uncountable name (like `news`) a name with an `_index` suffix (`news_index`). Previously these shared the `news` name with the show route, which left the index route without a usable name. (@timriley in #1643)
-- Name the params for routes nested under `resources` after the resource name, rather than its `path:`. `resources :cafes, path: "coffee-shops" do resources :reviews end` now gives `/coffee-shops/:cafe_id/reviews`. Previously, a `path:` with a dash or a slash gave an invalid param name, and the nested routes did not match any request. Apps that use a `path:` and read the old param name (for example, `article_id` for `resources :posts, path: "articles"`) will need to read the new name (`post_id`). (@timriley in #1643)
-- In request logs, include body params parsed by actions (such as from JSON request bodies). Parsed body params were missing from logs in Hanami 3.0 when body parsing moved into Hanami Action. (@timriley in #1649)
-- Generate content security policy nonces from the config of the slice whose router serves the request, rather than the app's. Previously a slice served through its own `rack_app` used the app's nonce generator. (@parndt in #1653)
-- Apply slice config to actions and views in a slice that inherit directly from `Hanami::Action` or `Hanami::View`. Previously these missed every setting the slice shared with the app, such as default headers and accepted formats. (@parndt in #1656)
-- Instrument and correctly handle errors in views in templates when auto-render is used (@katafrakt in #1660)
 - Work around a [JRuby bug](https://github.com/jruby/jruby/issues/10115). (@timriley in #1667)
 
 ### Security
 
 - When a database gem is missing, give only the database URL's scheme in the error message, rather than the full URL, which may contain credentials. (@timriley in #1670)
+
+[3.1.0.rc1]: https://github.com/hanami/hanami/compare/v3.0.3...v3.1.0.rc1
+
+## [3.0.3] - 2026-11-24
+
+### Security
+
+- Change the default `config.logger.filters` to `["passw", "secret", "token", "_key", "crypt"]`. With the substring matching in dry-logger 1.3, these filter any key containing these words, ignoring case, such as `password_confirmation`, `client_secret`, `_csrf_token`, `api_key` and `encrypted_password`. To filter more keys, append to `config.logger.filters`. To match a short key exactly, use a regexp such as `/\Apin\z/`. (@timriley in #1657)
+- Require dry-logger 1.3 or later, which the new default log filters depend on. To keep the previous defaults, set `config.logger.filters = %w[_csrf password password_confirmation]`. (@parndt in GHSA-2v2m-5qwc-qhpw)
 - Escape every non-numeric interpolation value in HTML translations. Previously only Strings were escaped, so Arrays and Hashes from request params, Symbols, and view parts were inserted unescaped. (@parndt in GHSA-gc77-6753-x6mr)
 
-[unreleased]: https://github.com/hanami/hanami/compare/v3.0.2...HEAD
+[3.0.3]: https://github.com/hanami/hanami/compare/v3.0.2...v3.0.3
 
 ## [3.0.2] - 2026-08-21
 

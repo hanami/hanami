@@ -27,10 +27,6 @@ gem "hanami-webconsole", github: "hanami/hanami-webconsole", branch: "main"
 
 gem "hanami-devtools", github: "hanami/devtools", branch: "main"
 
-# Required for Slice reloading support; remove Dry System releases and we can bake the dependency
-# into the gemspec.
-gem "dry-system", github: "dry-rb/dry-system", branch: "main"
-
 # Required until dry-cli 2.0 is released
 gem "dry-cli", github: "dry-rb/dry-cli", branch: "main"
 
@@ -38,7 +34,7 @@ gem "dry-cli", github: "dry-rb/dry-cli", branch: "main"
 gem "dry-types"
 
 # For testing operation integrations
-gem "dry-operation", github: "dry-rb/dry-operation", branch: "main"
+gem "dry-operation", ">= 1.2.0"
 
 # For testing the DB layer
 gem "sqlite3", platform: :mri
@@ -53,8 +49,8 @@ gem "i18n"
 # For testing validation contract i18n integration
 gem "dry-validation"
 
-# Required for custom messages backends; remove afer dry-schema 1.17 ships.
-gem "dry-schema", github: "dry-rb/dry-schema", branch: "main"
+# Required for custom messages backends; remove once dry-validation requires dry-schema 1.17.
+gem "dry-schema", "~> 1.17"
 
 # Work around RDoc/JRuby incompatibiltiy: rdoc 8 depends on rbs 4, whose native C extension can't
 # build on JRuby.
